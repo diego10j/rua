@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recursos_x_perfil" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ae143fc7-6d96-4a72-8473-d025de3bb095">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="New Dataset 1" uuid="bdccbfa9-a01d-44aa-b5b9-d36bfeb7c24f">
+		<queryString language="SQL">
+			<![CDATA[SELECT perfil.ide_perf,nom_perf ,
+opcion2.ide_opci,opcion2.nom_opci as modulo,opcion.nom_opci
+FROM sis_perfil perfil
+left join sis_perfil_opcion per_opcion on per_opcion.ide_perf=perfil.ide_perf
+left join sis_opcion opcion on opcion.ide_opci=per_opcion.ide_opci
+left join sis_opcion opcion2 on opcion2.ide_opci=opcion.sis_ide_opci
+WHERE perfil.ide_perf IN (0)
+GROUP BY perfil.ide_perf,nom_perf,
+opcion2.ide_opci,opcion.nom_opci,opcion2.nom_opci
+HAVING opcion2.ide_opci IS NOT NULL]]>
+		</queryString>
+		<field name="ide_perf" class="java.lang.Long"/>
+		<field name="nom_perf" class="java.lang.String"/>
+		<field name="ide_opci" class="java.lang.Long"/>
+		<field name="modulo" class="java.lang.String"/>
+		<field name="nom_opci" class="java.lang.String"/>
+		<group name="ide_perf">
+			<groupExpression><![CDATA[$F{ide_perf}]]></groupExpression>
+		</group>
+		<group name="ide_opci">
+			<groupExpression><![CDATA[$F{ide_opci}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_perf" class="java.lang.String"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT perfil.ide_perf,nom_perf
+FROM sis_perfil perfil
+WHERE perfil.ide_perf IN ($P!{ide_perf})
+ORDER BY perfil.nom_perf ASC]]>
+	</queryString>
+	<field name="ide_perf" class="java.lang.Long"/>
+	<field name="nom_perf" class="java.lang.String"/>
+	<group name="ide_perf">
+		<groupExpression><![CDATA[$F{ide_perf}]]></groupExpression>
+		<groupHeader>
+			<band height="49">
+				<staticText>
+					<reportElement uuid="09d3c2f7-3b5b-4127-af3a-f538d498a17d" x="2" y="26" width="188" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[MENU OPCIONES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ed63e45b-92ab-4d47-aab8-dd8bacc2d5d6" x="190" y="26" width="188" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[REPORTES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b883d5c9-c453-4b28-8513-96e03140287d" x="378" y="26" width="177" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[OBJETOS]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="131870f8-adb9-4f23-b9d3-4a166ef8cdcb" mode="Opaque" x="2" y="2" width="552" height="20" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PERFIL: "+$F{nom_perf}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="39" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="acc80674-1d2a-4a9b-9ea4-864353e8030d" positionType="Float" isPrintRepeatedValues="false" x="1" y="0" width="552" height="38" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="14">
+			<textField evaluationTime="Report">
+				<reportElement uuid="23e76f7a-23b7-42ec-9be5-c65ee9e959af" positionType="Float" x="509" y="0" width="42" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a0009ae0-446d-4a14-bd9d-e260aef56c35" positionType="Float" x="463" y="0" width="51" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23">
+			<subreport>
+				<reportElement uuid="c46ffda9-0c0b-4b82-a457-5d1641527d5d" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="187" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_perf">
+					<subreportParameterExpression><![CDATA[$F{ide_perf}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_auditoria/sub_rep_opciones_x_perfil.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="eb9554ca-a8a8-48fd-b725-2f4a7176ca2f" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="198" y="0" width="188" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_perf">
+					<subreportParameterExpression><![CDATA[$F{ide_perf}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_auditoria/sub_rep_reportes_x_perfil.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="6ede9812-f71e-4db1-ba33-f6963064b938" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="389" y="0" width="165" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_perf">
+					<subreportParameterExpression><![CDATA[$F{ide_perf}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_auditoria/sub_rep_objetos_x_perfil.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

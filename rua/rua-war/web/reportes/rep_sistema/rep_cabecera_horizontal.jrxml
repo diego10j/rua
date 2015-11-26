@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="657d7e5a-b9e6-4f43-ab64-d0061135e46a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="131"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from SIS_EMPRESA empresa,SIS_SUCURSAL sucursal
+left join SIS_USUARIO_SUCURSAL usuario_sucursal on USUARIO_SUCURSAL.IDE_SUCU=SUCURSAL.IDE_SUCU
+left join SIS_USUARIO usuario on USUARIO.IDE_USUA=USUARIO_SUCURSAL.IDE_USUA
+where SUCURSAL.IDE_EMPR=$P{ide_empr}
+and SUCURSAL.IDE_SUCU=$P{ide_sucu}
+and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
+	</queryString>
+	<field name="ide_empr" class="java.lang.Integer"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="contacto_empr" class="java.lang.String"/>
+	<field name="representante_empr" class="java.lang.String"/>
+	<field name="nom_corto_empr" class="java.lang.String"/>
+	<field name="mail_empr" class="java.lang.String"/>
+	<field name="pagina_empr" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="direccion_empr" class="java.lang.String"/>
+	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="logo_empr" class="java.lang.String"/>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
+	<field name="ide_ussu" class="java.lang.Long"/>
+	<field name="sis_ide_sucu" class="java.lang.Long"/>
+	<field name="ide_usua" class="java.lang.Long"/>
+	<field name="ide_perf" class="java.lang.Long"/>
+	<field name="nom_usua" class="java.lang.String"/>
+	<field name="nick_usua" class="java.lang.String"/>
+	<field name="mail_usua" class="java.lang.String"/>
+	<field name="fecha_reg_usua" class="java.sql.Date"/>
+	<field name="fecha_caduc_usua" class="java.sql.Date"/>
+	<field name="activo_usua" class="java.lang.Boolean"/>
+	<field name="tema_usua" class="java.lang.String"/>
+	<field name="bloqueado_usua" class="java.lang.Boolean"/>
+	<field name="cambia_clave_usua" class="java.lang.Boolean"/>
+	<title>
+		<band height="80" splitType="Stretch">
+			<image>
+				<reportElement uuid="d1cbe5c6-30e6-481e-aa20-19f7e434c340" x="4" y="11" width="136" height="44"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{logo_empr}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="d68b8ab5-589f-4cd7-8924-569307f79b66" x="0" y="53" width="140" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7e838733-f84a-4d5f-8f26-056acdacc906" x="0" y="63" width="140" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{telefono_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="65239882-21c6-4dfd-b01e-2e862b9bc656" x="140" y="11" width="552" height="62"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="4621b5e4-ea0f-443e-855f-7496b64e0042" x="722" y="35" width="80" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="dc0c1260-8e03-41b2-a2b7-611093772efb" x="722" y="48" width="80" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a609083a-74af-4eed-a22b-807530fd6562" x="692" y="35" width="54" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Hora:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="8f5064e4-ff19-4d33-9d57-2a2b2cc94f1a" x="722" y="22" width="80" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="daf99e65-02c0-459e-a736-894b984e2831" x="692" y="22" width="54" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="00ed2191-479f-42e4-94dc-4b4855129729" x="692" y="48" width="54" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Usua:]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

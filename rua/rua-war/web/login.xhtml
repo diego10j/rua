@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Login</title>                
+        <script type="text/javascript" src="resources/sistema/sistema.js"/>       
+
+        <link rel="stylesheet" type="text/css" href="resources/components/font-awesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/components/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/login/css/estilo.css"/>                    
+    </h:head>      
+    <h:body>           
+        <p:growl autoUpdate="true" showDetail="true" sticky="true"/>  
+        <div class="login-box" >
+            <div class="login-logo">
+                <b>RUA</b><small> v2.0</small>
+            </div><!-- /.login-logo -->
+            <div class="login-box-body">
+                <p class="login-box-msg">Ingresar al Sistema</p>
+                <h:form  id="formulario" binding="#{pre_login.formulario}"/>                                      
+            </div><!-- /.login-box-body -->
+        </div><!-- /.login-box -->
+
+    </h:body>
+</html>
+

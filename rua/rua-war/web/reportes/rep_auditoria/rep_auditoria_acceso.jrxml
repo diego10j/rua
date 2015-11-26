@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="23e08ac2-605f-450b-bc53-784a791ed2cc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_ini" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="hora_ini" class="java.sql.Time">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="hora_fin" class="java.sql.Time">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_acau" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_usua" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from SIS_AUDITORIA_ACCESO auditoria_acceso
+left join SIS_ACCION_AUDITORIA accion_auditoria on ACCION_AUDITORIA.IDE_ACAU=AUDITORIA_ACCESO.IDE_ACAU
+LEFT JOIN SIS_USUARIO USUARIO ON USUARIO.IDE_USUA=auditoria_acceso.SIS_IDE_USUA
+where ACCION_AUDITORIA.IDE_ACAU in ($P!{ide_acau})
+and AUDITORIA_ACCESO.FECHA_AUAC >= $P{fecha_ini} and AUDITORIA_ACCESO.FECHA_AUAC <= $P{fecha_fin}
+and AUDITORIA_ACCESO.HORA_AUAC >= $P{hora_ini} and AUDITORIA_ACCESO.HORA_AUAC  <= $P{hora_fin}
+and AUDITORIA_ACCESO.SIS_IDE_USUA in ($P!{ide_usua})
+order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
+	</queryString>
+	<field name="ide_auac" class="java.lang.Integer"/>
+	<field name="ide_usua" class="java.lang.Long"/>
+	<field name="ide_acau" class="java.lang.Integer"/>
+	<field name="sis_ide_usua" class="java.lang.Long"/>
+	<field name="fecha_auac" class="java.sql.Date"/>
+	<field name="hora_auac" class="java.sql.Time"/>
+	<field name="ip_auac" class="java.lang.String"/>
+	<field name="id_session_auac" class="java.lang.String"/>
+	<field name="fin_auac" class="java.lang.Boolean"/>
+	<field name="detalle_auac" class="java.lang.String"/>
+	<field name="nom_acau" class="java.lang.String"/>
+	<field name="descripcion_acau" class="java.lang.String"/>
+	<field name="ide_empr" class="java.lang.Integer"/>
+	<field name="ide_perf" class="java.lang.Long"/>
+	<field name="nom_usua" class="java.lang.String"/>
+	<field name="nick_usua" class="java.lang.String"/>
+	<field name="mail_usua" class="java.lang.String"/>
+	<field name="fecha_reg_usua" class="java.sql.Date"/>
+	<field name="fecha_caduc_usua" class="java.sql.Date"/>
+	<field name="activo_usua" class="java.lang.Boolean"/>
+	<field name="tema_usua" class="java.lang.String"/>
+	<field name="bloqueado_usua" class="java.lang.Boolean"/>
+	<field name="cambia_clave_usua" class="java.lang.Boolean"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a6e75734-a57a-4878-a1cb-7dae2174d48d" x="0" y="0" width="555" height="38"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="291f25ff-7593-4f67-a044-375e0add015d" positionType="Float" x="0" y="56" width="60" height="15"/>
+				<textElement/>
+				<text><![CDATA[Parametros:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="7d874527-da43-4332-a63a-aee3573ee7aa" positionType="Float" x="59" y="70" width="316" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Hora Inicio: "+$P{hora_ini}+" Hora Fin: "+$P{hora_fin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="20c6e953-eae7-4b78-97af-0b497a076d9a" positionType="Float" x="59" y="56" width="316" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Desde:  "+$P{fecha_ini}+"  Hasta:  "+$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bb7df2b3-e0dd-4501-b293-53d827ea9327" x="0" y="20" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[ACCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dcfc5661-b9cf-4034-bb5a-ab2ff617ce14" x="100" y="20" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[USUARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5a981ee4-1e24-4c2a-b15d-8fd6a6438673" x="200" y="20" width="103" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA/HORA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dc57b1a1-6c16-4f45-a1ad-37f340422930" x="303" y="20" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[IP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5539cb5a-694c-4993-9aaa-01e38ecdba17" x="403" y="20" width="152" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="73ba18aa-5074-4b3d-a0a7-c99637d47322" positionType="Float" x="465" y="0" width="51" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="edd488c5-8199-4b3e-9021-26b8efdfaca3" positionType="Float" x="511" y="0" width="42" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7bcb5f70-2244-4a98-a2c1-c9482c1ee902" x="0" y="0" width="100" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_acau}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="906b7314-afc5-439b-8771-ba20f84297cc" x="100" y="0" width="100" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="370bcca3-66e9-44b2-8546-6cf386386c41" x="200" y="0" width="51" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_auac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm a">
+				<reportElement uuid="63911f33-99be-4a7a-bb50-d99cc2bf9ba6" x="251" y="0" width="52" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_auac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c7ee64a0-c1f9-41bb-bcdc-12dc560e19d7" x="303" y="0" width="100" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ip_auac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a459f5c0-61fa-4cec-83a2-ab17b22a2f3c" x="403" y="0" width="152" height="15"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_auac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

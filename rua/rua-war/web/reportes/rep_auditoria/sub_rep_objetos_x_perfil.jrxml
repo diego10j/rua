@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_perf" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT objeto_opcion.ide_obop,
+opcion.nom_opci,
+objeto_opcion.nom_obop,
+objeto_opcion.descripcion_obop,
+PERFIL_OBJETO.LECTURA_PEOB,
+PERFIL_OBJETO.VISIBLE_PEOB
+
+FROM sis_perfil perfil
+left join sis_perfil_objeto perfil_objeto on perfil_objeto.ide_perf=perfil.ide_perf
+left join sis_objeto_opcion objeto_opcion on objeto_opcion.ide_obop=perfil_objeto.ide_peob
+left join sis_opcion opcion on opcion.ide_opci=objeto_opcion.ide_opci
+where perfil.ide_perf=$P{ide_perf}
+order by opcion.nom_opci ASC]]>
+	</queryString>
+	<field name="IDE_OBOP" class="java.math.BigDecimal"/>
+	<field name="NOM_OPCI" class="java.lang.String"/>
+	<field name="NOM_OBOP" class="java.lang.String"/>
+	<field name="DESCRIPCION_OBOP" class="java.lang.String"/>
+	<field name="LECTURA_PEOB" class="java.math.BigDecimal"/>
+	<field name="VISIBLE_PEOB" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="176" height="15"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOM_OPCI}==null?null
+:$F{NOM_OBOP}==null?null:
+$F{NOM_OPCI}+" / "+$F{DESCRIPCION_OBOP}
+
+]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="15" width="176" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LECTURA_PEOB}.toString().equals("0")?
+$F{VISIBLE_PEOB}.toString().equals("0")?"Lectura true / Visible true"
+:"Lectura true / Visible false"
+
+:$F{VISIBLE_PEOB}.toString().equals("0")?"Lectura false / Visible true"
+:"Lectura false / Visible false"
+
+    ]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

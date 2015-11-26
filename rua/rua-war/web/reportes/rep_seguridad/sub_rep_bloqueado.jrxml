@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="15f1211c-c85a-4f97-b376-cf956d4530b8">
+	<property name="ireport.zoom" value="1.3995221406292"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="bloqueado" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT USUARIO.NOM_USUA,upper(perfil.NOM_PERF) as nom_perfil,USUARIO.NICK_USUA,USUARIO.FECHA_REG_USUA,USUARIO.FECHA_CADUC_USUA,USUARIO.BLOQUEADO_USUA
+FROM SIS_USUARIO USUARIO
+LEFT JOIN SIS_PERFIL PERFIL ON PERFIL.IDE_PERF=USUARIO.IDE_PERF
+WHERE USUARIO.BLOQUEADO_USUA IN ($P!{bloqueado})
+ORDER BY USUARIO.BLOQUEADO_USUA ASC]]>
+	</queryString>
+	<field name="NOM_USUA" class="java.lang.String"/>
+	<field name="NOM_PERFIL" class="java.lang.String"/>
+	<field name="NICK_USUA" class="java.lang.String"/>
+	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
+	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
+	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
+	<group name="BLOQUEADO">
+		<groupExpression><![CDATA[$F{BLOQUEADO_USUA}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<staticText>
+					<reportElement uuid="0753c2f8-ce24-45ea-bced-e5ece82827ff" mode="Transparent" x="0" y="32" width="140" height="18"/>
+					<box>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+						<topPen lineWidth="0.5" lineStyle="Solid"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[NOMBRE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="68339f26-338a-4acf-bf75-19884190050f" x="140" y="32" width="117" height="18"/>
+					<box>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+						<topPen lineWidth="0.5" lineStyle="Solid"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[PERFIL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="0baa8564-af71-465a-a3db-c627a8992dfe" x="257" y="32" width="78" height="18"/>
+					<box>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+						<topPen lineWidth="0.5" lineStyle="Solid"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[USUARIO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5ea4281f-0898-4b42-8746-f2505f7cb23c" x="445" y="32" width="110" height="18"/>
+					<box>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+						<topPen lineWidth="0.5" lineStyle="Solid"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[FECHA CADUCIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dded8c0a-561c-45dd-b5b5-a603751d55df" x="335" y="32" width="110" height="18"/>
+					<box>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+						<topPen lineWidth="0.5" lineStyle="Solid"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[FECHA CREACION]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="ad15459a-32e1-46b5-b22b-8472edf71730" x="3" y="0" width="272" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{BLOQUEADO_USUA}.toString().equals("0")?
+"USUARIOS DESBLOQUEADOS":"USUARIOS BLOQUEADOS"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d1851f42-2694-4d5e-adc3-9efa77c28afd" x="0" y="0" width="140" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOM_USUA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cc3e3a7e-674f-4d6c-a8e9-05423b549150" x="140" y="0" width="117" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOM_PERFIL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c30f03f4-4e2d-4f67-b235-fba9a480aea6" x="257" y="0" width="78" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NICK_USUA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="e70c0078-fab8-4dec-9241-5669af888ba7" x="335" y="0" width="110" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_REG_USUA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="e15270b2-93aa-4bd5-bb5c-3b72004573b7" x="445" y="0" width="110" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_CADUC_USUA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

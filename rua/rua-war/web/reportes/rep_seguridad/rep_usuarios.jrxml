@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_usuarios" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3c869267-bb45-4749-820a-8c13c563f300">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="fecha_ini" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select FECHA_AUAC,COUNT(ide_auac) AS ide_auac from SIS_AUDITORIA_ACCESO
+where FECHA_AUAC  BETWEEN cast('2014-11-01' as date) and cast('2014-12-31' as date)
+and IDE_ACAU=0
+group by FECHA_AUAC]]>
+	</queryString>
+	<field name="fecha_auac" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_auac]]></fieldDescription>
+	</field>
+	<field name="ide_auac" class="java.lang.Long"/>
+	<variable name="COUNT(IDE_AUAC)_1" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$V{COUNT(IDE_AUAC)_1}]]></variableExpression>
+	</variable>
+	<variable name="COUNT(IDE_AUAC)_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ide_auac}]]></variableExpression>
+	</variable>
+	<group name="fecha">
+		<groupExpression><![CDATA[$F{fecha_auac}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField pattern="yyyy/MM/dd">
+					<reportElement uuid="eec66bf1-2087-4ab0-b186-3612e2f57dd2" x="81" y="2" width="64" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fecha_auac}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="7f10d1cb-3324-44e8-a75c-5e7cf9fae8c1" x="106" y="2" width="100" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ide_auac}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="39" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="12b0362d-de6f-49f3-a3ff-57e8ca423bc8" x="1" y="0" width="555" height="38"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="57" splitType="Stretch">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement uuid="5e46bee5-3952-49fd-a867-97fa4e6acdb9" positionType="Float" x="515" y="0" width="40" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7242ea8a-985d-4a21-83ec-99976aa8d87e" positionType="Float" x="461" y="0" width="50" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3842b247-51fe-4701-b177-4daa42ff6479" positionType="Float" x="61" y="10" width="316" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Desde:  "+$P{fecha_ini}+"  Hasta:  "+$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="21016d64-ff0d-4ca4-885d-c91a63ae5b0c" positionType="Float" x="0" y="10" width="60" height="15"/>
+				<textElement/>
+				<text><![CDATA[Parametros:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f42b9c1-c702-423e-a264-a99734abf082" positionType="Float" x="1" y="42" width="144" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuarios Conectados por dia:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="31">
+			<staticText>
+				<reportElement uuid="9ae6bc09-9033-4261-8004-2cbaa485e6a8" positionType="Float" x="0" y="6" width="136" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Usuarios Conectados:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8932a2d9-f718-475e-a5e7-ef4eb8fa49b0" x="156" y="6" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{COUNT(IDE_AUAC)_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

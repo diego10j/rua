@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"             
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+    <h:head>       
+        <h:form id="fortitulo">
+            <title>#{pre_index.str_titulo}</title>             
+        </h:form>  
+        <h:outputScript library="sistema" name="sistema.js"/>  
+        <h:outputScript library="numeros" name="jquery.numeric.js"/>  
+        <h:outputScript library="block" name="jquery.blockUI.js"/>                    
+        <h:outputScript library="pace" name="pace.min.js"/>                     
+        <link rel="stylesheet" href="resources/sistema/estilo.css"/>  
+    </h:head>
+    <h:body> 
+        <p:growl autoUpdate="true" widgetVar="growl" showDetail="true"/>      
+        <p:idleMonitor timeout="#{session.maxInactiveInterval * 600}" >            
+            <p:ajax event="idle" listener="#{pre_login.caducoSession}" onstart="diaCaduco.show();"  />  
+        </p:idleMonitor>  
+        <p:dialog header="Sessión caducada" onHide="location.href='about:blank';window.close();" resizable="false" widgetVar="diaCaduco" modal="true" closable="true" width="400" visible="false">  
+            <div align="center">
+                <h:outputText value="La sesión ha caducado, debido a la inactividad en el sistema" />                                   
+            </div>
+        </p:dialog>
+        <f:view>                 
+            <h:form  id="formulario" binding="#{pre_index.formulario}"/>    
+            <p:schedule style="display:none"/>                    
+        </f:view>  
+    </h:body>       
+    <c:if test="#{pre_index.bus_buscar==null}">
+        <meta http-equiv="refresh" content="0;url=login.jsf"/>  
+    </c:if>
+</html>
