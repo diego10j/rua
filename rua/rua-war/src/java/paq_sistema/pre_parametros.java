@@ -47,7 +47,7 @@ public class pre_parametros extends Pantalla {
 		Boton bot_importar = new Boton();
 		Boton bot_configurar = new Boton();
 
-		bot_importar.setValue("Importar ParÃ¡metros");
+		bot_importar.setValue("Importar Parámetros");
 		bot_importar.setMetodo("importar");
 		bar_botones.agregarBoton(bot_importar);
 
@@ -90,7 +90,7 @@ public class pre_parametros extends Pantalla {
 		set_nuevos_parametros.setWidth("80%");
 		set_nuevos_parametros.setHeight("80%");
 		set_nuevos_parametros.setDynamic(false);
-		set_nuevos_parametros.setTitle("ParÃ¡metros no existentes en la base de datos");
+		set_nuevos_parametros.setTitle("Parámetros no existentes en la base de datos");
 		set_nuevos_parametros.getBot_aceptar().setMetodo("aceptar_importar");
 		agregarComponente(set_nuevos_parametros);
 
@@ -111,11 +111,11 @@ public class pre_parametros extends Pantalla {
 		tex_nombre.setSize(40);
 		gri_cuerpo.getChildren().add(tex_nombre);
 
-		gri_cuerpo.getChildren().add(new Etiqueta("MÃ“DULO"));
+		gri_cuerpo.getChildren().add(new Etiqueta("MÓDULO"));
 		com_modulos.setCombo("select ide_modu,nom_modu from sis_modulo");
 		com_modulos.setDisabled(true);
 		gri_cuerpo.getChildren().add(com_modulos);
-		gri_cuerpo.getChildren().add(new Etiqueta("DESCRIPCIÃ“N :"));
+		gri_cuerpo.getChildren().add(new Etiqueta("DESCRIPCIÓN :"));
 
 		ate_descripcion.setStyle("width:" + (dia_dialogo.getAnchoPanel() / 1.8) + "px;height:50px;overflow:auto;");
 		gri_cuerpo.getChildren().add(ate_descripcion);
@@ -170,7 +170,7 @@ public class pre_parametros extends Pantalla {
 
 	public void configurar() {
 		if (tab_tabla2.getValorSeleccionado() != null) {
-			dia_dialogo.setHeader("CONFIGURAR PARAMETRO : " + tab_tabla2.getValor("NOM_PARA"));
+			dia_dialogo.setHeader("CONFIGURAR PARÁMETRO : " + tab_tabla2.getValor("NOM_PARA"));
 			tex_nombre.setValue(tab_tabla2.getValor("NOM_PARA"));
 			com_modulos.setValue(tab_tabla2.getValor("IDE_MODU"));
 			tex_valor.setValue(tab_tabla2.getValor("valor_PARA"));
@@ -183,14 +183,14 @@ public class pre_parametros extends Pantalla {
 			} else {
 				bot_reconfigura.setRendered(true);
 				tex_valor.setReadonly(true);
-				set_configura.setHeader("CONFIGURAR PARAMETRO : " + tab_tabla2.getValor("NOM_PARA"));
+				set_configura.setHeader("CONFIGURAR PARÁMETRO : " + tab_tabla2.getValor("NOM_PARA"));
 				set_configura.setSeleccionTabla(tab_tabla2.getValor("tabla_para"), tab_tabla2.getValor("campo_codigo_para"), tab_tabla2.getValor("campo_nombre_para") + " as NOMBRE," + tab_tabla2.getValor("campo_codigo_para") + " as VALOR");
 				set_configura.getTab_seleccion().setCampoOrden(tab_tabla2.getValor("campo_nombre_para"));
 			}
 			dia_dialogo.dibujar();
 			utilitario.addUpdate("dia_dialogo");
 		} else {
-			utilitario.agregarMensajeInfo("Debe seleccionar un parÃ¡metro para poder configurarlo", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un parámetro para poder configurarlo", "");
 		}
 	}
 
@@ -258,7 +258,7 @@ public class pre_parametros extends Pantalla {
 		if (set_nuevos_parametros.getTab_seleccion().getTotalFilas() < 0) {
 			set_nuevos_parametros.cerrar();
 			set_nuevos_parametros.getTab_seleccion().limpiar();
-			utilitario.agregarMensajeInfo("No existen nuevos Parametros", "Actualmente el sistema cuenta con todos los parÃ¡metros disponibles");
+			utilitario.agregarMensajeInfo("No existen nuevos Parámetros", "Actualmente el sistema cuenta con todos los parámetros disponibles");
 		}
 	}
 
