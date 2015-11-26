@@ -98,7 +98,7 @@ public class pre_principal extends Pantalla {
 		dibujarDatosUusario();
 		Division div_division = new Division();
 		div_division.setId("div_division");
-		div_division.dividir2(gru_panel_izquierda, pan_opcion, "18%", "V");
+		div_division.dividir2(gru_panel_izquierda, pan_opcion, "25%", "V");
 		bar_botones.quitarBotonInsertar();
 		bar_botones.quitarBotonEliminar();
 		bar_botones.quitarBotonsNavegacion();
