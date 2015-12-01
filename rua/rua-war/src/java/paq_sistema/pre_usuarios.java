@@ -503,7 +503,7 @@ public class pre_usuarios extends Pantalla {
                 utilitario.agregarMensajeInfo("Usuario deshabilitado", "");
             }
         } else if (tab_tabla2.isFocus()) {
-            eliminar();
+            tab_tabla2.eliminar();
         }
         cambiarEstadoNick();
     }

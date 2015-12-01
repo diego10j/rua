@@ -1,15 +1,31 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title></title>
-    </h:head>
-    <h:outputScript library="sistema" name="sistema.js"/>
+        <title>RUA</title>
+    </h:head>     
+    <script type="text/javascript" src="resources/sistema/sistema.js"/>
+    <link rel="stylesheet" type="text/css" href="resources/components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/login/css/home.css"/>
     <h:body  onload="abrirPopUp('login.jsf');">
-        <div align="center"  style="display: block;height: 100%;vertical-align: middle;">
-            <p>Se ha abierto una nueva ventana para que ingrese al sistema, si no puede verla, por favor presione <a href="#" onclick="abrirPopUp('login.jsf');
-            return false;">aquí</a>.</p>
+        <p:growl autoUpdate="true" showDetail="true" sticky="true"/>  
+        <div class="site-wrapper">
+            <div class="site-wrapper-inner">
+                <div class="cover-container">
+                    <div class="masthead clearfix">
+                        <img class="logo" src="imagenes/logo.png" />
+                    </div>
+                    <div class="inner cover">
+                        <h1 class="cover-heading">Sistema Contable Finaciero RUA <small> 2.0</small> </h1> 
+                        <p  class="texto">Se ha abierto una nueva ventana para que ingrese al sistema, si no puede verla, por favor presione el botón.</p>
+                        <p>
+                            <a onclick="abrirPopUp('login.jsf');" class="btn btn-lg btn-success">Abrir Sistema</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </h:body>
 </html>
