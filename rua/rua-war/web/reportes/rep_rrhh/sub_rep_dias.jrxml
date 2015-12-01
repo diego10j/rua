@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="40" pageHeight="17" whenNoDataType="AllSectionsNoDetail" columnWidth="40" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_rhcru" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[9]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geper" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_rhcrp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT valor_rhrro FROM reh_rubros_rol rr, reh_empleados_rol er, reh_cab_rol_pago crp
+where crp.ide_rhcrp=$P{ide_rhcrp}
+and crp.ide_rhcrp=er.ide_rhcrp
+and er.ide_rherl=rr.ide_rherl
+and er.ide_geper=$P{ide_geper}
+and rr.ide_rhcru=$P{ide_rhcru}]]>
+	</queryString>
+	<field name="valor_rhrro" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="###0;(-###0)">
+				<reportElement x="3" y="0" width="45" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_rhrro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

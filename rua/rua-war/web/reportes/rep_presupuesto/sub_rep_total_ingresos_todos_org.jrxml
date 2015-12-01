@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="16" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prtpr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_prppr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gemes" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_georg" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT dp.ide_prtap,tap.nombre_prtap,sum(total_prdep) as total FROM pre_cab_plan_presu cpp 
+left join pre_descripcion_presu dpr on dpr.ide_prcppr=cpp.ide_prcppr 
+left join pre_detalle_presu dp on dp.ide_prdpr=dpr.ide_prdpr 
+left join pre_tipo_aporte_presu tap on tap.ide_prtap=dp.ide_prtap
+left join gen_mes gm on gm.ide_gemes=cpp.ide_gemes
+left join pre_periodo_presu per on per.ide_prppr=cpp.ide_prppr
+WHERE cpp.ide_georg in($P!{ide_georg})
+and dp.ide_prtpr=$P{ide_prtpr}
+and dp.ide_sucu=$P{ide_sucu}
+and dp.ide_empr=$P{ide_empr}
+and per.ide_prppr = $P{ide_prppr}
+and gm.ide_gemes in ($P!{ide_gemes})
+GROUP BY cpp.ide_prcppr,dp.ide_prtap,dp.ide_prtpr,tap.nombre_prtap ORDER BY nombre_prtap]]>
+	</queryString>
+	<field name="ide_prtap" class="java.lang.Long"/>
+	<field name="nombre_prtap" class="java.lang.String"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<variable name="total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="TipoParticipante" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<variable name="total_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<variable name="total_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<group name="TipoParticipante">
+		<groupExpression><![CDATA[$F{ide_prtap}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="16">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="109" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

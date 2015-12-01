@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geper" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_rhcrp" class="java.lang.Integer"/>
+	<parameter name="ide_rhcru" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT pers.nom_geper,pers.identificac_geper, estructura.nombre_rheor, rol.ide_rherl,cabrubro.ide_rhcru,
+cabrubro.nombre_rhcru,rubros.valor_rhrro,banco.nombre_teban,tiporubro.ide_rhtru,signo_rhtru,cabrol.mes_rhcrp,
+cabrol.fecha_inicio_rhcrp,cabrol.fecha_fin_rhcrp 
+from reh_cab_rol_pago as cabrol
+left join reh_empleados_rol as rol on cabrol.ide_rhcrp=rol.ide_rhcrp
+left JOIN gen_persona as pers on rol.ide_geper=pers.ide_geper
+left join reh_rubros_rol as rubros on rol.ide_rherl=rubros.ide_rherl
+left join reh_estruc_organi as estructura on pers.ide_rheor=estructura.ide_rheor
+left join tes_banco as banco on pers.ide_teban=banco.ide_teban
+left join reh_cab_rubro cabrubro on cabrubro.ide_rhcru=rubros.ide_rhcru
+left join reh_tipo_rubro tiporubro on cabrubro.ide_rhtru= tiporubro.ide_rhtru
+left join sis_empresa as empresa on cabrol.ide_empr=empresa.ide_empr 
+where pers.es_empleado_geper is true and cabrubro.imprime_rhcru is true and pers.ide_geper=$P{ide_geper}
+and empresa.ide_empr=$P{ide_empr} and cabrol.ide_rhcrp=$P{ide_rhcrp} and tiporubro.ide_rhtru not in (4,3,1)
+order by tiporubro.ide_rhtru ASC]]>
+	</queryString>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="nombre_rheor" class="java.lang.String"/>
+	<field name="ide_rherl" class="java.lang.Long"/>
+	<field name="ide_rhcru" class="java.lang.Long"/>
+	<field name="nombre_rhcru" class="java.lang.String"/>
+	<field name="valor_rhrro" class="java.math.BigDecimal"/>
+	<field name="nombre_teban" class="java.lang.String"/>
+	<field name="ide_rhtru" class="java.lang.Long"/>
+	<field name="signo_rhtru" class="java.lang.Integer"/>
+	<field name="mes_rhcrp" class="java.lang.String"/>
+	<field name="fecha_inicio_rhcrp" class="java.sql.Date"/>
+	<field name="fecha_fin_rhcrp" class="java.sql.Date"/>
+	<variable name="ingresos" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{signo_rhtru}.toString().equals("1")?new Double($F{valor_rhrro}.toString()):null]]></variableExpression>
+	</variable>
+	<variable name="egresos" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{signo_rhtru}.toString().equals("-1")?new Double($F{valor_rhrro}.toString()):null]]></variableExpression>
+	</variable>
+	<variable name="total_ingresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{ingresos}]]></variableExpression>
+	</variable>
+	<variable name="total_egresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{egresos}]]></variableExpression>
+	</variable>
+	<variable name="tot_recibir" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{total_ingresos}-$V{total_egresos}]]></variableExpression>
+	</variable>
+	<variable name="dias_laborados" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{ide_rhcru}.toString().equals("9")?new Double($F{valor_rhrro}.toString()):null]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="166" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="107" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Empleado:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="99" y="107" width="276" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="94" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N°:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="99" y="94" width="182" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ide_rherl}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="119" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cédula:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="99" y="119" width="276" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="131" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cargo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="99" y="131" width="276" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_rheor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="375" y="131" width="50" height="13"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Banco:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="425" y="131" width="129" height="13"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_teban}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="143" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Días:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="425" y="118" width="129" height="13"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{mes_rhcrp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="375" y="118" width="50" height="13"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mes:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="100" y="144" width="57" height="12"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_rhcru">
+					<subreportParameterExpression><![CDATA[$P{ide_rhcru}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_rhcrp">
+					<subreportParameterExpression><![CDATA[$P{ide_rhcrp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geper">
+					<subreportParameterExpression><![CDATA[$P{ide_geper}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_rrhh/sub_rep_dias.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="75"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="179" y="14" width="376" height="60"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ROL DE PAGOS]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="323" y="94" width="71" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_inicio_rhcrp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="425" y="94" width="100" height="13"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_fin_rhcrp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="179" y="0" width="189" height="15"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de impresión: ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="367" y="0" width="188" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="281" y="94" width="43" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Desde:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="94" width="33" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hasta:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement x="243" y="0" width="123" height="17"/>
+				<box>
+					<pen lineWidth="1.5" lineStyle="Solid"/>
+					<topPen lineWidth="1.5" lineStyle="Solid"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="367" y="0" width="168" height="17"/>
+				<box>
+					<pen lineWidth="1.5" lineStyle="Solid"/>
+					<topPen lineWidth="1.5" lineStyle="Solid"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="0" width="244" height="17"/>
+				<box leftPadding="3">
+					<pen lineWidth="1.5" lineStyle="Solid"/>
+					<topPen lineWidth="1.5" lineStyle="Solid"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[NOMBRE RUBRO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement x="244" y="0" width="123" height="12"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ingresos}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="244" height="12" isRemoveLineWhenBlank="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{signo_rhtru}.toString().equals("1")?$F{nombre_rhcru}.toString():
+$F{signo_rhtru}.toString().equals("-1")?$F{nombre_rhcru}.toString():
+null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement x="367" y="0" width="169" height="12"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{egresos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="144" splitType="Stretch">
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement x="243" y="0" width="125" height="20"/>
+				<box rightPadding="50"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_ingresos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement x="367" y="0" width="188" height="20"/>
+				<box leftPadding="10" rightPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_egresos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="244" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totales:]]></text>
+			</staticText>
+			<rectangle radius="10">
+				<reportElement x="362" y="24" width="174" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="377" y="24" width="101" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[TOTAL A RECIBIR:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement x="477" y="24" width="43" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{tot_recibir}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="80" width="325" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recibí Conforme]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="1" y="100" width="325" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="326" y="100" width="228" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[P. Alfredo Espinoza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="115" width="228" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Economo Inspectorial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="80" width="228" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aprobado por:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

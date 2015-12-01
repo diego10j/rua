@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cab_retencion" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select nom_geper,gp.identificac_geper,gp.direccion_geper,cr.fecha_emisi_cncre,
+td.nombre_cntdo,cf.numero_cpcfa,
+cast (extract (year from cr.fecha_emisi_cncre) as integer) as ejer_fiscal,
+imp.nombre_cnimp,
+cim.casillero_cncim,dr.porcentaje_cndre,dr.base_cndre,dr.valor_cndre
+from con_cabece_retenc cr, cxp_cabece_factur cf,gen_persona gp,con_tipo_document td
+     ,con_detall_retenc dr,con_cabece_impues cim,con_impuesto imp
+where cf.ide_cncre=$P{ide_cab_retencion}
+and gp.ide_geper=cf.ide_geper
+and cf.ide_cntdo=td.ide_cntdo
+and cr.ide_cncre=dr.ide_cncre
+and cim.ide_cncim=dr.ide_cncim
+and cr.ide_cncre=$P{ide_cab_retencion}
+and imp.ide_cnimp=cim.ide_cnimp]]>
+	</queryString>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="direccion_geper" class="java.lang.String"/>
+	<field name="fecha_emisi_cncre" class="java.sql.Date"/>
+	<field name="nombre_cntdo" class="java.lang.String"/>
+	<field name="numero_cpcfa" class="java.lang.String"/>
+	<field name="ejer_fiscal" class="java.lang.Integer"/>
+	<field name="nombre_cnimp" class="java.lang.String"/>
+	<field name="casillero_cncim" class="java.lang.String"/>
+	<field name="porcentaje_cndre" class="java.math.BigDecimal"/>
+	<field name="base_cndre" class="java.math.BigDecimal"/>
+	<field name="valor_cndre" class="java.math.BigDecimal"/>
+	<variable name="valor_cndre_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_cndre}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="80" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="117" y="30" width="164" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="117" y="52" width="164" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="376" y="10" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_emisi_cncre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="376" y="30" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_cntdo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="376" y="52" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numero_cpcfa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="120" y="6" width="228" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="57" splitType="Stretch">
+			<staticText>
+				<reportElement x="25" y="19" width="85" height="20"/>
+				<textElement/>
+				<text><![CDATA[Ejercicio fiscal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="129" y="0" width="65" height="55"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Base Imponible para la Retencion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="19" width="77" height="20"/>
+				<textElement/>
+				<text><![CDATA[% de retencion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="451" y="19" width="76" height="20"/>
+				<textElement/>
+				<text><![CDATA[Valor Retenido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="19" width="50" height="20"/>
+				<textElement/>
+				<text><![CDATA[Impuesto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="289" y="8" width="38" height="40"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Codigo del Impuesto]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField>
+				<reportElement x="36" y="1" width="58" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ejer_fiscal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="1" width="65" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{base_cndre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="361" y="1" width="31" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{porcentaje_cndre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="461" y="1" width="76" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_cndre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="392" y="1" width="12" height="13"/>
+				<textElement/>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="292" y="1" width="44" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{casillero_cncim}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="1" width="50" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_cnimp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="3" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="3" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="461" y="4" width="76" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{valor_cndre_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="372" y="4" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[Total a Retener]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

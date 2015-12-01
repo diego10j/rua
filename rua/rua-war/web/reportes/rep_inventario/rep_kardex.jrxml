@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.610510000000001"/>
+	<property name="ireport.x" value="79"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CODIGO_INBOD" class="java.lang.String">
+		<defaultValueExpression><![CDATA["'001001','001002'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CODIGO_GEPRO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["'0010107133','0010107134'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_DESDE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2005-06-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_HASTA" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2012-01-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUCURSAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA["001"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COMPANIA" class="java.lang.String">
+		<defaultValueExpression><![CDATA["001"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SALDO_INICIAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[24]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CANTIDAD_INICIAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[12]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     inv_det_comp_inve.PRECIO_INDCI AS inv_det_comp_inve_PRECIO_INDCI,
+     inv_det_comp_inve.VALOR_INDCI AS inv_det_comp_inve_VALOR_INDCI,
+     inv_det_comp_inve.CANTIDAD_INDCI AS inv_det_comp_inve_CANTIDAD_INDC,
+     inv_bodega.NOMBRE_INBOD AS inv_bodega_NOMBRE_INBOD,
+     inv_articulo.nombre_inarti AS inv_articulo_nombre_inarti,
+     inv_tip_tran_inve.NOMBRE_INTTI AS inv_tip_tran_inve_NOMBRE_INTT,
+     inv_unidad.nombre_inuni AS inv_unidad_nombre_inuni,
+     inv_cab_comp_inve.NUMERO_INCCI AS inv_cab_comp_inve_NUMERO_INCCI,
+     inv_cab_comp_inve.FECHA_TRANS_INCCI AS inv_cab_comp_inve_FECHA_TRANS_I,     
+     inv_articulo.ide_inarti AS inv_articulo_ide_inarti,
+     inv_articulo.observacion_inarti AS inv_articulo_observacion_inarti,
+     inv_tip_comp_inve.SIGNO_INTCI AS inv_tip_comp_inve_SIGNO_INTCI
+FROM
+     inv_unidad INNER JOIN  inv_articulo ON inv_unidad.ide_inuni = inv_articulo.ide_inuni
+     INNER JOIN inv_det_comp_inve ON inv_articulo.ide_inarti = inv_det_comp_inve.ide_inarti
+     INNER JOIN inv_cab_comp_inve ON inv_det_comp_inve.ide_incci = inv_cab_comp_inve.ide_incci
+     INNER JOIN inv_bodega ON inv_cab_comp_inve.ide_inbod = inv_bodega.ide_inbod
+     INNER JOIN inv_tip_tran_inve ON inv_cab_comp_inve.ide_intti = inv_tip_tran_inve.ide_intti
+     INNER JOIN inv_tip_comp_inve ON inv_tip_tran_inve.ide_intci = inv_tip_comp_inve.ide_intci
+WHERE
+inv_cab_comp_inve.FECHA_TRANS_INCCI BETWEEN '2011-01-01'AND '2012-12-31'
+ORDER BY
+     inv_bodega.NOMBRE_INBOD ASC,
+     inv_articulo.nombre_inarti ASC,
+     inv_tip_tran_inve.NOMBRE_INTTI ASC,
+     inv_cab_comp_inve.FECHA_TRANS_INCCI ASC,
+     inv_cab_comp_inve.NUMERO_INCCI ASC]]>
+	</queryString>
+	<field name="inv_det_comp_inve_precio_indci" class="java.math.BigDecimal"/>
+	<field name="inv_det_comp_inve_valor_indci" class="java.math.BigDecimal"/>
+	<field name="inv_det_comp_inve_cantidad_indc" class="java.math.BigDecimal"/>
+	<field name="inv_bodega_nombre_inbod" class="java.lang.String"/>
+	<field name="inv_articulo_nombre_inarti" class="java.lang.String"/>
+	<field name="inv_tip_tran_inve_nombre_intt" class="java.lang.String"/>
+	<field name="inv_unidad_nombre_inuni" class="java.lang.String"/>
+	<field name="inv_cab_comp_inve_numero_incci" class="java.lang.String"/>
+	<field name="inv_cab_comp_inve_fecha_trans_i" class="java.sql.Date"/>
+	<field name="inv_articulo_ide_inarti" class="java.lang.Long"/>
+	<field name="inv_articulo_observacion_inarti" class="java.lang.String"/>
+	<field name="inv_tip_comp_inve_signo_intci" class="java.lang.Integer"/>
+	<variable name="cantidad_pr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_CANTIDAD_INDC}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[0.000]]></initialValueExpression>
+	</variable>
+	<variable name="total_pr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="cantidad_eg_pr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_CANTIDAD_INDC}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_eg_pr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_in_bo" class="java.lang.Double" resetType="Group" resetGroup="IN_BODEGA_NOMBRE_INBOD" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_eg_bo" class="java.lang.Double" resetType="Group" resetGroup="IN_BODEGA_NOMBRE_INBOD" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_ingresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_egresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[(($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: new Double(0.00))]]></variableExpression>
+		<initialValueExpression><![CDATA[0.000]]></initialValueExpression>
+	</variable>
+	<variable name="cant_saldo_tr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO">
+		<variableExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? ($V{cant_saldo_tr}-$F{IN_DET_COMP_INVE_CANTIDAD_INDC}): ($V{cant_saldo_tr}+$F{IN_DET_COMP_INVE_CANTIDAD_INDC})]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double($P{CANTIDAD_INICIAL})]]></initialValueExpression>
+	</variable>
+	<variable name="total_saldo_tr" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO">
+		<variableExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? ($V{total_saldo_tr}-$F{IN_DET_COMP_INVE_VALOR_INDCI}): ($V{total_saldo_tr}+$F{IN_DET_COMP_INVE_VALOR_INDCI})]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double($P{SALDO_INICIAL})]]></initialValueExpression>
+	</variable>
+	<variable name="subtotal_bo" class="java.lang.Double" resetType="Group" resetGroup="GE_PRODUCTO_NOMBRE_GEPRO" calculation="Sum">
+		<variableExpression><![CDATA[$V{total_in_bo}.doubleValue()-$V{total_eg_bo}.doubleValue()]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<variable name="total_saldos" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{total_ingresos}.doubleValue()-$V{total_egresos}.doubleValue()]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.000)]]></initialValueExpression>
+	</variable>
+	<group name="IN_BODEGA_NOMBRE_INBOD">
+		<groupExpression><![CDATA[$F{IN_BODEGA_NOMBRE_INBOD}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField>
+					<reportElement x="0" y="0" width="124" height="14"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{IN_BODEGA_NOMBRE_INBOD}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<staticText>
+					<reportElement mode="Transparent" x="287" y="0" width="83" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[Total Bodega]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="458" y="0" width="39" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="585" y="0" width="39" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="370" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_in_bo}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="497" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_eg_bo}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="624" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subtotal_bo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="GE_PRODUCTO_NOMBRE_GEPRO">
+		<groupExpression><![CDATA[$F{GE_PRODUCTO_NOMBRE_GEPRO}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField>
+					<reportElement x="0" y="0" width="124" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GE_PRODUCTO_NOMBRE_GEPRO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="124" y="0" width="46" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GE_UNIDAD_NOMBRE_GEUNI}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="210" y="0" width="77" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GE_PRODUCTO_CODIGO_GEPRO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="170" y="0" width="40" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="9" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Cód: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="497" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo Inicial: ]]></text>
+				</staticText>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="541" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{CANTIDAD_INICIAL}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="624" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{SALDO_INICIAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<staticText>
+					<reportElement mode="Transparent" x="210" y="0" width="77" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[Total Producto]]></text>
+				</staticText>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="287" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{cantidad_pr}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="370" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_pr}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="414" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{cantidad_eg_pr}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="497" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_eg_pr}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="541" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{cant_saldo_tr}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+					<reportElement x="624" y="0" width="44" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_saldo_tr}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement x="249" y="4" width="292" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kardex de Bodegas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="682" y="3" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="762" y="3" width="40" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="14" y="30" width="775" height="36"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BODEGA = "+$P{CODIGO_INBOD}+"; ARTICULO = "+$P{CODIGO_GEPRO}+"; DESDE: "+$P{FECHA_DESDE}+"; HASTA: "+$P{FECHA_HASTA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="99" y="66" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="14" y="66" width="85" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha impresión: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="91" width="124" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bodega / Producto / Trasacción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="124" y="91" width="46" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Uni / Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="91" width="40" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comp. Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="91" width="77" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Centro de Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="331" y="91" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="497" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="458" y="91" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="624" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="585" y="91" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="541" y="91" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="668" y="91" width="134" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="77" width="127" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="77" width="127" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="541" y="77" width="127" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[SALDOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="124" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IN_TIP_TRAN_INVE_NOMBRE_INTT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="124" y="0" width="46" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IN_CAB_COMP_INVE_FECHA_TRANS_I}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="170" y="0" width="40" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IN_CAB_COMP_INVE_NUMERO_INCCI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="210" y="0" width="77" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CS_DET_CENT_COST_NOMBRE_CSDCC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="668" y="0" width="134" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GE_PRODUCTO_OBSERVACION_GEPRO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="287" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_CANTIDAD_INDC}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="331" y="0" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_PRECIO_INDCI}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="370" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == 1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="458" y="0" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_PRECIO_INDCI}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="414" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_CANTIDAD_INDC}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="497" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IN_TIP_COMP_INVE_SIGNO_INTCI}.intValue() == -1)? $F{IN_DET_COMP_INVE_VALOR_INDCI}: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+				<reportElement x="541" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{cant_saldo_tr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+				<reportElement x="624" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_saldo_tr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+				<reportElement x="585" y="0" width="39" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{cant_saldo_tr} == 0.000)? new Double(0.000):($V{total_saldo_tr} / $V{cant_saldo_tr})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="287" y="0" width="83" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Total Saldos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="458" y="0" width="39" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="585" y="0" width="39" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+				<reportElement x="370" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_ingresos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000;-#,##0.000">
+				<reportElement x="497" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_egresos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
+				<reportElement x="624" y="0" width="44" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_saldos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

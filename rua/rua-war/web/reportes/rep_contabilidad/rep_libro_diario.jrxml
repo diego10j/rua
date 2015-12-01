@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cnlap_haber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0012]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cnlap_debe" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cneco" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT CCC.ide_cnccc,CCC.numero_cnccc,CCC.fecha_trans_cnccc,EC.nombre_cneco,PERSONA.nom_geper,
+CCC.observacion_cnccc,TC.nombre_cntcm,CCC.fecha_siste_cnccc,CCC.hora_sistem_cnccc
+FROM con_cab_comp_cont CCC
+INNER JOIN con_estado_compro EC ON CCC.ide_cneco=EC.ide_cneco
+LEFT JOIN sis_modulo SM ON CCC.ide_modu=SM.ide_modu
+LEFT JOIN gen_persona PERSONA ON CCC.ide_geper=PERSONA.ide_geper
+INNER JOIN con_tipo_comproba TC ON CCC.ide_cntcm=TC.ide_cntcm
+WHERE  CCC.ide_sucu=$P{ide_sucu}
+and CCC.ide_cneco IN ($P!{ide_cneco})
+AND CCC.fecha_trans_cnccc BETWEEN $P{fecha_inicio} AND $P{fecha_fin}
+ORDER BY CCC.fecha_trans_cnccc]]>
+	</queryString>
+	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="numero_cnccc" class="java.lang.String"/>
+	<field name="fecha_trans_cnccc" class="java.sql.Date"/>
+	<field name="nombre_cneco" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="observacion_cnccc" class="java.lang.String"/>
+	<field name="nombre_cntcm" class="java.lang.String"/>
+	<field name="fecha_siste_cnccc" class="java.sql.Date"/>
+	<field name="hora_sistem_cnccc" class="java.sql.Time"/>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="180" y="11" width="375" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LIBRO DIARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="258" y="31" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[DESDE:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="312" y="31" width="87" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="398" y="31" width="58" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[HASTA:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="455" y="31" width="100" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="90">
+			<textField>
+				<reportElement x="292" y="19" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_cnccc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="19" width="37" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha: ]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="36" y="19" width="70" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_trans_cnccc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="38" width="70" height="20"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Beneficiario:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="69" y="38" width="486" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="57" width="70" height="20"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Concepto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="69" y="57" width="486" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="193" y="19" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cntcm}+":"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="19" width="164" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cneco}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm" isBlankWhenNull="true">
+				<reportElement x="105" y="19" width="54" height="20"/>
+				<box leftPadding="3"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{hora_sistem_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="99" y="0" width="94" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de impresión: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="229" y="0" width="73" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transacción:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="302" y="0" width="87" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ide_cnccc}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="12" splitType="Stretch">
+			<subreport>
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="537" height="12" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_cnlap_haber">
+					<subreportParameterExpression><![CDATA[$P{ide_cnlap_haber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_cnccc">
+					<subreportParameterExpression><![CDATA[$F{ide_cnccc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_cnlap_debe">
+					<subreportParameterExpression><![CDATA[$P{ide_cnlap_debe}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_deta_libro_diario.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="19">
+			<textField evaluationTime="Report">
+				<reportElement x="513" y="2" width="40" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="425" y="2" width="88" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

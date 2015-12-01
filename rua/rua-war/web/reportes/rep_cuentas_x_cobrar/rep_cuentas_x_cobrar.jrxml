@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ct.ide_cccfa,gp.nom_geper,gp.identificac_geper,ct.ide_ccctr,fecha_trans_ccctr,sum (dt.numero_pago_ccdtr) as num_pago,
+case when (select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr=0) is null then 0 ELSE
+(select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr=0) end -
+case when (select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr>0 ) is null then 0 ELSE 
+(select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr>0 ) end as saldo_x_cobrar,ct.observacion_ccctr
+from cxc_cabece_transa ct
+INNER join cxc_detall_transa dt on dt.ide_ccctr=ct.ide_ccctr
+INNER join cxc_tipo_transacc tt on tt.ide_ccttr=ct.ide_ccttr
+left join cxc_cabece_factura cf on cf.ide_cccfa=dt.ide_cccfa
+left join gen_persona gp on gp.ide_geper=ct.ide_geper
+where ct.ide_sucu=$P{ide_sucu}
+
+group by ct.ide_ccctr,gp.nom_geper,gp.identificac_geper,ct.observacion_ccctr
+HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) >0
+
+and case when (select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr=0) is null then 0 ELSE
+(select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr=0) end -
+case when (select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr>0 ) is null then 0 ELSE 
+(select sum (valor_ccdtr*tt.signo_ccttr) from cxc_detall_transa dt,cxc_tipo_transacc tt
+where ct.ide_ccctr=dt.ide_ccctr
+and ct.ide_ccttr=tt.ide_ccttr
+and numero_pago_ccdtr>0 ) end > 0]]>
+	</queryString>
+	<field name="ide_cccfa" class="java.lang.Long"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="ide_ccctr" class="java.lang.Long"/>
+	<field name="fecha_trans_ccctr" class="java.sql.Date"/>
+	<field name="num_pago" class="java.lang.Long"/>
+	<field name="saldo_x_cobrar" class="java.math.BigDecimal"/>
+	<field name="observacion_ccctr" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="180" y="0" width="375" height="85"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTAS X COBRAR]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="143" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTES A COBRAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="232" y="0" width="72" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[FECHA TRANSACCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="0" width="102" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[VALOR A PAGAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="0" width="151" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="0" width="91" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[IDENTIFICACIÓN]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement x="303" y="-1" width="102" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_x_cobrar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="-1" width="143" height="21"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="142" y="0" width="91" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="404" y="-1" width="151" height="21"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_ccctr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="232" y="0" width="72" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_trans_ccctr}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="20" width="555" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement x="435" y="0" width="80" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="0" width="41" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

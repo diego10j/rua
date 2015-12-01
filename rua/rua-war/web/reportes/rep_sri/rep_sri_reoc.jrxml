@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="860" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select cf.fecha_emisi_cpcfa, gp.nom_geper, cf.numero_cpcfa, cf.base_tarifa0_cpcfa, cf.base_grabada_cpcfa, cf.base_no_objeto_iva_cpcfa, cf.total_cpcfa
+from cxp_cabece_factur cf
+FULL OUTER JOIN sis_empresa e on (e.ide_empr = cf.ide_empr)
+JOIN gen_persona gp on (gp.ide_geper = cf.ide_geper)
+where gp.es_proveedo_geper = true
+and cf.fecha_emisi_cpcfa between $P{fecha_inicio} and $P{fecha_fin}]]>
+	</queryString>
+	<field name="fecha_emisi_cpcfa" class="java.sql.Date"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="numero_cpcfa" class="java.lang.String"/>
+	<field name="base_tarifa0_cpcfa" class="java.math.BigDecimal"/>
+	<field name="base_grabada_cpcfa" class="java.math.BigDecimal"/>
+	<field name="base_no_objeto_iva_cpcfa" class="java.math.BigDecimal"/>
+	<field name="total_cpcfa" class="java.math.BigDecimal"/>
+	<variable name="base_tarifa0_cpcfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_tarifa0_cpcfa}]]></variableExpression>
+	</variable>
+	<variable name="base_grabada_cpcfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_grabada_cpcfa}]]></variableExpression>
+	</variable>
+	<variable name="base_no_objeto_iva_cpcfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_no_objeto_iva_cpcfa}]]></variableExpression>
+	</variable>
+	<variable name="total_cpcfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_cpcfa}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="179" splitType="Stretch">
+			<image>
+				<reportElement x="1" y="4" width="132" height="61"/>
+				<imageExpression><![CDATA["D:\\inspectoria\\web\\imagenes\\sri1.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="133" y="5" width="415" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TALON RESUMEN DE ANEXO DE COMPRAS Y RETENCIONES EN LA FUENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="207" y="35" width="265" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERVICIO DE RENTAS INTERNAS - RIG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="57" width="102" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RAZON SOCIAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="72" width="102" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="126" width="555" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Certifico que la información contenida en el medio magnético adjunto al presente de Anexo de Compras y Retenciones en la fuente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="141" width="252" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[de Impuesto a la Renta por otros conceptos para el período ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="187" y="20" width="322" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO A LA RENTA POR OTROS CONCEPTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="102" width="102" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="87" width="102" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="141" width="247" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[, es el fiel reflejo del siguiente reporte:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="205" splitType="Stretch">
+			<staticText>
+				<reportElement x="49" y="13" width="197" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="13" width="85" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="13" forecolor="#FFFFFF" backcolor="#000099"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESUMEN DE RETENCIONES - RETENCION EN LA FUENTE DE IMPUESTO A LA RENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="61" width="586" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Declaro que los datos contenidos en este anexo son verdaderos, por lo que asumo la responsabilidad correspondientes, de acuerdo a lo establecido en]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="74" width="555" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[el Art. 101 de la Codificación de la Ley de Régimen Tributario interno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="130" width="147" height="15"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Firma del Contador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="307" y="130" width="147" height="15"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Firma del Representate Legal]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+</jasperReport>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_georg" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_prtpr_gasto" class="java.lang.Long"/>
+	<parameter name="ide_prtpr_ingreso" class="java.lang.Long"/>
+	<parameter name="ide_prppr" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gemes" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select cpp.ide_prppr,per.nombre_prppr,cpp.ide_georg,cpp.ide_gemes, cpp.ide_prcppr,cpp.nombre_prcppr,tr.ide_prtrp,tr.nombre_prtrp,gm.nombre_gemes,gorg.nombre_georg,per.fecha_inicio_prppr,per.fecha_fin_prppr from pre_cab_plan_presu cpp  
+left join pre_descripcion_presu desp on cpp.ide_prcppr=desp.ide_prcppr
+left join pre_tipo_rubro_presu tr on desp.ide_prtrp=tr.ide_prtrp
+left join gen_mes gm on gm.ide_gemes=cpp.ide_gemes
+left join gen_organigrama gorg on cpp.ide_georg=gorg.ide_georg
+left join pre_periodo_presu per on per.ide_prppr=cpp.ide_prppr
+where cpp.ide_georg in ($P!{ide_georg}) and cpp.ide_sucu=$P{ide_sucu} and cpp.ide_empr=$P{ide_empr}
+and per.ide_prppr in ($P!{ide_prppr})
+and gm.ide_gemes in ($P!{ide_gemes})
+order by cpp.ide_prppr,gorg.nombre_georg,gm.ide_gemes]]>
+	</queryString>
+	<field name="ide_prppr" class="java.lang.Long"/>
+	<field name="nombre_prppr" class="java.lang.String"/>
+	<field name="ide_georg" class="java.lang.Long"/>
+	<field name="ide_gemes" class="java.lang.Long"/>
+	<field name="ide_prcppr" class="java.lang.Long"/>
+	<field name="nombre_prcppr" class="java.lang.String"/>
+	<field name="ide_prtrp" class="java.lang.Long"/>
+	<field name="nombre_prtrp" class="java.lang.String"/>
+	<field name="nombre_gemes" class="java.lang.String"/>
+	<field name="nombre_georg" class="java.lang.String"/>
+	<field name="fecha_inicio_prppr" class="java.sql.Date"/>
+	<field name="fecha_fin_prppr" class="java.sql.Date"/>
+	<group name="Periodo">
+		<groupExpression><![CDATA[$F{ide_prppr}]]></groupExpression>
+		<groupHeader>
+			<band height="34">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="555" height="34"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_prppr}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="16">
+				<subreport>
+					<reportElement positionType="Float" isPrintRepeatedValues="false" x="-10" y="1" width="545" height="14" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+					<subreportParameter name="ide_prtpr_gasto">
+						<subreportParameterExpression><![CDATA[$P{ide_prtpr_gasto}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_prtpr_ingreso">
+						<subreportParameterExpression><![CDATA[$P{ide_prtpr_ingreso}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_empr">
+						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_prppr">
+						<subreportParameterExpression><![CDATA[$F{ide_prppr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_gemes">
+						<subreportParameterExpression><![CDATA[$P{ide_gemes}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_georg">
+						<subreportParameterExpression><![CDATA[$P{ide_georg}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuesto/sub_rep_total_todos_org.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Organigrama">
+		<groupExpression><![CDATA[$F{ide_georg}]]></groupExpression>
+		<groupHeader>
+			<band height="113">
+				<subreport>
+					<reportElement x="1" y="0" width="180" height="85"/>
+					<subreportParameter name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_empr">
+						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement x="228" y="0" width="326" height="86"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PLANIFICACIÓN PRESUPUESTARIA]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="0" y="86" width="555" height="23"/>
+					<textElement verticalAlignment="Middle">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_georg}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="11">
+				<subreport>
+					<reportElement x="-10" y="1" width="545" height="10"/>
+					<subreportParameter name="ide_georg">
+						<subreportParameterExpression><![CDATA[$F{ide_georg}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_prtpr_gasto">
+						<subreportParameterExpression><![CDATA[$P{ide_prtpr_gasto}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_prtpr_ingreso">
+						<subreportParameterExpression><![CDATA[$P{ide_prtpr_ingreso}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="nombre_org">
+						<subreportParameterExpression><![CDATA[$F{nombre_georg}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_empr">
+						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_prppr">
+						<subreportParameterExpression><![CDATA[$F{ide_prppr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_gemes">
+						<subreportParameterExpression><![CDATA[$P{ide_gemes}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuesto/sub_rep_total_gastos.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Mes">
+		<groupExpression><![CDATA[$F{ide_gemes}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="555" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_gemes}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-10" y="0" width="545" height="11" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_prtrp">
+					<subreportParameterExpression><![CDATA[$F{ide_prtrp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_gemes">
+					<subreportParameterExpression><![CDATA[$F{ide_gemes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prppr">
+					<subreportParameterExpression><![CDATA[$F{ide_prppr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuesto/rep_deta_presu_proforma.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="14" splitType="Stretch">
+			<textField>
+				<reportElement x="463" y="0" width="52" height="14"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="0" width="40" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

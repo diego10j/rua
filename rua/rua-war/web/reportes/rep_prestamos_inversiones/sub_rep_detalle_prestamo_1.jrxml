@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="500" pageHeight="1" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="115"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_ipcpr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select sum(capital_ipdpr) as capital ,sum(interes_ipdpr) as interes,sum(cuota_ipdpr) as cuota,(select count(pagado_ipdpr) from iyp_deta_prestamo 
+where ide_ipcpr=$P{ide_ipcpr} and pagado_ipdpr=true) as pagos from iyp_deta_prestamo 
+where ide_ipcpr=$P{ide_ipcpr}]]>
+	</queryString>
+	<field name="capital" class="java.math.BigDecimal"/>
+	<field name="interes" class="java.math.BigDecimal"/>
+	<field name="cuota" class="java.math.BigDecimal"/>
+	<field name="pagos" class="java.lang.Long"/>
+	<variable name="capital" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double ($F{capital}.doubleValue())]]></variableExpression>
+	</variable>
+	<variable name="interes" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double ($F{interes}.doubleValue())]]></variableExpression>
+	</variable>
+	<variable name="cuota" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double ( $F{cuota}.doubleValue())]]></variableExpression>
+	</variable>
+	<variable name="pagos" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double ($F{pagos}.doubleValue())]]></variableExpression>
+	</variable>
+	<detail>
+		<band>
+			<textField>
+				<reportElement x="0" y="-1" width="68" height="1" forecolor="#33FF00"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new Double ($F{capital}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="0" width="64" height="0" forecolor="#33FF00"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new Double ($F{interes}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="132" y="0" width="51" height="0" forecolor="#33FF33" backcolor="#FFFFFF"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new Double ($F{cuota}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="183" y="0" width="63" height="0"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{pagos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

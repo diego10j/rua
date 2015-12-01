@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="CODIGO_ART" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ls_root_web" class="java.lang.String"/>
+	<parameter name="CODIGO_BOD" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INI" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ls_ruta_logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     C_ARTICULO."NOMBRE_ART" AS C_ARTICULO_NOMBRE_ART,
+     C_ARTICULO."DESCRIPCION_ART" AS C_ARTICULO_DESCRIPCION_ART,
+     C_ARTICULO."NSN_ART" AS C_ARTICULO_NSN_ART,
+     C_ARTICULO."STOCK_MINIM_ART" AS C_ARTICULO_STOCK_MINIM_ART,
+     C_ARTICULO."ALTERNATIVO_ART" AS C_ARTICULO_ALTERNATIVO_ART,
+     C_ARTICULO."FABRICANTE_ART" AS C_ARTICULO_FABRICANTE_ART,
+     C_UNIDAD."NOMBRE_UNI" AS C_UNIDAD_NOMBRE_UNI,
+     I_CAB_COMP_INVE."FECHA_CCI" AS I_CAB_COMP_INVE_FECHA_CCI,
+     I_CAB_COMP_INVE."NUMERO_CCI" AS I_CAB_COMP_INVE_NUMERO_CCI,
+     I_DET_COMP_INVE."CODIGO_DCI" AS I_DET_COMP_INVE_CODIGO_DCI,
+     I_DET_COMP_INVE."CANTIDAD_DCI" AS I_DET_COMP_INVE_CANTIDAD_DCI,
+     I_DET_COMP_INVE."PRECI_UNITA_DCI" AS I_DET_COMP_INVE_PRECI_UNITA_DC,
+     I_DET_COMP_INVE."TOTAL_DCI" AS I_DET_COMP_INVE_TOTAL_DCI,
+     I_DET_COMP_INVE."SALDO_DCI" AS I_DET_COMP_INVE_SALDO_DCI,
+     I_DET_COMP_INVE."PRECI_PROM_DCI" AS I_DET_COMP_INVE_PRECI_PROM_DCI,
+     I_DET_COMP_INVE."FECHA_CADUC_DCI" AS I_DET_COMP_INVE_FECHA_CADUC_DC,
+     I_DET_COMP_INVE."REFERENCIA_DCI" AS I_DET_COMP_INVE_REFERENCIA_DCI,
+     I_BODEGA."NOMBRE_BOD" AS I_BODEGA_NOMBRE_BOD,
+     I_TIP_TRAN_INVE."NOMBRE_TTI" AS I_TIP_TRAN_INVE_NOMBRE_TTI,
+     C_ARTICULO_P."NOMBRE_ART" AS C_ARTICULO_PADRE_ART,
+     Z_LOG_CARD."SERIE_ZLCA" AS Z_LOG_CARD_SERIE_ZLCA,
+     I_LOTE."NOMBRE_LOT" AS I_LOTE_NOMBRE_LOT,
+     C_ARTICULO."CODIGO_ART" AS C_ARTICULO_CODIGO_ART,
+     I_BODEGA."CODIGO_BOD" AS I_BODEGA_CODIGO_BOD,
+     I_TIP_COMP_INVE."SIGNO_TCI" AS I_TIP_COMP_INVE_SIGNO_TCI,
+     Z_AERONAVE."NOMBRE_ZAER" AS Z_AERONAVE_NOMBRE_ZAER
+FROM
+     "C_UNIDAD" C_UNIDAD RIGHT OUTER JOIN "C_ARTICULO" C_ARTICULO ON C_UNIDAD."CODIGO_UNI" = C_ARTICULO."CODIGO_UNI"
+     INNER JOIN "I_DET_COMP_INVE" I_DET_COMP_INVE ON C_ARTICULO."CODIGO_ART" = I_DET_COMP_INVE."CODIGO_ART"
+     INNER JOIN "I_CAB_COMP_INVE" I_CAB_COMP_INVE ON I_DET_COMP_INVE."CODIGO_CCI" = I_CAB_COMP_INVE."CODIGO_CCI"
+     LEFT OUTER JOIN "Z_LOG_CARD" Z_LOG_CARD ON I_DET_COMP_INVE."CODIGO_ZLCA" = Z_LOG_CARD."CODIGO_ZLCA"
+     LEFT OUTER JOIN "I_LOTE" I_LOTE ON I_DET_COMP_INVE."CODIGO_LOT" = I_LOTE."CODIGO_LOT"
+     LEFT OUTER JOIN "Z_AERONAVE" Z_AERONAVE ON I_DET_COMP_INVE."CODIGO_ZAER" = Z_AERONAVE."CODIGO_ZAER"
+     INNER JOIN "I_BODEGA" I_BODEGA ON I_CAB_COMP_INVE."CODIGO_BOD" = I_BODEGA."CODIGO_BOD"
+     INNER JOIN "I_TIP_TRAN_INVE" I_TIP_TRAN_INVE ON I_CAB_COMP_INVE."CODIGO_TTI" = I_TIP_TRAN_INVE."CODIGO_TTI"
+     INNER JOIN "I_TIP_COMP_INVE" I_TIP_COMP_INVE ON I_TIP_TRAN_INVE."CODIGO_TCI" = I_TIP_COMP_INVE."CODIGO_TCI"
+     INNER JOIN "C_ARTICULO" C_ARTICULO_P ON C_ARTICULO."PADRE_ART" = C_ARTICULO_P."CODIGO_ART"
+WHERE
+     I_CAB_COMP_INVE."FECHA_CCI" >= TO_DATE('$P!{FECHA_INI}','yyyy-MM-dd')
+ AND I_CAB_COMP_INVE."FECHA_CCI" <= TO_DATE('$P!{FECHA_FIN}','yyyy-MM-dd')
+ AND C_ARTICULO."CODIGO_ART" IN ($P!{CODIGO_ART})
+ AND I_BODEGA."CODIGO_BOD" IN ($P!{CODIGO_BOD})]]>
+	</queryString>
+	<field name="C_ARTICULO_NOMBRE_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_DESCRIPCION_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_NSN_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_STOCK_MINIM_ART" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_ALTERNATIVO_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_FABRICANTE_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_UNIDAD_NOMBRE_UNI" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_CAB_COMP_INVE_FECHA_CCI" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_CAB_COMP_INVE_NUMERO_CCI" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_CODIGO_DCI" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_CANTIDAD_DCI" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_PRECI_UNITA_DC" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_TOTAL_DCI" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_SALDO_DCI" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_PRECI_PROM_DCI" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_FECHA_CADUC_DC" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_DET_COMP_INVE_REFERENCIA_DCI" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_BODEGA_NOMBRE_BOD" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_TIP_TRAN_INVE_NOMBRE_TTI" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_PADRE_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Z_LOG_CARD_SERIE_ZLCA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_LOTE_NOMBRE_LOT" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="C_ARTICULO_CODIGO_ART" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_BODEGA_CODIGO_BOD" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="I_TIP_COMP_INVE_SIGNO_TCI" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Z_AERONAVE_NOMBRE_ZAER" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<sortField name="C_ARTICULO_CODIGO_ART"/>
+	<sortField name="I_BODEGA_NOMBRE_BOD"/>
+	<sortField name="I_CAB_COMP_INVE_FECHA_CCI"/>
+	<sortField name="I_DET_COMP_INVE_CODIGO_DCI"/>
+	<variable name="ord" class="java.lang.Integer" resetType="Group" resetGroup="I_BODEGA_CODIGO_BOD" calculation="Count">
+		<variableExpression><![CDATA[$F{I_CAB_COMP_INVE_FECHA_CCI}]]></variableExpression>
+	</variable>
+	<variable name="SUBCANT" class="java.lang.Number" resetType="Group" resetGroup="I_BODEGA_CODIGO_BOD" calculation="Sum">
+		<variableExpression><![CDATA[$F{I_DET_COMP_INVE_CANTIDAD_DCI} * $F{I_TIP_COMP_INVE_SIGNO_TCI}]]></variableExpression>
+	</variable>
+	<variable name="SUBTOTAL" class="java.lang.Number" resetType="Group" resetGroup="I_BODEGA_CODIGO_BOD" calculation="Sum">
+		<variableExpression><![CDATA[$F{I_DET_COMP_INVE_TOTAL_DCI} * $F{I_TIP_COMP_INVE_SIGNO_TCI}]]></variableExpression>
+	</variable>
+	<variable name="SUBTOTAL_1" class="java.lang.Number" resetType="Group" resetGroup="C_ARTICULO_CODIGO_ART" calculation="Sum">
+		<variableExpression><![CDATA[$F{I_DET_COMP_INVE_TOTAL_DCI} * $F{I_TIP_COMP_INVE_SIGNO_TCI}]]></variableExpression>
+	</variable>
+	<variable name="SUBCANT_1" class="java.lang.Number" resetType="Group" resetGroup="C_ARTICULO_CODIGO_ART" calculation="Sum">
+		<variableExpression><![CDATA[$F{I_DET_COMP_INVE_CANTIDAD_DCI} * $F{I_TIP_COMP_INVE_SIGNO_TCI}]]></variableExpression>
+	</variable>
+	<variable name="SALDO" class="java.lang.Number" resetType="Group" resetGroup="I_BODEGA_CODIGO_BOD" calculation="First">
+		<variableExpression><![CDATA[$F{I_DET_COMP_INVE_SALDO_DCI}]]></variableExpression>
+	</variable>
+	<group name="C_ARTICULO_CODIGO_ART">
+		<groupExpression><![CDATA[$F{C_ARTICULO_CODIGO_ART}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="13" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_NOMBRE_ART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="200" y="13" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_DESCRIPCION_ART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="400" y="13" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_NSN_ART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="38" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_STOCK_MINIM_ART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="200" y="38" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_UNIDAD_NOMBRE_UNI}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="400" y="38" width="200" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_ALTERNATIVO_ART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="600" y="38" width="202" height="12"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{C_ARTICULO_FABRICANTE_ART}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[No. PARTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="25" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[STOCK MINIMO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="0" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DESCRIPCION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="25" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[UNIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="400" y="0" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[N.S.N.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="400" y="25" width="200" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[REFERENCIA FAB.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="600" y="25" width="202" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FABRICANTE]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="31">
+				<textField pattern="#,##0.00">
+					<reportElement x="216" y="0" width="60" height="15"/>
+					<box rightPadding="3">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SUBCANT_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="216" height="15"/>
+					<box leftPadding="5">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA['TOTAL GENERAL']]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="336" y="0" width="60" height="15"/>
+					<box rightPadding="3">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SUBTOTAL_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="I_BODEGA_CODIGO_BOD">
+		<groupExpression><![CDATA[$F{I_BODEGA_CODIGO_BOD}]]></groupExpression>
+		<groupHeader>
+			<band height="28">
+				<textField>
+					<reportElement x="133" y="1" width="669" height="14"/>
+					<box leftPadding="5">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{I_BODEGA_NOMBRE_BOD}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="1" width="133" height="14"/>
+					<box leftPadding="5">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[BODEGA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="24" y="15" width="49" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="73" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NUMERO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="133" y="15" width="83" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TRANSACCION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="216" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CANTIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="276" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PRECIO UNIT.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="336" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="396" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SALDO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="456" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PRECI PROM.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="516" y="15" width="116" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AERONAVE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="632" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[LOTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="692" y="15" width="50" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[UBICACION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="742" y="15" width="60" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SERIE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="15" width="24" height="13"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ORD]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<textField pattern="#,##0.00">
+					<reportElement x="216" y="0" width="60" height="15"/>
+					<box rightPadding="3">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SUBCANT}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="336" y="0" width="60" height="15"/>
+					<box rightPadding="3">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SUBTOTAL}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="216" height="15"/>
+					<box leftPadding="5">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA['TOTAL ' + $F{I_BODEGA_NOMBRE_BOD}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="94" splitType="Stretch">
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="677" y="24" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="234" y="72" width="337" height="19" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="13" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[KARDEX DE BODEGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="10" width="337" height="34"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[BRIGADA DE AVIACION DEL EJERCITO No 15 "PAQUISHA"]]></text>
+			</staticText>
+			<image>
+				<reportElement x="3" y="4" width="70" height="90"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{ls_ruta_logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="22" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="756" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="675" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="12" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement x="24" y="0" width="49" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{I_CAB_COMP_INVE_FECHA_CCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="73" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{I_CAB_COMP_INVE_NUMERO_CCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="133" y="0" width="83" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{I_TIP_TRAN_INVE_NOMBRE_TTI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="216" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{I_DET_COMP_INVE_CANTIDAD_DCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="276" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{I_DET_COMP_INVE_PRECI_UNITA_DC}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="336" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{I_DET_COMP_INVE_TOTAL_DCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="396" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{I_DET_COMP_INVE_SALDO_DCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="456" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{I_DET_COMP_INVE_PRECI_PROM_DCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="516" y="0" width="116" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Z_AERONAVE_NOMBRE_ZAER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="632" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{I_LOTE_NOMBRE_LOT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="692" y="0" width="50" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{I_DET_COMP_INVE_REFERENCIA_DCI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="742" y="0" width="60" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Z_LOG_CARD_SERIE_ZLCA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="24" height="12"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{ord}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

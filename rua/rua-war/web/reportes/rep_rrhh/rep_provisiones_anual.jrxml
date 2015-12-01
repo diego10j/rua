@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT org.nombre_georg,pers.nom_geper,
+rubros.valor_rhrro,cabrubro.nombre_rhcru,cabrubro.ide_rhcru||cabrubro.nombre_rhcru as nombre,
+pers.sueldo_geper,cabrol.mes_rhcrp,cabrol.ide_rhcrp||cabrol.mes_rhcrp as mes
+from reh_cab_rol_pago as cabrol
+left join reh_empleados_rol as rol on cabrol.ide_rhcrp=rol.ide_rhcrp
+left JOIN gen_persona as pers on rol.ide_geper=pers.ide_geper
+left join reh_rubros_rol as rubros on rol.ide_rherl=rubros.ide_rherl
+left join reh_cab_rubro cabrubro on cabrubro.ide_rhcru=rubros.ide_rhcru
+left join sis_empresa as empresa on cabrol.ide_empr=empresa.ide_empr 
+left join gen_organigrama as org on org.ide_georg=pers.ide_georg 
+left join reh_estado_emplea as res on res.ide_rheem=pers.ide_rheem
+where pers.es_empleado_geper=true
+and pers.ide_rheem=0
+and empresa.ide_empr=0 and cabrol.ide_rhcrp in (select ide_rhcrp from reh_cab_rol_pago where ide_rhero=0)
+and cabrubro.ide_rhcru in (56,58,22,27)
+and rol.revisado_rherl=true
+GROUP BY org.nombre_georg,pers.nom_geper,rubros.valor_rhrro,cabrubro.nombre_rhcru,cabrubro.ide_rhcru||cabrubro.nombre_rhcru,
+pers.sueldo_geper,cabrol.mes_rhcrp,cabrubro.ide_rhcru,cabrol.ide_rhcrp||cabrol.mes_rhcrp
+ORDER BY org.nombre_georg asc,cabrol.mes_rhcrp]]>
+	</queryString>
+	<field name="nombre_georg" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="valor_rhrro" class="java.math.BigDecimal"/>
+	<field name="nombre_rhcru" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="sueldo_geper" class="java.math.BigDecimal"/>
+	<field name="mes_rhcrp" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<staticText>
+				<reportElement x="293" y="0" width="509" height="79"/>
+				<textElement>
+					<font size="32"/>
+				</textElement>
+				<text><![CDATA[PROVISIONES SOCIALES ANUAL]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<summary>
+		<band height="158" splitType="Stretch">
+			<elementGroup/>
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="158"/>
+				<crosstabHeaderCell>
+					<cellContents>
+						<staticText>
+							<reportElement style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="127" height="30" backcolor="#F8F4FC"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="7" isBold="true"/>
+							</textElement>
+							<text><![CDATA[DESCRIPCIÓN]]></text>
+						</staticText>
+						<staticText>
+							<reportElement style="Crosstab Data Text" mode="Opaque" x="0" y="30" width="86" height="30" backcolor="#F8F4FC"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="7" isBold="true"/>
+							</textElement>
+							<text><![CDATA[NOMBRES]]></text>
+						</staticText>
+						<staticText>
+							<reportElement style="Crosstab Data Text" mode="Opaque" x="86" y="30" width="41" height="30" backcolor="#F8F4FC"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="7" isBold="true"/>
+							</textElement>
+							<text><![CDATA[SUELDO]]></text>
+						</staticText>
+					</cellContents>
+				</crosstabHeaderCell>
+				<rowGroup name="nom_geper" width="86" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{nom_geper}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="86" height="25"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="SansSerif" size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{nom_geper}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="7"/>
+								</textElement>
+								<text><![CDATA[Total nom_geper]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="sueldo_geper" width="41">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{sueldo_geper}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="41" height="25"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="SansSerif" size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{sueldo_geper}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="mes" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{mes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="27" height="30"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="SansSerif" size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{mes}.substring(1)]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="nombre" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{nombre}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="27" height="30"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="SansSerif" size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[new String ($V{nombre}.equals("22TOTAL VALOR HORAS EXTRAS")?"V.H.E.":
+$V{nombre}.equals("56DÉCIMO CUARTO SUELDO")?"14º":
+$V{nombre}.equals("27TOTAL INGRESOS")?"T.I.":
+$V{nombre}.equals("58DECIMO TERCER SUELDO")?"13º":"")]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="valor_rhrroMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{valor_rhrro}]]></measureExpression>
+				</measure>
+				<crosstabCell width="27" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="27" height="25"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="27" height="25" rowTotalGroup="nom_geper">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="27" height="25"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="mes">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="nom_geper" columnTotalGroup="mes">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="nombre">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="nom_geper" columnTotalGroup="nombre">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{valor_rhrroMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="sueldo_geper">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="sueldo_geper" columnTotalGroup="mes">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="sueldo_geper" columnTotalGroup="nombre">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

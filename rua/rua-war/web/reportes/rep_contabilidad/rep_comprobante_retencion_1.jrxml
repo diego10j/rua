@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_retencion_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="71"/>
+	<parameter name="ide_cncre" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/Inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select cr.observacion_cncre,nom_geper,gp.identificac_geper,gp.direccion_geper,cr.fecha_emisi_cncre,
+td.nombre_cntdo,cf.numero_cpcfa,
+cast (extract (year from cr.fecha_emisi_cncre) as integer) as ejer_fiscal,
+imp.nombre_cnimp,
+cim.casillero_cncim,dr.porcentaje_cndre,dr.base_cndre,dr.valor_cndre
+from con_cabece_retenc cr
+LEFT JOIN cxp_cabece_factur cf ON cr.ide_cncre=cf.ide_cncre
+LEFT JOIN gen_persona gp ON gp.ide_geper=cf.ide_geper
+LEFT JOIN con_tipo_document td ON cf.ide_cntdo=td.ide_cntdo
+LEFT JOIN con_detall_retenc dr ON cr.ide_cncre=dr.ide_cncre
+LEFT JOIN con_cabece_impues cim ON cim.ide_cncim=dr.ide_cncim
+LEFT JOIN con_impuesto imp ON imp.ide_cnimp=cim.ide_cnimp
+where cf.ide_cncre=$P{ide_cncre}  and cr.ide_cncre=$P{ide_cncre}]]>
+	</queryString>
+	<field name="observacion_cncre" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="direccion_geper" class="java.lang.String"/>
+	<field name="fecha_emisi_cncre" class="java.sql.Date"/>
+	<field name="nombre_cntdo" class="java.lang.String"/>
+	<field name="numero_cpcfa" class="java.lang.String"/>
+	<field name="ejer_fiscal" class="java.lang.Integer"/>
+	<field name="nombre_cnimp" class="java.lang.String"/>
+	<field name="casillero_cncim" class="java.lang.String"/>
+	<field name="porcentaje_cndre" class="java.math.BigDecimal"/>
+	<field name="base_cndre" class="java.math.BigDecimal"/>
+	<field name="valor_cndre" class="java.math.BigDecimal"/>
+	<variable name="valor_cndre_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_cndre}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="38" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="181" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="79" width="164" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="83" y="93" width="282" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="434" y="61" width="100" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_emisi_cncre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="473" y="77" width="100" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cntdo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="473" y="92" width="100" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_cpcfa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="138" y="62" width="228" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="47" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="65" y="5" width="58" height="14"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ejer_fiscal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="19" y="18" width="135" height="14"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{observacion_cncre}==null? new String(""):$F{observacion_cncre}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="-11" y="10" width="50" height="35"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_cncre">
+					<subreportParameterExpression><![CDATA[$P{ide_cncre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_comp_rete.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

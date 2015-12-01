@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_inarti" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select arti1.ide_inarti,arti1.nombre_inarti,uac.ide_acuba,uac.nombre_acuba,sum(valor_compra_acafi) as valor_nuevo,
+sum(valor_comercial_acafi) as valor_comercial,
+sum ((valor_compra_acafi-recidual_acafi)/vida_util_acafi) as depreciacion_anual,
+sum (((valor_compra_acafi-recidual_acafi)/vida_util_acafi)/12) as depreciacion_mensual
+
+from act_activo_fijo af
+left join inv_articulo arti on af.ide_inarti=arti.ide_inarti
+left join inv_articulo arti1 on arti.inv_ide_inarti=arti1.ide_inarti
+left join act_ubicacion_activo uac on af.ide_acuba=uac.ide_acuba
+where af.ide_empr=$P{ide_empr}
+and fecha_acafi<$P{fecha_fin}
+and af.ide_acafi in (select ide_acafi from act_activo_fijo where ide_inarti 
+in ($P!{ide_inarti}))
+group by arti1.ide_inarti,uac.ide_acuba
+order by arti1.nombre_inarti,nombre_acuba]]>
+	</queryString>
+	<field name="ide_inarti" class="java.lang.Long"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="ide_acuba" class="java.lang.Long"/>
+	<field name="nombre_acuba" class="java.lang.String"/>
+	<field name="valor_nuevo" class="java.math.BigDecimal"/>
+	<field name="valor_comercial" class="java.math.BigDecimal"/>
+	<field name="depreciacion_anual" class="java.math.BigDecimal"/>
+	<field name="depreciacion_mensual" class="java.math.BigDecimal"/>
+	<variable name="valor_nuevo_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ide_inarti" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_nuevo}]]></variableExpression>
+	</variable>
+	<variable name="valor_comercial_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ide_inarti" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_comercial}]]></variableExpression>
+	</variable>
+	<variable name="depreciacion_anual_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ide_inarti" calculation="Sum">
+		<variableExpression><![CDATA[$F{depreciacion_anual}]]></variableExpression>
+	</variable>
+	<variable name="depreciacion_mensual_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ide_inarti" calculation="Sum">
+		<variableExpression><![CDATA[$F{depreciacion_mensual}]]></variableExpression>
+	</variable>
+	<group name="ide_inarti">
+		<groupExpression><![CDATA[$F{ide_inarti}]]></groupExpression>
+		<groupHeader>
+			<band height="36">
+				<staticText>
+					<reportElement x="260" y="2" width="51" height="34"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Nuevo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="335" y="2" width="60" height="34"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Comercial]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="404" y="2" width="77" height="34"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Depreciacion Anual]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="480" y="2" width="77" height="34"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Depreciacion Mensual]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="13" y="2" width="206" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="44">
+				<textField isStretchWithOverflow="true">
+					<reportElement x="19" y="8" width="205" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TOTAL "+$F{nombre_inarti}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="233" y="8" width="66" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{valor_nuevo_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="300" y="8" width="80" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{valor_comercial_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="379" y="8" width="80" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{depreciacion_anual_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement x="455" y="8" width="80" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{depreciacion_mensual_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="ide_georg">
+		<groupExpression><![CDATA[$F{ide_acuba}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="219" y="0" width="80" height="13"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{valor_nuevo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="300" y="0" width="80" height="13"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{valor_comercial}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="379" y="0" width="80" height="13"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{depreciacion_anual}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="455" y="0" width="80" height="13"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{depreciacion_mensual}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="13" y="0" width="222" height="13"/>
+					<textElement>
+						<font size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_acuba}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="76" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="329" y="5" width="115" height="20"/>
+				<textElement textAlignment="Justified">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="137" y="5" width="198" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPRECIACIÓN DE ACTIVOS FIJOS AL ]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+</jasperReport>

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.24184264611831"/>
+	<property name="ireport.x" value="270"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT  GP.identificac_geper,GP.nom_geper,
+CF.fecha_emisi_cccfa,DFA.serie_ccdaf, CF.secuencial_cccfa,DFA.autorizacion_ccdaf,
+ CF.base_no_objeto_iva_cccfa, CF.base_grabada_cccfa, CF.valor_iva_cccfa,CF.base_tarifa0_cccfa
+FROM cxc_cabece_factura AS CF
+INNER JOIN sis_empresa AS E ON E.ide_empr = CF.ide_empr
+INNER JOIN cxc_datos_fac AS DFA ON CF.ide_ccdaf=DFA.ide_ccdaf
+INNER JOIN gen_persona AS GP ON (GP.ide_geper = cf.ide_geper)
+AND  CF.fecha_emisi_cccfa BETWEEN $P{fecha_inicio} and  $P{fecha_fin}
+ORDER BY CF.secuencial_cccfa,CF.fecha_emisi_cccfa]]>
+	</queryString>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="fecha_emisi_cccfa" class="java.sql.Date"/>
+	<field name="serie_ccdaf" class="java.lang.String"/>
+	<field name="secuencial_cccfa" class="java.lang.String"/>
+	<field name="autorizacion_ccdaf" class="java.lang.String"/>
+	<field name="base_no_objeto_iva_cccfa" class="java.math.BigDecimal"/>
+	<field name="base_grabada_cccfa" class="java.math.BigDecimal"/>
+	<field name="valor_iva_cccfa" class="java.math.BigDecimal"/>
+	<field name="base_tarifa0_cccfa" class="java.math.BigDecimal"/>
+	<variable name="base_no_objeto_iva_cccfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_no_objeto_iva_cccfa}]]></variableExpression>
+	</variable>
+	<variable name="base_grabada_cccfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_grabada_cccfa}]]></variableExpression>
+	</variable>
+	<variable name="base_grabada_cccfa_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{base_grabada_cccfa}]]></variableExpression>
+	</variable>
+	<variable name="valor_iva_cccfa_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_iva_cccfa}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="105" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="180" y="0" width="622" height="44"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE VENTAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="354" y="44" width="66" height="24"/>
+				<box rightPadding="3"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ DESDE]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="79" y="85" width="138" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="85" width="80" height="20"/>
+				<box rightPadding="3"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[IMPRESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="522" y="44" width="73" height="24"/>
+				<box rightPadding="3"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="419" y="44" width="103" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="594" y="45" width="94" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="26"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="0" width="65" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="341" y="0" width="62" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTORIZA.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="403" y="0" width="54" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERIE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="457" y="0" width="65" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SECUENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="522" y="0" width="70" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[B.I. NO OBJ I.V.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="592" y="0" width="70" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE GRAVADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="662" y="0" width="70" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[I.V.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="732" y="0" width="70" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[B.I. TARIFA 0%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="196" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="80" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="276" y="0" width="65" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_emisi_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="405" y="1" width="52" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{serie_ccdaf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="457" y="0" width="65" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{secuencial_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="522" y="0" width="70" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{base_no_objeto_iva_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="592" y="0" width="70" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{base_grabada_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="662" y="0" width="70" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_iva_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="733" y="0" width="70" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{base_tarifa0_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="196" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="341" y="0" width="62" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{autorizacion_ccdaf}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement x="683" y="0" width="80" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="763" y="0" width="40" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="84" splitType="Stretch">
+			<textField>
+				<reportElement x="270" y="8" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{base_no_objeto_iva_cccfa_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="27" width="100" height="18"/>
+				<textElement textAlignment="Right">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{base_grabada_cccfa_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="44" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{base_grabada_cccfa_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="63" width="100" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{valor_iva_cccfa_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="140" y="8" width="131" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[B.I. NO OBJ I.V.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="44" width="131" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[B.I. TARIFA 0%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="27" width="131" height="18"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE GRAVADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="63" width="131" height="17"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[I.V.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="27" width="90" height="26"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALES:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

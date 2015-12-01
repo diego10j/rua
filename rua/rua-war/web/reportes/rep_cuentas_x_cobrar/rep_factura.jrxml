@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="427" pageHeight="597" whenNoDataType="AllSectionsNoDetail" columnWidth="387" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3f9c6dba-fab8-4364-b91b-399bea5a48c4">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="167"/>
+	<parameter name="ide_cccfa" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT FACTURA.secuencial_cccfa,FACTURA.fecha_emisi_cccfa,PERSONA.nom_geper,PERSONA.identificac_geper,
+PERSONA.direccion_geper,PERSONA.telefono_geper,DETALLE.cantidad_ccdfa,ARTICULO.nombre_inarti,DETALLE.observacion_ccdfa,DETALLE.precio_ccdfa,
+DETALLE.total_ccdfa ,FACTURA.base_no_objeto_iva_cccfa,FACTURA.base_tarifa0_cccfa,FACTURA.base_grabada_cccfa,
+FACTURA.valor_iva_cccfa,FACTURA.total_cccfa
+FROM cxc_cabece_factura AS FACTURA
+FULL OUTER JOIN cxc_deta_factura AS DETALLE ON DETALLE.ide_cccfa=FACTURA.ide_cccfa
+FULL OUTER JOIN inv_articulo AS ARTICULO ON DETALLE.ide_inarti=ARTICULO.ide_inarti
+FULL OUTER JOIN gen_persona AS PERSONA ON FACTURA.ide_geper=PERSONA.ide_geper
+WHERE PERSONA.es_cliente_geper=TRUE AND ARTICULO.nivel_inarti='HIJO'
+AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
+	</queryString>
+	<field name="secuencial_cccfa" class="java.lang.String"/>
+	<field name="fecha_emisi_cccfa" class="java.sql.Date"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="direccion_geper" class="java.lang.String"/>
+	<field name="telefono_geper" class="java.lang.String"/>
+	<field name="cantidad_ccdfa" class="java.math.BigDecimal"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="observacion_ccdfa" class="java.lang.String"/>
+	<field name="precio_ccdfa" class="java.math.BigDecimal"/>
+	<field name="total_ccdfa" class="java.math.BigDecimal"/>
+	<field name="base_no_objeto_iva_cccfa" class="java.math.BigDecimal"/>
+	<field name="base_tarifa0_cccfa" class="java.math.BigDecimal"/>
+	<field name="base_grabada_cccfa" class="java.math.BigDecimal"/>
+	<field name="valor_iva_cccfa" class="java.math.BigDecimal"/>
+	<field name="total_cccfa" class="java.math.BigDecimal"/>
+	<variable name="var_iva_cero" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{base_tarifa0_cccfa}.doubleValue()+$F{base_no_objeto_iva_cccfa}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="total" class="java.lang.Double" calculation="Sum"/>
+	<variable name="total_ccdfa_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_ccdfa}]]></variableExpression>
+	</variable>
+	<group name="DETA">
+		<groupExpression><![CDATA[$F{secuencial_cccfa}]]></groupExpression>
+	</group>
+	<title>
+		<band height="105" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="73" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="4f3b1551-f9f5-4de6-8701-dbbef4b0e4e3" x="85" y="1" width="202" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_emisi_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="204407f8-df61-4bd3-83f3-35faa9789985" x="56" y="16" width="248" height="14"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4a2ce816-4a6c-4a37-bc16-aed9ddb42cba" x="60" y="30" width="253" height="14"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="30ec6389-53b4-438e-b104-6aee06822dda" x="313" y="30" width="100" height="15"/>
+				<box leftPadding="8"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono_geper}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d0557c01-68a1-4552-9e7e-041e0ae43b27" x="303" y="13" width="100" height="17"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="56" y="1" width="30" height="15"/>
+				<textElement/>
+				<text><![CDATA[Quito,]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="57d50bc6-4742-4ece-819f-27ab02dc2927" x="67" y="0" width="186" height="15"/>
+				<box rightPadding="3"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_ccdfa}== null? ($F{nombre_inarti}):($F{nombre_inarti}+" "+$F{observacion_ccdfa})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="33973201-da51-43aa-abd3-d6e11584c907" x="17" y="0" width="29" height="15"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_ccdfa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="010697a7-d236-469d-a92e-06438150c711" x="271" y="0" width="53" height="15"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{precio_ccdfa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="963c04e5-b179-47e9-8222-77e9bba3be4a" x="331" y="0" width="55" height="15"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ccdfa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="90">
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="d17142f5-2dec-432f-a948-61e789edbc58" x="334" y="59" width="54" height="15"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_iva_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="93826fdd-42e1-40fd-a786-340b46699431" x="334" y="74" width="54" height="15"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_cccfa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="4b79361e-cd48-4e51-9529-2197b8d62b4a" x="334" y="41" width="54" height="15"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{var_iva_cero}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="4bb01748-73ee-4879-87ed-d4f577323131" x="333" y="25" width="54" height="15"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{total_ccdfa_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

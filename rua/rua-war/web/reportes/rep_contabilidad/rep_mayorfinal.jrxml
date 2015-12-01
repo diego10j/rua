@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.1566298682885952"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="32"/>
+	<parameter name="ide_cneco" class="java.lang.String">
+		<defaultValueExpression><![CDATA['1']]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cnlap_debe" class="java.lang.String"/>
+	<parameter name="ide_cnlap_haber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cndpc" class="java.lang.String">
+		<defaultValueExpression><![CDATA['1']]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT CAB.ide_cnccc,CAB.fecha_trans_cnccc,CAB.observacion_cnccc,
+CUENTA.nombre_cndpc,CUENTA.codig_recur_cndpc,LUGAR.nombre_cnlap,CUENTA.ide_cndpc,LUGAR.ide_cnlap,
+CAB.ide_geper,DETA.observacion_cndcc,CAB.fecha_siste_cnccc,(DETA.valor_cndcc*sc.signo_cnscu) as valor_cndcc,PERSO.nom_geper
+FROM con_cab_comp_cont CAB 
+inner join gen_persona PERSO on CAB.ide_geper=PERSO.ide_geper
+inner join  con_det_comp_cont DETA on CAB.ide_cnccc=DETA.ide_cnccc 
+inner join con_det_plan_cuen CUENTA on  CUENTA.ide_cndpc = DETA.ide_cndpc 
+inner join con_lugar_aplicac LUGAR on  LUGAR.ide_cnlap=DETA.ide_cnlap
+inner join con_tipo_cuenta tc on CUENTA.ide_cntcu=tc.ide_cntcu 
+inner join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and DETA.ide_cnlap=sc.ide_cnlap 
+WHERE CUENTA.ide_cndpc IN ($P!{ide_cndpc}) AND
+CAB.fecha_trans_cnccc>=$P{fecha_inicio}	AND					
+CAB.fecha_trans_cnccc<=$P{fecha_fin} AND
+CAB.ide_cneco IN ($P!{ide_cneco}) AND
+CAB.ide_sucu=$P!{ide_sucu}
+AND CAB.ide_empr=$P{ide_empr}
+ORDER BY DETA.ide_cndpc,CAB.fecha_trans_cnccc]]>
+	</queryString>
+	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="fecha_trans_cnccc" class="java.sql.Date"/>
+	<field name="observacion_cnccc" class="java.lang.String"/>
+	<field name="nombre_cndpc" class="java.lang.String"/>
+	<field name="codig_recur_cndpc" class="java.lang.String"/>
+	<field name="nombre_cnlap" class="java.lang.String"/>
+	<field name="ide_cndpc" class="java.lang.Long"/>
+	<field name="ide_cnlap" class="java.lang.Long"/>
+	<field name="ide_geper" class="java.lang.Long"/>
+	<field name="observacion_cndcc" class="java.lang.String"/>
+	<field name="fecha_siste_cnccc" class="java.sql.Date"/>
+	<field name="valor_cndcc" class="java.math.BigDecimal"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<variable name="VALOR_HABER" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{ide_cnlap}.toString().equals($P{ide_cnlap_haber}) ?($F{valor_cndcc}.doubleValue()):(null))]]></variableExpression>
+	</variable>
+	<variable name="VALOR_DEBE" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{ide_cnlap}.toString().equals($P{ide_cnlap_debe}) ?($F{valor_cndcc}.doubleValue()):(null))]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_DEBE" class="java.lang.Double" resetType="Group" resetGroup="NOMBRE CUENTA" calculation="Sum">
+		<variableExpression><![CDATA[$V{VALOR_DEBE}==null?new Double (0):$V{VALOR_DEBE}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL HABER" class="java.lang.Double" resetType="Group" resetGroup="NOMBRE CUENTA" calculation="Sum">
+		<variableExpression><![CDATA[$V{VALOR_HABER}==null?new Double (0):$V{VALOR_HABER}]]></variableExpression>
+	</variable>
+	<variable name="SALDO_ANTERIOR" class="java.lang.Double" resetType="Group" resetGroup="NOMBRE CUENTA">
+		<variableExpression><![CDATA[$V{SALDO_ANTERIOR}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
+	</variable>
+	<variable name="SALDO_ACTUAL" class="java.lang.Double" resetType="Group" resetGroup="NOMBRE CUENTA">
+		<variableExpression><![CDATA[$V{SALDO_ACTUAL}]]></variableExpression>
+	</variable>
+	<variable name="SALDO_FINAL" class="java.lang.Double" resetType="Group" resetGroup="NOMBRE CUENTA">
+		<variableExpression><![CDATA[($F{valor_cndcc}.doubleValue()+$V{SALDO_FINAL})]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
+	</variable>
+	<group name="NOMBRE CUENTA">
+		<groupExpression><![CDATA[$F{ide_cndpc}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="245" y="-1" width="307" height="14"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font size="11" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="351" y="16" width="103" height="13"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font size="10" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[SALDO ANTERIOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="-1" width="51" height="14"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font size="11" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Cta:]]></text>
+				</staticText>
+				<textField evaluationTime="Group" evaluationGroup="NOMBRE CUENTA" pattern="#,##0.00">
+					<reportElement x="454" y="16" width="100" height="13"/>
+					<box rightPadding="3"/>
+					<textElement textAlignment="Right">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{SALDO_ANTERIOR}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="11" y="21" width="40" height="1" forecolor="#FFFFFF"/>
+					<subreportParameter name="fecha_inicio">
+						<subreportParameterExpression><![CDATA[$P{fecha_inicio}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cndpc">
+						<subreportParameterExpression><![CDATA[$F{ide_cndpc}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cneco">
+						<subreportParameterExpression><![CDATA[$P{ide_cneco}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<returnValue subreportVariable="saldo" toVariable="SALDO_ANTERIOR"/>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_saldo_inicial_mayorizacion.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement x="13" y="17" width="40" height="1" forecolor="#FFFFFF"/>
+					<subreportParameter name="fecha_fin">
+						<subreportParameterExpression><![CDATA[$P{fecha_fin}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cndpc">
+						<subreportParameterExpression><![CDATA[$F{ide_cndpc}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cneco">
+						<subreportParameterExpression><![CDATA[$P{ide_cneco}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<returnValue subreportVariable="saldo_actual" toVariable="SALDO_ACTUAL"/>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_saldo_fin_mayorizacion.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="50" y="0" width="196" height="14"/>
+					<textElement>
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="59">
+				<textField pattern="#,##0.00">
+					<reportElement x="441" y="0" width="53" height="15"/>
+					<box rightPadding="3">
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{TOTAL HABER}==null?new Double (0):$V{TOTAL HABER} <0? 0-$V{TOTAL HABER}:$V{TOTAL HABER}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="200" y="0" width="183" height="15"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTALES:]]></text>
+				</staticText>
+				<line>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="15"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+				<textField pattern="#,##0.00">
+					<reportElement x="383" y="0" width="55" height="15"/>
+					<box rightPadding="3">
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{TOTAL_DEBE}==null?new Double (0):$V{TOTAL_DEBE}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="554" y="0" width="1" height="15"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement positionType="Float" x="0" y="14" width="554" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="1" y="0" width="100" height="15"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SALDO ACTUAL:]]></text>
+				</staticText>
+				<textField evaluationTime="Group" evaluationGroup="NOMBRE CUENTA" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="100" y="0" width="102" height="15"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{SALDO_ACTUAL}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="1" y="0" width="555" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="439" y="0" width="1" height="14"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band height="3">
+			<frame>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="485" y="0" width="69" height="3" isPrintInFirstWholeBand="true" forecolor="#000000" backcolor="#FFFFFF"/>
+				<subreport>
+					<reportElement isPrintRepeatedValues="false" mode="Transparent" x="7" y="1" width="20" height="1" isPrintInFirstWholeBand="true" forecolor="#000000"/>
+					<subreportParameter name="fecha_fin">
+						<subreportParameterExpression><![CDATA[$P{fecha_fin}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cndpc">
+						<subreportParameterExpression><![CDATA[$F{ide_cndpc}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cneco">
+						<subreportParameterExpression><![CDATA[$P{ide_cneco}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<returnValue subreportVariable="saldo_actual" toVariable="SALDO_ACTUAL"/>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_saldo_fin_mayorizacion.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" isPrintRepeatedValues="false" x="41" y="1" width="20" height="1" isPrintInFirstWholeBand="true"/>
+					<subreportParameter name="ide_cneco">
+						<subreportParameterExpression><![CDATA[$P{ide_cneco}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_cndpc">
+						<subreportParameterExpression><![CDATA[$F{ide_cndpc}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="fecha_inicio">
+						<subreportParameterExpression><![CDATA[$P{fecha_inicio}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<returnValue subreportVariable="saldo" toVariable="SALDO_ANTERIOR"/>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_saldo_inicial_mayorizacion.jasper"]]></subreportExpression>
+				</subreport>
+			</frame>
+		</band>
+	</background>
+	<title>
+		<band height="98" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="180" y="0" width="375" height="56"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LIBRO MAYOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="84" width="100" height="14"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Fecha Impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="99" y="84" width="81" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="367" y="55" width="74" height="14"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="485" y="55" width="70" height="14"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="321" y="55" width="47" height="14"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESDE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="55" width="46" height="14"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="13">
+			<staticText>
+				<reportElement x="178" y="0" width="205" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="51" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="0" width="62" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="0" width="48" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ASIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="99" y="0" width="79" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTO.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="0" width="57" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="0" width="52" height="13"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="8" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="51" height="8"/>
+				<box leftPadding="3" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_trans_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="177" y="0" width="206" height="8"/>
+				<box leftPadding="3" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geper}+": "+$F{observacion_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="51" y="0" width="48" height="8"/>
+				<box leftPadding="5" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00;#,##0.00" isBlankWhenNull="true">
+				<reportElement x="440" y="0" width="52" height="8"/>
+				<box leftPadding="2" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Double ($V{VALOR_HABER}<0 ? 0-$V{VALOR_HABER} :$V{VALOR_HABER} )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="554" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="50" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="99" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="494" y="0" width="60" height="8"/>
+				<box leftPadding="2" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SALDO_FINAL}+$V{SALDO_ANTERIOR}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="493" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="382" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="439" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="177" y="0" width="1" height="8"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="383" y="0" width="55" height="8"/>
+				<box leftPadding="2" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{VALOR_DEBE}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="99" y="0" width="79" height="8"/>
+				<subreportParameter name="ide_cnccc">
+					<subreportParameterExpression><![CDATA[$F{ide_cnccc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_num_documento_mayor.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="454" y="0" width="62" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

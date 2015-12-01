@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_georg" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_prtpr_gasto" class="java.lang.Long"/>
+	<parameter name="ide_prtpr_ingreso" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombre_org" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_prppr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gemes" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT dp.ide_prtap,tap.nombre_prtap,sum(total_prdep) as total FROM pre_cab_plan_presu cpp 
+left join pre_descripcion_presu dpr on dpr.ide_prcppr=cpp.ide_prcppr 
+left join pre_detalle_presu dp on dp.ide_prdpr=dpr.ide_prdpr 
+left join pre_tipo_aporte_presu tap on tap.ide_prtap=dp.ide_prtap 
+left join gen_mes gm on gm.ide_gemes=cpp.ide_gemes
+left join pre_periodo_presu per on per.ide_prppr=cpp.ide_prppr
+WHERE cpp.ide_georg=$P{ide_georg}
+and dp.ide_prtpr=$P{ide_prtpr_gasto}
+and dp.ide_sucu=$P{ide_sucu}
+and dp.ide_empr=$P{ide_empr}
+and per.ide_prppr =$P{ide_prppr}
+and gm.ide_gemes in ($P!{ide_gemes})
+GROUP BY cpp.ide_prcppr,dp.ide_prtap,dp.ide_prtpr,tap.nombre_prtap ORDER BY nombre_prtap]]>
+	</queryString>
+	<field name="ide_prtap" class="java.lang.Long"/>
+	<field name="nombre_prtap" class="java.lang.String"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<variable name="total_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="209" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="9" y="98" width="100" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL GASTOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="263" y="98" width="179" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL INGRESOS:]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="8" y="90" width="544" height="1" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="0" width="555" height="20" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL PRESUPUESTADO DE LA CARTERA]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="10" y="115" width="542" height="1"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="253" y="56" width="1" height="60" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+			</line>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="108" y="98" width="100" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{total_1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="22" width="555" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre_org}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="255" y="55" width="257" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_georg">
+					<subreportParameterExpression><![CDATA[$P{ide_georg}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prtpr">
+					<subreportParameterExpression><![CDATA[$P{ide_prtpr_ingreso}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prppr">
+					<subreportParameterExpression><![CDATA[$P{ide_prppr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_gemes">
+					<subreportParameterExpression><![CDATA[$P{ide_gemes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuesto/sub_rep_total_det_ingresos_org.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="442" y="97" width="74" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="ide_georg">
+					<subreportParameterExpression><![CDATA[$P{ide_georg}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prtpr">
+					<subreportParameterExpression><![CDATA[$P{ide_prtpr_ingreso}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prppr">
+					<subreportParameterExpression><![CDATA[$P{ide_prppr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_gemes">
+					<subreportParameterExpression><![CDATA[$P{ide_gemes}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuesto/sub_rep_total_ingresos_org.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

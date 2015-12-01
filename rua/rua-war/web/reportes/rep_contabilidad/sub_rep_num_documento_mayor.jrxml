@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="150" pageHeight="25" columnWidth="150" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cnccc" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select case when (select numero_teclb from tes_cab_libr_banc clb
+left JOIN tes_tip_tran_banc ttb on clb.ide_tettb=ttb.ide_tettb
+where clb.ide_cnccc = $P{ide_cnccc} ORDER BY clb.ide_teclb desc limit 1) is null 
+then (case when (select 'Fact.'||'  ' ||numero_cpcfa from cxp_cabece_factur cf
+									where ide_cnccc = $P{ide_cnccc} limit 1) is null
+									then (case when (select 'Fact.'||'  ' ||secuencial_cccfa from cxc_cabece_factura cf
+												where ide_cnccc = $P{ide_cnccc} limit 1) is null
+												then (select sigla_tettb ||' - '||numero_teclb from tes_cab_libr_banc clb
+left JOIN tes_tip_tran_banc ttb on clb.ide_tettb=ttb.ide_tettb
+where ide_cnccc = $P{ide_cnccc}
+) else (select 'Fact.'||'  ' ||secuencial_cccfa from cxc_cabece_factura cf
+												where ide_cnccc = $P{ide_cnccc} limit 1) end )
+else (select 'Fact.'||'  ' ||numero_cpcfa from cxp_cabece_factur cf
+									where ide_cnccc = $P{ide_cnccc} limit 1) end)
+ELSE (select sigla_tettb||' - '||numero_teclb from tes_cab_libr_banc clb
+left JOIN tes_tip_tran_banc ttb on clb.ide_tettb=ttb.ide_tettb
+where clb.ide_cnccc = $P{ide_cnccc}  
+group by clb.ide_cnccc,sigla_tettb,numero_teclb,clb.ide_teclb  
+ORDER BY clb.ide_teclb DESC limit 1) end as num_doc]]>
+	</queryString>
+	<field name="num_doc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="15">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="-1" y="0" width="83" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_doc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

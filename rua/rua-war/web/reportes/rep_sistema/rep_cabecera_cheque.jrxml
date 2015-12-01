@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="280" pageHeight="85" whenNoDataType="AllSectionsNoDetail" columnWidth="260" leftMargin="0" rightMargin="20" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT * FROM sis_empresa e, sis_sucursal s 
+where s.ide_empr=e.ide_empr 
+and s.ide_empr=$P{ide_empr}
+and s.ide_sucu=$P{ide_sucu}]]>
+	</queryString>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="ide_empr" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="contacto_empr" class="java.lang.String"/>
+	<field name="representante_empr" class="java.lang.String"/>
+	<field name="identi_repre_empr" class="java.lang.String"/>
+	<field name="nom_corto_empr" class="java.lang.String"/>
+	<field name="mail_empr" class="java.lang.String"/>
+	<field name="pagina_empr" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="direccion_empr" class="java.lang.String"/>
+	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
+	<field name="logo_empr" class="java.lang.String"/>
+	<title>
+		<band height="72" splitType="Stretch">
+			<image>
+				<reportElement x="5" y="11" width="57" height="60"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{logo_empr}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="66" y="53" width="168" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC: "+$F{identificacion_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="11" width="168" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="25" width="168" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_sucu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="39" width="168" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{telefonos_sucu}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

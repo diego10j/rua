@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_rhcrp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geper" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_rhcru" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT pers.nom_geper,pers.identificac_geper, estructura.nombre_rheor, rol.ide_rherl,
+cabrubro.nombre_rhcru,rubros.valor_rhrro,banco.nombre_teban,tiporubro.ide_rhtru,signo_rhtru ,cabrol.mes_rhcrp,cabrol.fecha_inicio_rhcrp,cabrol.fecha_fin_rhcrp,pers.ide_geper
+from reh_cab_rol_pago as cabrol
+left join reh_empleados_rol as rol on cabrol.ide_rhcrp=rol.ide_rhcrp
+left JOIN gen_persona as pers on rol.ide_geper=pers.ide_geper
+left join reh_rubros_rol as rubros on rol.ide_rherl=rubros.ide_rherl
+left join reh_estruc_organi as estructura on pers.ide_rheor=estructura.ide_rheor
+left join tes_banco as banco on pers.ide_teban=banco.ide_teban
+left join reh_cab_rubro cabrubro on cabrubro.ide_rhcru=rubros.ide_rhcru
+left join reh_tipo_rubro tiporubro on cabrubro.ide_rhtru= tiporubro.ide_rhtru
+left join sis_empresa as empresa on cabrol.ide_empr=empresa.ide_empr 
+where pers.es_empleado_geper is true and cabrubro.imprime_rhcru is true 
+and empresa.ide_empr=$P{ide_empr} and cabrol.ide_rhcrp=$P{ide_rhcrp}
+and rol.ide_geper in($P!{ide_geper})
+order by pers.nom_geper,tiporubro.ide_rhtru ASC]]>
+	</queryString>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="nombre_rheor" class="java.lang.String"/>
+	<field name="ide_rherl" class="java.lang.Long"/>
+	<field name="nombre_rhcru" class="java.lang.String"/>
+	<field name="valor_rhrro" class="java.math.BigDecimal"/>
+	<field name="nombre_teban" class="java.lang.String"/>
+	<field name="ide_rhtru" class="java.lang.Long"/>
+	<field name="signo_rhtru" class="java.lang.Integer"/>
+	<field name="mes_rhcrp" class="java.lang.String"/>
+	<field name="fecha_inicio_rhcrp" class="java.sql.Date"/>
+	<field name="fecha_fin_rhcrp" class="java.sql.Date"/>
+	<field name="ide_geper" class="java.lang.Long"/>
+	<group name="empleado" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{ide_geper}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<subreport>
+					<reportElement x="1" y="1" width="555" height="49"/>
+					<subreportParameter name="ide_rhcru">
+						<subreportParameterExpression><![CDATA[$P{ide_rhcru}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_empr">
+						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_rhcrp">
+						<subreportParameterExpression><![CDATA[$P{ide_rhcrp}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="ide_geper">
+						<subreportParameterExpression><![CDATA[$F{ide_geper}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_rrhh/rep_rol_individual.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

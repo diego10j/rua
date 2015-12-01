@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_inarti" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_ini" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select arti1.ide_inarti,af.ide_acafi,arti1.nombre_inarti,af.nombre_acafi,af.serie_acafi,af.modelo_acafi,
+af.valor_compra_acafi,
+af.fecha_compra_acafi,
+af.anos_uso_acafi,
+af.vida_util_acafi,
+per.nom_geper,
+(valor_compra_acafi-recidual_acafi)/vida_util_acafi as depreciacion_anual,
+((valor_compra_acafi-recidual_acafi)/vida_util_acafi)/12 as depreciacion_mensual,
+tr.acumulado_actra,
+tr.valor_activo_actra,
+observacion_actra 
+from act_activo_fijo af 
+left join act_transaccion tr on af.ide_acafi=tr.ide_acafi
+left join inv_articulo arti on af.ide_inarti=arti.ide_inarti
+left join inv_articulo arti1 on arti.inv_ide_inarti=arti1.ide_inarti
+left join gen_persona per on af.ide_geper=per.ide_geper
+where af.anos_uso_acafi>0
+and af.ide_acafi in (select ide_acafi from act_activo_fijo where ide_inarti 
+in ($P!{ide_inarti}))
+and fecha_actra BETWEEN $P{fecha_ini} and $P{fecha_fin}
+group by arti1.ide_inarti,af.ide_acafi,per.nom_geper,
+tr.acumulado_actra,tr.valor_activo_actra,tr.observacion_actra,tr.ide_actra
+order by arti1.ide_inarti DESC]]>
+	</queryString>
+	<field name="ide_inarti" class="java.lang.Long"/>
+	<field name="ide_acafi" class="java.lang.Long"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="nombre_acafi" class="java.lang.String"/>
+	<field name="serie_acafi" class="java.lang.String"/>
+	<field name="modelo_acafi" class="java.lang.String"/>
+	<field name="valor_compra_acafi" class="java.math.BigDecimal"/>
+	<field name="fecha_compra_acafi" class="java.sql.Date"/>
+	<field name="anos_uso_acafi" class="java.math.BigDecimal"/>
+	<field name="vida_util_acafi" class="java.lang.Integer"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="depreciacion_anual" class="java.math.BigDecimal"/>
+	<field name="depreciacion_mensual" class="java.math.BigDecimal"/>
+	<field name="acumulado_actra" class="java.math.BigDecimal"/>
+	<field name="valor_activo_actra" class="java.math.BigDecimal"/>
+	<field name="observacion_actra" class="java.lang.String"/>
+	<group name="ide_inarti">
+		<groupExpression><![CDATA[$F{ide_inarti}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField>
+					<reportElement x="0" y="0" width="555" height="20"/>
+					<textElement>
+						<font size="11" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Cuenta Contable: "+$F{nombre_inarti}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="ide_acafi">
+		<groupExpression><![CDATA[$F{ide_acafi}]]></groupExpression>
+		<groupHeader>
+			<band height="86">
+				<frame>
+					<reportElement x="0" y="1" width="555" height="51"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textField>
+						<reportElement x="407" y="4" width="128" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["F. Compra: "+$F{fecha_compra_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="20" y="4" width="130" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Activo: "+$F{nombre_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="18" y="28" width="130" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["V. Compra: "+ $F{valor_compra_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="291" y="28" width="100" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Años Uso: "+$F{anos_uso_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="172" y="4" width="100" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Serie: "+$F{serie_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="291" y="4" width="100" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Modelo: "+$F{modelo_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="172" y="28" width="100" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Vida Util: "+$F{vida_util_acafi}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="407" y="28" width="128" height="20"/>
+						<textElement/>
+						<textFieldExpression><![CDATA["Custodio: "+$F{nom_geper}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<staticText>
+					<reportElement x="17" y="58" width="100" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observacion]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="240" y="58" width="77" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Dep. Mensual]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="346" y="58" width="100" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Depreciado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="455" y="58" width="100" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Activo]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="37"/>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="78" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="359" y="33" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="169" y="34" width="198" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPRECIACIÓN DE ACTIVOS FIJOS AL ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="226" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_actra}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="250" y="2" width="52" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{depreciacion_mensual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="367" y="0" width="58" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{acumulado_actra}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="472" y="2" width="63" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_activo_actra}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

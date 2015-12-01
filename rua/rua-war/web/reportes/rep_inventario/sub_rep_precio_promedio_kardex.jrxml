@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="120" pageHeight="20" columnWidth="120" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_inarti" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_inbod" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_ini" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select case when (
+select 
+avg(inv_det_comp_inve.precio_indci) as saldo 
+from inv_cab_comp_inve, inv_det_comp_inve, inv_tip_tran_inve,inv_tip_comp_inve,inv_articulo 
+where inv_det_comp_inve.ide_inarti = inv_articulo.ide_inarti 
+and inv_cab_comp_inve.ide_inepi=1 
+and inv_tip_tran_inve.ide_intti= inv_cab_comp_inve.ide_intti 
+and inv_tip_comp_inve.ide_intci= inv_tip_tran_inve.ide_intci 
+and inv_cab_comp_inve.ide_incci=inv_det_comp_inve.ide_incci 
+and inv_articulo.ide_inarti = $P{ide_inarti} 
+and inv_cab_comp_inve.ide_inbod in ($P{ide_inbod}) 
+and inv_cab_comp_inve.fecha_trans_incci < $P{fecha_ini}
+group by inv_articulo.ide_inarti) is null then 0 else 
+(
+select 
+avg (inv_det_comp_inve.precio_indci) as saldo 
+from inv_cab_comp_inve, inv_det_comp_inve, inv_tip_tran_inve,inv_tip_comp_inve,inv_articulo 
+where inv_det_comp_inve.ide_inarti = inv_articulo.ide_inarti 
+and inv_cab_comp_inve.ide_inepi=1 
+and inv_tip_tran_inve.ide_intti= inv_cab_comp_inve.ide_intti 
+and inv_tip_comp_inve.ide_intci= inv_tip_tran_inve.ide_intci 
+and inv_cab_comp_inve.ide_incci=inv_det_comp_inve.ide_incci 
+and inv_articulo.ide_inarti = $P{ide_inarti}
+and inv_cab_comp_inve.ide_inbod in ($P{ide_inbod}) 
+and inv_cab_comp_inve.fecha_trans_incci < $P{fecha_ini}
+group by inv_articulo.ide_inarti) end as valor]]>
+	</queryString>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<variable name="precio_promedio" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{valor}.doubleValue())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="11" y="0" width="100" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{precio_promedio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="100" pageHeight="20" whenNoDataType="AllSectionsNoDetail" columnWidth="100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cndpc" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_cneco" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[Select dpc.ide_cndpc,sum(dcc.valor_cndcc*sc.signo_cnscu) as valor 
+from con_cab_comp_cont ccc 
+inner join  con_det_comp_cont dcc on ccc.ide_cnccc=dcc.ide_cnccc 
+inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc 
+inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu 
+inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap 
+WHERE  ccc.fecha_trans_cnccc<=$P{fecha_fin}
+and ccc.ide_cneco in ($P!{ide_cneco}) and ccc.ide_sucu=$P{ide_sucu} and dpc.ide_cndpc=$P{ide_cndpc}
+GROUP BY dpc.ide_cndpc]]>
+	</queryString>
+	<field name="ide_cndpc" class="java.lang.Long"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<variable name="saldo_actual" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{valor}.doubleValue())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="19" y="5" width="51" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}==null?new BigDecimal(0):$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

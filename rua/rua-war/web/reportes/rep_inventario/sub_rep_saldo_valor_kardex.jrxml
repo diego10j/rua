@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="100" pageHeight="30" columnWidth="100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_inarti" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_inbod" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_ini" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select case when (
+select 
+sum (inv_det_comp_inve.cantidad_indci * inv_tip_comp_inve.signo_intci*inv_det_comp_inve.precio_indci) as saldo 
+from inv_cab_comp_inve, inv_det_comp_inve, inv_tip_tran_inve,inv_tip_comp_inve,inv_articulo 
+where inv_det_comp_inve.ide_inarti = inv_articulo.ide_inarti 
+and inv_cab_comp_inve.ide_inepi=1 
+and inv_tip_tran_inve.ide_intti= inv_cab_comp_inve.ide_intti 
+and inv_tip_comp_inve.ide_intci= inv_tip_tran_inve.ide_intci 
+and inv_cab_comp_inve.ide_incci=inv_det_comp_inve.ide_incci 
+and inv_articulo.ide_inarti = $P{ide_inarti}
+and inv_cab_comp_inve.ide_inbod = $P{ide_inbod} 
+and inv_cab_comp_inve.fecha_trans_incci < $P{fecha_ini}
+group by inv_articulo.ide_inarti) is null then 0 else 
+(
+select 
+sum (inv_det_comp_inve.cantidad_indci * inv_tip_comp_inve.signo_intci*inv_det_comp_inve.precio_indci) as saldo 
+from inv_cab_comp_inve, inv_det_comp_inve, inv_tip_tran_inve,inv_tip_comp_inve,inv_articulo 
+where inv_det_comp_inve.ide_inarti = inv_articulo.ide_inarti 
+and inv_cab_comp_inve.ide_inepi=1 
+and inv_tip_tran_inve.ide_intti= inv_cab_comp_inve.ide_intti 
+and inv_tip_comp_inve.ide_intci= inv_tip_tran_inve.ide_intci 
+and inv_cab_comp_inve.ide_incci=inv_det_comp_inve.ide_incci 
+and inv_articulo.ide_inarti = $P{ide_inarti}
+and inv_cab_comp_inve.ide_inbod =  $P{ide_inbod}
+and inv_cab_comp_inve.fecha_trans_incci < $P{fecha_ini}
+group by inv_articulo.ide_inarti) end as valor]]>
+	</queryString>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<variable name="saldo_inicial" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{valor}.doubleValue())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement x="11" y="3" width="78" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{saldo_inicial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
