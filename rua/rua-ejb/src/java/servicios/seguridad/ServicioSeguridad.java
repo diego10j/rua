@@ -126,7 +126,7 @@ public class ServicioSeguridad {
         // Auditoria para reseteo de clavel
         utilitario.getConexion().agregarSql(
                 crearSQLAuditoriaAcceso(ide_usua, P_SIS_RESETEO_CLAVE,
-                "Reseteo de clave"));
+                        "Reseteo de clave"));
         utilitario.getConexion().agregarSql(
                 crearSQLHistorialClave(ide_usua, clave));
         utilitario.getConexion().ejecutarListaSql();
@@ -145,7 +145,7 @@ public class ServicioSeguridad {
         // Auditoria para activacion del usuario
         utilitario.getConexion().agregarSql(
                 crearSQLAuditoriaAcceso(ide_usua, P_SIS_ACTIVA_USUARIO,
-                "Activar usuario"));
+                        "Activar usuario"));
         utilitario.getConexion().ejecutarListaSql();
     }
 
@@ -162,7 +162,7 @@ public class ServicioSeguridad {
         // Auditoria para desactivacion del usuario
         utilitario.getConexion().agregarSql(
                 crearSQLAuditoriaAcceso(ide_usua, P_SIS_DESACTIVA_USUARIO,
-                "Desactivar usuario"));
+                        "Desactivar usuario"));
         utilitario.getConexion().ejecutarListaSql();
     }
 
@@ -180,7 +180,7 @@ public class ServicioSeguridad {
         // Auditoria para bloqueo
         utilitario.getConexion().agregarSql(
                 crearSQLAuditoriaAcceso(ide_usua, P_SIS_BLOQUEA_USUARIO,
-                detalle));
+                        detalle));
         utilitario.getConexion().ejecutarListaSql();
     }
 
@@ -197,7 +197,7 @@ public class ServicioSeguridad {
         // Auditoria para bloqueo
         utilitario.getConexion().agregarSql(
                 crearSQLAuditoriaAcceso(ide_usua, P_SIS_DESBLOQUEA_USUARIO,
-                "Desbloquear Usuario"));
+                        "Desbloquear Usuario"));
         //pongo fin a todos sus seciones no finalizadas
 
         str_sql = "update SIS_AUDITORIA_ACCESO set  FIN_AUAC=true WHERE IDE_USUA="
@@ -247,7 +247,7 @@ public class ServicioSeguridad {
                                 if (utilitario.isFechaMayor(utilitario
                                         .getDate(), utilitario
                                         .getFecha(tab_clave
-                                        .getValor("fecha_vence_uscl")))) {
+                                                .getValor("fecha_vence_uscl")))) {
                                     str_mensaje = "La vigencia de su clave a caducado, contactese con el administrador del sistema";
                                     return str_mensaje;
                                 }
@@ -359,7 +359,7 @@ public class ServicioSeguridad {
             if (tab_clave.getValor("fecha_vence_uscl") != null) {
                 if (utilitario.isFechaMayor(utilitario.getFecha(fecha),
                         utilitario.getFecha(tab_clave
-                        .getValor("fecha_vence_uscl")))) {
+                                .getValor("fecha_vence_uscl")))) {
                     return true;
                 }
             }
@@ -401,9 +401,9 @@ public class ServicioSeguridad {
         int int_intentos = 0;
         TablaGenerica tab_intentos = utilitario
                 .consultar("select ide_usua,count(*) as intentos from sis_auditoria_acceso where ide_usua="
-                + ide_usua + " " + "and fecha_auac=" + utilitario.getFormatoFechaSQL(fecha)
-                + " and ip_auac='" + utilitario.getIp() + "' and fin_auac=false and ide_acau=" + P_SIS_FALLO_INGRESO
-                + " group by ide_usua");
+                        + ide_usua + " " + "and fecha_auac=" + utilitario.getFormatoFechaSQL(fecha)
+                        + " and ip_auac='" + utilitario.getIp() + "' and fin_auac=false and ide_acau=" + P_SIS_FALLO_INGRESO
+                        + " group by ide_usua");
         if (tab_intentos.isEmpty() == false) {
             try {
                 int_intentos = Integer.parseInt(tab_intentos.getValor("intentos"));
@@ -610,7 +610,7 @@ public class ServicioSeguridad {
         // Si el cambia_clave esta en true
         TablaGenerica tab_usuario = utilitario
                 .consultar("SELECT * FROM SIS_USUARIO WHERE IDE_USUA="
-                + ide_usua + " AND cambia_clave_usua=true");
+                        + ide_usua + " AND cambia_clave_usua=true");
         return !tab_usuario.isEmpty();
     }
 
@@ -642,10 +642,10 @@ public class ServicioSeguridad {
                     // Busca si el usuario ya cambio la clave el dia actual
                     TablaGenerica tab_cambio = utilitario
                             .consultar("SELECT * FROM SIS_AUDITORIA_ACCESO WHERE IDE_ACAU="
-                            + P_SIS_CAMBIO_CLAVE
-                            + " AND FECHA_AUAC="
-                            + utilitario.getFormatoFechaSQL(utilitario
-                            .getFechaActual()));
+                                    + P_SIS_CAMBIO_CLAVE
+                                    + " AND FECHA_AUAC="
+                                    + utilitario.getFormatoFechaSQL(utilitario
+                                            .getFechaActual()));
                     if (tab_cambio.isEmpty()) {
                         // Debe cambiar la clave
                         String str_sql = "UPDATE sis_usuario SET cambia_clave_usua=true WHERE IDE_USUA="
@@ -677,7 +677,7 @@ public class ServicioSeguridad {
     public TablaGenerica getClaveActivaUusario(String ide_usua) {
         return utilitario
                 .consultar("SELECT * FROM SIS_USUARIO_CLAVE WHERE IDE_USUA="
-                + ide_usua + "  AND ACTIVO_USCL=true");
+                        + ide_usua + "  AND ACTIVO_USCL=true");
     }
 
     /**
@@ -692,7 +692,7 @@ public class ServicioSeguridad {
         if (ide_pecl != null) {
             TablaGenerica tab_periodos = utilitario
                     .consultar("SELECT * FROM sis_periodo_clave WHERE ide_pecl="
-                    + ide_pecl);
+                            + ide_pecl);
             if (tab_periodos.isEmpty() == false) {
                 if (tab_periodos.getValor("num_dias") != null) {
                     try {
@@ -715,7 +715,7 @@ public class ServicioSeguridad {
 
         return utilitario
                 .consultar("SELECT * FROM sis_reglas_clave where ide_empr="
-                + utilitario.getPropiedad("ide_empr"));
+                        + utilitario.getPropiedad("ide_empr"));
     }
 
     /**
@@ -775,12 +775,12 @@ public class ServicioSeguridad {
         // fecha,ip,usuario y estado fin de session = false
         TablaGenerica tab_logeo = utilitario
                 .consultar("SELECT * FROM SIS_AUDITORIA_ACCESO WHERE IDE_USUA="
-                + ide_usua
-                + " AND FECHA_AUAC="
-                + utilitario.getFormatoFechaSQL(utilitario
-                .getFechaActual())
-                + " AND FIN_AUAC=false AND IDE_ACAU="
-                + P_SIS_INGRESO_USUARIO);
+                        + ide_usua
+                        + " AND FECHA_AUAC="
+                        + utilitario.getFormatoFechaSQL(utilitario
+                                .getFechaActual())
+                        + " AND FIN_AUAC=false AND IDE_ACAU="
+                        + P_SIS_INGRESO_USUARIO);
 
         if (!tab_logeo.isEmpty()) {
             // Comparo si la ip del cliente con las de la tabla
@@ -826,5 +826,13 @@ public class ServicioSeguridad {
             return true;
         }
         return false;
+    }
+
+    public String getSqlUsuariosConectados() {
+        return "SELECT IDE_AUAC,NOM_USUA,IP_AUAC,FECHA_AUAC,HORA_AUAC FROM SIS_AUDITORIA_ACCESO au "
+                + "INNER JOIN SIS_USUARIO us on au.IDE_USUA = us.IDE_USUA "
+                + "WHERE IDE_ACAU="
+                + P_SIS_INGRESO_USUARIO
+                + " AND FIN_AUAC=false AND IDE_AUAC=-1";
     }
 }
