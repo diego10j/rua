@@ -42,14 +42,14 @@ import sistema.aplicacion.Utilitario;
 public class pre_index {
 
     private HtmlForm formulario = new HtmlForm();
-    private Grupo dibuja = new Grupo();
+    private final Grupo dibuja = new Grupo();
     private Object clase;
-    private HtmlInputHidden ith_alto = new HtmlInputHidden(); //Alto disponible
-    private HtmlInputHidden alto = new HtmlInputHidden(); //Alto Browser
-    private HtmlInputHidden ancho = new HtmlInputHidden();//Ancho Browser
-    private Utilitario utilitario = new Utilitario();
-    private Grupo mensajes = new Grupo();
-    private ErrorSQL error_sql = new ErrorSQL();
+    private final HtmlInputHidden ith_alto = new HtmlInputHidden(); //Alto disponible
+    private final HtmlInputHidden alto = new HtmlInputHidden(); //Alto Browser
+    private final HtmlInputHidden ancho = new HtmlInputHidden();//Ancho Browser
+    private final Utilitario utilitario = new Utilitario();
+    private final Grupo mensajes = new Grupo();
+    private final ErrorSQL error_sql = new ErrorSQL();
     private BuscarTabla bus_buscar;
     private TerminalTabla term_tabla;
     private String str_paquete;

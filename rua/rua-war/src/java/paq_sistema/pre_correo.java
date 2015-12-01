@@ -24,14 +24,14 @@ import sistema.aplicacion.Pantalla;
 public class pre_correo extends Pantalla {
 
     
-    private Editor edi_texto = new Editor();
-    private Texto tex_destinatario = new Texto();
-    private Texto tex_asunto = new Texto();
-    private Boton bot_enviar = new Boton();
+    private final Editor edi_texto = new Editor();
+    private final Texto tex_destinatario = new Texto();
+    private final Texto tex_asunto = new Texto();
+    private final Boton bot_enviar = new Boton();
     private Upload upl_adjuntos = new Upload();
     private Tabla tab_tabla = new Tabla();
-    private OverlayPanel ovp_destinatario = new OverlayPanel();
-    private Boton bot_destinatario = new Boton();
+    private final OverlayPanel ovp_destinatario = new OverlayPanel();
+    private final Boton bot_destinatario = new Boton();
 
     public pre_correo() {
         bar_botones.quitarBotonEliminar();

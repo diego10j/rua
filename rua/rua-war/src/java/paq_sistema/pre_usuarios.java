@@ -39,25 +39,25 @@ public class pre_usuarios extends Pantalla {
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private Tabla tab_tabla3 = new Tabla();
-    private Encriptar encriptar = new Encriptar();
+    private final Encriptar encriptar = new Encriptar();
     private Dialogo dia_clave = new Dialogo();
-    private Etiqueta eti_clave = new Etiqueta();
+    private final Etiqueta eti_clave = new Etiqueta();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private Map map_parametros = new HashMap();
     private SeleccionTabla set_tab_recursos = new SeleccionTabla();
     private SeleccionTabla set_perfiles = new SeleccionTabla();
-    private ListaSeleccion lis_estado_usuarios = new ListaSeleccion();
+    private final ListaSeleccion lis_estado_usuarios = new ListaSeleccion();
     private Dialogo dia_estado_usuarios = new Dialogo();
-    private ListaSeleccion lis_estado_usuarios_2 = new ListaSeleccion();
-    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
+    private final ListaSeleccion lis_estado_usuarios_2 = new ListaSeleccion();
+    private final SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     @EJB
-    private ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario
+    private final ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario
             .instanciarEJB(ServicioSeguridad.class);
 
-    private int int_longitud_minima_login = ser_seguridad
+    private final int int_longitud_minima_login = ser_seguridad
             .getLongitudMinimaLogin();
-    private Texto tex_nick;
+    private final Texto tex_nick;
 
     public pre_usuarios() {
 

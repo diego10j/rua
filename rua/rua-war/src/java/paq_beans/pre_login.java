@@ -34,14 +34,14 @@ import servicios.seguridad.ServicioSeguridad;
 public class pre_login {
 
     private HtmlForm formulario = new HtmlForm();
-    private HtmlInputText tex_usuario = new HtmlInputText();
-    private HtmlInputSecret pas_clave = new HtmlInputSecret();
+    private final HtmlInputText tex_usuario = new HtmlInputText();
+    private final HtmlInputSecret pas_clave = new HtmlInputSecret();
     private ErrorSQL error_sql = new ErrorSQL();
-    private Utilitario utilitario = new Utilitario();
-    private Clave cla_clave_actual = new Clave();
-    private Clave cla_nueva = new Clave();
-    private Clave cla_confirmar = new Clave();
-    private Dialogo dia_cambia = new Dialogo();
+    private final Utilitario utilitario = new Utilitario();
+    private final Clave cla_clave_actual = new Clave();
+    private final Clave cla_nueva = new Clave();
+    private final Clave cla_confirmar = new Clave();
+    private final Dialogo dia_cambia = new Dialogo();
     @EJB
     private ServicioSeguridad ser_seguridad;
 

@@ -138,52 +138,52 @@ public class pre_permisos extends Pantalla {
     @Override
     public void aceptarReporte() {
         // TODO Auto-generated method stub
-        if (rep_reporte.getReporteSelecionado().equals("Perfiles")) {
-            if (rep_reporte.isVisible()) {
-                map_parametros = new HashMap();
-                rep_reporte.cerrar();
-                map_parametros.put("titulo", "PERFILES DE USUARIO");
-                sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
-                sel_rep.dibujar();
-                utilitario.addUpdate("sel_rep,rep_reporte");
-            }
-        } else if (rep_reporte.getReporteSelecionado().equals("Usuarios Por Perfil")) {
-            if (rep_reporte.isVisible()) {
-                map_parametros = new HashMap();
-                rep_reporte.cerrar();
-                set_perfiles.dibujar();
-                //	utilitario.addUpdate("rep_reporte,set_perfiles");
-            } else if (set_perfiles.isVisible()) {
-                if (set_perfiles.getListaSeleccionados().size() > 0) {
-                    map_parametros.put("ide_perf", set_perfiles.getSeleccionados());
-                    set_perfiles.cerrar();
-                    map_parametros.put("titulo", "USUARIOS POR PERFIL");
+        switch (rep_reporte.getReporteSelecionado()) {
+            case "Perfiles":
+                if (rep_reporte.isVisible()) {
+                    map_parametros = new HashMap();
+                    rep_reporte.cerrar();
+                    map_parametros.put("titulo", "PERFILES DE USUARIO");
                     sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
                     sel_rep.dibujar();
-                    //	utilitario.addUpdate("sel_rep,set_perfiles");
-                } else {
-                    utilitario.agregarMensajeInfo("Atencion", "Debe seleccionar al menos un perfil de usuario");
+                    utilitario.addUpdate("sel_rep,rep_reporte");
+                }   break;
+            case "Usuarios Por Perfil":
+                if (rep_reporte.isVisible()) {
+                    map_parametros = new HashMap();
+                    rep_reporte.cerrar();
+                    set_perfiles.dibujar();
+                    //	utilitario.addUpdate("rep_reporte,set_perfiles");
+                } else if (set_perfiles.isVisible()) {
+                    if (set_perfiles.getListaSeleccionados().size() > 0) {
+                        map_parametros.put("ide_perf", set_perfiles.getSeleccionados());
+                        set_perfiles.cerrar();
+                        map_parametros.put("titulo", "USUARIOS POR PERFIL");
+                        sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
+                        sel_rep.dibujar();
+                        //	utilitario.addUpdate("sel_rep,set_perfiles");
+                    } else {
+                        utilitario.agregarMensajeInfo("Atencion", "Debe seleccionar al menos un perfil de usuario");
+                    }
+                }   break;
+            case "Recursos por Perfil":
+                if (rep_reporte.isVisible()) {
+                    map_parametros = new HashMap();
+                    rep_reporte.cerrar();
+                    set_perfiles.dibujar();
+                    //	utilitario.addUpdate("rep_reporte,set_perfiles");
+                } else if (set_perfiles.isVisible()) {
+                    if (set_perfiles.getListaSeleccionados().size() > 0) {
+                        map_parametros.put("ide_perf", set_perfiles.getSeleccionados());
+                        set_perfiles.cerrar();
+                        map_parametros.put("titulo", "PERFILES POR RECURSOS");
+                        sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
+                        sel_rep.dibujar();
+                        //	utilitario.addUpdate("sel_rep,set_perfiles");
+                    } else {
+                        utilitario.agregarMensajeInfo("Atencion", "Debe seleccionar al menos un perfil de usuario");
                 }
-            }
-
-        } else if (rep_reporte.getReporteSelecionado().equals("Recursos por Perfil")) {
-            if (rep_reporte.isVisible()) {
-                map_parametros = new HashMap();
-                rep_reporte.cerrar();
-                set_perfiles.dibujar();
-                //	utilitario.addUpdate("rep_reporte,set_perfiles");
-            } else if (set_perfiles.isVisible()) {
-                if (set_perfiles.getListaSeleccionados().size() > 0) {
-                    map_parametros.put("ide_perf", set_perfiles.getSeleccionados());
-                    set_perfiles.cerrar();
-                    map_parametros.put("titulo", "PERFILES POR RECURSOS");
-                    sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
-                    sel_rep.dibujar();
-                    //	utilitario.addUpdate("sel_rep,set_perfiles");
-                } else {
-                    utilitario.agregarMensajeInfo("Atencion", "Debe seleccionar al menos un perfil de usuario");
-                }
-            }
+            }   break;
         }
     }
 
