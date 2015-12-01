@@ -6,7 +6,7 @@ body {
     font-size:13px;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #ecf0f5;
+    background: #ecf0f5; 
 }
 
 .ui-widget {
