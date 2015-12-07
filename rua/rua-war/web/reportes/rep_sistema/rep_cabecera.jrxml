@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="1db0eac9-51a2-4883-86a3-aa5c1e4fb0da">
-	<property name="ireport.zoom" value="1.5"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="280" pageHeight="85" whenNoDataType="AllSectionsNoDetail" columnWidth="240" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -8,114 +8,64 @@
 	<parameter name="ide_empr" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="ide_usua" class="java.lang.Integer"/>
-	<parameter name="titulo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from SIS_EMPRESA empresa,SIS_SUCURSAL sucursal
-left join SIS_USUARIO_SUCURSAL usuario_sucursal on USUARIO_SUCURSAL.IDE_SUCU=SUCURSAL.IDE_SUCU
-left join SIS_USUARIO usuario on USUARIO.IDE_USUA=USUARIO_SUCURSAL.IDE_USUA
-where SUCURSAL.IDE_EMPR=$P{ide_empr}
-and SUCURSAL.IDE_SUCU=$P{ide_sucu}
-and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
+		<![CDATA[SELECT * FROM sis_empresa e, sis_sucursal s 
+where s.ide_empr=e.ide_empr 
+and s.ide_empr=$P{ide_empr}
+and s.ide_sucu=$P{ide_sucu}]]>
 	</queryString>
-	<field name="ide_empr" class="java.lang.Integer"/>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="ide_empr" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
 	<field name="nom_empr" class="java.lang.String"/>
 	<field name="contacto_empr" class="java.lang.String"/>
 	<field name="representante_empr" class="java.lang.String"/>
+	<field name="identi_repre_empr" class="java.lang.String"/>
 	<field name="nom_corto_empr" class="java.lang.String"/>
 	<field name="mail_empr" class="java.lang.String"/>
 	<field name="pagina_empr" class="java.lang.String"/>
 	<field name="identificacion_empr" class="java.lang.String"/>
 	<field name="direccion_empr" class="java.lang.String"/>
 	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
 	<field name="logo_empr" class="java.lang.String"/>
-	<field name="ide_sucu" class="java.lang.Long"/>
-	<field name="nom_sucu" class="java.lang.String"/>
-	<field name="telefonos_sucu" class="java.lang.String"/>
-	<field name="direccion_sucu" class="java.lang.String"/>
-	<field name="contacto_suc" class="java.lang.String"/>
-	<field name="ide_ussu" class="java.lang.Long"/>
-	<field name="sis_ide_sucu" class="java.lang.Long"/>
-	<field name="ide_usua" class="java.lang.Long"/>
-	<field name="ide_perf" class="java.lang.Long"/>
-	<field name="nom_usua" class="java.lang.String"/>
-	<field name="nick_usua" class="java.lang.String"/>
-	<field name="mail_usua" class="java.lang.String"/>
-	<field name="fecha_reg_usua" class="java.sql.Date"/>
-	<field name="fecha_caduc_usua" class="java.sql.Date"/>
-	<field name="activo_usua" class="java.lang.Boolean"/>
-	<field name="tema_usua" class="java.lang.String"/>
-	<field name="bloqueado_usua" class="java.lang.Boolean"/>
-	<field name="cambia_clave_usua" class="java.lang.Boolean"/>
 	<title>
 		<band height="80" splitType="Stretch">
 			<image>
-				<reportElement uuid="d5c00b06-65f2-4781-b061-08710acdf763" x="4" y="11" width="113" height="44"/>
+				<reportElement x="4" y="11" width="68" height="60"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{logo_empr}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement uuid="00503b86-f390-4a05-aded-2a2c7baa396d" x="0" y="53" width="117" height="10"/>
+				<reportElement x="72" y="54" width="168" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{direccion_empr}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["RUC: "+$F{identificacion_empr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f741c9dd-ddd3-413b-8a5c-6dda48632717" x="0" y="63" width="117" height="10"/>
+				<reportElement x="72" y="12" width="168" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Teléfono: "+$F{telefono_empr}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="50b64175-d8ce-45f9-913c-8d1dbe5e25f1" x="117" y="11" width="325" height="62"/>
+				<reportElement x="72" y="26" width="168" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{direccion_sucu}]]></textFieldExpression>
 			</textField>
-			<textField pattern="h:mm a" isBlankWhenNull="true">
-				<reportElement uuid="6f56b00b-a8d1-4924-9c77-29984bf66787" x="472" y="44" width="65" height="13"/>
-				<textElement>
+			<textField>
+				<reportElement x="72" y="40" width="168" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{telefonos_sucu}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a84f382d-c899-48fb-8389-a4dfbcc867fc" x="472" y="57" width="65" height="13"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="1aff2c3f-ff78-4cc7-978b-8bf06ee9cef4" x="442" y="44" width="31" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Hora:]]></text>
-			</staticText>
-			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
-				<reportElement uuid="8754c165-b5ab-4726-a63a-8d4bffb7d59e" x="472" y="31" width="65" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="f069b8a4-0e14-419d-a7d3-f77f4ca6275f" x="442" y="31" width="31" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Fecha:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="323643ec-ffd5-428f-8e4b-5d779ae00194" x="442" y="57" width="31" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Usua:]]></text>
-			</staticText>
 		</band>
 	</title>
 </jasperReport>

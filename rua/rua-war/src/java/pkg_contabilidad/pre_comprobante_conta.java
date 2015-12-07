@@ -61,9 +61,8 @@ public class pre_comprobante_conta extends Pantalla {
     private SeleccionTabla sel_tab_nivel = new SeleccionTabla();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     cls_contabilidad con = new cls_contabilidad();
-    private Boton bot_anular = new Boton();
+
     private Texto tex_num_transaccion = new Texto();
-    private Boton bot_buscar_transaccion = new Boton();
 
     public pre_comprobante_conta() {
         //Recuperar el plan de cuentas activo
@@ -80,25 +79,21 @@ public class pre_comprobante_conta extends Pantalla {
             tex_num_transaccion.setId("tex_num_transaccion");
             tex_num_transaccion.setSoloEnteros();
             tex_num_transaccion.setSize(10);
+            Boton bot_buscar_transaccion = new Boton();
             bot_buscar_transaccion.setTitle("Buscar Transaccion");
             bot_buscar_transaccion.setIcon("ui-icon-search");
             bot_buscar_transaccion.setMetodo("buscarTransaccion");
 
-            Grid gri_busca = new Grid();
-            gri_busca.setWidth("100%");
-            gri_busca.setColumns(3);
-            gri_busca.getChildren().add(new Etiqueta("Num Transaccion: "));
-            gri_busca.getChildren().add(tex_num_transaccion);
-            gri_busca.getChildren().add(bot_buscar_transaccion);
-            bar_botones.agregarComponente(gri_busca);
+            bar_botones.agregarComponente(new Etiqueta("Num Transaccion: "));
+            bar_botones.agregarComponente(tex_num_transaccion);
+            bar_botones.agregarBoton(bot_buscar_transaccion);
 
             com_tipo_comprobante.setId("com_tipo_comprobante");
             com_tipo_comprobante.setTitle("Tipo de Comprobate");
             com_tipo_comprobante.setCombo("select ide_cntcm,nombre_cntcm from con_tipo_comproba where ide_empr=" + utilitario.getVariable("ide_empr"));
             com_tipo_comprobante.setMetodo("seleccionTipoComprobante");
-            Etiqueta eti = new Etiqueta();
-            eti.setValue("Tipo de Comprobante :");
-            bar_botones.agregarComponente(eti);
+
+            bar_botones.agregarComponente(new Etiqueta("Tipo de Comprobante :"));
             bar_botones.agregarComponente(com_tipo_comprobante);
 
             Espacio esp = new Espacio();
@@ -116,13 +111,12 @@ public class pre_comprobante_conta extends Pantalla {
 
             bot_copiar.setIcon("ui-icon-copy");
             bar_botones.agregarBoton(bot_copiar);
-
+            Boton bot_anular = new Boton();
             bot_anular.setValue("Anular Comprobante");
             bot_anular.setMetodo("anularComprobante");
             bar_botones.agregarBoton(bot_anular);
 
             //seleccion de las cuentas para reporte libro mayor
-
             sel_tab.setId("sel_tab");
             sel_tab.setSeleccionTabla("SELECT ide_cndpc,codig_recur_cndpc,nombre_cndpc FROM con_det_plan_cuen WHERE ide_cncpc=(SELECT ide_cncpc FROM con_cab_plan_cuen WHERE activo_cncpc is TRUE) AND ide_empr=" + utilitario.getVariable("ide_empr") + " AND nivel_cndpc='HIJO' ORDER BY codig_recur_cndpc ASC ", "ide_cndpc");
             sel_tab.getTab_seleccion().getColumna("nombre_cndpc").setFiltro(true);
@@ -137,7 +131,6 @@ public class pre_comprobante_conta extends Pantalla {
 
             sel_tab.getBot_aceptar().setMetodo("aceptarReporte");
             sel_tab.getBot_aceptar().setUpdate("sel_tab,sec_calendario ");
-
 
             sel_tab_nivel.setId("sel_tab_nivel");
             sel_tab_nivel.setTitle("Seleccione El Nivel");
@@ -156,8 +149,6 @@ public class pre_comprobante_conta extends Pantalla {
 
             sel_rep.setId("sel_rep");
             agregarComponente(sel_rep);
-
-
 
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setTabla("con_cab_comp_cont", "ide_cnccc", 1);
@@ -241,7 +232,6 @@ public class pre_comprobante_conta extends Pantalla {
             vpdf_ver.setTitle("Comprobante de Contabilidad");
             vpdf_ver.setId("vpdf_ver");
             agregarComponente(vpdf_ver);
-
         } else {
             utilitario.agregarNotificacionInfo("No existe un plan de cuentas activo", "Para poder ingresar a esta pantalla debe estar activo un plan de cuentas, contactese con el administrador del sistema");
         }
@@ -1109,7 +1099,7 @@ public class pre_comprobante_conta extends Pantalla {
                 if (sel_tab.isVisible()) {
 
                     if (sel_tab.getSeleccionados() != null && !sel_tab.getSeleccionados().isEmpty()) {
-                        System.out.println("nn "+sel_tab.getSeleccionados());
+                        System.out.println("nn " + sel_tab.getSeleccionados());
                         parametro.put("ide_cndpc", sel_tab.getSeleccionados());//lista sel                     
                         sel_tab.cerrar();
                         String estado = "" + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comp_final");
@@ -1216,7 +1206,6 @@ public class pre_comprobante_conta extends Pantalla {
                 } else {
                     utilitario.agregarMensajeInfo("No se puede generar el reporte", "La fila seleccionada no tiene compraqbante de contabilidad");
                 }
-
 
             }
         }
