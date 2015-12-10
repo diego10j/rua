@@ -21,8 +21,8 @@ public class pre_empresa extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.setTabla("sis_empresa", "ide_empr", 1);
-        tab_tabla.getColumna("logo_empr").setUpload("logos");
-        tab_tabla.getColumna("logo_empr").setImagen("", "");
+        tab_tabla.getColumna("logo_empr").setUpload();
+        tab_tabla.getColumna("logo_empr").setImagen();
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);

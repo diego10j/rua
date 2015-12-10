@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.component.blockui.BlockUI;
 import sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
-import servicios.seguridad.ServicioSeguridad;
+import servicios.sistema.ServicioSeguridad;
 
 /**
  *

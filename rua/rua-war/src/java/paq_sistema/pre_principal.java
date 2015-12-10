@@ -22,8 +22,10 @@ import javax.ejb.EJB;
 import org.primefaces.component.menu.Menu;
 import org.primefaces.component.panel.Panel;
 import org.primefaces.component.themeswitcher.ThemeSwitcher;
+import org.primefaces.model.StreamedContent;
+import servicios.sistema.ServicioSeguridad;
+import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Pantalla;
-import servicios.seguridad.ServicioSeguridad;
 
 /**
  *
@@ -40,8 +42,12 @@ public class pre_principal extends Pantalla {
     private final Clave cla_nueva = new Clave();
     private final Clave cla_confirmar = new Clave();
     private final Efecto efecto = new Efecto();
+    private StreamedContent stcLogo;
     @EJB
     private final ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
+
+    @EJB
+    private final ServicioSistema ser_sistema = (ServicioSistema) utilitario.instanciarEJB(ServicioSistema.class);
 
     public pre_principal() {
         ItemMenu mit_datos = new ItemMenu();
@@ -63,6 +69,7 @@ public class pre_principal extends Pantalla {
         mit_tema.setMetodo("dibujarTemas");
 
         Menu men_menu = new Menu();
+        men_menu.setStyle("width:100%");
         men_menu.getChildren().add(mit_datos);
         men_menu.getChildren().add(mit_clave);
         men_menu.getChildren().add(mit_tema);
@@ -81,11 +88,12 @@ public class pre_principal extends Pantalla {
         Panel pan_empresa = new Panel();
         pan_empresa.setHeader("EMPRESA");
         Imagen ima_empresa = new Imagen();
-        ima_empresa.setValue((utilitario.getConexion().consultar("SELECT logo_empr from sis_empresa where ide_empr=" + utilitario.getVariable("IDE_EMPR")).get(0)));
+        stcLogo = ser_sistema.getLogoEmpresa();
+        ima_empresa.setValueExpression("value", "pre_index.clase.stcLogo");
         pan_empresa.getChildren().add(ima_empresa);
         Etiqueta eti_sucursal = new Etiqueta();
         eti_sucursal.setStyle("width: 100%;font-size: 13px;text-align: left;font-weight: bold;");
-        eti_sucursal.setValue("<br/>" + utilitario.getConexion().consultar("SELECT nom_sucu from sis_sucursal where ide_sucu=" + utilitario.getVariable("IDE_SUCU")).get(0));
+        eti_sucursal.setValue("<br/>" + ser_sistema.getSucursal().getValor("nom_sucu"));
         pan_empresa.getChildren().add(eti_sucursal);
         gru_panel_izquierda.getChildren().add(pan_empresa);
         pan_opcion.setId("pan_opcion");
@@ -98,7 +106,7 @@ public class pre_principal extends Pantalla {
         dibujarDatosUusario();
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(gru_panel_izquierda, pan_opcion, "25%", "V");
+        div_division.dividir2(gru_panel_izquierda, pan_opcion, "22%", "V");
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
         bar_botones.quitarBotonsNavegacion();
@@ -154,15 +162,15 @@ public class pre_principal extends Pantalla {
         gri_imagenes.setWidth("100%");
         gri_imagenes.setStyle("font-size: 13px;text-align: center;");
 
-        for (int i = 0; i < lis_temas.size(); i++) {
+        for (String lis_tema : lis_temas) {
             ItemOpcion ito_tema = new ItemOpcion();
-            ito_tema.setItemValue(lis_temas.get(i));
-            ito_tema.setItemLabel(lis_temas.get(i) + "");
+            ito_tema.setItemValue(lis_tema);
+            ito_tema.setItemLabel(lis_tema + "");
             ths_temas.getChildren().add(ito_tema);
             Grid gri_actual = new Grid();
-            gri_actual.getChildren().add(new Etiqueta(lis_temas.get(i) + ""));
+            gri_actual.getChildren().add(new Etiqueta(lis_tema + ""));
             Imagen ima_tema = new Imagen();
-            ima_tema.setValue("/imagenes/temas/" + lis_temas.get(i) + ".png");
+            ima_tema.setValue("/imagenes/temas/" + lis_tema + ".png");
             gri_actual.getChildren().add(ima_tema);
             gri_imagenes.getChildren().add(gri_actual);
         }
@@ -313,4 +321,13 @@ public class pre_principal extends Pantalla {
     public void setTab_form_usuario(Tabla tab_form_usuario) {
         this.tab_form_usuario = tab_form_usuario;
     }
+
+    public StreamedContent getStcLogo() {
+        return stcLogo;
+    }
+
+    public void setStcLogo(StreamedContent stcLogo) {
+        this.stcLogo = stcLogo;
+    }
+
 }

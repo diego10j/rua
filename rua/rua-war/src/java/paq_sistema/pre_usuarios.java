@@ -28,7 +28,7 @@ import framework.componentes.Texto;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import sistema.aplicacion.Pantalla;
-import servicios.seguridad.ServicioSeguridad;
+import servicios.sistema.ServicioSeguridad;
 
 /**
  *

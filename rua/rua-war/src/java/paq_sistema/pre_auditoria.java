@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import sistema.aplicacion.Pantalla;
-import servicios.seguridad.ServicioSeguridad;
+import servicios.sistema.ServicioSeguridad;
 
 /**
  *
