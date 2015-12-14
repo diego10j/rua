@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d633b53b-6456-4b76-abbc-0aeac7eb6055">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="1"/>
@@ -38,53 +38,53 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 	<title>
 		<band height="107" splitType="Stretch">
 			<textField>
-				<reportElement x="70" y="41" width="168" height="15"/>
+				<reportElement uuid="6aa2b6e5-07ca-40a3-9b2a-afdcc4169247" x="70" y="41" width="168" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="17" width="168" height="15"/>
+				<reportElement uuid="e9eca696-6aa8-41c2-a543-fa634150e998" x="70" y="17" width="168" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{sucursal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="70" y="4" width="168" height="15" forecolor="#000000"/>
+				<reportElement uuid="f0c8fd3c-4b27-4215-9b31-fdc26fcd20b4" x="70" y="4" width="168" height="15" forecolor="#000000"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="28" width="168" height="15"/>
+				<reportElement uuid="c4979729-3007-4263-9a63-872d197e87ec" x="70" y="28" width="168" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="53" width="168" height="15"/>
+				<reportElement uuid="03185924-6229-44c9-ad8a-19b936735eaa" x="70" y="53" width="168" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["RUC: "+$P{ruc}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="1" y="3" width="82" height="60"/>
+			<image onErrorType="Blank">
+				<reportElement uuid="54ad7c5b-eec2-46e3-92ea-6e8ed9deec6c" x="1" y="3" width="82" height="60"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="87" width="554" height="15"/>
+				<reportElement uuid="f3886b48-de75-4b73-b801-afad7f52a014" x="0" y="87" width="554" height="15"/>
 				<textElement textAlignment="Center">
 					<font isBold="false" isItalic="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Del    "+$P{fecha_inicio}+"    Al    "+$P{fecha_fin}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="69" width="555" height="19"/>
+				<reportElement uuid="464e7e59-359e-4fa2-bdde-1710fa333198" x="0" y="69" width="555" height="19"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
@@ -96,7 +96,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 		<band height="11" splitType="Stretch">
 			<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="115" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="57858c69-3854-4287-bb24-05bc37456dc6" stretchType="RelativeToBandHeight" x="0" y="0" width="115" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -109,7 +109,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="ac2bf42e-0246-489b-a8ab-9d92fdbfa24e" stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -122,7 +122,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="385" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="d363b84a-5538-40b9-9fdb-4cc2520a968e" stretchType="RelativeToBandHeight" x="385" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -136,7 +136,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<textFieldExpression><![CDATA[$V{lugar_debe}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="470" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="de3982d8-7174-4d78-9e8a-6051ebcf94f9" stretchType="RelativeToBandHeight" x="470" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -157,17 +157,17 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 	<pageFooter>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="453" y="0" width="64" height="13"/>
+				<reportElement uuid="974b91b1-f98e-46bb-95f5-120d7cf6f524" x="453" y="0" width="64" height="13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="516" y="0" width="40" height="13"/>
+				<reportElement uuid="1fa92a98-5e87-4b6a-9646-5f9854b47948" x="516" y="0" width="40" height="13"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="2" width="101" height="11"/>
+				<reportElement uuid="7812e638-5f32-4d48-a49c-be57dd347014" x="0" y="2" width="101" height="11"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -175,7 +175,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[Fecha de Impresión:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="100" y="2" width="88" height="11"/>
+				<reportElement uuid="383c0441-3504-4651-87eb-23baa2de43e0" x="100" y="2" width="88" height="11"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
@@ -186,7 +186,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 	<summary>
 		<band height="132" splitType="Stretch">
 			<staticText>
-				<reportElement x="112" y="55" width="155" height="16"/>
+				<reportElement uuid="4c74305b-e7fd-46b1-91e2-2070c96c7c65" x="112" y="55" width="155" height="16"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
@@ -194,17 +194,17 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[Utilidad/Perdida del Ejercicio:]]></text>
 			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="266" y="55" width="150" height="16"/>
+				<reportElement uuid="9dcc300f-9568-4c65-aed2-d8c0a8c47b95" x="266" y="55" width="150" height="16"/>
 				<textElement textAlignment="Right">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_utilidad}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="72" y="110" width="155" height="1"/>
+				<reportElement uuid="e8bfe734-0c80-4cf5-b85d-738c80b6c53d" x="72" y="110" width="155" height="1"/>
 			</line>
 			<staticText>
-				<reportElement x="334" y="112" width="155" height="15"/>
+				<reportElement uuid="9e115bc2-712d-4159-8e1d-e65241a55a41" x="334" y="112" width="155" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -212,7 +212,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[CONTADOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="72" y="114" width="155" height="15"/>
+				<reportElement uuid="22dbb0e9-113d-4276-9423-97ce02ee3ea1" x="72" y="114" width="155" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -220,10 +220,10 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
 			</staticText>
 			<line>
-				<reportElement x="334" y="109" width="155" height="1"/>
+				<reportElement uuid="92448a54-bfe0-4d44-8824-18832c95a233" x="334" y="109" width="155" height="1"/>
 			</line>
 			<staticText>
-				<reportElement x="112" y="40" width="155" height="16"/>
+				<reportElement uuid="3ba2146b-5fa7-4cc0-9139-9446452a4bcd" x="112" y="40" width="155" height="16"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
@@ -231,7 +231,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[Total Costos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="112" y="25" width="155" height="16"/>
+				<reportElement uuid="85cd3261-f835-48ba-9b1f-52c18dcc0153" x="112" y="25" width="155" height="16"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
@@ -239,7 +239,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[Total Gastos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="112" y="10" width="155" height="16"/>
+				<reportElement uuid="439d46b6-3533-4a66-8ec5-4e6d5399cba0" x="112" y="10" width="155" height="16"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
@@ -247,21 +247,21 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<text><![CDATA[Total Ingresos:]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
-				<reportElement x="266" y="10" width="150" height="16"/>
+				<reportElement uuid="5b97f719-bc61-4d7a-9802-179adefdfd76" x="266" y="10" width="150" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_ingresos}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="266" y="25" width="150" height="16"/>
+				<reportElement uuid="00635646-04da-4792-9138-afea8afa31f0" x="266" y="25" width="150" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_gastos}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="266" y="40" width="150" height="16"/>
+				<reportElement uuid="4e7550a0-778f-47be-add6-758e6dfeb2b2" x="266" y="40" width="150" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01d31a08-32f1-407c-9b06-0b427192c894">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -41,25 +41,25 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<title>
 		<band height="55" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="0" width="555" height="16" forecolor="#000000"/>
+				<reportElement uuid="f88affe5-6d44-41e1-8a58-54f0df56fc8e" x="0" y="0" width="555" height="16" forecolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="0" y="0" width="58" height="40"/>
+			<image onErrorType="Blank">
+				<reportElement uuid="07d4f714-b7b0-4aa9-99a3-d85ad7bcade1" x="0" y="0" width="58" height="40"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="32" width="555" height="15"/>
+				<reportElement uuid="1e5ee415-5516-4010-8aca-2c232bf55a8b" x="0" y="32" width="555" height="15"/>
 				<textElement textAlignment="Center">
 					<font isBold="true" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Del    "+$P{fecha_inicio}+"    Al    "+$P{fecha_fin}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="16" width="555" height="16"/>
+				<reportElement uuid="e2473047-3224-4176-80e0-b5a0e62dd797" x="0" y="16" width="555" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -74,7 +74,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 		<band height="11" splitType="Stretch">
 			<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="385" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="3008f332-751b-4b92-98c5-2080aa6b9e90" stretchType="RelativeToBandHeight" x="385" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box rightPadding="3">
@@ -90,7 +90,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textFieldExpression><![CDATA[$V{lugar_debe}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="470" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="22bdc475-3170-4073-b156-c0c9722f7ac7" stretchType="RelativeToBandHeight" x="470" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box rightPadding="3">
@@ -106,7 +106,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textFieldExpression><![CDATA[$V{lugar_haber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="115" height="11" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="3105b081-1710-48e0-a799-5dee84604c8f" stretchType="RelativeToBandHeight" x="0" y="0" width="115" height="11" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -122,7 +122,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="74e8430f-c92e-4c60-ae77-c43010196601" stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -145,24 +145,24 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<pageFooter>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="451" y="0" width="65" height="13"/>
+				<reportElement uuid="c96eccb9-6745-4aa0-a121-70679b584bf6" x="451" y="0" width="65" height="13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="515" y="0" width="40" height="13"/>
+				<reportElement uuid="326ee03c-eccb-4f80-940a-1dd435fc0a82" x="515" y="0" width="40" height="13"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="100" y="1" width="88" height="11"/>
+				<reportElement uuid="e2fac6a5-3aab-4467-adcf-1202b6ec76b5" x="100" y="1" width="88" height="11"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="1" width="101" height="11"/>
+				<reportElement uuid="dafdd695-29d9-4028-b310-71694b5a6d07" x="1" y="1" width="101" height="11"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -174,7 +174,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<summary>
 		<band height="158" splitType="Stretch">
 			<staticText>
-				<reportElement x="280" y="39" width="147" height="15"/>
+				<reportElement uuid="5c416a70-83f7-447f-bd04-d21b8bf7f1b2" x="280" y="39" width="147" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -182,7 +182,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Utilidad/Perdida del Ejercicio:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="10" width="82" height="15"/>
+				<reportElement uuid="b985b2cb-377c-4163-811a-e03ab36047e1" x="0" y="10" width="82" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -190,7 +190,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Total Activos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="126" y="56" width="301" height="15"/>
+				<reportElement uuid="a0b502eb-91b2-4180-84de-08451c653a30" x="126" y="56" width="301" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -198,28 +198,28 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Total (Pasivos + Patrimonio + Utilidad/Perdida del Ejercicio):]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
-				<reportElement x="83" y="10" width="120" height="15"/>
+				<reportElement uuid="e86ef527-4982-4813-b100-08f6800d87f9" x="83" y="10" width="120" height="15"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_activo}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="430" y="56" width="120" height="15"/>
+				<reportElement uuid="8d47b295-19aa-4067-a8ca-a087bfeeb14c" x="430" y="56" width="120" height="15"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_total}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="430" y="39" width="120" height="15"/>
+				<reportElement uuid="96da087b-0f13-401b-8d33-8bb6b63ae76b" x="430" y="39" width="120" height="15"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_utilidad_perdida}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="280" y="9" width="147" height="15"/>
+				<reportElement uuid="2b79021a-aaf0-4576-853a-0c90840c518b" x="280" y="9" width="147" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -227,7 +227,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Total Pasivos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="24" width="147" height="15"/>
+				<reportElement uuid="0d718246-ddf3-49d3-817f-51a8f36331e8" x="280" y="24" width="147" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -235,27 +235,27 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Total Patrimonio:	]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
-				<reportElement x="430" y="9" width="120" height="15"/>
+				<reportElement uuid="a6cf48e0-d966-4e6c-8300-f1192d77a7c8" x="430" y="9" width="120" height="15"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_pasivo}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="430" y="24" width="120" height="15"/>
+				<reportElement uuid="a2cf4147-56a4-4ef2-8cae-829eeb6fad88" x="430" y="24" width="120" height="15"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_patrimonio}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="72" y="130" width="155" height="1"/>
+				<reportElement uuid="7ff2ec69-55ec-4b0e-bd5a-17ad9e774c0a" x="72" y="130" width="155" height="1"/>
 			</line>
 			<line>
-				<reportElement x="334" y="129" width="155" height="1"/>
+				<reportElement uuid="eb2b619c-d365-4673-a824-35da6bc532e2" x="334" y="129" width="155" height="1"/>
 			</line>
 			<staticText>
-				<reportElement x="74" y="134" width="145" height="15"/>
+				<reportElement uuid="d4382724-3800-46d7-8e78-ce904b4e7b7b" x="74" y="134" width="145" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -263,7 +263,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="335" y="132" width="145" height="15"/>
+				<reportElement uuid="19850d85-6ac5-43b5-aff1-40f97c8973a9" x="335" y="132" width="145" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
