@@ -60,8 +60,7 @@ public class ServicioSistema {
                     myInputStream.close();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
         }
         return stream;
     }
