@@ -19,18 +19,7 @@ public class ServicioSeguridad {
 
     private final Utilitario utilitario = new Utilitario();
     private final Encriptar encriptar = new Encriptar();
-    /**
-     * Sirve para cuando se resetea la clave de un usuario
-     */
-    public final static String P_SIS_RESETEO_CLAVE = "6";
-    /**
-     * Sirve para cuando se pone en estado activo a un usuario
-     */
-    public final static String P_SIS_ACTIVA_USUARIO = "5";
-    /**
-     * Sirve para cuando se pone en estado inactivo a un usuario
-     */
-    public final static String P_SIS_DESACTIVA_USUARIO = "3";
+
     /**
      * Sirve para cuando un usuario accede exitosamente al sistema
      */
@@ -41,6 +30,26 @@ public class ServicioSeguridad {
      */
     public final static String P_SIS_FALLO_INGRESO = "1";
     /**
+     * Sirve para cuando se bloqueao a un usuario
+     */
+    public final static String P_SIS_BLOQUEA_USUARIO = "2";
+    /**
+     * Sirve para cuando se pone en estado inactivo a un usuario
+     */
+    public final static String P_SIS_DESACTIVA_USUARIO = "3";
+    /**
+     * Sirve para cuando se pone en estado activo a un usuario
+     */
+    public final static String P_SIS_ACTIVA_USUARIO = "4";
+    /**
+     * Sirve para cuando un usuario cambia su clave
+     */
+    public final static String P_SIS_CAMBIO_CLAVE = "5";
+    /**
+     * Sirve para cuando se resetea la clave de un usuario
+     */
+    public final static String P_SIS_RESETEO_CLAVE = "6";
+    /**
      * Sirve para cuando a un usuario se le expira el tiempo de su session
      */
     public final static String P_SIS_CADUCO_SESSION = "7";
@@ -49,21 +58,17 @@ public class ServicioSeguridad {
      */
     public final static String P_SIS_SALIO_USUARIO = "8";
     /**
-     * Sirve para cuando un usuario cambia su clave
-     */
-    public final static String P_SIS_CAMBIO_CLAVE = "11";
-    /**
      * Sirve para cuando se crea un usuario en el sistema
      */
     public final static String P_SIS_CREAR_USUARIO = "9";
     /**
-     * Sirve para cuando se bloqueao a un usuario
-     */
-    public final static String P_SIS_BLOQUEA_USUARIO = "2";
-    /**
      * Sirve para cuando se desbloquea a un usuario
      */
     public final static String P_SIS_DESBLOQUEA_USUARIO = "10";
+    /**
+     * Sirve para cuando el usuario Abre una Pantalla
+     */
+    public final static String P_SIS_ABRIO_PANTALLA = "11";
 
     /**
      * Forma la sentencia sql para el insert en la tabla de auditoria de acceso,
@@ -836,4 +841,25 @@ public class ServicioSeguridad {
                 + " AND FIN_AUAC=false AND IDE_AUAC=-1";
 
     }
+
+    public TablaGenerica getUltimoAccesoUsuario(String ide_usua) {
+        return utilitario.consultar("select * from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " \n"
+                + "and ide_auac = (select max(ide_auac) from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " and fin_auac=true)");
+    }
+
+    public void abrioPantalla() {
+        utilitario.getConexion().ejecutarSql(crearSQLAuditoriaAcceso(utilitario.getVariable("IDE_USUA"), P_SIS_ABRIO_PANTALLA,
+                utilitario.getVariable("IDE_OPCI")));
+    }
+
+    public String getSqlPantallasMasUsadas(String ide_usua) {
+        //solo postgres
+        return "select detalle_auac,(SELECT nom_opci FROM sis_opcion where ide_opci=a.detalle_auac::integer),count(detalle_auac) \n"
+                + "from sis_auditoria_acceso a\n"
+                + "where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_ABRIO_PANTALLA + "\n"
+                + "GROUP BY ide_usua,detalle_auac \n"
+                + "order by 3 desc\n"
+                + "limit 5";
+    }
+
 }

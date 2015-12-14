@@ -14,7 +14,6 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import sistema.aplicacion.Utilitario;
 
-
 /**
  *
  * @author DIEGOFERNANDOJACOMEG
@@ -57,7 +56,7 @@ public class ServicioSistema {
                 try (InputStream myInputStream = new ByteArrayInputStream((byte[]) tabEmpresa.getValorObjeto("LOGO_EMPR"))) {
                     myInputStream.mark(0);
                     String mimeType = URLConnection.guessContentTypeFromStream(myInputStream);
-                    stream = new DefaultStreamedContent(myInputStream, mimeType);                   
+                    stream = new DefaultStreamedContent(myInputStream, mimeType);
                     myInputStream.close();
                 }
             }
@@ -84,6 +83,35 @@ public class ServicioSistema {
      */
     public TablaGenerica getSucursal() {
         return getSucursal(utilitario.getVariable("IDE_SUCU"));
+    }
+
+    public TablaGenerica getUsuario() {
+        return getUsuario(utilitario.getVariable("IDE_USUA"));
+    }
+
+    public TablaGenerica getUsuario(String ide_usua) {
+        return utilitario.consultar("SELECT * from sis_usuario where ide_usua=" + ide_usua);
+    }
+
+    public TablaGenerica getPerfil(String ide_perf) {
+        return utilitario.consultar("SELECT * from sis_perfil where ide_perf=" + ide_perf);
+    }
+
+    public TablaGenerica getPerfil() {
+        return getPerfil(utilitario.getVariable("IDE_PERF"));
+    }
+
+    public TablaGenerica getOpcionPantalla() {
+        return utilitario.consultar("SELECT PAQUETE_OPCI,TIPO_OPCI,AUDITORIA_OPCI,MANUAL_OPCI FROM SIS_OPCION WHERE IDE_OPCI=" + utilitario.getVariable("IDE_OPCI"));
+    }
+
+    public String getSqlPantallasPerfil(String ide_perf) {
+        return "SELECT a.IDE_OPCI,NOM_OPCI\n"
+                + "FROM SIS_OPCION a ,SIS_PERFIL_OPCION b\n"
+                + "WHERE a.IDE_OPCI=b.IDE_OPCI \n"
+                + "AND b.IDE_PERF=" + ide_perf + " \n"
+                + "and tipo_opci is not null and paquete_opci is not null\n"
+                + "ORDER BY NOM_OPCI";
     }
 
 }
