@@ -21,9 +21,9 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 import org.primefaces.component.blockui.BlockUI;
-import sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 import servicios.sistema.ServicioSeguridad;
+import sistema.aplicacion.Utilitario;
 
 /**
  *

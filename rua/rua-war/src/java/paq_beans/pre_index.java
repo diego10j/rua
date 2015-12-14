@@ -5,6 +5,7 @@
 package paq_beans;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
 import framework.componentes.BuscarTabla;
 import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
@@ -18,20 +19,34 @@ import framework.componentes.ImportarTabla;
 import framework.componentes.ItemMenu;
 import framework.componentes.Link;
 import framework.componentes.Menu;
+import framework.componentes.MenuLista;
 import framework.componentes.MetodoRemoto;
 import framework.componentes.Notificacion;
-import framework.componentes.Radio;
 import framework.componentes.SeleccionArchivo;
 import framework.componentes.TerminalTabla;
+import framework.componentes.bootstrap.Alerta;
+import framework.componentes.bootstrap.BotonBootstrap;
+import framework.componentes.bootstrap.CajaBootstrap;
+import framework.componentes.bootstrap.ContenidoBootstrap;
+import framework.componentes.bootstrap.GrupoBootstrap;
+import framework.componentes.bootstrap.ListaBootstrap;
+import framework.componentes.bootstrap.PanelBootstrap;
+import framework.componentes.bootstrap.RowBootstrap;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.event.ActionEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
+import servicios.sistema.ServicioSeguridad;
+import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Utilitario;
+
 
 /**
  *
@@ -59,9 +74,15 @@ public class pre_index {
     private FormatoTabla fot_formato;
     private ImportarTabla imt_importar;
     private Dialogo dia_sucu_usuario;
-    private Radio rad_sucursales;
-
+    private MenuLista mel_sucursales;
     private SeleccionArchivo sar_upload;
+    private StreamedContent logo;
+    private AutoCompletar aut_pantalla = new AutoCompletar();
+
+    @EJB
+    private ServicioSistema ser_sistema;
+    @EJB
+    private ServicioSeguridad ser_seguridad;
 
     public pre_index() {
         if (utilitario.getConexion() != null && utilitario.getVariable("NICK") != null) {
@@ -126,12 +147,12 @@ public class pre_index {
                 dia_sucu_usuario = new Dialogo();
                 dia_sucu_usuario.setId("dia_sucu_usuario");
                 dia_sucu_usuario.setTitle("Seleccione una Sucursal");
-                dia_sucu_usuario.setWidth("30%");
+                dia_sucu_usuario.setWidth("40%");
                 dia_sucu_usuario.setHeight("30%");
                 dia_sucu_usuario.getBot_cancelar().setMetodoRuta("pre_login.salir");
-                dia_sucu_usuario.getBot_aceptar().setMetodoRuta("pre_index.aceptarSucursal");
+                dia_sucu_usuario.getBot_aceptar().setRendered(false);
                 Grid gri_sucu = new Grid();
-                gri_sucu.setStyle("font-size:15px;width:" + (dia_sucu_usuario.getAnchoPanel() - 10) + "px;height:" + (dia_sucu_usuario.getAltoPanel() - 50) + "px;overflow: auto;display: block;");
+                gri_sucu.setStyle("font-size:15px;width:" + (dia_sucu_usuario.getAnchoPanel() - 5) + "px;overflow: hidden;display: block;");
 
                 if (tab_sucursales.getTotalFilas() > 0) {
                     List lis_sucu = new ArrayList();
@@ -141,10 +162,11 @@ public class pre_index {
                         obj[1] = tab_sucursales.getValor(i, "nom_sucu");
                         lis_sucu.add(obj);
                     }
-                    rad_sucursales = new Radio();
-                    rad_sucursales.setRadio(lis_sucu);
-                    rad_sucursales.setVertical();
-                    gri_sucu.getChildren().add(rad_sucursales);
+                    mel_sucursales = new MenuLista();
+                    mel_sucursales.setStyle("width:" + (dia_sucu_usuario.getAnchoPanel() - 20) + "px;" + "px;height:" + (dia_sucu_usuario.getAltoPanel() - 25) + "px;overflow: hidden;display: block;");
+                    mel_sucursales.setActionListenerRuta("pre_index.aceptarSucursal");
+                    mel_sucursales.setMenuLista(lis_sucu);
+                    gri_sucu.getChildren().add(mel_sucursales);
                 } else {
                     Etiqueta eti_no_sucursal = new Etiqueta();
                     eti_no_sucursal.setValue("No tiene sucursales asignadas, contactese con el administrador del sistema");
@@ -162,48 +184,164 @@ public class pre_index {
             lin_salir.setStyle("position:fixed;right:2px;top:1px;");
             formulario.getChildren().add(lin_salir);
 
+            aut_pantalla.setId("aut_pantalla");
+            aut_pantalla.setStyle("padding: 0;");
+            aut_pantalla.setRuta("pre_index");
+            aut_pantalla.setMetodoChangeRuta("pre_index.seleccionarPantalla");
         }
     }
 
-    public void aceptarSucursal() {
-        if (rad_sucursales.getValue() != null) {
-            seleccionarSucursal(rad_sucursales.getValue() + "");
-            dia_sucu_usuario.cerrar();
-        } else {
-            utilitario.agregarMensajeInfo("Seleccione Sucursa", "Debe seleccionar una sucursal para iniciar el sistema");
-        }
+    /**
+     * Acepta la sucursal seleccionada de la lista de seleccion
+     *
+     * @param evt
+     */
+    public void aceptarSucursal(ActionEvent evt) {
+        seleccionarSucursal(((ItemMenu) evt.getComponent()).getCodigo() + "");
+        dia_sucu_usuario.cerrar();
     }
 
+    /**
+     * Selecciona la sucursal
+     *
+     * @param ide_sucu
+     */
     private void seleccionarSucursal(String ide_sucu) {
-        TablaGenerica tab_sucursal = utilitario.consultar("SELECT * FROM SIS_SUCURSAL WHERE IDE_SUCU=" + ide_sucu);
+        dibuja.setStyle("width: 100%;overflow-x: hidden;overflow-y: auto;");
+        aut_pantalla.setAutoCompletar(ser_sistema.getSqlPantallasPerfil(utilitario.getVariable("IDE_PERF")));
+        aut_pantalla.limpiar();
+
+        TablaGenerica tab_sucursal = ser_sistema.getSucursal(ide_sucu);
         utilitario.crearVariable("IDE_EMPR", tab_sucursal.getValor(0, "IDE_EMPR"));
         utilitario.crearVariable("IDE_SUCU", ide_sucu);
-        Etiqueta eti_sucursal = new Etiqueta();
-        Imagen ima_empresa = new Imagen();
-        eti_sucursal.setValue(tab_sucursal.getValor(0, "NOM_SUCU") + " <br/><br/>");
-        ima_empresa.setValue("imagenes/logo.png");
+        TablaGenerica tab_empresa = ser_sistema.getEmpresa();
+        TablaGenerica tab_usuario = ser_sistema.getUsuario();
+        TablaGenerica tab_perfil = ser_sistema.getPerfil();
+        TablaGenerica tab_ultimo_acceso = ser_seguridad.getUltimoAccesoUsuario(utilitario.getVariable("ide_usua"));
+
+        logo = ser_sistema.getLogoEmpresa();
         dibuja.getChildren().clear();
-        Grupo gru_empresa = new Grupo();
-        gru_empresa.setStyle("width: 100%;font-size: 30px;text-align: center;font-weight: bold;");
-        eti_sucursal.setStyle("font-style: italic;border: none;text-shadow: 0px 2px 3px #ccc;background: none;text-transform: uppercase");
-        gru_empresa.getChildren().add(eti_sucursal);
-        gru_empresa.getChildren().add(ima_empresa);
-        dibuja.getChildren().add(gru_empresa);
+
+        Alerta ale_inicio = new Alerta();
+        ale_inicio.setAlertaCeleste("<strong>Bienvenido </strong> al Sistema Contable Financiero RUA v2.0 <span class='pull-right'> " + utilitario.getFechaLarga(utilitario.getFechaActual()) + " &nbsp;  </span>");
+        dibuja.getChildren().add(ale_inicio);
+
+        RowBootstrap row_cajas = new RowBootstrap();
+        dibuja.getChildren().add(row_cajas);
+
+        CajaBootstrap cb1 = new CajaBootstrap();
+        cb1.setCajaBootstrap("USUARIO", tab_usuario.getValor("nom_usua").toUpperCase());
+        cb1.setIcono("fa fa-user", "bg-blue");
+        row_cajas.getChildren().add(cb1);
+
+        CajaBootstrap cb2 = new CajaBootstrap();
+        cb2.setCajaBootstrap("PERFIL", tab_perfil.getValor("nom_perf").toUpperCase());
+        cb2.setIcono("fa fa-users", "bg-aqua");
+        row_cajas.getChildren().add(cb2);
+
+        CajaBootstrap cb3 = new CajaBootstrap();
+        cb3.setCajaBootstrap("DIRECCIÓN IP", utilitario.getIp());
+        cb3.setIcono("fa fa-laptop", "bg-green");
+        row_cajas.getChildren().add(cb3);
+
+        CajaBootstrap cb4 = new CajaBootstrap();
+        String str_ultimo_acceso = "";
+        if (!tab_ultimo_acceso.isEmpty()) {
+            str_ultimo_acceso = utilitario.getFormatoFecha(utilitario.getDia(tab_ultimo_acceso.getValor("fecha_auac")), "dd-MM-yyyy") + " </br> " + tab_ultimo_acceso.getValor("hora_auac");
+        }
+        cb4.setCajaBootstrap("ÚLTIMO ACCESO", str_ultimo_acceso);
+        cb4.setIcono("fa fa-calendar", "bg-yellow");
+        row_cajas.getChildren().add(cb4);
+
+        RowBootstrap row_util = new RowBootstrap();
+        dibuja.getChildren().add(row_util);
+        ContenidoBootstrap cb_izquierda = new ContenidoBootstrap("col-md-6");
+        row_util.getChildren().add(cb_izquierda);
+
+        PanelBootstrap pb_empresa = new PanelBootstrap();
+        cb_izquierda.getChildren().add(pb_empresa);
+        pb_empresa.setPanelVerde();
+        pb_empresa.setTitulo(tab_empresa.getValor("nom_empr"));
+        pb_empresa.agregarComponenteContenido(new Etiqueta("<h3  style='font-weight: bold;text-align:center'>" + tab_sucursal.getValor("nom_sucu") + "</h3> <p align='center'>"));
+        Imagen ima_empresa = new Imagen();
+        ima_empresa.setValueExpression("value", "pre_index.logo");
+        ima_empresa.setStyleClass("img-responsive");
+        pb_empresa.agregarComponenteContenido(ima_empresa);
+        pb_empresa.agregarComponenteContenido(new Etiqueta("</p>"));
+        if (dia_sucu_usuario != null) {
+            BotonBootstrap bb_cambia = new BotonBootstrap();
+            bb_cambia.setMetodoRuta("pre_index.cambiarSucursal");            
+            bb_cambia.setValue("Cambiar Sucursal");            
+            bb_cambia.setBotonVerde();
+            bb_cambia.setValueExpression("rendered", "pre_index.dia_sucu_usuario !=null");
+            pb_empresa.agregarComponenteFooter(bb_cambia);
+
+        }
+
+        ContenidoBootstrap cb_derecha = new ContenidoBootstrap("col-md-6");
+        row_util.getChildren().add(cb_derecha);
+
+        PanelBootstrap pb_busca_pantalla = new PanelBootstrap();
+        cb_derecha.getChildren().add(pb_busca_pantalla);
+        pb_busca_pantalla.setPanelNaranja();
+        pb_busca_pantalla.setTitulo("BUSCAR PANTALLA");
+
+        GrupoBootstrap grb_abrir = new GrupoBootstrap();
+        grb_abrir.setAutocompletar(aut_pantalla);
+        BotonBootstrap bot_abrir = new BotonBootstrap();
+        bot_abrir.setId("bot_buscaPantalla");
+        bot_abrir.setBotonAzul();
+        bot_abrir.setBotonUpdate("dibuja,:fortitulo");
+        bot_abrir.setOnclick("dimensionesDisponibles()");
+        bot_abrir.setActionListenerRuta("pre_index.cargar");
+        bot_abrir.setValue("Abrir");
+        grb_abrir.setBotonBootstrap(bot_abrir);
+        pb_busca_pantalla.agregarComponenteContenido(grb_abrir);
+
+        PanelBootstrap pb_pantallas = new PanelBootstrap();
+        pb_pantallas.setPanelAzul();
+        pb_pantallas.setTitulo("PANTALLAS MÁS USADAS");
+        cb_derecha.getChildren().add(pb_pantallas);
+
+        ListaBootstrap lib_pantallas = new ListaBootstrap();
+        lib_pantallas.setActionListenerRuta("pre_index.cargar");
+        lib_pantallas.setUpdate("dibuja,:fortitulo");
+        lib_pantallas.setOnClick("dimensionesDisponibles()");
+        lib_pantallas.setListaBootstrap(ser_seguridad.getSqlPantallasMasUsadas(utilitario.getVariable("ide_usua")));
+        pb_pantallas.agregarComponenteContenido(lib_pantallas);
+
         utilitario.addUpdate("dibuja");
     }
 
+    /**
+     * Abre el dialgo de seleccionar sucursal
+     */
     public void cambiarSucursal() {
         if (utilitario.getComponente("dia_sucu_usuario") != null) {
-            rad_sucursales.setValue(utilitario.getVariable("IDE_SUCU"));
             dia_sucu_usuario.dibujar();
             dia_sucu_usuario.getBot_cancelar().setActionExpression(null);
             dia_sucu_usuario.getBot_cancelar().setActionListenerRuta("pre_index.cerrarDialogo");
         }
     }
 
+    /**
+     * Dibuja la pantalla seleccionada
+     *
+     * @param evt
+     */
     public void cargar(ActionEvent evt) {
-        utilitario.crearVariable("IDE_OPCI", ((ItemMenu) evt.getComponent()).getCodigo());
-        str_titulo = ((ItemMenu) evt.getComponent()).getValue() + "";
+        dibuja.setStyle("");
+        if (evt.getComponent().getRendererType() == null) { //ItemMenu
+            utilitario.crearVariable("IDE_OPCI", ((ItemMenu) evt.getComponent()).getCodigo());
+            str_titulo = ((ItemMenu) evt.getComponent()).getValue() + "";
+        } else {
+            utilitario.crearVariable("IDE_OPCI", ((Link) evt.getComponent()).getCodigo());
+            str_titulo = ((Link) evt.getComponent()).getValue() + "";
+        }
+        if (utilitario.getVariable("IDE_OPCI") == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar una Pantalla", "");
+            return;
+        }
         utilitario.crearVariable("ALTO_PANTALLA", ith_alto.getValue() + "");  //Alto disponible
         utilitario.crearVariable("ALTO", alto.getValue() + "");  //Alto browser
         utilitario.crearVariable("ANCHO", ancho.getValue() + ""); //Ancho browser    
@@ -228,7 +366,8 @@ public class pre_index {
             Class pantalla = Class.forName(str_paquete + "." + str_tipo);
             clase = pantalla.newInstance();
             utilitario.buscarPermisosObjetos();
-        } catch (Exception ex) {
+            ser_seguridad.abrioPantalla();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             utilitario.crearError(ex.getMessage(), "pre_index en el método cargar() ", ex);
         }
         //Tacla Abajo y Arriba
@@ -244,8 +383,11 @@ public class pre_index {
 
     }
 
+    /**
+     * Busca configuración de una Pantalla Seleccionada
+     */
     private void buscarOpcion() {
-        TablaGenerica tab_opcion = utilitario.consultar("SELECT PAQUETE_OPCI,TIPO_OPCI,AUDITORIA_OPCI,MANUAL_OPCI FROM SIS_OPCION WHERE IDE_OPCI=" + utilitario.getVariable("IDE_OPCI"));
+        TablaGenerica tab_opcion = ser_sistema.getOpcionPantalla();
         if (tab_opcion.getTotalFilas() > 0) {
             str_paquete = tab_opcion.getValor(0, "PAQUETE_OPCI");
             str_tipo = tab_opcion.getValor(0, "TIPO_OPCI");
@@ -258,6 +400,11 @@ public class pre_index {
         }
     }
 
+    /**
+     * Metodo génerico que cierra un Dialogo abierto
+     *
+     * @param evt
+     */
     public void cerrarDialogo(ActionEvent evt) {
         UIComponent com_padre = evt.getComponent();
         while (com_padre != null) {
@@ -271,6 +418,11 @@ public class pre_index {
         }
     }
 
+    /**
+     * Cierra el Dialogo de Confirmar
+     *
+     * @param evt
+     */
     public void cerrarConfirmar(ActionEvent evt) {
         UIComponent com_padre = evt.getComponent();
         while (com_padre != null) {
@@ -285,7 +437,11 @@ public class pre_index {
         }
     }
 
+    /**
+     * Carga pantalla de inicio
+     */
     public void cargar_inicio() {
+        dibuja.setStyle("");
         utilitario.crearVariable("ALTO_PANTALLA", ith_alto.getValue() + ""); //Alto disponible
         utilitario.crearVariable("ALTO", alto.getValue() + "");  //Alto browser
         utilitario.crearVariable("ANCHO", ancho.getValue() + ""); //Ancho browser        
@@ -303,21 +459,42 @@ public class pre_index {
             Class pantalla = Class.forName("paq_sistema.pre_principal");
             clase = pantalla.newInstance();
             utilitario.buscarPermisosObjetos();
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             utilitario.crearError(ex.getMessage(), "pre_index en el método cargar_inicio() ", ex);
         }
     }
 
+    /**
+     * Cierra el Dialogo de Errores SQL
+     */
     public void cerrarSql() {
         error_sql.setVisible(false);
         error_sql.limpiar();
     }
 
+    /**
+     * Abre la pantalla de ayuda si tiene configuracion
+     */
     public void ayuda() {
         //Cargar la ayuda de la pantalla     
         if (str_manual != null) {
             utilitario.ejecutarJavaScript("window.open('" + utilitario.getURL() + "/manuales/" + str_paquete + "/" + str_manual + "','nuevo','directories=no,location=no,menubar=no,scrollbars=yes,statusbar=no,tittlebar=no,width=800,height=600')");
         }
+    }
+
+    /**
+     * Cuando selecciona una Pantalla en el Autocompletar
+     *
+     * @param evt
+     */
+    public void seleccionarPantalla(SelectEvent evt) {
+        aut_pantalla.onSelect(evt);
+        try {
+            ((BotonBootstrap) utilitario.getComponente("bot_buscaPantalla")).setValue(aut_pantalla.getNombre());
+            ((BotonBootstrap) utilitario.getComponente("bot_buscaPantalla")).setCodigo(aut_pantalla.getValor());
+        } catch (Exception e) {
+        }
+
     }
 
     public HtmlForm getFormulario() {
@@ -390,6 +567,22 @@ public class pre_index {
 
     public void setSar_upload(SeleccionArchivo sar_upload) {
         this.sar_upload = sar_upload;
+    }
+
+    public StreamedContent getLogo() {
+        return logo;
+    }
+
+    public void setLogo(StreamedContent logo) {
+        this.logo = logo;
+    }
+
+    public AutoCompletar getAut_pantalla() {
+        return aut_pantalla;
+    }
+
+    public void setAut_pantalla(AutoCompletar aut_pantalla) {
+        this.aut_pantalla = aut_pantalla;
     }
 
 }

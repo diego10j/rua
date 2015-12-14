@@ -26,7 +26,7 @@
         <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
         <param-value>true</param-value>
     </context-param>
-
+        
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <filter-class>
@@ -40,16 +40,16 @@
     <filter-mapping>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>    
+    </filter-mapping>
     <context-param>
         <param-name>primefaces.THEME</param-name>
         <param-value>#{pre_login.tema}</param-value>     
     </context-param>  
-
+   
     <listener>  
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>  
     </listener> 
     
-
+  
   
 </web-app>

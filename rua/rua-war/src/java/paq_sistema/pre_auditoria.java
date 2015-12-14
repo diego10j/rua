@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import sistema.aplicacion.Pantalla;
 import servicios.sistema.ServicioSeguridad;
+import sistema.aplicacion.Pantalla;
 
 /**
  *

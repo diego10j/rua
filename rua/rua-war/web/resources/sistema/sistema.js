@@ -2,14 +2,14 @@
  *
  * @author Diego Fernando Jácome
  */
-$(document).bind("touchmove", function (event) {
+$(document).bind("touchmove", function(event) {
     event.preventDefault();
 });
 
 /*
  * Función que permite bloquear la pantalla mientras esta procesando
  */
-$(function () {
+$(function() {
     $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 });
 
@@ -17,8 +17,8 @@ $(function () {
 /*
  * Función que bloquea la tecla F5 y Enter de la pagina y  detectar tecla arriba y abajo
  */
-$(function () {
-    $(document).keydown(function (e) {
+$(function() {
+    $(document).keydown(function(e) {
         if ($('#formulario\\:menu').length) {
             var code = (e.keyCode ? e.keyCode : e.which);
             //     if(code == 116 || code == 13) {
@@ -73,10 +73,11 @@ function dimensionesDisponibles() {
 }
 
 
+
+
 /*
  * Para poner los calendarios, las horas en español
  */
-
 PrimeFaces.locales['es'] = {
     closeText: 'Cerrar',
     prevText: 'Anterior',
@@ -104,15 +105,11 @@ PrimeFaces.locales['es'] = {
     allDayText: 'Todo el día'
 };
 
-function abrirPopUp(dir) {
-    var w = window.open(dir, "sistemadj", "width=" + screen.availWidth + ", height=" + screen.availHeight + ", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes");
-    if (w !== null) {
-        w.focus();
-    }
+function abrirPopUp(dir) {    
+    var w = window.open(dir, "sistemadj", "width="+screen.availWidth+", height="+screen.availHeight+", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes" );
+    w.focus();
 }
-function abrirNuevoPopUp(dir) {
-    var w = window.open(dir, "", "width=" + screen.availWidth + ", height=" + screen.availHeight + ", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes");
-    if (w !== null) {
-        w.focus();
-    }
+function abrirNuevoPopUp(dir) {    
+    var w = window.open(dir, "", "width="+screen.availWidth+", height="+screen.availHeight+", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes" );
+    w.focus();
 }

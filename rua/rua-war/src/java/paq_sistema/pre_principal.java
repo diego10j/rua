@@ -15,14 +15,13 @@ import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.ItemMenu;
 import framework.componentes.ItemOpcion;
+import framework.componentes.MenuLista;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import org.primefaces.component.menu.Menu;
 import org.primefaces.component.panel.Panel;
 import org.primefaces.component.themeswitcher.ThemeSwitcher;
-import org.primefaces.model.StreamedContent;
 import servicios.sistema.ServicioSeguridad;
 import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Pantalla;
@@ -42,7 +41,7 @@ public class pre_principal extends Pantalla {
     private final Clave cla_nueva = new Clave();
     private final Clave cla_confirmar = new Clave();
     private final Efecto efecto = new Efecto();
-    private StreamedContent stcLogo;
+
     @EJB
     private final ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
 
@@ -68,7 +67,7 @@ public class pre_principal extends Pantalla {
         mit_tema.setUpdate("pan_opcion");
         mit_tema.setMetodo("dibujarTemas");
 
-        Menu men_menu = new Menu();
+        MenuLista men_menu = new MenuLista();
         men_menu.setStyle("width:100%");
         men_menu.getChildren().add(mit_datos);
         men_menu.getChildren().add(mit_clave);
@@ -88,8 +87,8 @@ public class pre_principal extends Pantalla {
         Panel pan_empresa = new Panel();
         pan_empresa.setHeader("EMPRESA");
         Imagen ima_empresa = new Imagen();
-        stcLogo = ser_sistema.getLogoEmpresa();
-        ima_empresa.setValueExpression("value", "pre_index.clase.stcLogo");
+
+        ima_empresa.setValueExpression("value", "pre_index.logo");
         pan_empresa.getChildren().add(ima_empresa);
         Etiqueta eti_sucursal = new Etiqueta();
         eti_sucursal.setStyle("width: 100%;font-size: 13px;text-align: left;font-weight: bold;");
@@ -121,7 +120,7 @@ public class pre_principal extends Pantalla {
         Grupo gru_panel = new Grupo();
         Grid gri_tema = new Grid();
         gri_tema.setColumns(2);
-        gri_tema.getChildren().add(new Etiqueta("Tema"));
+        gri_tema.getChildren().add(new Etiqueta("<strong>TEMA :</strong>"));
         List<String> lis_temas = new ArrayList<String>();
         lis_temas.add("afterdark");
         lis_temas.add("afternoon");
@@ -320,14 +319,6 @@ public class pre_principal extends Pantalla {
 
     public void setTab_form_usuario(Tabla tab_form_usuario) {
         this.tab_form_usuario = tab_form_usuario;
-    }
-
-    public StreamedContent getStcLogo() {
-        return stcLogo;
-    }
-
-    public void setStcLogo(StreamedContent stcLogo) {
-        this.stcLogo = stcLogo;
     }
 
 }
