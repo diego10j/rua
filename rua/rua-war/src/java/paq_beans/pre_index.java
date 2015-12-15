@@ -247,7 +247,7 @@ public class pre_index {
         CajaBootstrap cb4 = new CajaBootstrap();
         String str_ultimo_acceso = "";
         if (!tab_ultimo_acceso.isEmpty()) {
-            str_ultimo_acceso = utilitario.getFormatoFecha(utilitario.getDia(tab_ultimo_acceso.getValor("fecha_auac")), "dd-MM-yyyy") + " </br> " + tab_ultimo_acceso.getValor("hora_auac");
+            str_ultimo_acceso = utilitario.getFormatoFecha(tab_ultimo_acceso.getValor("fecha_auac"), "dd-MM-yyyy") + " </br> " + tab_ultimo_acceso.getValor("hora_auac");
         }
         cb4.setCajaBootstrap("ÚLTIMO ACCESO", str_ultimo_acceso);
         cb4.setIcono("fa fa-calendar", "bg-yellow");
