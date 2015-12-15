@@ -47,7 +47,6 @@ import servicios.sistema.ServicioSeguridad;
 import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Utilitario;
 
-
 /**
  *
  * @author Diego
@@ -247,7 +246,7 @@ public class pre_index {
         CajaBootstrap cb4 = new CajaBootstrap();
         String str_ultimo_acceso = "";
         if (!tab_ultimo_acceso.isEmpty()) {
-            str_ultimo_acceso = utilitario.getFormatoFecha(tab_ultimo_acceso.getValor("fecha_auac"), "dd-MM-yyyy") + " </br> " + tab_ultimo_acceso.getValor("hora_auac");
+            str_ultimo_acceso = utilitario.getFormatoFecha(utilitario.getFecha(tab_ultimo_acceso.getValor("fecha_auac")), "dd-MM-yyyy") + " </br> " + tab_ultimo_acceso.getValor("hora_auac");
         }
         cb4.setCajaBootstrap("ÚLTIMO ACCESO", str_ultimo_acceso);
         cb4.setIcono("fa fa-calendar", "bg-yellow");
@@ -270,8 +269,8 @@ public class pre_index {
         pb_empresa.agregarComponenteContenido(new Etiqueta("</p>"));
         if (dia_sucu_usuario != null) {
             BotonBootstrap bb_cambia = new BotonBootstrap();
-            bb_cambia.setMetodoRuta("pre_index.cambiarSucursal");            
-            bb_cambia.setValue("Cambiar Sucursal");            
+            bb_cambia.setMetodoRuta("pre_index.cambiarSucursal");
+            bb_cambia.setValue("Cambiar Sucursal");
             bb_cambia.setBotonVerde();
             bb_cambia.setValueExpression("rendered", "pre_index.dia_sucu_usuario !=null");
             pb_empresa.agregarComponenteFooter(bb_cambia);
