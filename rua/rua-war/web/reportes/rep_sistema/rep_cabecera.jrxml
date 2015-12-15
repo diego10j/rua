@@ -26,7 +26,6 @@ and s.ide_sucu=$P{ide_sucu}]]>
 	<field name="telefono_empr" class="java.lang.String"/>
 	<field name="constitucion_empr" class="java.lang.String"/>
 	<field name="logo_empr" class="java.io.InputStream"/>
-	<field name="path" class="java.lang.String"/>
 	<field name="ide_sucu" class="java.lang.Long"/>
 	<field name="nom_sucu" class="java.lang.String"/>
 	<field name="telefonos_sucu" class="java.lang.String"/>
