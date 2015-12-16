@@ -167,6 +167,7 @@ public class pre_libro_bancos extends Pantalla {
             bar_botones.agregarComponente(new Etiqueta("Banco: "));
             bar_botones.agregarComponente(com_bancos);
             bar_botones.agregarComponente(new Etiqueta("Cuenta Banco: "));
+            com_cue_ban.setId("com_cue_ban"); 
             bar_botones.agregarComponente(com_cue_ban);
 
             bot_cuentas_x_pagar.setId("bot_cuentas_x_pagar");
