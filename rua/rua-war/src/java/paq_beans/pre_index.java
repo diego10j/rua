@@ -34,6 +34,7 @@ import framework.componentes.bootstrap.PanelBootstrap;
 import framework.componentes.bootstrap.RowBootstrap;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -82,6 +83,53 @@ public class pre_index {
     private ServicioSistema ser_sistema;
     @EJB
     private ServicioSeguridad ser_seguridad;
+
+    @PostConstruct
+    public void cargaSucursalesUsuario() {
+        if (utilitario.getConexion() != null && utilitario.getVariable("NICK") != null) {
+            TablaGenerica tab_sucursales = ser_seguridad.getSucursalesUsuario();
+
+            if (tab_sucursales.getTotalFilas() == 1) {
+                seleccionarSucursal(tab_sucursales.getValor(0, "sis_ide_sucu"));
+            } else {
+                //Dialogo para seleccionar sucursales  
+                dia_sucu_usuario = new Dialogo();
+                dia_sucu_usuario.setId("dia_sucu_usuario");
+                dia_sucu_usuario.setTitle("Seleccione una Sucursal");
+                dia_sucu_usuario.setWidth("40%");
+                dia_sucu_usuario.setHeight("30%");
+                dia_sucu_usuario.getBot_cancelar().setMetodoRuta("pre_login.salir");
+                dia_sucu_usuario.getBot_aceptar().setRendered(false);
+                Grid gri_sucu = new Grid();
+                gri_sucu.setStyle("font-size:15px;width:" + (dia_sucu_usuario.getAnchoPanel() - 5) + "px;overflow: hidden;display: block;");
+
+                if (tab_sucursales.getTotalFilas() > 0) {
+                    List lis_sucu = new ArrayList();
+                    for (int i = 0; i < tab_sucursales.getTotalFilas(); i++) {
+                        Object[] obj = new Object[2];
+                        obj[0] = tab_sucursales.getValor(i, "sis_ide_sucu");
+                        obj[1] = tab_sucursales.getValor(i, "nom_sucu");
+                        lis_sucu.add(obj);
+                    }
+                    mel_sucursales = new MenuLista();
+                    mel_sucursales.setStyle("width:" + (dia_sucu_usuario.getAnchoPanel() - 20) + "px;" + "px;height:" + (dia_sucu_usuario.getAltoPanel() - 25) + "px;overflow: hidden;display: block;");
+                    mel_sucursales.setActionListenerRuta("pre_index.aceptarSucursal");
+                    mel_sucursales.setMenuLista(lis_sucu);
+                    gri_sucu.getChildren().add(mel_sucursales);
+                } else {
+                    Etiqueta eti_no_sucursal = new Etiqueta();
+                    eti_no_sucursal.setValue("No tiene sucursales asignadas, contactese con el administrador del sistema");
+                    eti_no_sucursal.setStyle("border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+                    gri_sucu.getChildren().add(eti_no_sucursal);
+                }
+                dia_sucu_usuario.setDialogo(gri_sucu);
+                dia_sucu_usuario.dibujar();
+                formulario.getChildren().add(dia_sucu_usuario);
+
+            }
+        }
+
+    }
 
     public pre_index() {
         if (utilitario.getConexion() != null && utilitario.getVariable("NICK") != null) {
@@ -135,47 +183,6 @@ public class pre_index {
 
             formulario.getChildren().add(con_guarda);
 
-            TablaGenerica tab_sucursales = utilitario.consultar("select sis_usuario_sucursal.sis_ide_sucu,ide_empr,nom_sucu "
-                    + "from sis_usuario_sucursal "
-                    + "INNER JOIN sis_sucursal on sis_usuario_sucursal.sis_ide_sucu=sis_sucursal.ide_sucu "
-                    + "where ide_usua=" + utilitario.getVariable("IDE_USUA"));
-            if (tab_sucursales.getTotalFilas() == 1) {
-                seleccionarSucursal(tab_sucursales.getValor(0, "sis_ide_sucu"));
-            } else {
-                //Dialogo para seleccionar sucursales  
-                dia_sucu_usuario = new Dialogo();
-                dia_sucu_usuario.setId("dia_sucu_usuario");
-                dia_sucu_usuario.setTitle("Seleccione una Sucursal");
-                dia_sucu_usuario.setWidth("40%");
-                dia_sucu_usuario.setHeight("30%");
-                dia_sucu_usuario.getBot_cancelar().setMetodoRuta("pre_login.salir");
-                dia_sucu_usuario.getBot_aceptar().setRendered(false);
-                Grid gri_sucu = new Grid();
-                gri_sucu.setStyle("font-size:15px;width:" + (dia_sucu_usuario.getAnchoPanel() - 5) + "px;overflow: hidden;display: block;");
-
-                if (tab_sucursales.getTotalFilas() > 0) {
-                    List lis_sucu = new ArrayList();
-                    for (int i = 0; i < tab_sucursales.getTotalFilas(); i++) {
-                        Object[] obj = new Object[2];
-                        obj[0] = tab_sucursales.getValor(i, "sis_ide_sucu");
-                        obj[1] = tab_sucursales.getValor(i, "nom_sucu");
-                        lis_sucu.add(obj);
-                    }
-                    mel_sucursales = new MenuLista();
-                    mel_sucursales.setStyle("width:" + (dia_sucu_usuario.getAnchoPanel() - 20) + "px;" + "px;height:" + (dia_sucu_usuario.getAltoPanel() - 25) + "px;overflow: hidden;display: block;");
-                    mel_sucursales.setActionListenerRuta("pre_index.aceptarSucursal");
-                    mel_sucursales.setMenuLista(lis_sucu);
-                    gri_sucu.getChildren().add(mel_sucursales);
-                } else {
-                    Etiqueta eti_no_sucursal = new Etiqueta();
-                    eti_no_sucursal.setValue("No tiene sucursales asignadas, contactese con el administrador del sistema");
-                    eti_no_sucursal.setStyle("border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
-                    gri_sucu.getChildren().add(eti_no_sucursal);
-                }
-                dia_sucu_usuario.setDialogo(gri_sucu);
-                dia_sucu_usuario.dibujar();
-                formulario.getChildren().add(dia_sucu_usuario);
-            }
             Link lin_salir = new Link();
             lin_salir.agregarImagen("imagenes/im_salir_sistema.png", "32", "32");
             lin_salir.setMetodoRuta("pre_login.salir");
@@ -187,6 +194,7 @@ public class pre_index {
             aut_pantalla.setStyle("padding: 0;");
             aut_pantalla.setRuta("pre_index");
             aut_pantalla.setMetodoChangeRuta("pre_index.seleccionarPantalla");
+
         }
     }
 
@@ -207,6 +215,7 @@ public class pre_index {
      */
     private void seleccionarSucursal(String ide_sucu) {
         dibuja.setStyle("width: 100%;overflow-x: hidden;overflow-y: auto;");
+
         aut_pantalla.setAutoCompletar(ser_sistema.getSqlPantallasPerfil(utilitario.getVariable("IDE_PERF")));
         aut_pantalla.limpiar();
 
