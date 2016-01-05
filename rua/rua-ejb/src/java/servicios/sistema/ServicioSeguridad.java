@@ -862,4 +862,11 @@ public class ServicioSeguridad {
                 + "limit 5";
     }
 
+    public TablaGenerica getSucursalesUsuario() {
+        return utilitario.consultar("select sis_usuario_sucursal.sis_ide_sucu,ide_empr,nom_sucu "
+                + "from sis_usuario_sucursal "
+                + "INNER JOIN sis_sucursal on sis_usuario_sucursal.sis_ide_sucu=sis_sucursal.ide_sucu "
+                + "where ide_usua=" + utilitario.getVariable("IDE_USUA"));
+    }
+
 }
