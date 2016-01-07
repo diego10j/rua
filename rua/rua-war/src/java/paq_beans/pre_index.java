@@ -191,7 +191,7 @@ public class pre_index {
             formulario.getChildren().add(lin_salir);
 
             aut_pantalla.setId("aut_pantalla");
-            aut_pantalla.setStyle("padding: 0;");
+            aut_pantalla.setStyleClass("autocompletar-index");
             aut_pantalla.setRuta("pre_index");
             aut_pantalla.setMetodoChangeRuta("pre_index.seleccionarPantalla");
 

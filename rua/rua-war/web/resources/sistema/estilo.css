@@ -113,13 +113,14 @@ html,body{
     text-align: left ! important        
 }
 
-.ui-autocomplete-input {
+.autocompletar-index {
     border: 0 none;
     width: 99%;
     outline: medium none;
     background-color: transparent;
     margin:2px;    
 }
+
 
 .pull-right{float:right!important}
 .pull-left{float:left!important}

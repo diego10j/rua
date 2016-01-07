@@ -477,7 +477,6 @@ public class pre_transacciones_cxc extends Pantalla {
         tex_saldo.setStyle("font-size: 16px;font-weight: bold");
         tex_saldo.setDisabled(true);
         utilitario.addUpdate("eti_saldo,tex_saldo");
-
     }
 
     @Override
