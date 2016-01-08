@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package paq_cuentas_x_pagar;
+package paq_cuentas_x_cobrar;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
