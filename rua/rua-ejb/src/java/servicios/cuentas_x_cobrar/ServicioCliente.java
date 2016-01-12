@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servicios.cuentas_x_pagar;
+package servicios.cuentas_x_cobrar;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.contabilidad.ServicioConfiguracion;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -20,7 +23,63 @@ public class ServicioCliente {
      * Codigo Padre de todos los clientes para el campo GEN_IDE_GEPER
      */
     public final static String P_PADRE_CLIENTES = "1";
-    private Utilitario utilitario = new Utilitario();
+    private final Utilitario utilitario = new Utilitario();
+
+    @EJB
+    private ServicioConfiguracion ser_configuracion;
+
+    /**
+     * Retorna la cuenta configurada del Cliente con el identificador CUENTA POR
+     * COBRAR
+     *
+     * @param ide_geper Cliente
+     * @return
+     */
+    public String getCuentaCliente(String ide_geper) {
+        return ser_configuracion.getCuentaPersona("CUENTA POR COBRAR", ide_geper);
+    }
+
+    /**
+     * Retorna la sentencia SQL para actualizar la configuracion de la cuenta
+     * del cliente
+     *
+     * @param ide_geper Cliente
+     * @param ide_cndpc Nueva Cuenta
+     * @return
+     */
+    public String getSqlActualizarCuentaCliente(String ide_geper, String ide_cndpc) {
+        return "update con_det_conf_asie "
+                + "set ide_cndpc=" + ide_cndpc + " "
+                + "where ide_geper=" + ide_geper + " "
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("CUENTA POR COBRAR");
+    }
+
+    /**
+     * Retorna si un cliente tiene configurada una cuenta contable
+     *
+     * @param ide_geper
+     * @return
+     */
+    public boolean isTieneCuentaConfiguradaCliente(String ide_geper) {
+        return !utilitario.consultar("Select * from con_det_conf_asie "
+                + "where ide_geper=" + ide_geper + " "
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("CUENTA POR COBRAR")).isEmpty();
+    }
+
+    /**
+     * Retorna la sentencia SQL para insertar la configuracion de la cuenta del
+     * cliente
+     *
+     * @param ide_geper
+     * @param ide_cndpc
+     * @return
+     */
+    public String getSqlInsertarCuentaCliente(String ide_geper, String ide_cndpc) {
+        return "insert into con_det_conf_asie (ide_cndca,ide_geper,ide_cndpc,ide_cnvca)"
+                + "values (" + utilitario.getConexion().getMaximo("con_det_conf_asie", "ide_cndca", 1)
+                + ", " + ide_geper + ", " + ide_cndpc + ","
+                + ser_configuracion.getCodigoVigenciaIdentificador("CUENTA POR COBRAR") + " )";
+    }
 
     /**
      * Reorna la sentecnia SQL para que se utilice en Combos, Autocompletar
