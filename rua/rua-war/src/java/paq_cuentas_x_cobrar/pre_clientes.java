@@ -241,11 +241,17 @@ public class pre_clientes extends Pantalla {
                 tab_movimientos.setCampoPrimaria("ide_cnccc");
                 tab_movimientos.getColumna("ide_cnccc").setVisible(false);
                 tab_movimientos.getColumna("ide_cnlap").setVisible(false);
-                tab_movimientos.getColumna("debe").setLongitud(20);
-                tab_movimientos.getColumna("haber").setLongitud(20);
-                tab_movimientos.getColumna("saldo").setLongitud(20);
+                tab_movimientos.getColumna("debe").setLongitud(30);
+                tab_movimientos.getColumna("haber").setLongitud(30);
+                tab_movimientos.getColumna("saldo").setLongitud(30);
+                
+                tab_movimientos.getColumna("debe").alinearDerecha();
+                tab_movimientos.getColumna("haber").alinearDerecha();
+                tab_movimientos.getColumna("saldo").alinearDerecha();
+                tab_movimientos.getColumna("saldo").setEstilo("font-weight: bold;");
+                
                 tab_movimientos.getColumna("valor_cndcc").setVisible(false);
-                tab_movimientos.setScrollRows(20);
+                tab_movimientos.setScrollRows(15);
                 tab_movimientos.dibujar();
                 PanelTabla pat_panel = new PanelTabla();
                 pat_panel.setPanelTabla(tab_movimientos);
