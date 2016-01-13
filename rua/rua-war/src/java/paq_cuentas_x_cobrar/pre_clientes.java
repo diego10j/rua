@@ -15,8 +15,10 @@ import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
+import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidad;
 import servicios.cuentas_x_cobrar.ServicioCliente;
@@ -46,8 +48,11 @@ public class pre_clientes extends Pantalla {
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
     private AutoCompletar aut_cuentas;
-
     private Tabla tab_movimientos; //movimientos contables
+    private Texto tex_saldo_inicial;
+    private Texto tex_saldo_final;
+    private Texto tex_total_debe;
+    private Texto tex_total_haber;
 
     public pre_clientes() {
         aut_clientes.setId("aut_clientes");
@@ -231,25 +236,51 @@ public class pre_clientes extends Pantalla {
 
                 gri_fechas.getChildren().add(bot_consultar);
 
+                Separator separar = new Separator();
+                fis_consulta.getChildren().add(separar);
+
+                Grid gri_saldos = new Grid();
+                gri_saldos.setColumns(4);
+                gri_saldos.getChildren().add(new Etiqueta("SALDO INICIAL :"));
+                tex_saldo_inicial = new Texto();
+                tex_saldo_inicial.setDisabled(true);
+                tex_saldo_inicial.setStyle("font-size: 14px;font-weight: bold");
+                gri_saldos.getChildren().add(tex_saldo_inicial);
+                gri_saldos.getChildren().add(new Etiqueta("TOTAL DEBE :"));
+                tex_total_debe = new Texto();
+                tex_total_debe.setDisabled(true);
+                tex_total_debe.setStyle("font-size: 14px;font-weight: bold");
+                gri_saldos.getChildren().add(tex_total_debe);
+                gri_saldos.getChildren().add(new Etiqueta("SALDO FINAL:"));
+                tex_saldo_final = new Texto();
+                tex_saldo_final.setDisabled(true);
+                tex_saldo_final.setStyle("font-size: 14px;font-weight: bold");
+                gri_saldos.getChildren().add(tex_saldo_final);
+                gri_saldos.getChildren().add(new Etiqueta("TOTAL HABER :"));
+                tex_total_haber = new Texto();
+                tex_total_haber.setDisabled(true);
+                tex_total_haber.setStyle("font-size: 14px;font-weight: bold");
+                gri_saldos.getChildren().add(tex_total_haber);
+
+                fis_consulta.getChildren().add(gri_saldos);
+
                 gru_grupo.getChildren().add(fis_consulta);
 
                 tab_movimientos = new Tabla();
                 tab_movimientos.setNumeroTabla(4);
                 tab_movimientos.setId("tab_movimientos");
                 tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-                tab_movimientos.setLectura(true); 
+                tab_movimientos.setLectura(true);
                 tab_movimientos.setCampoPrimaria("ide_cnccc");
                 tab_movimientos.getColumna("ide_cnccc").setVisible(false);
                 tab_movimientos.getColumna("ide_cnlap").setVisible(false);
                 tab_movimientos.getColumna("debe").setLongitud(30);
                 tab_movimientos.getColumna("haber").setLongitud(30);
-                tab_movimientos.getColumna("saldo").setLongitud(30);
-                
+                tab_movimientos.getColumna("saldo").setLongitud(35);
                 tab_movimientos.getColumna("debe").alinearDerecha();
                 tab_movimientos.getColumna("haber").alinearDerecha();
                 tab_movimientos.getColumna("saldo").alinearDerecha();
                 tab_movimientos.getColumna("saldo").setEstilo("font-weight: bold;");
-                
                 tab_movimientos.getColumna("valor_cndcc").setVisible(false);
                 tab_movimientos.setScrollRows(15);
                 tab_movimientos.dibujar();
@@ -270,6 +301,13 @@ public class pre_clientes extends Pantalla {
     public void actualizarMovimientos() {
         tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_movimientos.ejecutarSql();
+    }
+    
+    /**
+     * Actualiza los solados que se visualizan en pantalla
+     */
+    private void actualizarSaldos(){
+        
     }
 
     /**
