@@ -302,12 +302,34 @@ public class pre_clientes extends Pantalla {
         tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_movimientos.ejecutarSql();
     }
-    
+
     /**
      * Actualiza los solados que se visualizan en pantalla
      */
-    private void actualizarSaldos(){
-        
+    private void actualizarSaldos() {
+
+        double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha());
+        double saldo_inicial = saldo_anterior;
+        double saldo_actual = 0;
+        String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
+
+        for (int i = 0; i < tab_movimientos.getTotalFilas(); i++) {
+            if (tab_movimientos.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
+                tab_movimientos.setValor(i, "debe", tab_movimientos.getValor(i, "valor_cndcc"));
+            } else {
+                tab_movimientos.setValor(i, "haber", tab_movimientos.getValor(i, "valor_cndcc"));
+            }
+            saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc"));
+            tab_movimientos.setValor(i, "saldo", utilitario.getFormatoNumero(saldo_actual, 3));
+
+            saldo_anterior = saldo_actual;
+        }
+        if (tab_movimientos.getTotalFilas() == 0) {
+            utilitario.agregarMensajeInfo("Atencion", "No existe Movimientos con esta Cuenta ");      
+            utilitario.addUpdate("div_division");
+        }
+        utilitario.addUpdate("tab_tabla1");
+
     }
 
     /**
