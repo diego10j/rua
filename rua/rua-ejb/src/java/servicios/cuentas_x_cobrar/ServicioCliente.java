@@ -185,7 +185,7 @@ public class ServicioCliente {
      * @return
      */
     public String getSqlTransaccionesCliente(String ide_geper) {
-        return "SELECT IDE_CCDTR, IDE_CNCCC, nombre_ccttr,DOCUM_RELAC_CCDTR, FECHA_TRANS_CCDTR,case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, IDE_TECLB, FECHA_VENCI_CCDTR,    OBSERVACION_CCDTR, NOM_USUA, NUMERO_PAGO_CCDTR \n"
+        return "SELECT IDE_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, FECHA_TRANS_CCDTR as FECHA,case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, IDE_TECLB, FECHA_VENCI_CCDTR ,    OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, NUMERO_PAGO_CCDTR \n"
                 + "FROM cxc_detall_transa a\n"
                 + "INNER JOIN  cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR\n"
                 + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA\n"
