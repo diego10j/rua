@@ -15,7 +15,6 @@ import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Texto;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.event.SelectEvent;
@@ -47,6 +46,8 @@ public class pre_clientes extends Pantalla {
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
     private AutoCompletar aut_cuentas;
+
+    private Tabla tab_movimientos; //movimientos contables
 
     public pre_clientes() {
         aut_clientes.setId("aut_clientes");
@@ -136,8 +137,10 @@ public class pre_clientes extends Pantalla {
         contenido.getChildren().add(gri_saldos);
 
         tab_transacciones_cxc = new Tabla();
+        tab_transacciones_cxc.setNumeroTabla(2);
         tab_transacciones_cxc.setId("tab_transacciones_cxc");
         tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor()));
+        tab_transacciones_cxc.setCampoPrimaria("IDE_CCDTR");
         tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
         tab_transacciones_cxc.getColumna("IDE_CCDTR").setVisible(false);
         tab_transacciones_cxc.getColumna("NUMERO_PAGO_CCDTR").setVisible(false);
@@ -162,8 +165,10 @@ public class pre_clientes extends Pantalla {
 
     public void dibujarProductos() {
         tab_productos = new Tabla();
+        tab_productos.setNumeroTabla(3);
         tab_productos.setId("tab_productos");
         tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor()));
+        tab_productos.setCampoPrimaria("ide_ccdfa");
         tab_productos.getColumna("ide_ccdfa").setVisible(false);
         tab_productos.setLectura(true);
         tab_productos.dibujar();
@@ -221,16 +226,44 @@ public class pre_clientes extends Pantalla {
 
                 Boton bot_consultar = new Boton();
                 bot_consultar.setValue("Consultar");
+                bot_consultar.setMetodo("actualizarMovimientos");
                 bot_consultar.setIcon("ui-icon-search");
+
                 gri_fechas.getChildren().add(bot_consultar);
 
                 gru_grupo.getChildren().add(fis_consulta);
+
+                tab_movimientos = new Tabla();
+                tab_movimientos.setNumeroTabla(4);
+                tab_movimientos.setId("tab_movimientos");
+                tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_movimientos.setLectura(true); 
+                tab_movimientos.setCampoPrimaria("ide_cnccc");
+                tab_movimientos.getColumna("ide_cnccc").setVisible(false);
+                tab_movimientos.getColumna("ide_cnlap").setVisible(false);
+                tab_movimientos.getColumna("debe").setLongitud(20);
+                tab_movimientos.getColumna("haber").setLongitud(20);
+                tab_movimientos.getColumna("saldo").setLongitud(20);
+                tab_movimientos.getColumna("valor_cndcc").setVisible(false);
+                tab_movimientos.setScrollRows(20);
+                tab_movimientos.dibujar();
+                PanelTabla pat_panel = new PanelTabla();
+                pat_panel.setPanelTabla(tab_movimientos);
+                gru_grupo.getChildren().add(pat_panel);
 
             } else {
                 utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El cliente seleccionado no tiene asociado una cuenta contable");
             }
         }
         mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
+    }
+
+    /**
+     * Actualiza los movmientos contables segun las fechas selecionadas
+     */
+    public void actualizarMovimientos() {
+        tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_movimientos.ejecutarSql();
     }
 
     /**
@@ -408,6 +441,14 @@ public class pre_clientes extends Pantalla {
 
     public void setAut_cuentas(AutoCompletar aut_cuentas) {
         this.aut_cuentas = aut_cuentas;
+    }
+
+    public Tabla getTab_movimientos() {
+        return tab_movimientos;
+    }
+
+    public void setTab_movimientos(Tabla tab_movimientos) {
+        this.tab_movimientos = tab_movimientos;
     }
 
 }
