@@ -187,14 +187,14 @@ public class ServicioCliente {
      * @param ide_geper
      * @return
      */
-    public String getSqlTransaccionesCliente(String ide_geper,String fechaInicio, String fechaFin) {
+    public String getSqlTransaccionesCliente(String ide_geper, String fechaInicio, String fechaFin) {
         return "SELECT FECHA_TRANS_CCDTR,IDE_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, '' SALDO,IDE_TECLB,OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, NUMERO_PAGO_CCDTR ,FECHA_VENCI_CCDTR "
                 + "FROM cxc_detall_transa a "
                 + "INNER JOIN  cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR "
                 + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA "
                 + "WHERE a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "AND ide_ccctr in (select ide_ccctr from cxc_cabece_transa where ide_geper=" + ide_geper + ") "
-                +" AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + " AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY ide_ccdtr desc";
     }
 
@@ -224,6 +224,32 @@ public class ServicioCliente {
             }
         }
         return saldo;
+    }
+
+    /**
+     * Retorna sentencia SQL para obtener las facturas por cobrar de un cliente
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getSqlFacturasPorCobrar(String ide_geper) {
+        return "select dt.ide_ccctr,"
+                + "dt.ide_cccfa,"
+                + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end,"
+                + "cf.secuencial_cccfa,"
+                + "cf.total_cccfa,"
+                + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar,"
+                + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end "
+                + "from cxc_detall_transa dt "
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "where ct.ide_geper=" + ide_geper + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa, "
+                + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
     }
 
 }
