@@ -531,12 +531,7 @@ public class pre_comprobante_conta extends Pantalla {
 
     @Override
     public void abrirRangoFecha() {
-        if (com_tipo_comprobante.getValue() != null) {
-            sec_calendario.dibujar();
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar un tipo de comprobante", "");
-        }
-
+        sec_calendario.dibujar();
     }
 
     public void seleccionTipoComprobante() {
