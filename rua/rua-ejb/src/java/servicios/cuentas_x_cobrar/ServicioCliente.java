@@ -162,36 +162,68 @@ public class ServicioCliente {
     }
 
     /**
-     * Retorna una sentencia SQL que contiene los detalles de Productos que a
-     * comprado un Cliente
+     * Retorna una sentencia SQL que contiene los detalles de Productos X
+     * SUCURSAL que a comprado un Cliente en un rango de fechas
      *
      * @param ide_geper
+     * @param fechaInicio
+     * @param fechaFin
      * @return
      */
-    public String getSqlProductosCliente(String ide_geper) {
+    public String getSqlProductosCliente(String ide_geper, String fechaInicio, String fechaFin) {
         return "SELECT cdf.ide_ccdfa,cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa ,iart.nombre_inarti ,cdf.cantidad_ccdfa,cdf.precio_ccdfa,cdf.total_ccdfa \n"
                 + "from cxc_deta_factura cdf \n"
                 + "left join cxc_cabece_factura cf on cf.ide_cccfa=cdf.ide_cccfa \n"
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti \n"
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
-                + "where cf.ide_geper=" + ide_geper + " and cdf.IDE_EMPR =" + utilitario.getVariable("IDE_EMPR") + " "
+                + "where cf.ide_geper=" + ide_geper + " and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
     }
 
     /**
-     * Retorna las Transacciones del Cliente
+     * Retorna las Transacciones del Cliente X SUCURSAL
      *
      * @param ide_geper
      * @return
      */
-    public String getSqlTransaccionesCliente(String ide_geper) {
-        return "SELECT IDE_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, FECHA_TRANS_CCDTR as FECHA,case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, IDE_TECLB, FECHA_VENCI_CCDTR ,    OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, NUMERO_PAGO_CCDTR \n"
-                + "FROM cxc_detall_transa a\n"
-                + "INNER JOIN  cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR\n"
-                + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA\n"
-                + "WHERE a.IDE_EMPR =" + utilitario.getVariable("IDE_EMPR") + " \n"
-                + "AND ide_ccctr in (select ide_ccctr from cxc_cabece_transa where ide_geper=" + ide_geper + ") \n"
+    public String getSqlTransaccionesCliente(String ide_geper,String fechaInicio, String fechaFin) {
+        return "SELECT FECHA_TRANS_CCDTR,IDE_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, '' SALDO,IDE_TECLB,OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, NUMERO_PAGO_CCDTR ,FECHA_VENCI_CCDTR "
+                + "FROM cxc_detall_transa a "
+                + "INNER JOIN  cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR "
+                + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA "
+                + "WHERE a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "AND ide_ccctr in (select ide_ccctr from cxc_cabece_transa where ide_geper=" + ide_geper + ") "
+                +" AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY ide_ccdtr desc";
+    }
+
+    /**
+     * Retorna el saldo inicial de un Cliente X SUCURSAL a una fecha determinada
+     *
+     * @param ide_geper
+     * @param fecha
+     * @return
+     */
+    public double getSaldoInicialCliente(String ide_geper, String fecha) {
+        double saldo = 0;
+        String sql = "select ide_geper,sum(valor_ccdtr* signo_ccttr) as valor from cxc_detall_transa dt "
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "where ide_geper=" + ide_geper + " "
+                + "and fecha_trans_ccdtr <'" + fecha + "' "
+                + "and dt.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "group by ide_geper";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor(0, "valor") != null) {
+                try {
+                    saldo = Double.parseDouble(tab_saldo.getValor(0, "valor"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return saldo;
     }
 
 }

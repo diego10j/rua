@@ -45,7 +45,7 @@ public class ServicioContabilidad {
      * @return
      */
     public String getSqlMovimientosCuenta(String ide_cndpc, String fechaInicio, String fechaFin) {
-        return "SELECT CAB.ide_cnccc ,CAB.fecha_trans_cnccc as FECHA,PERSO.nom_geper as BENEFICIARIO, "
+        return "SELECT CAB.ide_cnccc ,CAB.fecha_trans_cnccc ,PERSO.nom_geper as BENEFICIARIO, "
                 + "DETA.ide_cnlap,'' as DEBE, '' as HABER, "
                 + "(DETA.valor_cndcc * sc.signo_cnscu) as valor_cndcc,'' as SALDO, CAB.observacion_cnccc as OBSERVACION "
                 + "from con_cab_comp_cont CAB "
