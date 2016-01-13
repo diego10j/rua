@@ -145,14 +145,17 @@ public class pre_clientes extends Pantalla {
         tab_transacciones_cxc.setNumeroTabla(2);
         tab_transacciones_cxc.setId("tab_transacciones_cxc");
         tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor()));
-        tab_transacciones_cxc.setCampoPrimaria("IDE_CCDTR");
         tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
+        tab_transacciones_cxc.getColumna("FECHA").setVisible(true);
         tab_transacciones_cxc.getColumna("IDE_CCDTR").setVisible(false);
         tab_transacciones_cxc.getColumna("NUMERO_PAGO_CCDTR").setVisible(false);
         tab_transacciones_cxc.getColumna("INGRESOS").alinearDerecha();
         tab_transacciones_cxc.getColumna("EGRESOS").alinearDerecha();
         tab_transacciones_cxc.getColumna("IDE_CNCCC").setFiltro(true);
+        tab_transacciones_cxc.getColumna("IDE_CNCCC").setNombreVisual("N. COMP");
+        tab_transacciones_cxc.getColumna("TRANSACCION").setFiltroContenido();
         tab_transacciones_cxc.getColumna("DOCUM_RELAC_CCDTR").setFiltroContenido();
+        tab_transacciones_cxc.getColumna("DOCUM_RELAC_CCDTR").setNombreVisual("N. DOCUMENTO");
         tab_transacciones_cxc.getColumna("INGRESOS").setEstilo("font-weight: bold;");
         tab_transacciones_cxc.getColumna("EGRESOS").setEstilo("font-weight: bold;");
         tab_transacciones_cxc.setLectura(true);
@@ -173,7 +176,6 @@ public class pre_clientes extends Pantalla {
         tab_productos.setNumeroTabla(3);
         tab_productos.setId("tab_productos");
         tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor()));
-        tab_productos.setCampoPrimaria("ide_ccdfa");
         tab_productos.getColumna("ide_ccdfa").setVisible(false);
         tab_productos.setLectura(true);
         tab_productos.dibujar();
@@ -213,9 +215,10 @@ public class pre_clientes extends Pantalla {
         if (isClienteSeleccionado()) {
             TablaGenerica tab_cuenta = ser_contabilidad.getCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()));
             if (!tab_cuenta.isEmpty()) {
-                gru_grupo.getChildren().add(new Etiqueta("<p style='font-size:16px;padding-bottom:5px;'> <strong>" + tab_cuenta.getValor("codig_recur_cndpc") + "</strong> &nbsp; " + tab_cuenta.getValor("nombre_cndpc") + "</p>"));
+
                 Fieldset fis_consulta = new Fieldset();
                 fis_consulta.setLegend("Detalle de la Consulta");
+                fis_consulta.getChildren().add(new Etiqueta("<p style='font-size:16px;padding-bottom:5px;'> <strong>" + tab_cuenta.getValor("codig_recur_cndpc") + "</strong> &nbsp; " + tab_cuenta.getValor("nombre_cndpc") + "</p>"));
 
                 Grid gri_fechas = new Grid();
                 gri_fechas.setColumns(5);
@@ -241,25 +244,33 @@ public class pre_clientes extends Pantalla {
 
                 Grid gri_saldos = new Grid();
                 gri_saldos.setColumns(4);
-                gri_saldos.getChildren().add(new Etiqueta("SALDO INICIAL :"));
+                gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
                 tex_saldo_inicial = new Texto();
+                tex_saldo_inicial.setId("tex_saldo_inicial");
                 tex_saldo_inicial.setDisabled(true);
-                tex_saldo_inicial.setStyle("font-size: 14px;font-weight: bold");
+                tex_saldo_inicial.setSize(10);
+                tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold");
                 gri_saldos.getChildren().add(tex_saldo_inicial);
                 gri_saldos.getChildren().add(new Etiqueta("TOTAL DEBE :"));
                 tex_total_debe = new Texto();
+                tex_total_debe.setId("tex_total_debe");
                 tex_total_debe.setDisabled(true);
-                tex_total_debe.setStyle("font-size: 14px;font-weight: bold");
+                tex_total_debe.setSize(10);
+                tex_total_debe.setStyle("font-size: 13px;");
                 gri_saldos.getChildren().add(tex_total_debe);
-                gri_saldos.getChildren().add(new Etiqueta("SALDO FINAL:"));
+                gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO FINAL :</strong>"));
                 tex_saldo_final = new Texto();
+                tex_saldo_final.setId("tex_saldo_final");
                 tex_saldo_final.setDisabled(true);
-                tex_saldo_final.setStyle("font-size: 14px;font-weight: bold");
+                tex_saldo_final.setStyle("font-size: 13px;font-weight: bold");
+                tex_saldo_final.setSize(10);
                 gri_saldos.getChildren().add(tex_saldo_final);
                 gri_saldos.getChildren().add(new Etiqueta("TOTAL HABER :"));
                 tex_total_haber = new Texto();
+                tex_total_haber.setId("tex_total_haber");
                 tex_total_haber.setDisabled(true);
-                tex_total_haber.setStyle("font-size: 14px;font-weight: bold");
+                tex_total_haber.setStyle("font-size: 13px;");
+                tex_total_haber.setSize(10);
                 gri_saldos.getChildren().add(tex_total_haber);
 
                 fis_consulta.getChildren().add(gri_saldos);
@@ -271,12 +282,12 @@ public class pre_clientes extends Pantalla {
                 tab_movimientos.setId("tab_movimientos");
                 tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
                 tab_movimientos.setLectura(true);
-                tab_movimientos.setCampoPrimaria("ide_cnccc");
                 tab_movimientos.getColumna("ide_cnccc").setVisible(false);
+                tab_movimientos.getColumna("fecha").setVisible(true);
                 tab_movimientos.getColumna("ide_cnlap").setVisible(false);
-                tab_movimientos.getColumna("debe").setLongitud(30);
-                tab_movimientos.getColumna("haber").setLongitud(30);
-                tab_movimientos.getColumna("saldo").setLongitud(35);
+                tab_movimientos.getColumna("debe").setLongitud(20);
+                tab_movimientos.getColumna("haber").setLongitud(20);
+                tab_movimientos.getColumna("saldo").setLongitud(25);
                 tab_movimientos.getColumna("debe").alinearDerecha();
                 tab_movimientos.getColumna("haber").alinearDerecha();
                 tab_movimientos.getColumna("saldo").alinearDerecha();
@@ -287,7 +298,7 @@ public class pre_clientes extends Pantalla {
                 PanelTabla pat_panel = new PanelTabla();
                 pat_panel.setPanelTabla(tab_movimientos);
                 gru_grupo.getChildren().add(pat_panel);
-
+                actualizarSaldos();
             } else {
                 utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El cliente seleccionado no tiene asociado una cuenta contable");
             }
@@ -301,6 +312,7 @@ public class pre_clientes extends Pantalla {
     public void actualizarMovimientos() {
         tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_movimientos.ejecutarSql();
+        actualizarSaldos();
     }
 
     /**
@@ -309,27 +321,38 @@ public class pre_clientes extends Pantalla {
     private void actualizarSaldos() {
 
         double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha());
-        double saldo_inicial = saldo_anterior;
-        double saldo_actual = 0;
+        double dou_saldo_inicial = saldo_anterior;
+        double dou_saldo_actual = 0;
+        double dou_debe = 0;
+        double dou_haber = 0;
         String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
 
         for (int i = 0; i < tab_movimientos.getTotalFilas(); i++) {
             if (tab_movimientos.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
-                tab_movimientos.setValor(i, "debe", tab_movimientos.getValor(i, "valor_cndcc"));
+                tab_movimientos.setValor(i, "debe", utilitario.getFormatoNumero(tab_movimientos.getValor(i, "valor_cndcc")));
+                dou_debe += Double.parseDouble(tab_movimientos.getValor(i, "debe"));
+
             } else {
-                tab_movimientos.setValor(i, "haber", tab_movimientos.getValor(i, "valor_cndcc"));
+                tab_movimientos.setValor(i, "haber", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc")))));
+                dou_haber += Double.parseDouble(tab_movimientos.getValor(i, "haber"));
             }
-            saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc"));
-            tab_movimientos.setValor(i, "saldo", utilitario.getFormatoNumero(saldo_actual, 3));
+            dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc"));
+            tab_movimientos.setValor(i, "saldo", utilitario.getFormatoNumero(dou_saldo_actual));
 
-            saldo_anterior = saldo_actual;
+            saldo_anterior = dou_saldo_actual;
         }
-        if (tab_movimientos.getTotalFilas() == 0) {
-            utilitario.agregarMensajeInfo("Atencion", "No existe Movimientos con esta Cuenta ");      
-            utilitario.addUpdate("div_division");
+        if (tab_movimientos.isEmpty()) {
+            dou_saldo_actual = dou_saldo_inicial;
+            tab_movimientos.setEmptyMessage("No existe Movimientos con esta Cuenta");
         }
-        utilitario.addUpdate("tab_tabla1");
 
+        tex_total_debe.setValue(utilitario.getFormatoNumero(dou_debe));
+        tex_total_haber.setValue(utilitario.getFormatoNumero(dou_haber));
+
+        tex_saldo_inicial.setValue(utilitario.getFormatoNumero(dou_saldo_inicial));
+        tex_saldo_final.setValue(utilitario.getFormatoNumero(dou_saldo_actual));
+
+        utilitario.addUpdate("tex_total_debe,tex_total_haber,tex_saldo_inicial,tex_saldo_final");
     }
 
     /**
