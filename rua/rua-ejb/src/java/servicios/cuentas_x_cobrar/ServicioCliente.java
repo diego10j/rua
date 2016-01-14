@@ -228,25 +228,27 @@ public class ServicioCliente {
 
     /**
      * Retorna sentencia SQL para obtener las facturas por cobrar de un cliente
+     * X SUCURSAL
      *
      * @param ide_geper
      * @return
      */
     public String getSqlFacturasPorCobrar(String ide_geper) {
         return "select dt.ide_ccctr,"
-                + "dt.ide_cccfa,"
-                + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end,"
-                + "cf.secuencial_cccfa,"
+                + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end as FECHA,"
+                + "serie_ccdaf,"
+                + "cf.secuencial_cccfa," 
                 + "cf.total_cccfa,"
                 + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar,"
-                + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end "
+                + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end as OBSERVACION "
                 + "from cxc_detall_transa dt "
                 + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
                 + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "where ct.ide_geper=" + ide_geper + " "
                 + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
-                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa, "
+                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,serie_ccdaf,cf.secuencial_cccfa, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
