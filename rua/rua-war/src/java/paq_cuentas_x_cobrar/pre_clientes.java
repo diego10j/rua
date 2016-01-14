@@ -43,6 +43,7 @@ public class pre_clientes extends Pantalla {
     private Tabla tab_cliente; //formulario cliente    
     private Tabla tab_transacciones_cxc; //transacciones cliente
     private Tabla tab_productos; //transacciones cliente
+    private Tabla tab_facturas; //Facturas pendientes
 
     /*CONTABILIDAD*/
     @EJB
@@ -76,7 +77,6 @@ public class pre_clientes extends Pantalla {
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
 
-
         agregarComponente(mep_menu);
 
     }
@@ -104,6 +104,9 @@ public class pre_clientes extends Pantalla {
                     break;
                 case 5:
                     dibujarMovimientos();
+                    break;
+                case 6:
+                    dibujarFacturas();
                     break;
                 default:
                     dibujarCliente();
@@ -409,6 +412,39 @@ public class pre_clientes extends Pantalla {
         mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
     }
 
+    public void dibujarFacturas() {
+        Grupo gru_grupo = new Grupo();
+        if (isClienteSeleccionado()) {
+            tab_facturas = new Tabla();
+            tab_facturas.setNumeroTabla(6);
+            tab_facturas.setId("tab_facturas");
+            tab_facturas.setSql(ser_cliente.getSqlFacturasPorCobrar(aut_clientes.getValor()));
+            tab_facturas.getColumna("saldo_x_pagar").setEstilo("font-size: 13px;font-weight: bold");
+            tab_facturas.getColumna("saldo_x_pagar").alinearDerecha();
+            tab_facturas.setCampoPrimaria("ide_ccctr");
+            tab_facturas.getColumna("ide_ccctr").setVisible(false);
+            tab_facturas.getColumna("fecha").setVisible(true);
+            tab_facturas.getColumna("serie_ccdaf").setNombreVisual("SERIE");
+            tab_facturas.getColumna("secuencial_cccfa").setNombreVisual("N. FACTURA");
+            tab_facturas.getColumna("secuencial_cccfa").setFiltroContenido();
+            tab_facturas.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
+            tab_facturas.getColumna("total_cccfa").setNombreVisual("TOTAL");
+            tab_facturas.getColumna("total_cccfa").setEstilo("font-size: 13px;");
+            tab_facturas.getColumna("total_cccfa").alinearDerecha();
+            tab_facturas.setLectura(true);
+            tab_facturas.setColumnaSuma("saldo_x_pagar");
+            tab_facturas.dibujar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_facturas);
+            gru_grupo.getChildren().add(pat_panel);
+
+            if (tab_facturas.isEmpty()) {
+                tab_facturas.setEmptyMessage("El cliente no tiene facturas por pagar");
+            }
+        }
+        mep_menu.dibujar(6, "FACTURAS POR COBRAR AL CLIENTE", gru_grupo);
+    }
+
     /**
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
@@ -689,6 +725,14 @@ public class pre_clientes extends Pantalla {
 
     public void setTab_movimientos(Tabla tab_movimientos) {
         this.tab_movimientos = tab_movimientos;
+    }
+
+    public Tabla getTab_facturas() {
+        return tab_facturas;
+    }
+
+    public void setTab_facturas(Tabla tab_facturas) {
+        this.tab_facturas = tab_facturas;
     }
 
 }
