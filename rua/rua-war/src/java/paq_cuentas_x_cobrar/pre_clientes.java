@@ -6,6 +6,7 @@
 package paq_cuentas_x_cobrar;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Arbol;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -13,6 +14,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
+import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -45,6 +47,8 @@ public class pre_clientes extends Pantalla {
     private Tabla tab_productos; //transacciones cliente
     private Tabla tab_facturas; //Facturas pendientes
 
+    private Arbol arb_estructura;// Estructura Gerarquica de clientes
+
     /*CONTABILIDAD*/
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
@@ -73,6 +77,8 @@ public class pre_clientes extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES CLIENTE", "20%");
         mep_menu.agregarItem("Información Cliente", "dibujarCliente", "ui-icon-person");
+        mep_menu.agregarItem("Clasificación Clientes", "dibujarEstructura", "ui-icon-arrow-4-diag");
+        mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Transacciones Cliente", "dibujarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Productos Cliente", "dibujarProductos", "ui-icon-cart");
         mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
@@ -110,6 +116,9 @@ public class pre_clientes extends Pantalla {
                     break;
                 case 6:
                     dibujarFacturas();
+                    break;
+                case 7:
+                    dibujarEstructura();
                     break;
                 default:
                     dibujarCliente();
@@ -450,6 +459,25 @@ public class pre_clientes extends Pantalla {
         mep_menu.dibujar(6, "FACTURAS POR COBRAR AL CLIENTE", gru_grupo);
     }
 
+    public void dibujarEstructura() {
+        Grupo gru_grupo = new Grupo();
+        arb_estructura = new Arbol();
+        arb_estructura.setId("arb_estructura");
+        arb_estructura.setArbol("gen_persona", "ide_geper", "nom_geper", "gen_ide_geper");
+        arb_estructura.setCondicion("es_cliente_geper=true");
+        arb_estructura.dibujar();
+        //Selecciona el nodo
+        if (aut_clientes.getValor() != null) {
+            arb_estructura.seleccinarNodo(aut_clientes.getValor());
+            arb_estructura.getNodoSeleccionado().setExpanded(true);
+            arb_estructura.getNodoSeleccionado().getParent().setExpanded(true);
+        }
+        PanelArbol paa_panel = new PanelArbol();
+        paa_panel.setPanelArbol(arb_estructura);
+        gru_grupo.getChildren().add(paa_panel);
+        mep_menu.dibujar(7, "CLASIFICACIÓN DE CLIENTES", gru_grupo);
+    }
+
     /**
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
@@ -670,10 +698,16 @@ public class pre_clientes extends Pantalla {
                 }
             }
         } else if (mep_menu.getOpcion() == 4) {
+            //Cambiar Cuenta Contable
             if (guardarPantalla().isEmpty()) {
+
                 aut_cuentas.setDisabled(true);
             }
+        } else if (mep_menu.getOpcion() == 7) {
+            //Classificacion de Clientes
+            guardarPantalla();
         }
+
     }
 
     @Override
@@ -738,6 +772,14 @@ public class pre_clientes extends Pantalla {
 
     public void setTab_facturas(Tabla tab_facturas) {
         this.tab_facturas = tab_facturas;
+    }
+
+    public Arbol getArb_estructura() {
+        return arb_estructura;
+    }
+
+    public void setArb_estructura(Arbol arb_estructura) {
+        this.arb_estructura = arb_estructura;
     }
 
 }

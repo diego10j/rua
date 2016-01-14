@@ -6,6 +6,7 @@
 package paq_cuentas_x_pagar;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Arbol;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -13,6 +14,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
+import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -45,6 +47,8 @@ public class pre_proveedores extends Pantalla {
     private Tabla tab_productos; //transacciones proveedor
     private Tabla tab_facturas; //Facturas pendientes
 
+    private Arbol arb_estructura;// Estructura Gerarquica de proveedores
+
     /*CONTABILIDAD*/
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
@@ -59,7 +63,7 @@ public class pre_proveedores extends Pantalla {
 
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PROVEEDOR :"));
-        
+
         aut_proveedor.setId("aut_proveedor");
         aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
         aut_proveedor.setSize(75);
@@ -74,6 +78,8 @@ public class pre_proveedores extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES PROVEEDOR", "20%");
         mep_menu.agregarItem("Información Proveedor", "dibujarProveedor", "ui-icon-person");
+        mep_menu.agregarItem("Clasificación Proveedores", "dibujarEstructura", "ui-icon-arrow-4-diag");
+        mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Transacciones Proveedor", "dibujarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Productos Proveedor", "dibujarProductos", "ui-icon-cart");
         mep_menu.agregarItem("Facturas Por Pagar", "dibujarFacturas", "ui-icon-calculator");
@@ -111,6 +117,9 @@ public class pre_proveedores extends Pantalla {
                     break;
                 case 6:
                     dibujarFacturas();
+                    break;
+                case 7:
+                    dibujarEstructura();
                     break;
                 default:
                     dibujarProveedor();
@@ -452,6 +461,25 @@ public class pre_proveedores extends Pantalla {
         mep_menu.dibujar(6, "FACTURAS POR PAGAR AL PROVEEDOR", gru_grupo);
     }
 
+    public void dibujarEstructura() {
+        Grupo gru_grupo = new Grupo();
+        arb_estructura = new Arbol();
+        arb_estructura.setId("arb_estructura");
+        arb_estructura.setArbol("gen_persona", "ide_geper", "nom_geper", "gen_ide_geper");
+        arb_estructura.setCondicion("es_proveedo_geper=true");
+        arb_estructura.dibujar();
+        //Selecciona el nodo
+        if (aut_proveedor.getValor() != null) {
+            arb_estructura.seleccinarNodo(aut_proveedor.getValor());
+            arb_estructura.getNodoSeleccionado().setExpanded(true);
+            arb_estructura.getNodoSeleccionado().getParent().setExpanded(true);
+        }
+        PanelArbol paa_panel = new PanelArbol();
+        paa_panel.setPanelArbol(arb_estructura);
+        gru_grupo.getChildren().add(paa_panel);
+        mep_menu.dibujar(7, "CLASIFICACIÓN DE PROVEEDORES", gru_grupo);
+    }
+
     /**
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
@@ -672,10 +700,15 @@ public class pre_proveedores extends Pantalla {
                 }
             }
         } else if (mep_menu.getOpcion() == 4) {
+            //Cambiar Cuenta Contable
             if (guardarPantalla().isEmpty()) {
                 aut_cuentas.setDisabled(true);
             }
+        } else if (mep_menu.getOpcion() == 7) {
+            //Classificacion de Proveedores
+            guardarPantalla();
         }
+
     }
 
     @Override
@@ -740,6 +773,14 @@ public class pre_proveedores extends Pantalla {
 
     public void setTab_facturas(Tabla tab_facturas) {
         this.tab_facturas = tab_facturas;
+    }
+
+    public Arbol getArb_estructura() {
+        return arb_estructura;
+    }
+
+    public void setArb_estructura(Arbol arb_estructura) {
+        this.arb_estructura = arb_estructura;
     }
 
 }
