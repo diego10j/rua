@@ -10,7 +10,6 @@ import framework.componentes.Tabla;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.contabilidad.ServicioConfiguracion;
-import static servicios.cuentas_x_cobrar.ServicioCliente.P_PADRE_CLIENTES;
 import sistema.aplicacion.Utilitario;
 
 /**
