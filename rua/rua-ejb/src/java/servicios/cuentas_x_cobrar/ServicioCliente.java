@@ -185,6 +185,8 @@ public class ServicioCliente {
      * Retorna las Transacciones del Cliente X SUCURSAL
      *
      * @param ide_geper
+     * @param fechaInicio
+     * @param fechaFin
      * @return
      */
     public String getSqlTransaccionesCliente(String ide_geper, String fechaInicio, String fechaFin) {
