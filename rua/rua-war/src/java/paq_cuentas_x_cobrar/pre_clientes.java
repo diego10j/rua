@@ -56,6 +56,8 @@ public class pre_clientes extends Pantalla {
     private Texto tex_total_haber;
 
     public pre_clientes() {
+        
+        bar_botones.quitarBotonsNavegacion();
         aut_clientes.setId("aut_clientes");
         aut_clientes.setAutoCompletar(ser_cliente.getSqlComboClientes());
         aut_clientes.setSize(75);
@@ -276,6 +278,8 @@ public class pre_clientes extends Pantalla {
             tab_productos.getColumna("precio_ccdfa").alinearDerecha();
             tab_productos.getColumna("total_ccdfa").alinearDerecha();
             tab_productos.getColumna("total_ccdfa").setEstilo("font-weight: bold");
+            tab_productos.getColumna("nombre_inarti").setFiltroContenido();
+            tab_productos.getColumna("secuencial_cccfa").setFiltroContenido();
 
             tab_productos.setLectura(true);
             tab_productos.setScrollable(true);
@@ -302,7 +306,7 @@ public class pre_clientes extends Pantalla {
 
             Grid gri_contenido = new Grid();
             gri_contenido.setColumns(3);
-            gri_contenido.getChildren().add(new Etiqueta("CUENTA CONTABLE : "));
+            gri_contenido.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
             gri_contenido.getChildren().add(aut_cuentas);
             Boton bot_cambia = new Boton();
             bot_cambia.setValue("Cambiar");
