@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package paq_cuentas_x_cobrar;
+package paq_cuentas_x_pagar;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
@@ -21,28 +21,28 @@ import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidad;
-import servicios.cuentas_x_cobrar.ServicioCliente;
+import servicios.cuentas_x_pagar.ServicioProveedor;
 import sistema.aplicacion.Pantalla;
 
 /**
  *
  * @author dfjacome
  */
-public class pre_clientes extends Pantalla {
+public class pre_proveedores extends Pantalla {
 
     @EJB
-    private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
+    private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
 
     private final MenuPanel mep_menu = new MenuPanel();
-    private AutoCompletar aut_clientes = new AutoCompletar();
+    private AutoCompletar aut_proveedor = new AutoCompletar();
 
     //Consultas
     private Calendario cal_fecha_inicio;
     private Calendario cal_fecha_fin;
 
-    private Tabla tab_cliente; //formulario cliente    
-    private Tabla tab_transacciones_cxc; //transacciones cliente
-    private Tabla tab_productos; //transacciones cliente
+    private Tabla tab_proveedor; //formulario proveedor    
+    private Tabla tab_transacciones_cxp; //transacciones proveedor
+    private Tabla tab_productos; //transacciones proveedor
     private Tabla tab_facturas; //Facturas pendientes
 
     /*CONTABILIDAD*/
@@ -55,27 +55,28 @@ public class pre_clientes extends Pantalla {
     private Texto tex_total_debe;
     private Texto tex_total_haber;
 
-    public pre_clientes() {
+    public pre_proveedores() {
 
         bar_botones.quitarBotonsNavegacion();
-        bar_botones.agregarComponente(new Etiqueta("CLIENTE :"));
-        aut_clientes.setId("aut_clientes");
-        aut_clientes.setAutoCompletar(ser_cliente.getSqlComboClientes());
-        aut_clientes.setSize(75);
-        aut_clientes.setAutocompletarContenido(); // no startWith para la busqueda
-        aut_clientes.setMetodoChange("seleccionarCliente");
-        bar_botones.agregarComponente(aut_clientes);
+        bar_botones.agregarComponente(new Etiqueta("PROVEEDOR :"));
+        
+        aut_proveedor.setId("aut_proveedor");
+        aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
+        aut_proveedor.setSize(75);
+        aut_proveedor.setAutocompletarContenido(); // no startWith para la busqueda
+        aut_proveedor.setMetodoChange("seleccionarProveedor");
+        bar_botones.agregarComponente(aut_proveedor);
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
 
-        mep_menu.setMenuPanel("OPCIONES CLIENTE", "20%");
-        mep_menu.agregarItem("Información Cliente", "dibujarCliente", "ui-icon-person");
-        mep_menu.agregarItem("Transacciones Cliente", "dibujarTransacciones", "ui-icon-contact");
-        mep_menu.agregarItem("Productos Cliente", "dibujarProductos", "ui-icon-cart");
-        mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
+        mep_menu.setMenuPanel("OPCIONES PROVEEDOR", "20%");
+        mep_menu.agregarItem("Información Proveedor", "dibujarProveedor", "ui-icon-person");
+        mep_menu.agregarItem("Transacciones Proveedor", "dibujarTransacciones", "ui-icon-contact");
+        mep_menu.agregarItem("Productos Proveedor", "dibujarProductos", "ui-icon-cart");
+        mep_menu.agregarItem("Facturas Por Pagar", "dibujarFacturas", "ui-icon-calculator");
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
@@ -85,16 +86,16 @@ public class pre_clientes extends Pantalla {
     }
 
     /**
-     * Selecciona un cliente en el autocompletar
+     * Selecciona un Proveedor en el autocompletar
      *
      * @param evt
      */
-    public void seleccionarCliente(SelectEvent evt) {
-        aut_clientes.onSelect(evt);
-        if (aut_clientes != null) {
+    public void seleccionarProveedor(SelectEvent evt) {
+        aut_proveedor.onSelect(evt);
+        if (aut_proveedor != null) {
             switch (mep_menu.getOpcion()) {
                 case 1:
-                    dibujarCliente();
+                    dibujarProveedor();
                     break;
                 case 2:
                     dibujarTransacciones();
@@ -112,7 +113,7 @@ public class pre_clientes extends Pantalla {
                     dibujarFacturas();
                     break;
                 default:
-                    dibujarCliente();
+                    dibujarProveedor();
             }
         } else {
             limpiar();
@@ -120,25 +121,25 @@ public class pre_clientes extends Pantalla {
     }
 
     /**
-     * Dibuja el formulario de datos del Cliente, osigna opcion 1
+     * Dibuja el formulario de datos del Proveedor, osigna opcion 1
      */
-    public void dibujarCliente() {
-        tab_cliente = new Tabla();
-        tab_cliente.setId("tab_cliente");
-        ser_cliente.configurarTablaCliente(tab_cliente);
-        tab_cliente.setTabla("gen_persona", "ide_geper", 1);
-        tab_cliente.setCondicion("ide_geper=" + aut_clientes.getValor());
-        tab_cliente.setMostrarNumeroRegistros(false);
-        tab_cliente.dibujar();
+    public void dibujarProveedor() {
+        tab_proveedor = new Tabla();
+        tab_proveedor.setId("tab_proveedor");
+        ser_proveedor.configurarTablaProveedor(tab_proveedor);
+        tab_proveedor.setTabla("gen_persona", "ide_geper", 1);
+        tab_proveedor.setCondicion("ide_geper=" + aut_proveedor.getValor());
+        tab_proveedor.setMostrarNumeroRegistros(false);
+        tab_proveedor.dibujar();
         PanelTabla pat_panel = new PanelTabla();
-        pat_panel.setPanelTabla(tab_cliente);
+        pat_panel.setPanelTabla(tab_proveedor);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-        mep_menu.dibujar(1, "DATOS DEL CLIENTE", pat_panel);
+        mep_menu.dibujar(1, "DATOS DEL PROVEEDOR", pat_panel);
     }
 
     public void dibujarTransacciones() {
         Grupo gru_grupo = new Grupo();
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
 
             Fieldset fis_consulta = new Fieldset();
             fis_consulta.setLegend("Detalle de la Consulta");
@@ -201,45 +202,46 @@ public class pre_clientes extends Pantalla {
 
             fis_consulta.getChildren().add(gri_saldos);
 
-            tab_transacciones_cxc = new Tabla();
-            tab_transacciones_cxc.setNumeroTabla(2);
-            tab_transacciones_cxc.setId("tab_transacciones_cxc");
-            tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-            tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
-            tab_transacciones_cxc.getColumna("FECHA_TRANS_CCDTR").setNombreVisual("FECHA");
-            tab_transacciones_cxc.getColumna("IDE_CCDTR").setVisible(false);
-            tab_transacciones_cxc.getColumna("NUMERO_PAGO_CCDTR").setVisible(false);
-            tab_transacciones_cxc.getColumna("INGRESOS").alinearDerecha();
-            tab_transacciones_cxc.getColumna("EGRESOS").alinearDerecha();
-            tab_transacciones_cxc.getColumna("IDE_CNCCC").setFiltro(true);
-            tab_transacciones_cxc.getColumna("IDE_CNCCC").setNombreVisual("N. COMP");
-            tab_transacciones_cxc.getColumna("TRANSACCION").setFiltroContenido();
-            tab_transacciones_cxc.getColumna("DOCUM_RELAC_CCDTR").setFiltroContenido();
-            tab_transacciones_cxc.getColumna("DOCUM_RELAC_CCDTR").setNombreVisual("N. DOCUMENTO");
-            tab_transacciones_cxc.getColumna("INGRESOS").alinearDerecha();
-            tab_transacciones_cxc.getColumna("EGRESOS").alinearDerecha();
-            tab_transacciones_cxc.getColumna("INGRESOS").setLongitud(20);
-            tab_transacciones_cxc.getColumna("EGRESOS").setLongitud(20);
-            tab_transacciones_cxc.getColumna("saldo").setLongitud(25);
-            tab_transacciones_cxc.getColumna("saldo").alinearDerecha();
-            tab_transacciones_cxc.getColumna("saldo").setEstilo("font-weight: bold;");
+            tab_transacciones_cxp = new Tabla();
+            tab_transacciones_cxp.setNumeroTabla(2);
+            tab_transacciones_cxp.setId("tab_transacciones_cxp");
+            tab_transacciones_cxp.setSql(ser_proveedor.getSqlTransaccionesProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_transacciones_cxp.setCampoPrimaria("ide_cpdtr");
+            tab_transacciones_cxp.getColumna("IDE_TECLB").setVisible(false);
+            tab_transacciones_cxp.getColumna("fecha_trans_cpdtr").setNombreVisual("FECHA");
+            tab_transacciones_cxp.getColumna("ide_cpdtr").setVisible(false);
+            tab_transacciones_cxp.getColumna("numero_pago_cpdtr").setVisible(false);
+            tab_transacciones_cxp.getColumna("INGRESOS").alinearDerecha();
+            tab_transacciones_cxp.getColumna("EGRESOS").alinearDerecha();
+            tab_transacciones_cxp.getColumna("IDE_CNCCC").setFiltro(true);
+            tab_transacciones_cxp.getColumna("IDE_CNCCC").setNombreVisual("N. COMP");
+            tab_transacciones_cxp.getColumna("TRANSACCION").setFiltroContenido();
+            tab_transacciones_cxp.getColumna("docum_relac_cpdtr").setFiltroContenido();
+            tab_transacciones_cxp.getColumna("docum_relac_cpdtr").setNombreVisual("N. DOCUMENTO");
+            tab_transacciones_cxp.getColumna("INGRESOS").alinearDerecha();
+            tab_transacciones_cxp.getColumna("EGRESOS").alinearDerecha();
+            tab_transacciones_cxp.getColumna("INGRESOS").setLongitud(20);
+            tab_transacciones_cxp.getColumna("EGRESOS").setLongitud(20);
+            tab_transacciones_cxp.getColumna("saldo").setLongitud(25);
+            tab_transacciones_cxp.getColumna("saldo").alinearDerecha();
+            tab_transacciones_cxp.getColumna("saldo").setEstilo("font-weight: bold;");
 
-            tab_transacciones_cxc.setLectura(true);
-            tab_transacciones_cxc.setScrollable(true);
-            tab_transacciones_cxc.setScrollHeight(300);
-            tab_transacciones_cxc.dibujar();
+            tab_transacciones_cxp.setLectura(true);
+            tab_transacciones_cxp.setScrollable(true);
+            tab_transacciones_cxp.setScrollHeight(300);
+            tab_transacciones_cxp.dibujar();
             PanelTabla pat_panel = new PanelTabla();
-            pat_panel.setPanelTabla(tab_transacciones_cxc);
+            pat_panel.setPanelTabla(tab_transacciones_cxp);
             gru_grupo.getChildren().add(pat_panel);
 
-            actualizarSaldoxCobrar();
+            actualizarSaldoxPagar();
         }
-        mep_menu.dibujar(2, "TRANSACCIONES DEL CLIENTE", gru_grupo);
+        mep_menu.dibujar(2, "TRANSACCIONES DEL PROVEEDOR", gru_grupo);
     }
 
     public void dibujarProductos() {
         Grupo gru_grupo = new Grupo();
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
             Fieldset fis_consulta = new Fieldset();
             fis_consulta.setLegend("Detalle de la Consulta");
 
@@ -267,20 +269,20 @@ public class pre_clientes extends Pantalla {
             tab_productos = new Tabla();
             tab_productos.setNumeroTabla(3);
             tab_productos.setId("tab_productos");
-            tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-            tab_productos.getColumna("ide_ccdfa").setVisible(false);
-            tab_productos.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
-            tab_productos.getColumna("serie_ccdaf").setNombreVisual("N. SERIE");
-            tab_productos.getColumna("secuencial_cccfa").setNombreVisual("N. FACTURA");
+            tab_productos.setSql(ser_proveedor.getSqlProductosProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_productos.getColumna("ide_cpdfa").setVisible(false);
+
+            tab_productos.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA");
+            tab_productos.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
             tab_productos.getColumna("nombre_inarti").setNombreVisual("ARTICULO");
-            tab_productos.getColumna("cantidad_ccdfa").setNombreVisual("CANTIDAD");
-            tab_productos.getColumna("precio_ccdfa").setNombreVisual("PRECIO UNI.");
-            tab_productos.getColumna("total_ccdfa").setNombreVisual("TOTAL");
-            tab_productos.getColumna("precio_ccdfa").alinearDerecha();
-            tab_productos.getColumna("total_ccdfa").alinearDerecha();
-            tab_productos.getColumna("total_ccdfa").setEstilo("font-weight: bold");
+            tab_productos.getColumna("cantidad_cpdfa").setNombreVisual("CANTIDAD");
+            tab_productos.getColumna("precio_cpdfa").setNombreVisual("PRECIO UNI.");
+            tab_productos.getColumna("valor_cpdfa").setNombreVisual("TOTAL");
+            tab_productos.getColumna("precio_cpdfa").alinearDerecha();
+            tab_productos.getColumna("valor_cpdfa").alinearDerecha();
+            tab_productos.getColumna("valor_cpdfa").setEstilo("font-weight: bold");
             tab_productos.getColumna("nombre_inarti").setFiltroContenido();
-            tab_productos.getColumna("secuencial_cccfa").setFiltroContenido();
+            tab_productos.getColumna("numero_cpcfa").setFiltroContenido();
 
             tab_productos.setLectura(true);
             tab_productos.setScrollable(true);
@@ -291,19 +293,19 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
 
-        mep_menu.dibujar(3, "PRODUCTOS COMPRADOS POR EL CLIENTE", gru_grupo);
+        mep_menu.dibujar(3, "PRODUCTOS COMPRADOS POR EL PROVEEDOR", gru_grupo);
     }
 
     public void dibujarConfiguraCuenta() {
         Grupo gru_grupo = new Grupo();
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
             aut_cuentas = new AutoCompletar();
             aut_cuentas.setId("aut_cuentas");
-            aut_cuentas.setAutoCompletar(ser_contabilidad.getSqlCuentasActivos());
+            aut_cuentas.setAutoCompletar(ser_contabilidad.getSqlCuentasPasivos());
             aut_cuentas.setSize(75);
             aut_cuentas.setDisabled(true);
             aut_cuentas.setMetodoChange("seleccionarCuentaContable");
-            aut_cuentas.setValor(ser_cliente.getCuentaCliente(aut_clientes.getValor()));
+            aut_cuentas.setValor(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()));
 
             Grid gri_contenido = new Grid();
             gri_contenido.setColumns(3);
@@ -315,15 +317,15 @@ public class pre_clientes extends Pantalla {
             bot_cambia.setMetodo("activaCambiarCuenta");
             gri_contenido.getChildren().add(bot_cambia);
             gru_grupo.getChildren().add(gri_contenido);
-            gru_grupo.getChildren().add(new Etiqueta("<p style='padding-top:10px;'><strong >NOTA: </strong> La cuenta contable seleccionada se relacionará a los movimientos-transacciones que realice el Cliente, a partir que se <strong>guarde </strong> el cambio. </p>"));
+            gru_grupo.getChildren().add(new Etiqueta("<p style='padding-top:10px;'><strong >NOTA: </strong> La cuenta contable seleccionada se relacionará a los movimientos-transacciones que realice el Proveedor, a partir que se <strong>guarde </strong> el cambio. </p>"));
         }
         mep_menu.dibujar(4, "CONFIGURACIÓN DE CUENTA CONTABLE", gru_grupo);
     }
 
     public void dibujarMovimientos() {
         Grupo gru_grupo = new Grupo();
-        if (isClienteSeleccionado()) {
-            TablaGenerica tab_cuenta = ser_contabilidad.getCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()));
+        if (isProveedorSeleccionado()) {
+            TablaGenerica tab_cuenta = ser_contabilidad.getCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()));
             if (!tab_cuenta.isEmpty()) {
 
                 Fieldset fis_consulta = new Fieldset();
@@ -390,7 +392,7 @@ public class pre_clientes extends Pantalla {
                 tab_movimientos = new Tabla();
                 tab_movimientos.setNumeroTabla(4);
                 tab_movimientos.setId("tab_movimientos");
-                tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
                 tab_movimientos.setLectura(true);
                 tab_movimientos.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
                 tab_movimientos.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
@@ -411,7 +413,7 @@ public class pre_clientes extends Pantalla {
                 gru_grupo.getChildren().add(pat_panel);
                 actualizarSaldosContable();
             } else {
-                utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El cliente seleccionado no tiene asociado una cuenta contable");
+                utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El proveedor seleccionado no tiene asociado una cuenta contable");
             }
         }
         mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
@@ -419,23 +421,23 @@ public class pre_clientes extends Pantalla {
 
     public void dibujarFacturas() {
         Grupo gru_grupo = new Grupo();
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
             tab_facturas = new Tabla();
             tab_facturas.setNumeroTabla(6);
             tab_facturas.setId("tab_facturas");
-            tab_facturas.setSql(ser_cliente.getSqlFacturasPorCobrar(aut_clientes.getValor()));
+            tab_facturas.setSql(ser_proveedor.getSqlFacturasPorPagar(aut_proveedor.getValor()));
             tab_facturas.getColumna("saldo_x_pagar").setEstilo("font-size: 13px;font-weight: bold");
             tab_facturas.getColumna("saldo_x_pagar").alinearDerecha();
-            tab_facturas.setCampoPrimaria("ide_ccctr");
-            tab_facturas.getColumna("ide_ccctr").setVisible(false);
+            tab_facturas.setCampoPrimaria("ide_cpctr");
+            tab_facturas.getColumna("ide_cpctr").setVisible(false);
+            tab_facturas.getColumna("ide_cpcfa").setVisible(false);
             tab_facturas.getColumna("fecha").setVisible(true);
-            tab_facturas.getColumna("serie_ccdaf").setNombreVisual("SERIE");
-            tab_facturas.getColumna("secuencial_cccfa").setNombreVisual("N. FACTURA");
-            tab_facturas.getColumna("secuencial_cccfa").setFiltroContenido();
+            tab_facturas.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
+            tab_facturas.getColumna("numero_cpcfa").setFiltroContenido();
             tab_facturas.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
-            tab_facturas.getColumna("total_cccfa").setNombreVisual("TOTAL");
-            tab_facturas.getColumna("total_cccfa").setEstilo("font-size: 13px;");
-            tab_facturas.getColumna("total_cccfa").alinearDerecha();
+            tab_facturas.getColumna("total_cpcfa").setNombreVisual("TOTAL");
+            tab_facturas.getColumna("total_cpcfa").setEstilo("font-size: 13px;");
+            tab_facturas.getColumna("total_cpcfa").alinearDerecha();
             tab_facturas.setLectura(true);
             tab_facturas.setColumnaSuma("saldo_x_pagar");
             tab_facturas.dibujar();
@@ -444,36 +446,36 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
 
             if (tab_facturas.isEmpty()) {
-                tab_facturas.setEmptyMessage("El cliente no tiene facturas por pagar");
+                tab_facturas.setEmptyMessage("No tiene facturas por pagar al proveedor seleccionado");
             }
         }
-        mep_menu.dibujar(6, "FACTURAS POR COBRAR AL CLIENTE", gru_grupo);
+        mep_menu.dibujar(6, "FACTURAS POR PAGAR AL PROVEEDOR", gru_grupo);
     }
 
     /**
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
     public void actualizarMovimientos() {
-        tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_movimientos.ejecutarSql();
         actualizarSaldosContable();
     }
 
     /**
-     * Actualiza las transacciones de un cliente segun las fechas selecionadas
+     * Actualiza las transacciones de un Proveedor segun las fechas selecionadas
      */
     public void actualizarTransacciones() {
-        tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-        tab_transacciones_cxc.ejecutarSql();
-        actualizarSaldoxCobrar();
+        tab_transacciones_cxp.setSql(ser_proveedor.getSqlTransaccionesProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_transacciones_cxp.ejecutarSql();
+        actualizarSaldoxPagar();
     }
 
     /**
-     * Actualiza los productos comprados del cliente segun las fechas
+     * Actualiza los productos comprados del Proveedor segun las fechas
      * selecionadas
      */
     public void actualizarProducots() {
-        tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_productos.setSql(ser_proveedor.getSqlProductosProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_productos.ejecutarSql();
         if (tab_productos.isEmpty()) {
 
@@ -486,7 +488,7 @@ public class pre_clientes extends Pantalla {
      */
     private void actualizarSaldosContable() {
 
-        double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha());
+        double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()), cal_fecha_inicio.getFecha());
         double dou_saldo_inicial = saldo_anterior;
         double dou_saldo_actual = 0;
         double dou_debe = 0;
@@ -495,11 +497,11 @@ public class pre_clientes extends Pantalla {
 
         for (int i = 0; i < tab_movimientos.getTotalFilas(); i++) {
             if (tab_movimientos.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
-                tab_movimientos.setValor(i, "debe", utilitario.getFormatoNumero(tab_movimientos.getValor(i, "valor_cndcc")));
+                tab_movimientos.setValor(i, "debe", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc")))));
                 dou_debe += Double.parseDouble(tab_movimientos.getValor(i, "debe"));
 
             } else {
-                tab_movimientos.setValor(i, "haber", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc")))));
+                tab_movimientos.setValor(i, "haber", utilitario.getFormatoNumero(tab_movimientos.getValor(i, "valor_cndcc")));
                 dou_haber += Double.parseDouble(tab_movimientos.getValor(i, "haber"));
             }
             dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc"));
@@ -526,7 +528,7 @@ public class pre_clientes extends Pantalla {
      * Activa el Autocompletar para cambiar la cuenta contable
      */
     public void activaCambiarCuenta() {
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
             aut_cuentas.setDisabled(false);
             utilitario.addUpdate("aut_cuentas");
         }
@@ -540,15 +542,15 @@ public class pre_clientes extends Pantalla {
      */
     public void seleccionarCuentaContable(SelectEvent evt) {
         aut_cuentas.onSelect(evt);
-        if (isClienteSeleccionado()) {
+        if (isProveedorSeleccionado()) {
             if (aut_cuentas.getValor() != null) {
                 utilitario.getConexion().getSqlPantalla().clear();
-                if (ser_cliente.isTieneCuentaConfiguradaCliente(aut_clientes.getValor()) == false) {
+                if (ser_proveedor.isTieneCuentaConfiguradaProveedor(aut_proveedor.getValor()) == false) {
                     //nueva
-                    utilitario.getConexion().agregarSqlPantalla(ser_cliente.getSqlInsertarCuentaCliente(aut_clientes.getValor(), aut_cuentas.getValor()));
+                    utilitario.getConexion().agregarSqlPantalla(ser_proveedor.getSqlInsertarCuentaProveedor(aut_proveedor.getValor(), aut_cuentas.getValor()));
                 } else {
                     //modifica
-                    utilitario.getConexion().agregarSqlPantalla(ser_cliente.getSqlActualizarCuentaCliente(aut_clientes.getValor(), aut_cuentas.getValor()));
+                    utilitario.getConexion().agregarSqlPantalla(ser_proveedor.getSqlActualizarCuentaProveedor(aut_proveedor.getValor(), aut_cuentas.getValor()));
                 }
             }
         }
@@ -556,39 +558,39 @@ public class pre_clientes extends Pantalla {
     }
 
     /**
-     * Validacion para que se seleccione un cliente del Autocompletar
+     * Validacion para que se seleccione un Proveedor del Autocompletar
      *
      * @return
      */
-    private boolean isClienteSeleccionado() {
-        if (aut_clientes.getValor() == null) {
-            utilitario.agregarMensajeInfo("Debe seleccionar un Cliente", "Seleccione un cliente de la lista del Autocompletar");
+    private boolean isProveedorSeleccionado() {
+        if (aut_proveedor.getValor() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un Proveedor", "Seleccione un proveedor de la lista del Autocompletar");
             return false;
         }
         return true;
     }
 
     /**
-     * Validaciones para crear o modificar un Cliente
+     * Validaciones para crear o modificar un Proveedor
      *
      * @return
      */
-    private boolean validarCliente() {
-        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
-            if (utilitario.validarCedula(tab_cliente.getValor("identificac_geper"))) {
+    private boolean validarProveedor() {
+        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
+            if (utilitario.validarCedula(tab_proveedor.getValor("identificac_geper"))) {
             } else {
                 utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
                 return false;
             }
         }
-        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
-            if (utilitario.validarRUC(tab_cliente.getValor("identificac_geper"))) {
+        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
+            if (utilitario.validarRUC(tab_proveedor.getValor("identificac_geper"))) {
             } else {
                 utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
                 return false;
             }
         }
-        if (tab_cliente.getValor("ide_cntco") == null || tab_cliente.getValor("ide_cntco").isEmpty()) {
+        if (tab_proveedor.getValor("ide_cntco") == null || tab_proveedor.getValor("ide_cntco").isEmpty()) {
             utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
             return false;
         }
@@ -597,32 +599,32 @@ public class pre_clientes extends Pantalla {
     }
 
     /**
-     * Calcula el saldo por cobrar del Cliente
+     * Calcula el saldo por cobrar del Proveedor
      *
      * @return
      */
-    private void actualizarSaldoxCobrar() {
-        double saldo_anterior = ser_cliente.getSaldoInicialCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha());
+    private void actualizarSaldoxPagar() {
+        double saldo_anterior = ser_proveedor.getSaldoInicialProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha());
         double dou_saldo_inicial = saldo_anterior;
         double dou_saldo_actual = 0;
         double dou_ingresos = 0;
         double dou_egresos = 0;
 
-        for (int i = 0; i < tab_transacciones_cxc.getTotalFilas(); i++) {
-            if (tab_transacciones_cxc.getValor(i, "ingresos") != null) {
-                dou_ingresos += Double.parseDouble(tab_transacciones_cxc.getValor(i, "ingresos"));
-                dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_transacciones_cxc.getValor(i, "ingresos"));
+        for (int i = 0; i < tab_transacciones_cxp.getTotalFilas(); i++) {
+            if (tab_transacciones_cxp.getValor(i, "ingresos") != null) {
+                dou_ingresos += Double.parseDouble(tab_transacciones_cxp.getValor(i, "ingresos"));
+                dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_transacciones_cxp.getValor(i, "ingresos"));
             } else {
-                dou_egresos += Double.parseDouble(tab_transacciones_cxc.getValor(i, "egresos"));
-                dou_saldo_actual = saldo_anterior - Double.parseDouble(tab_transacciones_cxc.getValor(i, "egresos"));
+                dou_egresos += Double.parseDouble(tab_transacciones_cxp.getValor(i, "egresos"));
+                dou_saldo_actual = saldo_anterior - Double.parseDouble(tab_transacciones_cxp.getValor(i, "egresos"));
             }
 
-            tab_transacciones_cxc.setValor(i, "saldo", utilitario.getFormatoNumero(dou_saldo_actual));
+            tab_transacciones_cxp.setValor(i, "saldo", utilitario.getFormatoNumero(dou_saldo_actual));
             saldo_anterior = dou_saldo_actual;
         }
-        if (tab_transacciones_cxc.isEmpty()) {
+        if (tab_transacciones_cxp.isEmpty()) {
             dou_saldo_actual = dou_saldo_inicial;
-            tab_transacciones_cxc.setEmptyMessage("No existen Transacciones en el rango de fechas seleccionado");
+            tab_transacciones_cxp.setEmptyMessage("No existen Transacciones en el rango de fechas seleccionado");
         }
         tex_total_debe.setValue(utilitario.getFormatoNumero(dou_ingresos));
         tex_total_haber.setValue(utilitario.getFormatoNumero(dou_egresos));
@@ -637,7 +639,7 @@ public class pre_clientes extends Pantalla {
      * Limpia la pantalla y el autocompletar
      */
     public void limpiar() {
-        aut_clientes.limpiar();
+        aut_proveedor.limpiar();
         mep_menu.limpiar();
     }
 
@@ -645,28 +647,28 @@ public class pre_clientes extends Pantalla {
     public void insertar() {
         if (mep_menu.getOpcion() == -1) {
             //PANTALLA LIMPIA
-            dibujarCliente();
+            dibujarProveedor();
         }
 
         if (mep_menu.getOpcion() == 1) {
-            //FORMULARIO CLIENTE
-            aut_clientes.limpiar();
-            tab_cliente.insertar();
+            //FORMULARIO Proveedor
+            aut_proveedor.limpiar();
+            tab_proveedor.insertar();
         }
     }
 
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
-            //FORMULARIO CLIENTE
-            if (validarCliente()) {
-                tab_cliente.guardar();
+            //FORMULARIO Proveedor
+            if (validarProveedor()) {
+                tab_proveedor.guardar();
                 if (guardarPantalla().isEmpty()) {
                     //Actualiza el autocompletar
-                    aut_clientes.actualizar();
-                    aut_clientes.setSize(75);
-                    aut_clientes.setValor(tab_cliente.getValorSeleccionado());
-                    utilitario.addUpdate("aut_clientes");
+                    aut_proveedor.actualizar();
+                    aut_proveedor.setSize(75);
+                    aut_proveedor.setValor(tab_proveedor.getValorSeleccionado());
+                    utilitario.addUpdate("aut_proveeedor");
                 }
             }
         } else if (mep_menu.getOpcion() == 4) {
@@ -679,33 +681,33 @@ public class pre_clientes extends Pantalla {
     @Override
     public void eliminar() {
         if (mep_menu.getOpcion() == 1) {
-            //FORMULARIO CLIENTE
-            tab_cliente.eliminar();
+            //FORMULARIO Proveedor
+            tab_proveedor.eliminar();
         }
     }
 
-    public AutoCompletar getAut_clientes() {
-        return aut_clientes;
+    public AutoCompletar getAut_proveedor() {
+        return aut_proveedor;
     }
 
-    public void setAut_clientes(AutoCompletar aut_clientes) {
-        this.aut_clientes = aut_clientes;
+    public void setAut_proveedor(AutoCompletar aut_proveedor) {
+        this.aut_proveedor = aut_proveedor;
     }
 
-    public Tabla getTab_cliente() {
-        return tab_cliente;
+    public Tabla getTab_proveedor() {
+        return tab_proveedor;
     }
 
-    public void setTab_cliente(Tabla tab_cliente) {
-        this.tab_cliente = tab_cliente;
+    public void setTab_proveedor(Tabla tab_proveedor) {
+        this.tab_proveedor = tab_proveedor;
     }
 
-    public Tabla getTab_transacciones_cxc() {
-        return tab_transacciones_cxc;
+    public Tabla getTab_transacciones_cxp() {
+        return tab_transacciones_cxp;
     }
 
-    public void setTab_transacciones_cxc(Tabla tab_transacciones_cxc) {
-        this.tab_transacciones_cxc = tab_transacciones_cxc;
+    public void setTab_transacciones_cxp(Tabla tab_transacciones_cxp) {
+        this.tab_transacciones_cxp = tab_transacciones_cxp;
     }
 
     public Tabla getTab_productos() {
