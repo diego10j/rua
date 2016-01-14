@@ -17,6 +17,7 @@ import sistema.aplicacion.Utilitario;
 public class ServicioContabilidad {
 
     public final static String P_TIPO_CUENTA_ACTIVO = "0";
+    public final static String P_TIPO_CUENTA_PASIVO = "4";
     private final Utilitario utilitario = new Utilitario();
 
     public TablaGenerica getCuenta(String ide_cndpc) {
@@ -34,6 +35,18 @@ public class ServicioContabilidad {
                 + "where ide_cntcu = " + P_TIPO_CUENTA_ACTIVO + " "
                 + "ORDER BY codig_recur_cndpc";
     }
+    
+     /**
+     * Retorna la sentencia SQL para obtener cuentas hijas de tipo ACTIVOS
+     *
+     * @return
+     */
+    public String getSqlCuentasPasivos() {
+        return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
+                + "from con_det_plan_cuen "
+                + "where ide_cntcu = " + P_TIPO_CUENTA_PASIVO + " "
+                + "ORDER BY codig_recur_cndpc";
+    }
 
     /**
      * Retorna los movimientos de una cuenta de la sucursal actual en un rango
@@ -45,7 +58,7 @@ public class ServicioContabilidad {
      * @return
      */
     public String getSqlMovimientosCuenta(String ide_cndpc, String fechaInicio, String fechaFin) {
-        return "SELECT CAB.ide_cnccc ,CAB.fecha_trans_cnccc ,PERSO.nom_geper as BENEFICIARIO, "
+        return "SELECT CAB.fecha_trans_cnccc,CAB.ide_cnccc ,PERSO.nom_geper as BENEFICIARIO, "
                 + "DETA.ide_cnlap,'' as DEBE, '' as HABER, "
                 + "(DETA.valor_cndcc * sc.signo_cnscu) as valor_cndcc,'' as SALDO, CAB.observacion_cnccc as OBSERVACION "
                 + "from con_cab_comp_cont CAB "
