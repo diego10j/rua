@@ -259,4 +259,4 @@ public class ServicioProveedor {
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
     }
 
-}
+ }
