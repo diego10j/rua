@@ -29,6 +29,16 @@ public class ServicioCliente {
     private ServicioConfiguracion ser_configuracion;
 
     /**
+     * Retorna los datos de un cliente
+     *
+     * @param ide_geper Cliente
+     * @return
+     */
+    public TablaGenerica getCliente(String ide_geper) {
+        return utilitario.consultar("select * from gen_persona where ide_geper=" + ide_geper);
+    }
+
+    /**
      * Retorna la cuenta configurada del Cliente con el identificador CUENTA POR
      * COBRAR
      *

@@ -22,6 +22,31 @@ public class ServicioProducto {
     private final Utilitario utilitario = new Utilitario();
 
     /**
+     * Retorna los datos de un Producto
+     *
+     * @param ide_inarti Producto
+     * @return
+     */
+    public TablaGenerica getProducto(String ide_inarti) {
+        return utilitario.consultar("SELECT * from inv_articulo where ide_inarti=" + ide_inarti + "");
+    }
+
+    /**
+     * Retorna el valor que identifica la configuracion de iva para un Producto
+     *
+     * @param ide_inarti
+     * @return "" No existe el producto; 1 SI IVA; -1 NO IVA; 0 NO OBJETO;
+     */
+    public String getIvaProducto(String ide_inarti) {
+        String iva = "";
+        TablaGenerica tab_producto = getProducto(ide_inarti);
+        if (tab_producto.isEmpty() == false) {
+            iva = tab_producto.getValor("iva_inarti");
+        }
+        return iva;
+    }
+
+    /**
      * Retorna la sentencia SQL para obtener los Productos de una empresa, para
      * ser utilizada en Combos, Autocompletar
      *
@@ -168,6 +193,87 @@ public class ServicioProducto {
             }
         }
         return precio_promedio;
+    }
+
+    /**
+     * Retona el último precio de un Producto que compro un cliente
+     *
+     * @param ide_geper
+     * @param ide_inarti
+     * @return
+     */
+    public double getUltimoPrecioProductoCliente(String ide_geper, String ide_inarti) {
+        double precio = 0.00;
+        TablaGenerica tab_precio = utilitario.consultar("select ide_inarti,precio_ccdfa  from cxc_deta_factura a "
+                + "inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa "
+                + "where ide_geper=" + ide_geper + " "
+                + "AND  ide_inarti=" + ide_inarti + " "
+                + "order by fecha_trans_cccfa desc limit 1");
+        if (tab_precio.isEmpty() == false) {
+            if (tab_precio.getValor(0, "precio_ccdfa") != null) {
+                try {
+                    precio = Double.parseDouble(tab_precio.getValor(0, "precio_ccdfa"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return precio;
+    }
+
+    /**
+     * Retorna el ultimo valor de configuracion de la compra del Producto de un
+     * Cliente
+     *
+     * @param ide_geper
+     * @param ide_inarti
+     * @return '' No existe configuracion; 1 SI IVA; -1 NO IVA; 0 NO OBJETO;
+     */
+    public String getUltimoIvaProductoCliente(String ide_geper, String ide_inarti) {
+        String iva = "";
+        TablaGenerica tab_precio = utilitario.consultar("select ide_inarti,iva_inarti_ccdfa  from cxc_deta_factura a "
+                + "inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa "
+                + "where ide_geper=" + ide_geper + " "
+                + "AND  ide_inarti=" + ide_inarti + " "
+                + "AND iva_inarti_ccdfa is not null "
+                + "order by fecha_trans_cccfa desc limit 1");
+        if (tab_precio.isEmpty() == false) {
+            if (tab_precio.getValor(0, "iva_inarti_ccdfa") != null) {
+                iva = tab_precio.getValor(0, "iva_inarti_ccdfa");
+
+            }
+        }
+        return iva;
+    }
+
+    /**
+     * Obtiene el tipo de producto recursivamente
+     *
+     * @param ide_arti
+     * @return
+     */
+    public String getTipoProducto(String ide_arti) {
+        String ide_art = ide_arti;
+        TablaGenerica inv_ide_arti = getProducto(ide_arti);
+        if (inv_ide_arti.getTotalFilas() > 0) {
+            do {
+                ide_art = inv_ide_arti.getValor(0, "inv_ide_inarti");
+                inv_ide_arti = utilitario.consultar("select * from inv_articulo where ide_inarti=" + ide_art);
+            } while (inv_ide_arti.getValor(0, "inv_ide_inarti") != null && !inv_ide_arti.getValor(0, "inv_ide_inarti").isEmpty());
+        }
+        return ide_art;
+    }
+
+    /**
+     * Retorna si un Producto es un Bien
+     *
+     * @param ide_inarti
+     * @return
+     */
+    public boolean isBien(String ide_inarti) {
+        // Parametro que identifica a un 
+        String p_inv_articulo_bien = utilitario.getVariable("p_inv_articulo_bien");
+        String art = getTipoProducto(ide_inarti);
+        return art.equals(p_inv_articulo_bien);
     }
 
 }
