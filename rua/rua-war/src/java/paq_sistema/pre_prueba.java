@@ -17,7 +17,7 @@ public class pre_prueba extends Pantalla {
 
     public pre_prueba() {
         fac.setId("fac");
-        fac.setFacturaCxC();
+        fac.setFacturaCxC("");
         agregarComponente(fac);
     }
 
