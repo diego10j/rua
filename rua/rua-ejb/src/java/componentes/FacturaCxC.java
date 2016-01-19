@@ -36,7 +36,7 @@ public class FacturaCxC extends Dialogo {
     private final Utilitario utilitario = new Utilitario();
 
     /////FACTURA
-    @EJB
+    @EJB 
     private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
     @EJB
     private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
@@ -234,12 +234,13 @@ public class FacturaCxC extends Dialogo {
         };
         lista.add(fila1);
         lista.add(fila2);
-        lista.add(fila3);
-        tab_deta_factura.getColumna("iva_inarti_ccdfa").setRadio(lista, "1");
+        lista.add(fila3);        
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(lista);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(4);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setNombreVisual("IVA");
-        tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");        
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setLongitud(-1);
 
         tab_deta_factura.getColumna("total_ccdfa").setNombreVisual("TOTAL");
         tab_deta_factura.getColumna("total_ccdfa").setOrden(5);

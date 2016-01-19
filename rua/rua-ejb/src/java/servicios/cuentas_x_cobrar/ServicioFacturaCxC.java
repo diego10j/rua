@@ -31,7 +31,7 @@ public class ServicioFacturaCxC {
      * Retorna el secuencial maximo de un punto de emisión
      *
      * @param ide_ccdaf
-     * @return
+     * @return 
      */
     public int getSecuencialFactura(String ide_ccdaf) {
         int max = 0;
