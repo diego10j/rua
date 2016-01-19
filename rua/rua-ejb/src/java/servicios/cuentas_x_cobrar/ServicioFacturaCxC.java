@@ -31,7 +31,7 @@ public class ServicioFacturaCxC {
      * Retorna el secuencial maximo de un punto de emisión
      *
      * @param ide_ccdaf
-     * @return 
+     * @return
      */
     public int getSecuencialFactura(String ide_ccdaf) {
         int max = 0;
@@ -40,11 +40,31 @@ public class ServicioFacturaCxC {
             try {
                 max = Integer.parseInt(tab_secuencia.getValor("num_max"));
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         max++;
         return max;
+    }
+
+    /**
+     * Retorna todas las facturas generadas en un punto de emisión x sucursal
+     *
+     * @param ide_ccdaf Punto de Emisión
+     * @param fechaInicio Fecha desde
+     * @param fechaFin Fecha hasta
+     * @return
+     */
+    public String getSqlFacturas(String ide_ccdaf, String fechaInicio, String fechaFin) {
+        return "select a.ide_cccfa, secuencial_cccfa, a.ide_ccefa,nombre_ccefa ,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
+                + "observacion_cccfa, fecha_trans_cccfa,ide_cnccc "
+                + "from cxc_cabece_factura a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
+                + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_ccdaf=" + ide_ccdaf + " "
+                +" and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
 }

@@ -6,6 +6,7 @@
 package componentes;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Ajax;
 import framework.componentes.AreaTexto;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
@@ -36,23 +37,32 @@ public class FacturaCxC extends Dialogo {
     private final Utilitario utilitario = new Utilitario();
 
     /////FACTURA
-    @EJB 
+    @EJB
     private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
     @EJB
     private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
 
+    private final Tabulador tab_factura = new Tabulador();
     private Tabla tab_cab_factura = new Tabla();
     private Tabla tab_deta_factura = new Tabla();
-    private final SelectBooleanButton sbb_factura = new SelectBooleanButton();
+    private SelectBooleanButton sbb_factura = new SelectBooleanButton();
     private final AreaTexto ate_observacion = new AreaTexto();
     private final Texto tex_subtotal12 = new Texto();
     private final Texto tex_subtotal0 = new Texto();
     private final Texto tex_iva = new Texto();
     private final Texto tex_total = new Texto();
-
     private final Combo com_pto_emision = new Combo();
+
+    //CONTABILIDAD Asiento de Venta
+    private Tabla tab_cab_conta = new Tabla();
+    private Tabla tab_deta_conta = new Tabla();
+
+    //OPCIONES
+    private boolean lectura = false;
+    private String ide_cccfa = "-1";
+    private String ide_cnccc = "-1";
 
     public FacturaCxC() {
         this.setWidth("95%");
@@ -61,38 +71,93 @@ public class FacturaCxC extends Dialogo {
         this.setResizable(false);
         this.setDynamic(false);
 
-    }
-
-    public void setFacturaCxC() {
-        this.getGri_cuerpo().getChildren().clear();
-        Tabulador tab_factura = new Tabulador();
         tab_factura.setStyle("width:" + (getAnchoPanel() - 5) + "px;height:" + (getAltoPanel() - 10) + "px;overflow: auto;display: block;");
         tab_factura.setId("tab_factura");
-        tab_factura.agregarTab("FACTURA ", dibujarFactura());
-        //tab_factura.agregarTab("RETENCIÓN", null);
-        tab_factura.agregarTab("ASIENTO DE VENTA", null);
-        tab_factura.agregarTab("ASIENTO DE COSTO", null);
-        tab_factura.agregarTab("INVENTARIO", null);
+        tab_factura.setWidgetVar("w_factura");
+        tab_factura.agregarTab("FACTURA ", null);//0 
+        tab_factura.agregarTab("ASIENTO DE VENTA", null);//1
+        tab_factura.agregarTab("ASIENTO DE COSTO", null);//2
+        tab_factura.agregarTab("INVENTARIO", null);//3
+        tab_factura.agregarTab("RETENCIÓN", null);//4
         this.setDialogo(tab_factura);
+
     }
 
-    @Override
-    public void dibujar() {
-        //FACTURA
+    public void setFacturaCxC(String titulo) {
+        tab_factura.getTab(0).getChildren().clear();
+        tab_factura.getTab(1).getChildren().clear();
+        tab_factura.getTab(2).getChildren().clear();
+        tab_factura.getTab(3).getChildren().clear();
+        this.setTitle(titulo);
+
+        tab_factura.getTab(0).getChildren().add(dibujarFactura());
+        tab_factura.getTab(1).getChildren().add(dibujarAsientoVenta());
+    }
+
+    /**
+     * Configuraciones para crear una factura
+     */
+    public void nuevaFactura() {
         tab_cab_factura.limpiar();
         tab_cab_factura.insertar();
         tab_deta_factura.limpiar();
         ate_observacion.limpiar();
         sbb_factura.setValue(false);
+        sbb_factura.setDisabled(false);
         tex_iva.setValue("0,00");
         tex_subtotal0.setValue("0,00");
         tex_subtotal12.setValue("0,00");
         tex_total.setValue("0,00");
         cargarMaximoSecuencial();
-        //FIN FACTURA
-        super.dibujar(); //To change body of generated methods, choose Tools | Templates.
+        setActivarRetencion(false); //Desactiva la retención
     }
 
+    /**
+     * Configuraciones para cargar una factura
+     *
+     * @param ide_cccfa
+     */
+    public void cargarFactura(String ide_cccfa) {
+        //Carga la Factura
+        tab_cab_factura.setCondicion("ide_cccfa=" + ide_cccfa);
+        tab_cab_factura.ejecutarSql();
+        com_pto_emision.setValue(tab_cab_factura.getValor("ide_ccdaf"));
+        tab_deta_factura.setValorForanea(tab_cab_factura.getValorSeleccionado());
+        tab_deta_factura.ejecutarSql();
+        sbb_factura.setDisabled(true);
+        tex_iva.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("valor_iva_cccfa")));
+        //Carga totales y observacion
+        double dou_subt0 = 0;
+        double dou_subtno = 0;
+        try {
+            dou_subt0 = Double.parseDouble(tab_cab_factura.getValor("base_tarifa0_cccfa"));
+        } catch (Exception e) {
+        }
+        try {
+            dou_subtno = Double.parseDouble(tab_cab_factura.getValor("base_no_objeto_iva_cccfa"));
+        } catch (Exception e) {
+        }
+        tex_subtotal0.setValue(utilitario.getFormatoNumero(dou_subt0 + dou_subtno));
+        tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("base_grabada_cccfa")));
+        tex_total.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cccfa")));
+        ate_observacion.setValue(tab_cab_factura.getValor("observacion_cccfa "));
+
+        //Si la factura esta anulada pone de lectura
+        if (tab_cab_factura.getValor("ide_ccefa").equals(utilitario.getVariable("p_cxc_estado_factura_anulada"))) {
+            tab_cab_factura.getFilaSeleccionada().setLectura(true);
+            ate_observacion.setDisabled(true);
+            com_pto_emision.setDisabled(true);
+        } else {
+            ate_observacion.setDisabled(false);
+            com_pto_emision.setDisabled(false);
+        }
+    }
+
+    /**
+     * Configuraciones para Tab de Factura
+     *
+     * @return
+     */
     private Grupo dibujarFactura() {
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodoRuta("pre_index.clase." + getId() + ".cargarMaximoSecuencial");
@@ -105,12 +170,17 @@ public class FacturaCxC extends Dialogo {
         gri_pto.getChildren().add(com_pto_emision);
 
         gri_pto.getChildren().add(new Etiqueta("<strong>&nbsp;SOLO GUARDAR LA FACTURA ?</strong>"));
+        sbb_factura = new SelectBooleanButton();
         sbb_factura.setValue(false);
         sbb_factura.setOnLabel("Si");
         sbb_factura.setOffLabel("No");
         sbb_factura.setOnIcon("ui-icon-check");
         sbb_factura.setOffIcon("ui-icon-close");
         sbb_factura.setStyle("width:60px");
+        Ajax aja_click = new Ajax();
+        aja_click.setMetodoRuta("pre_index.clase." + getId() + ".soloGuarda");
+        aja_click.setGlobal(false);
+        sbb_factura.addClientBehavior("change", aja_click);
         gri_pto.getChildren().add(sbb_factura);
 
         grupo.getChildren().add(gri_pto);
@@ -188,7 +258,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.setTipoFormulario(true);
         tab_cab_factura.getGrid().setColumns(6);
         tab_cab_factura.agregarRelacion(tab_deta_factura);
-        tab_cab_factura.setCondicion("ide_cccfa=-1");
+        tab_cab_factura.setCondicion("ide_cccfa=" + ide_cccfa);
         tab_cab_factura.setCondicionSucursal(true);
 
         tab_cab_factura.getColumna("base_grabada_cccfa").setVisible(false);
@@ -196,9 +266,8 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("valor_iva_cccfa").setVisible(false);
         tab_cab_factura.getColumna("base_tarifa0_cccfa").setVisible(false);
         tab_cab_factura.getColumna("total_cccfa").setVisible(false);
-
+        tab_cab_factura.setLectura(lectura);
         tab_cab_factura.dibujar();
-        tab_cab_factura.insertar();
 
         tab_deta_factura.setId("tab_deta_factura");
         tab_deta_factura.setIdCompleto("tab_factura:tab_deta_factura");
@@ -216,12 +285,10 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setOrden(2);
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setRequerida(true);
-
         tab_deta_factura.getColumna("PRECIO_CCDFA").setNombreVisual("PRECIO");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setOrden(3);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
-
         List lista = new ArrayList();
         Object fila1[] = {
             "1", "SI"
@@ -234,24 +301,24 @@ public class FacturaCxC extends Dialogo {
         };
         lista.add(fila1);
         lista.add(fila2);
-        lista.add(fila3);        
+        lista.add(fila3);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(lista);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(4);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setNombreVisual("IVA");
-        tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");        
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setLongitud(-1);
-
         tab_deta_factura.getColumna("total_ccdfa").setNombreVisual("TOTAL");
         tab_deta_factura.getColumna("total_ccdfa").setOrden(5);
         tab_deta_factura.getColumna("OBSERVACION_CCDFA").setNombreVisual("OBSERVACION");
-
         tab_deta_factura.getColumna("total_ccdfa").setEtiqueta();
         tab_deta_factura.getColumna("total_ccdfa").setEstilo("font-size:14px;font-weight: bold;");
         tab_deta_factura.getColumna("total_ccdfa").alinearDerecha();
         tab_deta_factura.getColumna("precio_promedio_ccdfa").setLectura(true);
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(150);
+        tab_deta_factura.setLectura(lectura);
+        tab_deta_factura.setRecuperarLectura(true);
         tab_deta_factura.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();
@@ -306,6 +373,110 @@ public class FacturaCxC extends Dialogo {
 
         grupo.getChildren().add(gri_total);
         return grupo;
+    }
+
+    public Grupo dibujarAsientoVenta() {
+        Grupo grupo = new Grupo();
+
+        tab_cab_conta = new Tabla();
+        tab_deta_conta = new Tabla();
+        tab_cab_conta.setRuta("pre_index.clase." + getId());
+        tab_cab_conta.setId("tab_cab_conta");
+        tab_cab_conta.setIdCompleto("tab_factura:tab_cab_conta");
+        tab_cab_conta.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
+        tab_cab_conta.setCondicion("ide_cnccc=" + ide_cnccc);
+        tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("CODIGO");
+        tab_cab_conta.getColumna("fecha_siste_cnccc").setVisible(false);
+        tab_cab_conta.getColumna("numero_cnccc").setLectura(true);
+        tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
+        tab_cab_conta.getColumna("numero_cnccc").setNombreVisual("NÚMERO");
+        tab_cab_conta.getColumna("numero_cnccc").setOrden(3);
+        tab_cab_conta.getColumna("fecha_siste_cnccc").setValorDefecto(utilitario.getFechaActual());
+        tab_cab_conta.getColumna("fecha_trans_cnccc").setValorDefecto(utilitario.getFechaActual());
+        tab_cab_conta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
+        tab_cab_conta.getColumna("fecha_trans_cnccc").setOrden(1);
+        tab_cab_conta.getColumna("hora_sistem_cnccc").setVisible(false);
+        tab_cab_conta.getColumna("hora_sistem_cnccc").setValorDefecto(utilitario.getHoraActual());
+        tab_cab_conta.getColumna("ide_usua").setVisible(false);
+        tab_cab_conta.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_cab_conta.getColumna("ide_modu").setVisible(false);
+        //tab_cab_conta.getColumna("ide_modu").setValorDefecto(""); ////////////////************
+        tab_cab_conta.getColumna("ide_geper").setCombo(tab_cab_factura.getColumna("ide_geper").getListaCombo());
+        tab_cab_conta.getColumna("ide_geper").setAutoCompletar();
+        tab_cab_conta.getColumna("ide_geper").setLectura(true);
+        tab_cab_conta.getColumna("ide_geper").setNombreVisual("BENEFICIARIO");
+        tab_cab_conta.getColumna("ide_geper").setOrden(2);
+        tab_cab_conta.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
+        tab_cab_conta.getColumna("ide_cneco").setVisible(false);
+        tab_cab_conta.getColumna("ide_cntcm").setValorDefecto(utilitario.getVariable("p_con_tipo_comprobante_ingreso"));
+        tab_cab_conta.getColumna("ide_cntcm").setVisible(false);
+        tab_cab_conta.getColumna("OBSERVACION_CNCCC").setVisible(false);
+
+        tab_cab_conta.setTipoFormulario(true);
+        tab_cab_conta.getGrid().setColumns(6);
+        tab_cab_conta.setMostrarNumeroRegistros(false);
+        tab_cab_conta.setLectura(lectura);
+        tab_cab_conta.agregarRelacion(tab_deta_conta);
+        tab_cab_conta.dibujar();
+        tab_cab_conta.insertar();
+
+        tab_deta_conta.setRuta("pre_index.clase." + getId());
+        tab_deta_conta.setId("tab_deta_conta");
+        tab_deta_conta.setIdCompleto("tab_factura:tab_deta_conta");
+        tab_deta_conta.setTabla("con_det_comp_cont", "ide_cndcc", -1);
+        tab_deta_conta.getColumna("ide_cndpc").setCombo("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc,nombre_cndpc", "ide_cncpc=0");
+        tab_deta_conta.getColumna("ide_cndpc").setAutoCompletar();
+        tab_deta_conta.getColumna("ide_cndpc").setNombreVisual("CUENTA");
+        tab_deta_conta.getColumna("ide_cnlap").setCombo("con_lugar_aplicac", "ide_cnlap", "nombre_cnlap", "");
+        tab_deta_conta.getColumna("ide_cnlap").setPermitirNullCombo(false);
+        tab_deta_conta.getColumna("ide_cnlap").setNombreVisual("LUGAR APLICA");
+        tab_deta_conta.getColumna("ide_cnlap").setRequerida(true);
+        tab_deta_conta.getColumna("ide_cnlap").setLongitud(-1);
+        tab_deta_conta.getColumna("ide_cnccc").setVisible(false);
+        tab_deta_conta.getColumna("ide_cndcc").setVisible(false);
+        tab_deta_conta.getColumna("ide_cndpc").setRequerida(true);
+        tab_deta_conta.getColumna("valor_cndcc").setRequerida(true);
+        tab_deta_conta.getColumna("valor_cndcc").setNombreVisual("VALOR");
+        tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACION");
+        tab_deta_conta.setCampoOrden("ide_cnlap desc");
+        tab_deta_conta.setScrollable(true);
+        tab_deta_conta.setScrollHeight(150);
+        tab_deta_conta.setLectura(lectura);
+        tab_deta_conta.setRecuperarLectura(true);
+        tab_deta_conta.dibujar();
+
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_deta_conta);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_formato().setRendered(false);
+        pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertar");
+        pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
+
+        grupo.getChildren().add(tab_cab_conta);
+        grupo.getChildren().add(pat_panel);
+
+        return grupo;
+    }
+
+    /**
+     * Activa o desactiva las Tabs
+     *
+     * @param evt
+     */
+    public void soloGuarda(AjaxBehaviorEvent evt) {
+        //Solo guarda
+        String str_script_activa = tab_factura.getTab(1).isDisabled() == false ? "w_factura.enable(1);" : "";
+        str_script_activa += tab_factura.getTab(2).isDisabled() == false ? "w_factura.enable(2);" : "";
+        str_script_activa += tab_factura.getTab(3).isDisabled() == false ? "w_factura.enable(3);" : "";
+        str_script_activa += tab_factura.getTab(4).isDisabled() == false ? "w_factura.enable(4);" : "";
+        if (String.valueOf(sbb_factura.getValue()).equals("true")) {
+            //Desactiva todas
+            utilitario.ejecutarJavaScript("w_factura.disable(1);w_factura.disable(2);w_factura.disable(3);w_factura.disable(4)");
+        } else {
+            utilitario.ejecutarJavaScript(str_script_activa);
+        }
     }
 
     /**
@@ -429,12 +600,21 @@ public class FacturaCxC extends Dialogo {
             } else {
                 utilitario.agregarMensajeInfo("Seleccione Cliente", "Debe seleccionar un cliente para realizar la factura");
             }
+        } else if (tab_deta_conta.isFocus()) {
+            //Valida que haya valores en la factura
+            if (tab_deta_factura.isEmpty() == false) {
+                tab_deta_conta.insertar();
+            } else {
+                utilitario.agregarMensajeInfo("Crear Factura", "Debe ingresar detalles a la Factura");
+            }
         }
     }
 
     public void eliminar() {
         if (tab_deta_factura.isFocus()) {
             tab_deta_factura.eliminar();
+        } else if (tab_deta_conta.isFocus()) {
+            tab_deta_conta.eliminar();
         }
     }
 
@@ -444,6 +624,16 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.setValor("solo_guardar_cccfa", String.valueOf(sbb_factura.getValue()));
         tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));
 
+    }
+
+    @Override
+    public void cerrar() {
+        //Activa las tab
+        tab_factura.getTab(1).setDisabled(false);
+        tab_factura.getTab(2).setDisabled(false);
+        tab_factura.getTab(3).setDisabled(false);
+        tab_factura.getTab(4).setDisabled(false);
+        super.cerrar(); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Tabla getTab_cab_factura() {
@@ -460,6 +650,71 @@ public class FacturaCxC extends Dialogo {
 
     public void setTab_deta_factura(Tabla tab_deta_factura) {
         this.tab_deta_factura = tab_deta_factura;
+    }
+
+    public boolean isLectura() {
+        return lectura;
+    }
+
+    public void setLectura(boolean lectura) {
+        this.lectura = lectura;
+    }
+
+    /**
+     * Para cargar una factura que ya existe
+     *
+     * @param ide_cccfa Codigo de la Factura
+     */
+    public void setIdeFactura(String ide_cccfa) {
+        this.ide_cccfa = ide_cccfa;
+    }
+
+    public boolean isActivarAsientoVenta() {
+        return tab_factura.getTab(1).isDisabled();
+    }
+
+    public void setActivarAsientoVenta(boolean activarAsientoVenta) {
+        tab_factura.getTab(1).setDisabled(!activarAsientoVenta);
+    }
+
+    public boolean isActivarAsientoCosto() {
+        return tab_factura.getTab(2).isDisabled();
+    }
+
+    public void setActivarAsientoCosto(boolean activarAsientoCosto) {
+        tab_factura.getTab(2).setDisabled(!activarAsientoCosto);
+    }
+
+    public boolean isActivarInventario() {
+        return tab_factura.getTab(3).isDisabled();
+    }
+
+    public void setActivarInventario(boolean activarInventario) {
+        tab_factura.getTab(3).setDisabled(!activarInventario);
+    }
+
+    public boolean isActivarRetencion() {
+        return tab_factura.getTab(4).isDisabled();
+    }
+
+    public void setActivarRetencion(boolean activarRetencion) {
+        tab_factura.getTab(4).setDisabled(!activarRetencion);
+    }
+
+    public Tabla getTab_cab_conta() {
+        return tab_cab_conta;
+    }
+
+    public void setTab_cab_conta(Tabla tab_cab_conta) {
+        this.tab_cab_conta = tab_cab_conta;
+    }
+
+    public Tabla getTab_deta_conta() {
+        return tab_deta_conta;
+    }
+
+    public void setTab_deta_conta(Tabla tab_deta_conta) {
+        this.tab_deta_conta = tab_deta_conta;
     }
 
 }
