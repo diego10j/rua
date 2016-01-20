@@ -144,7 +144,7 @@ public class pre_facturasCxC extends Pantalla {
 
     public void abrirVerFactura() {
         if (tab_facturas.getValorSeleccionado() != null) {
-            fcc_factura.cargarFactura(tab_facturas.getValorSeleccionado());
+            fcc_factura.verFactura(tab_facturas.getValorSeleccionado());
             fcc_factura.dibujar();
         } else {
             utilitario.agregarMensajeInfo("Seleccionar Factura", "Debe seleccionar una factura de la tabla");
