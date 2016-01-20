@@ -58,6 +58,10 @@ public class FacturaCxC extends Dialogo {
     //CONTABILIDAD Asiento de Venta
     private Tabla tab_cab_conta = new Tabla();
     private Tabla tab_deta_conta = new Tabla();
+    private final AreaTexto ate_observacion_conta = new AreaTexto();
+    private final Texto tex_debe_conta = new Texto();
+    private final Texto tex_haber_conta = new Texto();
+    private final Texto tex_diferencia = new Texto();
 
     //OPCIONES
     private boolean lectura = false;
@@ -113,11 +117,11 @@ public class FacturaCxC extends Dialogo {
     }
 
     /**
-     * Configuraciones para cargar una factura
+     * Configuraciones para ver una factura
      *
      * @param ide_cccfa
      */
-    public void cargarFactura(String ide_cccfa) {
+    public void verFactura(String ide_cccfa) {
         //Carga la Factura
         tab_cab_factura.setCondicion("ide_cccfa=" + ide_cccfa);
         tab_cab_factura.ejecutarSql();
@@ -142,15 +146,42 @@ public class FacturaCxC extends Dialogo {
         tex_total.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cccfa")));
         ate_observacion.setValue(tab_cab_factura.getValor("observacion_cccfa "));
 
-        //Si la factura esta anulada pone de lectura
-        if (tab_cab_factura.getValor("ide_ccefa").equals(utilitario.getVariable("p_cxc_estado_factura_anulada"))) {
-            tab_cab_factura.getFilaSeleccionada().setLectura(true);
-            ate_observacion.setDisabled(true);
-            com_pto_emision.setDisabled(true);
+        tab_cab_factura.getFilaSeleccionada().setLectura(true);
+        ate_observacion.setDisabled(true);
+        com_pto_emision.setDisabled(true);
+
+        /**
+         * COMPROBANTE DE VENTA
+         */
+        if (tab_cab_factura.getValor("ide_cnccc") == null) {
+            nuevoComprobanteVenta();
         } else {
-            ate_observacion.setDisabled(false);
-            com_pto_emision.setDisabled(false);
+            verComprobanteVenta(tab_cab_factura.getValor("ide_cnccc"));
         }
+
+    }
+
+    public void nuevoComprobanteVenta() {
+        tab_cab_conta.limpiar();
+        tab_cab_conta.insertar();
+        tab_deta_conta.limpiar();
+        ate_observacion_conta.limpiar();
+        ate_observacion_conta.setDisabled(false);
+        tex_debe_conta.setValue("0,00");
+        tex_haber_conta.setValue("0,00");
+        tex_diferencia.setValue("0,00");
+        com_pto_emision.setDisabled(false);
+    }
+
+    public void verComprobanteVenta(String ide_cnccc) {
+        tab_cab_conta.setCondicion("ide_cnccc=" + ide_cnccc);
+        tab_cab_conta.ejecutarSql();
+        tab_cab_conta.getFilaSeleccionada().setLectura(true);
+        tab_deta_conta.setValorForanea(tab_cab_conta.getValorSeleccionado());
+        tab_deta_conta.ejecutarSql();
+        ate_observacion_conta.setDisabled(true);
+        ate_observacion_conta.setValue(tab_cab_conta.getValor("observacion_cnccc "));
+        calculaTotalesComprobanteVenta();
     }
 
     /**
@@ -222,7 +253,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("total_cccfa").setEtiqueta();
         tab_cab_factura.getColumna("total_cccfa").setEstilo("font-size: 16px;font-weight: bold;text-decoration: underline");
         tab_cab_factura.getColumna("total_cccfa").setValorDefecto("0,00");
-        tab_cab_factura.getColumna("secuencial_cccfa").setEstilo("font-size: 14px;font-weight: bold;text-align: right;color:red");
+        tab_cab_factura.getColumna("secuencial_cccfa").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_factura.getColumna("secuencial_cccfa").setTipoJava("java.lang.Integer");
         tab_cab_factura.getColumna("secuencial_cccfa").setLongitud(10);
         tab_cab_factura.getColumna("secuencial_cccfa").setOrden(1);
@@ -341,7 +372,7 @@ public class FacturaCxC extends Dialogo {
 
         Grid gri_observa = new Grid();
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
-        ate_observacion.setCols(50);
+        ate_observacion.setCols(80);
         gri_observa.getChildren().add(ate_observacion);
         gri_total.getChildren().add(gri_observa);
 
@@ -385,12 +416,12 @@ public class FacturaCxC extends Dialogo {
         tab_cab_conta.setIdCompleto("tab_factura:tab_cab_conta");
         tab_cab_conta.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
         tab_cab_conta.setCondicion("ide_cnccc=" + ide_cnccc);
-        tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("CODIGO");
+        tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("TRANSACCIÓN");
         tab_cab_conta.getColumna("fecha_siste_cnccc").setVisible(false);
         tab_cab_conta.getColumna("numero_cnccc").setLectura(true);
-        tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
-        tab_cab_conta.getColumna("numero_cnccc").setNombreVisual("NÚMERO");
-        tab_cab_conta.getColumna("numero_cnccc").setOrden(3);
+        tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
+        tab_cab_conta.getColumna("numero_cnccc").setNombreVisual("NUM. COMPROBANTE");
+        tab_cab_conta.getColumna("numero_cnccc").setOrden(5);
         tab_cab_conta.getColumna("fecha_siste_cnccc").setValorDefecto(utilitario.getFechaActual());
         tab_cab_conta.getColumna("fecha_trans_cnccc").setValorDefecto(utilitario.getFechaActual());
         tab_cab_conta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
@@ -399,8 +430,12 @@ public class FacturaCxC extends Dialogo {
         tab_cab_conta.getColumna("hora_sistem_cnccc").setValorDefecto(utilitario.getHoraActual());
         tab_cab_conta.getColumna("ide_usua").setVisible(false);
         tab_cab_conta.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
-        tab_cab_conta.getColumna("ide_modu").setVisible(false);
-        //tab_cab_conta.getColumna("ide_modu").setValorDefecto(""); ////////////////************
+        tab_cab_conta.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
+        tab_cab_conta.getColumna("ide_modu").setValorDefecto("3"); //Cuentas x Cobrar
+        tab_cab_conta.getColumna("ide_modu").setLectura(true);
+        tab_cab_conta.getColumna("ide_modu").setNombreVisual("MÓDULO");
+        tab_cab_conta.getColumna("ide_modu").setOrden(4);
+        tab_cab_conta.getColumna("ide_modu").setEstilo("width:130px");
         tab_cab_conta.getColumna("ide_geper").setCombo(tab_cab_factura.getColumna("ide_geper").getListaCombo());
         tab_cab_conta.getColumna("ide_geper").setAutoCompletar();
         tab_cab_conta.getColumna("ide_geper").setLectura(true);
@@ -409,7 +444,11 @@ public class FacturaCxC extends Dialogo {
         tab_cab_conta.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
         tab_cab_conta.getColumna("ide_cneco").setVisible(false);
         tab_cab_conta.getColumna("ide_cntcm").setValorDefecto(utilitario.getVariable("p_con_tipo_comprobante_ingreso"));
-        tab_cab_conta.getColumna("ide_cntcm").setVisible(false);
+        tab_cab_conta.getColumna("ide_cntcm").setLectura(true);
+        tab_cab_conta.getColumna("ide_cntcm").setCombo("con_tipo_comproba", "ide_cntcm", "nombre_cntcm", "");
+        tab_cab_conta.getColumna("ide_cntcm").setNombreVisual("TIPO COMPROBANTE");
+        tab_cab_conta.getColumna("ide_cntcm").setEstilo("width:100px");
+        tab_cab_conta.getColumna("ide_cntcm").setOrden(3);
         tab_cab_conta.getColumna("OBSERVACION_CNCCC").setVisible(false);
 
         tab_cab_conta.setTipoFormulario(true);
@@ -440,7 +479,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACION");
         tab_deta_conta.setCampoOrden("ide_cnlap desc");
         tab_deta_conta.setScrollable(true);
-        tab_deta_conta.setScrollHeight(150);
+        tab_deta_conta.setScrollHeight(200);
         tab_deta_conta.setLectura(lectura);
         tab_deta_conta.setRecuperarLectura(true);
         tab_deta_conta.dibujar();
@@ -457,6 +496,37 @@ public class FacturaCxC extends Dialogo {
         grupo.getChildren().add(tab_cab_conta);
         grupo.getChildren().add(pat_panel);
 
+        Grid gri_total = new Grid();
+        gri_total.setWidth("100%");
+        gri_total.setStyle("width:" + (getAnchoPanel() - 10) + "px;border:1px");
+        gri_total.setColumns(2);
+
+        Grid gri_observa = new Grid();
+        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
+        ate_observacion_conta.setCols(80);
+        gri_observa.getChildren().add(ate_observacion_conta);
+        gri_total.getChildren().add(gri_observa);
+
+        Grid gri_valores = new Grid();
+        gri_valores.setColumns(6);
+        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL DEBE :<s/trong>"));
+        tex_debe_conta.setDisabled(true);
+        tex_debe_conta.setStyle("font-size: 14px;text-align: right;width:110px;font-weight: bold");
+        gri_valores.getChildren().add(tex_debe_conta);
+
+        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL HABER :<s/trong>"));
+        tex_haber_conta.setDisabled(true);
+        tex_haber_conta.setStyle("font-size: 14px;text-align: right;width:110px;font-weight: bold");
+        gri_valores.getChildren().add(tex_haber_conta);
+
+        gri_valores.getChildren().add(new Etiqueta("<strong>DIFERENCIA :<s/trong>"));
+        tex_diferencia.setDisabled(true);
+        tex_diferencia.setStyle("font-size: 14px;text-align: right;width:110px");
+        gri_valores.getChildren().add(tex_diferencia);
+
+        gri_total.getChildren().add(gri_valores);
+
+        grupo.getChildren().add(gri_total);
         return grupo;
     }
 
@@ -626,6 +696,47 @@ public class FacturaCxC extends Dialogo {
 
     }
 
+    private boolean calculaTotalesComprobanteVenta() {
+        double tot_debe = 0;
+        double tot_haber = 0;
+        double dou_diferencia = 0;
+        String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
+        String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
+        for (int i = 0; i < tab_deta_conta.getTotalFilas(); i++) {
+
+            if (tab_deta_conta.getValor(i, "valor_cndcc") != null && !tab_deta_conta.getValor(i, "valor_cndcc").isEmpty()) {
+                if (tab_deta_conta.getValor(i, "ide_cnlap") != null && !tab_deta_conta.getValor(i, "ide_cnlap").isEmpty()) {
+                    if (tab_deta_conta.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
+                        tot_debe = tot_debe + Double.parseDouble(tab_deta_conta.getValor(i, "valor_cndcc"));
+                    }
+                    if (tab_deta_conta.getValor(i, "ide_cnlap").equals(p_con_lugar_haber)) {
+                        tot_haber = tot_haber + Double.parseDouble(tab_deta_conta.getValor(i, "valor_cndcc"));
+                    }
+                }
+            }
+
+        }
+        tex_debe_conta.setValue(utilitario.getFormatoNumero(tot_debe));
+        tex_haber_conta.setValue(utilitario.getFormatoNumero(tot_haber));
+
+        try {
+            dou_diferencia = Double.parseDouble(utilitario.getFormatoNumero(tot_debe)) - Double.parseDouble(utilitario.getFormatoNumero(tot_haber));
+        } catch (Exception e) {
+        }
+
+        tex_diferencia.setValue(utilitario.getFormatoNumero(dou_diferencia));
+        if (dou_diferencia != 0) {
+            tex_diferencia.setStyle("font-size: 14px;text-align: right;width:110px;color:red;font-weight: bold");
+        } else {
+            tex_diferencia.setStyle("font-size: 14px;text-align: right;width:110px");
+        }
+        if (dou_diferencia == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void cerrar() {
         //Activa las tab
@@ -658,15 +769,6 @@ public class FacturaCxC extends Dialogo {
 
     public void setLectura(boolean lectura) {
         this.lectura = lectura;
-    }
-
-    /**
-     * Para cargar una factura que ya existe
-     *
-     * @param ide_cccfa Codigo de la Factura
-     */
-    public void setIdeFactura(String ide_cccfa) {
-        this.ide_cccfa = ide_cccfa;
     }
 
     public boolean isActivarAsientoVenta() {
