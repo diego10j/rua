@@ -62,7 +62,7 @@ public class FacturaCxC extends Dialogo {
     private AutoCompletar aut_recibe_pago = new AutoCompletar();
     private Texto tex_doc_pago = new Texto();
     private Texto tex_mono_pago = new Texto();
-    private AreaTexto ate_observacion_pago=new AreaTexto();
+    private AreaTexto ate_observacion_pago = new AreaTexto();
     //CONTABILIDAD Asiento de Venta
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
@@ -244,6 +244,11 @@ public class FacturaCxC extends Dialogo {
         } catch (Exception e) {
         }
 
+    }
+
+    private Grupo dibujarDetallePago() {
+        Grupo grupo = new Grupo();
+        return grupo;
     }
 
     /**
@@ -957,6 +962,5 @@ public class FacturaCxC extends Dialogo {
     public void setAut_recibe_pago(AutoCompletar aut_recibe_pago) {
         this.aut_recibe_pago = aut_recibe_pago;
     }
-
 
 }
