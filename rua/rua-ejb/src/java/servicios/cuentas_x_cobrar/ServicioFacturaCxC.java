@@ -6,7 +6,11 @@
 package servicios.cuentas_x_cobrar;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Tabla;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.contabilidad.ServicioContabilidad;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -16,6 +20,8 @@ import sistema.aplicacion.Utilitario;
 @Stateless
 public class ServicioFacturaCxC {
 
+    @EJB
+    private ServicioContabilidad ser_tesoreria;
     private final Utilitario utilitario = new Utilitario();
 
     /**
@@ -84,6 +90,105 @@ public class ServicioFacturaCxC {
                 + "where numero_pago_ccdtr > 0 "
                 + "and ide_cccfa=" + ide_cccfa + " "
                 + "order by fecha_trans_ccdtr";
+    }
+
+    /**
+     * Registra la Factura en una transaccion cxc
+     *
+     * @param tab_cab_factura
+     * @return ide_ccctr Cabecera de la Transaccion CxC
+     */
+    public String generarTransaccionFactura(Tabla tab_cab_factura) {
+        String ide_ccctr = "-1";
+        TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
+        TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+        tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr", -1);
+        tab_cab_tran_cxc.getColumna("ide_ccctr").setExterna(false);
+        tab_cab_tran_cxc.setCondicion("ide_ccctr=-1");
+        tab_cab_tran_cxc.ejecutarSql();
+        tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+        tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+        tab_det_tran_cxc.setCondicion("ide_ccdtr=" + ide_ccctr);
+        tab_det_tran_cxc.ejecutarSql();
+        String str_p_cxc_tipo_trans_factura = utilitario.getVariable("p_cxc_tipo_trans_factura");//Tipo transaccion Factura     
+        tab_cab_tran_cxc.limpiar();
+        tab_det_tran_cxc.limpiar();
+        tab_cab_tran_cxc.insertar();
+        if (tab_cab_factura != null) {
+            tab_cab_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
+            tab_cab_tran_cxc.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
+            tab_cab_tran_cxc.setValor("fecha_trans_ccctr", tab_cab_factura.getValor("fecha_emisi_cccfa"));
+            tab_cab_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+            tab_cab_tran_cxc.setValor("observacion_ccctr", "V/. Factura " + tab_cab_factura.getValor("secuencial_cccfa") + " ");
+            tab_cab_tran_cxc.guardar();
+            tab_det_tran_cxc.insertar();
+            tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+            tab_det_tran_cxc.setValor("ide_ccctr", tab_cab_tran_cxc.getValor("ide_ccctr"));
+            tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+            tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
+            tab_det_tran_cxc.setValor("fecha_trans_ccdtr", tab_cab_factura.getValor("fecha_emisi_cccfa"));
+            tab_det_tran_cxc.setValor("valor_ccdtr", tab_cab_factura.getValor("total_cccfa"));
+            tab_det_tran_cxc.setValor("observacion_ccdtr", tab_cab_tran_cxc.getValor("observacion_ccctr"));
+            tab_det_tran_cxc.setValor("numero_pago_ccdtr", "0");
+            tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cccfa")), ser_tesoreria.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
+            tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
+            tab_det_tran_cxc.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
+            tab_det_tran_cxc.guardar();
+            ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
+        }
+        return ide_ccctr;
+    }
+
+    /**
+     * Genera la transaccion cxc de un pago registrado en tesoreria de una
+     * factura cxc
+     *
+     * @param tab_cab_factura Cebecera Factura
+     * @param ide_ccctr Cabecera Transaccion cxc
+     * @param ide_teclb Cabecera Libro Bancos
+     * @param valor valor del pago
+     * @param observacion observacion
+     * @param num_documento num documento relacionado
+     */
+    public void generarTransaccionPago(Tabla tab_cab_factura, String ide_ccctr, String ide_teclb, double valor, String observacion, String num_documento) {
+        TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+        tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+        tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+        tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
+        tab_det_tran_cxc.ejecutarSql();
+        String str_p_cxc_tipo_trans_pago = utilitario.getVariable("p_cxc_tipo_trans_pago");
+
+        tab_det_tran_cxc.insertar();
+        tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
+        tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+        tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
+        tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+
+        tab_det_tran_cxc.setValor("fecha_trans_ccdtr", utilitario.getFechaActual());
+        tab_det_tran_cxc.setValor("valor_ccdtr", utilitario.getFormatoNumero(valor));
+        tab_det_tran_cxc.setValor("observacion_ccdtr", observacion);
+        tab_det_tran_cxc.setValor("numero_pago_ccdtr", getNumeroPagoFactura(ide_ccctr) + "");
+        tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFechaActual());
+        if (num_documento == null || num_documento.isEmpty()) {
+            num_documento = tab_cab_factura.getValor("secuencial_cccfa");
+        }
+        tab_det_tran_cxc.setValor("docum_relac_ccdtr", num_documento);
+
+        tab_det_tran_cxc.guardar();
+    }
+
+    public int getNumeroPagoFactura(String ide_ccctr) {
+        //RETORNA EL PAGO MAXIMO         
+        List lis_sql = utilitario.getConexion().consultar("select max(numero_pago_ccdtr) from cxc_detall_transa where ide_ccctr=" + ide_ccctr);
+        int num = 0;
+        if (lis_sql.isEmpty() == false && lis_sql.get(0) != null) {
+            try {
+                num = Integer.parseInt(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return num + 1;
     }
 
 }

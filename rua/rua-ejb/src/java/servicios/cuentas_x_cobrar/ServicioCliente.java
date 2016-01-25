@@ -208,7 +208,7 @@ public class ServicioCliente {
                 + "WHERE a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "AND ide_geper=" + ide_geper + " "
                 + "AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "ORDER BY FECHA_TRANS_CCDTR ";
+                + "ORDER BY FECHA_TRANS_CCDTR,IDE_CCDTR";
     }
 
     /**

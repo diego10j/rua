@@ -35,8 +35,8 @@ public class ServicioContabilidad {
                 + "where ide_cntcu = " + P_TIPO_CUENTA_ACTIVO + " "
                 + "ORDER BY codig_recur_cndpc";
     }
-    
-     /**
+
+    /**
      * Retorna la sentencia SQL para obtener cuentas hijas de tipo ACTIVOS
      *
      * @return
@@ -64,7 +64,7 @@ public class ServicioContabilidad {
                 + "from con_cab_comp_cont CAB "
                 + "left join gen_persona PERSO on CAB.ide_geper=PERSO.ide_geper "
                 + "inner join  con_det_comp_cont DETA on CAB.ide_cnccc=DETA.ide_cnccc "
-                + "inner join con_det_plan_cuen CUENTA on  CUENTA.ide_cndpc = DETA.ide_cndpc "                
+                + "inner join con_det_plan_cuen CUENTA on  CUENTA.ide_cndpc = DETA.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on CUENTA.ide_cntcu=tc.ide_cntcu "
                 + "inner join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and DETA.ide_cnlap=sc.ide_cnlap "
                 + "WHERE CUENTA.ide_cndpc=" + ide_cndpc + " and fecha_trans_cnccc BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
@@ -104,5 +104,25 @@ public class ServicioContabilidad {
         }
         return saldo;
     }
+
+    /**
+     * Retorna el número de dias de credito de una forma de pago
+     *
+     * @param ide_cndfp
+     * @return 0==contado !=0 Credito
+     */
+    public int getDiasFormaPago(String ide_cndfp) {
+        int dias = 0;
+        TablaGenerica tab_dias = utilitario.consultar("select ide_cndfp,dias_cndfp from con_deta_forma_pago where ide_cndfp=" + ide_cndfp);
+        if (tab_dias.isEmpty() == false) {
+            try {
+                dias = Integer.parseInt(tab_dias.getValor("dias_cndfp"));
+            } catch (Exception e) {
+            }
+        }
+        return dias;
+    }
+    
+    
 
 }
