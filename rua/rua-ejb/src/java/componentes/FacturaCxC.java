@@ -237,8 +237,7 @@ public class FacturaCxC extends Dialogo {
         ate_observacion_conta.setDisabled(false);
         tex_debe_conta.setValue("0,00");
         tex_haber_conta.setValue("0,00");
-        tex_diferencia.setValue("0,00");
-        com_pto_emision.setDisabled(false);
+        tex_diferencia.setValue("0,00");     
         //Activa click derecho insertar y eliminar
         try {
             PanelTabla pat_panel = (PanelTabla) tab_deta_conta.getParent();
