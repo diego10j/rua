@@ -16,6 +16,7 @@ is divided into following sections:
 
         -->
 <project xmlns:ejbjarproject1="http://www.netbeans.org/ns/j2ee-ejbjarproject/1" xmlns:ejbjarproject2="http://www.netbeans.org/ns/j2ee-ejbjarproject/2" xmlns:ejbjarproject3="http://www.netbeans.org/ns/j2ee-ejbjarproject/3" basedir=".." default="default" name="rua-ejb-impl">
+    <import file="jaxws-build.xml"/>
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -783,7 +784,7 @@ exists or setup the property manually. For example like this:
     <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps"/>
     <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps"/>
     <target depends="init, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
-    <target depends="init,deps-jar" name="-pre-pre-compile">
+    <target depends="init,deps-jar,wsimport-client-generate" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
         <mkdir dir="${build.ear.classes.dir}"/>
     </target>
@@ -795,19 +796,139 @@ exists or setup the property manually. For example like this:
     <target if="is.jars.in.ejbjar" name="-library-inclusion-in-archive-by-user">
         <copyfiles files="${file.reference.primefaces-3.4.2.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.jdfaces.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.API.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.Cert.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.Log.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.OCSP.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.Policy.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.TSA.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.Trust.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.XADES.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.bcmail-jdk15-1.43.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.bcprov-jdk15-1.43.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.bctsp-jdk15-1.43.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.cliente-file-ws.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.firma-xades.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.jconn4.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.jdom-2.0.5.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.log4j-1.2.16.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.serializer-2.7.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.xalan-2.7.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.xml-apis-1.3.04.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.xmlsec-1.4.2-ADSI-1.0.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.appframework-1.0.3.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-beanutils-1.8.0.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-collections-3.2.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-digester-1.8.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-javaflow-20060411.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-logging-1.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.hsqldb.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.itext-2.1.7.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.jasperreports-5.1.0.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.swing-worker-1.1.jar}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${file.reference.primefaces-3.4.2.jar}" property="manifest.file.reference.primefaces-3.4.2.jar"/>
         <basename file="${file.reference.jdfaces.jar}" property="manifest.file.reference.jdfaces.jar"/>
+        <basename file="${file.reference.API.jar}" property="manifest.file.reference.API.jar"/>
+        <basename file="${file.reference.Cert.jar}" property="manifest.file.reference.Cert.jar"/>
+        <basename file="${file.reference.Log.jar}" property="manifest.file.reference.Log.jar"/>
+        <basename file="${file.reference.OCSP.jar}" property="manifest.file.reference.OCSP.jar"/>
+        <basename file="${file.reference.Policy.jar}" property="manifest.file.reference.Policy.jar"/>
+        <basename file="${file.reference.TSA.jar}" property="manifest.file.reference.TSA.jar"/>
+        <basename file="${file.reference.Trust.jar}" property="manifest.file.reference.Trust.jar"/>
+        <basename file="${file.reference.XADES.jar}" property="manifest.file.reference.XADES.jar"/>
+        <basename file="${file.reference.bcmail-jdk15-1.43.jar}" property="manifest.file.reference.bcmail-jdk15-1.43.jar"/>
+        <basename file="${file.reference.bcprov-jdk15-1.43.jar}" property="manifest.file.reference.bcprov-jdk15-1.43.jar"/>
+        <basename file="${file.reference.bctsp-jdk15-1.43.jar}" property="manifest.file.reference.bctsp-jdk15-1.43.jar"/>
+        <basename file="${file.reference.cliente-file-ws.jar}" property="manifest.file.reference.cliente-file-ws.jar"/>
+        <basename file="${file.reference.firma-xades.jar}" property="manifest.file.reference.firma-xades.jar"/>
+        <basename file="${file.reference.jconn4.jar}" property="manifest.file.reference.jconn4.jar"/>
+        <basename file="${file.reference.jdom-2.0.5.jar}" property="manifest.file.reference.jdom-2.0.5.jar"/>
+        <basename file="${file.reference.log4j-1.2.16.jar}" property="manifest.file.reference.log4j-1.2.16.jar"/>
+        <basename file="${file.reference.serializer-2.7.1.jar}" property="manifest.file.reference.serializer-2.7.1.jar"/>
+        <basename file="${file.reference.xalan-2.7.1.jar}" property="manifest.file.reference.xalan-2.7.1.jar"/>
+        <basename file="${file.reference.xml-apis-1.3.04.jar}" property="manifest.file.reference.xml-apis-1.3.04.jar"/>
+        <basename file="${file.reference.xmlsec-1.4.2-ADSI-1.0.jar}" property="manifest.file.reference.xmlsec-1.4.2-ADSI-1.0.jar"/>
+        <basename file="${file.reference.appframework-1.0.3.jar}" property="manifest.file.reference.appframework-1.0.3.jar"/>
+        <basename file="${file.reference.commons-beanutils-1.8.0.jar}" property="manifest.file.reference.commons-beanutils-1.8.0.jar"/>
+        <basename file="${file.reference.commons-collections-3.2.1.jar}" property="manifest.file.reference.commons-collections-3.2.1.jar"/>
+        <basename file="${file.reference.commons-digester-1.8.jar}" property="manifest.file.reference.commons-digester-1.8.jar"/>
+        <basename file="${file.reference.commons-javaflow-20060411.jar}" property="manifest.file.reference.commons-javaflow-20060411.jar"/>
+        <basename file="${file.reference.commons-logging-1.1.jar}" property="manifest.file.reference.commons-logging-1.1.jar"/>
+        <basename file="${file.reference.hsqldb.jar}" property="manifest.file.reference.hsqldb.jar"/>
+        <basename file="${file.reference.itext-2.1.7.jar}" property="manifest.file.reference.itext-2.1.7.jar"/>
+        <basename file="${file.reference.jasperreports-5.1.0.jar}" property="manifest.file.reference.jasperreports-5.1.0.jar"/>
+        <basename file="${file.reference.swing-worker-1.1.jar}" property="manifest.file.reference.swing-worker-1.1.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 jar-13 jar-14 jar-15 jar-16 jar-17 jar-18 jar-19 jar-20 jar-21 jar-22 jar-23 jar-24 jar-25 jar-26 jar-27 jar-28 jar-29 jar-30 jar-31 jar-32 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.primefaces-3.4.2.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.file.reference.jdfaces.jar}"/>
+            <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.API.jar}"/>
+            <attribute name="jar-4-Extension-Name" value="${manifest.file.reference.Cert.jar}"/>
+            <attribute name="jar-5-Extension-Name" value="${manifest.file.reference.Log.jar}"/>
+            <attribute name="jar-6-Extension-Name" value="${manifest.file.reference.OCSP.jar}"/>
+            <attribute name="jar-7-Extension-Name" value="${manifest.file.reference.Policy.jar}"/>
+            <attribute name="jar-8-Extension-Name" value="${manifest.file.reference.TSA.jar}"/>
+            <attribute name="jar-9-Extension-Name" value="${manifest.file.reference.Trust.jar}"/>
+            <attribute name="jar-10-Extension-Name" value="${manifest.file.reference.XADES.jar}"/>
+            <attribute name="jar-11-Extension-Name" value="${manifest.file.reference.bcmail-jdk15-1.43.jar}"/>
+            <attribute name="jar-12-Extension-Name" value="${manifest.file.reference.bcprov-jdk15-1.43.jar}"/>
+            <attribute name="jar-13-Extension-Name" value="${manifest.file.reference.bctsp-jdk15-1.43.jar}"/>
+            <attribute name="jar-14-Extension-Name" value="${manifest.file.reference.cliente-file-ws.jar}"/>
+            <attribute name="jar-15-Extension-Name" value="${manifest.file.reference.firma-xades.jar}"/>
+            <attribute name="jar-16-Extension-Name" value="${manifest.file.reference.jconn4.jar}"/>
+            <attribute name="jar-17-Extension-Name" value="${manifest.file.reference.jdom-2.0.5.jar}"/>
+            <attribute name="jar-18-Extension-Name" value="${manifest.file.reference.log4j-1.2.16.jar}"/>
+            <attribute name="jar-19-Extension-Name" value="${manifest.file.reference.serializer-2.7.1.jar}"/>
+            <attribute name="jar-20-Extension-Name" value="${manifest.file.reference.xalan-2.7.1.jar}"/>
+            <attribute name="jar-21-Extension-Name" value="${manifest.file.reference.xml-apis-1.3.04.jar}"/>
+            <attribute name="jar-22-Extension-Name" value="${manifest.file.reference.xmlsec-1.4.2-ADSI-1.0.jar}"/>
+            <attribute name="jar-23-Extension-Name" value="${manifest.file.reference.appframework-1.0.3.jar}"/>
+            <attribute name="jar-24-Extension-Name" value="${manifest.file.reference.commons-beanutils-1.8.0.jar}"/>
+            <attribute name="jar-25-Extension-Name" value="${manifest.file.reference.commons-collections-3.2.1.jar}"/>
+            <attribute name="jar-26-Extension-Name" value="${manifest.file.reference.commons-digester-1.8.jar}"/>
+            <attribute name="jar-27-Extension-Name" value="${manifest.file.reference.commons-javaflow-20060411.jar}"/>
+            <attribute name="jar-28-Extension-Name" value="${manifest.file.reference.commons-logging-1.1.jar}"/>
+            <attribute name="jar-29-Extension-Name" value="${manifest.file.reference.hsqldb.jar}"/>
+            <attribute name="jar-30-Extension-Name" value="${manifest.file.reference.itext-2.1.7.jar}"/>
+            <attribute name="jar-31-Extension-Name" value="${manifest.file.reference.jasperreports-5.1.0.jar}"/>
+            <attribute name="jar-32-Extension-Name" value="${manifest.file.reference.swing-worker-1.1.jar}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${file.reference.primefaces-3.4.2.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.jdfaces.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.API.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Cert.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Log.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.OCSP.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Policy.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.TSA.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Trust.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.XADES.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.bcmail-jdk15-1.43.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.bcprov-jdk15-1.43.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.bctsp-jdk15-1.43.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.cliente-file-ws.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.firma-xades.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.jconn4.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.jdom-2.0.5.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.log4j-1.2.16.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.serializer-2.7.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.xalan-2.7.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.xml-apis-1.3.04.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.xmlsec-1.4.2-ADSI-1.0.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.appframework-1.0.3.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-beanutils-1.8.0.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-collections-3.2.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-digester-1.8.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-javaflow-20060411.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-logging-1.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.hsqldb.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.itext-2.1.7.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.jasperreports-5.1.0.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.swing-worker-1.1.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl" uri="src/conf/xml-resources/web-service-references/RecepcionComprobantes/wsdl/celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes.wsdl"/>
+    <system systemId="https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl" uri="src/conf/xml-resources/web-service-references/AutorizacionComprobantes/wsdl/celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes.wsdl"/>
+</catalog>
