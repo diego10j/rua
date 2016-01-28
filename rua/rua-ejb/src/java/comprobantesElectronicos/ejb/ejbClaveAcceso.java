@@ -9,6 +9,7 @@ import comprobantesElectronicos.entidades.Clavecontingencia;
 import comprobantesElectronicos.entidades.Comprobante;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -21,9 +22,8 @@ public class ejbClaveAcceso {
     private ClaveContingenciaDAOLocal claveContingenciaDAO;
     @EJB
     private ComprobanteDAOLocal comprobanteDAO;
-    @EJB
-    private ejbUtilitario utilitario;
-
+    
+    private final Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     /**

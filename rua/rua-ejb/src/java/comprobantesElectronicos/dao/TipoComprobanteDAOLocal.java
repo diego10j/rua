@@ -14,13 +14,6 @@ import javax.ejb.Local;
 public interface TipoComprobanteDAOLocal {
 
     /**
-     * Retorna el numero de tabla de cobis..catalogo
-     *
-     * @return
-     */
-    public String getTablaCatalogo();
-
-    /**
      * Retorna Tipo Factura 1
      *
      * @return Tipocomprobante

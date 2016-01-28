@@ -16,6 +16,9 @@ WITH (
 COMMENT ON TABLE public.gen_webservice
   IS 'TABLA DE CONFIGURACION DE DIRECCIONES WSDL DE WEB SERVICES ';
 
+INSERT INTO gen_webservice VALUES(1,'Recepcion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl',NULL,NULL,5000);
+INSERT INTO gen_webservice VALUES(2,'Autorizacion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl',NULL,NULL,5000);
+
 -----AUMENTA COLUMNAS A LA TABLA DE SIS_EMPRESA
 ALTER TABLE sis_empresa
   ADD COLUMN contribuyenteespecial_empr character varying(20);
@@ -70,7 +73,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-INSERT INTO public.sri_firma_digital VALUES(1, 'firmas/edgar_mesias_tapia_coral.p12', 'Ecuador8', '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true')
+INSERT INTO public.sri_firma_digital VALUES(1, 'firmas/edgar_mesias_tapia_coral.p12', 'Ecuador8', '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
 
 
 ------TABLA COMPROBANTES ELECTRONICOS
@@ -135,4 +138,24 @@ WITH (
 )
 ;
 
-
+-----TABLA ENVIOS XML SRI
+create table public.sri_xml_comprobante ( 
+        ide_srxmc               BIGSERIAL NOT NULL,
+        ide_srcom               bigint ,
+        ide_sresc               smallint ,--estado comprobante
+        fecha_hora_srxmc        timestamp,        
+        xml_srxmc               text,
+        msg_recepcion_srxmc     character varying(200),
+        msg_autoriza_srxmc      character varying(200),
+        CONSTRAINT "PK_SRI_XML_COMPROBANTE" PRIMARY KEY (ide_srxmc),
+        CONSTRAINT fk_sri_estado_comprobante FOREIGN KEY (ide_sresc)
+        REFERENCES sri_estado_comprobante (ide_sresc) MATCH SIMPLE
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+        CONSTRAINT fk_sri_xml_comprobante FOREIGN KEY (ide_srcom)
+        REFERENCES sri_comprobante (ide_srcom) MATCH SIMPLE
+        ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+WITH (
+  OIDS = FALSE
+)
+;

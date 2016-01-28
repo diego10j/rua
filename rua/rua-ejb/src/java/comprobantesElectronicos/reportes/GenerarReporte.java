@@ -3,7 +3,7 @@
  */
 package comprobantesElectronicos.reportes;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
+import framework.reportes.ReporteDataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +23,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -48,10 +49,10 @@ public class GenerarReporte {
 
     public File crearPDF(Map parametros, String reporte, String nombreReporte) {
         try {
-            
-          //  generarReporte(parametros, reporte);
-           // jasperPrint = JasperFillManager.fillReport("C:/Users/dfjacome/Desktop/SRI/EAR/comprobantesElectronicos/comprobantesElectronicos-war/web"+reporte, parametros, dataSource);
-            jasperPrint = JasperFillManager.fillReport("/opt/contingenciaSRI"+reporte, parametros, dataSource);
+
+            //  generarReporte(parametros, reporte);
+            // jasperPrint = JasperFillManager.fillReport("C:/Users/dfjacome/Desktop/SRI/EAR/comprobantesElectronicos/comprobantesElectronicos-war/web"+reporte, parametros, dataSource);
+            jasperPrint = JasperFillManager.fillReport("/opt/contingenciaSRI" + reporte, parametros, dataSource);
             dataSource.setIndice(-1);
             //parametros.put("SUBREPORT_DIR", "/opt/contingenciaSRI");
             JRExporter exporter = new JRPdfExporter();
@@ -71,7 +72,7 @@ public class GenerarReporte {
     private void generarReporte(Map parametros, String reporte) {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
-          
+
             ExternalContext ec = fc.getExternalContext();
             InputStream fis = ec.getResourceAsStream(reporte);
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fis);
@@ -81,10 +82,11 @@ public class GenerarReporte {
 
             parametros.put("SUBREPORT_DIR", getURL());
             if (dataSource == null) {
-                ConexionSybaseCentral conn = new ConexionSybaseCentral();
+                Utilitario utilitario = new Utilitario();
+                utilitario.getConexion().conectar(false);
                 jasperPrint = JasperFillManager.fillReport(
-                        jasperReport, parametros, conn.getConnection());
-                conn.desconectar();
+                        jasperReport, parametros, utilitario.getConexion().getConnection());
+                utilitario.getConexion().desconectar(false);
             } else {
                 jasperPrint = JasperFillManager.fillReport(
                         jasperReport, parametros, dataSource);

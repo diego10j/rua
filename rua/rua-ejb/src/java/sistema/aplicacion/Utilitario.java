@@ -953,4 +953,23 @@ public class Utilitario extends Framework {
         cal.set(Calendar.SECOND, cal.get(Calendar.SECOND));
         return cal.getTime();
     }
+
+    /**
+     * Retorna un valor dentro de una estructura XML
+     *
+     * @param cadenaXML
+     * @param etiqueta
+     * @return
+     */
+    public String getValorEtiqueta(String cadenaXML, String etiqueta) {
+        String str_valor = "";
+        try {
+            String str_etiqueta1 = "<" + etiqueta + ">";
+            String str_etiqueta2 = "</" + etiqueta + ">";
+            str_valor = cadenaXML.substring((cadenaXML.indexOf(str_etiqueta1) + str_etiqueta1.length()), (cadenaXML.indexOf(str_etiqueta2)));
+            str_valor = str_valor.trim();
+        } catch (Exception e) {
+        }
+        return str_valor;
+    }
 }

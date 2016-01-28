@@ -30,6 +30,7 @@ import javax.ejb.Stateless;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -40,8 +41,8 @@ public class ejbFirmarDocumento {
 
     @EJB
     private FirmaDAOLocal firmaDAO;
-    @EJB
-    private ejbUtilitario utilitario;
+
+    private final Utilitario utilitario = new Utilitario();
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -163,7 +164,7 @@ public class ejbFirmarDocumento {
                 }
             }
             Date dat_fecha_actual = new Date();
-            System.out.println(dat_fecha_expira+"   FECHA EXPIRA");
+            System.out.println(dat_fecha_expira + "   FECHA EXPIRA");
             if (utilitario.isFechaMayor(dat_fecha_actual, dat_fecha_expira)) {
                 mensaje = "La firma digital expiró el " + utilitario.getFormatoFecha(dat_fecha_expira);
             }

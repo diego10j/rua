@@ -32,6 +32,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.ws.BindingProvider;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -50,8 +51,8 @@ public class ejbAutorizaComprobante {
     private ComprobanteDAOLocal comprobanteDAO;
     @EJB
     private EstadoComprobanteDAOLocal estadoComprobanteDAO;
-    @EJB
-    private ejbUtilitario utilitario;
+    
+    private final Utilitario utilitario = new Utilitario();
     /**
      * enlaza webservice de SRI solicitud
      */
@@ -117,7 +118,7 @@ public class ejbAutorizaComprobante {
             //System.out.println("****estado**************" + estado + " fecha " + autorizacion.getFechaAutorizacion());
             Estadocomprobante estadoComprobante = estadoComprobanteDAO.getEstadoporNombre(estado);
             //Asigna nuevo estado      
-            sriComprobante.setCodigoestado(estadoComprobante);            
+            sriComprobante.setCodigoestado(estadoComprobante);
             if (estado.equalsIgnoreCase("AUTORIZADO")) {
                 //Asigna numero de autorizacion y fecha del SRI                 
                 comprobante.setNumAutorizacion(autorizacion.getNumeroAutorizacion());

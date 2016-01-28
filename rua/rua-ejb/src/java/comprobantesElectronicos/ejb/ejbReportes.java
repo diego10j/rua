@@ -3,13 +3,11 @@
  */
 package comprobantesElectronicos.ejb;
 
-import comprobantesElectronicos.dao.ComprobanteDAOLocal;
-import comprobantesElectronicos.dao.EmisorDAOLocal;
-import comprobantesElectronicos.dao.SriComprobanteDAOLocal;
 import comprobantesElectronicos.entidades.Comprobante;
-import comprobantesElectronicos.reportes.DetalleReporte;
-import comprobantesElectronicos.reportes.GenerarReporte;
-import comprobantesElectronicos.reportes.ReporteDataSource;
+
+import framework.reportes.DetalleReporte;
+import framework.reportes.GenerarReporte;
+import framework.reportes.ReporteDataSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -43,11 +40,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.util.Constants;
 import org.xml.sax.InputSource;
-
-
-
-
-
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -56,14 +49,7 @@ import org.xml.sax.InputSource;
 @Stateless
 public class ejbReportes {
 
-    @EJB
-    private ejbUtilitario utilitario;
-    @EJB
-    private EmisorDAOLocal emisorDAO;
-    @EJB
-    private ComprobanteDAOLocal comprobanteDAO;
-    @EJB
-    private SriComprobanteDAOLocal sriComprobanteDAO;
+    private final Utilitario utilitario = new Utilitario();
 
     public void generarFacturaPDF(String cadenaXML, Comprobante comprobante) {
         Map parametros = getParametrosComunes(cadenaXML, comprobante);
@@ -107,7 +93,8 @@ public class ejbReportes {
         ReporteDataSource data = new ReporteDataSource(lisDetalle);
         GenerarReporte generarReporte = new GenerarReporte();
         generarReporte.setDataSource(data);
-        generarReporte.generarPDF(parametros, "/reportes/factura.jasper", parametros.get("CLAVE_ACC") + "");
+        // generarReporte.generarPDF(parametros, "/reportes/factura.jasper", parametros.get("CLAVE_ACC") + "");
+        generarReporte.generarPDF(parametros, "/reportes/factura.jasper");
     }
 
     public void generarNotaCreditoPDF(String cadenaXML, Comprobante comprobante) {
@@ -157,7 +144,8 @@ public class ejbReportes {
         ReporteDataSource data = new ReporteDataSource(lisDetalle);
         GenerarReporte generarReporte = new GenerarReporte();
         generarReporte.setDataSource(data);
-        generarReporte.generarPDF(parametros, "/reportes/notaCredito.jasper", parametros.get("CLAVE_ACC") + "");
+        //  generarReporte.generarPDF(parametros, "/reportes/notaCredito.jasper", parametros.get("CLAVE_ACC") + "");
+        generarReporte.generarPDF(parametros, "/reportes/notaCredito.jasper");
     }
 
     public void generarComprobanteRetencion(String cadenaXML, Comprobante comprobante) {
@@ -206,7 +194,8 @@ public class ejbReportes {
         ReporteDataSource data = new ReporteDataSource(lisDetalle);
         GenerarReporte generarReporte = new GenerarReporte();
         generarReporte.setDataSource(data);
-        generarReporte.generarPDF(parametros, "/reportes/comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
+        // generarReporte.generarPDF(parametros, "/reportes/comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
+        generarReporte.generarPDF(parametros, "/reportes/comprobanteRetencion.jasper");
     }
 
     private Map getParametrosComunes(String cadenaXML, Comprobante comprobante) {
@@ -405,7 +394,7 @@ public class ejbReportes {
 //            lisDetalle.add(new DetalleReporte(columnas, valores));
 //        }
 //        //Genera el reporte en PDF
-//        ReporteDataSource data = new ReporteDataSource(lisDetalle);
+//        ReporteDetalleDataSource data = new ReporteDetalleDataSource(lisDetalle);
 //        GenerarReporte generarReporte = new GenerarReporte();
 //        generarReporte.setDataSource(data);
 //        File reporte = generarReporte.crearPDF(parametros, "/reportes/factura.jasper", parametros.get("CLAVE_ACC") + "");
@@ -421,5 +410,4 @@ public class ejbReportes {
 //        }
 //        return null;
 //    }
-
 }

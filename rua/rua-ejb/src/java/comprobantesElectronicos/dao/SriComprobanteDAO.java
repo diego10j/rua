@@ -3,16 +3,14 @@
  */
 package comprobantesElectronicos.dao;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
 import comprobantesElectronicos.entidades.Comprobante;
 import comprobantesElectronicos.entidades.Estadocomprobante;
 import comprobantesElectronicos.entidades.Sricomprobante;
-
-
-import java.sql.ResultSet;
+import framework.aplicacion.TablaGenerica;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -20,6 +18,8 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class SriComprobanteDAO implements SriComprobanteDAOLocal {
+
+    private final Utilitario utilitario = new Utilitario();
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -34,73 +34,53 @@ public class SriComprobanteDAO implements SriComprobanteDAOLocal {
 
     @Override
     public void crear(Sricomprobante sriComprobante) {
-
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        try {
-            String sc_msg_autoriza = sriComprobante.getMensajeautorizacion() == null ? "Null" : "'" + sriComprobante.getMensajeautorizacion().replace("'", "\"") + "'";
-            String sc_msg_recepcion = sriComprobante.getMensajerecepcion() == null ? "Null" : "'" + sriComprobante.getMensajerecepcion().replace("'", "\"") + "'";
-            String sc_xml_comp = sriComprobante.getXmlcomprobante() == null ? "Null" : "'" + sriComprobante.getXmlcomprobante().replace("'", "\"") + "'";
-            conn.ejecutar("INSERT INTO cob_remesas..re_sri_comprobante "
-                    + "( sc_secuencial,sc_estado,sc_fecha,sc_xml_comp ,sc_msg_recepcion,sc_msg_autoriza) "
-                    + "values "
-                    + "(" + sriComprobante.getCodigocomprobante().getCodigocomprobante() + ""
-                    + ",'" + sriComprobante.getCodigoestado().getCodigoestado() + "',"
-                    + "getDate()," + sc_xml_comp
-                    + "," + sc_msg_recepcion
-                    + "," + sc_msg_autoriza  + ")");
-        } catch (Exception e) {
-
-        } finally {
-            conn.desconectar();
-        }
+        String sc_msg_autoriza = sriComprobante.getMensajeautorizacion() == null ? "Null" : "'" + sriComprobante.getMensajeautorizacion().replace("'", "\"") + "'";
+        String sc_msg_recepcion = sriComprobante.getMensajerecepcion() == null ? "Null" : "'" + sriComprobante.getMensajerecepcion().replace("'", "\"") + "'";
+        String sc_xml_comp = sriComprobante.getXmlcomprobante() == null ? "Null" : "'" + sriComprobante.getXmlcomprobante().replace("'", "\"") + "'";
+        utilitario.getConexion().ejecutarSql("INSERT INTO sri_xml_comprobante "
+                + "( ide_srcom,ide_sresc,fecha_hora_srxmc,xml_srxmc ,msg_recepcion_srxmc,msg_autoriza_srxmc) "
+                + "values "
+                + "(" + sriComprobante.getCodigocomprobante().getCodigocomprobante() + ""
+                + "," + sriComprobante.getCodigoestado().getCodigoestado() + ","
+                + "now()," + sc_xml_comp
+                + "," + sc_msg_recepcion
+                + "," + sc_msg_autoriza + ")");
 
     }
 
     @Override
     public void actualizar(Sricomprobante sriComprobante) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        try {
-            String sc_msg_autoriza = sriComprobante.getMensajeautorizacion() == null ? "Null" : "'" + sriComprobante.getMensajeautorizacion().replace("'", "\"") + "'";
-            String sc_msg_recepcion = sriComprobante.getMensajerecepcion() == null ? "Null" : "'" + sriComprobante.getMensajerecepcion().replace("'", "\"") + "'";
-            String sc_xml_comp = sriComprobante.getXmlcomprobante() == null ? "Null" : "'" + sriComprobante.getXmlcomprobante().replace("'", "\"") + "'";
-            conn.ejecutar("UPDATE cob_remesas..re_sri_comprobante set sc_secuencial=" + sriComprobante.getCodigocomprobante().getCodigocomprobante()
-                    + ", sc_estado='" + sriComprobante.getCodigoestado().getCodigoestado() + "' ,"
-                    + "sc_fecha=getDate(), sc_xml_comp=" + sc_xml_comp
-                    + ", sc_msg_recepcion=" + sc_msg_recepcion
-                    + ", sc_msg_autoriza=" + sc_msg_autoriza + " "
-                    + "WHERE sc_codigo=" + sriComprobante.getCodigocompsri());
-        } catch (Exception e) {
-
-        } finally {
-            conn.desconectar();
-        }
+        String sc_msg_autoriza = sriComprobante.getMensajeautorizacion() == null ? "Null" : "'" + sriComprobante.getMensajeautorizacion().replace("'", "\"") + "'";
+        String sc_msg_recepcion = sriComprobante.getMensajerecepcion() == null ? "Null" : "'" + sriComprobante.getMensajerecepcion().replace("'", "\"") + "'";
+        String sc_xml_comp = sriComprobante.getXmlcomprobante() == null ? "Null" : "'" + sriComprobante.getXmlcomprobante().replace("'", "\"") + "'";
+        utilitario.getConexion().ejecutarSql("UPDATE sri_xml_comprobante set ide_srcom=" + sriComprobante.getCodigocomprobante().getCodigocomprobante()
+                + ", ide_sresc=" + sriComprobante.getCodigoestado().getCodigoestado() + " ,"
+                + "fecha_hora_srxmc=now(), xml_srxmc=" + sc_xml_comp
+                + ", msg_recepcion_srxmc=" + sc_msg_recepcion
+                + ", msg_autoriza_srxmc=" + sc_msg_autoriza + " "
+                + "WHERE ide_srxmc=" + sriComprobante.getCodigocompsri());
     }
 
     @Override
     public List<Sricomprobante> getTodosSriComprobantes(Comprobante comprobante) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
+
         List<Sricomprobante> lisSriComprobante = new ArrayList();
-        try {
-            ResultSet res = conn.consultar("SELECT * FROM cob_remesas..re_sri_comprobante WHERE sc_secuencial=" + comprobante.getCodigocomprobante() + " order by sc_fecha desc");
-            while (res.next()) {
-                Sricomprobante sriComprobante = new Sricomprobante();
-                sriComprobante.setCodigocomprobante(comprobante);
-                sriComprobante.setCodigocompsri(res.getLong("sc_codigo"));
-                sriComprobante.setFecha(res.getDate("sc_fecha"));
-                sriComprobante.setXmlcomprobante(res.getString("sc_xml_comp"));
-                sriComprobante.setMensajerecepcion(res.getString("sc_msg_recepcion"));
-                sriComprobante.setMensajeautorizacion(res.getString("sc_msg_autoriza"));
-                if (res.getString("sc_estado") != null) {
-                    sriComprobante.setCodigoestado(new Estadocomprobante(res.getString("sc_estado")));
-                }
-                lisSriComprobante.add(sriComprobante);
+
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_xml_comprobante WHERE ide_srcom=" + comprobante.getCodigocomprobante() + " order by fecha_hora_srxmc desc");
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+            Sricomprobante sriComprobante = new Sricomprobante();
+            sriComprobante.setCodigocomprobante(comprobante);
+            sriComprobante.setCodigocompsri(new Long(tab_consulta.getValor(i, "ide_srxmc")));
+            sriComprobante.setFecha(utilitario.getFechaHora(tab_consulta.getValor(i, "fecha_hora_srxmc")));
+            sriComprobante.setXmlcomprobante(tab_consulta.getValor(i, "xml_srxmc"));
+            sriComprobante.setMensajerecepcion(tab_consulta.getValor(i, "msg_recepcion_srxmc"));
+            sriComprobante.setMensajeautorizacion(tab_consulta.getValor(i, "msg_autoriza_srxmc"));
+            if (tab_consulta.getValor(i, "ide_sresc") != null) {
+                sriComprobante.setCodigoestado(new Estadocomprobante(tab_consulta.getValor(i, "ide_sresc")));
             }
-            res.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            conn.desconectar();
+            lisSriComprobante.add(sriComprobante);
         }
+
         return lisSriComprobante;
     }
 

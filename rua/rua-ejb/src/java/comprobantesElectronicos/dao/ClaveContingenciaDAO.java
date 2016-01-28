@@ -3,7 +3,6 @@
  */
 package comprobantesElectronicos.dao;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
 import comprobantesElectronicos.entidades.Clavecontingencia;
 import framework.aplicacion.TablaGenerica;
 import java.util.ArrayList;
@@ -24,32 +23,22 @@ public class ClaveContingenciaDAO implements ClaveContingenciaDAOLocal {
     public List<Clavecontingencia> getTodasClavesDisponibles() {
         Utilitario utilitario = new Utilitario();
         List<Clavecontingencia> lisClaveContingencia = new ArrayList();
-        try {
-            TablaGenerica tab_consulta = utilitario.consultar("select * from sri_claves_contingencia where cc_disponible=true");
+        TablaGenerica tab_consulta = utilitario.consultar("select * from sri_claves_contingencia where cc_disponible=true");
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
 
-            for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
-
-                Clavecontingencia clave = new Clavecontingencia();
-                clave.setCodigoclave(new Long(tab_consulta.getValor(i, "ide_srclc")));
-                clave.setClavecont(tab_consulta.getValor(i, "clavecont_srclc"));
-                clave.setDisponiblecont(Boolean.valueOf(tab_consulta.getValor(i, "disponible_srclc")));
-                lisClaveContingencia.add(clave);
-            }
-
-        } catch (Exception e) {
+            Clavecontingencia clave = new Clavecontingencia();
+            clave.setCodigoclave(new Long(tab_consulta.getValor(i, "ide_srclc")));
+            clave.setClavecont(tab_consulta.getValor(i, "clavecont_srclc"));
+            clave.setDisponiblecont(Boolean.valueOf(tab_consulta.getValor(i, "disponible_srclc")));
+            lisClaveContingencia.add(clave);
         }
         return lisClaveContingencia;
     }
 
     @Override
     public void actualizarClaveNoDisponible(Clavecontingencia claveContingencia) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        try {
-            conn.ejecutar("UPDATE sri_claves_contingencia set disponible_srclc=false WHERE ide_srclc=" + claveContingencia.getCodigoclave());
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
-        }
+        Utilitario utilitario = new Utilitario();
+        utilitario.getConexion().ejecutarSql("UPDATE sri_claves_contingencia set disponible_srclc=false WHERE ide_srclc=" + claveContingencia.getCodigoclave());
     }
 
     @Override

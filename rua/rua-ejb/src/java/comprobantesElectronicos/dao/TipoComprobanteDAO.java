@@ -3,10 +3,10 @@
  */
 package comprobantesElectronicos.dao;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
 import comprobantesElectronicos.entidades.Tipocomprobante;
-import java.sql.ResultSet;
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -15,40 +15,13 @@ import javax.ejb.Stateless;
 @Stateless
 public class TipoComprobanteDAO implements TipoComprobanteDAOLocal {
 
-    public String tablaCatalogo;
-
     @Override
-    public String getTablaCatalogo() {
-        //Si es null busca el numero de la tabla
-        if (tablaCatalogo == null) {
-            ConexionSybaseCentral conn = new ConexionSybaseCentral();
-            try {
-                ResultSet res = conn.consultar("select codigo from cobis..cl_tabla where tabla='tipo_comprobante_fe'");
-                if (res.next()) {
-                    tablaCatalogo = res.getString("codigo");
-                }
-                res.close();
-            } catch (Exception e) {
-                conn.desconectar();
-            }
-        }
-        return tablaCatalogo;
-    }
-
-    @Override
-    public Tipocomprobante getTipoComprobante(String valor) {
+    public Tipocomprobante getTipoComprobante(String alter_tribu_cntdo) {
         Tipocomprobante tipoComprobante = null;
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        try {
-            ResultSet res = conn.consultar("select * from cobis..cl_catalogo where tabla=" + getTablaCatalogo() + " and codigo='" + valor + "'");
-            if (res.next()) {
-                tipoComprobante = new Tipocomprobante(res.getString("valor"), res.getString("codigo"));
-            }
-            res.close();
-
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
+        Utilitario utilitario = new Utilitario();
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * from con_tipo_document where alter_tribu_cntdo='" + alter_tribu_cntdo + "'");
+        if (tab_consulta.isEmpty() == false) {
+            tipoComprobante = new Tipocomprobante(tab_consulta.getValor("nombre_cntdo"), alter_tribu_cntdo);
         }
         return tipoComprobante;
     }

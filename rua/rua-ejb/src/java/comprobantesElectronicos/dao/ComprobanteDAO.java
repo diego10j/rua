@@ -3,15 +3,11 @@
  */
 package comprobantesElectronicos.dao;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
-import comprobantesElectronicos.ejb.ejbUtilitario;
 import comprobantesElectronicos.entidades.Clavecontingencia;
 import comprobantesElectronicos.entidades.Comprobante;
 import comprobantesElectronicos.entidades.Estadocomprobante;
 import comprobantesElectronicos.entidades.Tipocomprobante;
 import framework.aplicacion.TablaGenerica;
-
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -89,80 +85,61 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     }
 
     public void actualizar(Comprobante comprobante) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        try {
-            String va_estado_comprobante = comprobante.getCodigoestado() == null ? "Null" : "'" + comprobante.getCodigoestado().getCodigoestado() + "'";
-            String va_clave_acceso = comprobante.getClaveacceso() == null ? "Null" : "'" + comprobante.getClaveacceso() + "'";
-            String va_firma = comprobante.getCodigofirma() == null ? "Null" : "" + comprobante.getCodigofirma().getCodigofirma() + "";
-            String va_clave_contingencia = comprobante.getCodigoclave() == null ? "Null" : "" + comprobante.getCodigoclave().getCodigoclave() + "";
-            String va_autorizacion_sri = comprobante.getNumAutorizacion() == null ? "Null" : "'" + comprobante.getNumAutorizacion() + "'";
-            String va_tipo_emision = comprobante.getTipoemision() == null ? "Null" : "" + comprobante.getTipoemision() + "";
-            String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFecha(comprobante.getFechaautoriza()) + "'";
 
-            String sql = "UPDATE sri_comprobante set"
-                    + " ide_sresc=" + va_estado_comprobante
-                    + " ,claveacceso_srcom=" + va_clave_acceso
-                    + " ,ide_srfid =" + va_firma
-                    + " ,ide_srclc=" + va_clave_contingencia
-                    + " ,autorizacion_srcom =" + va_autorizacion_sri
-                    + " ,tipoemision_srcom=" + va_tipo_emision
-                    + " ,autorizacion_srcom=" + va_fec_autoriza
-                    + " WHERE secuencial_srcom =" + comprobante.getCodigocomprobante();
-            conn.ejecutar(sql);
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
-        }
+        String va_estado_comprobante = comprobante.getCodigoestado() == null ? "Null" : "'" + comprobante.getCodigoestado().getCodigoestado() + "'";
+        String va_clave_acceso = comprobante.getClaveacceso() == null ? "Null" : "'" + comprobante.getClaveacceso() + "'";
+        String va_firma = comprobante.getCodigofirma() == null ? "Null" : "" + comprobante.getCodigofirma().getCodigofirma() + "";
+        String va_clave_contingencia = comprobante.getCodigoclave() == null ? "Null" : "" + comprobante.getCodigoclave().getCodigoclave() + "";
+        String va_autorizacion_sri = comprobante.getNumAutorizacion() == null ? "Null" : "'" + comprobante.getNumAutorizacion() + "'";
+        String va_tipo_emision = comprobante.getTipoemision() == null ? "Null" : "" + comprobante.getTipoemision() + "";
+        String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFecha(comprobante.getFechaautoriza()) + "'";
+
+        String sql = "UPDATE sri_comprobante set"
+                + " ide_sresc=" + va_estado_comprobante
+                + " ,claveacceso_srcom=" + va_clave_acceso
+                + " ,ide_srfid =" + va_firma
+                + " ,ide_srclc=" + va_clave_contingencia
+                + " ,autorizacion_srcom =" + va_autorizacion_sri
+                + " ,tipoemision_srcom=" + va_tipo_emision
+                + " ,autorizacion_srcom=" + va_fec_autoriza
+                + " WHERE secuencial_srcom =" + comprobante.getCodigocomprobante();
+        utilitario.getConexion().ejecutarSql(sql);
+
     }
 
     @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
+    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper) {
+
         List<Comprobante> lisComprobantes = new ArrayList();
-        try {
-            ResultSet res = conn.consultar("SELECT * FROM cob_remesas..re_anexo_detalle  WHERE va_idcliente='" + identificacion + "' and va_estado_comprobante='" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + "' order by va_fec_crea desc");
-            while (res.next()) {
-                lisComprobantes.add(new Comprobante(res));
-            }
-            res.close();
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
+
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+            lisComprobantes.add(new Comprobante(tab_consulta, i));
+        }
+
+        return lisComprobantes;
+    }
+
+    @Override
+    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, Tipocomprobante tipoComprobante) {
+        List<Comprobante> lisComprobantes = new ArrayList();
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and coddoc_srcom='" + tipoComprobante.getAlternotipcomp() + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+            lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
         return lisComprobantes;
     }
 
     @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion, Tipocomprobante tipoComprobante) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
-        List<Comprobante> lisComprobantes = new ArrayList();
-        try {
-            ResultSet res = conn.consultar("SELECT * FROM cob_remesas..re_anexo_detalle  WHERE va_idcliente='" + identificacion + "' and va_tipoComprobante='" + tipoComprobante.getAlternotipcomp() + "' and va_estado_comprobante='" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + "' order by va_fec_crea desc");
-            while (res.next()) {
-                lisComprobantes.add(new Comprobante(res));
-            }
-            res.close();
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
-        }
-        return lisComprobantes;
-    }
+    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, String secuencial) {
 
-    @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion, String secuencial) {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
         List<Comprobante> lisComprobantes = new ArrayList();
-        try {
-            ResultSet res = conn.consultar("SELECT * FROM cob_remesas..re_anexo_detalle  WHERE va_idcliente='" + identificacion + "' and va_nro_factura='" + secuencial + "' and va_estado_comprobante='" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + "' order by va_fec_crea desc");
-            while (res.next()) {
-                lisComprobantes.add(new Comprobante(res));
-            }
-            res.close();
-        } catch (Exception e) {
-        } finally {
-            conn.desconectar();
+
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and secuencial_srcom='" + secuencial + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+            lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
+
         return lisComprobantes;
     }
 

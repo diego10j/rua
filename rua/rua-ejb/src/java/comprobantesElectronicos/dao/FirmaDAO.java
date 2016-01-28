@@ -3,7 +3,6 @@
  */
 package comprobantesElectronicos.dao;
 
-import comprobantesElectronicos.conexion.ConexionSybaseCentral;
 import comprobantesElectronicos.entidades.Firma;
 import framework.aplicacion.TablaGenerica;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class FirmaDAO implements FirmaDAOLocal {
 
     @Override
     public List<Firma> getTodasFirmas() {
-        ConexionSybaseCentral conn = new ConexionSybaseCentral();
+       
         List<Firma> lisFirmas = new ArrayList();
         try {
             TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital");
