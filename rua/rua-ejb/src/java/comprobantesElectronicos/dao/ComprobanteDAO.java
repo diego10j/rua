@@ -166,7 +166,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         tab_comprobante.setCondicion("ide_srcom=-1");
         tab_comprobante.ejecutarSql();
         tab_comprobante.insertar();
-        tab_comprobante.setValor("ide_geper", tab_factura.getValor("ide_geper"));
+        //  tab_comprobante.setValor("ide_geper", tab_factura.getValor("ide_geper"));
         // tab_comprobante.setValor("codigoemisor_srcom", "");
         //  tab_comprobante.setValor("ide_srclc", "");
         //tab_comprobante.setValor("ide_srfid", "");
@@ -183,40 +183,24 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         tab_comprobante.setValor("fechaemision_srcom", tab_factura.getValor("fecha_emisi_cccfa"));
         //tab_comprobante.setValor("autorizacion_srcom", "");
         //tab_comprobante.setValor("fechaautoriza_srcom", "");
-        tab_comprobante.setValor("direstablecimiento_srcom", "");
-        tab_comprobante.setValor("tipoidentificacion_srcom", "");
+        //tab_comprobante.setValor("direstablecimiento_srcom", "");
+        // tab_comprobante.setValor("tipoidentificacion_srcom", "");
 
         tab_comprobante.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
         tab_comprobante.setValor("ide_empr", utilitario.getVariable("ide_empr"));
         tab_comprobante.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-        //tab_comprobante.setValor("guiaremision_srcom", "");
-        double dou_base_no_objeto_iva = 0;
-        double dou_base_tarifa0 = 0;
-        double dou_base_grabada = 0;
-        try {
-            dou_base_no_objeto_iva = Double.parseDouble(tab_factura.getValor("base_no_objeto_iva_cccfa"));
-        } catch (Exception e) {
-        }
-        try {
-            dou_base_tarifa0 = Double.parseDouble(tab_factura.getValor("base_tarifa0_cccfa"));
-        } catch (Exception e) {
-        }
-        try {
-            dou_base_grabada = Double.parseDouble(tab_factura.getValor("base_grabada_cccfa"));
-        } catch (Exception e) {
-        }
-        tab_comprobante.setValor("totalsinimpuestos_srcom", utilitario.getFormatoNumero(dou_base_grabada + dou_base_no_objeto_iva + dou_base_tarifa0));
-        tab_comprobante.setValor("totaldescuento_srcom", "0.00");
-        tab_comprobante.setValor("propina_srcom", "0.00");
-        tab_comprobante.setValor("importetotal_srcom", tab_factura.getValor("total_cccfa"));
-        tab_comprobante.setValor("moneda_srcom", "DOLAR");
+
+        //tab_comprobante.setValor("totalsinimpuestos_srcom", utilitario.getFormatoNumero(dou_base_grabada + dou_base_no_objeto_iva + dou_base_tarifa0));
+        // tab_comprobante.setValor("totaldescuento_srcom", "0.00");
+        //tab_comprobante.setValor("propina_srcom", "0.00");
+        //tab_comprobante.setValor("importetotal_srcom", tab_factura.getValor("total_cccfa"));
+        //tab_comprobante.setValor("moneda_srcom", "DOLAR");
         //tab_comprobante.setValor("periodofiscal_srcom", "");
         //tab_comprobante.setValor("rise_srcom", "");
         //tab_comprobante.setValor("coddocmodificado_srcom", "");
         //tab_comprobante.setValor("numdocmodificado_srcom", "");
         //tab_comprobante.setValor("fechaemisiondocsustento_srcom", "");
         //tab_comprobante.setValor("valormodificacion_srcom", "");
-
     }
 
     /**
