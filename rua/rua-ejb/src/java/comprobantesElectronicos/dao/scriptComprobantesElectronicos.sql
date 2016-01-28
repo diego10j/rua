@@ -87,6 +87,9 @@ create table public.sri_comprobante (
 	ide_cntdo                       bigint , --tipo documento  con_tipo_document
         ide_cccfa                       bigint , -- factura de venta
         ide_cncre                       bigint , -- Retencion 
+        ide_empr                        bigint,
+        ide_sucu                        bigint,   
+        ide_usua                       bigint, 
 	tipoemision_srcom               smallint,        
 	claveacceso_srcom               character varying(50) not null,
 	coddoc_srcom              	character varying(2) not null,
@@ -131,6 +134,15 @@ create table public.sri_comprobante (
         ON UPDATE RESTRICT ON DELETE RESTRICT,
         CONSTRAINT fk_con_documento_comprobante FOREIGN KEY (ide_cntdo)
         REFERENCES con_tipo_document (ide_cntdo) MATCH SIMPLE
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+        CONSTRAINT fk_sri_comprobante_sis_sucu FOREIGN KEY (ide_sucu)
+        REFERENCES sis_sucursal (ide_sucu) MATCH SIMPLE
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+        CONSTRAINT fk_sri_comprobante_sis_usua FOREIGN KEY (ide_usua)
+        REFERENCES sis_usuario (ide_usua) MATCH SIMPLE
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+        CONSTRAINT fk_sri_comprobante_sis_empr FOREIGN KEY (ide_empr)
+        REFERENCES sis_empresa (ide_empr) MATCH SIMPLE
         ON UPDATE RESTRICT ON DELETE RESTRICT
 )
 WITH (

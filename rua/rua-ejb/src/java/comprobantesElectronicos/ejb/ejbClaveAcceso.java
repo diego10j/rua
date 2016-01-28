@@ -17,15 +17,17 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ejbClaveAcceso {
-
+    
     @EJB
     private ClaveContingenciaDAOLocal claveContingenciaDAO;
     @EJB
     private ComprobanteDAOLocal comprobanteDAO;
     
     private final Utilitario utilitario = new Utilitario();
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
     /**
      * Obtiene la clave de acceso de manera normal para el documento electronico
      *
@@ -40,26 +42,26 @@ public class ejbClaveAcceso {
         String serie = comprobante.getEstab() + comprobante.getPtoemi();
         String numeroComprobante = comprobante.getSecuencial();
         String tipoEmision = comprobante.getTipoemision().toString();
-        String oficina = comprobante.getOficina(); //Oficina  char(3)
+        String oficina = utilitario.getVariable("IDE_SUCU"); //Oficina  char(3)
         oficina = oficina == null ? "000" : oficina;
         if (oficina.length() == 1) {
             oficina = "00" + oficina;
         } else if (oficina.length() == 2) {
             oficina = "0" + oficina;
         }
-
+        
         if (ruc != null && ruc.length() < 13) {
             ruc = String.format("%013d", new Object[]{Integer.parseInt(ruc)});
         }
-
+        
         if (numeroComprobante != null && numeroComprobante.length() < 9) {
             numeroComprobante = String.format("%09d", new Object[]{Integer.parseInt(numeroComprobante)});
         }
         int verificador = 0;
-
+        
         String fecha = fechaEmision.replaceAll("/", "");
         String codigoNumerico = getNumberCod(fecha.substring(4), oficina);
-
+        
         StringBuilder clave = new StringBuilder(fecha);
         clave.append(tipoComprobante);
         clave.append(ruc);
@@ -76,7 +78,7 @@ public class ejbClaveAcceso {
         }
         return clave.toString();
     }
-
+    
     public String getClaveContingencia(Comprobante comprobante) {
         StringBuilder clave = new StringBuilder();
         //Obtengo una clave de contingencia que este disponible
@@ -153,7 +155,7 @@ public class ejbClaveAcceso {
     public String getNumberCod(String anio, String idlocation) {
         return "0" + idlocation + "" + anio;
     }
-
+    
     public String getValorEtiqueta(String cadenaXML, String etiqueta) {
         String str_valor = "";
         try {

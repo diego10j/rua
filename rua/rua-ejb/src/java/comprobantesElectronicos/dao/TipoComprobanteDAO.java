@@ -21,7 +21,7 @@ public class TipoComprobanteDAO implements TipoComprobanteDAOLocal {
         Utilitario utilitario = new Utilitario();
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * from con_tipo_document where alter_tribu_cntdo='" + alter_tribu_cntdo + "'");
         if (tab_consulta.isEmpty() == false) {
-            tipoComprobante = new Tipocomprobante(tab_consulta.getValor("nombre_cntdo"), alter_tribu_cntdo);
+            tipoComprobante = new Tipocomprobante(new Integer(tab_consulta.getValor("ide_cntdo")), tab_consulta.getValor("nombre_cntdo"), alter_tribu_cntdo);
         }
         return tipoComprobante;
     }

@@ -7,6 +7,7 @@ import comprobantesElectronicos.entidades.Clavecontingencia;
 import comprobantesElectronicos.entidades.Comprobante;
 import comprobantesElectronicos.entidades.Estadocomprobante;
 import comprobantesElectronicos.entidades.Tipocomprobante;
+import framework.componentes.Tabla;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -94,7 +95,6 @@ public interface ComprobanteDAOLocal {
      */
     public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion);
 
-    
     /**
      * Busca todos los comprobantes de un cliente
      *
@@ -102,8 +102,8 @@ public interface ComprobanteDAOLocal {
      * @param secuencial
      * @return
      */
-    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion,String secuencial);
-    
+    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion, String secuencial);
+
     /**
      * Busca todos los comprobantes de un cliente
      *
@@ -130,5 +130,12 @@ public interface ComprobanteDAOLocal {
      * @return
      */
     public List<Comprobante> getComprobantesTipoEstado(Tipocomprobante tipoComprobante, Estadocomprobante estadoComprobante);
+
+    /**
+     * Guarda un comprobante tipo Factura mediante un objeto Tabla
+     *
+     * @param tab_factura
+     */
+    public void generarComprobanteFactura(Tabla tab_factura);
 
 }
