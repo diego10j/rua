@@ -26,26 +26,23 @@ public class FirmaDAO implements FirmaDAOLocal {
     public Firma getFirmaDisponible() {
 
         Firma firma = null;
-        try {
-            TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital where disponible_srfid =true");
-            if (tab_consulta.isEmpty() == false) {
-                firma = new Firma();
-                firma.setCodigofirma(new Integer(tab_consulta.getValor("ide_srfid")));
-                firma.setRutafirma(tab_consulta.getValor("ruta_srfid"));
-                firma.setClavefirma(tab_consulta.getValor("password_srfid"));
-                firma.setFechaingreso(utilitario.getFecha(tab_consulta.getValor("fecha_ingreso_srfid")));
-                firma.setFechacaducidad(utilitario.getFecha(tab_consulta.getValor("fecha_caduca_srfid")));
-                firma.setNombrerepresentante(tab_consulta.getValor("nombre_representante_srfid"));
-                firma.setCorreorepresentante(tab_consulta.getValor("correo_representante_srfid"));
-                firma.setDisponiblefirma(true);
-                if (tab_consulta.getValor("archivo_srfid") != null) {
-                    firma.setArchivo(new ByteArrayInputStream((byte[]) tab_consulta.getValorObjeto("archivo_srfid")));
-                }
 
+        TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital where disponible_srfid =true");
+        if (tab_consulta.isEmpty() == false) {
+            firma = new Firma();
+            firma.setCodigofirma(new Integer(tab_consulta.getValor("ide_srfid")));
+            firma.setRutafirma(tab_consulta.getValor("ruta_srfid"));
+            firma.setClavefirma(tab_consulta.getValor("password_srfid"));
+            firma.setFechaingreso(utilitario.getFecha(tab_consulta.getValor("fecha_ingreso_srfid")));
+            firma.setFechacaducidad(utilitario.getFecha(tab_consulta.getValor("fecha_caduca_srfid")));
+            firma.setNombrerepresentante(tab_consulta.getValor("nombre_representante_srfid"));
+            firma.setCorreorepresentante(tab_consulta.getValor("correo_representante_srfid"));
+            firma.setDisponiblefirma(true);
+            if (tab_consulta.getValor("archivo_srfid") != null) {
+                firma.setArchivo(new ByteArrayInputStream((byte[]) tab_consulta.getValorObjeto("archivo_srfid")));
             }
-
-        } catch (Exception e) {
         }
+
         return firma;
     }
 

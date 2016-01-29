@@ -119,7 +119,7 @@ public class ejbAutorizaComprobante {
         }
         for (Autorizacion autorizacion : listaAutorizaciones) {
             String estado = autorizacion.getEstado();
-            System.out.println("****estado**************" + estado + " fecha " + autorizacion.getFechaAutorizacion());
+            //System.out.println("****estado**************" + estado + " fecha " + autorizacion.getFechaAutorizacion());
             Estadocomprobante estadoComprobante = estadoComprobanteDAO.getEstadoporNombre(estado);
             //Asigna nuevo estado      
             sriComprobante.setCodigoestado(estadoComprobante);
