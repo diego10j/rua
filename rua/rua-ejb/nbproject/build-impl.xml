@@ -872,6 +872,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jxl.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.poi-3.7.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.primefaces-3.4.2.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.iText-2.1.7.jar}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${file.reference.API.jar}" property="manifest.file.reference.API.jar"/>
@@ -952,8 +953,9 @@ exists or setup the property manually. For example like this:
         <basename file="${file.reference.jxl.jar}" property="manifest.file.reference.jxl.jar"/>
         <basename file="${file.reference.poi-3.7.jar}" property="manifest.file.reference.poi-3.7.jar"/>
         <basename file="${file.reference.primefaces-3.4.2.jar}" property="manifest.file.reference.primefaces-3.4.2.jar"/>
+        <basename file="${file.reference.iText-2.1.7.jar}" property="manifest.file.reference.iText-2.1.7.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 jar-13 jar-14 jar-15 jar-16 jar-17 jar-18 jar-19 jar-20 jar-21 jar-22 jar-23 jar-24 jar-25 jar-26 jar-27 jar-28 jar-29 jar-30 jar-31 jar-32 jar-33 jar-34 jar-35 jar-36 jar-37 jar-38 jar-39 jar-40 jar-41 jar-42 jar-43 jar-44 jar-45 jar-46 jar-47 jar-48 jar-49 jar-50 jar-51 jar-52 jar-53 jar-54 jar-55 jar-56 jar-57 jar-58 jar-59 jar-60 jar-61 jar-62 jar-63 jar-64 jar-65 jar-66 jar-67 jar-68 jar-69 jar-70 jar-71 jar-72 jar-73 jar-74 jar-75 jar-76 jar-77 jar-78 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 jar-13 jar-14 jar-15 jar-16 jar-17 jar-18 jar-19 jar-20 jar-21 jar-22 jar-23 jar-24 jar-25 jar-26 jar-27 jar-28 jar-29 jar-30 jar-31 jar-32 jar-33 jar-34 jar-35 jar-36 jar-37 jar-38 jar-39 jar-40 jar-41 jar-42 jar-43 jar-44 jar-45 jar-46 jar-47 jar-48 jar-49 jar-50 jar-51 jar-52 jar-53 jar-54 jar-55 jar-56 jar-57 jar-58 jar-59 jar-60 jar-61 jar-62 jar-63 jar-64 jar-65 jar-66 jar-67 jar-68 jar-69 jar-70 jar-71 jar-72 jar-73 jar-74 jar-75 jar-76 jar-77 jar-78 jar-79 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.API.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.file.reference.Cert.jar}"/>
             <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.Log.jar}"/>
@@ -1032,6 +1034,7 @@ exists or setup the property manually. For example like this:
             <attribute name="jar-76-Extension-Name" value="${manifest.file.reference.jxl.jar}"/>
             <attribute name="jar-77-Extension-Name" value="${manifest.file.reference.poi-3.7.jar}"/>
             <attribute name="jar-78-Extension-Name" value="${manifest.file.reference.primefaces-3.4.2.jar}"/>
+            <attribute name="jar-79-Extension-Name" value="${manifest.file.reference.iText-2.1.7.jar}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
@@ -1113,6 +1116,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jxl.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.poi-3.7.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.primefaces-3.4.2.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.iText-2.1.7.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">
