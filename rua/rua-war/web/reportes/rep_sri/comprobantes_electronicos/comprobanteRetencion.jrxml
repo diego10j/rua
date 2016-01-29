@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comprobanteRetencion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1">
+		<field name="_THIS" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="RUC" class="java.lang.String"/>
+	<parameter name="NUM_AUT" class="java.lang.String"/>
+	<parameter name="FECHA_AUT" class="java.lang.String"/>
+	<parameter name="TIPO_EMISION" class="java.lang.String"/>
+	<parameter name="CLAVE_ACC" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="RAZON_SOCIAL" class="java.lang.String"/>
+	<parameter name="DIR_MATRIZ" class="java.lang.String"/>
+	<parameter name="DIR_SUCURSAL" class="java.lang.String"/>
+	<parameter name="CONT_ESPECIAL" class="java.lang.String"/>
+	<parameter name="LLEVA_CONTABILIDAD" class="java.lang.String"/>
+	<parameter name="RS_COMPRADOR" class="java.lang.String"/>
+	<parameter name="RUC_COMPRADOR" class="java.lang.String"/>
+	<parameter name="FECHA_EMISION" class="java.lang.Object"/>
+	<parameter name="GUIA" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/marco/NetBeansProjects/comprobantes-elctronicos-cliente/resources/reportes/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MARCA_AGUA" class="java.io.InputStream"/>
+	<parameter name="NUM_FACT" class="java.lang.String"/>
+	<parameter name="EJERCICIO_FISCAL" class="java.lang.String"/>
+	<parameter name="AMBIENTE" class="java.lang.String"/>
+	<parameter name="NOM_COMERCIAL" class="java.lang.String"/>
+	<parameter name="col_name" class="java.util.Collection"/>
+	<field name="baseImponible" class="java.lang.String"/>
+	<field name="porcentajeRetener" class="java.lang.String"/>
+	<field name="valorRetenido" class="java.lang.String"/>
+	<field name="nombreImpuesto" class="java.lang.String"/>
+	<field name="nombreComprobante" class="java.lang.String"/>
+	<field name="numeroComprobante" class="java.lang.String"/>
+	<field name="fechaEmisionCcompModificado" class="java.lang.String"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<title>
+		<band height="403" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="346" width="557" height="41"/>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement x="295" y="0" width="260" height="332"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="301" y="11" width="65" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R.U.C.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="301" y="42" width="247" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE RETENCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="301" y="98" width="246" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[NÚMERO DE AUTORIZACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="149" width="116" height="26"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[FECHA DE AUTORIZACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="245" width="133" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[CLAVE DE ACCESO]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement mode="Transparent" x="300" y="265" width="253" height="50" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<jr:Codabar xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="none">
+					<jr:codeExpression><![CDATA[$P{CLAVE_ACC}]]></jr:codeExpression>
+				</jr:Codabar>
+			</componentElement>
+			<image hAlign="Left">
+				<reportElement mode="Transparent" x="0" y="0" width="285" height="163"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="0" y="169" width="290" height="165"/>
+			</rectangle>
+			<textField>
+				<reportElement mode="Transparent" x="301" y="115" width="253" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{NUM_AUT}==null)?"NO ENVIADA":$P{NUM_AUT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="400" y="149" width="147" height="26"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($P{FECHA_AUT} ==null)?"NO ENVIADA":$P{FECHA_AUT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="361" y="214" width="191" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{TIPO_EMISION}.equals( "1" )?"NORMAL":"CONTINGENCIA"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="366" y="11" width="182" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{RUC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="300" y="310" width="253" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLAVE_ACC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="346" width="192" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razón Social / Nombres y Apellidos:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="369" y="346" width="66" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identificación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="375" width="87" height="12"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Emisión:]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="181" y="346" width="186" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{RS_COMPRADOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="436" y="346" width="118" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{RUC_COMPRADOR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yy">
+				<reportElement mode="Transparent" x="80" y="374" width="114" height="12"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_EMISION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="301" y="71" width="31" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="333" y="71" width="161" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{NUM_FACT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="301" y="188" width="63" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AMBIENTE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="303" y="213" width="55" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMISIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="367" y="188" width="180" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{AMBIENTE}.equals( "1" )?"PRUEBAS":"PRODUCCIÓN"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="66" y="234" width="222" height="13"/>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DIR_MATRIZ}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="15" y="234" width="48" height="25"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección Matriz:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="17" y="206" width="268" height="13"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NOM_COMERCIAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="16" y="302" width="169" height="14">
+					<printWhenExpression><![CDATA[$P{CONT_ESPECIAL}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contribuyente Especial Nro ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="316" width="177" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBLIGADO A LLEVAR CONTABILIDAD]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="66" y="275" width="222" height="13"/>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DIR_SUCURSAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="15" y="268" width="51" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección Sucursal:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="17" y="175" width="268" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{RAZON_SOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="302" width="85" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CONT_ESPECIAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="317" width="51" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{LLEVA_CONTABILIDAD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="28"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="254" y="0" width="80" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base Imponible para la Retención ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="353" y="0" width="51" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="421" y="0" width="59" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Porcentaje Retención]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="481" y="0" width="71" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Retenido]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Transparent" x="338" y="0" width="1" height="28"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="419" y="0" width="1" height="28"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="480" y="0" width="1" height="28"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="248" y="0" width="1" height="28"/>
+			</line>
+			<staticText>
+				<reportElement mode="Transparent" x="194" y="0" width="51" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ejercicio Fiscal]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Transparent" x="192" y="0" width="1" height="28"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="69" y="0" width="1" height="28"/>
+			</line>
+			<staticText>
+				<reportElement mode="Transparent" x="2" y="0" width="63" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comprobante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="71" y="0" width="51" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Transparent" x="123" y="0" width="1" height="28"/>
+			</line>
+			<staticText>
+				<reportElement mode="Transparent" x="127" y="0" width="58" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Emisión]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="25"/>
+			</rectangle>
+			<line>
+				<reportElement mode="Transparent" x="338" y="0" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="419" y="0" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="480" y="0" width="1" height="25"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="252" y="0" width="80" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{baseImponible}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="421" y="0" width="59" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{porcentajeRetener}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="486" y="0" width="67" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valorRetenido}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="339" y="0" width="81" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreImpuesto}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement mode="Transparent" x="248" y="0" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="192" y="0" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement mode="Transparent" x="69" y="0" width="1" height="25"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement x="2" y="0" width="63" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreComprobante}==null?"OTRO":$F{nombreComprobante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="0" width="51" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeroComprobante}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="195" y="0" width="51" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EJERCICIO_FISCAL}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement mode="Transparent" x="123" y="0" width="1" height="25"/>
+			</line>
+			<textField>
+				<reportElement x="128" y="0" width="61" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaEmisionCcompModificado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="118" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="116"/>
+			</rectangle>
+			<componentElement>
+				<reportElement x="8" y="16" width="540" height="14">
+					<printWhenExpression><![CDATA[$P{col_name}!=null]]></printWhenExpression>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="dataset1">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{col_name})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="14" width="540">
+						<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="539" height="14"/>
+							<box leftPadding="0">
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="8" isBold="false"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{_THIS}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="8" y="3" width="152" height="13">
+					<printWhenExpression><![CDATA[$P{col_name}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Información Adicional]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
