@@ -40,38 +40,37 @@ public class pre_comprobantes_electronicos extends Pantalla {
     public pre_comprobantes_electronicos() {
         bar_botones.limpiar();
 
+        com_estados.setCombo("SELECT * FROM sri_estado_comprobante order by nombre_sresc");
+        com_estados.setMetodo("actualizarConsulta");
+
+        bar_botones.agregarComponente(new Etiqueta("ESTADO COMPROBANTE:"));
+        bar_botones.agregarComponente(com_estados);
+
+        bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
+        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
+        bar_botones.agregarComponente(cal_fecha_inicio);
+        bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
+        cal_fecha_fin.setFechaActual();
+        bar_botones.agregarComponente(cal_fecha_fin);
+
+        Boton bot_consultar = new Boton();
+        bot_consultar.setValue("Buscar");
+        bot_consultar.setMetodo("actualizarConsulta");
+        bot_consultar.setIcon("ui-icon-search");
+        bar_botones.agregarBoton(bot_consultar);
+
+        bar_botones.agregarSeparador();
+
         Boton bot_pdf = new Boton();
         bot_pdf.setValue("Ver PDF");
         bot_pdf.setMetodo("generarPDF");
         bar_botones.agregarBoton(bot_pdf);
 
-        Fieldset fis_consulta = new Fieldset();
-
-        Grid gri_estados = new Grid();
-        gri_estados.setColumns(2);
-        gri_estados.getChildren().add(new Etiqueta("<strong>ESTADO :</strong>"));
-        com_estados.setCombo("SELECT * FROM sri_estado_comprobante order by nombre_sresc");
-        gri_estados.getChildren().add(com_estados);
-        fis_consulta.getChildren().add(gri_estados);
-        Grid gri_fechas = new Grid();
-        gri_fechas.setColumns(5);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-        gri_fechas.getChildren().add(cal_fecha_inicio);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
-        cal_fecha_fin.setFechaActual();
-        gri_fechas.getChildren().add(cal_fecha_fin);
-        fis_consulta.getChildren().add(gri_fechas);
-
-        Boton bot_consultar = new Boton();
-        bot_consultar.setValue("Consultar");
-        bot_consultar.setMetodo("actualizarConsulta");
-        bot_consultar.setIcon("ui-icon-search");
-
-        gri_fechas.getChildren().add(bot_consultar);
-
-        fis_consulta.getChildren().add(gri_fechas);
-        agregarComponente(fis_consulta);
+        Boton bot_xml = new Boton();
+        bot_xml.setValue("Descargar XML");
+        bot_xml.setMetodo("descargarXML");
+        bot_xml.setAjax(false);
+        bar_botones.agregarBoton(bot_xml);
 
         Tabulador tab_tabulador = new Tabulador();
         tab_tabulador.setId("tab_tabulador");
@@ -108,6 +107,15 @@ public class pre_comprobantes_electronicos extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccione un Comprobante", "");
         }
+    }
+
+    public void descargarXML() {
+        if (tab_facturas.getValorSeleccionado() != null) {
+            ser_comprobante.generarXML(tab_facturas.getValorSeleccionado());
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un Comprobante", "");
+        }
+
     }
 
     @Override
