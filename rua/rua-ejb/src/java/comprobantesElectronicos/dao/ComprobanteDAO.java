@@ -313,8 +313,8 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                 TablaGenerica tab_articulo = utilitario.consultar("SELECT codigo_inarti,nombre_inarti FROM inv_articulo where ide_inarti=" + tab_detalle_factura.getValor(i, "ide_inarti"));
                 str_xml += "			<detalle> \n"
                         + "				<codigoPrincipal>" + tab_detalle_factura.getValor(i, "ide_inarti") + "</codigoPrincipal> \n"
-                        + "				<codigoAuxiliar>" + tab_articulo.getValor(i, "codigo_inarti") + "</codigoAuxiliar> \n"
-                        + "				<descripcion>" + tab_articulo.getValor(i, "nombre_inarti") + "</descripcion> \n"
+                        + "				<codigoAuxiliar>" + tab_articulo.getValor("codigo_inarti") + "</codigoAuxiliar> \n"
+                        + "				<descripcion>" + tab_articulo.getValor("nombre_inarti") + "</descripcion> \n"
                         + "				<cantidad>" + tab_detalle_factura.getValor(i, "cantidad_ccdfa") + "</cantidad> \n"
                         + "				<precioUnitario>" + tab_detalle_factura.getValor(i, "precio_ccdfa") + "</precioUnitario> \n"
                         + "				<descuento>" + utilitario.getFormatoNumero(0) + "</descuento> \n"
