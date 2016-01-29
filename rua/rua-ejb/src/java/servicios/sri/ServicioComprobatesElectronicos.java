@@ -23,7 +23,7 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioComprobatesElectronicos {
-    
+
     @EJB
     private ComprobanteDAOLocal comprobanteDAO;
     @EJB
@@ -114,14 +114,14 @@ public class ServicioComprobatesElectronicos {
             return mensajes;
         }
     }
-    
+
     public String getSqlFacturasElectronicas(String fechaInicio, String fechaFin, String estado) {
         String condicionEstado = "";
         if (estado != null && !estado.isEmpty()) {
             if (estado.equalsIgnoreCase("null") == false) {
                 condicionEstado = " and a.ide_sresc =" + estado + " ";
             }
-            
+
         }
         return "select ide_srcom,a.ide_cccfa,fechaemision_srcom,nombre_sresc,claveacceso_srcom,estab_srcom,ptoemi_srcom,secuencial_srcom,autorizacion_srcom,fechaautoriza_srcom,nom_geper,identificac_geper,total_cccfa "
                 + "from sri_comprobante a "
@@ -133,8 +133,12 @@ public class ServicioComprobatesElectronicos {
                 + condicionEstado
                 + "order by fechaemision_srcom,ide_srcom";
     }
-    
+
     public void generarPDF(String ide_srcom) {
         ejbReportes.generarFacturaPDF(ide_srcom);
+    }
+
+    public void generarXML(String ide_srcom) {
+        ejbReportes.generarComprobanteXML(ide_srcom);
     }
 }

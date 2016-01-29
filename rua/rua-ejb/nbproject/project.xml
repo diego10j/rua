@@ -66,7 +66,6 @@
             <included-library dirs="200">file.reference.groovy-all-1.8.0.jar</included-library>
             <included-library dirs="200">file.reference.hsqldb-1_8_0_10.jar</included-library>
             <included-library dirs="200">file.reference.hsqldb.jar</included-library>
-            <included-library dirs="200">file.reference.iText-2.1.7.jar</included-library>
             <included-library dirs="200">file.reference.jasperreports-5.1.0.jar</included-library>
             <included-library dirs="200">file.reference.jcalendarbutton-1.4.5.jar</included-library>
             <included-library dirs="200">file.reference.log4j-1.2.16.jar-1</included-library>

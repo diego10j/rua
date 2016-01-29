@@ -290,8 +290,12 @@ public class ejbReportes {
         return fechaAut;
     }
 
-    public void generarComprobanteXML(String cadenaXML, Comprobante comprobante) {
+    public void generarComprobanteXML(String ide_srcom) {
         try {
+            Comprobante comprobante = comprobanteDAO.getComprobanteporCodigocomprobante(ide_srcom);
+            Sricomprobante sri_comprobante = sriComprobanteDAO.getSriComprobanteActual(comprobante);
+            String cadenaXML = sri_comprobante.getXmlcomprobante();
+
             //Crea el archivo y escribe el XML           
             SAXBuilder builder = new SAXBuilder();
             Document doc = builder.build(new StringReader(cadenaXML));
