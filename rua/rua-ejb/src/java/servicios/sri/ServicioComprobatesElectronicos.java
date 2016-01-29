@@ -10,6 +10,7 @@ import comprobantesElectronicos.ejb.ejbAutorizaComprobante;
 import comprobantesElectronicos.ejb.ejbClaveAcceso;
 import comprobantesElectronicos.ejb.ejbContingencia;
 import comprobantesElectronicos.ejb.ejbRecepcionComprobante;
+import comprobantesElectronicos.ejb.ejbReportes;
 import comprobantesElectronicos.entidades.Comprobante;
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.EJB;
@@ -22,7 +23,7 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioComprobatesElectronicos {
-
+    
     @EJB
     private ComprobanteDAOLocal comprobanteDAO;
     @EJB
@@ -33,6 +34,8 @@ public class ServicioComprobatesElectronicos {
     private ejbAutorizaComprobante ejbAutoriza;
     @EJB
     private ejbContingencia ejbContingencia;
+    @EJB
+    private ejbReportes ejbReportes;
 
     /**
      * Genera un comprobante electronico, lo firma digitalmente y lo envia al
@@ -111,14 +114,14 @@ public class ServicioComprobatesElectronicos {
             return mensajes;
         }
     }
-
+    
     public String getSqlFacturasElectronicas(String fechaInicio, String fechaFin, String estado) {
         String condicionEstado = "";
         if (estado != null && !estado.isEmpty()) {
             if (estado.equalsIgnoreCase("null") == false) {
                 condicionEstado = " and a.ide_sresc =" + estado + " ";
             }
-
+            
         }
         return "select ide_srcom,a.ide_cccfa,fechaemision_srcom,nombre_sresc,claveacceso_srcom,estab_srcom,ptoemi_srcom,secuencial_srcom,autorizacion_srcom,fechaautoriza_srcom,nom_geper,identificac_geper,total_cccfa "
                 + "from sri_comprobante a "
@@ -129,5 +132,9 @@ public class ServicioComprobatesElectronicos {
                 + "and fechaemision_srcom    BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + condicionEstado
                 + "order by fechaemision_srcom,ide_srcom";
+    }
+    
+    public void generarPDF(String ide_srcom) {
+        ejbReportes.generarFacturaPDF(ide_srcom);
     }
 }

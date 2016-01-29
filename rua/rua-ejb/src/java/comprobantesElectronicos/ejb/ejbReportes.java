@@ -3,7 +3,10 @@
  */
 package comprobantesElectronicos.ejb;
 
+import comprobantesElectronicos.dao.ComprobanteDAOLocal;
+import comprobantesElectronicos.dao.SriComprobanteDAOLocal;
 import comprobantesElectronicos.entidades.Comprobante;
+import comprobantesElectronicos.entidades.Sricomprobante;
 
 import framework.reportes.DetalleReporte;
 import framework.reportes.GenerarReporte;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -40,6 +44,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.util.Constants;
 import org.xml.sax.InputSource;
+import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -51,7 +56,17 @@ public class ejbReportes {
 
     private final Utilitario utilitario = new Utilitario();
 
-    public void generarFacturaPDF(String cadenaXML, Comprobante comprobante) {
+    @EJB
+    private ServicioSistema ser_sistema;
+    @EJB
+    private SriComprobanteDAOLocal sriComprobanteDAO;
+    @EJB
+    private ComprobanteDAOLocal comprobanteDAO;
+
+    public void generarFacturaPDF(String ide_srcom) {
+        Comprobante comprobante = comprobanteDAO.getComprobanteporCodigocomprobante(ide_srcom);
+        Sricomprobante sri_comprobante = sriComprobanteDAO.getSriComprobanteActual(comprobante);
+        String cadenaXML = sri_comprobante.getXmlcomprobante();
         Map parametros = getParametrosComunes(cadenaXML, comprobante);
         //Detalles Factura
         String cadenaDetalles = utilitario.getValorEtiqueta(cadenaXML, "detalles");
@@ -94,7 +109,7 @@ public class ejbReportes {
         GenerarReporte generarReporte = new GenerarReporte();
         generarReporte.setDataSource(data);
         // generarReporte.generarPDF(parametros, "/reportes/factura.jasper", parametros.get("CLAVE_ACC") + "");
-        generarReporte.generarPDF(parametros, "/reportes/factura.jasper");
+        generarReporte.generar(parametros, "/reportes/rep_sri/comprobantes_electronicos/factura.jasper");
     }
 
     public void generarNotaCreditoPDF(String cadenaXML, Comprobante comprobante) {
@@ -222,8 +237,8 @@ public class ejbReportes {
 
             //Logo 
             try {
-                InputStream stream = new BufferedInputStream(new java.io.FileInputStream("/opt/contingenciaSRI/reportes/im_logo_bnf.png"));
-                parametros.put("LOGO", stream);//InputStream
+
+                parametros.put("LOGO", ser_sistema.getLogoEmpresa().getStream());//InputStream
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -249,6 +264,7 @@ public class ejbReportes {
             parametros.put("TOTAL_DESCUENTO", utilitario.getValorEtiqueta(cadenaXML, "totalDescuento"));
             parametros.put("AMBIENTE", utilitario.getValorEtiqueta(cadenaXML, "ambiente"));
             parametros.put("NOM_COMERCIAL", utilitario.getValorEtiqueta(cadenaXML, "nombreComercial"));
+
         } catch (Exception e) {
         }
         return parametros;
