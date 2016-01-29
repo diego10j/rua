@@ -98,7 +98,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         String va_clave_contingencia = comprobante.getCodigoclave() == null ? "Null" : "" + comprobante.getCodigoclave().getCodigoclave() + "";
         String va_autorizacion_sri = comprobante.getNumAutorizacion() == null ? "Null" : "'" + comprobante.getNumAutorizacion() + "'";
         String va_tipo_emision = comprobante.getTipoemision() == null ? "Null" : "" + comprobante.getTipoemision() + "";
-        String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFecha(comprobante.getFechaautoriza()) + "'";
+        String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFechaHora(comprobante.getFechaautoriza()) + "'";
         
         String sql = "UPDATE sri_comprobante set"
                 + " ide_sresc=" + va_estado_comprobante

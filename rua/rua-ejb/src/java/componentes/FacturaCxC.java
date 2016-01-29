@@ -164,9 +164,6 @@ public class FacturaCxC extends Dialogo {
         //Genera nuevo comprobante
         nuevoComprobanteVenta();
 
-        /////////////
-        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico("14"));
-        ////
     }
 
     /**

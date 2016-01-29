@@ -48,7 +48,7 @@ public class EmisorDAO implements EmisorDAOLocal {
                 }
             }
 
-            emisor.setAmbiente(2); //*********!!!!PONER VARIABLES 
+            emisor.setAmbiente(1); //*********!!!!PONER VARIABLES   //1 pruebas   //2 produccion
             emisor.setXmlversion("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");//*********!!!!PONER VARIABLES 
         }
 

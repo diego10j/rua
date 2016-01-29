@@ -103,9 +103,6 @@ public class ejbAutorizaComprobante {
         if (respuesta == null) {
             return ("Servicio de autorización no disponible");
         }
-
-        System.out.println(emisor.getWsdlautirizacion());
-        System.out.println(respuesta);
         //Para guardar la resúesta de la autorizacion
         Sricomprobante sriComprobante = sriComprobanteDAO.getSriComprobanteActual(comprobante);
         if (sriComprobante == null) {

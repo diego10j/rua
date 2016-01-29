@@ -99,7 +99,7 @@ create table public.sri_comprobante (
 	secuencial_srcom             	character varying(9) not null,
 	fechaemision_srcom           	date not null,
         autorizacion_srcom              character varying(100),
-        fechaautoriza_srcom           	date,	
+        fechaautoriza_srcom           	timestamp ,	
         CONSTRAINT "PK_SRI_COMPROBANTE" PRIMARY KEY (ide_srcom),
         CONSTRAINT fk_con_retencion_comprobante FOREIGN KEY (ide_cncre)
         REFERENCES con_cabece_retenc (ide_cncre) MATCH SIMPLE

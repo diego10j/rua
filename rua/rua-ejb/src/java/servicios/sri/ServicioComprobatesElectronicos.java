@@ -111,4 +111,23 @@ public class ServicioComprobatesElectronicos {
             return mensajes;
         }
     }
+
+    public String getSqlFacturasElectronicas(String fechaInicio, String fechaFin, String estado) {
+        String condicionEstado = "";
+        if (estado != null && !estado.isEmpty()) {
+            if (estado.equalsIgnoreCase("null") == false) {
+                condicionEstado = " and a.ide_sresc =" + estado + " ";
+            }
+
+        }
+        return "select ide_srcom,a.ide_cccfa,fechaemision_srcom,nombre_sresc,claveacceso_srcom,estab_srcom,ptoemi_srcom,secuencial_srcom,autorizacion_srcom,fechaautoriza_srcom,nom_geper,identificac_geper,total_cccfa "
+                + "from sri_comprobante a "
+                + "inner join  cxc_cabece_factura  b on a.ide_cccfa=b.ide_cccfa "
+                + "inner join  gen_persona c on b.ide_geper=c.ide_geper "
+                + "inner join sri_estado_comprobante d on a.ide_sresc=d.ide_sresc "
+                + "where a.ide_cccfa is not null "
+                + "and fechaemision_srcom    BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + condicionEstado
+                + "order by fechaemision_srcom,ide_srcom";
+    }
 }
