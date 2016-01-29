@@ -26,58 +26,60 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     // "Insert Code > Add Business Method")
     @EJB
     private EstadoComprobanteDAOLocal estadoComprobanteDAO;
-
+    
     @EJB
     private TipoComprobanteDAOLocal tipoComprobanteDAO;
-
+    
     private final Utilitario utilitario = new Utilitario();
-
+    
     @Override
     public Comprobante getComprobanteporNumero(String estab, String ptoEmi, String secuencial) {
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE secuencial_srcom ='" + secuencial + "' and ptoemi_srcom='" + ptoEmi + "' and estab_srcom='" + estab + "'");
-        Comprobante comprobante = new Comprobante(tab_consulta);
-        return comprobante;
+        if (tab_consulta.isEmpty() == false) {
+            return new Comprobante(tab_consulta);
+        }
+        return null;
     }
-
+    
     @Override
     public void actualizarClaveAccesoyEstado(Comprobante comprobante, String claveAcceso, Estadocomprobante estadoComprobante) {
         comprobante.setClaveacceso(claveAcceso);
         comprobante.setCodigoestado(estadoComprobante);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarEstado(Comprobante comprobante, Estadocomprobante estadoComprobante) {
         comprobante.setCodigoestado(estadoComprobante);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarClaveAcceso(Comprobante comprobante, String claveAcceso) {
         comprobante.setClaveacceso(claveAcceso);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarClaveContingencia(Comprobante comprobante, Clavecontingencia claveContingencia) {
         comprobante.setCodigoclave(claveContingencia);
         actualizar(comprobante);
     }
-
+    
     @Override
     public Comprobante getComprobanteporCodigocomprobante(String Codigocomprobante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Comprobante getComprobanteporClaveAcceso(String claveAcceso) {
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE claveacceso_srcom='" + claveAcceso + "'");
         Comprobante comprobante = new Comprobante(tab_consulta);
         return comprobante;
-
+        
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesEstado(Estadocomprobante estadoComprobante) {
         List<Comprobante> lisComprobantesEstado = new ArrayList();
@@ -87,9 +89,9 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return lisComprobantesEstado;
     }
-
+    
     public void actualizar(Comprobante comprobante) {
-
+        
         String va_estado_comprobante = comprobante.getCodigoestado() == null ? "Null" : "'" + comprobante.getCodigoestado().getCodigoestado() + "'";
         String va_clave_acceso = comprobante.getClaveacceso() == null ? "Null" : "'" + comprobante.getClaveacceso() + "'";
         String va_firma = comprobante.getCodigofirma() == null ? "Null" : "" + comprobante.getCodigofirma().getCodigofirma() + "";
@@ -97,7 +99,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         String va_autorizacion_sri = comprobante.getNumAutorizacion() == null ? "Null" : "'" + comprobante.getNumAutorizacion() + "'";
         String va_tipo_emision = comprobante.getTipoemision() == null ? "Null" : "" + comprobante.getTipoemision() + "";
         String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFecha(comprobante.getFechaautoriza()) + "'";
-
+        
         String sql = "UPDATE sri_comprobante set"
                 + " ide_sresc=" + va_estado_comprobante
                 + " ,claveacceso_srcom=" + va_clave_acceso
@@ -105,25 +107,25 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                 + " ,ide_srclc=" + va_clave_contingencia
                 + " ,autorizacion_srcom =" + va_autorizacion_sri
                 + " ,tipoemision_srcom=" + va_tipo_emision
-                + " ,autorizacion_srcom=" + va_fec_autoriza
-                + " WHERE secuencial_srcom =" + comprobante.getCodigocomprobante();
+                + " ,fechaautoriza_srcom=" + va_fec_autoriza
+                + " WHERE ide_srcom =" + comprobante.getCodigocomprobante();
         utilitario.getConexion().ejecutarSql(sql);
-
+        
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper) {
-
+        
         List<Comprobante> lisComprobantes = new ArrayList();
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
-
+        
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, Tipocomprobante tipoComprobante) {
         List<Comprobante> lisComprobantes = new ArrayList();
@@ -133,32 +135,32 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, String secuencial) {
-
+        
         List<Comprobante> lisComprobantes = new ArrayList();
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and secuencial_srcom='" + secuencial + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
-
+        
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesTipo(Tipocomprobante tipoComprobante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesTipoEstado(Tipocomprobante tipoComprobante, Estadocomprobante estadoComprobante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
-    public String guardarComprobanteFactura(Tabla tab_factura) {
+    public String guardarComprobanteFactura(Tabla tab_factura, Tabla tab_detalle) {
         //Guarda la factura en la tabla de comprobantes electronicos
         TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
         String serie = tab_datos_factura.getValor("serie_ccdaf");
@@ -169,7 +171,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             estab = serie.substring(3);
             ptoEmi = serie.substring(3, 6);
         }
-
+        
         TablaGenerica tab_comprobante = new TablaGenerica();
         Tipocomprobante tic_factura = tipoComprobanteDAO.getTipoFactura();
         tab_comprobante.setTabla("sri_comprobante", "ide_srcom", -1);
@@ -193,12 +195,16 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             TablaGenerica tab_xml_comprobante = new TablaGenerica();
             tab_xml_comprobante.setTabla("sri_xml_comprobante", "ide_srxmc", -1);
             tab_xml_comprobante.setCondicion("ide_srxmc=-1");
+            tab_xml_comprobante.setGenerarPrimaria(false);
+            tab_xml_comprobante.getColumna("ide_srxmc").setExterna(true);
+            tab_xml_comprobante.getColumna("fecha_hora_srxmc").setTipoJava("java.lang.String");
+            tab_xml_comprobante.getColumna("fecha_hora_srxmc").setTipo("Text");
             tab_xml_comprobante.ejecutarSql();
             tab_xml_comprobante.insertar();
             tab_xml_comprobante.setValor("ide_srcom", tab_comprobante.getValor("ide_srcom"));
             tab_xml_comprobante.setValor("ide_sresc", String.valueOf(estadoComprobanteDAO.getEstadoContingencia().getCodigoestado()));
-            tab_xml_comprobante.setValor("fecha_hora_srxmc", utilitario.getFechaActual());
-            tab_xml_comprobante.setValor("xml_srxmc", getXmlFactura(tab_factura));
+            tab_xml_comprobante.setValor("fecha_hora_srxmc", utilitario.getFormatoFechaHora(utilitario.getFechaHoraActual()));
+            tab_xml_comprobante.setValor("xml_srxmc", getXmlFactura(tab_factura, tab_detalle));
             if (tab_xml_comprobante.guardar()) {
                 return tab_comprobante.getValor("ide_srcom");
             }
@@ -212,11 +218,11 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
      * @param ide_cccfa
      * @return
      */
-    private String getXmlFactura(Tabla tab_factura) {
-
+    private String getXmlFactura(Tabla tab_factura, Tabla tab_detalle_factura) {
+        
         String str_xml = null;
         if (tab_factura.isEmpty() == false) {
-            String ambiente = "2";  //*********!!!Poner variable
+            String ambiente = "1";  //*********!!!Poner variable   1=pruebas   2=produccion
             String tipoEmision = "1"; //NORMAL
             String moneda = "DOLAR"; //*********!!!Poner variable
 
@@ -225,10 +231,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                     + "inner join gen_tipo_identifi b on a.ide_getid=b.ide_getid\n"
                     + "where ide_geper=" + tab_factura.getValor("ide_geper"));
             TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
-            TablaGenerica tab_detalle_factura = utilitario.consultar("SELECT a.ide_inarti,codigo_inarti,nombre_inarti,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa FROM cxc_deta_factura a\n"
-                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
-                    + "where ide_cccfa=" + tab_factura.getValor("ide_cccfa"));
-
+            
             String serie = tab_datos_factura.getValor("serie_ccdaf");
             String estab = null;
             String ptoEmi = null;
@@ -279,7 +282,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                     + "			<dirMatriz>" + tab_empresa.getValor("direccion_empr") + "</dirMatriz> \n"
                     + "		</infoTributaria> \n"
                     + "		<infoFactura> \n"
-                    + "			<fechaEmision>" + tab_factura.getValor("fecha_emisi_cccfa") + "</fechaEmision> \n"
+                    + "			<fechaEmision>" + utilitario.getFormatoFecha(utilitario.getFecha(tab_factura.getValor("fecha_emisi_cccfa")), "dd/MM/yyyy") + "</fechaEmision> \n"
                     + "			<dirEstablecimiento>" + tab_empresa.getValor("direccion_empr") + "</dirEstablecimiento> \n"
                     + "			<contribuyenteEspecial>" + tab_empresa.getValor("contribuyenteespecial_empr") + "</contribuyenteEspecial> \n"
                     + "			<obligadoContabilidad>" + tab_empresa.getValor("obligadocontabilidad_empr") + "</obligadoContabilidad> \n"
@@ -303,10 +306,11 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                     + "		</infoFactura> \n"
                     + "		<detalles> \n";
             for (int i = 0; i < tab_detalle_factura.getTotalFilas(); i++) {
+                TablaGenerica tab_articulo = utilitario.consultar("SELECT codigo_inarti,nombre_inarti FROM inv_articulo where ide_inarti=" + tab_detalle_factura.getValor(i, "ide_inarti"));
                 str_xml += "			<detalle> \n"
                         + "				<codigoPrincipal>" + tab_detalle_factura.getValor(i, "ide_inarti") + "</codigoPrincipal> \n"
-                        + "				<codigoAuxiliar>" + tab_detalle_factura.getValor(i, "codigo_inarti") + "</codigoAuxiliar> \n"
-                        + "				<descripcion>" + tab_detalle_factura.getValor(i, "nombre_inarti") + "</descripcion> \n"
+                        + "				<codigoAuxiliar>" + tab_articulo.getValor(i, "codigo_inarti") + "</codigoAuxiliar> \n"
+                        + "				<descripcion>" + tab_articulo.getValor(i, "nombre_inarti") + "</descripcion> \n"
                         + "				<cantidad>" + tab_detalle_factura.getValor(i, "cantidad_ccdfa") + "</cantidad> \n"
                         + "				<precioUnitario>" + tab_detalle_factura.getValor(i, "precio_ccdfa") + "</precioUnitario> \n"
                         + "				<descuento>" + utilitario.getFormatoNumero(0) + "</descuento> \n"
@@ -344,8 +348,8 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             str_xml += "		</infoAdicional> \n"
                     + "     </factura>";
         }
-
+        
         return str_xml;
     }
-
+    
 }

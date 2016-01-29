@@ -163,11 +163,10 @@ public class FacturaCxC extends Dialogo {
 
         //Genera nuevo comprobante
         nuevoComprobanteVenta();
-        
+
         /////////////
-        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico("15"));
+        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico("14"));
         ////
-        
     }
 
     /**
@@ -410,7 +409,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("secuencial_cccfa").setOrden(1);
         tab_cab_factura.getColumna("secuencial_cccfa").setRequerida(true);
         tab_cab_factura.getColumna("secuencial_cccfa").setNombreVisual("SECUENCIAL");
-        tab_cab_factura.getColumna("secuencial_cccfa").setMascara("9999999");
+        tab_cab_factura.getColumna("secuencial_cccfa").setMascara("999999999");
         tab_cab_factura.getColumna("base_grabada_cccfa").setEtiqueta();
         tab_cab_factura.getColumna("base_grabada_cccfa").setEstilo("font-size: 16px;font-weight: bold;text-decoration: underline");
         tab_cab_factura.getColumna("base_grabada_cccfa").setValorDefecto("0");
@@ -696,7 +695,7 @@ public class FacturaCxC extends Dialogo {
 
         if (com_pto_emision.getValue() != null) {
             String secuencial = ser_factura.getSecuencialFactura(String.valueOf(com_pto_emision.getValue())) + "";
-            String ceros = utilitario.generarCero(7 - secuencial.length());
+            String ceros = utilitario.generarCero(9 - secuencial.length());
             String num_max = ceros.concat(secuencial);
             tab_cab_factura.setValor("secuencial_cccfa", num_max);
             utilitario.addUpdateTabla(tab_cab_factura, "secuencial_cccfa", "");
@@ -921,7 +920,7 @@ public class FacturaCxC extends Dialogo {
                 String ide_srcom = null; //IDE COMPROBANTE ELECTRONICO
                 //SI ESTA ACTIVA FACTURACION ELECTRONICA
                 if (true) {
-                    ide_srcom = ser_factura.guardarComprobanteElectronicoFactura(tab_cab_factura);
+                    ide_srcom = ser_factura.guardarComprobanteElectronicoFactura(tab_cab_factura, tab_deta_factura);
                     if (ide_srcom == null) {
                         return;
                     }

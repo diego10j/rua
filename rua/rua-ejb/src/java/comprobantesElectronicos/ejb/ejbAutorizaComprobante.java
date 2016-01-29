@@ -3,11 +3,6 @@
  */
 package comprobantesElectronicos.ejb;
 
-import autorizacion.ws.sri.gob.ec.Autorizacion;
-import autorizacion.ws.sri.gob.ec.AutorizacionComprobantes;
-import autorizacion.ws.sri.gob.ec.AutorizacionComprobantesService;
-import autorizacion.ws.sri.gob.ec.Mensaje;
-import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sun.xml.ws.client.BindingProviderProperties;
 import comprobantesElectronicos.dao.ComprobanteDAOLocal;
 import comprobantesElectronicos.dao.EmisorDAOLocal;
@@ -17,6 +12,13 @@ import comprobantesElectronicos.entidades.Comprobante;
 import comprobantesElectronicos.entidades.Emisor;
 import comprobantesElectronicos.entidades.Estadocomprobante;
 import comprobantesElectronicos.entidades.Sricomprobante;
+
+import ec.gob.sri.comprobantes.ws.aut.Autorizacion;
+import ec.gob.sri.comprobantes.ws.aut.AutorizacionComprobantes;
+import ec.gob.sri.comprobantes.ws.aut.AutorizacionComprobantesService;
+import ec.gob.sri.comprobantes.ws.aut.Mensaje;
+import ec.gob.sri.comprobantes.ws.aut.RespuestaComprobante;
+
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +53,7 @@ public class ejbAutorizaComprobante {
     private ComprobanteDAOLocal comprobanteDAO;
     @EJB
     private EstadoComprobanteDAOLocal estadoComprobanteDAO;
-    
+
     private final Utilitario utilitario = new Utilitario();
     /**
      * enlaza webservice de SRI solicitud
@@ -88,7 +90,7 @@ public class ejbAutorizaComprobante {
         }
 
         StringBuilder mensajesAutorizacion = new StringBuilder();
-        String urlEnvioroment = emisorDAO.getEmisor().getWsdlautirizacion();
+        String urlEnvioroment = emisor.getWsdlautirizacion();
         RespuestaComprobante respuesta = null;
         try {
             instalarCertificados();
@@ -102,6 +104,8 @@ public class ejbAutorizaComprobante {
             return ("Servicio de autorización no disponible");
         }
 
+        System.out.println(emisor.getWsdlautirizacion());
+        System.out.println(respuesta);
         //Para guardar la resúesta de la autorizacion
         Sricomprobante sriComprobante = sriComprobanteDAO.getSriComprobanteActual(comprobante);
         if (sriComprobante == null) {
@@ -115,7 +119,7 @@ public class ejbAutorizaComprobante {
         }
         for (Autorizacion autorizacion : listaAutorizaciones) {
             String estado = autorizacion.getEstado();
-            //System.out.println("****estado**************" + estado + " fecha " + autorizacion.getFechaAutorizacion());
+            System.out.println("****estado**************" + estado + " fecha " + autorizacion.getFechaAutorizacion());
             Estadocomprobante estadoComprobante = estadoComprobanteDAO.getEstadoporNombre(estado);
             //Asigna nuevo estado      
             sriComprobante.setCodigoestado(estadoComprobante);

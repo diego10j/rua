@@ -135,8 +135,9 @@ public interface ComprobanteDAOLocal {
      * Guarda un comprobante tipo Factura mediante un objeto Tabla
      *
      * @param tab_factura
-     * @return 
+     * @param tab_detalle
+     * @return
      */
-    public String guardarComprobanteFactura(Tabla tab_factura);
+    public String guardarComprobanteFactura(Tabla tab_factura, Tabla tab_detalle);
 
 }

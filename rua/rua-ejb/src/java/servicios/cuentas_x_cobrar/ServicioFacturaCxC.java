@@ -194,10 +194,8 @@ public class ServicioFacturaCxC {
         return num + 1;
     }
 
-    public String guardarComprobanteElectronicoFactura(Tabla tab_factura) {
-        return comprobateElectronico.guardarComprobanteFactura(tab_factura);
+    public String guardarComprobanteElectronicoFactura(Tabla tab_factura, Tabla tab_detalle) {
+        return comprobateElectronico.guardarComprobanteFactura(tab_factura, tab_detalle);
     }
-    
-    
 
 }

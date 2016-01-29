@@ -55,9 +55,13 @@ public interface EstadoComprobanteDAOLocal {
      * @return Estadocomprobante
      */
     public Estadocomprobante getEstadoContingencia();
-    
-       
-   
+
+    /**
+     * Retorna estado No Autorizado 6
+     *
+     * @return Estadocomprobante
+     */
+    public Estadocomprobante getEstadoNoAutorizado();
 
     /**
      * Retorna un tipo de documento

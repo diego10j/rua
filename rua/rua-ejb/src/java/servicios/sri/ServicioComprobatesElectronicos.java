@@ -65,7 +65,7 @@ public class ServicioComprobatesElectronicos {
         cadenaXML = cadenaXML.replaceAll("Ú", "U");
         cadenaXML = cadenaXML.replaceAll("ú", "u");
 
-        System.out.println(cadenaXML);
+        //System.out.println(cadenaXML);
         Comprobante comprobante = comprobanteDAO.getComprobanteporNumero(
                 ejbClaveAcceso.getValorEtiqueta(cadenaXML, "estab"),
                 ejbClaveAcceso.getValorEtiqueta(cadenaXML, "ptoEmi"),

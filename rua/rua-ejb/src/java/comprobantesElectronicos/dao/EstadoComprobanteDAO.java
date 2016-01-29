@@ -62,4 +62,9 @@ public class EstadoComprobanteDAO implements EstadoComprobanteDAOLocal {
         return getEstadocomprobante("5");
     }
 
+    @Override
+    public Estadocomprobante getEstadoNoAutorizado() {
+        return getEstadocomprobante("6");
+    }
+
 }

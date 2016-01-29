@@ -24,20 +24,7 @@ public class Comprobante implements Serializable {
     private String secuencial;
     private String ide_cccfa;
     private Date fechaemision;
-    // private String direstablecimiento; //Direccion de la oficina
-    // private String guiaremision;
     private String numAutorizacion;
-    // private BigDecimal totalsinimpuestos;
-    // private BigDecimal totaldescuento;
-    // private BigDecimal propina;
-    // private BigDecimal importetotal;
-    // private String moneda;
-    // private String periodofiscal;
-    // private String rise;
-    // private String coddocmodificado;
-    // private String numdocmodificado;
-    // private Date fechaemisiondocsustento;
-    // private BigDecimal valormodificacion;
     private Tipocomprobante codigotipcomp;
     private Firma codigofirma;
     private Estadocomprobante codigoestado;
@@ -64,29 +51,14 @@ public class Comprobante implements Serializable {
             this.tipoemision = new Integer(comprobante.getValor(index, "tipoemision_srcom"));
             this.claveacceso = comprobante.getValor(index, "claveacceso_srcom");
             this.coddoc = comprobante.getValor(index, "coddoc_srcom");
-            //   this.persona = new Integer(comprobante.getValor(index, "ide_geper"));
             this.estab = comprobante.getValor(index, "estab_srcom");
             this.ptoemi = comprobante.getValor(index, "ptoemi_srcom");
             this.secuencial = comprobante.getValor(index, "secuencial_srcom");
             this.ide_cccfa = comprobante.getValor(index, "ide_cccfa");
             this.fechaemision = utilitario.getFecha(comprobante.getValor(index, "fechaemision_srcom"));
-            // this.direstablecimiento = comprobante.getValor(index, "direstablecimiento_srcom");
-            // this.guiaremision = comprobante.getValor(index, "guiaremision_srcom");
-            // this.totalsinimpuestos = new BigDecimal(comprobante.getValor(index, "totalsinimpuestos_srcom"));
-            // this.totaldescuento = new BigDecimal(comprobante.getValor(index, "totaldescuento_srcom"));
-            // this.propina = new BigDecimal(comprobante.getValor(index, "propina_srcom"));
-            // this.importetotal = new BigDecimal(comprobante.getValor(index, "importetotal_srcom"));
-            // this.moneda = comprobante.getValor(index, "moneda_srcom");
-            //this.periodofiscal = comprobante.getValor(index, "periodofiscal_srcom");
-            //this.rise = comprobante.getValor(index, "rise_srcom");
-            // this.coddocmodificado = comprobante.getValor(index, "coddocmodificado_srcom");
-            // this.numdocmodificado = comprobante.getValor(index, "numdocmodificado_srcom");
-            //  this.fechaemisiondocsustento = utilitario.getFecha(comprobante.getValor(index, "fechaemisiondocsustento_srcom"));
-            //  this.valormodificacion = new BigDecimal(comprobante.getValor(index, "valormodificacion_srcom"));
             this.numAutorizacion = comprobante.getValor(index, "autorizacion_srcom");
-            // this.oficina = String.valueOf(resultado.getInt("va_oficina"));
-            if (comprobante.getValor(index, "ide_cntdo") != null) {
-                this.codigotipcomp = new Tipocomprobante(comprobante.getValor(index, "ide_cntdo"));
+            if (comprobante.getValor(index, "coddoc_srcom") != null) {
+                this.codigotipcomp = new Tipocomprobante(comprobante.getValor(index, "coddoc_srcom"));
             }
             if (comprobante.getValor(index, "ide_srfid") != null) {
                 this.codigofirma = new Firma(new Integer(comprobante.getValor(index, "ide_srfid")));
@@ -94,8 +66,6 @@ public class Comprobante implements Serializable {
             if (comprobante.getValor(index, "ide_sresc") != null) {
                 this.codigoestado = new Estadocomprobante(comprobante.getValor(index, "ide_sresc"));
             }
-            //this.codigoemisor = codigoemisor;
-
             if (comprobante.getValor(index, "ide_srclc") != null) {
                 this.codigoclave = new Clavecontingencia(new Long(comprobante.getValor(index, "ide_srclc")));
             }

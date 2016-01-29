@@ -13,6 +13,10 @@ import comprobantesElectronicos.entidades.Emisor;
 import comprobantesElectronicos.entidades.Estadocomprobante;
 import comprobantesElectronicos.entidades.Firma;
 import comprobantesElectronicos.entidades.Sricomprobante;
+import ec.gob.sri.comprobantes.ws.Mensaje;
+import ec.gob.sri.comprobantes.ws.RecepcionComprobantes;
+import ec.gob.sri.comprobantes.ws.RecepcionComprobantesService;
+import ec.gob.sri.comprobantes.ws.RespuestaSolicitud;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,9 +56,6 @@ import javax.xml.ws.BindingProvider;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import recepcion.ws.sri.gob.ec.RecepcionComprobantes;
-import recepcion.ws.sri.gob.ec.RecepcionComprobantesService;
-import recepcion.ws.sri.gob.ec.RespuestaSolicitud;
 
 /**
  *
@@ -112,11 +113,11 @@ public class ejbRecepcionComprobante {
 
         //Genera la clave de acceso normal
         String claveAcceso = "";
-        if (cadenaXML.indexOf("[CLAVEACCESO]") > 0) {
+        if (cadenaXML.contains("[CLAVEACCESO]")) {
             //CLAVE NORMAL, EMISION NORMAL 1
             comprobante.setTipoemision(1);
             claveAcceso = ejbClaveAcceso.getClaveAcceso(comprobante);
-            //Remplazo la clave de acceso en la estructura XML
+            //Remplazo la clave de acceso en la estructura XML            
             cadenaXML = cadenaXML.replace("[CLAVEACCESO]", claveAcceso);
             //Asigna la clave de acceso al comprobante
             comprobante.setClaveacceso(claveAcceso);
@@ -182,7 +183,7 @@ public class ejbRecepcionComprobante {
                 sriComprobanteDAO.crear(sriComprobante);
                 return "Servicio de Recepción del SRI no disponible";
             } else {
-                System.out.println("CLAVE DE ACCESO :" + claveAcceso);
+                System.out.println("CLAVE DE ACCESO :" + claveAcceso + "  " + response.getEstado());
                 String estado = response.getEstado();
                 //Busca el estado del comprobante              
                 estadoComprobante = estadoComprobanteDAO.getEstadoporNombre(estado);
@@ -192,17 +193,23 @@ public class ejbRecepcionComprobante {
                 //Lee los mensajes en caso de que le comprobante este en estado DEVUELTA
                 if (estado.equalsIgnoreCase("DEVUELTA")) {
                     RespuestaSolicitud.Comprobantes comprobantes = response.getComprobantes();
+                    System.out.println("1111   " + comprobantes);
                     if (comprobantes != null) {
-                        List<recepcion.ws.sri.gob.ec.Comprobante> listaComprobantes = comprobantes.getComprobante();
+                        List<ec.gob.sri.comprobantes.ws.Comprobante> listaComprobantes = comprobantes.getComprobante();
+                        System.out.println("2222   " + listaComprobantes);
                         if (!listaComprobantes.isEmpty()) {
-                            for (recepcion.ws.sri.gob.ec.Comprobante comprobanteActual : listaComprobantes) {
-                                List<recepcion.ws.sri.gob.ec.Mensaje> mensajes = comprobanteActual.getMensajes().getMensaje();
-                                for (recepcion.ws.sri.gob.ec.Mensaje mensaje : mensajes) {
+                            for (ec.gob.sri.comprobantes.ws.Comprobante comprobanteActual : listaComprobantes) {
+                                System.out.println("3333   " + comprobanteActual);
+                                List<Mensaje> mensajes = comprobanteActual.getMensajes().getMensaje();
+                                System.out.println("4444   " + mensajes);
+                                for (Mensaje mensaje : mensajes) {
+                                    System.out.println("5555   " + mensaje);
                                     mensajesDevuelta.append(mensaje.getTipo()).append(".").append(mensaje.getIdentificador()).append(" ").append(mensaje.getMensaje()).append(": ").append(mensaje.getInformacionAdicional()).append(" \n");
                                 }
                             }
                         }
                     } else {
+                        System.out.println("xxxx   ");
                         return "No existen comprobantes en el documento XML";
                     }
                     //Guardo el resultado de invocar al webservice

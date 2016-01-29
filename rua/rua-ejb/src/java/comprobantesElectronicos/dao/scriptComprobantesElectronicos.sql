@@ -16,8 +16,8 @@ WITH (
 COMMENT ON TABLE public.gen_webservice
   IS 'TABLA DE CONFIGURACION DE DIRECCIONES WSDL DE WEB SERVICES ';
 
-INSERT INTO gen_webservice VALUES(1,'Recepcion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl',NULL,NULL,5000);
-INSERT INTO gen_webservice VALUES(2,'Autorizacion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl',NULL,NULL,5000);
+INSERT INTO gen_webservice VALUES(1,'Recepcion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl',NULL,NULL,50000);
+INSERT INTO gen_webservice VALUES(2,'Autorizacion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl',NULL,NULL,50000);
 
 -----AUMENTA COLUMNAS A LA TABLA DE SIS_EMPRESA
 ALTER TABLE sis_empresa
@@ -55,6 +55,7 @@ INSERT INTO public.sri_estado_comprobante VALUES(2, 'DEVUELTA');
 INSERT INTO public.sri_estado_comprobante VALUES(3, 'AUTORIZADO');
 INSERT INTO public.sri_estado_comprobante VALUES(4, 'RECHAZADO');
 INSERT INTO public.sri_estado_comprobante VALUES(5, 'CONTINGENCIA');
+INSERT INTO public.sri_estado_comprobante VALUES(6, 'NO AUTORIZADO');
 
 
 -----TABLA DE FIRMAS ELECRONICAS
@@ -75,7 +76,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-INSERT INTO public.sri_firma_digital VALUES(1, 'D:\edgar_mesias_tapia_coral.p12', 'Ecuador8', '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
+INSERT INTO public.sri_firma_digital VALUES(1, 'D:\edgar_mesias_tapia_coral.p12', null,'1Guada92',  '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
 
 
 ------TABLA COMPROBANTES ELECTRONICOS
@@ -140,8 +141,8 @@ create table public.sri_xml_comprobante (
         ide_sresc               smallint ,--estado comprobante
         fecha_hora_srxmc        timestamp,        
         xml_srxmc               text,
-        msg_recepcion_srxmc     character varying(200),
-        msg_autoriza_srxmc      character varying(200),
+        msg_recepcion_srxmc     text,
+        msg_autoriza_srxmc      text,
         CONSTRAINT "PK_SRI_XML_COMPROBANTE" PRIMARY KEY (ide_srxmc),
         CONSTRAINT fk_sri_estado_comprobante FOREIGN KEY (ide_sresc)
         REFERENCES sri_estado_comprobante (ide_sresc) MATCH SIMPLE
