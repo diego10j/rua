@@ -5,6 +5,7 @@
  */
 package servicios.cuentas_x_cobrar;
 
+import comprobantesElectronicos.dao.ComprobanteDAOLocal;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.List;
@@ -23,6 +24,8 @@ public class ServicioFacturaCxC {
     @EJB
     private ServicioContabilidad ser_tesoreria;
     private final Utilitario utilitario = new Utilitario();
+    @EJB
+    private ComprobanteDAOLocal comprobateElectronico;
 
     /**
      * Retorna la sentencia SQL con los puntos de emision de facturas x empresa
@@ -190,5 +193,11 @@ public class ServicioFacturaCxC {
         }
         return num + 1;
     }
+
+    public String guardarComprobanteElectronicoFactura(Tabla tab_factura) {
+        return comprobateElectronico.guardarComprobanteFactura(tab_factura);
+    }
+    
+    
 
 }

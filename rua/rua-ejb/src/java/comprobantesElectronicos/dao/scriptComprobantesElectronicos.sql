@@ -60,27 +60,27 @@ INSERT INTO public.sri_estado_comprobante VALUES(5, 'CONTINGENCIA');
 -----TABLA DE FIRMAS ELECRONICAS
 CREATE TABLE public.sri_firma_digital ( 
 	ide_srfid                       smallint NOT NULL, 
-	ruta_srfid                      text NOT NULL,
+	ruta_srfid                      text ,
+        archivo_srfid                     bytea ,
 	password_srfid                  character varying(80) NOT NULL,
 	fecha_ingreso_srfid       	date NOT NULL,
 	fecha_caduca_srfid              date ,
 	nombre_representante_srfid	character varying(120),
 	correo_representante_srfid	character varying(100),
 	disponible_srfid                boolean,
+        
         CONSTRAINT "PK_SRI_FIRMA_DIGITAL" PRIMARY KEY (ide_srfid)
 )
 WITH (
   OIDS = FALSE
 )
 ;
-INSERT INTO public.sri_firma_digital VALUES(1, 'firmas/edgar_mesias_tapia_coral.p12', 'Ecuador8', '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
+INSERT INTO public.sri_firma_digital VALUES(1, 'D:\edgar_mesias_tapia_coral.p12', 'Ecuador8', '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
 
 
 ------TABLA COMPROBANTES ELECTRONICOS
 create table public.sri_comprobante ( 
-	ide_srcom                       bigint NOT NULL,
-	ide_geper                       bigint,
-	codigoemisor_srcom              smallint, 
+	ide_srcom                       bigint NOT NULL,		
 	ide_srclc                       bigint,  --clave contingencia
 	ide_srfid                       smallint,--firma digital 
 	ide_sresc                       smallint ,--estado comprobante
@@ -98,30 +98,13 @@ create table public.sri_comprobante (
 	secuencial_srcom             	character varying(9) not null,
 	fechaemision_srcom           	date not null,
         autorizacion_srcom              character varying(100),
-        fechaautoriza_srcom           	date,
-	direstablecimiento_srcom     	character varying(255) null,
-	tipoidentificacion_srcom     	character varying(2) not null,
-	guiaremision_srcom             	character varying(15) null,
-	totalsinimpuestos_srcom        	numeric(14,2) null,
-	totaldescuento_srcom           	numeric(14,2) null,
-	propina_srcom                  	numeric(14,2) not null,
-	importetotal_srcom             	numeric(14,2) not null,
-	moneda_srcom                   	character varying(20) null,
-	periodofiscal_srcom            	character varying(7) null,
-	rise_srcom                     	character varying(40) null,
-	coddocmodificado_srcom         	character varying(2) null,
-	numdocmodificado_srcom         	character varying(20) null,
-	fechaemisiondocsustento_srcom  	date null,
-	valormodificacion_srcom        	numeric(14,2) null ,
+        fechaautoriza_srcom           	date,	
         CONSTRAINT "PK_SRI_COMPROBANTE" PRIMARY KEY (ide_srcom),
         CONSTRAINT fk_con_retencion_comprobante FOREIGN KEY (ide_cncre)
         REFERENCES con_cabece_retenc (ide_cncre) MATCH SIMPLE
         ON UPDATE RESTRICT ON DELETE RESTRICT,
         CONSTRAINT fk_cxc_factura_comprobante FOREIGN KEY (ide_cccfa)
         REFERENCES cxc_cabece_factura (ide_cccfa) MATCH SIMPLE
-        ON UPDATE RESTRICT ON DELETE RESTRICT,
-        CONSTRAINT fk_gen_persona_comprobante FOREIGN KEY (ide_geper)
-        REFERENCES gen_persona (ide_geper) MATCH SIMPLE
         ON UPDATE RESTRICT ON DELETE RESTRICT,
         CONSTRAINT fk_sri_estado_comprobante FOREIGN KEY (ide_sresc)
         REFERENCES sri_estado_comprobante (ide_sresc) MATCH SIMPLE

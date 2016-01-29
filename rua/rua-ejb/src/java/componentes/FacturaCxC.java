@@ -27,6 +27,7 @@ import servicios.contabilidad.ServicioContabilidad;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioProducto;
+import servicios.sri.ServicioComprobatesElectronicos;
 import servicios.tesoreria.ServicioTesoreria;
 import sistema.aplicacion.Utilitario;
 
@@ -71,6 +72,7 @@ public class FacturaCxC extends Dialogo {
     //CONTABILIDAD Asiento de Venta
     @EJB
     private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
+    @EJB
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
 
     private Tabla tab_cab_conta = new Tabla();
@@ -79,6 +81,10 @@ public class FacturaCxC extends Dialogo {
     private final Texto tex_debe_conta = new Texto();
     private final Texto tex_haber_conta = new Texto();
     private final Texto tex_diferencia = new Texto();
+
+    //COMPROBANTES ELECTRONICOS
+    @EJB
+    private final ServicioComprobatesElectronicos ser_comprobante = (ServicioComprobatesElectronicos) utilitario.instanciarEJB(ServicioComprobatesElectronicos.class);
 
     //OPCIONES
     private boolean lectura = false;
@@ -157,6 +163,11 @@ public class FacturaCxC extends Dialogo {
 
         //Genera nuevo comprobante
         nuevoComprobanteVenta();
+        
+        /////////////
+        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico("15"));
+        ////
+        
     }
 
     /**
@@ -237,7 +248,7 @@ public class FacturaCxC extends Dialogo {
         ate_observacion_conta.setDisabled(false);
         tex_debe_conta.setValue("0,00");
         tex_haber_conta.setValue("0,00");
-        tex_diferencia.setValue("0,00");     
+        tex_diferencia.setValue("0,00");
         //Activa click derecho insertar y eliminar
         try {
             PanelTabla pat_panel = (PanelTabla) tab_deta_conta.getParent();
@@ -907,8 +918,19 @@ public class FacturaCxC extends Dialogo {
                 String ide_ccctr = ser_factura.generarTransaccionFactura(tab_cab_factura);
                 String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cab_factura, aut_recibe_pago.getValor(), Double.parseDouble(String.valueOf(tex_monto_pago.getValue())), String.valueOf(ate_observacion_pago.getValue()), String.valueOf(tex_doc_pago.getValue()));
                 ser_factura.generarTransaccionPago(tab_cab_factura, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(tex_monto_pago.getValue())), String.valueOf(ate_observacion_pago.getValue()), String.valueOf(tex_doc_pago.getValue()));
-                utilitario.getConexion().setImprimirSqlConsola(true);
+                String ide_srcom = null; //IDE COMPROBANTE ELECTRONICO
+                //SI ESTA ACTIVA FACTURACION ELECTRONICA
+                if (true) {
+                    ide_srcom = ser_factura.guardarComprobanteElectronicoFactura(tab_cab_factura);
+                    if (ide_srcom == null) {
+                        return;
+                    }
+                }
+
                 if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    if (true && ide_srcom != null) { //SI ESTA ACTIVADO ONLINE DE COMPROBANTES ELECTRONICOS
+                        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico(ide_srcom));
+                    }
                     this.cerrar();
                 }
             }

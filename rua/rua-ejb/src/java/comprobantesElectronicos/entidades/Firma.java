@@ -3,6 +3,7 @@
  */
 package comprobantesElectronicos.entidades;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public class Firma implements Serializable {
     private String nombrerepresentante;
     private String correorepresentante;
     private boolean disponiblefirma;
+    private InputStream archivo;
 
     public Firma() {
     }
@@ -100,4 +102,15 @@ public class Firma implements Serializable {
     public void setDisponiblefirma(boolean disponiblefirma) {
         this.disponiblefirma = disponiblefirma;
     }
+
+    public InputStream getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(InputStream archivo) {
+        this.archivo = archivo;
+    }
+    
+
+    
 }

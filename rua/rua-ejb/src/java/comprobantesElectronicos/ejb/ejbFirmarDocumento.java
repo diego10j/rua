@@ -152,6 +152,7 @@ public class ejbFirmarDocumento {
 
         try {
             KeyStore ks = KeyStore.getInstance("PKCS12");
+            //  ks.load(firma.getArchivo(), idpassword.toCharArray());
             ks.load(new java.io.FileInputStream(idcertified), idpassword.toCharArray());
             IPKStoreManager storeManager;
             storeManager = new KSStore(ks, new PassStoreKS(idpassword));
@@ -171,6 +172,7 @@ public class ejbFirmarDocumento {
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException ex) {
             mensaje = ex.getMessage();
         } catch (IOException ex) {
+            ex.printStackTrace();
             mensaje = "No se puede acceder a la firma digital, la ruta o la clave son incorrectas";
         }
         return mensaje;

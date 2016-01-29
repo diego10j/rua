@@ -5,6 +5,7 @@ package comprobantesElectronicos.dao;
 
 import comprobantesElectronicos.entidades.Firma;
 import framework.aplicacion.TablaGenerica;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -26,7 +27,7 @@ public class FirmaDAO implements FirmaDAOLocal {
 
         Firma firma = null;
         try {
-            TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital where fi_disponible =true");
+            TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital where disponible_srfid =true");
             if (tab_consulta.isEmpty() == false) {
                 firma = new Firma();
                 firma.setCodigofirma(new Integer(tab_consulta.getValor("ide_srfid")));
@@ -37,6 +38,10 @@ public class FirmaDAO implements FirmaDAOLocal {
                 firma.setNombrerepresentante(tab_consulta.getValor("nombre_representante_srfid"));
                 firma.setCorreorepresentante(tab_consulta.getValor("correo_representante_srfid"));
                 firma.setDisponiblefirma(true);
+                if (tab_consulta.getValor("archivo_srfid") != null) {
+                    firma.setArchivo(new ByteArrayInputStream((byte[]) tab_consulta.getValorObjeto("archivo_srfid")));
+                }
+
             }
 
         } catch (Exception e) {
@@ -46,7 +51,7 @@ public class FirmaDAO implements FirmaDAOLocal {
 
     @Override
     public List<Firma> getTodasFirmas() {
-       
+
         List<Firma> lisFirmas = new ArrayList();
         try {
             TablaGenerica tab_consulta = utilitario.consultar("select * from sri_firma_digital");

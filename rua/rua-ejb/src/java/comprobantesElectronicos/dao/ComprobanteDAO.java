@@ -158,49 +158,52 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     }
 
     @Override
-    public void generarComprobanteFactura(Tabla tab_factura) {
+    public String guardarComprobanteFactura(Tabla tab_factura) {
         //Guarda la factura en la tabla de comprobantes electronicos
+        TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
+        String serie = tab_datos_factura.getValor("serie_ccdaf");
+        String estab = null;
+        String ptoEmi = null;
+        //Separa el stablecimiento y el punto de emisión
+        if (serie.length() == 6) {
+            estab = serie.substring(3);
+            ptoEmi = serie.substring(3, 6);
+        }
+
         TablaGenerica tab_comprobante = new TablaGenerica();
         Tipocomprobante tic_factura = tipoComprobanteDAO.getTipoFactura();
         tab_comprobante.setTabla("sri_comprobante", "ide_srcom", -1);
         tab_comprobante.setCondicion("ide_srcom=-1");
         tab_comprobante.ejecutarSql();
         tab_comprobante.insertar();
-        //  tab_comprobante.setValor("ide_geper", tab_factura.getValor("ide_geper"));
-        // tab_comprobante.setValor("codigoemisor_srcom", "");
-        //  tab_comprobante.setValor("ide_srclc", "");
-        //tab_comprobante.setValor("ide_srfid", "");
-        tab_comprobante.setValor("ide_sresc", String.valueOf(estadoComprobanteDAO.getEstadoContingencia()));
+        tab_comprobante.setValor("ide_sresc", String.valueOf(estadoComprobanteDAO.getEstadoContingencia().getCodigoestado()));
         tab_comprobante.setValor("ide_cntdo", String.valueOf(tic_factura.getCodigotipcomp()));
         tab_comprobante.setValor("ide_cccfa", tab_factura.getValor("ide_cccfa"));
-        //tab_comprobante.setValor("ide_cncre", "");
-        tab_comprobante.setValor("tipoemision_srcom", "1"); //EMISION NORMAL
-        //tab_comprobante.setValor("claveacceso_srcom", "");
+        tab_comprobante.setValor("tipoemision_srcom", "1"); //EMISION NORMAL        
         tab_comprobante.setValor("coddoc_srcom", tic_factura.getAlternotipcomp());
-        tab_comprobante.setValor("estab_srcom", "");
-        tab_comprobante.setValor("ptoemi_srcom", "");
+        tab_comprobante.setValor("claveacceso_srcom", "[CLAVEACCESO]");
+        tab_comprobante.setValor("estab_srcom", estab);
+        tab_comprobante.setValor("ptoemi_srcom", ptoEmi);
         tab_comprobante.setValor("secuencial_srcom", tab_factura.getValor("secuencial_cccfa"));
         tab_comprobante.setValor("fechaemision_srcom", tab_factura.getValor("fecha_emisi_cccfa"));
-        //tab_comprobante.setValor("autorizacion_srcom", "");
-        //tab_comprobante.setValor("fechaautoriza_srcom", "");
-        //tab_comprobante.setValor("direstablecimiento_srcom", "");
-        // tab_comprobante.setValor("tipoidentificacion_srcom", "");
-
         tab_comprobante.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
         tab_comprobante.setValor("ide_empr", utilitario.getVariable("ide_empr"));
         tab_comprobante.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-
-        //tab_comprobante.setValor("totalsinimpuestos_srcom", utilitario.getFormatoNumero(dou_base_grabada + dou_base_no_objeto_iva + dou_base_tarifa0));
-        // tab_comprobante.setValor("totaldescuento_srcom", "0.00");
-        //tab_comprobante.setValor("propina_srcom", "0.00");
-        //tab_comprobante.setValor("importetotal_srcom", tab_factura.getValor("total_cccfa"));
-        //tab_comprobante.setValor("moneda_srcom", "DOLAR");
-        //tab_comprobante.setValor("periodofiscal_srcom", "");
-        //tab_comprobante.setValor("rise_srcom", "");
-        //tab_comprobante.setValor("coddocmodificado_srcom", "");
-        //tab_comprobante.setValor("numdocmodificado_srcom", "");
-        //tab_comprobante.setValor("fechaemisiondocsustento_srcom", "");
-        //tab_comprobante.setValor("valormodificacion_srcom", "");
+        if (tab_comprobante.guardar()) {
+            TablaGenerica tab_xml_comprobante = new TablaGenerica();
+            tab_xml_comprobante.setTabla("sri_xml_comprobante", "ide_srxmc", -1);
+            tab_xml_comprobante.setCondicion("ide_srxmc=-1");
+            tab_xml_comprobante.ejecutarSql();
+            tab_xml_comprobante.insertar();
+            tab_xml_comprobante.setValor("ide_srcom", tab_comprobante.getValor("ide_srcom"));
+            tab_xml_comprobante.setValor("ide_sresc", String.valueOf(estadoComprobanteDAO.getEstadoContingencia().getCodigoestado()));
+            tab_xml_comprobante.setValor("fecha_hora_srxmc", utilitario.getFechaActual());
+            tab_xml_comprobante.setValor("xml_srxmc", getXmlFactura(tab_factura));
+            if (tab_xml_comprobante.guardar()) {
+                return tab_comprobante.getValor("ide_srcom");
+            }
+        }
+        return null;
     }
 
     /**
@@ -209,22 +212,22 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
      * @param ide_cccfa
      * @return
      */
-    private String getXmlFactura(String ide_cccfa) {
-        TablaGenerica tab_factura = utilitario.consultar("SELECT * FROM cxc_cabece_factura where ide_cccfa=" + ide_cccfa);
+    private String getXmlFactura(Tabla tab_factura) {
+
         String str_xml = null;
         if (tab_factura.isEmpty() == false) {
             String ambiente = "2";  //*********!!!Poner variable
             String tipoEmision = "1"; //NORMAL
             String moneda = "DOLAR"; //*********!!!Poner variable
 
-            TablaGenerica tab_empresa = utilitario.consultar("SELECT * FROM sis_emresa where ide_empr=" + utilitario.getVariable("ide_empr"));
+            TablaGenerica tab_empresa = utilitario.consultar("SELECT * FROM sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
             TablaGenerica tab_persona = utilitario.consultar("SELECT ide_geper,alterno2_getid,nom_geper,identificac_geper,direccion_geper,telefono_geper,correo_geper FROM gen_persona  a\n"
                     + "inner join gen_tipo_identifi b on a.ide_getid=b.ide_getid\n"
                     + "where ide_geper=" + tab_factura.getValor("ide_geper"));
             TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
             TablaGenerica tab_detalle_factura = utilitario.consultar("SELECT a.ide_inarti,codigo_inarti,nombre_inarti,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa FROM cxc_deta_factura a\n"
                     + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
-                    + "where ide_cccfa=" + ide_cccfa);
+                    + "where ide_cccfa=" + tab_factura.getValor("ide_cccfa"));
 
             String serie = tab_datos_factura.getValor("serie_ccdaf");
             String estab = null;
@@ -257,7 +260,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             String codigoPorcentajeIvaNoObjeto = "6"; //NO IVA  //*********!!!Poner variable  
 
             String PorcentajeIva = "12.00"; //PORCENTAJE IVA    //*********!!!Poner variable
-            String PorcentajeIva0 = "0.00"; //PORCENTAJE NO IVA //*********!!!Poner variable  
+            String PorcentajeIva0 = "0.00"; //PORCENTAJE NO IVA //*********!!!Poner variable 
 
             double totalSinImpuestos = dou_base_no_objeto_iva + dou_base_tarifa0 + dou_base_grabada;
             str_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n"
@@ -276,7 +279,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                     + "			<dirMatriz>" + tab_empresa.getValor("direccion_empr") + "</dirMatriz> \n"
                     + "		</infoTributaria> \n"
                     + "		<infoFactura> \n"
-                    + "			<fechaEmision>'+@w_fechaEmision+'</fechaEmision> \n"
+                    + "			<fechaEmision>" + tab_factura.getValor("fecha_emisi_cccfa") + "</fechaEmision> \n"
                     + "			<dirEstablecimiento>" + tab_empresa.getValor("direccion_empr") + "</dirEstablecimiento> \n"
                     + "			<contribuyenteEspecial>" + tab_empresa.getValor("contribuyenteespecial_empr") + "</contribuyenteEspecial> \n"
                     + "			<obligadoContabilidad>" + tab_empresa.getValor("obligadocontabilidad_empr") + "</obligadoContabilidad> \n"

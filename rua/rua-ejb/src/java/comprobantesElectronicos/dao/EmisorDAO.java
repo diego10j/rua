@@ -27,7 +27,7 @@ public class EmisorDAO implements EmisorDAOLocal {
         TablaGenerica tab_consulta = utilitario.consultar("select * from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
         if (tab_consulta.isEmpty() == false) {
             emisor = new Emisor();
-            emisor.setCodigoemisor(new Integer(tab_consulta.getValor("re_codigo_emisor")));
+            emisor.setCodigoemisor(new Integer(tab_consulta.getValor("ide_empr")));
             emisor.setRuc(tab_consulta.getValor("identificacion_empr"));
             emisor.setRazonsocial(tab_consulta.getValor("nom_corto_empr"));
             emisor.setNombrecomercial(tab_consulta.getValor("nom_empr"));

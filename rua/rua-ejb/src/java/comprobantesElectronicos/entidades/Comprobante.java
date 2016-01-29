@@ -99,7 +99,7 @@ public class Comprobante implements Serializable {
             if (comprobante.getValor(index, "ide_srclc") != null) {
                 this.codigoclave = new Clavecontingencia(new Long(comprobante.getValor(index, "ide_srclc")));
             }
-            this.fechaautoriza = utilitario.getFecha(comprobante.getValor(index, "fechaautoriza"));
+            this.fechaautoriza = utilitario.getFecha(comprobante.getValor(index, "fechaautoriza_srcom"));
         }
     }
 
