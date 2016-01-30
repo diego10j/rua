@@ -54,7 +54,7 @@ public class pre_comprobantes_electronicos extends Pantalla {
         bar_botones.agregarComponente(cal_fecha_fin);
 
         Boton bot_consultar = new Boton();
-        bot_consultar.setValue("Buscar");
+        bot_consultar.setTitle("Buscar");
         bot_consultar.setMetodo("actualizarConsulta");
         bot_consultar.setIcon("ui-icon-search");
         bar_botones.agregarBoton(bot_consultar);
@@ -87,8 +87,11 @@ public class pre_comprobantes_electronicos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_facturas);
         tab_tabulador.agregarTab("FACTURAS", pat_panel);
-
         agregarComponente(tab_tabulador);
+        tab_tabulador.agregarTab("COMPROBANTES DE RETENCION", null);
+        tab_tabulador.agregarTab("NOTAS DE DEBITO", null);
+        tab_tabulador.agregarTab("NOTAS DE CREDITO", null);
+        tab_tabulador.agregarTab("GUIAS DE REMISIÓN", null);
 
         vipdf_comprobante.setId("vipdf_comprobante");
         agregarComponente(vipdf_comprobante);
