@@ -38,7 +38,7 @@
 
                     <p:tabView id="tvTipos" style="display: block;height: 100%;border: none">
                         <p:tab title="Facturas">
-                            <p:dataTable id="tabFactura" value="#{consultasBean.lisFactura}" var="factura" scrollable="true" scrollHeight="230" 
+                            <p:dataTable id="tabFactura" value="#{consultasBean.lisFactura}" var="factura" paginator="true" rows="15" paginatorAlwaysVisible="false" 
                                          emptyMessage="No se han encontrado registros de facturas">
                                 <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{factura.estab}-#{factura.ptoemi}-#{factura.secuencial}">
                                     <h:outputText value="#{factura.estab}-#{factura.ptoemi}-#{factura.secuencial}" />

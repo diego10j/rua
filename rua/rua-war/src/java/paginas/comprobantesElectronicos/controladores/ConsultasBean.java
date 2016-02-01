@@ -52,12 +52,13 @@ public class ConsultasBean implements Serializable {
         lisGuia = null;
         lisRetencion = null;
         Utilitario utilitario = new Utilitario();
-        if (utilitario.getVariable("CONEXION") == null) {
-            Conexion conexion = new Conexion();
+        Conexion conexion = utilitario.getConexion();
+        if (conexion == null) {
+            conexion = new Conexion();
             String str_recursojdbc = utilitario.getPropiedad("recursojdbc");
             conexion.setUnidad_persistencia(str_recursojdbc);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CONEXION", conexion);
-        } 
+        }
     }
 
     /**
