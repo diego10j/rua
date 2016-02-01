@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Consulta de Comprobantes</title>
+        <style>
+            .ui-widget {
+                font-size: 10.5px;     
+            }
+            html,body{
+                margin: 0;
+                padding: 0;
+                overflow: hidden;    
+            } 
+        </style>
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" size="99" resizable="false">
+                <h:graphicImage value="../../imagenes/logo.png"/>                
+            </p:layoutUnit>   
+            <p:layoutUnit header="Busqueda de Comprobantes Electrónicos" position="center">
+                <h:form id="form">
+                    <p:growl autoUpdate="true" id="growl" showDetail="false"/>
+                    <h:panelGrid columns="3" style="padding-top: 10px;padding-bottom: 10px;font-size: 12px;">
+                        <h:outputText style="font-weight: bold" value="RUC/CI/PASS: "/>
+                        <p:inputText autocomplete="off" size="25" value="#{consultasBean.identificacion}" required="true" requiredMessage="Debe ingresar un número de identificación"/>
+                        <p:commandButton id="btBuscar" value="Buscar" icon="ui-icon-search" action="#{consultasBean.consultar()}" update="@form" onstart="PF('wbloquear').show()" oncomplete="PF('wbloquear').hide()"/>
+                    </h:panelGrid>
+
+                    <p:blockUI block="tvTipos" widgetVar="wbloquear">
+                        BUSCANDO
+                        <h:graphicImage value="../../imagenes/cargando.gif"/>
+                    </p:blockUI>
+
+                    <p:tabView id="tvTipos" style="display: block;height: 100%;border: none">
+                        <p:tab title="Facturas">
+                            <p:dataTable id="tabFactura" value="#{consultasBean.lisFactura}" var="factura" scrollable="true" scrollHeight="230" 
+                                         emptyMessage="No se han encontrado registros de facturas">
+                                <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{factura.estab}-#{factura.ptoemi}-#{factura.secuencial}">
+                                    <h:outputText value="#{factura.estab}-#{factura.ptoemi}-#{factura.secuencial}" />
+                                </p:column>
+                                <p:column headerText="Fecha de emisión" style="width: 100px;" sortBy="#{factura.fechaemision}">
+                                    <h:outputText value="#{factura.fechaemision}" />
+                                </p:column>
+                                <p:column headerText="Clave de Acceso" style="width: 350px;">
+                                    <h:outputText value="#{factura.claveacceso}" /> 
+                                </p:column>
+                                <p:column headerText="N° Autorización" style="width: 300px;">
+                                    <h:outputText value="#{factura.numAutorizacion}" /> 
+                                </p:column>
+                                <p:column headerText="Descargar PDF">
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarFacturaPDF()}">
+                                            <h:graphicImage value="../../imagenes/im_pdf.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{factura}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                                <p:column headerText="Descargar XML" >
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarXML()}">
+                                            <h:graphicImage value="../../imagenes/im_xml.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{factura}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Notas de Crédito">
+                            <p:dataTable value="#{consultasBean.lisNotCredito}" var="notaCredito" scrollable="true" scrollHeight="230" 
+                                         emptyMessage="No se han encontrado registros de notas de crédito">
+                                <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{factura.estab}-#{factura.ptoemi}-#{factura.secuencial}">
+                                    <h:outputText value="#{notaCredito.estab}-#{notaCredito.ptoemi}-#{notaCredito.secuencial}" />
+                                </p:column>
+                                <p:column headerText="Fecha de emisión" style="width: 100px;" sortBy="#{notaCredito.fechaemision}">
+                                    <h:outputText value="#{notaCredito.fechaemision}" />
+                                </p:column>
+                                <p:column headerText="Clave de Acceso" style="width: 350px;">
+                                    <h:outputText value="#{notaCredito.claveacceso}" /> 
+                                </p:column>
+                                <p:column headerText="N° Autorización" style="width: 300px;">
+                                    <h:outputText value="#{notaCredito.numAutorizacion}" /> 
+                                </p:column>
+                                <p:column headerText="Descargar PDF">
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarNotaCreditoPDF()}">
+                                            <h:graphicImage value="../../imagenes/im_pdf.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{notaCredito}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                                <p:column headerText="Descargar XML" >
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarXML()}">
+                                            <h:graphicImage value="../../imagenes/im_xml.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{notaCredito}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Notas de Débito">
+                            <p:dataTable value="#{consultasBean.lisNotDebito}" var="notaDebito" scrollable="true" scrollHeight="230" 
+                                         emptyMessage="No se han encontrado registros de notas de débito">
+                                <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{notaDebito.estab}-#{notaDebito.ptoemi}-#{notaDebito.secuencial}">
+                                    <h:outputText value="#{notaDebito.estab}-#{notaDebito.ptoemi}-#{notaDebito.secuencial}" />
+                                </p:column>
+                                <p:column headerText="Fecha de emisión" style="width: 100px;" sortBy="#{notaDebito.fechaemision}">
+                                    <h:outputText value="#{notaDebito.fechaemision}" />
+                                </p:column>
+                                <p:column headerText="Clave de Acceso" style="width: 350px;">
+                                    <h:outputText value="#{notaDebito.claveacceso}" /> 
+                                </p:column>
+                                <p:column headerText="N° Autorización" style="width: 300px;">
+                                    <h:outputText value="#{notaDebito.numAutorizacion}" /> 
+                                </p:column>
+                                <p:column headerText="Descargar PDF">
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarNotaDebitoPDF()}">
+                                            <h:graphicImage value="../../imagenes/im_pdf.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{notaDebito}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                                <p:column headerText="Descargar XML" >
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarXML()}">
+                                            <h:graphicImage value="../../imagenes/im_xml.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{notaDebito}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Guias de Remisión">
+                            <p:dataTable value="#{consultasBean.lisGuia}" var="guia" scrollable="true" scrollHeight="230" 
+                                         emptyMessage="No se han encontrado registros de guias de remisión">
+                                <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{guia.estab}-#{guia.ptoemi}-#{guia.secuencial}">
+                                    <h:outputText value="#{guia.estab}-#{guia.ptoemi}-#{guia.secuencial}" />
+                                </p:column>
+                                <p:column headerText="Fecha de emisión" style="width: 100px;" sortBy="#{guia.fechaemision}">
+                                    <h:outputText value="#{guia.fechaemision}" />
+                                </p:column>
+                                <p:column headerText="Clave de Acceso" style="width: 350px;">
+                                    <h:outputText value="#{guia.claveacceso}" /> 
+                                </p:column>
+                                <p:column headerText="N° Autorización" style="width: 300px;">
+                                    <h:outputText value="#{guia.numAutorizacion}" /> 
+                                </p:column>
+                                <p:column headerText="Descargar PDF">
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarGuiaPDF()}">
+                                            <h:graphicImage value="../../imagenes/im_pdf.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{guia}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                                <p:column headerText="Descargar XML" >
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarXML()}">
+                                            <h:graphicImage value="../../imagenes/im_xml.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{guia}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Comprobantes de Retención">
+                            <p:dataTable value="#{consultasBean.lisRetencion}" var="retnecion" scrollable="true" scrollHeight="230" 
+                                         emptyMessage="No se han encontrado registros de comprobantes de retención">
+                                <p:column headerText="N° de Documento" style="width: 150px;" sortBy="#{retnecion.estab}-#{retnecion.ptoemi}-#{retnecion.secuencial}">
+                                    <h:outputText value="#{retnecion.estab}-#{retnecion.ptoemi}-#{retnecion.secuencial}" />
+                                </p:column>
+                                <p:column headerText="Fecha de emisión" style="width: 100px;" sortBy="#{retnecion.fechaemision}">
+                                    <h:outputText value="#{retnecion.fechaemision}" />
+                                </p:column>
+                                <p:column headerText="Clave de Acceso" style="width: 350px;">
+                                    <h:outputText value="#{retnecion.claveacceso}" /> 
+                                </p:column>
+                                <p:column headerText="N° Autorización" style="width: 300px;">
+                                    <h:outputText value="#{retnecion.numAutorizacion}" /> 
+                                </p:column>
+                                <p:column headerText="Descargar PDF">
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarRetencionPDF()}">
+                                            <h:graphicImage value="../../imagenes/im_pdf.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{retnecion}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                                <p:column headerText="Descargar XML" >
+                                    <div align="center">
+                                        <p:commandLink ajax="false" action="#{consultasBean.generarXML()}">
+                                            <h:graphicImage value="../../imagenes/im_xml.png" />
+                                            <f:setPropertyActionListener target="#{consultasBean.comprobanteActual}" value="#{retnecion}" />
+                                        </p:commandLink>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                </h:form> 
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+
