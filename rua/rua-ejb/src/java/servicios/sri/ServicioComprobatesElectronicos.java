@@ -123,7 +123,8 @@ public class ServicioComprobatesElectronicos {
             }
 
         }
-        return "select ide_srcom,a.ide_cccfa,fechaemision_srcom,nombre_sresc,claveacceso_srcom,estab_srcom,ptoemi_srcom,secuencial_srcom,autorizacion_srcom,fechaautoriza_srcom,nom_geper,identificac_geper,total_cccfa "
+        return "select ide_srcom,a.ide_cccfa,fechaemision_srcom,nombre_sresc,claveacceso_srcom,estab_srcom,"
+                + "ptoemi_srcom,secuencial_srcom,autorizacion_srcom,fechaautoriza_srcom,nom_geper,identificac_geper, base_grabada_cccfa as ventas12,base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa "
                 + "from sri_comprobante a "
                 + "inner join  cxc_cabece_factura  b on a.ide_cccfa=b.ide_cccfa "
                 + "inner join  gen_persona c on b.ide_geper=c.ide_geper "

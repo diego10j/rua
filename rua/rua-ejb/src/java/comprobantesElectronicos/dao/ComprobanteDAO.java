@@ -168,7 +168,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     public String guardarComprobanteFactura(Tabla tab_factura, Tabla tab_detalle) {
         //Guarda la factura en la tabla de comprobantes electronicos
         TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
-        TablaGenerica tab_persona = utilitario.consultar("select ide_geper,identificac_geper from gen_persona ide_geper=" + tab_factura.getValor("ide_geper"));
+        TablaGenerica tab_persona = utilitario.consultar("select ide_geper,identificac_geper from gen_persona where ide_geper=" + tab_factura.getValor("ide_geper"));
         String serie = tab_datos_factura.getValor("serie_ccdaf");
         String estab = null;
         String ptoEmi = null;

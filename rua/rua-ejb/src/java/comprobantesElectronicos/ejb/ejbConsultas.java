@@ -61,7 +61,7 @@ public class ejbConsultas {
      * @return
      */
     public List<Comprobante> getGuiasAutorizadas(String identificacion) {
-        return comprobanteDAO.getComprobantesAutorizadosCliente(identificacion, tipoComprobanteDAO.getTipoGuiadeRemision());
+        return comprobanteDAO.getComprobantesAutorizadosCliente(identificacion, tipoComprobanteDAO.getTipoNotadeDebito());
     }
 
     /**
