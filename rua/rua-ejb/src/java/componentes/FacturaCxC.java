@@ -13,6 +13,7 @@ import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Mensaje;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
@@ -97,6 +98,8 @@ public class FacturaCxC extends Dialogo {
     private int opcion = 0;
     private int tabActiva = 0;
 
+    private Mensaje men_factura = new Mensaje();
+
     public FacturaCxC() {
         this.setWidth("95%");
         this.setHeight("90%");
@@ -112,6 +115,9 @@ public class FacturaCxC extends Dialogo {
         tab_factura.agregarTab("ASIENTO DE VENTA", null);//2       
         tab_factura.agregarTab("RETENCIÓN", null);//3
         this.setDialogo(tab_factura);
+
+        men_factura.setId("men_factura");
+        utilitario.getPantalla().getChildren().add(men_factura);
 
     }
 
@@ -558,7 +564,6 @@ public class FacturaCxC extends Dialogo {
 
     public Grupo dibujarAsientoVenta() {
         Grupo grupo = new Grupo();
-
         tab_cab_conta = new Tabla();
         tab_deta_conta = new Tabla();
         tab_cab_conta.setRuta("pre_index.clase." + getId());
@@ -924,11 +929,26 @@ public class FacturaCxC extends Dialogo {
                 }
 
                 if (utilitario.getConexion().guardarPantalla().isEmpty()) {
-                    if (true && ide_srcom != null) { //SI ESTA ACTIVADO ONLINE DE COMPROBANTES ELECTRONICOS
-                        System.out.println("--- " + ser_comprobante.generarComprobanteElectronico(ide_srcom));
+                    if (true && ide_srcom != null) { //*******SI ESTA ACTIVADO ONLINE DE COMPROBANTES ELECTRONICOS
+                        facturacionElectronica(ide_srcom);
                     }
                     this.cerrar();
                 }
+            }
+        }
+    }
+
+    private void facturacionElectronica(String ide_srcom) {
+        if (true) {
+            ser_comprobante.generarComprobanteElectronico(ide_srcom);
+            TablaGenerica tab_xml_sri = ser_comprobante.getXmlComprobante(ide_srcom);
+            if (tab_xml_sri.isEmpty() == false) {
+                String mensje = "<p> COMPROBANTE NRO. <strong>" + tab_cab_factura.getValor("secuencial_cccfa") + "</strong>  se envió al SRI  </p>";
+                if (tab_xml_sri.getValor("ide_sresc").equals("1")) { //**********RECIBIDA
+
+                }
+            } else {
+                men_factura.setMensajeError("FACTURACIÓN ELECTRÓNICA", "No existe el comprobante eléctronico Nro. " + ide_srcom);
             }
         }
     }

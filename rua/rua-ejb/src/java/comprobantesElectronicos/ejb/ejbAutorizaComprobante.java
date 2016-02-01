@@ -220,7 +220,7 @@ public class ejbAutorizaComprobante {
     public void esperarAntesAutorizar() {
         try {
             //espera de tiempo antes del SERVICIO DE AUTORIZACIÓN 5 seg"
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException ie) {
         }
     }

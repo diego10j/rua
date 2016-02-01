@@ -6,6 +6,8 @@
 package servicios.sri;
 
 import comprobantesElectronicos.dao.ComprobanteDAOLocal;
+import comprobantesElectronicos.dao.EstadoComprobanteDAOLocal;
+import comprobantesElectronicos.dao.TipoComprobanteDAOLocal;
 import comprobantesElectronicos.ejb.ejbAutorizaComprobante;
 import comprobantesElectronicos.ejb.ejbClaveAcceso;
 import comprobantesElectronicos.ejb.ejbContingencia;
@@ -36,6 +38,8 @@ public class ServicioComprobatesElectronicos {
     private ejbContingencia ejbContingencia;
     @EJB
     private ejbReportes ejbReportes;
+    @EJB
+    private EstadoComprobanteDAOLocal estadobante;
 
     /**
      * Genera un comprobante electronico, lo firma digitalmente y lo envia al
@@ -115,6 +119,14 @@ public class ServicioComprobatesElectronicos {
         }
     }
 
+    /**
+     * Sql de Facturas Electronicas
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @param estado
+     * @return
+     */
     public String getSqlFacturasElectronicas(String fechaInicio, String fechaFin, String estado) {
         String condicionEstado = "";
         if (estado != null && !estado.isEmpty()) {
@@ -135,11 +147,37 @@ public class ServicioComprobatesElectronicos {
                 + "order by fechaemision_srcom desc,ide_srcom desc";
     }
 
+    /**
+     * último envio de xml al SRI
+     *
+     * @param ide_srcom
+     * @return
+     */
+    public TablaGenerica getXmlComprobante(String ide_srcom) {
+        Utilitario utilitario = new Utilitario();
+        return utilitario.consultar("select * from sri_xml_comprobante where ide_srcom =" + ide_srcom + " order by ide_srxmc desc limit 1");
+    }
+
+    public TablaGenerica getComprobante(String ide_srcom) {
+        Utilitario utilitario = new Utilitario();
+        return utilitario.consultar("select * from sri_comprobante where ide_srcom =" + ide_srcom + "");
+    }
+
     public void generarPDF(String ide_srcom) {
         ejbReportes.generarFacturaPDF(ide_srcom);
     }
 
     public void generarXML(String ide_srcom) {
         ejbReportes.generarComprobanteXML(ide_srcom);
+    }
+
+    /**
+     * Retorna el nombre de un estado del comprobante electronico
+     *
+     * @param ide_sresc
+     * @return
+     */
+    public String getEstadoComprobante(String ide_sresc) {
+        return estadobante.getEstadocomprobante(ide_sresc).getNombreestado();
     }
 }
