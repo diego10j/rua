@@ -118,11 +118,11 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     }
 
     @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper) {
+    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom) {
 
         List<Comprobante> lisComprobantes = new ArrayList();
 
-        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE identificacion_srcom='" + identificacion_srcom + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
@@ -131,9 +131,10 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     }
 
     @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, Tipocomprobante tipoComprobante) {
+    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom, Tipocomprobante tipoComprobante) {
         List<Comprobante> lisComprobantes = new ArrayList();
-        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and coddoc_srcom='" + tipoComprobante.getAlternotipcomp() + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE identificacion_srcom='" + identificacion_srcom + "' and coddoc_srcom='" + tipoComprobante.getAlternotipcomp() + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        tab_consulta.imprimirSql();
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
@@ -141,11 +142,11 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     }
 
     @Override
-    public List<Comprobante> getComprobantesAutorizadosCliente(String ide_geper, String secuencial) {
+    public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom, String secuencial) {
 
         List<Comprobante> lisComprobantes = new ArrayList();
 
-        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_geper=" + ide_geper + " and secuencial_srcom='" + secuencial + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE identificacion_srcom='" + identificacion_srcom + "' and secuencial_srcom='" + secuencial + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
@@ -167,6 +168,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     public String guardarComprobanteFactura(Tabla tab_factura, Tabla tab_detalle) {
         //Guarda la factura en la tabla de comprobantes electronicos
         TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
+        TablaGenerica tab_persona = utilitario.consultar("select ide_geper,identificac_geper from gen_persona ide_geper=" + tab_factura.getValor("ide_geper"));
         String serie = tab_datos_factura.getValor("serie_ccdaf");
         String estab = null;
         String ptoEmi = null;
@@ -195,6 +197,8 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         tab_comprobante.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
         tab_comprobante.setValor("ide_empr", utilitario.getVariable("ide_empr"));
         tab_comprobante.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_comprobante.setValor("identificacion_srcom", tab_persona.getValor("identificac_geper"));
+
         if (tab_comprobante.guardar()) {
             TablaGenerica tab_xml_comprobante = new TablaGenerica();
             tab_xml_comprobante.setTabla("sri_xml_comprobante", "ide_srxmc", -1);

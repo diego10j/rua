@@ -6,7 +6,8 @@ CREATE TABLE public.gen_webservice
    wsdl_gewes text, 
    usuario_gewes character varying(100), 
    password_gewes character varying(80), 
-   tiempomax_gewes integer, 
+   tiempomax_gewes integer,
+   ide_empr                        bigint,       
    CONSTRAINT "PK_GEN_WEBSERVICE" PRIMARY KEY (ide_gewes)
 ) 
 WITH (
@@ -16,8 +17,8 @@ WITH (
 COMMENT ON TABLE public.gen_webservice
   IS 'TABLA DE CONFIGURACION DE DIRECCIONES WSDL DE WEB SERVICES ';
 
-INSERT INTO gen_webservice VALUES(1,'Recepcion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl',NULL,NULL,50000);
-INSERT INTO gen_webservice VALUES(2,'Autorizacion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl',NULL,NULL,50000);
+INSERT INTO gen_webservice VALUES(1,'Recepcion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl',NULL,NULL,50000,0);
+INSERT INTO gen_webservice VALUES(2,'Autorizacion Comprobantes SRI','https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl',NULL,NULL,50000,0);
 
 -----AUMENTA COLUMNAS A LA TABLA DE SIS_EMPRESA
 ALTER TABLE sis_empresa
@@ -31,7 +32,8 @@ CREATE TABLE public.sri_claves_contingencia
 ( 
     ide_srclc         bigint NOT NULL,
     clavecont_srclc   character varying(80), 
-    disponible_srclc  boolean, 
+    disponible_srclc  boolean,
+    ide_empr                        bigint,    
    CONSTRAINT "PK_SRI_CLAVES_CONTIGENCIA" PRIMARY KEY (ide_srclc)
 )
 WITH (
@@ -69,14 +71,14 @@ CREATE TABLE public.sri_firma_digital (
 	nombre_representante_srfid	character varying(120),
 	correo_representante_srfid	character varying(100),
 	disponible_srfid                boolean,
-        
+        ide_empr                        bigint,
         CONSTRAINT "PK_SRI_FIRMA_DIGITAL" PRIMARY KEY (ide_srfid)
 )
 WITH (
   OIDS = FALSE
 )
 ;
-INSERT INTO public.sri_firma_digital VALUES(1, 'D:\edgar_mesias_tapia_coral.p12', null,'1Guada92',  '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true');
+INSERT INTO public.sri_firma_digital VALUES(1, 'D:\edgar_mesias_tapia_coral.p12', null,'1Guada92',  '2015-01-01', '2016-10-31', 'EDGAR TAPIA', 'edgartapia@bnf.fin.ec', 'true',0);
 
 
 ------TABLA COMPROBANTES ELECTRONICOS
@@ -87,11 +89,14 @@ create table public.sri_comprobante (
 	ide_sresc                       smallint ,--estado comprobante
 	ide_cntdo                       bigint , --tipo documento  con_tipo_document
         ide_cccfa                       bigint , -- factura de venta
+        ide_cccnc                       bigint , -- Nota Credito
+        ide_cccnd                       bigint , -- Nota Debito
         ide_cncre                       bigint , -- Retencion 
         ide_empr                        bigint,
         ide_sucu                        bigint,   
-        ide_usua                       bigint, 
-	tipoemision_srcom               smallint,        
+        ide_usua                        bigint, 
+        identificacion_srcom            character varying(30) not null,
+	tipoemision_srcom               smallint,      --1=normal; 2=contogencia   
 	claveacceso_srcom               character varying(50) not null,
 	coddoc_srcom              	character varying(2) not null,
 	estab_srcom                     character varying(3) not null,

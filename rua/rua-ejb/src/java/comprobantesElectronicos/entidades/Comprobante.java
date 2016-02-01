@@ -30,7 +30,7 @@ public class Comprobante implements Serializable {
     private Estadocomprobante codigoestado;
     private Emisor codigoemisor;
     private Clavecontingencia codigoclave;
-    // private String oficina; ///!!!!!!BORRAR
+    private String identificacion;
     private Date fechaautoriza;
 
     public Comprobante() {
@@ -57,6 +57,7 @@ public class Comprobante implements Serializable {
             this.ide_cccfa = comprobante.getValor(index, "ide_cccfa");
             this.fechaemision = utilitario.getFecha(comprobante.getValor(index, "fechaemision_srcom"));
             this.numAutorizacion = comprobante.getValor(index, "autorizacion_srcom");
+            this.identificacion = comprobante.getValor(index, "identificacion_srcom");
             if (comprobante.getValor(index, "coddoc_srcom") != null) {
                 this.codigotipcomp = new Tipocomprobante(comprobante.getValor(index, "coddoc_srcom"));
             }
@@ -137,109 +138,6 @@ public class Comprobante implements Serializable {
         this.fechaemision = fechaemision;
     }
 
-//    public String getDirestablecimiento() {
-//        return direstablecimiento;
-//    }
-//
-//    public void setDirestablecimiento(String direstablecimiento) {
-//        this.direstablecimiento = direstablecimiento;
-//    }
-//
-//    public String getGuiaremision() {
-//        return guiaremision;
-//    }
-//
-//    public void setGuiaremision(String guiaremision) {
-//        this.guiaremision = guiaremision;
-//    }
-//
-//    public BigDecimal getTotalsinimpuestos() {
-//        return totalsinimpuestos;
-//    }
-//
-//    public void setTotalsinimpuestos(BigDecimal totalsinimpuestos) {
-//        this.totalsinimpuestos = totalsinimpuestos;
-//    }
-//
-//    public BigDecimal getTotaldescuento() {
-//        return totaldescuento;
-//    }
-//
-//    public void setTotaldescuento(BigDecimal totaldescuento) {
-//        this.totaldescuento = totaldescuento;
-//    }
-//
-//    public BigDecimal getPropina() {
-//        return propina;
-//    }
-//
-//    public void setPropina(BigDecimal propina) {
-//        this.propina = propina;
-//    }
-//
-//    public BigDecimal getImportetotal() {
-//        return importetotal;
-//    }
-//
-//    public void setImportetotal(BigDecimal importetotal) {
-//        this.importetotal = importetotal;
-//    }
-//
-//    public String getMoneda() {
-//        return moneda;
-//    }
-//
-//    public void setMoneda(String moneda) {
-//        this.moneda = moneda;
-//    }
-//
-//    public String getPeriodofiscal() {
-//        return periodofiscal;
-//    }
-//
-//    public void setPeriodofiscal(String periodofiscal) {
-//        this.periodofiscal = periodofiscal;
-//    }
-//
-//    public String getRise() {
-//        return rise;
-//    }
-//
-//    public void setRise(String rise) {
-//        this.rise = rise;
-//    }
-//
-//    public String getCoddocmodificado() {
-//        return coddocmodificado;
-//    }
-//
-//    public void setCoddocmodificado(String coddocmodificado) {
-//        this.coddocmodificado = coddocmodificado;
-//    }
-//
-//    public String getNumdocmodificado() {
-//        return numdocmodificado;
-//    }
-//
-//    public void setNumdocmodificado(String numdocmodificado) {
-//        this.numdocmodificado = numdocmodificado;
-//    }
-//
-//    public Date getFechaemisiondocsustento() {
-//        return fechaemisiondocsustento;
-//    }
-//
-//    public void setFechaemisiondocsustento(Date fechaemisiondocsustento) {
-//        this.fechaemisiondocsustento = fechaemisiondocsustento;
-//    }
-//
-//    public BigDecimal getValormodificacion() {
-//        return valormodificacion;
-//    }
-//
-//    public void setValormodificacion(BigDecimal valormodificacion) {
-//        this.valormodificacion = valormodificacion;
-//    }
     public Tipocomprobante getCodigotipcomp() {
         return codigotipcomp;
     }
@@ -288,13 +186,6 @@ public class Comprobante implements Serializable {
         this.numAutorizacion = numAutorizacion;
     }
 
-//    public String getOficina() {
-//        return oficina;
-//    }
-//
-//    public void setOficina(String oficina) {
-//        this.oficina = oficina;
-//    }
     public Date getFechaautoriza() {
         return fechaautoriza;
     }
@@ -303,11 +194,20 @@ public class Comprobante implements Serializable {
         this.fechaautoriza = fechaautoriza;
     }
 
-//    public Integer getPersona() {
-//        return persona;
-//    }
-//
-//    public void setPersona(Integer persona) {
-//        this.persona = persona;
-//    }
+    public String getIde_cccfa() {
+        return ide_cccfa;
+    }
+
+    public void setIde_cccfa(String ide_cccfa) {
+        this.ide_cccfa = ide_cccfa;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
 }

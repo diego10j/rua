@@ -192,18 +192,13 @@ public class ejbRecepcionComprobante {
                 comprobanteDAO.actualizarEstado(comprobante, estadoComprobante);
                 //Lee los mensajes en caso de que le comprobante este en estado DEVUELTA
                 if (estado.equalsIgnoreCase("DEVUELTA")) {
-                    RespuestaSolicitud.Comprobantes comprobantes = response.getComprobantes();
-                    System.out.println("1111   " + comprobantes);
+                    RespuestaSolicitud.Comprobantes comprobantes = response.getComprobantes();                    
                     if (comprobantes != null) {
-                        List<ec.gob.sri.comprobantes.ws.Comprobante> listaComprobantes = comprobantes.getComprobante();
-                        System.out.println("2222   " + listaComprobantes);
+                        List<ec.gob.sri.comprobantes.ws.Comprobante> listaComprobantes = comprobantes.getComprobante();                        
                         if (!listaComprobantes.isEmpty()) {
-                            for (ec.gob.sri.comprobantes.ws.Comprobante comprobanteActual : listaComprobantes) {
-                                System.out.println("3333   " + comprobanteActual);
-                                List<Mensaje> mensajes = comprobanteActual.getMensajes().getMensaje();
-                                System.out.println("4444   " + mensajes);
-                                for (Mensaje mensaje : mensajes) {
-                                    System.out.println("5555   " + mensaje);
+                            for (ec.gob.sri.comprobantes.ws.Comprobante comprobanteActual : listaComprobantes) {                                
+                                List<Mensaje> mensajes = comprobanteActual.getMensajes().getMensaje();                                
+                                for (Mensaje mensaje : mensajes) {                                    
                                     mensajesDevuelta.append(mensaje.getTipo()).append(".").append(mensaje.getIdentificador()).append(" ").append(mensaje.getMensaje()).append(": ").append(mensaje.getInformacionAdicional()).append(" \n");
                                 }
                             }

@@ -131,7 +131,7 @@ public class ServicioComprobatesElectronicos {
                 + "where a.ide_cccfa is not null "
                 + "and fechaemision_srcom    BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + condicionEstado
-                + "order by fechaemision_srcom,ide_srcom";
+                + "order by fechaemision_srcom desc,ide_srcom desc";
     }
 
     public void generarPDF(String ide_srcom) {
