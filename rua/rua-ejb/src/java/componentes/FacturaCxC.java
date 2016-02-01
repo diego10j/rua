@@ -944,6 +944,7 @@ public class FacturaCxC extends Dialogo {
             TablaGenerica tab_xml_sri = ser_comprobante.getXmlComprobante(ide_srcom);
             if (tab_xml_sri.isEmpty() == false) {
                 String mensje = "<p> COMPROBANTE NRO. <strong>" + tab_cab_factura.getValor("secuencial_cccfa") + "</strong>  se envió al SRI  </p>";
+                mensje+="";
                 if (tab_xml_sri.getValor("ide_sresc").equals("1")) { //**********RECIBIDA
 
                 }
