@@ -11,7 +11,6 @@ import comprobantesElectronicos.entidades.Sricomprobante;
 import framework.reportes.DetalleReporte;
 import framework.reportes.GenerarReporte;
 import framework.reportes.ReporteDataSource;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
