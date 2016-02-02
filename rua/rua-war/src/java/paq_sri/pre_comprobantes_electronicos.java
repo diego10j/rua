@@ -9,13 +9,11 @@ import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
-import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.VisualizarPDF;
 import javax.ejb.EJB;
-import org.primefaces.component.fieldset.Fieldset;
 import servicios.sri.ServicioComprobatesElectronicos;
 import sistema.aplicacion.Pantalla;
 
