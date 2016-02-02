@@ -7,7 +7,6 @@ package servicios.sri;
 
 import comprobantesElectronicos.dao.ComprobanteDAOLocal;
 import comprobantesElectronicos.dao.EstadoComprobanteDAOLocal;
-import comprobantesElectronicos.dao.TipoComprobanteDAOLocal;
 import comprobantesElectronicos.ejb.ejbAutorizaComprobante;
 import comprobantesElectronicos.ejb.ejbClaveAcceso;
 import comprobantesElectronicos.ejb.ejbContingencia;
@@ -28,8 +27,6 @@ public class ServicioComprobatesElectronicos {
 
     @EJB
     private ComprobanteDAOLocal comprobanteDAO;
-    @EJB
-    private ejbClaveAcceso ejbClaveAcceso;
     @EJB
     private ejbRecepcionComprobante ejbRecepcion;
     @EJB
@@ -73,10 +70,7 @@ public class ServicioComprobatesElectronicos {
         cadenaXML = cadenaXML.replaceAll("ú", "u");
 
         //System.out.println(cadenaXML);
-        Comprobante comprobante = comprobanteDAO.getComprobanteporNumero(
-                ejbClaveAcceso.getValorEtiqueta(cadenaXML, "estab"),
-                ejbClaveAcceso.getValorEtiqueta(cadenaXML, "ptoEmi"),
-                ejbClaveAcceso.getValorEtiqueta(cadenaXML, "secuencial"));
+        Comprobante comprobante = comprobanteDAO.getComprobanteporCodigocomprobante(ide_srcom);
         if (comprobante == null) {
             return "El comprobante no se encuentra registrado en la base de datos";
         }
