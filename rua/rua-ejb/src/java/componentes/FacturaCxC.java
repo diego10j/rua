@@ -115,10 +115,8 @@ public class FacturaCxC extends Dialogo {
         tab_factura.agregarTab("ASIENTO DE VENTA", null);//2       
         tab_factura.agregarTab("RETENCIÓN", null);//3
         this.setDialogo(tab_factura);
-
         men_factura.setId("men_factura");
         utilitario.getPantalla().getChildren().add(men_factura);
-
     }
 
     public void setFacturaCxC(String titulo) {
@@ -941,16 +939,39 @@ public class FacturaCxC extends Dialogo {
     private void facturacionElectronica(String ide_srcom) {
         if (true) {
             ser_comprobante.generarComprobanteElectronico(ide_srcom);
+            TablaGenerica tab_comprobante = ser_comprobante.getComprobante(ide_srcom);
             TablaGenerica tab_xml_sri = ser_comprobante.getXmlComprobante(ide_srcom);
+            System.out.println(ide_srcom + "  ... " + ser_comprobante.getEstadoComprobante(tab_xml_sri.getValor("ide_sresc")) + " /////");
             if (tab_xml_sri.isEmpty() == false) {
-                String mensje = "<p> COMPROBANTE NRO. <strong>" + tab_cab_factura.getValor("secuencial_cccfa") + "</strong>  se envió al SRI  </p>";
-                mensje+="";
+                String mensje = "<p> FACTURA NRO. <strong>" + tab_cab_factura.getValor("secuencial_cccfa") + "</strong></p>";
+                mensje += "<p>CLAVE DE ACCESO : " + tab_comprobante.getValor("claveacceso_srcom") + "</p>";
+                mensje += "<p>ESTADO : <strong>" + ser_comprobante.getEstadoComprobante(tab_xml_sri.getValor("ide_sresc")) + "</strong></p>";
                 if (tab_xml_sri.getValor("ide_sresc").equals("1")) { //**********RECIBIDA
-
+                    mensje += "<p>Solo se envió al Servicio Web de Recepción de Comprobantes Electrónicos.</p>";
+                    men_factura.setMensajeAdvertencia("FACTURACIÓN ELECTRÓNICA", mensje);
+                } else if (tab_xml_sri.getValor("ide_sresc").equals("2")) { //**********DEVUELTA
+                    mensje += "<p>" + tab_xml_sri.getValor("msg_recepcion_srxmc") + "</p>";
+                    men_factura.setMensajeError("FACTURACIÓN ELECTRÓNICA", mensje);
+                } else if (tab_xml_sri.getValor("ide_sresc").equals("3")) { //**********AUTORIZADO
+                    mensje += "<p>NÚMERO DE AUTORIZACION : " + tab_comprobante.getValor("autorizacion_srcom") + "</p>";
+                    mensje += "<p>FECHA DE AUTORIZACION :" + utilitario.getFormatoFechaHora(tab_comprobante.getValor("fechaautoriza_srcom")) + " </p>";
+                    mensje += "<p>AMBIENTE : </p>";
+                    men_factura.setMensajeExito("FACTURACIÓN ELECTRÓNICA", mensje);
+                } else if (tab_xml_sri.getValor("ide_sresc").equals("4")) { //**********RECHAZADO
+                    mensje += "<p>" + tab_xml_sri.getValor("msg_recepcion_srxmc") + "</p>";
+                    men_factura.setMensajeError("FACTURACIÓN ELECTRÓNICA", mensje);
+                } else if (tab_xml_sri.getValor("ide_sresc").equals("5")) { //**********CONTINGENCIA
+                    mensje += "<p>No se pudo enviar el comprobante a los Servicios Web de SRI.</p>";
+                    men_factura.setMensajeAdvertencia("FACTURACIÓN ELECTRÓNICA", mensje);
+                } else if (tab_xml_sri.getValor("ide_sresc").equals("6")) { //**********NO AUTORIZADO
+                    mensje += "<p>" + tab_xml_sri.getValor("msg_autoriza_srxmc") + "</p>";
+                    men_factura.setMensajeError("FACTURACIÓN ELECTRÓNICA", mensje);
                 }
+
             } else {
                 men_factura.setMensajeError("FACTURACIÓN ELECTRÓNICA", "No existe el comprobante eléctronico Nro. " + ide_srcom);
             }
+            men_factura.dibujar();
         }
     }
 
