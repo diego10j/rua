@@ -12,6 +12,7 @@ import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
@@ -24,6 +25,8 @@ import sistema.aplicacion.Pantalla;
  * @author dfjacome
  */
 public class pre_facturasCxC extends Pantalla {
+
+    private final MenuPanel mep_menu = new MenuPanel();
 
     @EJB
     private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
@@ -72,6 +75,28 @@ public class pre_facturasCxC extends Pantalla {
         com_pto_emision.setMetodo("actualizarFacturas");
         com_pto_emision.eliminarVacio();
 
+        fcc_factura.setId("fcc_factura");
+        fcc_factura.setFacturaCxC("GENERAR FACTURA DE VENTA");
+        agregarComponente(fcc_factura);
+
+        mep_menu.setMenuPanel("OPCIONES FACTURA", "20%");
+        mep_menu.agregarItem("Listado de Facturas", "dibujarFacturas", "ui-icon-note");
+        mep_menu.agregarItem("Facturas No Contabilizadas", "dibujarFacturas", "ui-icon-notice");
+        mep_menu.agregarItem("Facturas Anuladas", "dibujarFacturas", "ui-icon-cancel");
+        mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
+        mep_menu.agregarSubMenu("INFORMES");
+        mep_menu.agregarItem("Grafico de Ventas", "dibujarFacturas", "ui-icon-clock");
+        mep_menu.agregarItem("Estadística de Ventas", "dibujarFacturas", "ui-icon-bookmark");
+        mep_menu.agregarItem("Reporte de Ventas", "dibujarFacturas", "ui-icon-calendar");
+        mep_menu.agregarSubMenu("FACTURACIÓN ELECTRÓNICA");
+        mep_menu.agregarItem("Facturas Eléctrónicas", "dibujarFacturas", "ui-icon-signal-diag");
+
+        agregarComponente(mep_menu);
+
+    }
+
+    public void dibujarFacturas() {
+
         Fieldset fis_consulta = new Fieldset();
         //fis_consulta.setLegend("Detalle de la Consulta");
 
@@ -101,6 +126,7 @@ public class pre_facturasCxC extends Pantalla {
         gri_fechas.getChildren().add(bot_consultar);
 
         // agregarComponente(fis_consulta);
+        tab_facturas = new Tabla();
         tab_facturas.setId("tab_facturas");
         tab_facturas.setSql(ser_factura.getSqlFacturas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_facturas.setCampoPrimaria("ide_cccfa");
@@ -125,16 +151,8 @@ public class pre_facturasCxC extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.getChildren().add(fis_consulta);
         pat_panel.setPanelTabla(tab_facturas);
-        agregarComponente(pat_panel);
 
-        Division div = new Division();
-        div.dividir1(pat_panel);
-        agregarComponente(div);
-
-        fcc_factura.setId("fcc_factura");
-        fcc_factura.setFacturaCxC("GENERAR FACTURA DE VENTA");
-        agregarComponente(fcc_factura);
-
+        mep_menu.dibujar(1, "LISTADO DE FACTURAS", pat_panel);
     }
 
     public void abrirCrearFactura() {
