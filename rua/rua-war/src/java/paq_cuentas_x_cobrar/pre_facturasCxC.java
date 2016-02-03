@@ -9,7 +9,6 @@ import componentes.FacturaCxC;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
-import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.MenuPanel;
