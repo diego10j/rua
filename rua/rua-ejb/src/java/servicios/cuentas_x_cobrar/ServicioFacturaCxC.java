@@ -72,8 +72,79 @@ public class ServicioFacturaCxC {
                 + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf + " "
-                + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                // + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+    }
+
+    /**
+     * Retorna las facturas anuladas de un punto de emsión en un rango de fechas
+     *
+     * @param ide_ccdaf
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlFacturasAnuladas(String ide_ccdaf, String fechaInicio, String fechaFin) {
+        return "select a.ide_cccfa, secuencial_cccfa, fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
+                + "observacion_cccfa, fecha_trans_cccfa,ide_cnccc "
+                + "from cxc_cabece_factura a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_ccdaf=" + ide_ccdaf + " "
+                + "AND a.ide_ccefa !=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                //    + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+    }
+
+    /**
+     * Retorna las facturas no contabilizadas de un punto de emsión en un rango
+     * de fechas
+     *
+     * @param ide_ccdaf
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlFacturasNoContabilizadas(String ide_ccdaf, String fechaInicio, String fechaFin) {
+        return "select a.ide_cccfa, secuencial_cccfa,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
+                + "observacion_cccfa, fecha_trans_cccfa "
+                + "from cxc_cabece_factura a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_ccdaf=" + ide_ccdaf + " "
+                + "AND a.ide_ccefa =" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and a.ide_cnccc is null "
+                //    + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+    }
+
+    /**
+     * Retorna las facturas por cobrar de un punto de emsión en un rango de
+     * fechas
+     *
+     * @param ide_ccdaf
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlFacturasPorCobrar(String ide_ccdaf, String fechaInicio, String fechaFin) {
+        return "select cf.ide_cccfa, secuencial_cccfa,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12, "
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar, "
+                + "observacion_cccfa, fecha_trans_cccfa,cf.ide_cnccc "
+                + "from cxc_detall_transa dt "
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr  "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
+                + "left join gen_persona b on cf.ide_geper=b.ide_geper "
+                + "where cf.ide_ccdaf=" + ide_ccdaf + " "
+                + "and fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                // + " and cf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "GROUP BY cf.ide_cccfa,nom_geper,identificac_geper "
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
+                + "ORDER BY secuencial_cccfa desc,cf.ide_cccfa desc";
     }
 
     /**
@@ -196,6 +267,23 @@ public class ServicioFacturaCxC {
 
     public String guardarComprobanteElectronicoFactura(Tabla tab_factura, Tabla tab_detalle) {
         return comprobateElectronico.guardarComprobanteFactura(tab_factura, tab_detalle);
+    }
+
+    /**
+     * Sql de total de ventas por mes de un punto de emisión por anio(s)
+     *
+     * @param ide_ccdaf
+     * @param anio
+     * @return
+     */
+    public String getSqlTotalVentasMensuales(String ide_ccdaf, String anio) {
+        return "select nombre_gemes,"
+                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + ") "
+                + "from gen_mes "
+                + "order by ide_gemes";
     }
 
 }

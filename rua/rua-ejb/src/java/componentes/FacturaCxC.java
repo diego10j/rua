@@ -149,6 +149,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.limpiar();
         ate_observacion.limpiar();
         ate_observacion.setDisabled(false);
+        com_pto_emision.setDisabled(false);
         tex_iva.setValue("0,00");
         tex_subtotal0.setValue("0,00");
         tex_subtotal12.setValue("0,00");
@@ -940,7 +941,7 @@ public class FacturaCxC extends Dialogo {
         if (true) {
             ser_comprobante.generarComprobanteElectronico(ide_srcom);
             TablaGenerica tab_comprobante = ser_comprobante.getComprobante(ide_srcom);
-            TablaGenerica tab_xml_sri = ser_comprobante.getXmlComprobante(ide_srcom);          
+            TablaGenerica tab_xml_sri = ser_comprobante.getXmlComprobante(ide_srcom);
             if (tab_xml_sri.isEmpty() == false) {
                 String mensje = "<p> FACTURA NRO. " + tab_cab_factura.getValor("secuencial_cccfa");
                 mensje += "</br>AMBIENTE : <strong>" + ("1" == "1" ? "PRUEBAS" : "PRODUCCIÓN") + "</strong>";  //********variable ambiente facturacion electronica
