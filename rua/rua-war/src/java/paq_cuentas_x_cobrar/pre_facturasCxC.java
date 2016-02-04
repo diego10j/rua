@@ -11,12 +11,14 @@ import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Grupo;
 
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.graficos.GraficoCartesiano;
+import framework.componentes.graficos.GraficoPastel;
 import javax.ejb.EJB;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import sistema.aplicacion.Pantalla;
@@ -44,7 +46,9 @@ public class pre_facturasCxC extends Pantalla {
     private Tabla tab_facturas_x_cobrar;
 
     private GraficoCartesiano gca_facturas;
+    private GraficoPastel gpa_facturas;
     private Tabla tab_datos_grafico;
+    private Combo com_periodo;
 
     public pre_facturasCxC() {
         bar_botones.quitarBotonsNavegacion();
@@ -218,16 +222,46 @@ public class pre_facturasCxC extends Pantalla {
         gca_facturas = new GraficoCartesiano();
         gca_facturas.setId("gca_facturas");
 
+        gpa_facturas = new GraficoPastel();
+        gpa_facturas.setId("gpa_facturas");
+        gpa_facturas.setShowDataLabels(true);
+        gpa_facturas.setStyle("width:300px;");
+
+        com_periodo = new Combo();
+        com_periodo.setMetodo("actualizarFacturas");
+        com_periodo.setCombo(ser_factura.getAniosFacturacion());
+        com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+
         tab_datos_grafico = new Tabla();
         tab_datos_grafico.setId("tab_datos_grafico");
-        tab_datos_grafico.setSql(ser_factura.getSqlTotalVentasMensuales(String.valueOf(com_pto_emision.getValue()), "2013"));
+        tab_datos_grafico.setSql(ser_factura.getSqlTotalVentasMensuales(String.valueOf(com_pto_emision.getValue()), String.valueOf(com_periodo.getValue())));
         tab_datos_grafico.setLectura(true);
+        tab_datos_grafico.setColumnaSuma("num_facturas,ventas12,ventas0,iva,total");
+        tab_datos_grafico.getColumna("num_facturas").alinearDerecha();
+        tab_datos_grafico.getColumna("ventas12").alinearDerecha();
+        tab_datos_grafico.getColumna("ventas0").alinearDerecha();
+        tab_datos_grafico.getColumna("iva").alinearDerecha();
+        tab_datos_grafico.getColumna("total").alinearDerecha();
         tab_datos_grafico.dibujar();
+
+        Grid gri_opciones = new Grid();
+        gri_opciones.setColumns(2);
+        gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
+        gri_opciones.getChildren().add(com_periodo);
         PanelTabla pat_panel = new PanelTabla();
+        pat_panel.getChildren().add(gri_opciones);
         pat_panel.setPanelTabla(tab_datos_grafico);
-        grupo.getChildren().add(pat_panel);
+
+        Grid gri = new Grid();
+        gri.setWidth("100%");
+        gri.setColumns(2);
+        gpa_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "num_facturas");
+        gri.getChildren().add(pat_panel);
+        gri.getChildren().add(gpa_facturas);
+        grupo.getChildren().add(gri);
+
         gca_facturas.setTitulo("VENTAS MENSUALES");
-        gca_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "total", "VENTAS 2015");
+        gca_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "total", "VENTAS " + String.valueOf(com_periodo.getValue()));
         grupo.getChildren().add(gca_facturas);
         mep_menu.dibujar(5, "FACTURAS POR COBRAR", grupo);
     }
@@ -256,11 +290,13 @@ public class pre_facturasCxC extends Pantalla {
             tab_facturas_x_cobrar.setSql(ser_factura.getSqlFacturasPorCobrar(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_facturas_x_cobrar.ejecutarSql();
         } else if (mep_menu.getOpcion() == 5) {
-            tab_datos_grafico.setSql(ser_factura.getSqlTotalVentasMensuales(com_pto_emision.getValue() + "", "2013"));
+            tab_datos_grafico.setSql(ser_factura.getSqlTotalVentasMensuales(com_pto_emision.getValue() + "", String.valueOf(com_periodo.getValue())));
             tab_datos_grafico.ejecutarSql();
             gca_facturas.limpiar();
-            gca_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "total", "VENTAS 2015");
-            utilitario.addUpdate("gca_facturas");
+            gca_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "total", "VENTAS " + String.valueOf(com_periodo.getValue()));
+            gpa_facturas.limpiar();
+            gpa_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "num_facturas");
+            utilitario.addUpdate("gca_facturas,gpa_facturas");
         }
     }
 
