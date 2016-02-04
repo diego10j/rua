@@ -277,11 +277,13 @@ public class ServicioFacturaCxC {
      * @return
      */
     public String getSqlTotalVentasMensuales(String ide_ccdaf, String anio) {
+        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
         return "select nombre_gemes,"
-                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
-                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
-                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + "),"
-                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + ") "
+                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
                 + "from gen_mes "
                 + "order by ide_gemes";
     }
@@ -330,6 +332,16 @@ public class ServicioFacturaCxC {
                 + "where EXTRACT(YEAR FROM fecha_emisi_cccfa)=" + utilitario.getAnio(utilitario.getFechaActual())
                 + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                 + " and ide_ccdaf=" + ide_ccdaf;
+    }
+
+    /**
+     * Retorna el sql con los anios que exuste facturacion en la empresa
+     *
+     * @return
+     */
+    public String getAniosFacturacion() {
+        return "select distinct EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as anio,EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as nom_anio  "
+                + "from cxc_cabece_factura where ide_empr=" + utilitario.getVariable("ide_empr") + " order by 1 desc ";
     }
 
 }
