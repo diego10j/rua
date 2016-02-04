@@ -128,7 +128,7 @@ public class FacturaCxC extends Dialogo {
 
         tab_factura.getTab(0).getChildren().add(dibujarFactura());
         tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
-        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
+       // tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
 
         this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
     }

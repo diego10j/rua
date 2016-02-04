@@ -286,4 +286,50 @@ public class ServicioFacturaCxC {
                 + "order by ide_gemes";
     }
 
+    /**
+     * sql con total de ventas en el dia actual y numero de facturas de un punto
+     * de emision
+     *
+     * @param ide_ccdaf
+     * @return
+     */
+    public String getSqlTotalVentasHoy(String ide_ccdaf) {
+        return "select count(ide_cccfa) as num_facturas,sum(total_cccfa) as total "
+                + "from cxc_cabece_factura "
+                + "where fecha_emisi_cccfa='" + utilitario.getFechaActual() + "' "
+                + "and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccdaf=" + ide_ccdaf;
+    }
+
+    /**
+     * sql con total de ventas en el mes actual y numero de facturas de un punto
+     * de emision
+     *
+     * @param ide_ccdaf
+     * @return
+     */
+    public String getSqlTotalVentasMes(String ide_ccdaf) {
+        return "select count(ide_cccfa) as num_facturas,sum(total_cccfa) as total "
+                + "from cxc_cabece_factura "
+                + "where  EXTRACT(MONTH FROM fecha_emisi_cccfa)=" + utilitario.getMes(utilitario.getFechaActual())
+                + " and EXTRACT(YEAR FROM fecha_emisi_cccfa)=" + utilitario.getAnio(utilitario.getFechaActual())
+                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccdaf=" + ide_ccdaf;
+    }
+
+    /**
+     * sql con total de ventas en el año actual y numero de facturas de un punto
+     * de emision
+     *
+     * @param ide_ccdaf
+     * @return
+     */
+    public String getSqlTotalVentasAnio(String ide_ccdaf) {
+        return "select count(ide_cccfa) as num_facturas,sum(total_cccfa) as total "
+                + "from cxc_cabece_factura "
+                + "where EXTRACT(YEAR FROM fecha_emisi_cccfa)=" + utilitario.getAnio(utilitario.getFechaActual())
+                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccdaf=" + ide_ccdaf;
+    }
+
 }
