@@ -339,9 +339,41 @@ public class ServicioFacturaCxC {
      *
      * @return
      */
-    public String getAniosFacturacion() {
+    public String getSqlAniosFacturacion() {
         return "select distinct EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as anio,EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as nom_anio  "
                 + "from cxc_cabece_factura where ide_empr=" + utilitario.getVariable("ide_empr") + " order by 1 desc ";
+    }
+
+    /**
+     * Sql con los meses calendarios
+     *
+     * @return
+     */
+    public String getSqlMeses() {
+        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + utilitario.getVariable("ide_empr") + " order by ide_gemes";
+    }
+
+    /**
+     * Sql que retorna las ventas de un punto de emision en un año y mes
+     *
+     * @param ide_ccdaf
+     * @param numeroMes
+     * @param anio
+     * @return
+     */
+    public String getSqlVentasMensuales(String ide_ccdaf, String numeroMes, String anio) {
+        String fechaInicio = utilitario.getFormatoFecha(anio + "-" + numeroMes + "-01");
+        String fechaFin = utilitario.getUltimaFechaMes(fechaInicio);
+        return "select a.ide_cccfa,fecha_emisi_cccfa, secuencial_cccfa,"
+                + "nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa,"
+                + "observacion_cccfa "
+                + "from cxc_cabece_factura a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "where fecha_emisi_cccfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_ccdaf=" + ide_ccdaf
+                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
 }
