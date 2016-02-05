@@ -211,9 +211,12 @@ public class pre_facturasCxC extends Pantalla {
         tab_facturas_x_cobrar.getColumna("valor_iva_cccfa").alinearDerecha();
         tab_facturas_x_cobrar.getColumna("total_cccfa").alinearDerecha();
         tab_facturas_x_cobrar.getColumna("total_cccfa").setEstilo("font-size: 12px;font-weight: bold;");
+        tab_facturas_x_cobrar.getColumna("saldo_x_pagar").alinearDerecha();
+        tab_facturas_x_cobrar.getColumna("saldo_x_pagar").setEstilo("font-size: 12px;font-weight: bold;color:red");
         tab_facturas_x_cobrar.getColumna("ide_cnccc").setFiltroContenido();
-        tab_facturas_x_cobrar.setRows(15);
         tab_facturas_x_cobrar.setLectura(true);
+        tab_facturas_x_cobrar.setRows(15);
+        tab_facturas_x_cobrar.setColumnaSuma("total_cccfa,saldo_x_pagar");
         tab_facturas_x_cobrar.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_facturas_x_cobrar);
@@ -268,10 +271,15 @@ public class pre_facturasCxC extends Pantalla {
         gca_facturas.setTitulo("VENTAS MENSUALES");
         gca_facturas.agregarSerie(tab_datos_grafico, "nombre_gemes", "total", "VENTAS " + String.valueOf(com_periodo.getValue()));
         grupo.getChildren().add(gca_facturas);
-        mep_menu.dibujar(5, "FACTURAS POR COBRAR", grupo);
+        mep_menu.dibujar(5, "GRAFICOS DE VENTAS", grupo);
     }
     
     public void dibujarReporteVentas() {
+        
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        
         com_mes = new Combo();
         com_mes.setMetodo("actualizarFacturas");
         com_mes.setCombo(ser_factura.getSqlMeses());
@@ -283,21 +291,21 @@ public class pre_facturasCxC extends Pantalla {
         com_periodo.setCombo(ser_factura.getSqlAniosFacturacion());
         com_periodo.eliminarVacio();
         com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
-        Grid gri_opciones = new Grid();
-        gri_opciones.setColumns(4);
-        gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
-        gri_opciones.getChildren().add(com_periodo);
-        gri_opciones.getChildren().add(new Etiqueta("<strong>MES :</strong>"));
-        gri_opciones.getChildren().add(com_mes);
+        
+        bar_menu.agregarComponente(new Etiqueta("<strong>PERÍODO :</strong>"));
+        bar_menu.agregarComponente(com_periodo);
+        bar_menu.agregarComponente(new Etiqueta("<strong>MES :</strong>"));
+        bar_menu.agregarComponente(com_mes);
         
         tab_rep_ventas = new Tabla();
         tab_rep_ventas.setId("tab_rep_ventas");
         tab_rep_ventas.setSql(ser_factura.getSqlVentasMensuales(com_pto_emision.getValue() + "", com_mes.getValue() + "", com_periodo.getValue() + ""));
-        tab_rep_ventas.getColumna("ide_cccfa").setVisible(false);        
-        tab_rep_ventas.setScrollable(true);
-        tab_rep_ventas.setScrollHeight(500);
+        tab_rep_ventas.getColumna("ide_cccfa").setVisible(false);
+        tab_rep_ventas.getColumna("observacion_cccfa").setVisible(false);
+        tab_rep_ventas.setRows(15);
         
         tab_rep_ventas.setLectura(true);
+        tab_rep_ventas.getColumna("NOM_GEPER").setLongitud(100);
         tab_rep_ventas.setColumnaSuma("ventas12,ventas0,valor_iva_cccfa,total_cccfa");
         tab_rep_ventas.getColumna("ventas12").alinearDerecha();
         tab_rep_ventas.getColumna("ventas0").alinearDerecha();
@@ -305,9 +313,13 @@ public class pre_facturasCxC extends Pantalla {
         tab_rep_ventas.getColumna("total_cccfa").alinearDerecha();
         tab_rep_ventas.dibujar();
         PanelTabla pat_panel = new PanelTabla();
-        pat_panel.getChildren().add(gri_opciones);
         pat_panel.setPanelTabla(tab_rep_ventas);
-        mep_menu.dibujar(7, "REPORTE DE VENTAS POR MES Y PERÍODO", pat_panel);
+        
+        Grupo grupo = new Grupo();
+        grupo.getChildren().add(bar_menu);
+        grupo.getChildren().add(pat_panel);
+        
+        mep_menu.dibujar(7, "REPORTE DE VENTAS POR MES Y PERÍODO", grupo);
         
     }
     
