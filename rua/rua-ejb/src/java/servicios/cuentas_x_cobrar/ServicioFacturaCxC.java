@@ -373,7 +373,7 @@ public class ServicioFacturaCxC {
                 + "where fecha_emisi_cccfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf
                 + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc"; 
     }
 
 }
