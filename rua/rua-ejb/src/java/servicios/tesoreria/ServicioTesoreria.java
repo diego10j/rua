@@ -40,6 +40,18 @@ public class ServicioTesoreria {
     }
 
     /**
+     * Retorna todas las cuentas : cajas y bancos
+     *
+     * @return
+     */
+    public String getSqlComboCuentas() {
+        return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
+                + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
+                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + " "
+                + "order by nombre_teban,nombre_tecba";
+    }
+
+    /**
      * Retorna sentencia SQL para obtener las cajas de una empresa, para ser
      * usada en Combos, Autocompletar
      *
@@ -63,8 +75,8 @@ public class ServicioTesoreria {
      * @return
      */
     public String getSqlTransaccionesCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
-        return "select ide_teclb,fecha_trans_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,"
-                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb "
+        return "select fecha_trans_teclb,numero_teclb,nombre_tettb,beneficiari_teclb,"
+                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_cnccc,ide_teclb "
                 + "from tes_cab_libr_banc a "
                 + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
                 + "where ide_tecba=" + ide_tecba + " "
