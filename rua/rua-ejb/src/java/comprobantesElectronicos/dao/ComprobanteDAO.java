@@ -26,12 +26,12 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
     // "Insert Code > Add Business Method")
     @EJB
     private EstadoComprobanteDAOLocal estadoComprobanteDAO;
-
+    
     @EJB
     private TipoComprobanteDAOLocal tipoComprobanteDAO;
-
+    
     private final Utilitario utilitario = new Utilitario();
-
+    
     @Override
     public Comprobante getComprobanteporNumero(String estab, String ptoEmi, String secuencial) {
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE secuencial_srcom ='" + secuencial + "' and ptoemi_srcom='" + ptoEmi + "' and estab_srcom='" + estab + "'");
@@ -40,32 +40,32 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return null;
     }
-
+    
     @Override
     public void actualizarClaveAccesoyEstado(Comprobante comprobante, String claveAcceso, Estadocomprobante estadoComprobante) {
         comprobante.setClaveacceso(claveAcceso);
         comprobante.setCodigoestado(estadoComprobante);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarEstado(Comprobante comprobante, Estadocomprobante estadoComprobante) {
         comprobante.setCodigoestado(estadoComprobante);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarClaveAcceso(Comprobante comprobante, String claveAcceso) {
         comprobante.setClaveacceso(claveAcceso);
         actualizar(comprobante);
     }
-
+    
     @Override
     public void actualizarClaveContingencia(Comprobante comprobante, Clavecontingencia claveContingencia) {
         comprobante.setCodigoclave(claveContingencia);
         actualizar(comprobante);
     }
-
+    
     @Override
     public Comprobante getComprobanteporCodigocomprobante(String ide_srcom) {
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE ide_srcom =" + ide_srcom + "");
@@ -74,16 +74,16 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return null;
     }
-
+    
     @Override
     public Comprobante getComprobanteporClaveAcceso(String claveAcceso) {
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE claveacceso_srcom='" + claveAcceso + "'");
         Comprobante comprobante = new Comprobante(tab_consulta);
         return comprobante;
-
+        
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesEstado(Estadocomprobante estadoComprobante) {
         List<Comprobante> lisComprobantesEstado = new ArrayList();
@@ -93,9 +93,9 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return lisComprobantesEstado;
     }
-
+    
     public void actualizar(Comprobante comprobante) {
-
+        
         String va_estado_comprobante = comprobante.getCodigoestado() == null ? "Null" : "'" + comprobante.getCodigoestado().getCodigoestado() + "'";
         String va_clave_acceso = comprobante.getClaveacceso() == null ? "Null" : "'" + comprobante.getClaveacceso() + "'";
         String va_firma = comprobante.getCodigofirma() == null ? "Null" : "" + comprobante.getCodigofirma().getCodigofirma() + "";
@@ -103,7 +103,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         String va_autorizacion_sri = comprobante.getNumAutorizacion() == null ? "Null" : "'" + comprobante.getNumAutorizacion() + "'";
         String va_tipo_emision = comprobante.getTipoemision() == null ? "Null" : "" + comprobante.getTipoemision() + "";
         String va_fec_autoriza = comprobante.getFechaautoriza() == null ? "Null" : "'" + utilitario.getFormatoFechaHora(comprobante.getFechaautoriza()) + "'";
-
+        
         String sql = "UPDATE sri_comprobante set"
                 + " ide_sresc=" + va_estado_comprobante
                 + " ,claveacceso_srcom=" + va_clave_acceso
@@ -114,22 +114,22 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
                 + " ,fechaautoriza_srcom=" + va_fec_autoriza
                 + " WHERE ide_srcom =" + comprobante.getCodigocomprobante();
         utilitario.getConexion().ejecutarSql(sql);
-
+        
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom) {
-
+        
         List<Comprobante> lisComprobantes = new ArrayList();
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE identificacion_srcom='" + identificacion_srcom + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
-
+        
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom, Tipocomprobante tipoComprobante) {
         List<Comprobante> lisComprobantes = new ArrayList();
@@ -140,30 +140,30 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         }
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesAutorizadosCliente(String identificacion_srcom, String secuencial) {
-
+        
         List<Comprobante> lisComprobantes = new ArrayList();
-
+        
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM sri_comprobante  WHERE identificacion_srcom='" + identificacion_srcom + "' and secuencial_srcom='" + secuencial + "' and ide_sresc=" + estadoComprobanteDAO.getEstadoAutorizado().getCodigoestado() + " order by fechaemision_srcom desc");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             lisComprobantes.add(new Comprobante(tab_consulta, i));
         }
-
+        
         return lisComprobantes;
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesTipo(Tipocomprobante tipoComprobante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public List<Comprobante> getComprobantesTipoEstado(Tipocomprobante tipoComprobante, Estadocomprobante estadoComprobante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String guardarComprobanteFactura(Tabla tab_factura, Tabla tab_detalle) {
         //Guarda la factura en la tabla de comprobantes electronicos
@@ -177,7 +177,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             estab = serie.substring(3);
             ptoEmi = serie.substring(3, 6);
         }
-
+        
         TablaGenerica tab_comprobante = new TablaGenerica();
         Tipocomprobante tic_factura = tipoComprobanteDAO.getTipoFactura();
         tab_comprobante.setTabla("sri_comprobante", "ide_srcom", -1);
@@ -198,7 +198,7 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
         tab_comprobante.setValor("ide_empr", utilitario.getVariable("ide_empr"));
         tab_comprobante.setValor("ide_usua", utilitario.getVariable("ide_usua"));
         tab_comprobante.setValor("identificacion_srcom", tab_persona.getValor("identificac_geper"));
-
+        
         if (tab_comprobante.guardar()) {
             TablaGenerica tab_xml_comprobante = new TablaGenerica();
             tab_xml_comprobante.setTabla("sri_xml_comprobante", "ide_srxmc", -1);
@@ -227,19 +227,19 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
      * @return
      */
     private String getXmlFactura(Tabla tab_factura, Tabla tab_detalle_factura) {
-
+        
         String str_xml = null;
         if (tab_factura.isEmpty() == false) {
-            String ambiente = "1";  //*********!!!Poner variable   1=pruebas   2=produccion
+            String ambiente = utilitario.getVariable("p_sri_ambiente_comp_elect");  //********* variable   1=pruebas   2=produccion
             String tipoEmision = "1"; //NORMAL
-            String moneda = "DOLAR"; //*********!!!Poner variable
-
+            String moneda = utilitario.getVariable("p_sri_moneda_comp_elect");
+            
             TablaGenerica tab_empresa = utilitario.consultar("SELECT * FROM sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
             TablaGenerica tab_persona = utilitario.consultar("SELECT ide_geper,alterno2_getid,nom_geper,identificac_geper,direccion_geper,telefono_geper,correo_geper FROM gen_persona  a\n"
                     + "inner join gen_tipo_identifi b on a.ide_getid=b.ide_getid\n"
                     + "where ide_geper=" + tab_factura.getValor("ide_geper"));
             TablaGenerica tab_datos_factura = utilitario.consultar("SELECT * FROM cxc_datos_fac WHERE ide_ccdaf=" + tab_factura.getValor("ide_ccdaf"));
-
+            
             String serie = tab_datos_factura.getValor("serie_ccdaf");
             String estab = null;
             String ptoEmi = null;
@@ -265,13 +265,12 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             } catch (Exception e) {
             }
             //totalImpuesto
-            String codigoIva = "2"; //CODIGO SRI IVA            //*********!!!Poner variable
-            String codigoPorcentajeIva = "2";    //SI IVA       //*********!!!Poner variable   
-            String codigoPorcentajeIva0 = "0";    //NO IVA      //*********!!!Poner variable  
-            String codigoPorcentajeIvaNoObjeto = "6"; //NO IVA  //*********!!!Poner variable  
-
-            String PorcentajeIva = "12.00"; //PORCENTAJE IVA    //*********!!!Poner variable
-            String PorcentajeIva0 = "0.00"; //PORCENTAJE NO IVA //*********!!!Poner variable 
+            String codigoIva = utilitario.getVariable("p_sri_codigoIva_comp_elect"); //2 CODIGO SRI IVA            //*********!!!Poner variable
+            String codigoPorcentajeIva = utilitario.getVariable("p_sri_codigoPorcentajeIva_comp_elect");    //2 SI IVA       //*********!!!Poner variable   
+            String codigoPorcentajeIva0 = utilitario.getVariable("p_sri_codigoPorcentajeIva0_comp_elect");      //0 NO IVA      //*********!!!Poner variable  
+            String codigoPorcentajeIvaNoObjeto = utilitario.getVariable("p_sri_codigoPorcentajeIvaNoObjeto_comp_elect"); //6 NO IVA  //*********!!!Poner variable  
+            String PorcentajeIva = utilitario.getVariable("p_sri_porcentajeIva_comp_elect"); //12.00 PORCENTAJE IVA    //*********!!!Poner variable
+            String PorcentajeIva0 = "0.00"; //PORCENTAJE NO IVA 
 
             double totalSinImpuestos = dou_base_no_objeto_iva + dou_base_tarifa0 + dou_base_grabada;
             str_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n"
@@ -356,8 +355,8 @@ public class ComprobanteDAO implements ComprobanteDAOLocal {
             str_xml += "		</infoAdicional> \n"
                     + "     </factura>";
         }
-
+        
         return str_xml;
     }
-
+    
 }

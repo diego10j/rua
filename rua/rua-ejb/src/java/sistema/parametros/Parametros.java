@@ -29,7 +29,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("0", "P_SIS_DESBLOQUEA_USUARIO", "Indica cuando se desbloquea a un usuario", "10", "SIS_ACCION_AUDITORIA", "IDE_ACAU", "DESCRIPCION_ACAU"));
 
 //////////////////////////////////////////////////////////////////////
-         // parametros para el cierre de periodo
+        // parametros para el cierre de periodo
         lis_parametros.add(new Parametro("0", "p_con_superavit_ejercicio_anterior", "Indica la configuracion para la cuenta de Superavit del Ejercicio Anterior ", "1496", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("0", "p_con_deficit_ejercicio_anterior", "Indica la configuracion para la cuenta de Deficit del Ejercicio Anterior ", "1497", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("0", "p_con_patrimonio", "Indica la configuracion para la cuenta a la que se vamos a sumar el (superavit)  o restar el (Deficit) del Ejercicio Anterior ", "1487", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
@@ -173,6 +173,15 @@ public class Parametros {
 
         lis_parametros.add(new Parametro("10", "p_sri_base_renta", "Indica el rubro de la base imponible del impuesto a la renta para formulario 103", "53", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
         lis_parametros.add(new Parametro("10", "p_sri_impuesto_renta", "Indica el rubro del valor de impuesto a la renta para formulario 103", "31", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
+
+        lis_parametros.add(new Parametro("10", "p_sri_activa_comp_elect", "Activa o desactiva comprobantes electronicos del SRI", "true"));
+        lis_parametros.add(new Parametro("10", "p_sri_ambiente_comp_elect", "Ambiente de Comprobantes Eléctronicos del SRI", "1"));  //1 PRUEBAS //2 PRODUCCION
+        lis_parametros.add(new Parametro("10", "p_sri_moneda_comp_elect", "Ambiente de Comprobantes Eléctronicos del SRI", "DOLAR"));
+        lis_parametros.add(new Parametro("10", "p_sri_codigoIva_comp_elect", "Codigo de Iva para Comprobantes Eléctronicos del SRI", "2"));
+        lis_parametros.add(new Parametro("10", "p_sri_codigoPorcentajeIva_comp_elect", "Codigo de Iva para Comprobantes Eléctronicos del SRI", "2"));
+        lis_parametros.add(new Parametro("10", "p_sri_codigoPorcentajeIva0_comp_elect", "Codigo de Iva 0 para Comprobantes Eléctronicos del SRI", "0"));
+        lis_parametros.add(new Parametro("10", "p_sri_codigoPorcentajeIvaNoObjeto_comp_elect", "Codigo de Iva no Objeto  para Comprobantes Eléctronicos del SRI", "6"));
+        lis_parametros.add(new Parametro("10", "p_sri_porcentajeIva_comp_elect", "Porcentaje del Iva para Comprobantes Eléctronicos del SRI", "12.00"));
 
         /*
          * PRESUPUESTOS =11 *
