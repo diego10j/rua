@@ -17,10 +17,12 @@ import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import javax.ejb.EJB;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
+import servicios.sri.ServicioComprobatesElectronicos;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -52,6 +54,14 @@ public class pre_facturasCxC extends Pantalla {
 
     private Tabla tab_rep_ventas;
     private Combo com_mes;
+
+    //Facturacion Electrónica
+    @EJB
+    private final ServicioComprobatesElectronicos ser_comprobante = (ServicioComprobatesElectronicos) utilitario.instanciarEJB(ServicioComprobatesElectronicos.class);
+
+    private Combo com_estados_fe;
+    private Tabla tab_facturas_fe;
+    private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
 
     public pre_facturasCxC() {
 
@@ -93,10 +103,13 @@ public class pre_facturasCxC extends Pantalla {
         mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");
         mep_menu.agregarItem("Reporte de Ventas", "dibujarReporteVentas", "ui-icon-calendar");
         mep_menu.agregarSubMenu("FACTURACIÓN ELECTRÓNICA");
-        mep_menu.agregarItem("Facturas Eléctrónicas", "dibujarFacturas", "ui-icon-signal-diag");
+        mep_menu.agregarItem("Facturas Eléctrónicas", "dibujarFacturaElectronica", "ui-icon-signal-diag");
 
         agregarComponente(mep_menu);
         dibujarFacturas();
+
+        vipdf_comprobante.setId("vipdf_comprobante");
+        agregarComponente(vipdf_comprobante);
     }
 
     public void dibujarFacturas() {
@@ -323,6 +336,51 @@ public class pre_facturasCxC extends Pantalla {
 
     }
 
+    public void dibujarFacturaElectronica() {
+        Grupo grupo = new Grupo();
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        com_estados_fe = new Combo();
+        com_estados_fe.setCombo("SELECT * FROM sri_estado_comprobante order by nombre_sresc");
+        com_estados_fe.setMetodo("actualizarFacturas");
+
+        bar_menu.agregarComponente(new Etiqueta("ESTADOS COMPROBANTES ELECTRÓNICOS :"));
+        bar_menu.agregarComponente(com_estados_fe);
+        bar_menu.agregarSeparador();
+        Boton bot_pdf = new Boton();
+        bot_pdf.setValue("Ver PDF");
+        bot_pdf.setMetodo("generarPDF");
+        bar_menu.agregarComponente(bot_pdf);
+
+        Boton bot_xml = new Boton();
+        bot_xml.setValue("Descargar XML");
+        bot_xml.setMetodo("descargarXML");
+        bot_xml.setAjax(false);
+        bar_menu.agregarComponente(bot_xml);
+        tab_facturas_fe = new Tabla();
+        tab_facturas_fe.setId("tab_facturas_fe");
+
+        tab_facturas_fe.setSql(ser_comprobante.getSqlFacturasElectronicas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_estados_fe.getValue())));
+
+        tab_facturas_fe.getColumna("ide_srcom").setVisible(false);
+        tab_facturas_fe.getColumna("ide_cccfa").setVisible(false);
+        tab_facturas_fe.getColumna("SECUENCIAL_SRCOM").setFiltroContenido();
+
+        tab_facturas_fe.setLectura(true);
+        tab_facturas_fe.setRows(15);
+        tab_facturas_fe.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_facturas_fe);
+
+        grupo.getChildren().add(bar_menu);
+        grupo.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(8, "FACTURAS ELECTRÓNICAS", grupo);
+    }
+
     public void abrirVerFactura() {
         fcc_factura.verFactura(tab_facturas.getValorSeleccionado());
         fcc_factura.dibujar();
@@ -352,8 +410,29 @@ public class pre_facturasCxC extends Pantalla {
         } else if (mep_menu.getOpcion() == 7) {
             tab_rep_ventas.setSql(ser_factura.getSqlVentasMensuales(com_pto_emision.getValue() + "", com_mes.getValue() + "", com_periodo.getValue() + ""));
             tab_rep_ventas.ejecutarSql();
+        } else if (mep_menu.getOpcion() == 8) {
+            tab_facturas_fe.setSql(ser_comprobante.getSqlFacturasElectronicas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_estados_fe.getValue())));
+            tab_facturas_fe.ejecutarSql();
         }
 
+    }
+
+    public void generarPDF() {
+        if (tab_facturas_fe.getValorSeleccionado() != null) {
+            ser_comprobante.generarPDF(tab_facturas_fe.getValorSeleccionado());
+            vipdf_comprobante.setVisualizarPDFUsuario();
+            vipdf_comprobante.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Factura Electrónica", "");
+        }
+    }
+
+    public void descargarXML() {
+        if (tab_facturas_fe.getValorSeleccionado() != null) {
+            ser_comprobante.generarXML(tab_facturas_fe.getValorSeleccionado());
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Factura Electrónica", "");
+        }
     }
 
     @Override
@@ -434,6 +513,22 @@ public class pre_facturasCxC extends Pantalla {
 
     public void setTab_rep_ventas(Tabla tab_rep_ventas) {
         this.tab_rep_ventas = tab_rep_ventas;
+    }
+
+    public Tabla getTab_facturas_fe() {
+        return tab_facturas_fe;
+    }
+
+    public void setTab_facturas_fe(Tabla tab_facturas_fe) {
+        this.tab_facturas_fe = tab_facturas_fe;
+    }
+
+    public VisualizarPDF getVipdf_comprobante() {
+        return vipdf_comprobante;
+    }
+
+    public void setVipdf_comprobante(VisualizarPDF vipdf_comprobante) {
+        this.vipdf_comprobante = vipdf_comprobante;
     }
 
 }

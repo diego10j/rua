@@ -57,6 +57,7 @@ public class pre_parametros extends Pantalla {
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("sis_modulo", "ide_modu", 1);
         tab_tabla1.agregarRelacion(tab_tabla2);
+        tab_tabla1.setRows(20);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -66,8 +67,8 @@ public class pre_parametros extends Pantalla {
         tab_tabla2.setLectura(true);
         tab_tabla2.getColumna("nom_para").setFiltro(true);
         tab_tabla2.getColumna("valor_para").setFiltro(true);
-        tab_tabla2.dibujar();
-        tab_tabla2.setRows(50);
+        tab_tabla2.setRows(25);
+        tab_tabla2.dibujar();        
         tab_tabla2.setLectura(false);//solo para que permita guardar
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -95,6 +96,7 @@ public class pre_parametros extends Pantalla {
 
         //Dialogo
         dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setDynamic(false);
         dia_dialogo.setWidth("40%");
         dia_dialogo.setHeight("40%");
         dia_dialogo.getBot_aceptar().setMetodo("aceptar_configurar");
@@ -133,6 +135,7 @@ public class pre_parametros extends Pantalla {
 
         ///
         set_configura.setId("set_configura");
+        set_configura.setDynamic(false);
         set_configura.setWidth("50%");
         set_configura.setHeight("70%");
         set_configura.getBot_aceptar().setMetodo("aceptar_reconfigurar");
@@ -144,13 +147,12 @@ public class pre_parametros extends Pantalla {
     public void aceptar_reconfigurar() {
         tex_valor.setValue(set_configura.getSeleccionados());
         set_configura.cerrar();
-        utilitario.addUpdate("set_configura,tex_valor");
+        utilitario.addUpdate("tex_valor");
     }
 
     public void reconfigurar() {
         set_configura.redibujar();
         set_configura.setFilasSeleccionados((String) tex_valor.getValue());
-        utilitario.addUpdate("set_configura");
     }
 
     public void aceptar_configurar() {
@@ -164,7 +166,6 @@ public class pre_parametros extends Pantalla {
             tab_tabla2.ejecutarSql();
             tab_tabla2.setFilaActual(str_foco);
         }
-        utilitario.addUpdate("dia_dialogo,tab_tabla2");
     }
 
     public void configurar() {
@@ -187,7 +188,6 @@ public class pre_parametros extends Pantalla {
                 set_configura.getTab_seleccion().setCampoOrden(tab_tabla2.getValor("campo_nombre_para"));
             }
             dia_dialogo.dibujar();
-            utilitario.addUpdate("dia_dialogo");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar un parámetro para poder configurarlo", "");
         }
@@ -207,12 +207,11 @@ public class pre_parametros extends Pantalla {
             tab_tabla2.setValor("campo_nombre_para", set_nuevos_parametros.getTab_seleccion().getValor(num_fila, "campo_nombre_para"));
         }
         tab_tabla2.guardar();
-        if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+        if (guardarPantalla().isEmpty()) {
             tab_tabla2.ejecutarSql();
         }
         set_nuevos_parametros.getTab_seleccion().limpiar();
         set_nuevos_parametros.cerrar();
-        utilitario.addUpdate("set_nuevos_parametros,tab_tabla2");
     }
 
     @Override

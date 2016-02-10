@@ -116,7 +116,6 @@ public class pre_comprobantes_electronicos extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccione un Comprobante", "");
         }
-
     }
 
     @Override

@@ -234,8 +234,7 @@ public class pre_clientes extends Pantalla {
             tab_transacciones_cxc = new Tabla();
             tab_transacciones_cxc.setNumeroTabla(2);
             tab_transacciones_cxc.setId("tab_transacciones_cxc");
-            tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-            tab_transacciones_cxc.setCampoPrimaria("IDE_CCDTR");
+            tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));             
             tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
             tab_transacciones_cxc.getColumna("FECHA_TRANS_CCDTR").setNombreVisual("FECHA");
             tab_transacciones_cxc.getColumna("IDE_CCDTR").setVisible(false);
@@ -254,10 +253,11 @@ public class pre_clientes extends Pantalla {
             tab_transacciones_cxc.getColumna("saldo").setLongitud(25);
             tab_transacciones_cxc.getColumna("saldo").alinearDerecha();
             tab_transacciones_cxc.getColumna("saldo").setEstilo("font-weight: bold;");
-
+            tab_transacciones_cxc.setColumnaSuma("INGRESOS,EGRESOS");
+            tab_transacciones_cxc.setOrdenar(false);
             tab_transacciones_cxc.setLectura(true);
             tab_transacciones_cxc.setScrollable(true);
-            tab_transacciones_cxc.setScrollHeight(300);
+            tab_transacciones_cxc.setRows(15);
             tab_transacciones_cxc.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_transacciones_cxc);
@@ -435,7 +435,8 @@ public class pre_clientes extends Pantalla {
                 tab_movimientos.getColumna("saldo").setEstilo("font-weight: bold;");
                 tab_movimientos.getColumna("valor_cndcc").setVisible(false);
                 tab_movimientos.setScrollable(true);
-                tab_movimientos.setScrollHeight(250);
+                tab_movimientos.setRows(15);
+                tab_movimientos.setOrdenar(false);
                 tab_movimientos.dibujar();
                 PanelTabla pat_panel = new PanelTabla();
                 pat_panel.setPanelTabla(tab_movimientos);
@@ -770,14 +771,13 @@ public class pre_clientes extends Pantalla {
 
     @Override
     public void insertar() {
-        if (mep_menu.getOpcion() == -1) {
-            //PANTALLA LIMPIA
-            dibujarCliente();
-        }
-
+        aut_clientes.limpiar();
         if (mep_menu.getOpcion() == 1) {
             //FORMULARIO CLIENTE
-            aut_clientes.limpiar();
+            tab_cliente.limpiar();
+            tab_cliente.insertar();
+        } else {
+            dibujarCliente();
             tab_cliente.insertar();
         }
     }
