@@ -268,6 +268,29 @@ public class ServicioCliente {
                 + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
     }
 
+    public String getSqlCuentasPorCobrar(String ide_geper) {
+
+        String str_sql_cxc = "select dt.ide_ccctr,"
+                + "dt.ide_cccfa,"
+                + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end,"
+                + "cf.secuencial_cccfa,"
+                + "cf.total_cccfa,"
+                + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar,"
+                + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end "
+                + "from cxc_detall_transa dt "
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "where ct.ide_geper=" + ide_geper + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa, "
+                + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
+
+        return str_sql_cxc;
+    }
+
     /**
      * Ventas Mensuales en un año de un cliente
      *

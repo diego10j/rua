@@ -219,4 +219,24 @@ public class ServicioTesoreria {
 
     }
 
+    /**
+     * Retorna las transacciones con signo positivo (aumentan libro caja bancos)
+     * INGRESOS
+     *
+     * @return
+     */
+    public String getSqlTipoTransaccionPositivo() {
+        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=1";
+    }
+
+    /**
+     * Retorna las transacciones con signo negativo (disminuyen libro caja
+     * bancos) EGRESOS
+     *
+     * @return
+     */
+    public String getSqlTipoTransaccionNegativo() {
+        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=-1";
+    }
+
 }
