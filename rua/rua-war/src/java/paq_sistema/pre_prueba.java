@@ -4,7 +4,7 @@
  */
 package paq_sistema;
 
-import componentes.FacturaCxC;
+import componentes.CuentaCxc;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -13,11 +13,10 @@ import sistema.aplicacion.Pantalla;
  */
 public class pre_prueba extends Pantalla {
 
-    private FacturaCxC fac = new FacturaCxC();
+    private CuentaCxc fac = new CuentaCxc();
 
     public pre_prueba() {
         fac.setId("fac");
-        fac.setFacturaCxC("");
         agregarComponente(fac);
     }
 
@@ -36,11 +35,11 @@ public class pre_prueba extends Pantalla {
 
     }
 
-    public FacturaCxC getFac() {
+    public CuentaCxc getFac() {
         return fac;
     }
 
-    public void setFac(FacturaCxC fac) {
+    public void setFac(CuentaCxc fac) {
         this.fac = fac;
     }
 

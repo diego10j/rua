@@ -26,7 +26,7 @@ import sistema.aplicacion.Pantalla;
  * @author dfjacome
  */
 public class pre_libro_bancos extends Pantalla {
-    
+
     private AutoCompletar aut_cuentas = new AutoCompletar();
     @EJB
     private final ServicioTesoreria ser_tesoreria = (ServicioTesoreria) utilitario.instanciarEJB(ServicioTesoreria.class);
@@ -34,51 +34,53 @@ public class pre_libro_bancos extends Pantalla {
     private final Calendario cal_fecha_fin = new Calendario();
     private Texto tex_saldo_inicial = new Texto();
     private Texto tex_saldo_final = new Texto();
-    
+
     private Tabla tab_movimientos = new Tabla();
-    
+
     public pre_libro_bancos() {
         aut_cuentas.setId("aut_cuentas");
         aut_cuentas.setAutocompletarContenido();
         aut_cuentas.setDropdown(true);
         aut_cuentas.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
         aut_cuentas.setMetodoChange("actualizarMovimientos");
-        
+
         bar_botones.quitarBotonEliminar();
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonsNavegacion();
-        
+
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
         bar_botones.agregarComponente(aut_cuentas);
-        
+
         bar_botones.agregarSeparador();
-        
+
         Fieldset fis_consulta = new Fieldset();
         Grid gri_fechas = new Grid();
         gri_fechas.setColumns(7);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
-        
+
         cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         gri_fechas.getChildren().add(cal_fecha_inicio);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
-        
+
         cal_fecha_fin.setFechaActual();
         gri_fechas.getChildren().add(cal_fecha_fin);
         fis_consulta.getChildren().add(gri_fechas);
-        
+
         Boton bot_consultar = new Boton();
         bot_consultar.setValue("Consultar");
         bot_consultar.setMetodo("actualizarMovimientos");
         bot_consultar.setIcon("ui-icon-search");
-        
+
         gri_fechas.getChildren().add(bot_consultar);
-        
+
         fis_consulta.getChildren().add(gri_fechas);
-        
+
         Grid gri_saldos = new Grid();
         gri_saldos.setColumns(4);
-        gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
+        Etiqueta eti_sinicial = new Etiqueta("<strong>SALDO INICIAL :</strong>");
+        eti_sinicial.setStyle("text-decoration: underline;");
+        gri_saldos.getChildren().add(eti_sinicial);
         tex_saldo_inicial = new Texto();
         tex_saldo_inicial.setId("tex_saldo_inicial");
         tex_saldo_inicial.setDisabled(true);
@@ -86,7 +88,9 @@ public class pre_libro_bancos extends Pantalla {
         tex_saldo_inicial.setSize(10);
         tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
         gri_saldos.getChildren().add(tex_saldo_inicial);
-        gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO FINAL :</strong>"));
+        Etiqueta eti_sfinal = new Etiqueta("<strong>SALDO FINAL :</strong>");
+        eti_sfinal.setStyle("text-decoration: underline;");
+        gri_saldos.getChildren().add(eti_sfinal);
         tex_saldo_final = new Texto();
         tex_saldo_final.setId("tex_saldo_final");
         tex_saldo_final.setDisabled(true);
@@ -94,10 +98,10 @@ public class pre_libro_bancos extends Pantalla {
         tex_saldo_final.setSize(10);
         tex_saldo_final.setValue("0.00");
         gri_saldos.getChildren().add(tex_saldo_final);
-        gri_fechas.getChildren().add(new Espacio("10", "3"));
-        
+        gri_fechas.getChildren().add(new Espacio("50", "5"));
+
         gri_fechas.getChildren().add(gri_saldos);
-        
+
         tab_movimientos.setId("tab_movimientos");
         tab_movimientos.setSql(ser_tesoreria.getSqlTransaccionesCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_movimientos.setRows(15);
@@ -119,24 +123,24 @@ public class pre_libro_bancos extends Pantalla {
         tab_movimientos.getColumna("nombre_tettb").setFiltroContenido();
         tab_movimientos.setColumnaSuma("INGRESOS,EGRESOS");
         tab_movimientos.dibujar();
-        
+
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_movimientos);
         Grupo gru_grupo = new Grupo();
         gru_grupo.setStyle("overflow: auto;display: block;");
         gru_grupo.getChildren().add(fis_consulta);
         gru_grupo.getChildren().add(pat_panel);
-        
+
         agregarComponente(gru_grupo);
-        
+
     }
-    
+
     private void actualizarSaldos() {
         if (aut_cuentas.getValor() != null) {
             double saldo_anterior = ser_tesoreria.getSaldoInicialCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha());
             double dou_saldo_inicial = saldo_anterior;
             double dou_saldo_actual = 0;
-            
+
             for (int i = 0; i < tab_movimientos.getTotalFilas(); i++) {
                 if (tab_movimientos.getValor(i, "ingresos") != null) {
                     dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "ingresos"));
@@ -155,12 +159,12 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.addUpdate("tex_saldo_inicial,tex_saldo_final");
         }
     }
-    
+
     public void actualizarMovimientos(SelectEvent evt) {
         aut_cuentas.onSelect(evt);
         actualizarMovimientos();
     }
-    
+
     public void actualizarMovimientos() {
         if (aut_cuentas.getValor() != null) {
             tab_movimientos.setSql(ser_tesoreria.getSqlTransaccionesCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -171,41 +175,41 @@ public class pre_libro_bancos extends Pantalla {
         }
         actualizarSaldos();
     }
-    
+
     @Override
     public void insertar() {
-        
+
     }
-    
+
     @Override
     public void guardar() {
-        
+
     }
-    
+
     @Override
     public void eliminar() {
-        
+
     }
-    
+
     @Override
     public void actualizar() {
         actualizarMovimientos();
     }
-    
+
     public AutoCompletar getAut_cuentas() {
         return aut_cuentas;
     }
-    
+
     public void setAut_cuentas(AutoCompletar aut_cuentas) {
         this.aut_cuentas = aut_cuentas;
     }
-    
+
     public Tabla getTab_movimientos() {
         return tab_movimientos;
     }
-    
+
     public void setTab_movimientos(Tabla tab_movimientos) {
         this.tab_movimientos = tab_movimientos;
     }
-    
+
 }
