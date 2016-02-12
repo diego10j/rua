@@ -5,6 +5,7 @@
  */
 package componentes;
 
+import framework.aplicacion.Fila;
 import framework.componentes.AreaTexto;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Calendario;
@@ -17,6 +18,7 @@ import framework.componentes.Texto;
 import javax.ejb.EJB;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.tesoreria.ServicioTesoreria;
 import sistema.aplicacion.Utilitario;
@@ -116,6 +118,7 @@ public class CuentaCxc extends Dialogo {
         tex_diferencia_cxc.setSoloNumeros();
         eti_diferencia_cxc.setValue("DIFERENCIA : ");
         tex_valor_pagar_cxc = new Texto();
+        tex_valor_pagar_cxc.setSoloNumeros();
         tex_valor_pagar_cxc.setId("tex_valor_pagar_cxc");
         tex_valor_pagar_cxc.setMetodoKeyPress("calcular_diferencia_cxc");
         eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;text-decoration: underline");
@@ -136,8 +139,15 @@ public class CuentaCxc extends Dialogo {
         tab_cuentas_x_cobrar.getColumna("saldo_x_pagar").setLongitud(25);
         tab_cuentas_x_cobrar.getColumna("total_cccfa").setLongitud(25);
         tab_cuentas_x_cobrar.getColumna("total_cccfa").alinearDerecha();
-        tab_cuentas_x_cobrar.getColumna("ide_cccfa").setVisible(false);       
+        tab_cuentas_x_cobrar.getColumna("ide_cccfa").setVisible(false);
         tab_cuentas_x_cobrar.getColumna("secuencial_cccfa").setLongitud(25);
+
+        tab_cuentas_x_cobrar.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
+        tab_cuentas_x_cobrar.getColumna("secuencial_cccfa").setNombreVisual("NUM. FACTURA");
+        tab_cuentas_x_cobrar.getColumna("total_cccfa").setNombreVisual("TOTAL");
+        tab_cuentas_x_cobrar.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
+        tab_cuentas_x_cobrar.getColumna("observacion_cccfa").setNombreVisual("OBSERVACIÓN");
+
         tab_cuentas_x_cobrar.setScrollable(true);
         tab_cuentas_x_cobrar.setScrollHeight(getAltoPanel() - 275);
         tab_cuentas_x_cobrar.setCampoPrimaria("ide_ccctr");
@@ -158,6 +168,12 @@ public class CuentaCxc extends Dialogo {
         return contenido;
     }
 
+    /**
+     * Carga las facturas por Cobrar cuando se selecciona un cliente del
+     * autocompletar
+     *
+     * @param evt
+     */
     public void cargarCuentasporCobrar(SelectEvent evt) {
         aut_cliente_cxc.onSelect(evt);
         tab_cuentas_x_cobrar.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_cliente_cxc.getValor()));
@@ -168,7 +184,48 @@ public class CuentaCxc extends Dialogo {
             utilitario.agregarMensajeError("El cliente seleccionado no tiene cuentas por cobrar", "");
         }
     }
+    
+        public void deseleccionaFacturaCxC(UnselectEvent evt) {
+        double total = 0;
+        for (Fila actual : tab_cuentas_x_cobrar.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[5] + "") + total;
+        }
+        tex_valor_pagar_cxc.setValue(utilitario.getFormatoNumero(total));
+        utilitario.addUpdate("tex_valor_pagar_cxc");
+        calcular_diferencia_cxc();
+    }
 
+      public void seleccionaFacturaCxC(SelectEvent evt) {
+        tab_cuentas_x_cobrar.seleccionarFila(evt);
+        double total = 0;
+        for (Fila actual : tab_cuentas_x_cobrar.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[5] + "") + total;
+        }
+        tex_valor_pagar_cxc.setValue(utilitario.getFormatoNumero(total));
+        utilitario.addUpdate("tex_valor_pagar_cxc");
+        calcular_diferencia_cxc();
+    }
+
+      
+        public void calcular_diferencia_cxc() {
+        double diferencia;
+        if (tex_valor_pagar_cxc.getValue() != null) {
+            if (!tex_valor_pagar_cxc.getValue().toString().isEmpty()) {
+                if (tab_cuentas_x_cobrar.getTotalFilas() > 0) {
+                    diferencia = tab_cuentas_x_cobrar.getSumaColumna("saldo_x_pagar") - Double.parseDouble(tex_valor_pagar_cxc.getValue().toString());
+                    tex_diferencia_cxc.setValue("" + utilitario.getFormatoNumero(diferencia));
+                }
+            }
+        } else {
+            if (tab_cuentas_x_cobrar.getTotalFilas() > 0) {
+                diferencia = tab_cuentas_x_cobrar.getSumaColumna("saldo_x_pagar");
+                tex_diferencia_cxc.setValue("" + utilitario.getFormatoNumero(diferencia));
+            }
+        }
+        utilitario.addUpdate("tex_diferencia_cxc");
+
+    }
+      
     @Override
     public void dibujar() {
         construir();
