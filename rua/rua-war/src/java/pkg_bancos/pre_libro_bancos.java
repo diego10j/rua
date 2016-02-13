@@ -2142,7 +2142,6 @@ public class pre_libro_bancos extends Pantalla {
             }
             monto = dif_acu;
         }
-
     }
 
     public void aceptarDialogoCxC() {
