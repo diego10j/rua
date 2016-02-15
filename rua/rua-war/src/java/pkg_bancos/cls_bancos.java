@@ -148,7 +148,6 @@ public class cls_bancos {
 
     public String obtenerNumMaximoTran(String ide_tecba, String ide_tettb) {
         String maximo = "";
-
         if (ide_tecba == null || ide_tecba.isEmpty()) {
             ide_tecba = "-1";
         }

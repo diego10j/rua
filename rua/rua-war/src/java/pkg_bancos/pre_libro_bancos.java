@@ -1286,7 +1286,6 @@ public class pre_libro_bancos extends Pantalla {
             tex_num_cxc.setValue("");
         }
         utilitario.addUpdate("tex_num_cxc,com_banco_cxc,com_cuenta_banco_cxc");
-
     }
 
     public void cambioTipoTransBancCxP() {
