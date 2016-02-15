@@ -722,7 +722,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_retencion.getColumna("numero_cncre").setQuitarCaracteresEspeciales(true);
         tab_cab_retencion.setCondicion("ide_cncre=-1");
         tab_cab_retencion.setTipoFormulario(true);
-        tab_cab_retencion.getGrid().setColumns(6); 
+        tab_cab_retencion.getGrid().setColumns(6);
         tab_cab_retencion.setMostrarNumeroRegistros(false);
         tab_cab_retencion.dibujar();
         tab_cab_retencion.insertar();
@@ -976,7 +976,7 @@ public class FacturaCxC extends Dialogo {
             if (tab_deta_factura.guardar()) {
                 //Guarda la cuenta por cobrar
                 String ide_ccctr = ser_factura.generarTransaccionFactura(tab_cab_factura);
-                String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cab_factura, aut_recibe_pago.getValor(), Double.parseDouble(String.valueOf(tex_monto_pago.getValue())), String.valueOf(ate_observacion_pago.getValue()), String.valueOf(tex_doc_pago.getValue()));
+                String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cab_factura, aut_recibe_pago.getValor(), Double.parseDouble(String.valueOf(tex_monto_pago.getValue())), String.valueOf(ate_observacion_pago.getValue()), String.valueOf(tex_doc_pago.getValue()), "");
                 ser_factura.generarTransaccionPago(tab_cab_factura, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(tex_monto_pago.getValue())), String.valueOf(ate_observacion_pago.getValue()), String.valueOf(tex_doc_pago.getValue()));
                 String ide_srcom = null; //IDE COMPROBANTE ELECTRONICO
                 //SI ESTA ACTIVA FACTURACION ELECTRONICA

@@ -7,6 +7,7 @@ package servicios.tesoreria;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.contabilidad.ServicioContabilidad;
@@ -187,12 +188,22 @@ public class ServicioTesoreria {
      * @param valor Valor
      * @param observacion Observación
      * @param numero Numero de Documento Relacionado
+     * @param fechaTransaccion Fecha de Pago
      * @return ide_teclb
      */
-    public String generarPagoFacturaCxC(Tabla tab_cab_factura_cxc, String ide_tecba, double valor, String observacion, String numero) {
+    public String generarPagoFacturaCxC(Tabla tab_cab_factura_cxc, String ide_tecba, double valor, String observacion, String numero, String fechaTransaccion) {
         if (numero == null || numero.isEmpty()) {
             numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
         }
+
+        if (observacion == null || observacion.isEmpty()) {
+            observacion = "V/. Pago Factura " + tab_cab_factura_cxc.getValor("secuencial_cccfa");
+        }
+
+        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
+        }
+
         long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
         String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
                 + "ide_sucu, ide_tettb, ide_teelb, ide_empr, ide_cnccc, valor_teclb, numero_teclb, "
@@ -201,8 +212,51 @@ public class ServicioTesoreria {
                 + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
                 + "" + getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp")) + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
                 + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", " + tab_cab_factura_cxc.getValor("ide_cnccc") + ", "
-                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + tab_cab_factura_cxc.getValor("fecha_emisi_cccfa") + "', "
-                + "'" + utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa")), ser_tesoreria.getDiasFormaPago(tab_cab_factura_cxc.getValor("ide_cndfp")))) + "', "
+                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+                + "'" + fechaTransaccion + "', "
+                + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+        utilitario.getConexion().agregarSqlPantalla(sql);
+        return String.valueOf(ide_teclb);
+    }
+
+    /**
+     * Genera una transaccion en bancos/caja de un pago de una factura CxC
+     *
+     * @param tab_cab_factura_cxc Factura
+     * @param ide_tecba Cuenta Banco-Cajsa
+     * @param valor Valor
+     * @param numero Numero de Documento
+     * @param fechaTransaccion Fecha de Transaccion
+     * @param tipoTransaccion Tipo de Transaccion Tesoreria
+     *
+     * @return ide_teclb generado
+     */
+    public String generarPagoFacturaCxC(TablaGenerica tab_cab_factura_cxc, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion) {
+        //Si noy numero de documento, asigna el secuencial de la factura
+        if (numero == null || numero.isEmpty()) {
+            numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
+        }
+
+        String observacion = "V/. Pago Factura " + tab_cab_factura_cxc.getValor("secuencial_cccfa");
+        //Si no hay fecha de pago, se asigna la fecha de la factura
+        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
+        }
+        //Si tipo transaccion, busca un tipo de transaccion cxc
+        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
+            tipoTransaccion = getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp"));
+        }
+
+        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
+                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
+                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
+                + "beneficiari_teclb, observacion_teclb) "
+                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
+                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+                + "'" + fechaTransaccion + "', "
                 + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
         utilitario.getConexion().agregarSqlPantalla(sql);
         return String.valueOf(ide_teclb);
@@ -237,6 +291,67 @@ public class ServicioTesoreria {
      */
     public String getSqlTipoTransaccionNegativo() {
         return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=-1";
+    }
+
+    /**
+     *
+     * @param ide_tecba Cuenta
+     * @param ide_tettb Tipo de transacción
+     * @return
+     */
+    public String getNumMaximoTipoTransaccion(String ide_tecba, String ide_tettb) {
+        String maximo = "";
+        if (ide_tecba == null || ide_tecba.isEmpty()) {
+            ide_tecba = "-1";
+        }
+        if (ide_tettb == null || ide_tettb.isEmpty()) {
+            ide_tettb = "-1";
+        }
+        String str_ide_ttr_nota_debito = utilitario.getVariable("p_tes_nota_debito");
+        String str_ide_ttr_nota_credito = utilitario.getVariable("p_tes_nota_credito");
+        String str_ide_ttr_cheque = utilitario.getVariable("p_tes_tran_cheque");
+        if (ide_tettb.equals(str_ide_ttr_nota_debito)) {
+//       calculo el maximo de las notas de debito
+            List lis_max = utilitario.getConexion().consultar("SELECT max(numero_teclb) from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_nota_debito + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_tecba=" + ide_tecba);
+            maximo = "000000001";
+            if (lis_max.get(0) != null) {
+                try {
+                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
+                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
+
+                } catch (Exception e) {
+                }
+            }
+        } else if (ide_tettb.equals(str_ide_ttr_nota_credito)) {
+//       calculo el maximo de las notas de credito
+            List lis_max = utilitario.getConexion().consultar("SELECT max(numero_teclb) from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_nota_credito + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_tecba=" + ide_tecba);
+            maximo = "000000001";
+            if (lis_max.get(0) != null) {
+                try {
+                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
+                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
+                } catch (Exception e) {
+                }
+            }
+        } else if (ide_tettb.equals(str_ide_ttr_cheque)) {
+//       calculo el maximo de los cheques
+            if (ide_tecba.equals("-1")) {
+                maximo = "";
+            }
+            List lis_max = utilitario.getConexion().consultar("select MAX(numero_teclb) from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_cheque + " and ide_tecba=" + ide_tecba);
+
+            if (lis_max.get(0) != null) {
+                try {
+                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
+                } catch (Exception e) {
+                }
+            }
+            if (ide_tecba.equals("-1")) {
+                maximo = "";
+            }
+
+        }
+        return maximo;
     }
 
 }

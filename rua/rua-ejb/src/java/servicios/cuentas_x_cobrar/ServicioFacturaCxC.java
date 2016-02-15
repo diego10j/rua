@@ -248,7 +248,33 @@ public class ServicioFacturaCxC {
             num_documento = tab_cab_factura.getValor("secuencial_cccfa");
         }
         tab_det_tran_cxc.setValor("docum_relac_ccdtr", num_documento);
+        tab_det_tran_cxc.guardar();
+    }
 
+    public void generarTransaccionPago(TablaGenerica tab_cab_factura, String ide_ccctr, String ide_teclb, double valor, String observacion, String num_documento) {
+        TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+        tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+        tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+        tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
+        tab_det_tran_cxc.ejecutarSql();
+        String str_p_cxc_tipo_trans_pago = utilitario.getVariable("p_cxc_tipo_trans_pago");
+
+        tab_det_tran_cxc.insertar();
+        tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
+        tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+        tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
+        tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+
+        tab_det_tran_cxc.setValor("fecha_trans_ccdtr", utilitario.getFechaActual());
+        tab_det_tran_cxc.setValor("valor_ccdtr", utilitario.getFormatoNumero(valor));
+        tab_det_tran_cxc.setValor("observacion_ccdtr", observacion);
+        tab_det_tran_cxc.setValor("numero_pago_ccdtr", getNumeroPagoFactura(ide_ccctr) + "");
+        tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFechaActual());
+        if (num_documento == null || num_documento.isEmpty()) {
+            num_documento = tab_cab_factura.getValor("secuencial_cccfa");
+        }
+        tab_det_tran_cxc.setValor("docum_relac_ccdtr", num_documento);
         tab_det_tran_cxc.guardar();
     }
 
@@ -373,7 +399,15 @@ public class ServicioFacturaCxC {
                 + "where fecha_emisi_cccfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf
                 + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc"; 
+                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+    }
+
+    public String getSqlCabeceraFactura(String ide_cccfa) {
+        return "SELECT * from cxc_cabece_factura where ide_cccfa=" + ide_cccfa;
+    }
+
+    public String getSqlActualizaPagoFactura(String ide_cccfa) {
+        return "update cxc_cabece_factura set pagado_cccfa=true where ide_cccfa=" + ide_cccfa;
     }
 
 }
