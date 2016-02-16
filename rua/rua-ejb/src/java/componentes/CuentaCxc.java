@@ -326,8 +326,9 @@ public class CuentaCxc extends Dialogo {
             String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cabecera, aut_cuenta_cxc.getValor(), Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(tex_num_cxc.getValue()), cal_fecha_pago_cxc.getFecha(), String.valueOf(com_tip_tran_cxc.getValue()));
             ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion_cxc.getValue()), String.valueOf(tex_num_cxc.getValue()));
         }
-        //utilitario.getConexion().setImprimirSqlConsola(true);
-        //  utilitario.getConexion().guardarPantalla();
+        
+        utilitario.getConexion().setImprimirSqlConsola(true);
+        utilitario.getConexion().guardarPantalla();
 
     }
 
