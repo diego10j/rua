@@ -24,8 +24,7 @@ public class ServicioTesoreria {
     @EJB
     private ServicioContabilidad ser_tesoreria;
 
-    private final Utilitario utilitario = new Utilitario();
-
+    private final Utilitario utilitario = new Utilitario();  
     /**
      * Retorna sentencia SQL para obtener las cuentas bancarias de una empresa,
      * para ser usada en Combos, Autocompletar

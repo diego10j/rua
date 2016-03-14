@@ -18,6 +18,7 @@ import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -115,7 +116,7 @@ public class CuentaCxc extends Dialogo {
         contenido.getChildren().add(gri2);
         contenido.getChildren().add(gri3);
         contenido.getChildren().add(new Separator());
-        Grid gri4 = new Grid();
+        PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);
 
         Etiqueta eti_valor_cobrar = new Etiqueta();
@@ -123,7 +124,7 @@ public class CuentaCxc extends Dialogo {
         eti_valor_cobrar.setValue("VALOR A COBRAR :");
         tex_diferencia_cxc = new Texto();
         tex_diferencia_cxc.setId("tex_diferencia_cxc");
-        eti_diferencia_cxc.setStyle("font-size: 14px;font-weight: bold;text-decoration: underline;padding-left:10px;");
+        eti_diferencia_cxc.setStyle("font-size: 14px;font-weight: bold;padding-left:10px;");
         tex_diferencia_cxc.setStyle("font-size: 14px;font-weight: bold");
         tex_diferencia_cxc.setDisabled(true);
         tex_diferencia_cxc.setSoloNumeros();
@@ -133,7 +134,7 @@ public class CuentaCxc extends Dialogo {
         tex_valor_pagar_cxc.setId("tex_valor_pagar_cxc");
         tex_valor_pagar_cxc.setMetodoKeyPressRuta("pre_index.clase." + getId() + ".calcular_diferencia_cxc");
         tex_valor_pagar_cxc.setMetodoChangeRuta("pre_index.clase." + getId() + ".calcular_diferencia_cxc");
-        eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;text-decoration: underline");
+        eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;");
         tex_valor_pagar_cxc.setStyle("font-size: 14px;font-weight: bold");
         gri4.getChildren().add(eti_valor_cobrar);
         gri4.getChildren().add(tex_valor_pagar_cxc);

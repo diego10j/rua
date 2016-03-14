@@ -20,6 +20,7 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
+import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidad;
@@ -178,7 +179,7 @@ public class pre_proveedores extends Pantalla {
             Separator separar = new Separator();
             fis_consulta.getChildren().add(separar);
 
-            Grid gri_saldos = new Grid();
+            PanelGrid gri_saldos = new PanelGrid();
             gri_saldos.setColumns(4);
             gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
             tex_saldo_inicial = new Texto();
@@ -363,7 +364,7 @@ public class pre_proveedores extends Pantalla {
                 Separator separar = new Separator();
                 fis_consulta.getChildren().add(separar);
 
-                Grid gri_saldos = new Grid();
+                PanelGrid gri_saldos = new PanelGrid();
                 gri_saldos.setColumns(4);
                 gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
                 tex_saldo_inicial = new Texto();

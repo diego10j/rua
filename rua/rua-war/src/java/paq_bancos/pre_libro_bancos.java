@@ -17,6 +17,7 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
+import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.event.SelectEvent;
 import servicios.tesoreria.ServicioTesoreria;
 import sistema.aplicacion.Pantalla;
@@ -76,10 +77,9 @@ public class pre_libro_bancos extends Pantalla {
 
         fis_consulta.getChildren().add(gri_fechas);
 
-        Grid gri_saldos = new Grid();
+        PanelGrid gri_saldos = new PanelGrid(); 
         gri_saldos.setColumns(4);
-        Etiqueta eti_sinicial = new Etiqueta("<strong>SALDO INICIAL :</strong>");
-        eti_sinicial.setStyle("text-decoration: underline;");
+        Etiqueta eti_sinicial = new Etiqueta("<strong>SALDO INICIAL :</strong>");        
         gri_saldos.getChildren().add(eti_sinicial);
         tex_saldo_inicial = new Texto();
         tex_saldo_inicial.setId("tex_saldo_inicial");
@@ -88,8 +88,7 @@ public class pre_libro_bancos extends Pantalla {
         tex_saldo_inicial.setSize(10);
         tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
         gri_saldos.getChildren().add(tex_saldo_inicial);
-        Etiqueta eti_sfinal = new Etiqueta("<strong>SALDO FINAL :</strong>");
-        eti_sfinal.setStyle("text-decoration: underline;");
+        Etiqueta eti_sfinal = new Etiqueta("<strong>SALDO FINAL :</strong>");        
         gri_saldos.getChildren().add(eti_sfinal);
         tex_saldo_final = new Texto();
         tex_saldo_final.setId("tex_saldo_final");
