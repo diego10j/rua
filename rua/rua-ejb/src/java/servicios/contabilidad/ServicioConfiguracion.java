@@ -52,6 +52,39 @@ public class ServicioConfiguracion {
     }
 
     /**
+     * Retorna la cuenta contable de una Persona a partir de un identificador,
+     * la busqueda se realiza con recursividad
+     *
+     * @param identificador
+     * @param ide_inarti
+     *
+     * @return
+     */
+    public String getCuentaProducto(String identificador, String ide_inarti) {
+        String str_sql = "";
+        String str_padre = null;
+        String str_cuenta = null;
+        //Busca si existe la persona
+        str_sql = "select ide_inarti,inv_ide_inarti from inv_articulo where ide_inarti=" + ide_inarti;
+        TablaGenerica tab_identificador = utilitario.consultar(str_sql);
+        if (tab_identificador.getTotalFilas() > 0) {
+            str_cuenta = buscarCuenta(identificador, ide_inarti, null, null, null, null, null);
+            str_padre = tab_identificador.getValor(0, "inv_ide_inarti");
+            if (str_cuenta == null) {
+                if (str_padre == null) {
+                    return null;
+                } else {
+                    return getCuentaPersona(identificador, str_padre);
+                }
+
+            } else {
+                return str_cuenta;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Busca la cuenta contable a travez de un identificador y varios criterios
      * de busqueda
      *
@@ -120,8 +153,9 @@ public class ServicioConfiguracion {
 
     /**
      * Retorna el código de vigencia de la configuracion
+     *
      * @param identificador
-     * @return 
+     * @return
      */
     public String getCodigoVigenciaIdentificador(String identificador) {
         List lis_identificador = utilitario.getConexion().consultar("SELECT ide_cnvca FROM con_vig_conf_asie WHERE ide_cncca =" + getCodigoIdentificador(identificador) + " and estado_cnvca=true");

@@ -189,6 +189,7 @@ public class ServicioCliente {
                 + "where cf.ide_geper=" + ide_geper + " "
                 + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
                 + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
     }
 

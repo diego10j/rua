@@ -9,7 +9,9 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.contabilidad.ServicioConfiguracion;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -20,6 +22,8 @@ import sistema.aplicacion.Utilitario;
 public class ServicioProducto {
 
     private final Utilitario utilitario = new Utilitario();
+    @EJB
+    private ServicioConfiguracion ser_configuracion;
 
     /**
      * Retorna los datos de un Producto
@@ -54,7 +58,7 @@ public class ServicioProducto {
      */
     public String getSqlProductosCombo() {
         return "SELECT ide_inarti,nombre_inarti from inv_articulo arti "
-                + "where arti.ide_empr=" + utilitario.getVariable("ide_empr") + " ";
+                + "where arti.ide_empr=" + utilitario.getVariable("ide_empr") + " and nivel_inarti='HIJO' ORDER BY nombre_inarti ";
     }
 
     /**
@@ -83,6 +87,7 @@ public class ServicioProducto {
         tabla.getColumna("nivel_inarti").setValorDefecto("HIJO");
         tabla.getColumna("hace_kardex_inarti").setValorDefecto("true");
         tabla.getColumna("es_combo_inarti").setValorDefecto("false");
+        tabla.getColumna("nombre_inarti").setRequerida(true);
         List lista = new ArrayList();
         Object fila1[] = {
             "1", "SI"
@@ -276,4 +281,153 @@ public class ServicioProducto {
         return art.equals(p_inv_articulo_bien);
     }
 
+    /**
+     * Retorna Sql para obtener el kardex de un producto, con rango de fechas y
+     * por bodega(s)
+     *
+     * @param ide_inarti
+     * @param fecha_inicio
+     * @param fecha_fin
+     * @param ide_inbod null o vacio no filtra por bodegas
+     * @return
+     */
+    public String getSqlKardex(String ide_inarti, String fecha_inicio, String fecha_fin, String ide_inbod) {
+        ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
+
+        String strCondicionBodega = ide_inbod.isEmpty() ? "" : " ide_inbod in (" + ide_inbod + ") \n";
+        return "SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
+                + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
+                + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
+                + "case when signo_intci = 1 THEN valor_indci  end as VTOT_INGRESO,\n"
+                + "case when signo_intci = -1 THEN cantidad_indci  end as CANT_EGRESO,\n"
+                + "case when signo_intci = -1 THEN precio_indci  end as VUNI_EGRESO,\n"
+                + "case when signo_intci = -1 THEN valor_indci  end as VTOT_EGRESO,\n"
+                + "'' as CANT_SALDO,precio_promedio_indci as VUNI_SALDO ,'' VTOT_SALDO\n"
+                + "from inv_det_comp_inve dci \n"
+                + "left join inv_cab_comp_inve cci on cci.ide_incci=dci.ide_incci \n"
+                + "left join gen_persona gpe on cci.ide_geper=gpe.ide_geper\n"
+                + "left join inv_tip_tran_inve tti on tti.ide_intti=cci.ide_intti \n"
+                + "left join inv_tip_comp_inve tci on tci.ide_intci=tti.ide_intci \n"
+                + "left join inv_articulo arti on dci.ide_inarti=arti.ide_inarti\n"
+                + "where dci.ide_inarti=" + ide_inarti + " \n"
+                + "and fecha_trans_incci BETWEEN '" + fecha_inicio + "'  and '" + fecha_fin + "' \n"
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " \n" //Comprobantes en estado  normal
+                + strCondicionBodega
+                + "ORDER BY cci.fecha_trans_incci,dci.ide_indci asc";
+    }
+
+    /**
+     * Retorna la cuenta configurada del Producto con el identificador
+     * INVENTARIO
+     *
+     * @param ide_inarti Producto
+     * @return
+     */
+    public String getCuentaProducto(String ide_inarti) {
+        return ser_configuracion.getCuentaPersona("INVENTARIO", ide_inarti);
+    }
+
+    /**
+     * Retorna si un Producto tiene configurada una cuenta contable
+     *
+     * @param ide_inarti
+     * @return
+     */
+    public boolean isTieneCuentaConfiguradaProducto(String ide_inarti) {
+        return !utilitario.consultar("Select * from con_det_conf_asie "
+                + "where ide_inarti=" + ide_inarti + " "
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO")).isEmpty();
+    }
+
+    /**
+     * Retorna la sentencia SQL para actualizar la configuracion de la cuenta
+     * del Producto
+     *
+     * @param ide_inarti Producto
+     * @param ide_cndpc Nueva Cuenta
+     * @return
+     */
+    public String getSqlActualizarCuentaProducto(String ide_inarti, String ide_cndpc) {
+        return "update con_det_conf_asie "
+                + "set ide_cndpc=" + ide_cndpc + " "
+                + "where ide_inarti=" + ide_inarti + " "
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO");
+    }
+
+    /**
+     * Retorna la sentencia SQL para insertar la configuracion de la cuenta del
+     * cliente
+     *
+     * @param ide_inarti
+     * @param ide_cndpc
+     * @return
+     */
+    public String getSqlInsertarCuentaProducto(String ide_inarti, String ide_cndpc) {
+        return "insert into con_det_conf_asie (ide_cndca,ide_inarti,ide_cndpc,ide_cnvca)"
+                + "values (" + utilitario.getConexion().getMaximo("con_det_conf_asie", "ide_cndca", 1)
+                + ", " + ide_inarti + ", " + ide_cndpc + ","
+                + ser_configuracion.getCodigoVigenciaIdentificador("CUENTA POR COBRAR") + " )";
+    }
+
+    /**
+     * Retorna una sentencia SQL que contiene las Ventas a Clientes que a an
+     * comprado un Producto en una sucursal por rango de fechas
+     *
+     * @param ide_inarti
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlVentasProducto(String ide_inarti, String fechaInicio, String fechaFin) {
+        return "SELECT cdf.ide_ccdfa,cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa ,p.nom_geper ,cdf.cantidad_ccdfa,cdf.precio_ccdfa,cdf.total_ccdfa \n"
+                + "from cxc_deta_factura cdf \n"
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=cdf.ide_cccfa \n"
+                + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
+                + "left join gen_persona p on cf.ide_geper=p.ide_geper "
+                + "where cdf.ide_inarti=" + ide_inarti + " "
+                + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
+    }
+
+    /**
+     * Retorna una sentencia SQL que contiene los detalles de Productos X
+     * SUCURSAL que compramos a un Proveedor en un rango de fechas
+     *
+     * @param ide_inarti Proveedor
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlComprasProducto(String ide_inarti, String fechaInicio, String fechaFin) {
+        return "SELECT cdf.ide_cpdfa,cf.fecha_emisi_cpcfa, numero_cpcfa  ,nom_geper ,cdf.cantidad_cpdfa,cdf.precio_cpdfa,cdf.valor_cpdfa "
+                + "from cxp_detall_factur cdf "
+                + "left join cxp_cabece_factur cf on cf.ide_cpcfa=cdf.ide_cpcfa "
+                + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti "
+                + "left join gen_persona p on cf.ide_geper=p.ide_geper "
+                + "where cdf.ide_inarti=" + ide_inarti + " and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal")
+                + " and cf.fecha_emisi_cpcfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "ORDER BY cf.fecha_emisi_cpcfa, numero_cpcfa";
+    }
+
+    /**
+     * Ventas Mensuales en un año de un Producto
+     *
+     * @param ide_inarti
+     * @param anio
+     * @return
+     */
+    public String getSqlTotalVentasMensualesProducto(String ide_inarti, String anio) {
+        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
+        return "select nombre_gemes,"
+                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(cantidad_cpdfa) as cantidad from cxc_cabece_factura a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(precio_cpdfa) as precio from cxc_cabece_factura a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_inarti=" + ide_inarti + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
+                + "(select sum(valor_cpdfa) as total from cxc_cabece_factura a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
+                + "from gen_mes "
+                + "order by ide_gemes";
+    }
+    
 }

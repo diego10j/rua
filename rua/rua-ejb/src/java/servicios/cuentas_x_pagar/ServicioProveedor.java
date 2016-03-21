@@ -179,7 +179,8 @@ public class ServicioProveedor {
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti "
                 + "where cf.ide_geper=" + ide_geper + " and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cpcfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "ORDER BY cf.fecha_emisi_cpcfa, numero_cpcfa";
+                + "cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal")
+                + " ORDER BY cf.fecha_emisi_cpcfa, numero_cpcfa";
     }
 
     /**
@@ -259,4 +260,4 @@ public class ServicioProveedor {
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
     }
 
- }
+}
