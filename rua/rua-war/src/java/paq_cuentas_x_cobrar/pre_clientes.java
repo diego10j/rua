@@ -113,6 +113,7 @@ public class pre_clientes extends Pantalla {
      */
     public void seleccionarCliente(SelectEvent evt) {
         aut_clientes.onSelect(evt);
+        liberarMemoria();
         if (aut_clientes != null) {
             switch (mep_menu.getOpcion()) {
                 case 1:
@@ -235,7 +236,7 @@ public class pre_clientes extends Pantalla {
             tab_transacciones_cxc = new Tabla();
             tab_transacciones_cxc.setNumeroTabla(2);
             tab_transacciones_cxc.setId("tab_transacciones_cxc");
-            tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));             
+            tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
             tab_transacciones_cxc.getColumna("FECHA_TRANS_CCDTR").setNombreVisual("FECHA");
             tab_transacciones_cxc.getColumna("IDE_CCDTR").setVisible(false);
@@ -290,7 +291,7 @@ public class pre_clientes extends Pantalla {
 
             Boton bot_consultar = new Boton();
             bot_consultar.setValue("Consultar");
-            bot_consultar.setMetodo("actualizarProducots");
+            bot_consultar.setMetodo("actualizarProductos");
             bot_consultar.setIcon("ui-icon-search");
 
             gri_fechas.getChildren().add(bot_consultar);
@@ -601,12 +602,12 @@ public class pre_clientes extends Pantalla {
      * Actualiza los productos comprados del cliente segun las fechas
      * selecionadas
      */
-    public void actualizarProducots() {
+    public void actualizarProductos() {
         tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_productos.ejecutarSql();
         if (tab_productos.isEmpty()) {
 
-            tab_productos.setEmptyMessage("No Productos en el rango de fechas seleccionado");
+            tab_productos.setEmptyMessage("No existen Productos en el rango de fechas seleccionado");
         }
     }
 
@@ -816,6 +817,33 @@ public class pre_clientes extends Pantalla {
             //FORMULARIO CLIENTE
             tab_cliente.eliminar();
         }
+    }
+
+    /**
+     * Libera memoria
+     */
+    private void liberarMemoria() {
+        Runtime garbage = Runtime.getRuntime();
+        System.out.println("Memoria libre antes de limpieza: " + garbage.freeMemory());
+        cal_fecha_inicio = null;
+        cal_fecha_fin = null;
+        tab_cliente = null;
+        tab_transacciones_cxc = null;
+        tab_compra_productos = null;
+        tab_productos = null;
+        tab_facturas = null;
+        arb_estructura = null;
+        aut_cuentas = null;
+        tab_movimientos = null;
+        tex_saldo_inicial = null;
+        tex_saldo_final = null;
+        tex_total_debe = null;
+        tex_total_haber = null;
+        tab_grafico = null;
+        gca_grafico = null;
+        com_periodo = null;
+        garbage.gc();
+        System.out.println("Memoria libre despues de limpieza: " + garbage.freeMemory());
     }
 
     public AutoCompletar getAut_clientes() {
