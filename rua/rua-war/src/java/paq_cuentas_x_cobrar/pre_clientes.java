@@ -113,7 +113,6 @@ public class pre_clientes extends Pantalla {
      */
     public void seleccionarCliente(SelectEvent evt) {
         aut_clientes.onSelect(evt);
-        liberarMemoria();
         if (aut_clientes != null) {
             switch (mep_menu.getOpcion()) {
                 case 1:
@@ -817,33 +816,6 @@ public class pre_clientes extends Pantalla {
             //FORMULARIO CLIENTE
             tab_cliente.eliminar();
         }
-    }
-
-    /**
-     * Libera memoria
-     */
-    private void liberarMemoria() {
-        Runtime garbage = Runtime.getRuntime();
-        System.out.println("Memoria libre antes de limpieza: " + garbage.freeMemory());
-        cal_fecha_inicio = null;
-        cal_fecha_fin = null;
-        tab_cliente = null;
-        tab_transacciones_cxc = null;
-        tab_compra_productos = null;
-        tab_productos = null;
-        tab_facturas = null;
-        arb_estructura = null;
-        aut_cuentas = null;
-        tab_movimientos = null;
-        tex_saldo_inicial = null;
-        tex_saldo_final = null;
-        tex_total_debe = null;
-        tex_total_haber = null;
-        tab_grafico = null;
-        gca_grafico = null;
-        com_periodo = null;
-        garbage.gc();
-        System.out.println("Memoria libre despues de limpieza: " + garbage.freeMemory());
     }
 
     public AutoCompletar getAut_clientes() {

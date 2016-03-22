@@ -116,7 +116,6 @@ public class pre_articulos extends Pantalla {
      */
     public void seleccionarProducto(SelectEvent evt) {
         aut_productos.onSelect(evt);
-        liberarMemoria();
         if (aut_productos != null) {
             switch (mep_menu.getOpcion()) {
                 case 1:
@@ -203,7 +202,6 @@ public class pre_articulos extends Pantalla {
 
             Fieldset fis_consulta = new Fieldset();
             fis_consulta.setLegend("Detalle de la Consulta");
-            
 
             Grid gri_fechas = new Grid();
             gri_fechas.setColumns(5);
@@ -596,7 +594,7 @@ public class pre_articulos extends Pantalla {
         mep_menu.dibujar(8, "GRAFICO DE VENTAS", gru_grupo);
     }
 
-    public void actualizarGrafico() {
+    public void actualizarGraficoVentas() {
         tab_grafico.setSql(ser_producto.getSqlTotalVentasMensualesProducto(aut_productos.getValor(), String.valueOf(com_periodo.getValue())));
         tab_grafico.ejecutarSql();
         gca_grafico.limpiar();
@@ -780,29 +778,6 @@ public class pre_articulos extends Pantalla {
             //FORMULARIO PRODUCTO
             tab_producto.eliminar();
         }
-    }
-
-    private void liberarMemoria() {
-        Runtime garbage = Runtime.getRuntime();
-        System.out.println("Memoria libre antes de limpieza: " + garbage.freeMemory());
-        cal_fecha_inicio = null;
-        tab_producto = null;
-        arb_estructura = null;
-        tab_kardex = null;
-        cal_fecha_inicio = null;
-        cal_fecha_fin = null;
-        tex_saldo_inicial = null;
-        tex_total_debe = null;
-        tex_total_haber = null;
-        aut_cuentas = null;
-        tab_movimientos = null;
-        tab_clientesFacturas = null;
-        tab_proveedoresFacturas = null;
-        tab_grafico = null;
-        gca_grafico = null;
-        com_periodo = null;
-        garbage.gc();
-        System.out.println("Memoria libre despues de limpieza: " + garbage.freeMemory());
     }
 
     public AutoCompletar getAut_productos() {
