@@ -324,7 +324,7 @@ public class ServicioProducto {
      * @return
      */
     public String getCuentaProducto(String ide_inarti) {
-        return ser_configuracion.getCuentaPersona("INVENTARIO", ide_inarti);
+        return ser_configuracion.getCuentaPersona("INVENTARIO-GASTO-ACTIVO", ide_inarti);
     }
 
     /**
@@ -336,7 +336,7 @@ public class ServicioProducto {
     public boolean isTieneCuentaConfiguradaProducto(String ide_inarti) {
         return !utilitario.consultar("Select * from con_det_conf_asie "
                 + "where ide_inarti=" + ide_inarti + " "
-                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO")).isEmpty();
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO-GASTO-ACTIVO")).isEmpty();
     }
 
     /**
@@ -351,7 +351,7 @@ public class ServicioProducto {
         return "update con_det_conf_asie "
                 + "set ide_cndpc=" + ide_cndpc + " "
                 + "where ide_inarti=" + ide_inarti + " "
-                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO");
+                + "and ide_cnvca =" + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO-GASTO-ACTIVO");
     }
 
     /**
@@ -424,8 +424,24 @@ public class ServicioProducto {
         return "select nombre_gemes,"
                 + "(select count(a.ide_cccfa) as num_facturas from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
                 + "(select sum(cantidad_ccdfa) as cantidad from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(precio_ccdfa) as precio from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
                 + "(select sum(total_ccdfa) as total from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
+                + "from gen_mes "
+                + "order by ide_gemes";
+    }
+
+    /**
+     * Compras Mensuales en un año de un Producto
+     *
+     * @param ide_inarti
+     * @param anio
+     * @return
+     */
+    public String getSqlTotalComprasMensualesProducto(String ide_inarti, String anio) {
+        String p_cxp_estado_factura_normal = utilitario.getVariable("p_cxp_estado_factura_normal");
+        return "select nombre_gemes,"
+                + "(select count(a.ide_cpcfa) as num_facturas from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(cantidad_cpdfa) as cantidad from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(valor_cpdfa) as total from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + ") "
                 + "from gen_mes "
                 + "order by ide_gemes";
     }

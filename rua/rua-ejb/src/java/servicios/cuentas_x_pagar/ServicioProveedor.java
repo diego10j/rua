@@ -179,7 +179,7 @@ public class ServicioProveedor {
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti "
                 + "where cf.ide_geper=" + ide_geper + " and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cpcfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal")
+                + "and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal")
                 + " ORDER BY cf.fecha_emisi_cpcfa, numero_cpcfa";
     }
 
@@ -258,6 +258,56 @@ public class ServicioProveedor {
                 + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa "
                 + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr)-sum (dt.valor_anticipo_cpdtr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
+    }
+
+    /**
+     * Compras Mensuales en un año de un cliente
+     *
+     * @param ide_geper
+     * @param anio
+     * @return
+     */
+    public String getSqlTotalComprasMensualesProveedor(String ide_geper, String anio) {
+        String p_cxp_estado_factura_normal = utilitario.getVariable("p_cxp_estado_factura_normal");
+        return "select nombre_gemes,"
+                + "(select count(ide_cpcfa) as num_facturas from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_geper=" + ide_geper + " and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(base_grabada_cpcfa) as ventas12 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa) as ventas0 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(valor_iva_cpcfa) as iva from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_geper=" + ide_geper + " and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
+                + "(select sum(total_cpcfa) as total from  cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_cpefa=" + p_cxp_estado_factura_normal + ") "
+                + "from gen_mes "
+                + "order by ide_gemes";
+    }
+
+    /**
+     * Reorna los productos que compramos a un proveedor, ultimo precio de
+     * compra,
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getSqlProductosComprados(String ide_geper) {
+        String p_cxp_estado_factura_normal = utilitario.getVariable("p_cxp_estado_factura_normal");
+        return "select distinct a.ide_inarti,nombre_inarti,max(b.fecha_emisi_cpcfa) as fecha_ultima_compra,\n"
+                + "(select precio_cpdfa from cxp_detall_factur  inner join cxp_cabece_factur  on cxp_detall_factur.ide_cpcfa=cxp_cabece_factur.ide_cpcfa where ide_cpefa=" + p_cxp_estado_factura_normal + " and ide_geper=" + ide_geper + " and ide_inarti=a.ide_inarti order by fecha_emisi_cpcfa desc limit 1) as ultimo_precio\n"
+                + "from cxp_detall_factur a \n"
+                + "inner join cxp_cabece_factur b on a.ide_cpcfa=b.ide_cpcfa\n"
+                + "inner join inv_articulo c on a.ide_inarti=c.ide_inarti\n"
+                + "where ide_cpefa=" + p_cxp_estado_factura_normal + " "
+                + "and ide_geper=" + ide_geper + " "
+                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "group by a.ide_inarti,nombre_inarti \n"
+                + "order by nombre_inarti";
+    }
+
+    /**
+     * Retorna el sql con los anios que exuste facturacion en la empresa
+     *
+     * @return
+     */
+    public String getSqlAniosCompras() {
+        return "select distinct EXTRACT(YEAR FROM fecha_emisi_cpcfa)||'' as anio,EXTRACT(YEAR FROM fecha_emisi_cpcfa)||'' as nom_anio  "
+                + "from cxp_cabece_factur where ide_empr=" + utilitario.getVariable("ide_empr") + " order by 1 desc ";
     }
 
 }
