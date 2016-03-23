@@ -143,7 +143,7 @@ public class pre_articulos extends Pantalla {
                     dibujarGraficoVentas();
                     break;
                 case 9:
-                    //  dibujarProductosVendidos();
+                    dibujarGraficoCompras();
                     break;
                 default:
                     dibujarProducto();
@@ -571,10 +571,10 @@ public class pre_articulos extends Pantalla {
             tab_grafico.setId("tab_grafico");
             tab_grafico.setSql(ser_producto.getSqlTotalVentasMensualesProducto(aut_productos.getValor(), String.valueOf(com_periodo.getValue())));
             tab_grafico.setLectura(true);
-            tab_grafico.setColumnaSuma("num_facturas,cantidad,precio,total");
+            tab_grafico.setColumnaSuma("num_facturas,cantidad,total");
             tab_grafico.getColumna("cantidad").alinearDerecha();
-            tab_grafico.getColumna("precio").alinearDerecha();
             tab_grafico.getColumna("total").alinearDerecha();
+            tab_grafico.getColumna("total").setNombreVisual("VALOR TOTAL");
             tab_grafico.dibujar();
 
             Grid gri_opciones = new Grid();
@@ -594,11 +594,58 @@ public class pre_articulos extends Pantalla {
         mep_menu.dibujar(8, "GRAFICO DE VENTAS", gru_grupo);
     }
 
+    public void dibujarGraficoCompras() {
+        Grupo gru_grupo = new Grupo();
+        if (isProductoSeleccionado()) {
+            gca_grafico = new GraficoCartesiano();
+            gca_grafico.setId("gca_grafico");
+
+            com_periodo = new Combo();
+            com_periodo.setMetodo("actualizarGraficoCompras");
+            com_periodo.setCombo(ser_factura.getSqlAniosFacturacion());
+            com_periodo.eliminarVacio();
+            com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+
+            tab_grafico = new Tabla();
+            tab_grafico.setId("tab_grafico");
+            tab_grafico.setSql(ser_producto.getSqlTotalComprasMensualesProducto(aut_productos.getValor(), String.valueOf(com_periodo.getValue())));
+            tab_grafico.setLectura(true);
+            tab_grafico.setColumnaSuma("num_facturas,cantidad,total");
+            tab_grafico.getColumna("cantidad").alinearDerecha();
+            tab_grafico.getColumna("total").alinearDerecha();
+            tab_grafico.getColumna("total").setNombreVisual("VALOR TOTAL");
+            tab_grafico.dibujar();
+
+            Grid gri_opciones = new Grid();
+            gri_opciones.setColumns(2);
+            gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
+            gri_opciones.getChildren().add(com_periodo);
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.getChildren().add(gri_opciones);
+            pat_panel.setPanelTabla(tab_grafico);
+
+            gca_grafico.setTitulo("COMPRAS MENSUALES");
+            gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
+
+            gru_grupo.getChildren().add(pat_panel);
+            gru_grupo.getChildren().add(gca_grafico);
+        }
+        mep_menu.dibujar(9, "GRAFICO DE COMPRAS", gru_grupo);
+    }
+
     public void actualizarGraficoVentas() {
         tab_grafico.setSql(ser_producto.getSqlTotalVentasMensualesProducto(aut_productos.getValor(), String.valueOf(com_periodo.getValue())));
         tab_grafico.ejecutarSql();
         gca_grafico.limpiar();
         gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "VENTAS " + String.valueOf(com_periodo.getValue()));
+        utilitario.addUpdate("gca_grafico");
+    }
+
+    public void actualizarGraficoCompras() {
+        tab_grafico.setSql(ser_producto.getSqlTotalComprasMensualesProducto(aut_productos.getValor(), String.valueOf(com_periodo.getValue())));
+        tab_grafico.ejecutarSql();
+        gca_grafico.limpiar();
+        gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
         utilitario.addUpdate("gca_grafico");
     }
 

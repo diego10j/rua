@@ -10,6 +10,7 @@ import framework.componentes.Arbol;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -18,6 +19,7 @@ import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.graficos.GraficoCartesiano;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.panelgrid.PanelGrid;
@@ -60,6 +62,12 @@ public class pre_proveedores extends Pantalla {
     private Texto tex_total_debe;
     private Texto tex_total_haber;
 
+    /*INFOMRES*/
+    private Tabla tab_grafico;
+    private GraficoCartesiano gca_grafico;
+    private Combo com_periodo;
+    private Tabla tab_compra_productos;
+
     public pre_proveedores() {
 
         bar_botones.quitarBotonsNavegacion();
@@ -87,6 +95,9 @@ public class pre_proveedores extends Pantalla {
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
+        mep_menu.agregarSubMenu("INFORMES");
+        mep_menu.agregarItem("Gráfico de Compras", "dibujarGrafico", "ui-icon-bookmark");
+        mep_menu.agregarItem("Productos Comprados", "dibujarProductosComprados", "ui-icon-cart");
 
         agregarComponente(mep_menu);
 
@@ -121,6 +132,12 @@ public class pre_proveedores extends Pantalla {
                     break;
                 case 7:
                     dibujarEstructura();
+                    break;
+                case 8:
+                    dibujarGrafico();
+                    break;
+                case 9:
+                    dibujarProductosComprados();
                     break;
                 default:
                     dibujarProveedor();
@@ -481,6 +498,85 @@ public class pre_proveedores extends Pantalla {
         mep_menu.dibujar(7, "CLASIFICACIÓN DE PROVEEDORES", gru_grupo);
     }
 
+    public void dibujarGrafico() {
+        Grupo gru_grupo = new Grupo();
+        if (isProveedorSeleccionado()) {
+            gca_grafico = new GraficoCartesiano();
+            gca_grafico.setId("gca_grafico");
+
+            com_periodo = new Combo();
+            com_periodo.setMetodo("actualizarGrafico");
+            com_periodo.setCombo(ser_proveedor.getSqlAniosCompras());
+            com_periodo.eliminarVacio();
+           // com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+            tab_grafico = new Tabla();
+            tab_grafico.setId("tab_grafico");
+            tab_grafico.setSql(ser_proveedor.getSqlTotalComprasMensualesProveedor(aut_proveedor.getValor(), String.valueOf(com_periodo.getValue())));
+            tab_grafico.setLectura(true);
+            tab_grafico.setColumnaSuma("num_facturas,ventas12,ventas0,iva,total");
+            tab_grafico.getColumna("num_facturas").alinearDerecha();
+            tab_grafico.getColumna("ventas12").alinearDerecha();
+            tab_grafico.getColumna("ventas0").alinearDerecha();
+            tab_grafico.getColumna("iva").alinearDerecha();
+            tab_grafico.getColumna("total").alinearDerecha();
+            tab_grafico.dibujar();
+
+            Grid gri_opciones = new Grid();
+            gri_opciones.setColumns(2);
+            gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
+            gri_opciones.getChildren().add(com_periodo);
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.getChildren().add(gri_opciones);
+            pat_panel.setPanelTabla(tab_grafico);
+
+            gca_grafico.setTitulo("COMPRAS MENSUALES");
+            gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
+
+            gru_grupo.getChildren().add(pat_panel);
+            gru_grupo.getChildren().add(gca_grafico);
+        }
+        mep_menu.dibujar(8, "GRAFICO DE COMPRAS", gru_grupo);
+    }
+
+    public void dibujarProductosComprados() {
+        Grupo gru_grupo = new Grupo();
+        if (isProveedorSeleccionado()) {
+            tab_compra_productos = new Tabla();
+            tab_compra_productos.setId("tab_compra_productos");
+            tab_compra_productos.setSql(ser_proveedor.getSqlProductosComprados(aut_proveedor.getValor()));
+            tab_compra_productos.getColumna("ide_inarti").setVisible(false);
+            tab_compra_productos.setRows(25);
+            tab_compra_productos.getColumna("nombre_inarti").setNombreVisual("PRODUCTO");
+            tab_compra_productos.getColumna("nombre_inarti").setFiltroContenido();
+            tab_compra_productos.getColumna("nombre_inarti").setLongitud(200);
+            tab_compra_productos.getColumna("fecha_ultima_compra").setNombreVisual("FECHA ULTIMA COMPRA");
+            tab_compra_productos.getColumna("fecha_ultima_compra").setLongitud(100);
+            tab_compra_productos.getColumna("ultimo_precio").setNombreVisual("PRECIO ULTIMA COMPRA");
+            tab_compra_productos.getColumna("ultimo_precio").setFormatoNumero(2);
+            tab_compra_productos.getColumna("ultimo_precio").alinearDerecha();
+            tab_compra_productos.getColumna("ultimo_precio").setLongitud(100);
+            tab_compra_productos.getColumna("ultimo_precio").setEstilo("font-weight: bold;font-size:14px");
+            tab_compra_productos.setLectura(true);
+            tab_compra_productos.dibujar();
+            PanelTabla pat_panel1 = new PanelTabla();
+            pat_panel1.setPanelTabla(tab_compra_productos);
+            gru_grupo.getChildren().add(pat_panel1);
+
+        }
+        mep_menu.dibujar(9, "PRODUCTOS COMPRADOS", gru_grupo);
+    }
+
+    /**
+     * Actualiza el grafico de compras segun el combo de periodo
+     */
+    public void actualizarGrafico() {
+        tab_grafico.setSql(ser_proveedor.getSqlTotalComprasMensualesProveedor(aut_proveedor.getValor(), String.valueOf(com_periodo.getValue())));
+        tab_grafico.ejecutarSql();
+        gca_grafico.limpiar();
+        gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
+        utilitario.addUpdate("gca_grafico");
+    }
+
     /**
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
@@ -782,6 +878,30 @@ public class pre_proveedores extends Pantalla {
 
     public void setArb_estructura(Arbol arb_estructura) {
         this.arb_estructura = arb_estructura;
+    }
+
+    public Tabla getTab_grafico() {
+        return tab_grafico;
+    }
+
+    public void setTab_grafico(Tabla tab_grafico) {
+        this.tab_grafico = tab_grafico;
+    }
+
+    public GraficoCartesiano getGca_grafico() {
+        return gca_grafico;
+    }
+
+    public void setGca_grafico(GraficoCartesiano gca_grafico) {
+        this.gca_grafico = gca_grafico;
+    }
+
+    public Tabla getTab_compra_productos() {
+        return tab_compra_productos;
+    }
+
+    public void setTab_compra_productos(Tabla tab_compra_productos) {
+        this.tab_compra_productos = tab_compra_productos;
     }
 
 }
