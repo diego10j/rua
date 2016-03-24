@@ -18,6 +18,7 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
 import framework.componentes.Texto;
 import framework.componentes.graficos.GraficoCartesiano;
 import javax.ejb.EJB;
@@ -67,7 +68,7 @@ public class pre_articulos extends Pantalla {
     //Opcion 6
     private Tabla tab_proveedoresFacturas;
 
-    //Opcion 8
+    //Opcion 8,9
     @EJB
     private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
 
@@ -75,7 +76,12 @@ public class pre_articulos extends Pantalla {
     private GraficoCartesiano gca_grafico;
     private Combo com_periodo;
 
+    //Opcion 10
+    private Tabla tab_preciosVentas;
+    private Tabla tab_preciosCompras;
+
     public pre_articulos() {
+        utilitario.getConexion().setImprimirSqlConsola(true);
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PRODUCTO :"));
         aut_productos.setId("aut_productos");
@@ -144,6 +150,9 @@ public class pre_articulos extends Pantalla {
                     break;
                 case 9:
                     dibujarGraficoCompras();
+                    break;
+                case 10:
+                    dibujarPrecios();
                     break;
                 default:
                     dibujarProducto();
@@ -423,7 +432,7 @@ public class pre_articulos extends Pantalla {
         if (isProductoSeleccionado()) {
             aut_cuentas = new AutoCompletar();
             aut_cuentas.setId("aut_cuentas");
-            aut_cuentas.setAutoCompletar(ser_contabilidad.getSqlCuentasActivos());
+            aut_cuentas.setAutoCompletar(ser_contabilidad.getSqlCuentas());
             aut_cuentas.setSize(75);
             aut_cuentas.setDisabled(true);
             aut_cuentas.setMetodoChange("seleccionarCuentaContable");
@@ -631,6 +640,90 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(gca_grafico);
         }
         mep_menu.dibujar(9, "GRAFICO DE COMPRAS", gru_grupo);
+    }
+
+    public void dibujarPrecios() {
+        Grupo gru_grupo = new Grupo();
+        if (isProductoSeleccionado()) {
+            Tabulador tab_tabulador = new Tabulador();
+            tab_tabulador.setId("tab_tabulador");
+
+            tab_preciosVentas = new Tabla();
+            tab_preciosVentas.setId("tab_preciosVentas");
+            tab_preciosVentas.setIdCompleto("tab_tabulador:tab_preciosVentas");
+            tab_preciosVentas.setSql(ser_producto.getSqlUltimosPreciosVentas(aut_productos.getValor()));
+            tab_preciosVentas.getColumna("ide_geper").setVisible(false);
+            tab_preciosVentas.setRows(20);
+            tab_preciosVentas.getColumna("nom_geper").setNombreVisual("CLIENTE");
+            tab_preciosVentas.getColumna("nom_geper").setFiltroContenido();
+            tab_preciosVentas.getColumna("nom_geper").setLongitud(200);
+            tab_preciosVentas.getColumna("fecha_ultima_venta").setNombreVisual("FECHA ULTIMA VENTA");
+            tab_preciosVentas.getColumna("fecha_ultima_venta").setLongitud(80);
+            tab_preciosVentas.getColumna("ultima_cantidad").setNombreVisual("CANTIDAD");
+            tab_preciosVentas.getColumna("ultima_cantidad").setFormatoNumero(2);
+            tab_preciosVentas.getColumna("ultima_cantidad").alinearDerecha();
+            tab_preciosVentas.getColumna("ultima_cantidad").setLongitud(100);
+            tab_preciosVentas.getColumna("ultima_cantidad").setEstilo("font-size:14px");
+
+            tab_preciosVentas.getColumna("ultimo_precio").setNombreVisual("PRECIO");
+            tab_preciosVentas.getColumna("ultimo_precio").setFormatoNumero(2);
+            tab_preciosVentas.getColumna("ultimo_precio").alinearDerecha();
+            tab_preciosVentas.getColumna("ultimo_precio").setLongitud(100);
+            tab_preciosVentas.getColumna("ultimo_precio").setEstilo("font-weight: bold;font-size:14px");
+
+            tab_preciosVentas.getColumna("valor_total").setNombreVisual("VALOR");
+            tab_preciosVentas.getColumna("valor_total").setFormatoNumero(2);
+            tab_preciosVentas.getColumna("valor_total").alinearDerecha();
+            tab_preciosVentas.getColumna("valor_total").setLongitud(100);
+            tab_preciosVentas.getColumna("valor_total").setEstilo("font-size:14px");
+
+            tab_preciosVentas.setLectura(true);
+            tab_preciosVentas.dibujar();
+            PanelTabla pat_panel1 = new PanelTabla();
+            pat_panel1.setPanelTabla(tab_preciosVentas);
+
+            tab_tabulador.agregarTab("VENTAS", pat_panel1);
+
+            tab_preciosCompras = new Tabla();
+            tab_preciosCompras.setId("tab_preciosCompras");
+            tab_preciosCompras.setIdCompleto("tab_tabulador:tab_preciosCompras");
+            tab_preciosCompras.setSql(ser_producto.getSqlUltimosPreciosCompras(aut_productos.getValor()));
+            tab_preciosCompras.getColumna("ide_geper").setVisible(false);
+            tab_preciosCompras.setRows(20);
+            tab_preciosCompras.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
+            tab_preciosCompras.getColumna("nom_geper").setFiltroContenido();
+            tab_preciosCompras.getColumna("nom_geper").setLongitud(200);
+            tab_preciosCompras.getColumna("fecha_ultima_venta").setNombreVisual("FECHA ULTIMA COMPRA");
+            tab_preciosCompras.getColumna("fecha_ultima_venta").setLongitud(80);
+            tab_preciosCompras.getColumna("ultima_cantidad").setNombreVisual("CANTIDAD");
+            tab_preciosCompras.getColumna("ultima_cantidad").setFormatoNumero(2);
+            tab_preciosCompras.getColumna("ultima_cantidad").alinearDerecha();
+            tab_preciosCompras.getColumna("ultima_cantidad").setLongitud(100);
+            tab_preciosCompras.getColumna("ultima_cantidad").setEstilo("font-size:14px");
+
+            tab_preciosCompras.getColumna("ultimo_precio").setNombreVisual("PRECIO");
+            tab_preciosCompras.getColumna("ultimo_precio").setFormatoNumero(2);
+            tab_preciosCompras.getColumna("ultimo_precio").alinearDerecha();
+            tab_preciosCompras.getColumna("ultimo_precio").setLongitud(100);
+            tab_preciosCompras.getColumna("ultimo_precio").setEstilo("font-weight: bold;font-size:14px");
+
+            tab_preciosCompras.getColumna("valor_total").setNombreVisual("VALOR");
+            tab_preciosCompras.getColumna("valor_total").setFormatoNumero(2);
+            tab_preciosCompras.getColumna("valor_total").alinearDerecha();
+            tab_preciosCompras.getColumna("valor_total").setLongitud(100);
+            tab_preciosCompras.getColumna("valor_total").setEstilo("font-size:14px");
+
+            tab_preciosCompras.setLectura(true);
+            tab_preciosCompras.dibujar();
+            PanelTabla pat_panel2 = new PanelTabla();
+            pat_panel2.setPanelTabla(tab_preciosCompras);
+
+            tab_tabulador.agregarTab("COMPRAS", pat_panel2);
+
+            gru_grupo.getChildren().add(tab_tabulador);
+
+        }
+        mep_menu.dibujar(10, "ÚLTIMOS PRECIOS", gru_grupo);
     }
 
     public void actualizarGraficoVentas() {
@@ -906,4 +999,21 @@ public class pre_articulos extends Pantalla {
     public void setGca_grafico(GraficoCartesiano gca_grafico) {
         this.gca_grafico = gca_grafico;
     }
+
+    public Tabla getTab_preciosVentas() {
+        return tab_preciosVentas;
+    }
+
+    public void setTab_preciosVentas(Tabla tab_preciosVentas) {
+        this.tab_preciosVentas = tab_preciosVentas;
+    }
+
+    public Tabla getTab_preciosCompras() {
+        return tab_preciosCompras;
+    }
+
+    public void setTab_preciosCompras(Tabla tab_preciosCompras) {
+        this.tab_preciosCompras = tab_preciosCompras;
+    }
+
 }
