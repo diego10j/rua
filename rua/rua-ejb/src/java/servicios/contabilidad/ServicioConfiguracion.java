@@ -68,7 +68,7 @@ public class ServicioConfiguracion {
         str_sql = "select ide_inarti,inv_ide_inarti from inv_articulo where ide_inarti=" + ide_inarti;
         TablaGenerica tab_identificador = utilitario.consultar(str_sql);
         if (tab_identificador.getTotalFilas() > 0) {
-            str_cuenta = buscarCuenta(identificador, ide_inarti, null, null, null, null, null);
+            str_cuenta = buscarCuenta(identificador, null, ide_inarti, null, null, null, null);
             str_padre = tab_identificador.getValor(0, "inv_ide_inarti");
             if (str_cuenta == null) {
                 if (str_padre == null) {

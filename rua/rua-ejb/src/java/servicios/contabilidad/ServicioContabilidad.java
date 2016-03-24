@@ -25,7 +25,7 @@ public class ServicioContabilidad {
     }
 
     /**
-     * Retorna la sentencia SQL para obtener cuentas hijas de tipo ACTIVOS
+     * Retorna la sentencia SQL para obtener cuentas de tipo ACTIVOS
      *
      * @return
      */
@@ -37,7 +37,7 @@ public class ServicioContabilidad {
     }
 
     /**
-     * Retorna la sentencia SQL para obtener cuentas hijas de tipo ACTIVOS
+     * Retorna la sentencia SQL para obtener cuentas de tipo PASIVO
      *
      * @return
      */
@@ -45,6 +45,17 @@ public class ServicioContabilidad {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen "
                 + "where ide_cntcu = " + P_TIPO_CUENTA_PASIVO + " "
+                + "ORDER BY codig_recur_cndpc";
+    }
+
+    /**
+     * Retorna la sentencia SQL para obtener el plan de cuentas
+     *
+     * @return
+     */
+    public String getSqlCuentas() {
+        return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
+                + "from con_det_plan_cuen "
                 + "ORDER BY codig_recur_cndpc";
     }
 
@@ -122,7 +133,5 @@ public class ServicioContabilidad {
         }
         return dias;
     }
-    
-    
 
 }

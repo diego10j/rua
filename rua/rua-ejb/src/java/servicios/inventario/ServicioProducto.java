@@ -324,7 +324,7 @@ public class ServicioProducto {
      * @return
      */
     public String getCuentaProducto(String ide_inarti) {
-        return ser_configuracion.getCuentaPersona("INVENTARIO-GASTO-ACTIVO", ide_inarti);
+        return ser_configuracion.getCuentaProducto("INVENTARIO-GASTO-ACTIVO", ide_inarti);
     }
 
     /**
@@ -366,7 +366,7 @@ public class ServicioProducto {
         return "insert into con_det_conf_asie (ide_cndca,ide_inarti,ide_cndpc,ide_cnvca)"
                 + "values (" + utilitario.getConexion().getMaximo("con_det_conf_asie", "ide_cndca", 1)
                 + ", " + ide_inarti + ", " + ide_cndpc + ","
-                + ser_configuracion.getCodigoVigenciaIdentificador("CUENTA POR COBRAR") + " )";
+                + ser_configuracion.getCodigoVigenciaIdentificador("INVENTARIO-GASTO-ACTIVO") + " )";
     }
 
     /**
@@ -444,6 +444,52 @@ public class ServicioProducto {
                 + "(select sum(valor_cpdfa) as total from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + ") "
                 + "from gen_mes "
                 + "order by ide_gemes";
+    }
+
+    /**
+     * Reorna los clientes que han comprado un producto, con ultima fecha de
+     * venta, ultimo precio de venta,
+     *
+     * @param ide_inarti
+     * @return
+     */
+    public String getSqlUltimosPreciosVentas(String ide_inarti) {
+        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
+        return "select distinct b.ide_geper,nom_geper,max(b.fecha_emisi_cccfa) as fecha_ultima_venta,\n"
+                + "(select cantidad_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + p_cxc_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cccfa desc limit 1) as ultima_cantidad,\n"
+                + "(select precio_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + p_cxc_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cccfa desc limit 1) as ultimo_precio,\n"
+                + "(select total_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + p_cxc_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cccfa desc limit 1) as valor_total\n"
+                + "from cxc_deta_factura a \n"
+                + "inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa\n"
+                + "inner join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "where ide_ccefa=" + p_cxc_estado_factura_normal + "\n"
+                + "and a.ide_inarti=" + ide_inarti + "\n"
+                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + "\n"
+                + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
+                + "order by 3,nom_geper desc";
+    }
+
+    /**
+     * Reorna los proveedores de un un producto, con ultima fecha de compra,
+     * ultimo precio de compra,
+     *
+     * @param ide_inarti
+     * @return
+     */
+    public String getSqlUltimosPreciosCompras(String ide_inarti) {
+        String p_cxp_estado_factura_normal = utilitario.getVariable("p_cxp_estado_factura_normal");
+        return "select distinct b.ide_geper,nom_geper,max(b.fecha_emisi_cpcfa) as fecha_ultima_venta,\n"
+                + "(select cantidad_cpdfa from cxp_detall_factur  inner join cxp_cabece_factur  on cxp_detall_factur.ide_cpcfa=cxp_cabece_factur.ide_cpcfa where ide_cpefa=" + p_cxp_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cpcfa desc limit 1) as ultima_cantidad,\n"
+                + "(select precio_cpdfa from cxp_detall_factur  inner join cxp_cabece_factur  on cxp_detall_factur.ide_cpcfa=cxp_cabece_factur.ide_cpcfa where ide_cpefa=" + p_cxp_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cpcfa desc limit 1) as ultimo_precio,\n"
+                + "(select valor_cpdfa  from cxp_detall_factur  inner join cxp_cabece_factur  on cxp_detall_factur.ide_cpcfa=cxp_cabece_factur.ide_cpcfa where ide_cpefa=" + p_cxp_estado_factura_normal + " and ide_geper=b.ide_geper and ide_inarti=" + ide_inarti + " order by fecha_emisi_cpcfa desc limit 1) as valor_total\n"
+                + "from cxp_detall_factur a \n"
+                + "inner join cxp_cabece_factur b on a.ide_cpcfa=b.ide_cpcfa\n"
+                + "inner join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "where ide_cpefa=" + p_cxp_estado_factura_normal + "\n"
+                + "and a.ide_inarti=" + ide_inarti + "\n"
+                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + "\n"
+                + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
+                + "order by 3,nom_geper desc";
     }
 
 }
