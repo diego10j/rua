@@ -11,7 +11,7 @@ import framework.componentes.Tabla;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import servicios.contabilidad.ServicioContabilidad;
+import servicios.contabilidad.ServicioContabilidadGeneral;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -22,7 +22,7 @@ import sistema.aplicacion.Utilitario;
 public class ServicioFacturaCxC {
 
     @EJB
-    private ServicioContabilidad ser_tesoreria;
+    private ServicioContabilidadGeneral ser_tesoreria;
     private final Utilitario utilitario = new Utilitario();
     @EJB
     private ComprobanteDAOLocal comprobateElectronico;

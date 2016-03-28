@@ -24,7 +24,7 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioConfiguracion;
-import servicios.contabilidad.ServicioContabilidad;
+import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioProducto;
@@ -72,7 +72,7 @@ public class FacturaCxC extends Dialogo {
 
     //CONTABILIDAD Asiento de Venta
     @EJB
-    private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
+    private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
     @EJB
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
 

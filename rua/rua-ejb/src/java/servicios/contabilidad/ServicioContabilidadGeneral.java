@@ -14,7 +14,7 @@ import sistema.aplicacion.Utilitario;
  * @author dfjacome
  */
 @Stateless
-public class ServicioContabilidad {
+public class ServicioContabilidadGeneral {
 
     public final static String P_TIPO_CUENTA_ACTIVO = "0";
     public final static String P_TIPO_CUENTA_PASIVO = "4";
