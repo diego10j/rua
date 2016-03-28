@@ -26,7 +26,7 @@ import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
-import servicios.contabilidad.ServicioContabilidad;
+import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
@@ -58,7 +58,7 @@ public class pre_articulos extends Pantalla {
     //Movimientos opcion 5
       /*CONTABILIDAD*/
     @EJB
-    private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
+    private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
     private AutoCompletar aut_cuentas;
     private Tabla tab_movimientos;
 
