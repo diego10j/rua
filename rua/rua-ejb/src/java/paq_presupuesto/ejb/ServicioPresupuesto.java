@@ -2,6 +2,7 @@ package paq_presupuesto.ejb;
 
 
 import javax.ejb.Stateless;
+import java.util.*;
 
 import sistema.aplicacion.Utilitario;
 import framework.aplicacion.TablaGenerica;
@@ -465,4 +466,60 @@ public void trigCompromisoPreMensual(String ide_prtra){
 	utilitario.getConexion().ejecutarSql(sql);
 
 }
+public List getListaGruposNivelPresupuesto(){
+		
+		List lista=new ArrayList();
+		Object fila1[] = {
+				"1","1"
+		};
+		
+		Object fila2[] = {
+				"2","2"
+					
+		};
+		Object fila3[]={
+				"3","3"
+				
+		};
+		
+		Object fila4[]={
+				"4","4"
+				
+				
+		};
+		
+		Object fila5[]={
+				"5","5"
+				
+		};
+		Object fila6[]={
+				"6","6"
+		};
+		
+		lista.add(fila1);
+		lista.add(fila2);
+		lista.add(fila3);
+		lista.add(fila4);
+		lista.add(fila5);
+		lista.add(fila6);
+		return lista;
+		}
+
+	public List getListaGrupoCuentaPresupuesto() {
+		//pARA USAR EN TODAS LAS TABLAS QUE SEAN RECURSIVAS
+		List lista = new ArrayList();
+		Object fila1[] = {
+				"G", "Cuenta General"
+		};
+		Object fila2[] = {
+				"S", "Cuenta Grupal"
+		};
+		Object fila3[] = {
+				"F", "Cuenta Final"
+		};
+		lista.add(fila1);
+		lista.add(fila2);
+		lista.add(fila3);
+		return lista;
+	}
 }
