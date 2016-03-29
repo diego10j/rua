@@ -972,4 +972,47 @@ public class Utilitario extends Framework {
         }
         return str_valor;
     }
+	/*Valida el ingreso de solo numeros enteros positivos (telefono)
+	 * 
+	 */
+    public boolean isEnteroPositivo(String numero_validar) {
+        try {
+            int int_num_val = Integer.parseInt(numero_validar);
+            double dou_num_val = Double.parseDouble(numero_validar);
+            if (int_num_val == dou_num_val) {
+                if (int_num_val > 0) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public boolean isNumeroPositivo(String numero_validar) {
+        try {
+            double dou_num_val = Double.parseDouble(numero_validar);
+            if (dou_num_val > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+    public boolean isEnteroPositivoyCero(String numero_validar) {
+        try {
+            int int_num_val = Integer.parseInt(numero_validar);
+            double dou_num_val = Double.parseDouble(numero_validar);
+            if (int_num_val == dou_num_val) {
+                if (int_num_val >= 0) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
 }
