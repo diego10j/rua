@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
-import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
