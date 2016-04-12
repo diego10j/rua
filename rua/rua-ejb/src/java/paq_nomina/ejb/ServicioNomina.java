@@ -21,6 +21,7 @@ import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Tabla;
+import javax.annotation.PostConstruct;
 
 
 /**
@@ -4296,9 +4297,18 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 		return null;
 	}
 
-	TablaGenerica tab_cuotas=new TablaGenerica();
-	TablaGenerica tab_det_fac_gua=new TablaGenerica();
+	TablaGenerica tab_cuotas;
+	TablaGenerica tab_det_fac_gua;
 
+        //DFJ
+        @PostConstruct
+        public void init(){
+        tab_cuotas=new TablaGenerica();
+	 tab_det_fac_gua=new TablaGenerica();
+ 
+        }
+        
+        
 	public void calcularRolIndividual(TablaGenerica tab_rubros,String ide_gtemp,String ide_geedp,String ide_nrrol,String fecha_ingreso,String fecha_contrato,String IDE_GEREG,String RMU,String acumula_fondos,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String fecha_subroga,String fecha_fin_subroga,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,Long ide_inicial,int nro_dias_comercial,String IDE_NRTIN,String acumula_decimo,String base_imponible_mes_anterior,String fondo_reserva_acum_pago, String fondo_reserva_nom_pago){
 
 		boolean boo_tiene_anticipos=false;
