@@ -327,6 +327,48 @@ public class pre_articulos extends Pantalla {
             //actualizarSaldoxCobrar();
         }
         mep_menu.dibujar(2, "KARDEX", gru_grupo);
+        calculaKardex();
+    }
+
+    private void calculaKardex() {
+        double dou_cantf = 0;
+        double dou_preciof = 0;
+        double dou_saldof = 0;
+
+        for (int i = 0; i < tab_kardex.getTotalFilas(); i++) {
+            double dou_cant_fin = 0;
+            double dou_precio_fin = 0;
+            double dou_saldo_fin = 0;
+
+            if (tab_kardex.getValor(i, "VTOT_INGRESO") != null && tab_kardex.getValor(i, "VTOT_INGRESO").isEmpty() == false) {
+                try {
+                    dou_cant_fin = Double.parseDouble(tab_kardex.getValor(i, "CANT_INGRESO"));
+                    dou_precio_fin = Double.parseDouble(tab_kardex.getValor(i, "VUNI_INGRESO"));
+                    dou_saldo_fin = Double.parseDouble(tab_kardex.getValor(i, "VTOT_INGRESO"));
+                } catch (Exception e) {
+                }
+
+                dou_cantf += dou_cant_fin;
+                dou_preciof += dou_precio_fin;
+                dou_saldof += dou_saldo_fin;
+////////////000000000
+            }
+            if (tab_kardex.getValor(i, "VTOT_EGRESO") != null && tab_kardex.getValor(i, "VTOT_EGRESO").isEmpty() == false) {
+                try {
+                    dou_cant_fin = Double.parseDouble(tab_kardex.getValor(i, "CANT_EGRESO"));
+                    dou_precio_fin = Double.parseDouble(tab_kardex.getValor(i, "VUNI_EGRESO"));
+                    dou_saldo_fin = Double.parseDouble(tab_kardex.getValor(i, "VTOT_EGRESO"));
+                } catch (Exception e) {
+                }
+                dou_cantf -= dou_cant_fin;
+                dou_preciof -= dou_precio_fin;
+                dou_saldof = dou_saldo_fin;
+
+            }
+            tab_kardex.setValor(i, "CANT_SALDO", utilitario.getFormatoNumero(dou_cantf));
+            tab_kardex.setValor(i, "VUNI_SALDO", utilitario.getFormatoNumero(dou_preciof));
+            tab_kardex.setValor(i, "VTOT_SALDO", utilitario.getFormatoNumero(dou_saldof));
+        }
     }
 
     public void dibujarMovimientos() {
@@ -334,7 +376,6 @@ public class pre_articulos extends Pantalla {
         if (isProductoSeleccionado()) {
             TablaGenerica tab_cuenta = ser_contabilidad.getCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()));
             if (!tab_cuenta.isEmpty()) {
-
                 Fieldset fis_consulta = new Fieldset();
                 fis_consulta.setLegend("Detalle de la Consulta");
                 fis_consulta.getChildren().add(new Etiqueta("<p style='font-size:16px;padding-bottom:5px;'> <strong>" + tab_cuenta.getValor("codig_recur_cndpc") + "</strong> &nbsp; " + tab_cuenta.getValor("nombre_cndpc") + "</p>"));
@@ -794,6 +835,7 @@ public class pre_articulos extends Pantalla {
         tab_kardex.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
         tab_kardex.ejecutarSql();
         // actualizarSaldoxCobrar();
+        calculaKardex();
     }
 
     /**
