@@ -313,7 +313,83 @@ public class ServicioProducto {
                 + "and fecha_trans_incci BETWEEN '" + fecha_inicio + "'  and '" + fecha_fin + "' \n"
                 + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " \n" //Comprobantes en estado  normal
                 + strCondicionBodega
-                + "ORDER BY cci.fecha_trans_incci,dci.ide_indci asc";
+                + "ORDER BY cci.fecha_trans_incci asc,signo_intci asc,dci.ide_indci asc";
+    }
+
+    public List<Double> getSaldosInicialesKardex(String ide_inarti, String fecha_fin, String ide_inbod) {
+        List<Double> resultado = new ArrayList();
+        ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
+        String strCondicionBodega = ide_inbod.isEmpty() ? "" : " ide_inbod in (" + ide_inbod + ") \n";
+
+        TablaGenerica tab_kardex = utilitario.consultar("SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
+                + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
+                + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
+                + "case when signo_intci = 1 THEN valor_indci  end as VTOT_INGRESO,\n"
+                + "case when signo_intci = -1 THEN cantidad_indci  end as CANT_EGRESO,\n"
+                + "case when signo_intci = -1 THEN precio_indci  end as VUNI_EGRESO,\n"
+                + "case when signo_intci = -1 THEN valor_indci  end as VTOT_EGRESO,\n"
+                + "'' as CANT_SALDO,precio_promedio_indci as VUNI_SALDO ,'' VTOT_SALDO\n"
+                + "from inv_det_comp_inve dci \n"
+                + "left join inv_cab_comp_inve cci on cci.ide_incci=dci.ide_incci \n"
+                + "left join gen_persona gpe on cci.ide_geper=gpe.ide_geper\n"
+                + "left join inv_tip_tran_inve tti on tti.ide_intti=cci.ide_intti \n"
+                + "left join inv_tip_comp_inve tci on tci.ide_intci=tti.ide_intci \n"
+                + "left join inv_articulo arti on dci.ide_inarti=arti.ide_inarti\n"
+                + "where dci.ide_inarti=" + ide_inarti + " \n"
+                + "and fecha_trans_incci < '" + fecha_fin + "' \n"
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " \n" //Comprobantes en estado  normal
+                + strCondicionBodega
+                + "ORDER BY cci.fecha_trans_incci asc,signo_intci asc,dci.ide_indci asc");
+        //CALCULA PRECIO PROMEDIO 
+        double dou_cantf = 0;
+        double dou_preciof = 0;
+        double dou_saldof = 0;
+        if (!tab_kardex.isEmpty()) {
+            for (int i = 0; i < tab_kardex.getTotalFilas(); i++) {
+                double dou_cant_fila = 0;
+                double dou_precio_fila = 0;
+                double dou_saldo_fila = 0;
+
+                if (tab_kardex.getValor(i, "VTOT_INGRESO") != null && tab_kardex.getValor(i, "VTOT_INGRESO").isEmpty() == false) {
+                    try {
+                        dou_cant_fila = Double.parseDouble(tab_kardex.getValor(i, "CANT_INGRESO"));
+                        dou_precio_fila = Double.parseDouble(tab_kardex.getValor(i, "VUNI_INGRESO"));
+                        dou_saldo_fila = Double.parseDouble(tab_kardex.getValor(i, "VTOT_INGRESO"));
+                    } catch (Exception e) {
+                    }
+                    if (i == 0) {
+                        dou_cantf += dou_cant_fila;
+                        dou_preciof = dou_precio_fila;
+                        dou_saldof = dou_cant_fila * dou_precio_fila;
+                    } else {
+                        dou_cantf += dou_cant_fila;
+                        dou_saldof += dou_saldo_fila;
+                        dou_preciof = dou_saldof / dou_cantf;
+                    }
+                } else if (tab_kardex.getValor(i, "VTOT_EGRESO") != null && tab_kardex.getValor(i, "VTOT_EGRESO").isEmpty() == false) {
+                    try {
+                        dou_cant_fila = Double.parseDouble(tab_kardex.getValor(i, "CANT_EGRESO"));
+                        dou_precio_fila = Double.parseDouble(tab_kardex.getValor(i, "VUNI_EGRESO"));
+                        dou_saldo_fila = Double.parseDouble(tab_kardex.getValor(i, "VTOT_EGRESO"));
+                    } catch (Exception e) {
+                    }
+                    if (i == 0) {
+                        dou_cantf -= dou_cant_fila;
+                        dou_preciof = dou_precio_fila;
+                        dou_saldof = dou_cant_fila * dou_precio_fila;
+                    } else {
+                        dou_cantf -= dou_cant_fila;
+                        dou_saldof -= dou_saldo_fila;
+                        dou_preciof = dou_saldof / dou_cantf;
+                    }
+                }
+            }
+        }
+        resultado.add(dou_cantf);//CANT INICIA
+        resultado.add(dou_preciof);//PRECIO UNIT. INICIA
+        resultado.add(dou_saldof);//SALDO INICIA
+
+        return resultado;
     }
 
     /**
