@@ -6,6 +6,8 @@
 package servicios.contabilidad;
 
 import framework.aplicacion.TablaGenerica;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import sistema.aplicacion.Utilitario;
 
@@ -56,6 +58,17 @@ public class ServicioContabilidadGeneral {
     public String getSqlCuentas() {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen "
+                + "ORDER BY codig_recur_cndpc";
+    }
+
+    /**
+     * Retorna la sentencia SQL para obtener el plan de cuentas HIJO
+     *
+     * @return
+     */
+    public String getSqlCuentasHijas() {
+        return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
+                + "from con_det_plan_cuen where nivel_cndpc='HIJO' "
                 + "ORDER BY codig_recur_cndpc";
     }
 
@@ -132,6 +145,131 @@ public class ServicioContabilidadGeneral {
             }
         }
         return dias;
+    }
+
+    /**
+     * Retorna sentencia SQL para obtener el libro diario en un determinado
+     * rango de fechas
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlLibroDiario(String fechaInicio, String fechaFin) {
+        String estadosComprobantes = "" + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comp_final");
+        return "SELECT DCC.ide_cndcc,CCC.ide_cnccc,CCC.fecha_trans_cnccc,CCC.numero_cnccc,\n"
+                + "DPC.codig_recur_cndpc,DPC.nombre_cndpc,\n"
+                + "case when DCC.ide_cnlap = 1 THEN DCC.valor_cndcc  end as DEBE,case when DCC.ide_cnlap = 0 THEN DCC.valor_cndcc end as HABER\n"
+                + ",CCC.observacion_cnccc,TC.nombre_cntcm\n"
+                + "FROM con_cab_comp_cont CCC\n"
+                + "LEFT JOIN sis_modulo SM ON CCC.ide_modu=SM.ide_modu\n"
+                + "INNER JOIN con_tipo_comproba TC ON CCC.ide_cntcm=TC.ide_cntcm\n"
+                + "inner JOIN  con_det_comp_cont DCC ON  CCC.ide_cnccc=DCC.ide_cnccc\n"
+                + "inner JOIN con_det_plan_cuen DPC ON DCC.ide_cndpc=DPC.ide_cndpc\n"
+                + "left join con_signo_cuenta sc on DPC.ide_cntcu=sc.ide_cntcu and DCC.ide_cnlap=sc.ide_cnlap  "
+                + "WHERE  CCC.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
+                + "and CCC.ide_cneco IN (" + estadosComprobantes + ")\n"
+                + "AND CCC.fecha_trans_cnccc BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'\n"
+                + "ORDER BY CCC.fecha_trans_cnccc DESC,numero_cnccc DESC,DCC.ide_cnlap desc";
+    }
+
+    /**
+     * Sql que genera el Balance General
+     *
+     * @param fecha_inicio
+     * @param fecha_fin
+     * @return
+     */
+    public String getSqlBalanceGeneral(String fecha_inicio, String fecha_fin) {
+        String p_activo = utilitario.getVariable("p_con_tipo_cuenta_activo");
+        String p_pasivo = utilitario.getVariable("p_con_tipo_cuenta_pasivo");
+        String p_patrimonio = utilitario.getVariable("p_con_tipo_cuenta_patrimonio");
+        String p_tipo_cuentas = p_activo + "," + p_pasivo + "," + p_patrimonio;
+        String sql = getSqlBalances(fecha_inicio, fecha_fin, p_tipo_cuentas);
+        return sql;
+    }
+
+    /**
+     * Sql genera estado de resultados
+     *
+     * @param fecha_inicio
+     * @param fecha_fin
+     * @return
+     */
+    public String getSqlEstadoResultados(String fecha_inicio, String fecha_fin) {
+        String p_ingresos = utilitario.getVariable("p_con_tipo_cuenta_ingresos");
+        String p_gastos = utilitario.getVariable("p_con_tipo_cuenta_gastos");
+        String p_costos = utilitario.getVariable("p_con_tipo_cuenta_costos");
+        String p_tipo_cuentas = p_ingresos + "," + p_costos + "," + p_gastos;
+        String sql = getSqlBalances(fecha_inicio, fecha_fin, p_tipo_cuentas);
+        return sql;
+    }
+
+    private String getSqlBalances(String fecha_inicio, String fecha_fin, String p_tipo_cuentas) {
+
+        String estado_normal = utilitario.getVariable("p_con_estado_comprobante_normal");
+        String estado_inicial = utilitario.getVariable("p_con_estado_comp_inicial");
+        String estado_final = utilitario.getVariable("p_con_estado_comp_final");
+
+        return "(SELECT * FROM (select dpc.ide_cndpc,dpc.codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || dpc.nombre_cndpc as nombre_cndpc,dpc.ide_cnncu, "
+                + "sum(dcc.valor_cndcc*sc.signo_cnscu) as valor,"
+                + "con_ide_cndpc,dpc.ide_cntcu from  "
+                + "con_cab_comp_cont ccc "
+                + "inner join  con_det_comp_cont dcc on ccc.ide_cnccc=dcc.ide_cnccc "
+                + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
+                + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
+                + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
+                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicio + "' and '" + fecha_fin + "') "
+                + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
+                + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
+                + " GROUP BY dpc.ide_cndpc,codig_recur_cndpc, nombre_cndpc,con_ide_cndpc "
+                + "HAVING (sum(dcc.valor_cndcc*sc.signo_cnscu) <>0) ) as C1 "
+                + "UNION SELECT * FROM(Select ide_cndpc,codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || nombre_cndpc,ide_cnncu , '0' as valor, "
+                + "con_ide_cndpc,ide_cntcu "
+                + "from  con_det_plan_cuen where ide_cntcu in (" + p_tipo_cuentas + ") "
+                + "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont where "
+                + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") "
+                + "and nivel_cndpc='PADRE' ) AS C2) "
+                + "order by codig_recur_cndpc ";
+    }
+
+    /**
+     * Retorna el ultimo nivel del plan de cuentas
+     *
+     * @return
+     */
+    public int getUltimoNivelCuentas() {
+        String ide_cncpc = getPlandeCuentasActivo();
+        List lis_nivel_max = utilitario.getConexion().consultar("select max (ide_cnncu) from con_det_plan_cuen dpc where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_cncpc=" + ide_cncpc);
+        if (lis_nivel_max != null) {
+            return Integer.parseInt(lis_nivel_max.get(0).toString());
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * Retorna el identificador del plan de cuentas activo
+     *
+     * @return
+     */
+    public String getPlandeCuentasActivo() {
+        TablaGenerica tab_plan_activo = utilitario.consultar("select * from con_cab_plan_cuen where ide_empr=" + utilitario.getVariable("ide_empr") + " and activo_cncpc is TRUE");
+        if (tab_plan_activo.getTotalFilas() > 0) {
+            return tab_plan_activo.getValor(0, "ide_cncpc");
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sql que retorna los niveles del Plan de cuentas
+     *
+     * @return
+     */
+    public String getSqlNivelPlandeCuentas() {
+        return "select ide_cnncu,nombre_cnncu from con_nivel_cuenta where ide_empr=" + utilitario.getVariable("ide_empr") + "order by ide_cnncu";
     }
 
 }

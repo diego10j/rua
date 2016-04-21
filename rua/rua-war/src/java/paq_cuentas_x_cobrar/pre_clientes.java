@@ -18,11 +18,9 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Texto;
 import framework.componentes.graficos.GraficoCartesiano;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
-import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidadGeneral;
@@ -62,10 +60,7 @@ public class pre_clientes extends Pantalla {
     private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
     private AutoCompletar aut_cuentas;
     private Tabla tab_movimientos; //movimientos contables
-    private Texto tex_saldo_inicial;
-    private Texto tex_saldo_final;
-    private Texto tex_total_debe;
-    private Texto tex_total_haber;
+
 
     /*INFOMRES*/
     private Tabla tab_grafico;
@@ -172,8 +167,6 @@ public class pre_clientes extends Pantalla {
         if (isClienteSeleccionado()) {
 
             Fieldset fis_consulta = new Fieldset();
-            fis_consulta.setLegend("Detalle de la Consulta");
-
             Grid gri_fechas = new Grid();
             gri_fechas.setColumns(5);
             gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
@@ -199,41 +192,8 @@ public class pre_clientes extends Pantalla {
             Separator separar = new Separator();
             fis_consulta.getChildren().add(separar);
 
-            PanelGrid gri_saldos = new PanelGrid();
-            gri_saldos.setColumns(4);
-            gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
-            tex_saldo_inicial = new Texto();
-            tex_saldo_inicial.setId("tex_saldo_inicial");
-            tex_saldo_inicial.setDisabled(true);
-            tex_saldo_inicial.setSize(10);
-            tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-            gri_saldos.getChildren().add(tex_saldo_inicial);
-            gri_saldos.getChildren().add(new Etiqueta("TOTAL INGRESOS :"));
-            tex_total_debe = new Texto();
-            tex_total_debe.setId("tex_total_debe");
-            tex_total_debe.setDisabled(true);
-            tex_total_debe.setSize(10);
-            tex_total_debe.setStyle("font-size: 13px;text-align: right;");
-            gri_saldos.getChildren().add(tex_total_debe);
-            gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO FINAL :</strong>"));
-            tex_saldo_final = new Texto();
-            tex_saldo_final.setId("tex_saldo_final");
-            tex_saldo_final.setDisabled(true);
-            tex_saldo_final.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-            tex_saldo_final.setSize(10);
-            gri_saldos.getChildren().add(tex_saldo_final);
-            gri_saldos.getChildren().add(new Etiqueta("TOTAL EGRESOS :"));
-            tex_total_haber = new Texto();
-            tex_total_haber.setId("tex_total_haber");
-            tex_total_haber.setDisabled(true);
-            tex_total_haber.setStyle("font-size: 13px;text-align: right;");
-            tex_total_haber.setSize(10);
-            gri_saldos.getChildren().add(tex_total_haber);
-
-            fis_consulta.getChildren().add(gri_saldos);
-
             tab_transacciones_cxc = new Tabla();
-            tab_transacciones_cxc.setNumeroTabla(2);
+            tab_transacciones_cxc.setNumeroTabla(-1);
             tab_transacciones_cxc.setId("tab_transacciones_cxc");
             tab_transacciones_cxc.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_transacciones_cxc.getColumna("IDE_TECLB").setVisible(false);
@@ -254,11 +214,14 @@ public class pre_clientes extends Pantalla {
             tab_transacciones_cxc.getColumna("saldo").setLongitud(25);
             tab_transacciones_cxc.getColumna("saldo").alinearDerecha();
             tab_transacciones_cxc.getColumna("saldo").setEstilo("font-weight: bold;");
-            tab_transacciones_cxc.setColumnaSuma("INGRESOS,EGRESOS");
+            tab_transacciones_cxc.setColumnaSuma("INGRESOS,EGRESOS,saldo");
+            tab_transacciones_cxc.getColumna("INGRESOS").setSuma(false);
+            tab_transacciones_cxc.getColumna("EGRESOS").setSuma(false);
+            tab_transacciones_cxc.getColumna("saldo").setSuma(false);
             tab_transacciones_cxc.setOrdenar(false);
             tab_transacciones_cxc.setLectura(true);
             tab_transacciones_cxc.setScrollable(true);
-            tab_transacciones_cxc.setRows(15);
+            tab_transacciones_cxc.setRows(20);
             tab_transacciones_cxc.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_transacciones_cxc);
@@ -274,7 +237,6 @@ public class pre_clientes extends Pantalla {
         if (isClienteSeleccionado()) {
 
             Fieldset fis_consulta = new Fieldset();
-            fis_consulta.setLegend("Detalle de la Consulta");
 
             Grid gri_fechas = new Grid();
             gri_fechas.setColumns(5);
@@ -298,7 +260,7 @@ public class pre_clientes extends Pantalla {
             fis_consulta.getChildren().add(gri_fechas);
             gru_grupo.getChildren().add(fis_consulta);
             tab_productos = new Tabla();
-            tab_productos.setNumeroTabla(3);
+            tab_productos.setNumeroTabla(-1);
             tab_productos.setId("tab_productos");
             tab_productos.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_productos.getColumna("ide_ccdfa").setVisible(false);
@@ -316,7 +278,7 @@ public class pre_clientes extends Pantalla {
             tab_productos.getColumna("secuencial_cccfa").setFiltroContenido();
 
             tab_productos.setLectura(true);
-            tab_productos.setRows(10);
+            tab_productos.setRows(20);
             tab_productos.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_productos);
@@ -359,7 +321,6 @@ public class pre_clientes extends Pantalla {
             if (!tab_cuenta.isEmpty()) {
 
                 Fieldset fis_consulta = new Fieldset();
-                fis_consulta.setLegend("Detalle de la Consulta");
                 fis_consulta.getChildren().add(new Etiqueta("<p style='font-size:16px;padding-bottom:5px;'> <strong>" + tab_cuenta.getValor("codig_recur_cndpc") + "</strong> &nbsp; " + tab_cuenta.getValor("nombre_cndpc") + "</p>"));
 
                 Grid gri_fechas = new Grid();
@@ -384,43 +345,10 @@ public class pre_clientes extends Pantalla {
                 Separator separar = new Separator();
                 fis_consulta.getChildren().add(separar);
 
-                PanelGrid gri_saldos = new PanelGrid();
-                gri_saldos.setColumns(4);
-                gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO INICIAL :</strong>"));
-                tex_saldo_inicial = new Texto();
-                tex_saldo_inicial.setId("tex_saldo_inicial");
-                tex_saldo_inicial.setDisabled(true);
-                tex_saldo_inicial.setSize(10);
-                tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-                gri_saldos.getChildren().add(tex_saldo_inicial);
-                gri_saldos.getChildren().add(new Etiqueta("TOTAL DEBE :"));
-                tex_total_debe = new Texto();
-                tex_total_debe.setId("tex_total_debe");
-                tex_total_debe.setDisabled(true);
-                tex_total_debe.setSize(10);
-                tex_total_debe.setStyle("font-size: 13px;text-align: right;");
-                gri_saldos.getChildren().add(tex_total_debe);
-                gri_saldos.getChildren().add(new Etiqueta("<strong>SALDO FINAL :</strong>"));
-                tex_saldo_final = new Texto();
-                tex_saldo_final.setId("tex_saldo_final");
-                tex_saldo_final.setDisabled(true);
-                tex_saldo_final.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-                tex_saldo_final.setSize(10);
-                gri_saldos.getChildren().add(tex_saldo_final);
-                gri_saldos.getChildren().add(new Etiqueta("TOTAL HABER :"));
-                tex_total_haber = new Texto();
-                tex_total_haber.setId("tex_total_haber");
-                tex_total_haber.setDisabled(true);
-                tex_total_haber.setStyle("font-size: 13px;text-align: right;");
-                tex_total_haber.setSize(10);
-                gri_saldos.getChildren().add(tex_total_haber);
-
-                fis_consulta.getChildren().add(gri_saldos);
-
                 gru_grupo.getChildren().add(fis_consulta);
 
                 tab_movimientos = new Tabla();
-                tab_movimientos.setNumeroTabla(4);
+                tab_movimientos.setNumeroTabla(-1);
                 tab_movimientos.setId("tab_movimientos");
                 tab_movimientos.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
                 tab_movimientos.setLectura(true);
@@ -435,8 +363,11 @@ public class pre_clientes extends Pantalla {
                 tab_movimientos.getColumna("saldo").alinearDerecha();
                 tab_movimientos.getColumna("saldo").setEstilo("font-weight: bold;");
                 tab_movimientos.getColumna("valor_cndcc").setVisible(false);
-                tab_movimientos.setScrollable(true);
-                tab_movimientos.setRows(15);
+                tab_movimientos.getColumna("debe").setSuma(false);
+                tab_movimientos.getColumna("haber").setSuma(false);
+                tab_movimientos.getColumna("saldo").setSuma(false);
+                tab_movimientos.setColumnaSuma("debe,haber,saldo");
+                tab_movimientos.setRows(20);
                 tab_movimientos.setOrdenar(false);
                 tab_movimientos.dibujar();
                 PanelTabla pat_panel = new PanelTabla();
@@ -454,7 +385,7 @@ public class pre_clientes extends Pantalla {
         Grupo gru_grupo = new Grupo();
         if (isClienteSeleccionado()) {
             tab_facturas = new Tabla();
-            tab_facturas.setNumeroTabla(6);
+            tab_facturas.setNumeroTabla(-1);
             tab_facturas.setId("tab_facturas");
             tab_facturas.setSql(ser_cliente.getSqlFacturasPorCobrar(aut_clientes.getValor()));
             tab_facturas.getColumna("saldo_x_pagar").setEstilo("font-size: 13px;font-weight: bold");
@@ -469,6 +400,7 @@ public class pre_clientes extends Pantalla {
             tab_facturas.getColumna("total_cccfa").setNombreVisual("TOTAL");
             tab_facturas.getColumna("total_cccfa").setEstilo("font-size: 13px;");
             tab_facturas.getColumna("total_cccfa").alinearDerecha();
+            tab_facturas.setRows(20);
             tab_facturas.setLectura(true);
             tab_facturas.setColumnaSuma("saldo_x_pagar");
             tab_facturas.dibujar();
@@ -641,13 +573,19 @@ public class pre_clientes extends Pantalla {
             tab_movimientos.setEmptyMessage("No existen Movimientos Contables en el rango de fechas seleccionado");
         }
 
-        tex_total_debe.setValue(utilitario.getFormatoNumero(dou_debe));
-        tex_total_haber.setValue(utilitario.getFormatoNumero(dou_haber));
-
-        tex_saldo_inicial.setValue(utilitario.getFormatoNumero(dou_saldo_inicial));
-        tex_saldo_final.setValue(utilitario.getFormatoNumero(dou_saldo_actual));
-
-        utilitario.addUpdate("tex_total_debe,tex_total_haber,tex_saldo_inicial,tex_saldo_final");
+        //INSERTA PRIMERA FILA SALDO INICIAL
+        if (dou_saldo_actual != 0) {
+            tab_movimientos.setLectura(false);
+            tab_movimientos.insertar();
+            tab_movimientos.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
+            tab_movimientos.setValor("OBSERVACION", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+            tab_movimientos.setValor("fecha_trans_cnccc", cal_fecha_inicio.getFecha());
+            tab_movimientos.setLectura(true);
+        }
+        //ASIGNA SALDOS FINALES
+        tab_movimientos.getColumna("saldo").setTotal(dou_saldo_actual);
+        tab_movimientos.getColumna("debe").setTotal(dou_debe);
+        tab_movimientos.getColumna("haber").setTotal(dou_haber);
     }
 
     /**
@@ -753,12 +691,20 @@ public class pre_clientes extends Pantalla {
             dou_saldo_actual = dou_saldo_inicial;
             tab_transacciones_cxc.setEmptyMessage("No existen Transacciones en el rango de fechas seleccionado");
         }
-        tex_total_debe.setValue(utilitario.getFormatoNumero(dou_ingresos));
-        tex_total_haber.setValue(utilitario.getFormatoNumero(dou_egresos));
-        tex_saldo_inicial.setValue(utilitario.getFormatoNumero(dou_saldo_inicial));
-        tex_saldo_final.setValue(utilitario.getFormatoNumero(dou_saldo_actual));
 
-        utilitario.addUpdate("tex_total_debe,tex_total_haber,tex_saldo_inicial,tex_saldo_final");
+        //INSERTA PRIMERA FILA SALDO INICIAL
+        if (dou_saldo_actual != 0) {
+            tab_transacciones_cxc.setLectura(false);
+            tab_transacciones_cxc.insertar();
+            tab_transacciones_cxc.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
+            tab_transacciones_cxc.setValor("OBSERVACION", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+            tab_transacciones_cxc.setValor("FECHA_TRANS_CCDTR", cal_fecha_inicio.getFecha());
+            tab_transacciones_cxc.setLectura(true);
+        }
+        //ASIGNA SALDOS FINALES
+        tab_transacciones_cxc.getColumna("saldo").setTotal(dou_saldo_actual);
+        tab_transacciones_cxc.getColumna("INGRESOS").setTotal(dou_ingresos);
+        tab_transacciones_cxc.getColumna("EGRESOS").setTotal(dou_egresos);
 
     }
 
