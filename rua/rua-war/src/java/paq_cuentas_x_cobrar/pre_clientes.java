@@ -693,7 +693,7 @@ public class pre_clientes extends Pantalla {
         }
 
         //INSERTA PRIMERA FILA SALDO INICIAL
-        if (dou_saldo_actual != 0) {
+        if (dou_saldo_inicial != 0) {
             tab_transacciones_cxc.setLectura(false);
             tab_transacciones_cxc.insertar();
             tab_transacciones_cxc.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));

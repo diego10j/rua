@@ -692,7 +692,7 @@ public class pre_proveedores extends Pantalla {
             tab_transacciones_cxp.setEmptyMessage("No existen Transacciones en el rango de fechas seleccionado");
         }
         //INSERTA PRIMERA FILA SALDO INICIAL
-        if (dou_saldo_actual != 0) {
+        if (dou_saldo_inicial != 0) {
             tab_transacciones_cxp.setLectura(false);
             tab_transacciones_cxp.insertar();
             tab_transacciones_cxp.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));

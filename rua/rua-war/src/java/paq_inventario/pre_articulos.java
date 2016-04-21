@@ -350,7 +350,7 @@ public class pre_articulos extends Pantalla {
             tab_kardex.setValor(i, "VTOT_SALDO", utilitario.getFormatoNumero(dou_saldof));
         }
 
-        if (dou_canti != 0) {
+        if (dou_saldoi != 0) {
             tab_kardex.setLectura(false);
             tab_kardex.insertar();
             tab_kardex.setValor("CANT_SALDO", utilitario.getFormatoNumero(dou_canti));
@@ -851,7 +851,7 @@ public class pre_articulos extends Pantalla {
         }
 
         //INSERTA PRIMERA FILA SALDO INICIAL
-        if (dou_saldo_inicial > 0) {
+        if (dou_saldo_inicial != 0) {
             tab_movimientos.setLectura(false);
             tab_movimientos.insertar();
             tab_movimientos.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
