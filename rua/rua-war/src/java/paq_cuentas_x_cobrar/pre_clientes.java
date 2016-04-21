@@ -574,7 +574,7 @@ public class pre_clientes extends Pantalla {
         }
 
         //INSERTA PRIMERA FILA SALDO INICIAL
-        if (dou_saldo_actual != 0) {
+        if (dou_saldo_inicial != 0) {
             tab_movimientos.setLectura(false);
             tab_movimientos.insertar();
             tab_movimientos.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
