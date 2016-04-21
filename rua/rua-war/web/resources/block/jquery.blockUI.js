@@ -121,7 +121,7 @@
         // override these in your code to change the default behavior and style
         $.blockUI.defaults = {
             // message displayed when blocking (use null for no message)
-            message: '<div align="center" style="font-size:14px;vertical-align: middle; padding-top:4px;padding-bottom:4px;"> <img src="imagenes/im_block.GIF" style="padding-left: 5px;padding-right: 5px;height="16" width="16""/> Procesando...</div>',
+            message: '<div align="center" style="font-size:14px;vertical-align: middle; padding-top:4px;padding-bottom:4px;"> <img src="imagenes/im_block_new.gif" style="padding-left: 5px;padding-right: 5px;height="16" width="16""/> Procesando...</div>',
             title: null, // title string; only used when theme == true
             draggable: true, // only used when theme == true (requires jquery-ui.js to be loaded)
 
