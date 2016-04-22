@@ -7,9 +7,9 @@ package pkg_contabilidad;
 import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Division;
-import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -32,6 +33,8 @@ import pkg_bancos.cls_bancos;
 import pkg_cuentas_x_cobrar.cls_cuentas_x_cobrar;
 import pkg_cuentas_x_pagar.cls_cuentas_x_pagar;
 import pkg_inventario.cls_inventario;
+import servicios.contabilidad.ServicioComprobanteContabilidad;
+import servicios.contabilidad.ServicioContabilidadGeneral;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -41,20 +44,22 @@ import sistema.aplicacion.Pantalla;
  */
 public class pre_comprobante_conta extends Pantalla {
 
+    @EJB
+    private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
+
+    @EJB
+    private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
+
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    private Division div_division = new Division();
-    private Boton bot_copiar = new Boton();
-    private Combo com_tipo_comprobante = new Combo();
-    private SeleccionCalendario sec_calendario = new SeleccionCalendario();
-    private Etiqueta eti_suma_debe = new Etiqueta();
-    private Etiqueta eti_suma_haber = new Etiqueta();
-    private Etiqueta eti_suma_diferencia = new Etiqueta();
-    private Boton bot_ver = new Boton();
+    private final Combo com_tipo_comprobante = new Combo();
+    private final Etiqueta eti_suma_debe = new Etiqueta();
+    private final Etiqueta eti_suma_haber = new Etiqueta();
+    private final Etiqueta eti_suma_diferencia = new Etiqueta();
     private VisualizarPDF vpdf_ver = new VisualizarPDF();
     //Parametros del sistema
-    private String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
-    private String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
+    private final String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
+    private final String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private SeleccionTabla sel_tab = new SeleccionTabla();
@@ -62,63 +67,73 @@ public class pre_comprobante_conta extends Pantalla {
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     cls_contabilidad con = new cls_contabilidad();
 
-    private Texto tex_num_transaccion = new Texto();
+    private final Texto tex_num_transaccion = new Texto();
+
+    //Consultas por rango de fechas
+    private final Calendario cal_fecha_inicio = new Calendario();
+    private final Calendario cal_fecha_fin = new Calendario();
 
     public pre_comprobante_conta() {
         //Recuperar el plan de cuentas activo
-        List lis_plan = utilitario.getConexion().consultar("select ide_CNCPC from con_cab_plan_cuen where activo_cncpc=true");
-        if (lis_plan != null && !lis_plan.isEmpty()) {
+
+        if (ser_contabilidad.getPlandeCuentasActivo() != null) {
             bar_botones.agregarReporte();
-            bar_botones.getBot_inicio().setMetodo("inicio");
-            bar_botones.getBot_fin().setMetodo("fin");
-            bar_botones.getBot_atras().setMetodo("atras");
-            bar_botones.getBot_siguiente().setMetodo("siguiente");
-
-            bar_botones.agregarCalendario();
-
-            tex_num_transaccion.setId("tex_num_transaccion");
-            tex_num_transaccion.setSoloEnteros();
-            tex_num_transaccion.setSize(10);
-            Boton bot_buscar_transaccion = new Boton();
-            bot_buscar_transaccion.setTitle("Buscar Transaccion");
-            bot_buscar_transaccion.setIcon("ui-icon-search");
-            bot_buscar_transaccion.setMetodo("buscarTransaccion");
-
-            bar_botones.agregarComponente(new Etiqueta("Num Transaccion: "));
-            bar_botones.agregarComponente(tex_num_transaccion);
-            bar_botones.agregarBoton(bot_buscar_transaccion);
-
             com_tipo_comprobante.setId("com_tipo_comprobante");
-            com_tipo_comprobante.setTitle("Tipo de Comprobate");
-            com_tipo_comprobante.setCombo("select ide_cntcm,nombre_cntcm from con_tipo_comproba where ide_empr=" + utilitario.getVariable("ide_empr"));
+            com_tipo_comprobante.setTitle("TIPO DE COMPROBANTE");
+            com_tipo_comprobante.setCombo(ser_comprobante.getSqlTiposComprobante());
             com_tipo_comprobante.setMetodo("seleccionTipoComprobante");
-
-            bar_botones.agregarComponente(new Etiqueta("Tipo de Comprobante :"));
+            bar_botones.agregarComponente(new Etiqueta("TIPO DE COMPROBANTE :"));
             bar_botones.agregarComponente(com_tipo_comprobante);
 
-            Espacio esp = new Espacio();
-            esp.setHeight("1");
-            esp.setWidth("20");
-            bar_botones.agregarComponente(esp);
+            bar_botones.agregarComponente(new Etiqueta("<strong>DEL</strong>"));
+            cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
+            cal_fecha_inicio.setSize(6);
+            bar_botones.agregarComponente(cal_fecha_inicio);
+            bar_botones.agregarComponente(new Etiqueta("<strong> AL </strong>"));
+            cal_fecha_fin.setFechaActual();
+            cal_fecha_fin.setSize(6);
+            bar_botones.agregarComponente(cal_fecha_fin);
+            Boton bot_consultar = new Boton();
+            bot_consultar.setTitle("Consultar");
+            bot_consultar.setMetodo("actualizarFechaComprobantes");
+            bot_consultar.setIcon("ui-icon-search");
+            bar_botones.agregarComponente(bot_consultar);
+            bar_botones.agregarSeparador();
 
-            bot_ver.setValue("Ver Comprobante");
+            Boton bot_ver = new Boton();
+            bot_ver.setValue("Ver");
             bot_ver.setMetodo("verComprobante");
             bot_ver.setUpdate("vpdf_ver");
-            //       bar_botones.agregarBoton(bot_ver);
+            bar_botones.agregarBoton(bot_ver);
 
+            Boton bot_copiar = new Boton();
             bot_copiar.setValue("Copiar");
             bot_copiar.setMetodo("copiarComprobante");
-
             bot_copiar.setIcon("ui-icon-copy");
             bar_botones.agregarBoton(bot_copiar);
+
             Boton bot_anular = new Boton();
-            bot_anular.setValue("Anular Comprobante");
+            bot_anular.setValue("Anular");
             bot_anular.setMetodo("anularComprobante");
             bar_botones.agregarBoton(bot_anular);
 
+            bar_botones.agregarSeparador();
+            tex_num_transaccion.setId("tex_num_transaccion");
+            tex_num_transaccion.setSoloEnteros();
+            tex_num_transaccion.setPlaceHolder("Nº COMPROBANTE");
+            tex_num_transaccion.setTitle("Nº COMPROBANTE");
+            tex_num_transaccion.setSize(7);
+            Boton bot_buscar_transaccion = new Boton();
+            bot_buscar_transaccion.setTitle("Buscar Comprobante");
+            bot_buscar_transaccion.setIcon("ui-icon-search");
+            bot_buscar_transaccion.setMetodo("buscarComprobante");
+
+            bar_botones.agregarComponente(tex_num_transaccion);
+            bar_botones.agregarBoton(bot_buscar_transaccion);
+
             //seleccion de las cuentas para reporte libro mayor
             sel_tab.setId("sel_tab");
-            sel_tab.setSeleccionTabla("SELECT ide_cndpc,codig_recur_cndpc,nombre_cndpc FROM con_det_plan_cuen WHERE ide_cncpc=(SELECT ide_cncpc FROM con_cab_plan_cuen WHERE activo_cncpc is TRUE) AND ide_empr=" + utilitario.getVariable("ide_empr") + " AND nivel_cndpc='HIJO' ORDER BY codig_recur_cndpc ASC ", "ide_cndpc");
+            sel_tab.setSeleccionTabla(ser_contabilidad.getSqlCuentasHijas(), "ide_cndpc");
             sel_tab.getTab_seleccion().getColumna("nombre_cndpc").setFiltro(true);
             sel_tab.getTab_seleccion().getColumna("codig_recur_cndpc").setFiltro(true);
             sel_tab.getTab_seleccion().onSelectCheck("seleccionaCuentaContable");
@@ -128,13 +143,12 @@ public class pre_comprobante_conta extends Pantalla {
 
             rep_reporte.setId("rep_reporte");
             rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
-
             sel_tab.getBot_aceptar().setMetodo("aceptarReporte");
-            sel_tab.getBot_aceptar().setUpdate("sel_tab,sec_calendario ");
+            sel_tab.getBot_aceptar().setUpdate("sel_tab ");
 
             sel_tab_nivel.setId("sel_tab_nivel");
             sel_tab_nivel.setTitle("Seleccione El Nivel");
-            sel_tab_nivel.setSeleccionTabla("select ide_cnncu,nombre_cnncu from con_nivel_cuenta where ide_empr=" + utilitario.getVariable("ide_empr") + "", "ide_cnncu");
+            sel_tab_nivel.setSeleccionTabla(ser_contabilidad.getSqlNivelesPlandeCuentas(), "ide_cnncu");
             sel_tab_nivel.setRadio();
             agregarComponente(sel_tab_nivel);
 
@@ -153,7 +167,7 @@ public class pre_comprobante_conta extends Pantalla {
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setTabla("con_cab_comp_cont", "ide_cnccc", 1);
             tab_tabla1.setCondicionSucursal(true);
-            tab_tabla1.getColumna("ide_cneco").setCombo("con_estado_compro", "ide_cneco", "nombre_cneco", "");
+            tab_tabla1.getColumna("ide_cneco").setCombo(ser_comprobante.getSqlEstadosComprobante());
             tab_tabla1.getColumna("fecha_siste_cnccc").setVisible(false);
             tab_tabla1.getColumna("numero_cnccc").setEtiqueta();
             tab_tabla1.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
@@ -169,7 +183,6 @@ public class pre_comprobante_conta extends Pantalla {
             tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
             tab_tabla1.getColumna("ide_geper").setAutoCompletar();
             tab_tabla1.getColumna("ide_geper").setRequerida(true);
-
             tab_tabla1.agregarRelacion(tab_tabla2);
             tab_tabla1.setCondicion("ide_cntcm=-1");
             tab_tabla1.setValidarInsertar(true);
@@ -186,10 +199,10 @@ public class pre_comprobante_conta extends Pantalla {
 
             tab_tabla2.setId("tab_tabla2");
             tab_tabla2.setTabla("con_det_comp_cont", "ide_cndcc", 2);
-            tab_tabla2.getColumna("ide_cndpc").setCombo("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc,nombre_cndpc", "ide_cncpc=" + lis_plan.get(0));
+            tab_tabla2.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentas());
             tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
             tab_tabla2.getColumna("ide_cndpc").setRequerida(true);
-            tab_tabla2.getColumna("ide_cnlap").setCombo("con_lugar_aplicac", "ide_cnlap", "nombre_cnlap", "");
+            tab_tabla2.getColumna("ide_cnlap").setCombo(ser_comprobante.getSqlLugarAplica());
             tab_tabla2.getColumna("ide_cnlap").setPermitirNullCombo(false);
             tab_tabla2.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
             tab_tabla2.setCampoOrden("ide_cnlap desc");
@@ -214,7 +227,7 @@ public class pre_comprobante_conta extends Pantalla {
             gri_totales.getChildren().add(eti_suma_diferencia);
             gri_totales.getChildren().add(eti_suma_debe);
             gri_totales.getChildren().add(eti_suma_haber);
-
+            Division div_division = new Division();
             div_division.setId("div_division");
             Division div_detalle = new Division();
             div_detalle.setFooter(pat_panel2, gri_totales, "85%");
@@ -223,12 +236,6 @@ public class pre_comprobante_conta extends Pantalla {
 
             agregarComponente(div_division);
 
-            sec_calendario.setId("sec_calendario");
-            //por defecto friltra un mes
-            sec_calendario.setFecha1(utilitario.sumarDiasFecha(utilitario.getDate(), -31));
-            sec_calendario.setFecha2(utilitario.getDate());
-            agregarComponente(sec_calendario);
-            sec_calendario.getBot_aceptar().setMetodo("aceptarRango");
             vpdf_ver.setTitle("Comprobante de Contabilidad");
             vpdf_ver.setId("vpdf_ver");
             agregarComponente(vpdf_ver);
@@ -237,10 +244,9 @@ public class pre_comprobante_conta extends Pantalla {
         }
     }
 
-    public void buscarTransaccion() {
+    public void buscarComprobante() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
-            com_tipo_comprobante.setValue(null);
-            tab_tabla1.setCondicion("fecha_trans_cnccc >='" + con.obtenerFechaInicialPeriodoActivo() + "' and ide_cnccc=" + tex_num_transaccion.getValue());
+            tab_tabla1.setCondicion("ide_cnccc=" + tex_num_transaccion.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             if (tab_tabla1.getTotalFilas() > 0) {
@@ -259,7 +265,6 @@ public class pre_comprobante_conta extends Pantalla {
     public void reversarComprobante() {
         if (tab_tabla1.getTotalFilas() > 0) {
             String ide_cnccc_anular = tab_tabla1.getValor("ide_cnccc");
-            cls_contabilidad con = new cls_contabilidad();
             // realizo el asiento de reversa
             con.reversar(ide_cnccc_anular, "Asiento de reversa de la transaccion num: " + ide_cnccc_anular, con);
             String ide_cnccc_nuevo = con.getTab_cabecera().getValor("ide_cnccc");
@@ -320,7 +325,6 @@ public class pre_comprobante_conta extends Pantalla {
         if (tab_tabla1.getTotalFilas() > 0) {
             if (!tab_tabla1.getValor("ide_cneco").equals(utilitario.getVariable("p_con_estado_comprobante_anulado"))) {
                 String ide_cnccc_anular = tab_tabla1.getValor("ide_cnccc");
-                cls_contabilidad con = new cls_contabilidad();
                 // realizo el asiento de reversa
                 con.anular(ide_cnccc_anular);
                 // cambio el estado de libro bancos a anulado
@@ -425,38 +429,30 @@ public class pre_comprobante_conta extends Pantalla {
 //        }
 //        utilitario.getConexion().guardarPantalla();
 //    }
+    @Override
     public void inicio() {
-        Tabla tabla_foco = utilitario.getTablaisFocus();
-        if (tabla_foco != null) {
-            tabla_foco.inicio();
-        }
+        super.inicio();
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }
 
+    @Override
     public void fin() {
-        Tabla tabla_foco = utilitario.getTablaisFocus();
-        if (tabla_foco != null) {
-            tabla_foco.fin();
-        }
+        super.fin();
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }
 
+    @Override
     public void atras() {
-        Tabla tabla_foco = utilitario.getTablaisFocus();
-        if (tabla_foco != null) {
-            tabla_foco.atras();
-        }
+        super.atras();
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }
 
+    @Override
     public void siguiente() {
-        Tabla tabla_foco = utilitario.getTablaisFocus();
-        if (tabla_foco != null) {
-            tabla_foco.siguiente();
-        }
+        super.siguiente();
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }
@@ -504,53 +500,30 @@ public class pre_comprobante_conta extends Pantalla {
         }
     }
 
-    public boolean validarFechasConPeriodoActivo(String fecha_inicial) {
-        if (utilitario.isFechaMenor(utilitario.getFecha(fecha_inicial), utilitario.getFecha(con.obtenerFechaInicialPeriodoActivo()))) {
-            sec_calendario.setFecha1(utilitario.getFecha(con.obtenerFechaInicialPeriodoActivo()));
-            utilitario.addUpdate("sec_calendario");
-        }
-        return true;
-    }
-
-    public void aceptarRango() {
-        if (validarFechasConPeriodoActivo(sec_calendario.getFecha1String())) {
-            if (sec_calendario.isFechasValidas()) {
-                sec_calendario.cerrar();
-                tab_tabla1.setCondicion("fecha_trans_cnccc between '" + sec_calendario.getFecha1String() + "' and '" + sec_calendario.getFecha2String() + "' and ide_cntcm=" + com_tipo_comprobante.getValue());
-                tab_tabla1.ejecutarSql();
-                tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
-                utilitario.addUpdate("sec_calendario,tab_tabla1,tab_tabla2");
-                calcularTotal();
-                utilitario.addUpdate("gri_totales");
-            } else {
-                utilitario.agregarMensajeInfo("Fechas no válidas", "");
-            }
+    public void actualizarFechaComprobantes() {
+        if (utilitario.isFechasValidas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha())) {
+            tab_tabla1.setCondicion("fecha_trans_cnccc between '" + cal_fecha_inicio.getFecha() + "' and '" + cal_fecha_fin.getFecha() + "' and ide_cntcm=" + com_tipo_comprobante.getValue());
+            tab_tabla1.ejecutarSql();
+            tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            utilitario.addUpdate("tab_tabla1,tab_tabla2");
+            calcularTotal();
+            utilitario.addUpdate("gri_totales");
+        } else {
+            utilitario.agregarMensajeInfo("Rango de fechas no válidas", "");
         }
 
-    }
-
-    @Override
-    public void abrirRangoFecha() {
-        sec_calendario.dibujar();
     }
 
     public void seleccionTipoComprobante() {
         if (com_tipo_comprobante.getValue() != null) {
             tex_num_transaccion.setValue(null);
-            if (utilitario.isFechaMenor(sec_calendario.getFecha1(), utilitario.getFecha(con.obtenerFechaInicialPeriodoActivo()))) {
-                sec_calendario.setFecha1(utilitario.getFecha(con.obtenerFechaInicialPeriodoActivo()));
-                sec_calendario.setFecha2(utilitario.getDate());
-                utilitario.addUpdate("sec_calendario");
-            }
-            tab_tabla1.setCondicion("fecha_trans_cnccc between '" + sec_calendario.getFecha1String() + "' and '" + sec_calendario.getFecha2String() + "' and ide_cntcm=" + com_tipo_comprobante.getValue());
+            tab_tabla1.setCondicion("fecha_trans_cnccc between '" + cal_fecha_inicio.getFecha() + "' and '" + cal_fecha_fin.getFecha() + "' and ide_cntcm=" + com_tipo_comprobante.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
         } else {
             tex_num_transaccion.setValue(null);
-            tab_tabla1.setCondicion("ide_cnccc=-1");
-            tab_tabla1.ejecutarSql();
-            tab_tabla2.setCondicion("ide_cndcc=-1");
-            tab_tabla2.ejecutarSql();
+            tab_tabla1.limpiar();
+            tab_tabla2.limpiar();
         }
         calcularTotal();
         utilitario.addUpdate("gri_totales,tex_num_transaccion");
@@ -578,7 +551,7 @@ public class pre_comprobante_conta extends Pantalla {
             if (con.validarPeriodo(tab_tabla1.getValor("fecha_trans_cnccc"))) {
                 if (tab_tabla1.isFilaInsertada()) {
                     tab_tabla1.setValor("hora_sistem_cnccc", utilitario.getHoraActual());
-                    tab_tabla1.setValor("numero_cnccc", generarSecuencial());
+                    tab_tabla1.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_tabla1.getValor("fecha_trans_cnccc")));
                 }
                 tab_tabla1.guardar();
                 tab_tabla2.guardar();
@@ -662,34 +635,6 @@ public class pre_comprobante_conta extends Pantalla {
         utilitario.addUpdate("gri_totales");
     }
 
-    private String generarSecuencial() {
-        //GENERA el número secuencial de la cabecera del comprobante
-        String str_numero = null;
-        String str_fecha = tab_tabla1.getValor("FECHA_TRANS_CNCCC");
-        String str_ano = utilitario.getAnio(str_fecha) + "";
-        String str_mes = utilitario.getMes(str_fecha) + "";
-        String str_ide_sucu = utilitario.getVariable("ide_sucu");
-        //SELECCIONA EL MAXIMO SEGUN EL MES Y EL AÑO 
-        TablaGenerica tab_max = utilitario.consultar("SELECT count(NUMERO_CNCCC) as cod,max(cast( substr(NUMERO_CNCCC,8) as NUMERIC)) AS MAXIMO FROM CON_CAB_COMP_CONT WHERE extract(year from FECHA_TRANS_CNCCC) ='" + str_ano + "' AND extract(month from FECHA_TRANS_CNCCC) ='" + str_mes + "' AND IDE_SUCU=" + str_ide_sucu);
-
-        String str_maximo = "0";
-        if (tab_max.getTotalFilas() > 0) {
-            str_maximo = tab_max.getValor("MAXIMO");
-            if (str_maximo == null || str_maximo.isEmpty()) {
-                str_maximo = "0";
-            }
-            long lon_siguiente = 0;
-            try {
-                lon_siguiente = Long.parseLong(str_maximo) + 1;
-            } catch (Exception e) {
-            }
-            str_maximo = lon_siguiente + "";
-        }
-        str_maximo = utilitario.generarCero(8 - str_maximo.length()) + str_maximo;
-        str_numero = str_ano + str_mes + str_ide_sucu + str_maximo;
-        return str_numero;
-    }
-
     @Override
     public void eliminar() {
         if (utilitario.getTablaisFocus().isFilaInsertada()) {
@@ -705,52 +650,11 @@ public class pre_comprobante_conta extends Pantalla {
         utilitario.addUpdate("gri_totales");
     }
 
-    public String retornar_mes_letras(int mes) {
-        String mes1 = "";
-        if (mes == 1) {
-            mes1 = "Enero";
-        }
-        if (mes == 2) {
-            mes1 = "Febrero";
-        }
-        if (mes == 3) {
-            mes1 = "Marzo";
-        }
-        if (mes == 4) {
-            mes1 = "Abril";
-        }
-        if (mes == 5) {
-            mes1 = "Mayo";
-        }
-        if (mes == 6) {
-            mes1 = "Junio";
-        }
-        if (mes == 7) {
-            mes1 = "Julio";
-        }
-        if (mes == 8) {
-            mes1 = "Agosto";
-        }
-        if (mes == 9) {
-            mes1 = "Septiembre";
-        }
-        if (mes == 10) {
-            mes1 = "Octubre";
-        }
-        if (mes == 11) {
-            mes1 = "Noviembre";
-        }
-        if (mes == 12) {
-            mes1 = "Diciembre";
-        }
-        return mes1;
-    }
-
     public String getFormatoFecha(String fecha) {
-        String mes = retornar_mes_letras(utilitario.getMes(fecha));
+        String mes = utilitario.getNombreMes(utilitario.getMes(fecha));
         String dia = utilitario.getDia(fecha) + "";
         String anio = utilitario.getAnio(fecha) + "";
-        String fecha_formato = dia + " de " + mes + " del " + anio;
+        String fecha_formato = dia + " DE " + mes + " DEL " + anio;
         return fecha_formato;
     }
     private List lis_ide_cndpc_sel = new ArrayList();
@@ -1245,14 +1149,6 @@ public class pre_comprobante_conta extends Pantalla {
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
-    }
-
-    public SeleccionCalendario getSec_calendario() {
-        return sec_calendario;
-    }
-
-    public void setSec_calendario(SeleccionCalendario sec_calendario) {
-        this.sec_calendario = sec_calendario;
     }
 
     public VisualizarPDF getVpdf_ver() {

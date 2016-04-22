@@ -230,13 +230,13 @@ public abstract class Pantalla {
             Boton bot_subir = (Boton) evt.getComponent();
             if (bot_subir.getDir() != null) {
                 sar_upload.getUpload().setSoloImagenes();
-               
+
             } else {
                 sar_upload.limpiar();
             }
             sar_upload.getUpload().setFileUploadListener(bot_subir.getUploadMetodo());
             sar_upload.getUpload().setUpdate(utilitario.getTablaisFocus().getIdCompleto());
-            try {               
+            try {
                 ((Tabla) bot_subir.getParent().getParent().getParent()).setFocus();
             } catch (Exception e) {
             }

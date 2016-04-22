@@ -6,8 +6,8 @@
 package servicios.contabilidad;
 
 import framework.aplicacion.TablaGenerica;
-import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import sistema.aplicacion.Utilitario;
 
@@ -18,16 +18,23 @@ import sistema.aplicacion.Utilitario;
 @Stateless
 public class ServicioContabilidadGeneral {
 
-    public final static String P_TIPO_CUENTA_ACTIVO = "0";
-    public final static String P_TIPO_CUENTA_PASIVO = "4";
+    public static String P_TIPO_CUENTA_ACTIVO = "0";
+    public static String P_TIPO_CUENTA_PASIVO = "4";
     private final Utilitario utilitario = new Utilitario();
+
+    @PostConstruct
+    public void init() {
+        P_TIPO_CUENTA_ACTIVO = "0"; ///******PONER EN VARIABLE
+        P_TIPO_CUENTA_PASIVO = "4"; ///******PONER EN VARIABLE
+    }
 
     public TablaGenerica getCuenta(String ide_cndpc) {
         return utilitario.consultar("SELECT * FROM con_det_plan_cuen where ide_cndpc=" + ide_cndpc);
     }
 
     /**
-     * Retorna la sentencia SQL para obtener cuentas de tipo ACTIVOS
+     * Retorna la sentencia SQL para obtener cuentas de tipo ACTIVOS de la
+     * empresa
      *
      * @return
      */
@@ -35,11 +42,14 @@ public class ServicioContabilidadGeneral {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen "
                 + "where ide_cntcu = " + P_TIPO_CUENTA_ACTIVO + " "
-                + "ORDER BY codig_recur_cndpc";
+                + " and ide_cncpc=" + getPlandeCuentasActivo()
+                + " and ide_empr=" + utilitario.getVariable("ide_empr")
+                + " ORDER BY codig_recur_cndpc";
     }
 
     /**
-     * Retorna la sentencia SQL para obtener cuentas de tipo PASIVO
+     * Retorna la sentencia SQL para obtener cuentas de tipo PASIVO de la
+     * empresa
      *
      * @return
      */
@@ -47,29 +57,36 @@ public class ServicioContabilidadGeneral {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen "
                 + "where ide_cntcu = " + P_TIPO_CUENTA_PASIVO + " "
-                + "ORDER BY codig_recur_cndpc";
+                + " and ide_cncpc=" + getPlandeCuentasActivo()
+                + " and ide_empr=" + utilitario.getVariable("ide_empr")
+                + " ORDER BY codig_recur_cndpc";
     }
 
     /**
-     * Retorna la sentencia SQL para obtener el plan de cuentas
+     * Retorna la sentencia SQL para obtener el plan de cuentas de la empresa
      *
      * @return
      */
     public String getSqlCuentas() {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen "
-                + "ORDER BY codig_recur_cndpc";
+                + " WHERE ide_cncpc=" + getPlandeCuentasActivo()
+                + " and ide_empr=" + utilitario.getVariable("ide_empr")
+                + " ORDER BY codig_recur_cndpc";
     }
 
     /**
-     * Retorna la sentencia SQL para obtener el plan de cuentas HIJO
+     * Retorna la sentencia SQL para obtener el plan de cuentas HIJO de la
+     * empresa
      *
      * @return
      */
     public String getSqlCuentasHijas() {
         return "select ide_cndpc,codig_recur_cndpc,nombre_cndpc "
                 + "from con_det_plan_cuen where nivel_cndpc='HIJO' "
-                + "ORDER BY codig_recur_cndpc";
+                + " and ide_cncpc=" + getPlandeCuentasActivo()
+                + " and ide_empr=" + utilitario.getVariable("ide_empr")
+                + " ORDER BY codig_recur_cndpc";
     }
 
     /**
@@ -240,8 +257,7 @@ public class ServicioContabilidadGeneral {
      * @return
      */
     public int getUltimoNivelCuentas() {
-        String ide_cncpc = getPlandeCuentasActivo();
-        List lis_nivel_max = utilitario.getConexion().consultar("select max (ide_cnncu) from con_det_plan_cuen dpc where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_cncpc=" + ide_cncpc);
+        List lis_nivel_max = utilitario.getConexion().consultar("select max (ide_cnncu) from con_det_plan_cuen dpc where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_cncpc=" + getPlandeCuentasActivo());
         if (lis_nivel_max != null) {
             return Integer.parseInt(lis_nivel_max.get(0).toString());
         } else {
@@ -250,7 +266,7 @@ public class ServicioContabilidadGeneral {
     }
 
     /**
-     * Retorna el identificador del plan de cuentas activo
+     * Retorna el ide_cncpc del plan de cuentas activo
      *
      * @return
      */
@@ -268,7 +284,7 @@ public class ServicioContabilidadGeneral {
      *
      * @return
      */
-    public String getSqlNivelPlandeCuentas() {
+    public String getSqlNivelesPlandeCuentas() {
         return "select ide_cnncu,nombre_cnncu from con_nivel_cuenta where ide_empr=" + utilitario.getVariable("ide_empr") + "order by ide_cnncu";
     }
 

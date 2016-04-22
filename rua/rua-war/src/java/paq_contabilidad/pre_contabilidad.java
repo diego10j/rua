@@ -49,12 +49,13 @@ public class pre_contabilidad extends Pantalla {
         bar_botones.limpiar();
         bar_botones.agregarComponente(new Etiqueta("CUENTA CONTABLE :"));
 
-        mep_menu.setMenuPanel("OPCIONES CONTABLIDAD", "20%");
+        mep_menu.setMenuPanel("INFORMES CONTABLIDAD", "20%");
         mep_menu.agregarItem("Libro Mayor", "dibujarLibroMayor", "ui-icon-bookmark"); //1
         mep_menu.agregarItem("Libro Diario", "dibujarLibroDiario", "ui-icon-bookmark");//2
         mep_menu.agregarItem("Balance General", "dibujarBalanceGeneral", "ui-icon-bookmark");//3
         mep_menu.agregarItem("Estado de Resultados", "dibujarEstadoResultados", "ui-icon-bookmark");//4
-
+        mep_menu.agregarSubMenu("GRAFICOS");
+        mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-bookmark");
         agregarComponente(mep_menu);
 
     }
@@ -206,7 +207,7 @@ public class pre_contabilidad extends Pantalla {
         gri_fechas.setColumns(5);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
         cal_fecha_inicio = new Calendario();
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));        
+        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         gri_fechas.getChildren().add(cal_fecha_inicio);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
         cal_fecha_fin = new Calendario();
@@ -268,7 +269,7 @@ public class pre_contabilidad extends Pantalla {
         gr_nivel.setColumns(2);
         gr_nivel.getChildren().add(new Etiqueta("<strong>NIVEL PLAN DE CUENTAS :</strong> "));
         rad_niveles = new Radio();
-        rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelPlandeCuentas()));
+        rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelesPlandeCuentas()));
         gr_nivel.getChildren().add(rad_niveles);
 
         fis_consulta.getChildren().add(gr_nivel);
@@ -328,6 +329,9 @@ public class pre_contabilidad extends Pantalla {
         calcularBalance();
     }
 
+    /**
+     * Calcula los totales de las cuentas padre
+     */
     private void calcularBalance() {
         int nivel_tope = 0;
         if (rad_niveles != null) {
@@ -415,7 +419,7 @@ public class pre_contabilidad extends Pantalla {
         gr_nivel.setColumns(2);
         gr_nivel.getChildren().add(new Etiqueta("<strong>NIVEL PLAN DE CUENTAS :</strong> "));
         rad_niveles = new Radio();
-        rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelPlandeCuentas()));
+        rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelesPlandeCuentas()));
         gr_nivel.getChildren().add(rad_niveles);
 
         fis_consulta.getChildren().add(gr_nivel);
