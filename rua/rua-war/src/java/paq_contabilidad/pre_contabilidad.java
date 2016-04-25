@@ -388,7 +388,7 @@ public class pre_contabilidad extends Pantalla {
                 for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
                     if (tab_consulta.getValor(j, "ide_cndpc").equals(padre)) {
                         try {
-                            tab_consulta.setValor(j, "valor", lis_valor_padre.get(i).toString());
+                            tab_consulta.setValor(j, "valor", utilitario.getFormatoNumero(lis_valor_padre.get(i).toString()));
                         } catch (Exception e) {
                         }
                     }
@@ -400,10 +400,14 @@ public class pre_contabilidad extends Pantalla {
         //elimina cuentas con saldo 0 mayores que el nivel tope
         Iterator<Fila> it = tab_consulta.getFilas().iterator();
         int numColumnaNivel = tab_consulta.getNumeroColumna("ide_cnncu");
+        int numColumnaValor = tab_consulta.getNumeroColumna("valor");
         while (it.hasNext()) {
-            Fila filaActual = it.next(); // must be called before you can call i.remove()
-            // Do something
+            Fila filaActual = it.next();
+            //Elimina cuentas mayores al nivel seleccionado
             if (Integer.parseInt(String.valueOf(filaActual.getCampos()[numColumnaNivel])) > nivel_tope) {
+                it.remove();
+            } //  Elimina cuentas con valor 0 
+            else if (utilitario.getFormatoNumero(String.valueOf(filaActual.getCampos()[numColumnaValor])).equals("0.00")) {
                 it.remove();
             }
         }
