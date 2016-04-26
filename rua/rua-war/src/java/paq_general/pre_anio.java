@@ -47,9 +47,9 @@ public class pre_anio extends Pantalla {
 			}
 		}else{
 			if (cont_activos==0){
-				utilitario.agregarMensajeInfo("No se puede guardar","Debe existir un a�o activo");
+				utilitario.agregarMensajeInfo("No se puede guardar","Debe existir un Año activo");
 			}else{
-				utilitario.agregarMensajeInfo("No se puede guardar","Debe existir solo un a�o activo");
+				utilitario.agregarMensajeInfo("No se puede guardar","Debe existir solo un Año activo");
 			}
 		}
 	}

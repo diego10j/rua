@@ -135,9 +135,9 @@ public class pre_partida_grupo_cargo extends Pantalla {
 		tab_tabla.getColumna("IDE_GEDEP").setOrden(6);
 		tab_tabla.getColumna("TITULO_CARGO_GEPGC").setNombreVisual("DENOMINACION PUESTO");
 		tab_tabla.getColumna("TITULO_CARGO_GEPGC").setOrden(2);
-		tab_tabla.getColumna("FECHA_ACTIVACION_GEPGC").setNombreVisual("FECHA ACTIVACI�N");
+		tab_tabla.getColumna("FECHA_ACTIVACION_GEPGC").setNombreVisual("FECHA ACTIVACióN");
 		tab_tabla.getColumna("FECHA_DESACTIVA_GEPGC ").setNombreVisual("FECHA DESACTIVA");
-		tab_tabla.getColumna("MOTIVO_GEPGC").setNombreVisual("MOTIVO ACTIVACI�N");
+		tab_tabla.getColumna("MOTIVO_GEPGC").setNombreVisual("MOTIVO ACTIVACióN");
 		tab_tabla.getColumna("ACTIVO_GEPGC").setNombreVisual("ACTIVO");
 		tab_tabla.getColumna("VACANTE_GEPGC").setNombreVisual("VACANTE");
 
@@ -231,7 +231,7 @@ public class pre_partida_grupo_cargo extends Pantalla {
 		grid_sueldo_subrogacion.getChildren().add(text_sueldo_subrogacion);
 
 		dia_sueldo_subrogacion.setId("dia_sueldo_subrogacion");
-		dia_sueldo_subrogacion.setTitle("Ingreso del Sueldo de Subrogaci�n");
+		dia_sueldo_subrogacion.setTitle("Ingreso del Sueldo de Subrogación");
 
 		dia_sueldo_subrogacion.setWidth("40%");
 		dia_sueldo_subrogacion.setHeight("20%");
@@ -284,7 +284,7 @@ public class pre_partida_grupo_cargo extends Pantalla {
 	/////partda presupestaria
 	public void agregarPartida(){
 		
-		//Filtrar los clasificadores del a�o seleccionado
+		//Filtrar los clasificadores del Año seleccionado
 		set_partida.getTab_seleccion().setSql("select ide_gepap,codigo_partida_gepap,detalle_gepap from gen_partida_presupuestaria order by codigo_partida_gepap");
 		set_partida.getTab_seleccion().ejecutarSql();
 		set_partida.dibujar();
@@ -297,7 +297,7 @@ public class pre_partida_grupo_cargo extends Pantalla {
 			utilitario.addUpdate("tab_tabla");	
 
 			con_guardar_partida.setMessage("Esta Seguro que desea Guardar ");
-			con_guardar_partida.setTitle("CONFIRMCI�N GUARDAR PARTIDA");
+			con_guardar_partida.setTitle("CONFIRMCióN GUARDAR PARTIDA");
 			con_guardar_partida.getBot_aceptar().setMetodo("guardarPartida");
 			con_guardar_partida.dibujar();
 			utilitario.addUpdate("con_guardar_partida");
@@ -363,10 +363,10 @@ public class pre_partida_grupo_cargo extends Pantalla {
 	public void cambiaEstado() {
 		if(tab_tabla.getValor("ACTIVO_GEPGC").equals("false")){
 			dia_activacion_desactivacion.setTitle("ACTIVAR PARTIDA");
-			eti_fecha.setValue("FECHA ACTIVACI�N");
+			eti_fecha.setValue("FECHA ACTIVACióN");
 		}else{
 			dia_activacion_desactivacion.setTitle("DESACTIVAR PARTIDA");
-			eti_fecha.setValue("FECHA DESACTIVACI�N");				
+			eti_fecha.setValue("FECHA DESACTIVACióN");				
 
 		}	
 		art_motivo.limpiar();
@@ -376,7 +376,7 @@ public class pre_partida_grupo_cargo extends Pantalla {
 
 	public boolean validarDialogo(){		
 		if (cal_fecha.getValue() == null) {
-			utilitario.agregarMensajeInfo("No se puede desactivar", "Debe seleccionar una fecha de desactivaci�n");
+			utilitario.agregarMensajeInfo("No se puede desactivar", "Debe seleccionar una fecha de desactivación");
 			return false;
 		}      
 		if (art_motivo.getValue() == null || art_motivo.getValue().toString().isEmpty()) {

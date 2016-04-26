@@ -148,7 +148,7 @@ public class pre_grupo_cargo_departamento extends Pantalla {
 		agregarComponente(div_division);
 		
 		sel_tab_grupo_cargo_supervisa.setId("sel_tab_grupo_cargo_supervisa");
-		sel_tab_grupo_cargo_supervisa.setTitle("Selecci�n de Grupo Cargo Supervisa");
+		sel_tab_grupo_cargo_supervisa.setTitle("Selección de Grupo Cargo Supervisa");
 		sel_tab_grupo_cargo_supervisa.setSeleccionTabla("SELECT b.ide_gecaf,b.detalle_gecaf,c.ide_gegro,c.detalle_gegro,a.activo_gegrc FROM gen_grupo_cargo a, gen_cargo_funcional b , gen_grupo_ocupacional c " +
 				"where a.ide_gecaf=b.ide_gecaf and a.ide_gegro=c.ide_gegro","ide_gecaf");
 		sel_tab_grupo_cargo_supervisa.getBot_aceptar().setMetodo("aceptarGrupoCargoSupervisa");
@@ -307,7 +307,7 @@ public class pre_grupo_cargo_departamento extends Pantalla {
 //				return false;
 //			}
 //			if(tab_grupo_cargo.getValor("ANIO_EDAD_SAFIM")==null || tab_grupo_cargo.getValor("ANIO_EDAD_SAFIM").isEmpty()){
-//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el A�o de Edad ");
+//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el Año de Edad ");
 //				return false;
 //			}
 //			if(tab_grupo_cargo.getValor("TALLA_SAFIM")==null || tab_grupo_cargo.getValor("TALLA_SAFIM").isEmpty()){
@@ -361,7 +361,7 @@ public class pre_grupo_cargo_departamento extends Pantalla {
 //	public boolean validarRecetaMedica(){
 //		if(tab_grupo_cargo_area.isFilaInsertada()){
 //			if(tab_grupo_cargo_area.getValor("IDE_SAMED")==null || tab_grupo_cargo_area.getValor("IDE_SAMED").isEmpty()){
-//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar La Medicaci�n ");
+//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar La Medicación ");
 //				return false;
 //			}
 //			if(tab_grupo_cargo_area.getValor("CANTIDAD_SAREM")==null || tab_grupo_cargo_area.getValor("CANTIDAD_SAREM").isEmpty()){
@@ -369,7 +369,7 @@ public class pre_grupo_cargo_departamento extends Pantalla {
 //				return false;
 //			}
 //			if(tab_grupo_cargo_area.getValor("INDICACION_SAREM")==null || tab_grupo_cargo_area.getValor("INDICACION_SAREM").isEmpty()){
-//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar la Indicaci�n ");
+//				utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar la Indicación ");
 //				return false;
 //			}
 //		}

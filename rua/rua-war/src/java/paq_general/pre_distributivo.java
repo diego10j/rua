@@ -74,15 +74,15 @@ public class pre_distributivo extends Pantalla {
 		tab_distributivo.getColumna("detalle_gttco").setNombreVisual("MODALIDAD");
 		tab_distributivo.getColumna("lugar_trabajo").setNombreVisual("LUGAR DE TRABAJO");
 		tab_distributivo.getColumna("genero").setNombreVisual("G�NERO");
-		tab_distributivo.getColumna("formacion").setNombreVisual("FORMACI�N");
+		tab_distributivo.getColumna("formacion").setNombreVisual("FORMACióN");
 		tab_distributivo.getColumna("titulo").setNombreVisual("TITULO");
 		tab_distributivo.getColumna("area_conocimiento").setNombreVisual("AREA DE CONOCIMIENTO");
 		tab_distributivo.getColumna("discapacitado").setNombreVisual("DISCAPACIDAD");
 		tab_distributivo.getColumna("detalle_gttds").setNombreVisual("TIPO DE DISCAPACIDAD");
 		tab_distributivo.getColumna("fecha_nacimiento_gtemp").setNombreVisual("FECHA DE NACIMIENTO");
 		tab_distributivo.getColumna("observacion_geedp").setNombreVisual("OBSERVACIONES");
-		tab_distributivo.getColumna("fecha_entrega_declaracion_gtdce").setNombreVisual("FECHA ENTREGADA DECLARACI�N");
-		tab_distributivo.getColumna("fecha_proxima_declaracion_gtdce").setNombreVisual("FECHA PROXIMA DECLARACI�N");
+		tab_distributivo.getColumna("fecha_entrega_declaracion_gtdce").setNombreVisual("FECHA ENTREGADA DECLARACióN");
+		tab_distributivo.getColumna("fecha_proxima_declaracion_gtdce").setNombreVisual("FECHA PROXIMA DECLARACióN");
 		tab_distributivo.getColumna("orden").setNombreVisual("TIPO");
 		tab_distributivo.getColumna("num_registro").setFiltro(true);
 		tab_distributivo.getColumna("documento_identidad_gtemp").setFiltro(true);

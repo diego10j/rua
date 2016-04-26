@@ -19,8 +19,8 @@ public class pre_periodo extends Pantalla {
         tab_tabla.setId("tab_tabla");        
         tab_tabla.setGenerarPrimaria(false);
         tab_tabla.setTabla("GEN_PERIODO", "IDE_GEMES,IDE_GEANI", 1);//clave primaria compuesta      
-        tab_tabla.getColumna("IDE_GEMES").setCombo("GEN_MES", "IDE_GEMES", "DETALLE_GEMES","");
-        tab_tabla.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "DETALLE_GEANI","");
+        tab_tabla.getColumna("IDE_GEMES").setCombo("GEN_MES", "IDE_GEMES", "nombre_gemes","");
+        tab_tabla.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "nom_geani","");
         tab_tabla.getColumna("ACTIVO_GEPER").setCheck();
         tab_tabla.getColumna("ACTIVO_GEPER").setValorDefecto("TRUE");
         tab_tabla.dibujar();

@@ -24,9 +24,9 @@ public class pre_periodo_rol extends Pantalla {
         tab_tabla.getColumna("ACTIVO_GEPRO").setCheck();
         tab_tabla.getColumna("ACTIVO_GEPRO").setValorDefecto("TRUE");
         tab_tabla.getColumna("IDE_NRTIT").setCombo("NRH_TIPO_ROL", "IDE_NRTIT", "DETALLE_NRTIT", "");
-        tab_tabla.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "DETALLE_GEANI", "");
+        tab_tabla.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "nom_geani", "");
         tab_tabla.getColumna("IDE_GEANI").setMetodoChange("cargarMes");
-        tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.DETALLE_GEMES FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));                        
+        tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.nombre_gemes FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));                        
         tab_tabla.getColumna("GEN_IDE_GEPRO").setCombo("select ide_gepro,fecha_inicial_gepro,fecha_final_gepro,detalle_periodo_gepro from gen_perido_rol order by fecha_inicial_gepro desc");                        
 
         tab_tabla.setTipoFormulario(true);
@@ -42,12 +42,12 @@ public class pre_periodo_rol extends Pantalla {
     
     public void cargarMes(AjaxBehaviorEvent evt) {
         tab_tabla.modificar(evt);
-        tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.DETALLE_GEMES FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));
+        tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.nombre_gemes FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));
         utilitario.addUpdateTabla(tab_tabla, "IDE_GEMES", "");
     }
     
     private void actualizarCombos() {
-    	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.DETALLE_GEMES FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));
+    	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.nombre_gemes FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI="+tab_tabla.getValor("IDE_GEANI"));
         tab_tabla.actualizarCombosFormulario();
     }
 
@@ -55,14 +55,14 @@ public class pre_periodo_rol extends Pantalla {
 public void buscar() {
 	// TODO Auto-generated method stub
 	   //Esto es para que le muestre todos los meses ya que se un  combo con filtro
-	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.DETALLE_GEMES FROM GEN_MES a");
+	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.nombre_gemes FROM GEN_MES a");
 	super.buscar();	 
 } 
    
     
     @Override
     public void insertar() {
-    	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.DETALLE_GEMES FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI=-1");
+    	tab_tabla.getColumna("IDE_GEMES").setCombo("SELECT a.IDE_GEMES,a.nombre_gemes FROM GEN_MES a, GEN_PERIODO b WHERE a.IDE_GEMES=b.IDE_GEMES and b.IDE_GEANI=-1");
         tab_tabla.insertar();
     }
 

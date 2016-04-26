@@ -206,7 +206,7 @@ public class pre_area_departamento extends Pantalla {
 
 			}
 			else if(tab_tabla2.getValor("NIVEL_ORGANICO_GEDEP").equalsIgnoreCase("4") && !tab_tabla2.getValor("TIPO_GEDEP").equalsIgnoreCase("Hijo")){ //validaciones Division				
-				str_mensaje="El Nivel Org�nico de Divisi�n debe ser de tipo Hijo";
+				str_mensaje="El Nivel Org�nico de División debe ser de tipo Hijo";
 			}
 			else if(tab_tabla2.getValor("TIPO_GEDEP").equalsIgnoreCase("Hijo")  ){ //validaciones Hijo
 				if(tab_tabla2.getValor("NIVEL_ORGANICO_GEDEP").equalsIgnoreCase("4")){
@@ -225,7 +225,7 @@ public class pre_area_departamento extends Pantalla {
 
 				}
 				else{
-					str_mensaje="El tipo Hijo debe ser de Nivel Org�nico Divisi�n";
+					str_mensaje="El tipo Hijo debe ser de Nivel Org�nico División";
 				}
 			}
 		}
