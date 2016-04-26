@@ -43,32 +43,28 @@ public TablaGenerica getTablaVigente (String tabla){
 	}
 
 public String getAnio (String activo, String bloqueado ){
-	String tab_anio= "select ide_geani,detalle_geani from gen_anio " +
+	String tab_anio= "select ide_geani,nom_geani as detalle_geani from gen_anio " +
 			" where activo_geani in ("+activo+") " +
-			" and bloqueado_geani in ("+bloqueado+") " +
-			" order by detalle_geani desc";
+			" order by nom_geani desc";
 	return tab_anio;
 
 	}
 public String getMes (String estado ){
-	String tab_anio= "select ide_gemes,detalle_gemes from gen_mes where activo_gemes in ("+estado+") order by ide_gemes";
+	String tab_anio= "select ide_gemes,nombre_gemes from gen_mes where activo_gemes in ("+estado+") order by ide_gemes";
 	return tab_anio;
 
 	}
 public TablaGenerica getTablaAnio (String activo, String bloqueado ){
-	TablaGenerica tab_anio= utilitario.consultar("select ide_geani,detalle_geani from gen_anio " +
+	TablaGenerica tab_anio= utilitario.consultar("select ide_geani,nom_geani as detalle_geani from gen_anio " +
 			" where activo_geani in ("+activo+") " +
-			" and bloqueado_geani in ("+bloqueado+") " +
-			" order by detalle_geani desc");
+			" order by nom_geani desc");
 	return tab_anio;
 	}
 public String getAnioDetalle (String activo, String bloqueado ){
-	String tab_anio= "select ide_geani,detalle_geani, " +
-			" CASE WHEN activo_geani = true THEN 'Activo' ELSE 'Inactivo' END AS activo_geani," +
-			" CASE WHEN bloqueado_geani = true THEN 'Bloqueado' ELSE 'Habilitado' END AS bloqueado_geani" +
+	String tab_anio= "select ide_geani,nom_geani as detalle_geani, " +
+			" CASE WHEN activo_geani = true THEN 'Activo' ELSE 'Inactivo' END AS activo_geani" +
 			" from gen_anio where activo_geani in("+activo+")" +
-			" and bloqueado_geani in ("+bloqueado+")" +
-			" order by detalle_geani desc" ;
+			" order by nom_geani desc" ;
 			
 	return tab_anio;
 
@@ -78,12 +74,10 @@ public String getNombreAsientoContable (String modulo, String estado ){
 	return tab_asiento;
 }
 public TablaGenerica getTablaAnioDetalle (String activo, String bloqueado ){
-	TablaGenerica tab_anio= utilitario.consultar("select ide_geani,detalle_geani," +
-			" CASE WHEN activo_geani = true THEN 'Activo' ELSE 'Inactivo' END AS activo_geani," +
-			" CASE WHEN bloqueado_geani = true THEN 'Bloqueado' ELSE 'Habilitado' END AS bloqueado_geani" +
+	TablaGenerica tab_anio= utilitario.consultar("select ide_geani,nom_geani as detalle_geani," +
+			" CASE WHEN activo_geani = true THEN 'Activo' ELSE 'Inactivo' END AS activo_geani" +
 			" from gen_anio where activo_geani in("+activo+")  " +
-			" and bloqueado_geani in ("+bloqueado+")" +
-			" order by detalle_geani desc");
+			" order by nom_geani desc");
 	return tab_anio;
 	}
 /**
@@ -192,15 +186,15 @@ public String getCuentaContableCodigo (String estado,String ide_activo){
 }
 
 /**
- * Metodo que devuelve la Cuenta Cantable por los a�os vigentes
+ * Metodo que devuelve la Cuenta Cantable por los Años vigentes
  * @param estado recibe el o los estados true y false, ejemplo: true o false
- * @param ide_geani recibe el a�o de las cuentas contables 
+ * @param ide_geani recibe el Año de las cuentas contables 
  * @return TablaGenerica Cuenta Contable 
  */
 public TablaGenerica getTablaCatalogoCuentaAnio (String estado,String ide_geani){
 	
 	TablaGenerica tab_catalogo_cuenta_anio=utilitario.consultar("select a.ide_cocac,cue_codigo_cocac,cue_descripcion_cocac," +
-			"detalle_geani" +
+			" nom_geani as detalle_geani" +
 			"  from cont_catalogo_cuenta a,cont_vigente b,gen_anio c "+
 			" where a.ide_cocac = b.ide_cocac" +
 			" and b.ide_geani= c.ide_geani and b.ide_geani =("+ide_geani+")" +
@@ -210,15 +204,15 @@ public TablaGenerica getTablaCatalogoCuentaAnio (String estado,String ide_geani)
 	
 }
 /**
- * Metodo que devuelve la Cuenta Cantable por los a�os vigentes
+ * Metodo que devuelve la Cuenta Cantable por los Años vigentes
  * @param estado recibe el o los estados true y false, ejemplo: true o false
- * @param ide_geani recibe el a�o de las cuentas contables 
+ * @param ide_geani recibe el Año de las cuentas contables 
  * @return String Cuenta Contable 
  */
 public String getCatalogoCuentaAnio (String estado,String ide_geani){
 	
 	String tab_catalogo_cuenta_anio="select a.ide_cocac,cue_codigo_cocac,cue_descripcion_cocac," +
-			"detalle_geani" +
+			" nom_geani as detalle_geani" +
 			"  from cont_catalogo_cuenta a,cont_vigente b,gen_anio c "+
 			" where a.ide_cocac = b.ide_cocac" +
 			" and b.ide_geani= c.ide_geani and b.ide_geani =("+ide_geani+")" +
@@ -228,17 +222,15 @@ public String getCatalogoCuentaAnio (String estado,String ide_geani){
 	
 }
 /**
- * Metodo que devuelve la Cuenta Cantable por los a�os vigentes
+ * Metodo que devuelve la Cuenta Cantable por los Años vigentes
  * @param estado recibe el o los estados true y false, ejemplo: true o false
- * @param ide_geani recibe el a�o de las cuentas contables 
+ * @param ide_geani recibe el Año de las cuentas contables 
  * @return String SQL Cuenta Contable 
  */
 public String servicioCatalogoCuentaAnio (String estado, String ide_geani){
 	
-	String catalogo_cuenta_anio="select a.ide_cocac,cue_codigo_cocac,cue_descripcion_cocac,detalle_geani " +
-			" from cont_catalogo_cuenta a,cont_vigente b,gen_anio c where a.ide_cocac = b.ide_cocac" +
-			" and b.ide_geani= c.ide_geani and b.ide_geani ="+ide_geani +
-			" and activo_cocac in ("+estado+")order by cue_codigo_cocac";
+	String catalogo_cuenta_anio="select ide_cndpc as ide_cocac, codig_recur_cndpc as cue_codigo_cocac, nombre_cndpc as cue_descripcion_cocac from con_det_plan_cuen a, con_cab_plan_cuen b " 
+                +" where a.ide_cncpc=b.ide_cncpc and activo_cncpc in ("+estado+")";
 	return catalogo_cuenta_anio;
 }
 
@@ -254,7 +246,7 @@ public String servicioCatalogoCuentaCombo (){
 }
 public String getInventario(String ide_geani,String carga,String material){
 	
-	String tab_inventario="SELECT ide_boinv,codigo_bomat,detalle_bomat, detalle_geani,ingreso_material_boinv,egreso_material_boinv,existencia_inicial_boinv,costo_anterior_boinv," +
+	String tab_inventario="SELECT ide_boinv,codigo_bomat,detalle_bomat,nom_geani as detalle_geani,ingreso_material_boinv,egreso_material_boinv,existencia_inicial_boinv,costo_anterior_boinv," +
 			"costo_actual_boinv,fecha_ingr_articulo_boinv,costo_inicial_boinv,activo_boinv " +
 			" FROM bodt_inventario a, gen_anio b ,bodt_material c WHERE a.ide_geani=b.ide_geani " +
 			" AND a.ide_bomat = c.ide_bomat AND a.ide_geani IN ("+ide_geani+") ";
@@ -267,7 +259,7 @@ public String getInventario(String ide_geani,String carga,String material){
 }
 
 /**
- * Metodo que devuelve la Cuenta Cantable por realizaqr transacciones filtra cuentas contables por a�o fiscal vigente
+ * Metodo que devuelve la Cuenta Cantable por realizaqr transacciones filtra cuentas contables por Año fiscal vigente
  * @return String SQL Cuenta Contable para realizar transacciones
  */
 public String servicioCatalogoCuentasTransaccion(String aplica_anio){
@@ -314,14 +306,14 @@ public String guardaSecuencial(String secuencial_vigente,String modulo){
 }
 /**
  * Metodo que permite generar el balance inicial
- * @param ide_geani recibe el a�o fiscal para la generaci�n del balance inicial
+ * @param ide_geani recibe el Año fiscal para la generación del balance inicial
  */
 public void generarBalanceInicial(String ide_geani,String ide_movimiento){
 	TablaGenerica anio = utilitario.consultar("select * from gen_anio where ide_geani ="+ide_geani);
 	utilitario.getConexion().ejecutarSql("delete from cont_balance_inicial where ide_geani="+ide_geani);
 	utilitario.getConexion().ejecutarSql("insert into cont_balance_inicial (ide_cobai,ide_cocac,ide_geani,valor_debe_cobai,valor_haber_cobai,valor_descripcion_cobai,activo_cobai)"
 +" select row_number() over(order by a.ide_cocac) + (select (case when max(ide_cobai) is null then 0 else max(ide_cobai) end) as codigo from cont_balance_inicial) as codigo, a.ide_cocac,"
-+" ide_geani,0 as debe,0 as haber,'BALANCE INICIAL '||"+anio.getValor("detalle_geani")+" as detalle,false from cont_catalogo_cuenta a, cont_vigente b where a.ide_cocac= b.ide_cocac and ide_geani ="+ide_geani+" group by a.ide_cocac,ide_geani");
++" ide_geani,0 as debe,0 as haber,'BALANCE INICIAL '||"+anio.getValor("nom_geani")+" as detalle,false from cont_catalogo_cuenta a, cont_vigente b where a.ide_cocac= b.ide_cocac and ide_geani ="+ide_geani+" group by a.ide_cocac,ide_geani");
 	
 	TablaGenerica actualiza_cuenta=utilitario.consultar(sumaDebeHaberCuentaContable(ide_movimiento));
 	for (int i=0;i<actualiza_cuenta.getTotalFilas();i++){
@@ -348,7 +340,7 @@ public void generarBalanceInicial(String ide_geani,String ide_movimiento){
  * @param valor_debe recibe el valor al debe que va a ser actualizado
  * @param valor_haber recibe el valor al haber que va a ser actualizado
  * @param ide_cocac recibe ide de la cuenta contable a ser actualizado
- * @param ide_geani recibe el a�o fiscal
+ * @param ide_geani recibe el Año fiscal
  * @return String sql para actualizar balance inicial
  */
 public String updateBalanceInicial(String valor_debe,String valor_haber,String ide_cocac,String ide_geani){
@@ -364,7 +356,7 @@ public String updateBalanceInicial(String valor_debe,String valor_haber,String i
  * @param valor_debe recibe el valor al debe que va a ser actualizado
  * @param valor_haber recibe el valor al haber que va a ser actualizado
  * @param ide_cocac recibe ide de la cuenta contable a ser actualizado
- * @param ide_geani recibe el a�o fiscal
+ * @param ide_geani recibe el Año fiscal
  * @param ide_gemes recibe el mes
  * @return String sql para actualizar balance comprobacion
  */
@@ -397,8 +389,8 @@ public String nivelMaximoCuentaContable(){
 		return sql;
 }
 /**
- * Metodo que devuelve los periodos contables por a�o vigente
- * @param ide_geani recibe el codigo del a�o fiscal
+ * Metodo que devuelve los periodos contables por Año vigente
+ * @param ide_geani recibe el codigo del Año fiscal
  * @return String sql de los movimientos contables
  */
 public String getMovimientosContables(String ide_geani,String ide_cotia,String ide_cotim){
@@ -424,9 +416,9 @@ public String getMovimientosContablesSumaDebeHaber(String ide_geani,String ide_g
 }
 
 /**
- * Metodo que permite generar el balance de comprobaci�n
- * @param ide_geani recibe el a�o fiscal para la generaci�n del balance inicial
- * @param ide_geani recibe el a�o fiscal para la generaci�n del balance inicial
+ * Metodo que permite generar el balance de comprobación
+ * @param ide_geani recibe el Año fiscal para la generación del balance inicial
+ * @param ide_geani recibe el Año fiscal para la generación del balance inicial
  */
 
  
@@ -513,9 +505,9 @@ public void desmayorizaAsientos(String ide_geani,String ide_gemes){
  */
 public String getMayorAnalitico(String fecha_inicial,String fecha_final,String ide_cocac){
 	    String sql="select a.ide_comov,mov_fecha_comov,detalle_comov,nro_comprobante_comov,"
-+" cue_codigo_cocac,cue_descripcion_cocac,debe_codem,haber_codem,detalle_gemes,estado"
++" cue_codigo_cocac,cue_descripcion_cocac,debe_codem,haber_codem,nombre_gemes,estado"
 +" from ("
-+" select ide_comov,mov_fecha_comov,detalle_comov,nro_comprobante_comov,detalle_gemes,"
++" select ide_comov,mov_fecha_comov,detalle_comov,nro_comprobante_comov,nombre_gemes,"
 +" (case when activo_comov = false then 'NO MAYORIZADO' else 'MAYORIZADO' end) as estado"
 +" from cont_movimiento a, gen_mes b where a.ide_gemes = b.ide_gemes"
 +" ) a"
