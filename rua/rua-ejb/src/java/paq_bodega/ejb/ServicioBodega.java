@@ -65,9 +65,9 @@ public class ServicioBodega {
 
 	}
 	/**
-	 * Este servicio retorna los datos del inventario por material y a�o 
+	 * Este servicio retorna los datos del inventario por material y Año 
 	 * @param material = Recibe el ide del material a consultar
-	 * @param anio = Recibe a�o del inventario del material a conultar.
+	 * @param anio = Recibe Año del inventario del material a conultar.
 	 * @return String 
 	 */
 	public String getDatosInventario (String material,String anio){
@@ -78,8 +78,8 @@ public class ServicioBodega {
 
 	}
 	/**
-	 * Este servicio retorna los datos del inventario por  a�o 
-	 * @param anio = Recibe a�o del inventario del material a conultar.
+	 * Este servicio retorna los datos del inventario por  Año 
+	 * @param anio = Recibe Año del inventario del material a conultar.
 	 * @return String 
 	 */
 	public String getDatosInventarioAnio (String anio){
