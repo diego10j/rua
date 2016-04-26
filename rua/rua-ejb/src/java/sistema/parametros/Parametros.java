@@ -108,7 +108,80 @@ public class Parametros {
         lis_parametros.add(new Parametro("6", "p_reh_rubro_valor_recibir", "Indica el rubro valor a recibir", "37", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
         lis_parametros.add(new Parametro("6", "p_reh_estado_pre_nomina", "Indica el estado pre nomina del rol ", "0", "reh_estado_rol", "ide_rhero", "nombre_rhero"));
         lis_parametros.add(new Parametro("6", "p_reh_estado_cerrada", "Indica el estado cerrado del rol ", "2", "reh_estado_rol", "ide_rhero", "nombre_rhero"));
-
+// luis toapanta pamatros nuevos nomina desde aqui
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_garante_empl_biess", "Indica el tipo de garante Empleado del Biess ", "1","NRH_TIPO_GARANTE", "IDE_NRTIG", "DETALLE_NRTIG"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_escenario", "Indica el tipo de nomina NORMAL ", "5","NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_normal", "Indica el tipo de nomina NORMAL ", "0","NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_liquidacion", "Indica el tipo de nomina LIQUIDACION ", "2","NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_pago_decimos", "Indica el tipo de nomina PAGO DE DECIMOS ", "4","NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_para_generar_rol", "Indica los tipos de nominas para generar desde rol ", "0,3"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_para_calcular_renta", "Indica los tipos de nominas a los cuales se calcula la renta ", "0"));
+        lis_parametros.add(new Parametro("6", "p_nrh_estado_nomina_cerrada", "Indica la estado de NOMINA CERRADA, en este estado los datos son solo de lectura, no se puede modificar ni eliminar ", "1","NRH_ESTADO_ROL", "IDE_NRESR", "DETALLE_NRESR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_estado_pre_nomina", "Indica la estado PRE-NOMINA, en este estado se pueden leer,modificar y eliminar datos de la nomina", "2","NRH_ESTADO_ROL", "IDE_NRESR", "DETALLE_NRESR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_estado_nomina_anulada", "Indica la estado de NOMINA ANULADA, en este estado los datos son solo de lectura, y nos indica que una nomina generada se encuentra anulada ", "3","NRH_ESTADO_ROL", "IDE_NRESR", "DETALLE_NRESR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_forma_calculo_formula", "Indica la forma de calculo TECLADO del Rubro ", "0","NRH_FORMA_CALCULO", "IDE_NRFOC", "DETALLE_NRFOC"));
+        lis_parametros.add(new Parametro("6", "p_nrh_forma_calculo_teclado", "Indica la forma de calculo TECLADO del Rubro ", "1","NRH_FORMA_CALCULO", "IDE_NRFOC", "DETALLE_NRFOC"));
+        lis_parametros.add(new Parametro("6", "p_nrh_forma_calculo_importado", "Indica la forma de calculo TECLADO del Rubro ", "2","NRH_FORMA_CALCULO", "IDE_NRFOC", "DETALLE_NRFOC"));
+        lis_parametros.add(new Parametro("6", "p_nrh_forma_calculo_constante", "Indica la forma de calculo TECLADO del Rubro ", "3","NRH_FORMA_CALCULO", "IDE_NRFOC", "DETALLE_NRFOC"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_importado", "Indica la forma de calculo IMPORTADO del Rubro ", "2","NRH_FORMA_CALCULO", "IDE_NRFOC", "DETALLE_NRFOC"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_vacaciones_liquidacion", "Indica el rubro en el cual se va a calcular el valor correspondiente a vacaciones ", "28","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_desc_valores_liquidar", "Indica el descuento de valores por liquidar ", "289","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_ajuste_sueldo", "Indica el numero de dias para calculo de rol en ajuste de sueldo ", "285","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_ajuste_sueldo", "Indica el numero de dias para calculo de rol en ajuste de sueldo ", "287","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_total_ingresos", "Indica el rubro Total Ingresos de un empleado ", "11","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_total_egresos", "Indica el rubro Total Ingresos de un empleado ", "22","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_valor_recibir", "Indica el rubro Total Ingresos de un empleado ", "131","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_subtotal_iess", "Indica el rubro Total Ingresos de un empleado ", "281","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_seguro_social_con_rmu", "Indica el rubro Seguro Social calculado solo con la RMU ", "291","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_rmu_cargo_subrogante", "Indica el rubro Total Ingresos de un empleado ", "278","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));        
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_subrogados", "Indica el rubro Total Ingresos de un empleado ", "279","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));        
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_region", "Indica el rubro Region, lo cual nos permite saber a que region pertenece el empleado para pago de decimo 4 ", "285","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_pendientes_vacacion", "Indica el numero de dias pendientes de vacacion ", "68","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_decimo_cuarto_rol", "Indica el rubro Decimo Cuarto Sueldo para el Rol  (Rol) en la fecha de pago configurada para el rubro ", "9","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_decimo_cuarto_rol_p", "Indica el rubro Decimo Cuarto Sueldo para el Rol  (Rol) en la fecha de pago configurada para el rubro ", "283","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_trabajados_d4", "Este rurbro nos indica el numero de dias para el calculo de decimo cuarto ", "65","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_proviciones_d4", "Este rurbro nos indica el numero de dias para el calculo de decimo cuarto ", "121","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_decimo_tercer_rol", "Indica el rubro Decimo Tercer Sueldo para el (Rol) ", "12","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_trabajados_d3", "Este rurbro nos indica el numero de dias para el calculo de decimo tercero ", "63","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_salario_basico_unificado_vig", "Este rurbro nos indica el numero de dias para el Salario basico unificado vigente ", "276","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_proviciones_d3", "Este rurbro nos indica el numero de dias para el calculo de decimo cuarto ", "125","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_descuento_decimo_cuarto", "Indica el rubro Decimo Tercer Sueldo para el (Rol) ", "273","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_descuento_decimo_tercer", "Indica el rubro Decimo Tercer Sueldo para el (Rol) ", "195","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_beneficios_guarderia", "Indica el rubro Beneficios Guarderia para el (Rol) ", "144","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));        
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_aportes_personales", "Indica el rubro aporte_personal para el (Rol) nombre del rubro seguro social ", "44","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_impuesto_renta_mensual", "Indica el rubro aporte_personal para el (Rol) ", "41","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));        
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_acumula_fondos_reserva", "Indica el rubro para saber si un empleado acumula o no los fondos de reserva ", "46","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_valor_fondos_reserva", "Indica el rubro con el valor acumulado de los fondos de reserva nomina ", "29","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_valor_provision_fondos_reserva", "Indica el rubro con el valor acumulado de los fondos de reserva iess", "120","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_descuento_nomina", "Indica el rubro Decimo Tercer Sueldo para el (Rol) ", "48","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_acumula_decimos", "Indica el rubro para saber si un empleado acumula los decimos true=acumula, false=no acumula ", "330","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_base_imponible_mes_anterior", "Indica el rubro donde se va a importar el sueldo base del mes anterior ", "329","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_imponible_mes_anterior", "Indica el rubro para del mes anteriro que se toma para el nuevo rubro ", "329","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_fondreser_acum_ante", "Indica el rubro fondos de reserva acumulado a ser importado para la nomina vigente", "136","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_fondreser_nomi_ante", "Indica el rubro fondos de reserva pago en nomina a ser importado para la nomina vigente", "29","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_fondreser_acum_pago", "Indica el rubro fondos de reserva acumulados con el cual se va a pagar en la nomina vigente", "338","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_fondreser_nomi_pago", "Indica el rubro fondos de reserva en nomina con el cual se va a pagar en la nomina vigente", "339","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_trubro_egreso_informativo", "Indica el tipo de rubro Egreso Informativo (Tipo Rol) ", "2","NRH_TIPO_RUBRO", "IDE_NRTIR", "DETALLE_NRTIR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_trubro_ingreso_informativo", "Indica el tipo de rubro Ingreso Informativo (Tipo Rol) ", "3","NRH_TIPO_RUBRO", "IDE_NRTIR", "DETALLE_NRTIR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_trubro_informativo", "Indica el tipo de rubro Informativo (Tipo Rol) ", "4","NRH_TIPO_RUBRO", "IDE_NRTIR", "DETALLE_NRTIR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_remuneracion_unificada", "Indica el rubro Remuneracion unificada ", "24","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_remuneracion_unificada_honorarios", "Indica el rubro Remuneracion unificada ", "277","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_periodo_nomina", "Indica el rubro Decimo Cuarto Sueldo para el Rol  (Rol) en la fecha de pago configurada para el rubro ", "2","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_trabajados", "Indica los dias trabajados para la generacion del rol ", "274","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_fondos_reserva", "Indica los dias trabajados para la generacion del rol ", "69","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_dias_antiguedad", "Indica los dias trabajados para la generacion del rol ", "60","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_gerencia_general_ap", "Indica el nombre de la persona encargada de la Gerencia General para el reporte de acciones de personal", "Eco. Roberto. A. Machuca. C"));
+        lis_parametros.add(new Parametro("6", "p_gerencia_administrativa_ap", "Indica el nombre de la persona encargada de la Gerencia Administrativa para el reporte de acciones de personal", "Ing. Marco V. Egas A."));
+        lis_parametros.add(new Parametro("6", "p_nrh_trubro_egreso", "Indica el tipo de rubro Egreso (Tipo Rol) ", "1","NRH_TIPO_RUBRO", "IDE_NRTIR", "DETALLE_NRTIR"));
+        lis_parametros.add(new Parametro("6", "p_nrh_trubro_ingreso", "Indica el tipo de rubro Ingreso (Tipo Rol) ", "0","NRH_TIPO_RUBRO", "IDE_NRTIR", "DETALLE_NRTIR"));
+        lis_parametros.add(new Parametro("6", "p_cargo_gerencia_general_ap", "Indica el nombre del Cargo de la Gerencia General para el reporte de acciones de personal", "GERENTE GENERAL"));
+        lis_parametros.add(new Parametro("6", "p_cargo_gerencia_administrativa_ap", "Indica el nombre del Cargo de la Gerencia Administrativa para el reporte de acciones de personal", "GERENTE ADMINISTRATIVO"));
+        lis_parametros.add(new Parametro("6", "p_liquidacion_elaborado_por", "Indica el nombre de la persona encargada de Elaborar la Liquidacion para el reporte de Liquidacion de Haberes", "Ing. Nelly Fabara"));
+        lis_parametros.add(new Parametro("6", "p_liquidacion_revisado_por", "Indica el nombre de la persona encargada de Revizar la Liquidacion para el reporte de Liquidacion de Haberes", "Ing. Maria Fernanda Reyes"));
+        lis_parametros.add(new Parametro("6", "p_liquidacion_aprobado_por", "Indica el nombre de la persona encargada de Aprobar la Liquidacion para el reporte de Liquidacion de Haberes", "Ing. Marco Egas"));
+        lis_parametros.add(new Parametro("6", "p_nrh_rubro_vacaciones_liquidacion", "Indica el rubro en el cual se va a calcular el valor correspondiente a vacaciones ", "28","NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_tipo_garante", "Indica el tipo de garante EMPLEADO DE EMGIRS", "1","nrh_tipo_garante", "ide_nrtig", "detalle_nrtig"));
+// hasta aqui lusi toapanta paramteros nomina
         /*
          * TESORERIA =7
          */
@@ -170,10 +243,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("10", "p_sri_adqui_realizadas_rise_518", "Adquisiciones realizadas a contribuyente rise", "518"));
         lis_parametros.add(new Parametro("10", "p_sri_trans_no_obj_iva_431", "Transferencias no objeto o exentas de IVA", "431"));
         lis_parametros.add(new Parametro("10", "p_sri_adqui_no_obj_iva_531", "Adquisiciones no objeto de IVA", "531"));
-
         lis_parametros.add(new Parametro("10", "p_sri_base_renta", "Indica el rubro de la base imponible del impuesto a la renta para formulario 103", "53", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
         lis_parametros.add(new Parametro("10", "p_sri_impuesto_renta", "Indica el rubro del valor de impuesto a la renta para formulario 103", "31", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
-
         lis_parametros.add(new Parametro("10", "p_sri_activa_comp_elect", "Activa o desactiva comprobantes electronicos del SRI", "true"));
         lis_parametros.add(new Parametro("10", "p_sri_ambiente_comp_elect", "Ambiente de Comprobantes Eléctronicos del SRI", "1"));  //1 PRUEBAS //2 PRODUCCION
         lis_parametros.add(new Parametro("10", "p_sri_moneda_comp_elect", "Ambiente de Comprobantes Eléctronicos del SRI", "DOLAR"));
@@ -182,7 +253,76 @@ public class Parametros {
         lis_parametros.add(new Parametro("10", "p_sri_codigoPorcentajeIva0_comp_elect", "Codigo de Iva 0 para Comprobantes Eléctronicos del SRI", "0"));
         lis_parametros.add(new Parametro("10", "p_sri_codigoPorcentajeIvaNoObjeto_comp_elect", "Codigo de Iva no Objeto  para Comprobantes Eléctronicos del SRI", "6"));
         lis_parametros.add(new Parametro("10", "p_sri_porcentajeIva_comp_elect", "Porcentaje del Iva para Comprobantes Eléctronicos del SRI", "12.00"));
+//desde aqui luis toapanta sri
+        lis_parametros.add(new Parametro("10", "p_sri_tipo_moneda_spi", "Indica el codigo de moneda dolar $ para el archivo SPI", "1"));
+        lis_parametros.add(new Parametro("10", "p_sri_tipo_pago_spi", "Indica el codigo de tipo de pago via internet para el archivo SPI", "2"));
+        lis_parametros.add(new Parametro("10", "p_sri_concepto_spi", "Indica el codigo del concepto para el archivo SPI", "2"));
+        lis_parametros.add(new Parametro("10", "p_sri_control_spi", "Indica el numero de control para el archivo SPI", "11217287915534"));
+        lis_parametros.add(new Parametro("10", "p_sri_301_sueldos_y_salarios", "Indica el 301 SUELDOS Y SALARIOS para (RUBRO 24) el	SRI", "24","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_303_subrogaciones", "Indica el 303 SOBRESUELDOS, COMISIONES, BONOS Y OTROS INGRESOS GRAVADOS (RUBRO 27) para el SRI", "27","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_305_participacion_utilidades", "Indica el 307 INGRESOS GRAVADOS GENERADOS CON OTROS EMPLEADORES (RUBRO 76) para el SRI", "76","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_307_ing_grav_otro_emp", "Indica el 307 INGRESOS GRAVADOS GENERADOS CON OTROS EMPLEADORES (RUBRO 77) para el SRI", "77","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_311_provisiones_decimo_tercero", "Indica el 311 DECIMO TERCER SUELDO (RUBRO 125)  provisiones para el SRI", "125","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_313_provisiones_decimo_cuarto", "Indica el 313 DECIMO CUARTO SUELDO (RUBRO 121)  provisiones  provisiones para el SRI", "121","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_315_provisiones_fondo_reserva", "Indica el 315 FONDO DE RESERVA (RUBRO 120)  provisiones  provisiones para el SRI", "120","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_317_otros_ing_rel_depencia", "Indica el 317 OTROS INGRESOS EN RELACION DE DEPENDENCIA QUE NO CONSTITUYEN RENTA GRAVADA para el SRI", "283","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_351_aporte_personal", "Indica el 351 (-) APORTE PERSONAL IESS CON ESTE EMPLEADOR para el SRI", "44","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_353_aporte_personal_otros_empl", "Indica el 353 (-) APORTE PERSONAL IESS CON OTROS EMPLEADORES para el SRI", "288","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_381_imp_renta_empleador", "Indica el 381 IMPUESTO A LA RENTA ASUMIDO POR ESTE EMPLEADOR para el SRI", "257","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_403_impuesto_retenido", "Indica el 403 VALOR DEL IMPUESTO RETENIDO Y ASUMIDO POR OTROS EMPL. DURANTE EL PERIODO DECLARADO para el SRI", "258","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_405_impuesto_asumido", "Indica el 405 VALOR DEL IMPUESTO ASUMIDO POR ESTE EMPLEADOR para el SRI", "267","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_sri_407_imp_retenido_trabajador", "Indica el 407 VALOR DEL IMPUESTO RETENIDO AL TRABAJADOR POR ESTE EMPLEADOR para el SRI", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_salario_ingreso", "Indica el VALOR DEL INGRESO DEL SALARIO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_salario_egreso", "Indica el VALOR DEL EGRESO DEL SALARIO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_sobresueldo_ing", "Indica el VALOR DEL INGRESO DEL SOBRESUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_sobresueldo_egr", "Indica el VALOR DEL EGRESO DEL SOBRESUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_parti_utilidad_ing", "Indica el VALOR DEL INGRESO DEL PARTICIPACION DE UTILIDAD", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_parti_utilidad_egr", "Indica el VALOR DEL EGRESO DEL PARTICIPACION DE UTILIDAD", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_ingr_gravados_ing", "Indica el VALOR DEL INGRESO GRAVADO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_ingr_gravados_egr", "Indica el VALOR DEL EGRESO GRAVADO ", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_empleador_ing", "Indica el VALOR DEL INGRESO DEL IMPUESTO A LA RENTA POR EL EMPLEADOR", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_empleador_egr", "Indica el VALOR DEL EGRESO DEL IMPUESTO A LA RENTA POR EL EMPLEADOR ", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_decimo_tercer_sueldo_ing", "Indica el VALOR DEL INGRESO DEL DECIMO TERCER SUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_decimo_tercer_sueldo_egr", "Indica el VALOR DEL EGRESO DEL DECIMO TERCER SUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_decimo_cuarto_sueldo_ing", "Indica el VALOR DEL INGRESO DEL DECIMO CUARTO SUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_decimo_cuarto_sueldo_egr", "Indica el VALOR DEL EGRESO DEL DECIMO CUARTO SUELDO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_fondo_reserva_ing", "Indica el VALOR DEL INGRESO DEL FONDO DE RESERVA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_fondo_reserva_egr", "Indica el VALOR DEL EGRESO DEL FONDO DE RESERVA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_otros_ingrrelaciondep_ing", "Indica el VALOR DEL INGRESO DEL INGRESO EN RELACION DE DEPENDENCIA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_otros_ingrrelaciondep_egr", "Indica el VALOR DEL EGRESO DEL INGRESO EN RELACION DE DEPENDENCIA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_ingresos_gravaempleado_ing", "Indica el VALOR DEL INGRESO DEL EGRESO GRAVADO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_ingresos_gravaempleado_egr", "Indica el VALOR DEL EGRESO DEL EGRESO GRAVADO", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_aporte_personal_iess_ing", "Indica el VALOR DEL INGRESO DEL APORTE PERSONAL IESS", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_aporte_personal_iess_egr", "Indica el VALOR DEL EGRESO DEL APORTE PERSONAL IESS", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_vivienda_ing", "Indica el VALOR DEL INGRESO DE LOS GASTOS PERSONALES POR VIVIENDA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_vivienda_egr", "Indica el VALOR DEL EGRESO DE LOS GASTOS PERSONALES POR VIVIENDA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_salud_ing", "Indica el VALOR DEL GASTO PERSONAL POR SALUD", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_salud_egr", "Indica el VALOR DEL GASTO PERSONAL POR SALUD", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_educa_ing", "Indica el VALOR DEL INGRESO DEL  GASTO PERSONAL POR EDUCACION", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_educa_egr", "Indica el VALOR DEL EGRESO DEL GASTO PERSONAL POR EDUCACION", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_alimenta_ing", "Indica el VALOR DEL INGRESO DEL  GASTO PERSONAL POR ALIMENTACION", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_alimenta_egr", "Indica el VALOR DEL EGRESO DEL GASTO PERSONAL POR ALIMENTACION", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_vestimenta_ing", "Indica el VALOR DEL INGRESO DEL  GASTO PERSONAL POR VESTIMENTA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_gas_persona_vestimenta_egr", "Indica el VALOR DEL EGRESO DEL GASTO PERSONAL POR VESTIMENTA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_baseimponible_gravada_ing", "Indica el VALOR DEL INGRESO DE LA BASE IMPONIBLE GRABADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_baseimponible_gravada_egr", "Indica el VALOR DEL EGRESO DE LA BASE IMPONIBLE GRABADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_causado_ing", "Indica el VALOR DEL INGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_causado_egr", "Indica el VALOR DEL EGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_asumidootr_ing", "Indica el VALOR DEL INGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_asumidootr_egr", "Indica el VALOR DEL EGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_asumidoest_ing", "Indica el VALOR DEL INGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impuesto_renta_asumidoest_egr", "Indica el VALOR DEL EGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impue_retenido_ing", "Indica el VALOR DEL INGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_impue_retenido_egr", "Indica el VALOR DEL EGRESO DEL IMPUESTO A LA RENTA GRAVADA", "42","NRH_RUBRO","IDE_NRRUB","DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("10", "p_redep_codigo_establecimiento", "Define el codigo del establecimiento", "001"));
+        lis_parametros.add(new Parametro("10", "p_redep_pais_tipo_residencia", "Define el numero del tipo de residencia", "943"));
+        lis_parametros.add(new Parametro("10", "p_redep_aplica_convenio", "Define el numero del tipo de residencia", "943"));
+        lis_parametros.add(new Parametro("10", "p_redep_pais_residencia", "Define el numero del tipo de residencia", "943"));
+        lis_parametros.add(new Parametro("10", "p_redep_tipo_identi_discap", "Define el numero del tipo de documento de identidad de los discapcitados", "N"));
+        lis_parametros.add(new Parametro("10", "p_redep_nro_docume_discap", "Define el numero del documento de identidad de los discapcitados", "999"));
+	lis_parametros.add(new Parametro("10", "p_redep_tipo_sis_salario_neto", "Define el tipo de sistema de salario neto", "1"));
 
+// hasta aqui luis toapnra sri
         /*
          * PRESUPUESTOS =11 *
          */
@@ -194,7 +334,36 @@ public class Parametros {
         lis_parametros.add(new Parametro("11", "p_pre_tipo_presu_ingreso", "Indica el tipo de presupuesto de Ingreso", "0", "pre_tipo_presupuesto", "ide_prtpr", "nombre_prtpr"));
         lis_parametros.add(new Parametro("11", "p_pre_estado_en_tramite", "Indica el tipo de estado en tramite del presupuesto", "1", "pre_estado_plan_presu", "ide_prepp", "nombre_prepp"));
         lis_parametros.add(new Parametro("11", "p_pre_num_modificacion_presu", "Numero de Modificaciones permitidas para el presupuesto", "1"));
-
+// desde aqui luis toapanta presupesto
+lis_parametros.add(new Parametro("11", "p_modulo_presupuesto","Indica el modulo que pertenece a presupuesto","10","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_tramite","Indica el modulo que pertenece el tramite ","11","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_tramite_alterno","Indica el modulo que pertenece el tramite alterno ","15","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_empleado","Indica el modulo que pertenece el empleado ","8","cont_parametros_general","ide_copag","detalle_copag"));
+        lis_parametros.add(new Parametro("11", "p_modulo_no_adjudicado","Indica el modulo que pertenece al no adjudicado ","10","cont_parametros_general","ide_copag","detalle_copag"));
+        lis_parametros.add(new Parametro("11", "p_modulo_proveedor","Indica el modulo que pertenece el proveedor ","9","cont_parametros_general","ide_copag","detalle_copag"));
+        lis_parametros.add(new Parametro("11", "p_modulo_estado_comprometido","Indica el modulo que pertenece el comprometido ","21","cont_estado","ide_coest","detalle_coest"));
+        lis_parametros.add(new Parametro("11", "p_modulo_estado_comprometido","Indica el modulo que pertenece el comprometido ","21","cont_estado","ide_coest","detalle_coest"));
+        lis_parametros.add(new Parametro("11", "p_sub_actividad","Indica el nombre sub actividad para ","5","pre_nivel_funcion_programa","ide_prnfp","detalle_prnfp"));
+        lis_parametros.add(new Parametro("11", "p_mov_devengado","Indica el tipo de movimiento presupuestario devengado","5","pre_movimiento_presupuestario","ide_prmop","detalle_prmop"));
+        lis_parametros.add(new Parametro("11", "p_cuenta_banco","Indica el codigo de cuenta contable de bancos para generar el asiento contable","5","cont_catalogo_cuenta","ide_cocac","cue_codigo_cocac,cue_descripcion_cocac"));
+        lis_parametros.add(new Parametro("11", "p_lugar_ejecuta_banco","Indica el si la cuenta cuanta bancos donde se ejcuta debe o haber","2","gen_lugar_aplica","ide_gelua","detalle_gelua"));
+        lis_parametros.add(new Parametro("11", "p_cuenta_banco","Indica el codigo de cuenta contable de bancos para generar el asiento contable","5","cont_catalogo_cuenta","ide_cocac","cue_codigo_cocac,cue_descripcion_cocac"));
+        lis_parametros.add(new Parametro("11", "p_lugar_ejecuta_banco","Indica el si la cuenta cuanta bancos donde se ejcuta debe o haber","2","gen_lugar_aplica","ide_gelua","detalle_gelua"));
+        lis_parametros.add(new Parametro("11", "p_cuenta_iva","Indica el codigo de cuenta contable de iva para generar el asiento contable","5","cont_catalogo_cuenta","ide_cocac","cue_codigo_cocac,cue_descripcion_cocac"));
+        lis_parametros.add(new Parametro("11", "p_lugar_ejecuta_iva","Indica el si la cuenta cuanta iva donde se ejcuta debe o haber","2","gen_lugar_aplica","ide_gelua","detalle_gelua"));
+        lis_parametros.add(new Parametro("11", "p_cuenta_iva_cierra","Indica el codigo de cuenta contable de iva para generar el asiento contable","5","cont_catalogo_cuenta","ide_cocac","cue_codigo_cocac,cue_descripcion_cocac"));
+        lis_parametros.add(new Parametro("11", "p_lugar_ejecuta_iva_cierra","Indica el si la cuenta cuanta iva donde se ejcuta debe o haber","2","gen_lugar_aplica","ide_gelua","detalle_gelua"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialproyecto","Indica el modulo para generar el secuencial de proyecto","21","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialprograma","Indica el modulo para generar el secuencial de programa","21","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialproducto","Indica el modulo para generar el secuencial de producto","21","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialfase","Indica el modulo para generar el secuencial de fase","21","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialsubactiv","Indica el modulo para generar el secuencial de sub actividad","21","gen_modulo","ide_gemod","detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_proyecto","Indica el proyecto","1","pre_nivel_funcion_programa","ide_prnfp","detalle_prnfp"));
+        lis_parametros.add(new Parametro("11", "p_programa","Indica el programa","2","pre_nivel_funcion_programa","ide_prnfp","detalle_prnfp"));
+        lis_parametros.add(new Parametro("11", "p_producto","Indica el producto","3","pre_nivel_funcion_programa","ide_prnfp","detalle_prnfp"));
+        lis_parametros.add(new Parametro("11", "p_fase","Indica el la fase","4","pre_nivel_funcion_programa","ide_prnfp","detalle_prnfp"));
+        lis_parametros.add(new Parametro("11", "p_modulo_secuencialcertificacion","Indica el modulo para generar el secuencial de las certificaciones","21","gen_modulo","ide_gemod","detalle_gemod"));
+///*
         /*
          * MODULO GENERAL 12
          */
@@ -202,7 +371,56 @@ public class Parametros {
         lis_parametros.add(new Parametro("12", "p_gen_tipo_iden_cedula", "tipo de identificacion CEDULA", "0", "gen_tipo_identifi", "ide_getid", "nombre_getid"));
 
         lis_parametros.add(new Parametro("12", "p_gen_beneficiario_roles", "Identifica al beneficiario en el asiento de roles de pago ", "1438", "gen_persona", "ide_geper", "nom_geper"));
-
+        // desque aqui Luis Toapanta Agregado Parametros Generales
+        lis_parametros.add(new Parametro("12", "p_tipo_cobro_factura", "Permite definir el tipo de cobro inicial que se mostrará por defecto en la facturación",  "4","rec_tipo", "ide_retip", "detalle_retip"));
+        lis_parametros.add(new Parametro("12", "p_gen_terminacion_encargo_posicion", "Permite al momento de hacer una terminacion de subrogacion volver a las caracteristicas del contrato que poseia antes de realizar la subrogacion", "46","GEN_ACCION_EMPLEADO_DEPA", "IDE_GEAED", "DETALLE_GEAED"));
+        lis_parametros.add(new Parametro("12", "p_gen_status_stand_by", "Indica la categoria estatus stand by", "2","GEN_CATEGORIA_ESTATUS", "IDE_GECAE", "DETALLE_GECAE"));
+        lis_parametros.add(new Parametro("12", "p_gen_accion_empl_comision", "Indica la accion de empleado Comision", "51","GEN_ACCION_EMPLEADO_DEPA", "IDE_GEAED", "DETALLE_GEAED"));
+        lis_parametros.add(new Parametro("12", "p_gen_tipo_institucion_educativa", "Indica el tipo de institucion Educativa", "4","GEN_TIPO_INSTITUCION", "IDE_GETII", "DETALLE_GETII"));
+        lis_parametros.add(new Parametro("12", "p_gen_tipo_institucion_aseguradora", "Indica el tipo de institucion Aseguradoras", "5","GEN_TIPO_INSTITUCION", "IDE_GETII", "DETALLE_GETII"));
+        lis_parametros.add(new Parametro("12", "p_gen_tipo_institucion_financiera", "Indica el tipo de institucion Financiera", "2","GEN_TIPO_INSTITUCION", "IDE_GETII", "DETALLE_GETII"));
+        lis_parametros.add(new Parametro("12", "p_gen_encargo_posicion", "Permite al momento de hacer una Subrogaciï¿½n desplegar los cargos a ser encargados", "13","GEN_ACCION_MOTIVO_EMPLEADO", "IDE_GEAME", "IDE_GEAME"));
+        lis_parametros.add(new Parametro("12", "p_gen_accion_contratacion", "Permite al momento de hacer una contratacion desplegar un dialogo para ingresar el periodo de asistencia ", "1","GEN_ACCION_EMPLEADO_DEPA", "IDE_GEAED", "IDE_GEAED"));
+        lis_parametros.add(new Parametro("12", "p_gen_lugar_aplica_haber", "Aplica al haber ", "2","GEN_LUGAR_APLICA", "IDE_GELUA", "DETALLE_GELUA"));
+        lis_parametros.add(new Parametro("12", "p_gen_lugar_aplica_debe", "aplica al debe ", "1","GEN_LUGAR_APLICA", "IDE_GELUA", "DETALLE_GELUA"));        
+        lis_parametros.add(new Parametro("12", "p_gen_instituciones", "Selecciona las instituciones que requiera mostrar (Instituciones Educativas)", "41,43","GEN_INSTITUCION", "IDE_GEINS", "DETALLE_GEINS"));
+        lis_parametros.add(new Parametro("12", "p_gen_casas_comerciales", "Selecciona el tipo de institucion casas comerciales  (Casas comerciales )",  "2","GEN_TIPO_INSTITUCION", "IDE_GETII", "DETALLE_GETII"));
+        lis_parametros.add(new Parametro("12", "p_gen_estado_activo", "Permite conocer tipo de estado (activo)en vacaciones ", "1","gen_estados", "IDE_GEEST", "detalle_geest"));
+        lis_parametros.add(new Parametro("12", "p_gen_estado_inactivo", "Permite conocer tipo de estado (inactivo)en vacaciones ", "2","gen_estados", "IDE_GEEST", "detalle_geest"));
+        lis_parametros.add(new Parametro("12", "p_gen_actividad_capacitador", "Permite conocer tipo de actividad economica ", "3","GTH_TIPO_ACTIVIDAD_ECONOMICA", "IDE_GTTAE", "DETALLE_GTTAE"));
+        lis_parametros.add(new Parametro("12", "p_firma_resp_solicitud_debito_sd", "Permite conocer el cargo de la persona que firma la Solicitud de Anticipo ", "GERENTE ADMINISTRATIVO"));
+        lis_parametros.add(new Parametro("12", "p_gen_tipo_institucion_educativa_idiomas", "Indica el tipo de institucion Educativa de Idiomas", "4","GEN_TIPO_INSTITUCION", "IDE_GETII", "DETALLE_GETII"));
+        lis_parametros.add(new Parametro("12", "p_gen_responsable_depa_bienestar", "Indica el departamento para poder ver el responsable de la entrevista (Talento Humano)", "135","GEN_DEPARTAMENTO", "IDE_GEDEP", "DETALLE_GEDEP"));
+        lis_parametros.add(new Parametro("12", "p_valor_iva", "Indica el valor aplicado del iva", "0.12"));
+        lis_parametros.add(new Parametro("12", "p_director_adminsitrativo", "Indica el titulo y nombre del Director Administrativo", "Ing. Paul Velez"));
+        lis_parametros.add(new Parametro("12", "p_jefe_activos_fijos", "Indica el titulo y nombre del jefe de Activos Fijos", "Ing. Evelyn Suarez"));
+	lis_parametros.add(new Parametro("12", "p_factor_multiplicador_renta_discapacitados","Indica el factor a multiplicar si el empleado es discapacitado o tercera edad para el calculo de la renta","2"));
+	lis_parametros.add(new Parametro("12", "p_num_veces_vmgd","Indica el numero de veces que se aplica a la fraccion basica desgravada para el maximo valor para gastos deducibles ","1.3"));
+	lis_parametros.add(new Parametro("12", "p_porcentaje_tot_ing_grab","El porcentaje que se aplica al total de ingresos gravados del contribuyente para la deduccion total por gastos deducibles","50"));
+        lis_parametros.add(new Parametro("12", "p_minimo_dias_derecho_fondos","Indica el numero de dias minimo para tener derecho a fondos de reserva (a partir del 13avo mes(390 dias))","390"));
+        lis_parametros.add(new Parametro("12", "p_amortizacion_cada","Indica que la amortizacion se la realizara cada 30 dias","30"));
+        lis_parametros.add(new Parametro("12", "p_tasa_interes","Indica la tasa de interes anticipo que se la realizara","0"));
+        lis_parametros.add(new Parametro("12", "p_tasa_interes_efectiva","Indica la tasa  efectiva anticipo de interes que se la realizara","0"));
+        // hasta aqui luis toapanta parametros generales
+        /*
+         * GESTION DE TALENTO HUMANO MODULO =13
+         */
+       
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_sindicato", "Indica el tipo de sindicato que pertenece", "1","gth_tipo_sindicato", "ide_gttsi", "detalle_gttsi"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_contrato_nombramiento", "Indica el tipo de documento de contrato NOMBRAMIENTO", "0","GTH_TIPO_CONTRATO", "IDE_GTTCO", "DETALLE_GTTCO"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_sangre", "Indica el tipo de sangre del empleado", "11","gth_tipo_sangre", "ide_gttis", "detalle_gttis"));
+        lis_parametros.add(new Parametro("13", "p_gth_nacionalidad", "Indica la nacionalidad del empleado", "2","gth_nacionalidad", "ide_gtnac", "detalle_gtnac"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_documento_cedula", "Indica el tipo de documento de identidad CEDULA", "0","GTH_TIPO_DOCUMENTO_IDENTIDAD", "IDE_GTTDI", "DETALLE_GTTDI"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_documento_ruc", "Indica el tipo de documento de identidad RUC", "2","GTH_TIPO_DOCUMENTO_IDENTIDAD", "IDE_GTTDI", "DETALLE_GTTDI"));
+        lis_parametros.add(new Parametro("13", "p_gth_estado_civil_soltero", "Indica el estado civil soltero", "0","GTH_ESTADO_CIVIL", "IDE_GTESC", "DETALLE_GTESC"));
+        lis_parametros.add(new Parametro("13", "p_gth_estado_civil_union_libre", "Indica el estado civil union libre", "2","GTH_ESTADO_CIVIL", "IDE_GTESC", "DETALLE_GTESC"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_telefono_celular", "Indica el tipo de telefono celular", "0","GTH_TIPO_TELEFONO", "IDE_GTTIT", "DETALLE_GTTIT"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_telefono_fijo", "Indica el tipo de telefono fijo", "1","GTH_TIPO_TELEFONO", "IDE_GTTIT", "DETALLE_GTTIT"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_telefono_oficina", "Indica el tipo de telefono de oficina", "3","GTH_TIPO_TELEFONO", "IDE_GTTIT", "DETALLE_GTTIT"));
+        lis_parametros.add(new Parametro("13", "p_gth_tipo_empleado_codigo", "Indica el tipo de empleado de codigo de trabajo", "1","GTH_TIPO_EMPLEADO", "IDE_GTTEM", "DETALLE_GTTEM"));
+        lis_parametros.add(new Parametro("13", "p_gth_coordinador_tthh", "Indica el nombre del coordinador de talento humano", "Ing. Tania Pantoja"));
+        lis_parametros.add(new Parametro("13", "p_gth_analista_tthh", "Indica el nombre del analista de talento humano", "Ing. Paola"));
+        
 //////////////////////////////////////////////////////////////////////
         return lis_parametros;
     }
