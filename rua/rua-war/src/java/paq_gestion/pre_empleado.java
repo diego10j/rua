@@ -349,7 +349,7 @@ public class pre_empleado extends Pantalla {
 		agregarComponente(set_departamento);
 
 
-		//cumplea�os
+		//cumpleAños
 		sel_cal_cumpleanios.setId("sel_cal_cumpleanios");
 		sel_cal_cumpleanios.getBot_aceptar().setMetodo("aceptarReporte");
 		agregarComponente(sel_cal_cumpleanios);
@@ -380,12 +380,12 @@ public class pre_empleado extends Pantalla {
 
 		//DFJ
 		Boton bot_contrato=new Boton();
-		bot_contrato.setValue("Contrataci�n");
+		bot_contrato.setValue("Contratación");
 		bot_contrato.setMetodo("abrirContratacion");
 		bar_botones.agregarBoton(bot_contrato);
 
 		dia_contrata.setId("dia_contrata");
-		dia_contrata.setTitle("CONTRATACI�N");
+		dia_contrata.setTitle("CONTRATACióN");
 		dia_contrata.setWidth("85%");
 		dia_contrata.setHeight("75%");
 		dia_contrata.getBot_aceptar().setMetodo("acpetarContratacion");
@@ -522,7 +522,7 @@ public class pre_empleado extends Pantalla {
 		tab_empleado_departamento_dia.setMostrarNumeroRegistros(false);
 		tab_empleado_departamento_dia.setCondicion("IDE_GEEDP=-1");
 		
-		//// campos ocultos en dialogo contrataci�n
+		//// campos ocultos en dialogo contratación
 		tab_empleado_departamento_dia.getColumna("IDE_GEGRO").setVisible(false);
 		tab_empleado_departamento_dia.getColumna("encargado_subrogado_geedp").setVisible(false);
 		tab_empleado_departamento_dia.getColumna("IDE_SUCU").setVisible(false);
@@ -716,7 +716,7 @@ public class pre_empleado extends Pantalla {
 
 	public void acpetarContratacion(){
 		if(tab_empleado_departamento_dia.getValor("rmu_geedp").equals("")||tab_empleado_departamento_dia.getValor("rmu_geedp").equals("null")||tab_empleado_departamento_dia.getValor("rmu_geedp").equals(null)){
-			utilitario.agregarMensajeError("Ingrese Valor", "Ingrese el valor de la Remuneraci�n");
+			utilitario.agregarMensajeError("Ingrese Valor", "Ingrese el valor de la Remuneración");
 			return;
 		}
 		
@@ -821,7 +821,7 @@ public class pre_empleado extends Pantalla {
 				set_cuenta_anticipo.dibujar();
 			}
 			else{
-				utilitario.agregarMensajeInfo("SELECCIONE UN A�O","No se encuentra seleccionado un a�o para la cuenta de anticipo");
+				utilitario.agregarMensajeInfo("SELECCIONE UN AñO","No se encuentra seleccionado un Año para la cuenta de anticipo");
 			}
 
 		}else {
@@ -1019,7 +1019,7 @@ public class pre_empleado extends Pantalla {
 					dia_filtro_activo.cerrar();
 					set_empleado.dibujar();			
 				}else{
-					utilitario.agregarMensajeInfo("No se puede generar la ficha del empleado", "Debe seleccionar una opci�n");
+					utilitario.agregarMensajeInfo("No se puede generar la ficha del empleado", "Debe seleccionar una opción");
 				}
 			}	else if (set_empleado.isVisible()){
 				if (set_empleado.getListaSeleccionados().size()>0){
@@ -1061,7 +1061,7 @@ public class pre_empleado extends Pantalla {
 					dia_filtro_activo.cerrar();
 					set_empleado.dibujar();			
 				}else{
-					utilitario.agregarMensajeInfo("No se puede generar la ficha del empleado", "Debe seleccionar una opci�n");
+					utilitario.agregarMensajeInfo("No se puede generar la ficha del empleado", "Debe seleccionar una opción");
 				}
 			}	else if (set_empleado.isVisible()){
 				if (set_empleado.getListaSeleccionados().size()>0){
@@ -1604,7 +1604,7 @@ public class pre_empleado extends Pantalla {
 
 			}
 		}		
-		else if(rep_reporte.getReporteSelecionado().equals("Listado de Cumplea�os")){
+		else if(rep_reporte.getReporteSelecionado().equals("Listado de CumpleAños")){
 			if(rep_reporte.isVisible()){
 				p_parametros =new HashMap();
 				rep_reporte.cerrar();
@@ -1649,12 +1649,12 @@ public class pre_empleado extends Pantalla {
 						p_parametros.put("fecha_inicial", sel_cal_cumpleanios.getFecha1String());
 						p_parametros.put("fecha_final", sel_cal_cumpleanios.getFecha2String());
 						//						p_parametros.put("fecha_actual", utilitario.getAnio(sel_cal_cumpleanios.getFecha1String())+"-1-1");
-						p_parametros.put("titulo","LISTADO DE CUMPLEA�OS");
+						p_parametros.put("titulo","LISTADO DE CUMPLEAñOS");
 						sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());					
 						sel_cal_cumpleanios.cerrar();
 						sef_reporte.dibujar();
 					}else{
-						utilitario.agregarMensajeInfo("No se puede continuar", "Debe Selecionar las fechas dentro del mismo A�o");
+						utilitario.agregarMensajeInfo("No se puede continuar", "Debe Selecionar las fechas dentro del mismo Año");
 					}
 				}else{
 					utilitario.agregarMensajeInfo("No se puede continuar", "La fecha final es menor a la fecha inicial");
@@ -1953,7 +1953,7 @@ public class pre_empleado extends Pantalla {
 						sel_cal_cumpleanios.cerrar();
 						sef_reporte.dibujar();
 					}else{
-						utilitario.agregarMensajeInfo("No se puede continuar", "Debe Selecionar las fechas dentro del mismo A�o");
+						utilitario.agregarMensajeInfo("No se puede continuar", "Debe Selecionar las fechas dentro del mismo Año");
 					}
 				}else{
 					utilitario.agregarMensajeInfo("No se puede continuar", "La fecha final es menor a la fecha inicial");
@@ -2912,7 +2912,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			limpiarPanel();	
 			tab_anio= new Tabla();
 			tab_anio.setId("tab_anio");
-			tab_anio.setHeader("A�O ");
+			tab_anio.setHeader("AñO ");
 			tab_anio.setTabla("GEN_ANIO","IDE_GEANI",44);
 			tab_anio.onSelect("seleccionarCuentaAnticipo");
 			//tab_anio.agregarRelacion(tab_cuenta_anticipo);
@@ -3317,13 +3317,13 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_educacion.getColumna("IDE_GTTTP").setCombo("GTH_TIPO_TITULO_PROFESIONAL", "IDE_GTTTP", "DETALLE_GTTTP", "");
 			tab_educacion.getColumna("IDE_GTTTP").setNombreVisual("TITULO");
 			tab_educacion.getColumna("IDE_GTANA").setCombo("GTH_ANIO_APROBADO", "IDE_GTANA", "DETALLE_GTANA", "");
-			tab_educacion.getColumna("IDE_GTANA").setNombreVisual("A�O APROBADO");
+			tab_educacion.getColumna("IDE_GTANA").setNombreVisual("AñO APROBADO");
 			tab_educacion.getColumna("IDE_GEDIP").setCombo(ser_gestion.getSqlDivisionPoliticaCiudad());
 			tab_educacion.getColumna("IDE_GEDIP").setNombreVisual("CIUDAD ");
 			tab_educacion.getColumna("REGISTRO_TITULO_GTEDE").setNombreVisual("REGISTRO SENECYT");
 			tab_educacion.getColumna("IDE_GEDIP").setVisible(false);
 			tab_educacion.getColumna("ANIO_GRADO_GTEDE").setMascara("9999");
-			tab_educacion.getColumna("ANIO_GRADO_GTEDE").setNombreVisual("A�O GRADO");
+			tab_educacion.getColumna("ANIO_GRADO_GTEDE").setNombreVisual("AñO GRADO");
 			tab_educacion.getColumna("IDE_GEDIP").setAutoCompletar();
 			tab_educacion.getColumna("IDE_GTEMP").setValorDefecto(aut_empleado.getValor());
 			tab_educacion.getColumna("IDE_GTEMP").setVisible(false);
@@ -3422,8 +3422,8 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_capacitacion.setCondicion("IDE_GTEMP =" + aut_empleado.getValor());
 			tab_capacitacion.getColumna("IDE_GTCEM").setNombreVisual("C�DIGO");
 			tab_capacitacion.getColumna("DETALLE_GTCEM").setNombreVisual("DETALLE");
-			tab_capacitacion.getColumna("DURACION_GTCEM").setNombreVisual("DURACI�N");
-			tab_capacitacion.getColumna("IDE_GEINS").setNombreVisual("INSTITUCI�N");
+			tab_capacitacion.getColumna("DURACION_GTCEM").setNombreVisual("DURACióN");
+			tab_capacitacion.getColumna("IDE_GEINS").setNombreVisual("INSTITUCióN");
 			tab_capacitacion.getColumna("FECHA_GTCEM").setNombreVisual("FECHA");
 			tab_capacitacion.setTipoFormulario(true);
 			tab_capacitacion.getGrid().setColumns(4);
@@ -3465,7 +3465,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_experiencia_laboral.getColumna("FUNCIONES_DESEMPENIO_GTELE").setVisible(false);
 			tab_experiencia_laboral.getColumna("ACTIVO_GTELE").setVisible(false);
 			tab_experiencia_laboral.getColumna("FECHA_INGRESO_GTELE").setNombreVisual("FECHA INGRESO");
-			tab_experiencia_laboral.getColumna("IDE_GEINS").setNombreVisual("INSTITUCI�N");
+			tab_experiencia_laboral.getColumna("IDE_GEINS").setNombreVisual("INSTITUCióN");
 			tab_experiencia_laboral.getColumna("AREA_DESEMPENIO_GTELE").setNombreVisual("�REA DESEMPE�O");
 			tab_experiencia_laboral.getColumna("MOTIVO_SALIDA_GTELE").setVisible(false);
 			tab_experiencia_laboral.getColumna("CARGO_JEFE_GTELE").setNombreVisual("CARGO JEFE");
@@ -3957,8 +3957,8 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_cuenta_bancaria.getColumna("IDE_GTCBE").setNombreVisual("C�DIGO");
 			tab_cuenta_bancaria.getColumna("IDE_GTTCB").setNombreVisual("TIPO CUENTA");
 			tab_cuenta_bancaria.getColumna("SALDO_PROMEDIO_GTCBE").setNombreVisual("SALDO PROMEDIO");
-			tab_cuenta_bancaria.getColumna("ACREDITACION_GTCBE").setNombreVisual("ACREDITACI�N");
-			tab_cuenta_bancaria.getColumna("IDE_GEINS").setNombreVisual("INSTITUCI�N");
+			tab_cuenta_bancaria.getColumna("ACREDITACION_GTCBE").setNombreVisual("ACREDITACióN");
+			tab_cuenta_bancaria.getColumna("IDE_GEINS").setNombreVisual("INSTITUCióN");
 			tab_cuenta_bancaria.getColumna("NUMERO_CUENTA_GTCBE").setNombreVisual("N�MERO DE CUENTA");
 			tab_cuenta_bancaria.getColumna("ACTIVO_GTCBE").setNombreVisual("ACTIVO");
 			tab_cuenta_bancaria.getColumna("ACTIVO_GTCBE").setCheck();
@@ -4181,7 +4181,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_sri_det_proy_ing = new Tabla();
 			tab_sri_det_proy_ing.setId("tab_sri_det_proy_ing");
 			tab_sri_det_proy_ing.setTabla("SRI_DETALLE_PROYECCCION_INGRES", "IDE_SRDPI", 38);
-			tab_sri_det_proy_ing.getColumna("IDE_GEMES").setCombo("GEN_MES","IDE_GEMES", "DETALLE_GEMES", "");
+			tab_sri_det_proy_ing.getColumna("IDE_GEMES").setCombo("GEN_MES","IDE_GEMES", "nombre_gemes", "");
 			tab_sri_det_proy_ing.setCondicion("IDE_SRPRI =" + tab_sri_proy_ing.getValorSeleccionado());
 			tab_sri_det_proy_ing.setCampoOrden("IDE_GEMES ASC");
 			tab_sri_det_proy_ing.getColumna("IDE_SRPRI").setVisible(false);
@@ -5152,20 +5152,20 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 		}else if (str_opcion.equals("8")){
 			//if(tab_registro_militar.getValor("ANIO_INGRESO_GTREM")!=null && !tab_registro_militar.getValor("ANIO_INGRESO_GTREM").isEmpty()){
 			//if(!utilitario.isEnteroPositivo(tab_registro_militar.getValor("ANIO_INGRESO_GTREM"))){
-			//utilitario.agregarMensajeInfo("No se puede guardar", "El Total de A�os es invalido");
+			//utilitario.agregarMensajeInfo("No se puede guardar", "El Total de Años es invalido");
 			//return;	
 			//}								
 			//}			
 			if(tab_registro_militar.getValor("ANIO_TOTAL_GTREM")!=null && !tab_registro_militar.getValor("ANIO_TOTAL_GTREM").isEmpty()){
 				if(!utilitario.isEnteroPositivo(tab_registro_militar.getValor("ANIO_TOTAL_GTREM"))){
-					utilitario.agregarMensajeInfo("No se puede guardar", "El A�o de ingreso es invalido");
+					utilitario.agregarMensajeInfo("No se puede guardar", "El Año de ingreso es invalido");
 					return;
 				}
 
 				int int_total_anios=0;
 				int_total_anios=Integer.parseInt(tab_registro_militar.getValor("ANIO_TOTAL_GTREM"));				
 				if(int_total_anios>50){
-					utilitario.agregarMensajeInfo("No se puede guardar", "El total de A�os esta fuera del rango 1 a 30");					
+					utilitario.agregarMensajeInfo("No se puede guardar", "El total de Años esta fuera del rango 1 a 30");					
 					return;
 				}			
 			}
@@ -5179,13 +5179,13 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 		}else if (str_opcion.equals("10")){
 			if(tab_educacion.getValor("ANIO_GTEDE")!=null && !tab_educacion.getValor("ANIO_GTEDE").isEmpty()){
 				if(!utilitario.isEnteroPositivo(tab_educacion.getValor("ANIO_GTEDE"))){
-					utilitario.agregarMensajeInfo("No se puede guardar", "El Tiempo de duraci�n (A�o) es invalido");
+					utilitario.agregarMensajeInfo("No se puede guardar", "El Tiempo de duración (Año) es invalido");
 					return;
 				}				
 				int int_total_anios=0;
 				int_total_anios=Integer.parseInt(tab_educacion.getValor("ANIO_GTEDE"));				
 				if(int_total_anios>20){
-					utilitario.agregarMensajeInfo("No se puede guardar", "El tiempo de duraci�n de A�os esta fuera del rango 1 a 20");					
+					utilitario.agregarMensajeInfo("No se puede guardar", "El tiempo de duración de Años esta fuera del rango 1 a 20");					
 					return;
 				}			
 			}
@@ -5246,7 +5246,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 				}
 				if(tab_idiomas.getValor(i, "ANIO_GTIDE")!=null && !tab_idiomas.getValor(i, "ANIO_GTIDE").isEmpty()){
 					if(!utilitario.isNumeroPositivo(tab_idiomas.getValor(i, "ANIO_GTIDE"))){
-						utilitario.agregarMensajeInfo("No se puede guardar", "El A�o es invalido");
+						utilitario.agregarMensajeInfo("No se puede guardar", "El Año es invalido");
 						return;
 					}					
 				}
