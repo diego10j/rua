@@ -35,7 +35,7 @@ public class pre_anual_egresos extends Pantalla {
 		
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 
 		
@@ -116,7 +116,7 @@ public class pre_anual_egresos extends Pantalla {
 		tab_mensual.getColumna("ide_prtra").setLectura(true);
 		tab_mensual.getColumna("ide_comov").setLectura(true);
 		//tab_mensual.setCondicion("ide_prpro!=null");
-		tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "detalle_gemes", "");
+		tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
 		tab_mensual.getColumna("ide_codem").setLectura(true);
 		//tab_anual.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "detalle_prfup,", "");
 		tab_mensual.setTipoFormulario(true);
@@ -130,7 +130,7 @@ public class pre_anual_egresos extends Pantalla {
 		tab_reforma.setHeader("REFORMA PRESUPUESTARIA MENSUAL");
 		tab_reforma.setIdCompleto("tab_tabulador:tab_reforma");
 		tab_reforma.setTabla("pre_reforma_mes", "ide_prrem", 3);
-		tab_reforma.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "detalle_gemes", "");
+		tab_reforma.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
 		tab_reforma.getColumna("val_reforma_h_prrem").setMetodoChange("calcular");
 		tab_reforma.getColumna("val_reforma_d_prrem").setMetodoChange("calcular");
 		tab_reforma.getColumna("activo_prrem").setValorDefecto("true");
@@ -196,7 +196,7 @@ public class pre_anual_egresos extends Pantalla {
 	}
 	public void importarPoa(){
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		
@@ -244,7 +244,7 @@ public class pre_anual_egresos extends Pantalla {
 			set_poa.dibujar();
 			}
 	}
-	///metodo a�o
+	///metodo Año
 	public void seleccionaElAnio (){
 		if(com_anio.getValue()!=null){
 			tab_anual.setCondicion("not ide_prpro is null and ide_geani="+com_anio.getValue());
@@ -253,7 +253,7 @@ public class pre_anual_egresos extends Pantalla {
 
 		}
 		else{
-			utilitario.agregarMensajeInfo("Selecione un a�o", "");
+			utilitario.agregarMensajeInfo("Selecione un Año", "");
 
 		}
 	}
@@ -301,12 +301,12 @@ public class pre_anual_egresos extends Pantalla {
 	public void importarPrograma(){
 		
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		
 	
-		//Filtrar los clasificadores del a�o seleccionado
+		//Filtrar los clasificadores del Año seleccionado
 		set_programa.getTab_seleccion().setSql(ser_presupuesto.getPrograma("true,false"));
 		set_programa.getTab_seleccion().ejecutarSql();
 		set_programa.dibujar();
@@ -335,7 +335,7 @@ public class pre_anual_egresos extends Pantalla {
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un A�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 		}
 			if(tab_anual.isFocus()){

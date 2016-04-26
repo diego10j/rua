@@ -13,10 +13,10 @@ public class pre_fuente_financiamiento_ini extends Pantalla {
 	 public pre_fuente_financiamiento_ini() {
 		// TODO Auto-generated constructor stub
 		 
-			com_anio.setCombo("select ide_geani,detalle_geani from gen_anio order by detalle_geani");
+			com_anio.setCombo("select ide_geani,nom_geani from gen_anio order by nom_geani");
 			com_anio.setMetodo("filtrarAnio");
 			//com_anio.setMetodo("seleccionaElAnio");
-			bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+			bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 			bar_botones.agregarComponente(com_anio);
 		 
 		 tab_fuente_financiamiento.setId("tab_fuente_financiamiento");
@@ -53,7 +53,7 @@ public class pre_fuente_financiamiento_ini extends Pantalla {
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un A�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 
 		}

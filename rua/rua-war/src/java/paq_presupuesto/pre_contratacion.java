@@ -87,7 +87,7 @@ public class pre_contratacion extends Pantalla{
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("filtrarAnio");
 		//com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 
 
@@ -155,7 +155,7 @@ public class pre_contratacion extends Pantalla{
 		tab_mes.setIdCompleto("tab_tabulador:tab_mes");
 		tab_mes.setTabla("pre_poa_mes","ide_prpom",3);
 		tab_mes.setCampoForanea("ide_prpoa");
-		tab_mes.getColumna("ide_gemes").setCombo("select ide_gemes,detalle_gemes from gen_mes order by ide_gemes");
+		tab_mes.getColumna("ide_gemes").setCombo("select ide_gemes,nombre_gemes from gen_mes order by ide_gemes");
 		tab_mes.getColumna("activo_prpom").setValorDefecto("true");
 		tab_mes.getColumna("activo_prpom").setLectura(true);
 		tab_mes.getColumna("valor_presupuesto_prpom").setMetodoChange("actualizarEjecucionMensual");		
@@ -171,7 +171,7 @@ public class pre_contratacion extends Pantalla{
 		tab_reforma.setTabla("pre_poa_reforma", "ide_prpor",4);
 		tab_reforma.setCampoForanea("ide_prpoa");
 		tab_reforma.getColumna("ide_coest").setCombo("cont_estado","ide_coest","detalle_coest","");
-		tab_reforma.getColumna("ide_gemes").setCombo("select ide_gemes,detalle_gemes from gen_mes order by ide_gemes");
+		tab_reforma.getColumna("ide_gemes").setCombo("select ide_gemes,nombre_gemes from gen_mes order by ide_gemes");
 		tab_reforma.getColumna("valor_reformado_prpor").setMetodoChange("valorReforma");
 		tab_reforma.getColumna("SALDO_ACTUAL_PRPOR").setLectura(true);
 		tab_reforma.getColumna("ide_coest").setVisible(false);
@@ -239,9 +239,6 @@ public class pre_contratacion extends Pantalla{
 		tab_archivo.setTabla("pre_archivo","ide_prarc",6);
 		tab_archivo.getColumna("foto_prarc").setUpload("presupuesto");
 		tab_archivo.setCampoForanea("ide_prpoa");
-		tab_archivo.getColumna("ide_prpac").setVisible(false);
-		tab_archivo.getColumna("ide_prcon").setVisible(false);
-		tab_archivo.getColumna("ide_prcop").setVisible(false);
 		tab_archivo.getColumna("ide_prtra").setVisible(false);
 		tab_archivo.getColumna("activo_prarc").setValorDefecto("true");
 		tab_archivo.dibujar();
@@ -359,7 +356,7 @@ public class pre_contratacion extends Pantalla{
 	public void aprobarPoa(){
 		
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		
@@ -385,7 +382,7 @@ public class pre_contratacion extends Pantalla{
 						ser_presupuesto.insertaVigente(maximo_cont_vigente, maximo_cont_movimiento, com_anio.getValue().toString());
 						ser_presupuesto.insertaFuenteEjecucion(maximo_ejecucion, tab_aprueba_poa.getValor(i,"ide_prpoa"));
 					}
-					utilitario.agregarMensaje("Aprobado POA", "Se transfiri� el POA para las ejecuciones presupuestarias.");
+					utilitario.agregarMensaje("Aprobado POA", "Se transfirio el POA para las ejecuciones presupuestarias.");
 
 				}
 				set_poa.cerrar();
@@ -477,7 +474,7 @@ public class pre_contratacion extends Pantalla{
 
 	public void seleccionar_arbol(NodeSelectEvent evt) {
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		arb_arbol.seleccionarNodo(evt);
@@ -496,7 +493,7 @@ public class pre_contratacion extends Pantalla{
 	public void actualizadorClasificador(){
 		//si no selecciono ningun valor en el combo
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 				
@@ -507,7 +504,7 @@ public class pre_contratacion extends Pantalla{
 	public void agregarClasificador(){
 		//si no selecciono ningun valor en el combo
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		/*
@@ -517,7 +514,7 @@ public class pre_contratacion extends Pantalla{
 			return;
 		}
 		*/
-		//Filtrar los clasificadores del a�o seleccionado
+		//Filtrar los clasificadores del Año seleccionado
 		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
 		set_clasificador.getTab_seleccion().ejecutarSql();
 		set_clasificador.dibujar();
@@ -562,7 +559,7 @@ public void abrirListaReportes() {
 }
 public void aceptarReporte(){
 	if(rep_reporte.getReporteSelecionado().equals("Plan Operativo Anual (POA)")){
-		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,detalle_geani from gen_anio where ide_geani="+com_anio.getValue());
+		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,nom_geani from gen_anio where ide_geani="+com_anio.getValue());
 		if (rep_reporte.isVisible()){
 			
 			p_parametros=new HashMap();		
@@ -575,7 +572,7 @@ public void aceptarReporte(){
 			
 			if(sel_poa.getListaSeleccionados().size()>0){	
 				p_parametros.put("ide_prpoa",sel_poa.getSeleccionados());
-				p_parametros.put("titulo","Plan Operativo Anual (POA) "+tab_reporte.getValor("detalle_geani"));
+				p_parametros.put("titulo","Plan Operativo Anual (POA) "+tab_reporte.getValor("nom_geani"));
 				p_parametros.put("ide_geani", Integer.parseInt(com_anio.getValue().toString()));
 				self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
 				sel_poa.cerrar();
@@ -591,7 +588,7 @@ public void aceptarReporte(){
 	
 	/////REFORMA
 	else if(rep_reporte.getReporteSelecionado().equals("Reforma Plan Operativo Anual (POA)")){
-		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,detalle_geani from gen_anio where ide_geani="+com_anio.getValue());
+		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,nom_geani from gen_anio where ide_geani="+com_anio.getValue());
 		if (rep_reporte.isVisible()){
 			
 			p_parametros=new HashMap();		
@@ -604,7 +601,7 @@ public void aceptarReporte(){
 			if(sel_resolucion.getListaSeleccionados().size()>0){	
 				System.out.println("entra reporte");
 				p_parametros.put("pnro_resolucion",sel_resolucion.getSeleccionados());
-				p_parametros.put("titulo","Reforma Plan Operativo Anual (POA) "+tab_reporte.getValor("detalle_geani"));
+				p_parametros.put("titulo","Reforma Plan Operativo Anual (POA) "+tab_reporte.getValor("nom_geani"));
 				p_parametros.put("ide_geani", Integer.parseInt(com_anio.getValue().toString()));
 
 				self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
@@ -626,7 +623,7 @@ public void aceptarReporte(){
 		sel_poa.setId("sel_poa");
 		sel_poa.setSeleccionTabla("select a.ide_prpoa,detalle_programa,programa,detalle_proyecto,proyecto,detalle_producto,producto,detalle_actividad,actividad," +
 				" detalle_subactividad,subactividad,codigo_subactividad,fecha_inicio_prpoa,fecha_fin_prpoa,num_resolucion_prpoa,presupuesto_inicial_prpoa," +
-				" presupuesto_codificado_prpoa,reforma_prpoa,detalle_geani,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_geare" +
+				" presupuesto_codificado_prpoa,reforma_prpoa,nom_geani,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_geare" +
 				" from pre_poa a" +
 				" left join  gen_anio b on a.ide_geani= b.ide_geani" +
 				" left join pre_clasificador c on a.ide_prcla = c.ide_prcla" +
@@ -670,7 +667,7 @@ public void aceptarReporte(){
 public void aceptarSelPoa(){
 	sel_poa.getTab_seleccion().setSql("select a.ide_prpoa,detalle_programa,programa,detalle_proyecto,proyecto,detalle_producto,producto,detalle_actividad,actividad," +
 			" detalle_subactividad,subactividad,codigo_subactividad,fecha_inicio_prpoa,fecha_fin_prpoa,num_resolucion_prpoa,presupuesto_inicial_prpoa," +
-			" presupuesto_codificado_prpoa,reforma_prpoa,detalle_geani,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_geare" +
+			" presupuesto_codificado_prpoa,reforma_prpoa,nom_geani,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_geare" +
 			" from pre_poa a" +
 			" left join  gen_anio b on a.ide_geani= b.ide_geani" +
 			" left join pre_clasificador c on a.ide_prcla = c.ide_prcla" +
@@ -735,7 +732,7 @@ public void aceptarSelResolucion (){
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un A�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 
 		}
@@ -787,7 +784,7 @@ public void aceptarSelResolucion (){
         	}
         }
         if(presupuesto_ejecutado>presupuesto_codificado){
-        	utilitario.agregarMensajeInfo("Ejecuci�n Mensual", "No puede ejecutar un valor superior al presupuesto codificado");
+        	utilitario.agregarMensajeInfo("Ejecución Mensual", "No puede ejecutar un valor superior al presupuesto codificado");
             return;
         }
         if(tab_financiamiento.isFocus()){        	
@@ -830,7 +827,7 @@ public void aceptarSelResolucion (){
         		 //cometando momentaneamente para revisuon
         			if(asi_inicial<ejecucion){        		
         				double saldo=asi_inicial-ejcutado_inicial; 
-        				utilitario.agregarMensajeError("Asignaci�n supera el valor total en el POA", "Ya no dispone de saldo suficiente para la fuente de financiamiento seleccionada SALDO: "+saldo);
+        				utilitario.agregarMensajeError("Asignación supera el valor total en el POA", "Ya no dispone de saldo suficiente para la fuente de financiamiento seleccionada SALDO: "+saldo);
         				return;
         			}
         			
@@ -848,7 +845,7 @@ public void aceptarSelResolucion (){
         	
         	//System.out.println("total_fin "+total_fin+ " inicial "+inicial);
         	if(total_fin!=inicial){
-        		utilitario.agregarMensajeError("Fuente de Financiamiento", "La Asignaci�n de la fuente de financiamiento no conicide con el valor del presupuesto inicial");
+        		utilitario.agregarMensajeError("Fuente de Financiamiento", "La Asignación de la fuente de financiamiento no conicide con el valor del presupuesto inicial");
         		return;
         	}
         	

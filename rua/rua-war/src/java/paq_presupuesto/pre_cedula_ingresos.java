@@ -39,7 +39,7 @@ public class pre_cedula_ingresos extends Pantalla{
 		bar_botones.limpiar();
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));		
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 		
 		com_nivel_cuenta_inicial.setCombo(ser_presupuesto.getListaGruposNivelPresupuesto());		
@@ -91,7 +91,7 @@ public class pre_cedula_ingresos extends Pantalla{
 	public void generarCedula(){
 		System.out.println("generamos cedula");
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Selecione un A�o", "");
+			utilitario.agregarMensajeInfo("Selecione un Año", "");
 			return;			
 
 		}
@@ -167,7 +167,7 @@ public class pre_cedula_ingresos extends Pantalla{
 	}
 		public void seleccionaElAnio (){
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Selecione un A�o", "");
+			utilitario.agregarMensajeInfo("Selecione un Año", "");
 			return;			
 
 		}

@@ -35,7 +35,7 @@ public class pre_programa extends Pantalla {
 		/*
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 */
 		tab_programa.setId("tab_programa");
@@ -109,7 +109,7 @@ public class pre_programa extends Pantalla {
 	public void agregarClasificador(){
 		//si no selecciono ningun valor en el combo
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		//Si la tabla esta vacia
@@ -117,7 +117,7 @@ public class pre_programa extends Pantalla {
 			utilitario.agregarMensajeInfo("No se puede agregar Clasificador, por que no existen registros", "");
 			return;
 		}
-		//Filtrar los clasificadores del a�o seleccionado
+		//Filtrar los clasificadores del Año seleccionado
 		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
 		set_clasificador.getTab_seleccion().ejecutarSql();
 		set_clasificador.dibujar();
@@ -134,7 +134,7 @@ public class pre_programa extends Pantalla {
 			utilitario.agregarMensajeInfo("Debe seleccionar un Clasificador", "");
 		}
 	}
-///METODO A�O
+///METODO AñO
 	public void seleccionaElAnio (){
 		if(com_anio.getValue()!=null){
 			tab_vigente.setCondicion("ide_geani="+com_anio.getValue());
@@ -143,7 +143,7 @@ public class pre_programa extends Pantalla {
 
 		}
 		else{
-			utilitario.agregarMensajeInfo("Selecione un a�o", "");
+			utilitario.agregarMensajeInfo("Selecione un Año", "");
 
 		}
 	}
@@ -154,7 +154,7 @@ public class pre_programa extends Pantalla {
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un A�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 		}
 		else if (tab_programa.isFocus()) {

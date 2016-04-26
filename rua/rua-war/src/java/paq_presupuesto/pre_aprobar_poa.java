@@ -50,7 +50,7 @@ public class pre_aprobar_poa extends Pantalla{
 		bar_botones.limpiar();
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 		
 		
@@ -66,7 +66,7 @@ public class pre_aprobar_poa extends Pantalla{
 		ItemMenu itm_todas = new ItemMenu();
 		ItemMenu itm_niguna = new ItemMenu();
 
-		boc_seleccion_inversa.setValue("Selecci�n Inversa");
+		boc_seleccion_inversa.setValue("Selección Inversa");
 		boc_seleccion_inversa.setIcon("ui-icon-circle-check");
 		boc_seleccion_inversa.setMetodo("seleccinarInversa");
 		boc_seleccion_inversa.setUpdate("tab_poa");
@@ -96,7 +96,7 @@ public class pre_aprobar_poa extends Pantalla{
 		tab_poa.getColumna("descripcion_clasificador_prcla").setNombreVisual("NOMBRE CUENTA PRESUPUESTARIA");
 		tab_poa.getColumna("detalle_subactividad").setNombreVisual("SUBACTIVIDAD");
 		tab_poa.getColumna("detalle_actividad").setNombreVisual("ACTIVIDAD");
-		tab_poa.getColumna("detalle_geani").setNombreVisual("A�O");
+		tab_poa.getColumna("nom_geani").setNombreVisual("AñO");
 		tab_poa.setColumnaSuma("presupuesto_inicial_prpoa");
 		tab_poa.setLectura(true);
 		tab_poa.setTipoSeleccion(true);
@@ -120,14 +120,14 @@ public class pre_aprobar_poa extends Pantalla{
 
 		}
 		else{
-			utilitario.agregarMensajeInfo("Selecione un a�o", "");
+			utilitario.agregarMensajeInfo("Selecione un Año", "");
 
 		}
 	}
 	
 	public void importar(){
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		

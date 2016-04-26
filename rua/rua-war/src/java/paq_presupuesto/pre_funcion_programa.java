@@ -84,10 +84,10 @@ public class pre_funcion_programa extends Pantalla {
 
 		// tabla deaños vigente
 		tab_vigente.setId("tab_vigente");
-		tab_vigente.setHeader("A�O VIGENTE");
+		tab_vigente.setHeader("AñO VIGENTE");
 		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
 		tab_vigente.setCondicion("not ide_prfup is null");
-		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","detalle_geani","");
+		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
 		tab_vigente.getColumna("ide_geani").setUnico(true);
 		tab_vigente.getColumna("ide_prfup").setUnico(true);
 		
@@ -312,7 +312,7 @@ public void actualizaCodigo(){
 				}
 		}
 		else {
-			utilitario.agregarMensajeError("No se puede Guardar", "Revice el nivel jerarquico para la creaci�n del presente registro");
+			utilitario.agregarMensajeError("No se puede Guardar", "Revice el nivel jerarquico para la creación del presente registro");
 		}
 		}
 		

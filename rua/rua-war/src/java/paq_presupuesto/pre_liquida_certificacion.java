@@ -43,14 +43,14 @@ public class pre_liquida_certificacion extends Pantalla {
 	public pre_liquida_certificacion (){
 		
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 		par_modulosec_certificacion=utilitario.getVariable("p_modulo_secuencialcertificacion");
 
 	/////boton buscar poa
 		Boton bot_certificacion=new Boton();
 		bot_certificacion.setIcon("ui-icon-person");
-		bot_certificacion.setValue("Buscar Certificaci�n");
+		bot_certificacion.setValue("Buscar Certificación");
 		bot_certificacion.setMetodo("importarCertificacion");
 		//bar_botones.agregarBoton(bot_certificacion);
 		
@@ -163,7 +163,7 @@ public class pre_liquida_certificacion extends Pantalla {
 
 			set_certificacion.setId("set_certificacion");
 			set_certificacion.setSeleccionTabla(ser_presupuesto.getCertificacion("true,false"),"ide_prcer");
-			set_certificacion.setTitle("Seleccione Certificaci�n");
+			set_certificacion.setTitle("Seleccione Certificación");
 			set_certificacion.getTab_seleccion().getColumna("nro_certificacion_prcer").setFiltro(true);
 
 			set_certificacion.setRadio();
@@ -178,7 +178,7 @@ public class pre_liquida_certificacion extends Pantalla {
 	public void importarPoa(){
 		//si no selecciono ningun valor en el combo
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		set_poa.getTab_seleccion().setSql(ser_presupuesto.getPoa(com_anio.getValue().toString(),"true","true"));
@@ -211,7 +211,7 @@ public class pre_liquida_certificacion extends Pantalla {
 	public void importarCertificacion(){
 		//si no selecciono ningun valor en el combo
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		set_certificacion.getTab_seleccion().setSql(ser_presupuesto.getCertificacion("true,false"));
@@ -221,7 +221,7 @@ public class pre_liquida_certificacion extends Pantalla {
 	}
 	public  void aceptarCertificacion(){
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		String str_seleccionado = set_certificacion.getValorSeleccionado();
@@ -236,7 +236,7 @@ public class pre_liquida_certificacion extends Pantalla {
 			if(rad_imprimir.getValue().equals("1")){
 			TablaGenerica tab_valida_presupuesto = utilitario.consultar("select * from pre_tramite where ide_prcer="+str_seleccionado);
 				if(tab_valida_presupuesto.getTotalFilas()>0){
-					utilitario.agregarMensajeError("No se puede realizar una Liquidaci�n Total", "Existen ya ejecutados compromisos con la certificacion seleccionada");
+					utilitario.agregarMensajeError("No se puede realizar una Liquidación Total", "Existen ya ejecutados compromisos con la certificacion seleccionada");
 					tab_liquida_certificacion.limpiar();
 					return;
 
@@ -295,7 +295,7 @@ public void calcularTotalLiquidacion(){
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(tab_liquida_certificacion.isFocus()){
-		utilitario.agregarMensajeInfo("No puede insertar", "Debe buscar una Certificaci�n");
+		utilitario.agregarMensajeInfo("No puede insertar", "Debe buscar una Certificación");
 		}
 		else if(tab_detalle.isFocus()){
 			utilitario.agregarMensajeInfo("No puede insertar", "Debe ingresar un poa");
@@ -318,7 +318,7 @@ public void calcularTotalLiquidacion(){
 				utilitario.agregarMensaje("No existe valor", "El valor del saldo deb ser valido");
 			}
 			if (saldo !=0){
-				utilitario.agregarMensajeError("No se puede guardar", "Para una Liquidacion Total de la Certificaci�n los Saldos deben ser Cero");
+				utilitario.agregarMensajeError("No se puede guardar", "Para una Liquidacion Total de la Certificación los Saldos deben ser Cero");
 			}
 		}
 		// TODO Auto-generated method stub

@@ -90,7 +90,7 @@ public class pre_tramite extends Pantalla   {
 
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 
 		tab_tramite.setId("tab_tramite");
@@ -223,7 +223,7 @@ public class pre_tramite extends Pantalla   {
 
 		Boton bot_buscar=new Boton();
 		bot_buscar.setIcon("ui-icon-person");
-		bot_buscar.setValue("Buscar Certificaci�n Presupuestaria");
+		bot_buscar.setValue("Buscar Certificación Presupuestaria");
 		bot_buscar.setMetodo("importarPoa");
 		bar_botones.agregarBoton(bot_buscar);
 
@@ -364,7 +364,7 @@ public void importarPeticionario(){
 	public void importarPoa(){
 		//System.out.println(" ingresar al importar");
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un A�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 
@@ -486,7 +486,7 @@ public void importarPeticionario(){
 	public void insertar() {
 		// TODO Auto-generated method stub
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un a�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 		
 		}

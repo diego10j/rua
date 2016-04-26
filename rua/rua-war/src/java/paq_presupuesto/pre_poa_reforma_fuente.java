@@ -60,7 +60,7 @@ public class pre_poa_reforma_fuente extends Pantalla {
 		bar_botones.getBot_siguiente().setRendered(false);
 		
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 		
 		
@@ -119,7 +119,7 @@ public class pre_poa_reforma_fuente extends Pantalla {
        	Grid gri_guarda_reforma = new Grid();
        	gri_guarda_reforma.setColumns(2);
        	
-       	Etiqueta eti_resolcion_guarda = new Etiqueta("Nro. Resoluci�n: ");
+       	Etiqueta eti_resolcion_guarda = new Etiqueta("Nro. Resolución: ");
        	gri_guarda_reforma.getChildren().add(eti_resolcion_guarda);
        	txt_num_resolucion_guarda.setId("txt_num_resolucion_guarda");
        	txt_num_resolucion_guarda.setSize(15);
@@ -148,14 +148,14 @@ public class pre_poa_reforma_fuente extends Pantalla {
        	Grid gri_busca_reforma = new Grid();
        	gri_busca_reforma.setColumns(2);
        	
-       	Etiqueta eti_resolcion_busca = new Etiqueta("Nro. Resoluci�n: ");
+       	Etiqueta eti_resolcion_busca = new Etiqueta("Nro. Resolución: ");
        	gri_busca_reforma.getChildren().add(eti_resolcion_busca);
        	txt_num_oficio.setId("txt_num_oficio");
        	txt_num_oficio.setSize(15);
        	gri_busca_reforma.getChildren().add(txt_num_oficio);
        	
        	dia_busca_resolucion.setId("dia_busca_resolucion");
-       	dia_busca_resolucion.setTitle("Ingrese Nro. Resoluci�n Para Buscar la Reforma");
+       	dia_busca_resolucion.setTitle("Ingrese Nro. Resolución Para Buscar la Reforma");
        	dia_busca_resolucion.setWidth("25%");
        	dia_busca_resolucion.setHeight("20%");
        	dia_busca_resolucion.setDialogo(gri_busca_reforma);
@@ -209,11 +209,11 @@ public class pre_poa_reforma_fuente extends Pantalla {
 		set_reforma_fuente.setTitle("Seleccione una Fuente de Financiamiento para la Reforma");
 		set_reforma_fuente.setSeleccionTabla(ser_presupuesto.getPoaSaldosFuenteFinanciamiento("-1","-1","0","1"),"codigo");
 		set_reforma_fuente.getTab_seleccion().getColumna("detalle_prfuf").setNombreVisual("Fuente Financiamiento");
-		set_reforma_fuente.getTab_seleccion().getColumna("valor_asignado").setNombreVisual("Asignaci�n Inicial F.F.");
+		set_reforma_fuente.getTab_seleccion().getColumna("valor_asignado").setNombreVisual("Asignación Inicial F.F.");
 		set_reforma_fuente.getTab_seleccion().getColumna("codigo_clasificador_prcla").setNombreVisual("Partida Presupuestaria");
 		set_reforma_fuente.getTab_seleccion().getColumna("codigo_subactividad").setNombreVisual("Codigo Sub-Actividad");
 		set_reforma_fuente.getTab_seleccion().getColumna("detalle_subactividad").setNombreVisual("Sub-Actividad");
-		set_reforma_fuente.getTab_seleccion().getColumna("num_resolucion_prpoa").setNombreVisual("Nro. Resoluci�n");
+		set_reforma_fuente.getTab_seleccion().getColumna("num_resolucion_prpoa").setNombreVisual("Nro. Resolución");
 		set_reforma_fuente.getTab_seleccion().getColumna("detalle_proyecto").setNombreVisual("PROYECTO");
 
 		set_reforma_fuente.getTab_seleccion().getColumna("detalle_prfuf").setFiltro(true);
@@ -392,7 +392,7 @@ public class pre_poa_reforma_fuente extends Pantalla {
 	}
 	public void mostrarSetReformaFuente(){
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un a�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		else if(com_fuente_financiamiento.getValue()==null){

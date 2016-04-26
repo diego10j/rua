@@ -70,7 +70,7 @@ private ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario.instanc
 
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
-		bar_botones.agregarComponente(new Etiqueta("Seleccione El A�o:"));
+		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
 
 		
@@ -175,12 +175,12 @@ private ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario.instanc
 		saldo_certificado=Double.parseDouble(tab_poa_certificacion.getValor(i,"saldo_certificacion_prpoc"));
 		if(valor_certificado <=0)
 		{
-			utilitario.agregarNotificacionInfo("No se puede generar la Certificaci�n Presupuestaria", "Ingrese un valor superior a cero o un valor positivo");
+			utilitario.agregarNotificacionInfo("No se puede generar la Certificación Presupuestaria", "Ingrese un valor superior a cero o un valor positivo");
 			retorna +=retorna+1;
 			
 		}
 		if(valor_certificado>saldo_certificado){
-			utilitario.agregarNotificacionInfo("No se puede generar la Certificaci�n Presupuestaria", "Ingrese un valor igual o menor al disponible de saldo");
+			utilitario.agregarNotificacionInfo("No se puede generar la Certificación Presupuestaria", "Ingrese un valor igual o menor al disponible de saldo");
 			retorna +=retorna+1;
 			
 		}
@@ -244,11 +244,11 @@ private ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario.instanc
 	public void importarPoa(){
 		//System.out.println(" ingresar al importar");
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensajeInfo("Debe seleccionar un a�o", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
 		else if(tab_certificacion.isEmpty()){
-			utilitario.agregarMensajeInfo("No puede buscar un POA", "Debe tener una Certificaci�n Presupuestaria");
+			utilitario.agregarMensajeInfo("No puede buscar un POA", "Debe tener una Certificación Presupuestaria");
 		}
 
 		set_poa.getTab_seleccion().setSql(ser_presupuesto.getPoa(com_anio.getValue().toString(),"true","true"));
@@ -291,8 +291,8 @@ public void abrirListaReportes() {
 	rep_reporte.dibujar();
 }
 public void aceptarReporte(){
-	if(rep_reporte.getReporteSelecionado().equals("Certificaci�n Presupuestaria"));{
-		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,detalle_geani from gen_anio where ide_geani="+com_anio.getValue());
+	if(rep_reporte.getReporteSelecionado().equals("Certificación Presupuestaria"));{
+		TablaGenerica tab_reporte=utilitario.consultar("select ide_geani,nom_geani from gen_anio where ide_geani="+com_anio.getValue());
 		if (rep_reporte.isVisible()){
 			p_parametros=new HashMap();		
 			rep_reporte.cerrar();	
@@ -327,7 +327,7 @@ public void aceptarReporte(){
 		
 		
 		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un a�o");
+			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
 			return;
 		
 		}
