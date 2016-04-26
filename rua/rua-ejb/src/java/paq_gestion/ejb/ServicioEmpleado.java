@@ -177,7 +177,7 @@ public class ServicioEmpleado {
     
     public TablaGenerica getRolesEmpleado(String IDE_GEEDP) {
         // (NRESR) ESTADO DE ROL ACTIVO=1 ===Poner en parametro
-        return utilitario.consultar("select IDE_NRROL,DETALLE_GEANI,DETALLE_GEMES,IDE_NRDTN,ROL.IDE_GEPRO,FECHA_NRROL from NRH_ROL rol "
+        return utilitario.consultar("select IDE_NRROL,nom_geani as DETALLE_GEANI,nombre_gemes,IDE_NRDTN,ROL.IDE_GEPRO,FECHA_NRROL from NRH_ROL rol "
                 + "INNER JOIN GEN_PERIDO_ROL PROL ON ROL.IDE_GEPRO=PROL.IDE_GEPRO "
                 + "INNER JOIN GEN_ANIO ANIO ON PROL.IDE_GEANI=ANIO.IDE_GEANI "
                 + "INNER JOIN GEN_MES mes on prol.ide_gemes=mes.ide_gemes "
@@ -188,7 +188,7 @@ public class ServicioEmpleado {
     
       public List getRolesEmpleadoLista(String IDE_GEEDP) {
         // (NRESR) ESTADO DE ROL ACTIVO=1 ===Poner en parametro
-        return utilitario.getConexion().consultar("select IDE_NRROL,DETALLE_GEANI,DETALLE_GEMES,IDE_NRDTN,ROL.IDE_GEPRO,to_CHAR(FECHA_NRROL,'DD-MM-YYYY') from NRH_ROL rol "
+        return utilitario.getConexion().consultar("select IDE_NRROL,nom_geani as DETALLE_GEANI,nombre_gemes,IDE_NRDTN,ROL.IDE_GEPRO,to_CHAR(FECHA_NRROL,'DD-MM-YYYY') from NRH_ROL rol "
                 + "INNER JOIN GEN_PERIDO_ROL PROL ON ROL.IDE_GEPRO=PROL.IDE_GEPRO "
                 + "INNER JOIN GEN_ANIO ANIO ON PROL.IDE_GEANI=ANIO.IDE_GEANI "
                 + "INNER JOIN GEN_MES mes on prol.ide_gemes=mes.ide_gemes "
