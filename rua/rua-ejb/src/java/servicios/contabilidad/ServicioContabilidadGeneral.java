@@ -6,7 +6,9 @@
 package servicios.contabilidad;
 
 import framework.aplicacion.TablaGenerica;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import sistema.aplicacion.Utilitario;
@@ -193,36 +195,41 @@ public class ServicioContabilidadGeneral {
     /**
      * Sql que genera el Balance General
      *
-     * @param fecha_inicio
      * @param fecha_fin
      * @return
      */
-    public String getSqlBalanceGeneral(String fecha_inicio, String fecha_fin) {
+    public String getSqlBalanceGeneral(String fecha_fin) {
         String p_activo = utilitario.getVariable("p_con_tipo_cuenta_activo");
         String p_pasivo = utilitario.getVariable("p_con_tipo_cuenta_pasivo");
         String p_patrimonio = utilitario.getVariable("p_con_tipo_cuenta_patrimonio");
         String p_tipo_cuentas = p_activo + "," + p_pasivo + "," + p_patrimonio;
-        String sql = getSqlBalances(fecha_inicio, fecha_fin, p_tipo_cuentas);
+        String sql = getSqlBalances(fecha_fin, p_tipo_cuentas);
         return sql;
     }
 
     /**
      * Sql genera estado de resultados
      *
-     * @param fecha_inicio
      * @param fecha_fin
      * @return
      */
-    public String getSqlEstadoResultados(String fecha_inicio, String fecha_fin) {
+    public String getSqlEstadoResultados(String fecha_fin) {
         String p_ingresos = utilitario.getVariable("p_con_tipo_cuenta_ingresos");
         String p_gastos = utilitario.getVariable("p_con_tipo_cuenta_gastos");
         String p_costos = utilitario.getVariable("p_con_tipo_cuenta_costos");
         String p_tipo_cuentas = p_ingresos + "," + p_costos + "," + p_gastos;
-        String sql = getSqlBalances(fecha_inicio, fecha_fin, p_tipo_cuentas);
+        String sql = getSqlBalances(fecha_fin, p_tipo_cuentas);
         return sql;
     }
 
-    private String getSqlBalances(String fecha_inicio, String fecha_fin, String p_tipo_cuentas) {
+    /**
+     * Sql con saldo de las cuentas
+     *
+     * @param fecha_fin
+     * @param p_tipo_cuentas
+     * @return
+     */
+    private String getSqlBalances(String fecha_fin, String p_tipo_cuentas) {
 
         String estado_normal = utilitario.getVariable("p_con_estado_comprobante_normal");
         String estado_inicial = utilitario.getVariable("p_con_estado_comp_inicial");
@@ -236,9 +243,9 @@ public class ServicioContabilidadGeneral {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicio + "' and '" + fecha_fin + "') "
+                + "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
                 + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
-                + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " " ///solo la sucursal 
                 + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
                 + " GROUP BY dpc.ide_cndpc,codig_recur_cndpc, nombre_cndpc,con_ide_cndpc "
                 + "HAVING (sum(dcc.valor_cndcc*sc.signo_cnscu) <>0) ) as C1 "
@@ -249,6 +256,101 @@ public class ServicioContabilidadGeneral {
                 + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") "
                 + "and nivel_cndpc='PADRE' ) AS C2) "
                 + "order by codig_recur_cndpc ";
+    }
+
+    /**
+     * Retorna los totales del Estado de Resultados
+     *
+     * @param fecha_final
+     * @return INGRESOS, GASTOS, COSTOS
+     */
+    public Map<String, Double> getTotalesEstadoResultados(String fecha_final) {
+        Map<String, Double> resultado = new HashMap();
+        String p_ingresos = utilitario.getVariable("p_con_tipo_cuenta_ingresos");
+        String p_gastos = utilitario.getVariable("p_con_tipo_cuenta_gastos");
+        String p_costos = utilitario.getVariable("p_con_tipo_cuenta_costos");
+        String p_tipo_cuentas = p_ingresos + "," + p_costos + "," + p_gastos;
+
+        String sql = getSqlTotalesBalances(fecha_final, p_tipo_cuentas);
+
+        TablaGenerica tab_estado = utilitario.consultar(sql);
+        double tot_ingresos = 0;
+        double tot_gastos = 0;
+        double tot_costos = 0;
+        for (int i = 0; i < tab_estado.getTotalFilas(); i++) {
+            if (tab_estado.getValor(i, "ide_cntcu").equals(p_ingresos)) {
+                tot_ingresos += Double.parseDouble(tab_estado.getValor(i, "valor"));
+            } else if (tab_estado.getValor(i, "ide_cntcu").equals(p_gastos)) {
+                tot_gastos += Double.parseDouble(tab_estado.getValor(i, "valor"));
+            } else if (tab_estado.getValor(i, "ide_cntcu").equals(p_costos)) {
+                tot_costos += Double.parseDouble(tab_estado.getValor(i, "valor"));
+            }
+        }
+        resultado.put("INGRESOS", Double.parseDouble(utilitario.getFormatoNumero(tot_ingresos)));
+        resultado.put("GASTOS", Double.parseDouble(utilitario.getFormatoNumero(tot_gastos)));
+        resultado.put("COSTOS", Double.parseDouble(utilitario.getFormatoNumero(tot_costos)));
+        return resultado;
+    }
+
+    /**
+     * Retorna los totales del balance general a una fecha determinada
+     *
+     * @param fecha_final
+     * @return ACTIVO, PASIVO, PATRIMONIO
+     */
+    public Map<String, Double> getTotalesBalanceGeneral(String fecha_final) {
+        Map<String, Double> resultado = new HashMap();
+        String p_activo = utilitario.getVariable("p_con_tipo_cuenta_activo");
+        String p_pasivo = utilitario.getVariable("p_con_tipo_cuenta_pasivo");
+        String p_patrimonio = utilitario.getVariable("p_con_tipo_cuenta_patrimonio");
+
+        String p_tipo_cuentas = p_activo + "," + p_pasivo + "," + p_patrimonio;
+        String sql = getSqlTotalesBalances(fecha_final, p_tipo_cuentas);
+
+        TablaGenerica tab_balance = utilitario.consultar(sql);
+        double tot_activo = 0;
+        double tot_pasivo = 0;
+        double tot_patrimonio = 0;
+        for (int i = 0; i < tab_balance.getTotalFilas(); i++) {
+            if (tab_balance.getValor(i, "ide_cntcu").equals(p_activo)) {
+                tot_activo += Double.parseDouble(tab_balance.getValor(i, "valor"));
+            } else if (tab_balance.getValor(i, "ide_cntcu").equals(p_pasivo)) {
+                tot_pasivo += Double.parseDouble(tab_balance.getValor(i, "valor"));
+            } else if (tab_balance.getValor(i, "ide_cntcu").equals(p_patrimonio)) {
+                tot_patrimonio += Double.parseDouble(tab_balance.getValor(i, "valor"));
+            }
+        }
+        resultado.put("ACTIVO", Double.parseDouble(utilitario.getFormatoNumero(tot_activo)));
+        resultado.put("PASIVO", Double.parseDouble(utilitario.getFormatoNumero(tot_pasivo)));
+        resultado.put("PATRIMONIO", Double.parseDouble(utilitario.getFormatoNumero(tot_patrimonio)));
+        return resultado;
+    }
+
+    /**
+     * Sql que retorna el saldo de las cuentas a una determinada fecha
+     *
+     * @param fecha_fin
+     * @param p_tipo_cuentas
+     * @return
+     */
+    private String getSqlTotalesBalances(String fecha_fin, String p_tipo_cuentas) {
+        String estado_normal = utilitario.getVariable("p_con_estado_comprobante_normal");
+        String estado_inicial = utilitario.getVariable("p_con_estado_comp_inicial");
+        String estado_final = utilitario.getVariable("p_con_estado_comp_final");
+        return "select dpc.ide_cndpc,dpc.nombre_cndpc,dpc.ide_cnncu , "
+                + "sum(dcc.valor_cndcc*sc.signo_cnscu) as valor, "
+                + "dpc.codig_recur_cndpc,con_ide_cndpc,dpc.ide_cntcu from "
+                + "con_cab_comp_cont ccc "
+                + "inner join  con_det_comp_cont dcc on ccc.ide_cnccc=dcc.ide_cnccc "
+                + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
+                + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
+                + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
+                + "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
+                + "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " " ///solo la sucursal 
+                + "and ccc.ide_cneco in (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
+                + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
+                + "GROUP BY dpc.ide_cndpc,codig_recur_cndpc, nombre_cndpc,con_ide_cndpc "
+                + "HAVING (sum(dcc.valor_cndcc*sc.signo_cnscu) <>0) ";
     }
 
     /**
@@ -286,6 +388,25 @@ public class ServicioContabilidadGeneral {
      */
     public String getSqlNivelesPlandeCuentas() {
         return "select ide_cnncu,nombre_cnncu from con_nivel_cuenta where ide_empr=" + utilitario.getVariable("ide_empr") + "order by ide_cnncu";
+    }
+
+    /**
+     * Retorna si una cuenta es nivel HIJO
+     *
+     * @param ide_cndpc
+     * @return
+     */
+    public boolean isCuentaContableHija(String ide_cndpc) {
+        if (ide_cndpc != null && !ide_cndpc.isEmpty()) {
+            TablaGenerica tab_cuenta = getCuenta(ide_cndpc);
+            String str_nivel_cndpc = tab_cuenta.getValor("nivel_cndpc");
+            if (str_nivel_cndpc != null) {
+                if (str_nivel_cndpc.equalsIgnoreCase("HIJO")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
