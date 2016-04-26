@@ -657,7 +657,7 @@ public class pre_generar_rol extends Pantalla{
 
 		// validar que no existan roles generados sin cerrar
 		try {
-			TablaGenerica tab_roles_tipo_normal_pre_nomina=utilitario.consultar("select IDE_NRROL,ROL.IDE_GEPRO,rol.IDE_NRDTN,detalle_nrtin,detalle_gttem,DETALLE_GEMES " +
+			TablaGenerica tab_roles_tipo_normal_pre_nomina=utilitario.consultar("select IDE_NRROL,ROL.IDE_GEPRO,rol.IDE_NRDTN,detalle_nrtin,detalle_gttem,nombre_gemes " +
 					"from NRH_ROL rol " +
 					"inner join NRH_DETALLE_TIPO_NOMINA dtn on dtn.IDE_NRDTN=rol.IDE_NRDTN " +
 					"inner join NRH_TIPO_NOMINA tin on TIN.ide_nrtin=dtn.ide_nrtin " +
@@ -674,10 +674,10 @@ public class pre_generar_rol extends Pantalla{
 				int anio_pre_nom=0;
 				try {
 					mes=Integer.parseInt(tab_gepro.getValor("IDE_GEMES"));
-					anio=Integer.parseInt(ser_nomina.getAnio(tab_gepro.getValor("IDE_GEANI")).getValor("detalle_geani"));
+					anio=Integer.parseInt(ser_nomina.getAnio(tab_gepro.getValor("IDE_GEANI")).getValor("nom_geani"));
 
 					mes_pre_nom=Integer.parseInt(tab_gepro_pre_nomina.getValor("IDE_GEMES"));
-					anio_pre_nom=Integer.parseInt(ser_nomina.getAnio(tab_gepro_pre_nomina.getValor("IDE_GEANI")).getValor("detalle_geani"));
+					anio_pre_nom=Integer.parseInt(ser_nomina.getAnio(tab_gepro_pre_nomina.getValor("IDE_GEANI")).getValor("nom_geani"));
 
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -685,7 +685,7 @@ public class pre_generar_rol extends Pantalla{
 				if (mes>0 && anio>0 && mes_pre_nom>0 && anio_pre_nom>0 ){
 					if (anio>=anio_pre_nom){
 						if (mes>mes_pre_nom){
-							utilitario.agregarNotificacionInfo("No se puede calcular, Existen roles anteriores sin cerrar", "Cerrar nomina "+tab_roles_tipo_normal_pre_nomina.getValor("DETALLE_NRTIN")+" "+tab_roles_tipo_normal_pre_nomina.getValor("DETALLE_GTTEM")+" del periodo "+anio_pre_nom+" "+tab_roles_tipo_normal_pre_nomina.getValor("DETALLE_GEMES"));
+							utilitario.agregarNotificacionInfo("No se puede calcular, Existen roles anteriores sin cerrar", "Cerrar nomina "+tab_roles_tipo_normal_pre_nomina.getValor("DETALLE_NRTIN")+" "+tab_roles_tipo_normal_pre_nomina.getValor("DETALLE_GTTEM")+" del periodo "+anio_pre_nom+" "+tab_roles_tipo_normal_pre_nomina.getValor("nombre_gemes"));
 							return;
 						}
 					}
@@ -778,7 +778,7 @@ public class pre_generar_rol extends Pantalla{
 
 		// validamos que exista configuarcion de detalles de la tabla del sri para retenciones
 		if (ser_nomina.getSriDetalleImpuestoRenta(ide_srimr).getTotalFilas()==0){
-			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe configuracion de la tabla de impuesto a la renta del sri para el a�o del periodo seleccionado");
+			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe configuracion de la tabla de impuesto a la renta del sri para el Año del periodo seleccionado");
 			return;
 		}
 

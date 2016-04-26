@@ -209,7 +209,7 @@ public class pre_detalle_tipo_nomina extends Pantalla {
 
 		set_periodo_rol.setId("set_periodo_rol");
 		set_periodo_rol.setSeleccionTabla("select IDE_NRROL, " +
-				"DETALLE_GTTEM ||' '|| DETALLE_GEMES || '  ' || DETALLE_GEANI || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
+				"DETALLE_GTTEM ||' '|| nombre_gemes || '  ' || DETALLE_GEANI || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
 				"from nrh_ROL rol " +
 				"inner join GEN_PERIDO_ROL PRO on PRO.IDE_GEPRO=ROL.IDE_GEPRO " +
 				"inner join NRH_TIPO_ROL TIT ON TIT.IDE_NRTIT=PRO.IDE_NRTIT "+
@@ -394,7 +394,7 @@ public class pre_detalle_tipo_nomina extends Pantalla {
 	public void importarRubro(){
 		set_periodo_rol.setTitle("Seleccione el Periodo de la Nomina a Importar");
 		set_periodo_rol.getTab_seleccion().setSql("select IDE_NRROL, " +
-				"DETALLE_GTTEM ||' '|| DETALLE_GEMES || '  ' || DETALLE_GEANI || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
+				"DETALLE_GTTEM ||' '|| nombre_gemes || '  ' || nom_geani || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
 				"from nrh_ROL rol " +
 				"inner join GEN_PERIDO_ROL PRO on PRO.IDE_GEPRO=ROL.IDE_GEPRO " +
 				"inner join NRH_TIPO_ROL TIT ON TIT.IDE_NRTIT=PRO.IDE_NRTIT "+
@@ -902,7 +902,7 @@ public class pre_detalle_tipo_nomina extends Pantalla {
 	}
 
 	/**
-	 * Evalua una expresi�n aritm�tica, y retorna el resultado, ejemplo
+	 * Evalua una expresión aritm�tica, y retorna el resultado, ejemplo
 	 * 2*2/(4-2) retorna 2
 	 *
 	 * @param expresion

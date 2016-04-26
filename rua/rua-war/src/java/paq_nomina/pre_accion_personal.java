@@ -136,7 +136,7 @@ public class pre_accion_personal extends Pantalla {
 		bar_botones.agregarBoton(bot_limpiar);
 
 		Boton bot_reactiva=new Boton();
-		bot_reactiva.setValue("Reversa de Encargo de Posici�n");
+		bot_reactiva.setValue("Reversa de Encargo de Posición");
 		bot_reactiva.setMetodo("reactivar");
 		bot_reactiva.setIcon("ui-icon-transfer-e-w");
 //		bar_botones.agregarBoton(bot_reactiva);
@@ -203,12 +203,12 @@ public class pre_accion_personal extends Pantalla {
 		//are_tex_motivo.set		
 		Grid gri_editar_motivo=new Grid();
 
-		gri_editar_motivo.setMensajeInfo("En esta �rea puede editar el detalle de la Acci�n de Personal");
+		gri_editar_motivo.setMensajeInfo("En esta �rea puede editar el detalle de la Acción de Personal");
 		gri_editar_motivo.getChildren().add(are_tex_motivo);	
 
 
 		dia_editar_motivo.setId("dia_editar_motivo");
-		dia_editar_motivo.setTitle("EDITOR DE EL DETALLE DE ACCI�N DE PERSONAL");
+		dia_editar_motivo.setTitle("EDITOR DE EL DETALLE DE ACCióN DE PERSONAL");
 		dia_editar_motivo.setWidth("65%");
 		dia_editar_motivo.setHeight("60%");
 		dia_editar_motivo.setDialogo(gri_editar_motivo);
@@ -514,23 +514,23 @@ public class pre_accion_personal extends Pantalla {
 		dia_reactiva.setId("dia_reactiva");
 		dia_reactiva.setHeight("33%");
 		dia_reactiva.setWidth("50%");
-		dia_reactiva.setTitle("Reactivacion de Encargo de Posici�n");
+		dia_reactiva.setTitle("Reactivacion de Encargo de Posición");
 
 		Grid gri_rac=new Grid();
 		gri_rac.setStyle("Width:"+(dia_reactiva.getAnchoPanel()-10)+"PX;height:" + (dia_reactiva.getAltoPanel()-10) + "px;overflow: auto;display: block;");
 
 		gri_rac.setColumns(2);
-		gri_rac.getChildren().add(new Etiqueta("Posici�n Encargada :"));
+		gri_rac.getChildren().add(new Etiqueta("Posición Encargada :"));
 		tex_encargo.setSize(50);
 		tex_encargo.setReadonly(true);
 		tex_encargo.setStyle("width:99%");
 		gri_rac.getChildren().add(tex_encargo);
-		gri_rac.getChildren().add(new Etiqueta("Posici�n Anterior :"));
+		gri_rac.getChildren().add(new Etiqueta("Posición Anterior :"));
 		tex_anterior.setSize(50);
 		tex_anterior.setReadonly(true);
 		tex_anterior.setStyle("width:99%");
 		gri_rac.getChildren().add(tex_anterior);
-		gri_rac.getChildren().add(new Etiqueta("Fecha Encargo Posici�n :"));
+		gri_rac.getChildren().add(new Etiqueta("Fecha Encargo Posición :"));
 		gri_rac.getChildren().add(cal_fecha_encargo);	
 
 		dia_reactiva.getBot_aceptar().setMetodo("aceptarReactivar");
@@ -824,11 +824,11 @@ public void cambiarPartida(){
 					dia_reactiva.dibujar();				
 				}	
 				else{
-					utilitario.agregarMensajeInfo("No se puede Reactivar", "Debe seleccionar una Acci�n de tipo Encargo de Posicion");
+					utilitario.agregarMensajeInfo("No se puede Reactivar", "Debe seleccionar una Acción de tipo Encargo de Posicion");
 				}	
 			}
 			else{
-				utilitario.agregarMensajeInfo("No se puede Reactivar", "La Acci�n debe estar activa");	
+				utilitario.agregarMensajeInfo("No se puede Reactivar", "La Acción debe estar activa");	
 			}
 		}
 
@@ -1424,7 +1424,7 @@ public void cambiarPartida(){
 				set_encargo.cerrar();				
 			}
 			else{
-				utilitario.agregarMensajeError("No se puede Completar la Acci�n", "El empleado seleccionado no tiene una Acci�n activa");
+				utilitario.agregarMensajeError("No se puede Completar la Acción", "El empleado seleccionado no tiene una Acción activa");
 			}
 		}
 	}
@@ -1639,7 +1639,7 @@ try {
 /* comentado por u salesiana
 							ser_asistencia.desactivarPeriodoVacacion(ser_asistencia.getAsiVacacionActiva(aut_empleado.getValor()).getValor("IDE_ASVAC"),tab_empleado_departamento.getValor("FECHA_LIQUIDACION_GEEDP"));
 */
-                                                        utilitario.agregarMensajeInfo("Se guardo correctamente", "Terminaci�n del contrato");
+                                                        utilitario.agregarMensajeInfo("Se guardo correctamente", "Terminación del contrato");
 						}
 					}
 
@@ -1859,7 +1859,7 @@ try {
 	public void aceptarReporte() {
 		Locale locale=new Locale("es","ES");
 		// TODO Auto-generated method stub
-		if(rep_reporte.getReporteSelecionado().equals("Acci�n de Personal")){
+		if(rep_reporte.getReporteSelecionado().equals("Acción de Personal")){
 			if(tab_deta_empleado_depar.getTotalFilas()>0){
 				if(rep_reporte.isVisible()){
 					p_parametros=new HashMap();
@@ -1897,7 +1897,7 @@ try {
 						System.out.println("sql sel_tab_accion_motivo...   "+sel_tab_accion_motivo.getTab_seleccion().getSql());
 						sel_tab_accion_motivo.dibujar();
 					}else{
-						utilitario.agregarMensajeInfo("No se puede generar el reporte de accion de personal", "Seleccione una opci�n");
+						utilitario.agregarMensajeInfo("No se puede generar el reporte de accion de personal", "Seleccione una opción");
 					}
 				}
 				else if(sel_tab_accion_motivo.isVisible()){					
@@ -1912,7 +1912,7 @@ try {
 						sel_tab_accion_motivo.cerrar();
 						dia_editar_motivo.dibujar();
 					}else{
-						utilitario.agregarMensajeInfo("No se puede generar el reporte de accion de personal", "Seleccione una opci�n de motivo");
+						utilitario.agregarMensajeInfo("No se puede generar el reporte de accion de personal", "Seleccione una opción de motivo");
 					}
 				}	
 				else if(dia_editar_motivo.isVisible()){
@@ -1942,7 +1942,7 @@ try {
 					System.out.println("valor de ide_geded: "+Long.parseLong(tab_deta_empleado_depar.getValor("ide_geded")));										
 				}
 			}else{
-				utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro en la cabecera de la acci�n de personal");
+				utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro en la cabecera de la acción de personal");
 			}
 		}
 	}	

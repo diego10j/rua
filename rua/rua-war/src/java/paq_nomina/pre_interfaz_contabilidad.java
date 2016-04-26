@@ -62,7 +62,7 @@ public class pre_interfaz_contabilidad extends Pantalla {
 
 
 		com_periodo.setId("com_periodo");
-		com_periodo.setCombo("SELECT PER.IDE_GEPRO,mes.detalle_gemes,ani.detalle_geani,TIR.DETALLE_NRTIT, " +
+		com_periodo.setCombo("SELECT PER.IDE_GEPRO,mes.nombre_gemes,ani.nom_geani,TIR.DETALLE_NRTIT, " +
 				"PER.FECHA_INICIAL_GEPRO,PER.FECHA_FINAL_GEPRO " +
 				"FROM GEN_PERIDO_ROL PER " +
 				"INNER JOIN NRH_TIPO_ROL TIR ON TIR.IDE_NRTIT=PER.IDE_NRTIT " +
@@ -343,8 +343,8 @@ public class pre_interfaz_contabilidad extends Pantalla {
 						"'"+utilitario.getVariable("p_CMC_ESTADO_MALLA")+"', "+
 						""+tab_det_m.getTotalFilas()+""+", " +
 						""+utilitario.getFormatoNumero(tab_det_mov.getSumaColumna("DEBE_CNDEM"))+", " +
-						"'PROCESO: [NOMINA] DE ["+utilitario.getNombreMes(Integer.parseInt(tab_mov_contable.getValor("IDE_GEMES")))+" "+ser_nomina.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("DETALLE_GEANI")+"]', "+
-						""+ser_nomina.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("DETALLE_GEANI")+", " +
+						"'PROCESO: [NOMINA] DE ["+utilitario.getNombreMes(Integer.parseInt(tab_mov_contable.getValor("IDE_GEMES")))+" "+ser_nomina.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("nom_geani")+"]', "+
+						""+ser_nomina.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("nom_geani")+", " +
 						"to_date('"+tab_mov_contable.getValor("FECHA_MOVIMIENTO_CNMOC")+"','yy-mm-dd'), " +
 						"to_date('"+utilitario.getFechaActual()+"','yy-mm-dd'), " +
 						""+utilitario.getFormatoNumero(tab_det_mov.getSumaColumna("HABER_CNDEM"))+" " +
@@ -583,8 +583,8 @@ public class pre_interfaz_contabilidad extends Pantalla {
 					nombre_nomina=nombre_nomina.substring(0, nombre_nomina.length()-2);
 
 					parametro.put("nombre_tipo_nomina",nombre_nomina);
-					String nom_mes=serv_gestion.getMes(tab_mov_contable.getValor("IDE_GEMES")).getValor("DETALLE_GEMES");
-					String anio=serv_gestion.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("DETALLE_GEANI");
+					String nom_mes=serv_gestion.getMes(tab_mov_contable.getValor("IDE_GEMES")).getValor("nombre_gemes");
+					String anio=serv_gestion.getAnio(tab_mov_contable.getValor("IDE_GEANI")).getValor("nom_geani");
 					parametro.put("nombre_mes",nom_mes);
 					parametro.put("anio",anio);
 

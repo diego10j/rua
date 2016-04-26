@@ -236,7 +236,7 @@ private Texto txt_usuario=new Texto();
 		gri_amor.getChildren().add(pat_panel7);
 		gri_amor.getChildren().add(pat_panel3);
 
-		tab_tabulador.agregarTab("TABLA DE AMORTIZACI�N", gri_amor);
+		tab_tabulador.agregarTab("TABLA DE AMORTIZACióN", gri_amor);
 
 
 

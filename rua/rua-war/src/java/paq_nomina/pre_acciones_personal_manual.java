@@ -234,7 +234,7 @@ public class pre_acciones_personal_manual extends Pantalla {
 		 
 	 }
 	 else {
-		 utilitario.agregarMensajeInfo("Seleccione una opci�n", "Debe seleccionar un funcionario");
+		 utilitario.agregarMensajeInfo("Seleccione una opción", "Debe seleccionar un funcionario");
 	 }
  }
  long ide_inicial=0;
@@ -292,10 +292,10 @@ public class pre_acciones_personal_manual extends Pantalla {
 			tab_tabla1.ejecutarSql();
 			tab_tabla2.ejecutarSql();
 			set_subroga.cerrar();
-			utilitario.agregarMensaje("Ejecutado con Exito", "La subrogaci�n se ejecuto con �xito");
+			utilitario.agregarMensaje("Ejecutado con Exito", "La subrogación se ejecuto con �xito");
 	 }
 	 else {
-		 utilitario.agregarMensajeInfo("Seleccionar una opci�n", "Debe seleccionar al menos un registro");
+		 utilitario.agregarMensajeInfo("Seleccionar una opción", "Debe seleccionar al menos un registro");
 	 return;
 	 }
  }

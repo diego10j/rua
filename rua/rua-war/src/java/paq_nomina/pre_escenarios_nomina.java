@@ -60,7 +60,7 @@ public class pre_escenarios_nomina extends Pantalla{
 		tab_rol_escenario.setId("tab_rol_escenario");
 		tab_rol_escenario.setTabla("NRH_ROL_ESCENARIO", "IDE_NRROE", 1);
 		tab_rol_escenario.getColumna("POR_VARIACION_NRROE").setMetodoChange("cambiaPorcentaje");
-		tab_rol_escenario.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "DETALLE_GEANI", "");
+		tab_rol_escenario.getColumna("IDE_GEANI").setCombo("GEN_ANIO", "IDE_GEANI", "nom_geani", "");
 		tab_rol_escenario.getColumna("ACTIVO_NRROE").setCheck();
 		tab_rol_escenario.getColumna("ACTIVO_NRROE").setValorDefecto("true");
 		tab_rol_escenario.getColumna("APROBADO_NRROE").setCheck();

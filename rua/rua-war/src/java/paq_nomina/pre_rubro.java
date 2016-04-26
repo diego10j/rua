@@ -91,10 +91,10 @@ public class pre_rubro extends Pantalla {
 
 		tab_tabla2.getColumna("IDE_GETIA").setCombo("GEN_TIPO_ASIENTO", "IDE_GETIA", "DETALLE_GETIA", "");
 		tab_tabla2.getColumna("IDE_GELUA").setCombo("GEN_LUGAR_APLICA", "IDE_GELUA", "DETALLE_GELUA", "");
-		//tab_tabla2.getColumna("IDE_GECUC").setCombo("GEN_CUENTA_CONTABLE", "IDE_GECUC", "CODIGO_CUENTA_GECUC,DETALLE_GECUC", "");
-		//tab_tabla2.getColumna("IDE_GECUC").setAutoCompletar();
-		tab_tabla2.getColumna("ide_cocac").setCombo(ser_contabilidad.servicioCatalogoCuentaCombo());
-		tab_tabla2.getColumna("ide_cocac").setAutoCompletar();		tab_tabla2.getColumna("IDE_GEARE").setCombo("GEN_AREA","IDE_GEARE","DETALLE_GEARE","");		
+		tab_tabla2.getColumna("IDE_GECUC").setCombo("GEN_CUENTA_CONTABLE", "IDE_GECUC", "CODIGO_CUENTA_GECUC,DETALLE_GECUC", "");
+		tab_tabla2.getColumna("IDE_GECUC").setAutoCompletar();
+		//tab_tabla2.getColumna("ide_cocac").setCombo(ser_contabilidad.servicioCatalogoCuentaCombo());
+		//tab_tabla2.getColumna("ide_cocac").setAutoCompletar();		tab_tabla2.getColumna("IDE_GEARE").setCombo("GEN_AREA","IDE_GEARE","DETALLE_GEARE","");		
 		tab_tabla2.dibujar();
 		PanelTabla pat_panel2 = new PanelTabla();
 		pat_panel2.setMensajeWarn("RUBROS PARA ASIENTO CONTABLE");		

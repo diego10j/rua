@@ -141,7 +141,7 @@ public class pre_rep_gerencial extends Pantalla {
 		lis.add(obj);
 		Object obj2[]=new Object[2];
 		obj2[0]=1;
-		obj2[1]="Tipo Nomina Vs (A�os,Meses)";
+		obj2[1]="Tipo Nomina Vs (Años,Meses)";
 		lis.add(obj2);		
 		Object obj3[]=new Object[2];
 		obj3[0]=2;
@@ -332,7 +332,7 @@ public class pre_rep_gerencial extends Pantalla {
 		PanelTabla pat_datos=new PanelTabla();
 		pat_datos.setPanelTabla(tab_datos);
 
-		pac_acordion.agregarPanel("INFORMACI�N EN TABLA", pat_datos);
+		pac_acordion.agregarPanel("INFORMACióN EN TABLA", pat_datos);
 		pac_acordion.setRendered(true);
 
 		bot_exportar.setOnclick("$('#formulario\\\\:output').empty().append(basic.exportAsImage());dlg.show(); ");
@@ -390,12 +390,12 @@ public class pre_rep_gerencial extends Pantalla {
 			gri_suc_are_dep.getChildren().add(rad_suc_are_dep);
 
 			gri_cabecera.getChildren().add(gri_suc_are_dep);
-		}else if (rad.getValue().equals("1")){// grafico (a�os,meses) Vs Tipo de Nomina
+		}else if (rad.getValue().equals("1")){// grafico (Años,meses) Vs Tipo de Nomina
 
 			List<Object> lis=new ArrayList<Object>();
 			Object obj[]=new Object[2];
 			obj[0]=0;
-			obj[1]="Por A�os";
+			obj[1]="Por Años";
 			lis.add(obj);
 			Object obj0[]=new Object[2];
 			obj0[0]=1;
@@ -405,7 +405,7 @@ public class pre_rep_gerencial extends Pantalla {
 			rad_suc_are_dep.setId("rad_suc_are_dep");
 			rad_suc_are_dep.setRadio(lis);
 			rad_suc_are_dep.setVertical();
-			rad_suc_are_dep.setMetodoChange("cambiaTipoGraficoA�osMeses");
+			rad_suc_are_dep.setMetodoChange("cambiaTipoGraficoAñosMeses");
 			rad_suc_are_dep.setValue(str_value_rad_anios_meses);
 			Grid gri_suc_are_dep=new Grid();
 			gri_suc_are_dep.setColumns(1);
@@ -561,7 +561,7 @@ public class pre_rep_gerencial extends Pantalla {
 				tab_rep_pantalla=utilitario.consultar("SELECT detatipono.ide_nrdtn as ide_label, " +
 						"TIN.DETALLE_NRTIN ||' - '|| TIPOEMP.detalle_gttem as detalle_label, " +
 						"anio.ide_geani as ide_col_ejeX, " +
-						"detalle_geani as nom_col_ejeX, " +
+						"nom_geani as nom_col_ejeX, " +
 						"SUM(VALOR_NRDRO) as MONTO " +
 						"FROM NRH_DETALLE_ROL DETA LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DETA.IDE_NRROL " +
 						"LEFT JOIN NRH_DETALLE_TIPO_NOMINA DETATIPONO ON ROL.IDE_NRDTN = DETATIPONO.IDE_NRDTN " +
@@ -581,7 +581,7 @@ public class pre_rep_gerencial extends Pantalla {
 						"WHERE detatipono.ide_nrdtn IN ("+set_tipo_nomina.getSeleccionados()+") " +
 						"AND ROL.IDE_GEPRO IN ("+ide_gepro+") " +
 						"AND RUB.IDE_NRRUB IN ("+utilitario.getVariable("p_nrh_rubro_valor_recibir")+") " +
-						"GROUP BY detatipono.ide_nrdtn,TIN.DETALLE_NRTIN,TIPOEMP.detalle_gttem,detalle_geani,anio.ide_geani " +
+						"GROUP BY detatipono.ide_nrdtn,TIN.DETALLE_NRTIN,TIPOEMP.detalle_gttem,nom_geani,anio.ide_geani " +
 						"HAVING sum (DETA.VALOR_NRDRO)>0 " +
 						"order by ide_label,nom_col_ejeX");
 
@@ -747,9 +747,9 @@ public class pre_rep_gerencial extends Pantalla {
 				tab_rep_pantalla=utilitario.consultar("SELECT detatipono.ide_nrdtn as ide_label," +
 						"TIN.DETALLE_NRTIN ||' - '|| TIPOEMP.detalle_gttem as detalle_label,  " +
 						"mes.ide_gemes as ide_col_ejeX," +
-						"detalle_geani ||' - '|| detalle_gemes as nom_col_ejeX, " +
+						"nom_geani ||' - '|| nombre_gemes as nom_col_ejeX, " +
 						"SUM(VALOR_NRDRO) as MONTO, " +
-						"detalle_geani "+
+						"nom_geani "+
 						"FROM NRH_DETALLE_ROL DETA LEFT JOIN NRH_ROL ROL ON " +
 						"ROL.IDE_NRROL=DETA.IDE_NRROL " +
 						"LEFT JOIN NRH_DETALLE_TIPO_NOMINA DETATIPONO ON ROL.IDE_NRDTN = DETATIPONO.IDE_NRDTN " +
@@ -769,9 +769,9 @@ public class pre_rep_gerencial extends Pantalla {
 						"ANIO ON ANIO.IDE_GEANI=PERIODO.IDE_GEANI " + 
 						"WHERE detatipono.ide_nrdtn IN ("+set_tipo_nomina.getSeleccionados()+") AND ROL.IDE_GEPRO " +
 						"IN ("+ide_gepro+") AND RUB.IDE_NRRUB IN ("+utilitario.getVariable("p_nrh_rubro_valor_recibir")+") " +
-						"GROUP BY detatipono.ide_nrdtn,TIPOEMP.detalle_gttem,detalle_geani,detalle_gemes,mes.ide_gemes,TIN.DETALLE_NRTIN " +
+						"GROUP BY detatipono.ide_nrdtn,TIPOEMP.detalle_gttem,nom_geani,nombre_gemes,mes.ide_gemes,TIN.DETALLE_NRTIN " +
 						"HAVING sum (DETA.VALOR_NRDRO)>0 " +
-						"order by ide_label,detalle_geani,ide_col_ejeX");
+						"order by ide_label,nom_geani,ide_col_ejeX");
 
 				if (tab_rep_pantalla.getTotalFilas()>0){
 					construirGrafico(tab_rep_pantalla,titulo);

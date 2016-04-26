@@ -420,7 +420,7 @@ public class pre_rol extends Pantalla{
 		gri_valida.setFooter(edi_mensajes);	
 
 		gri_cuerpo.setStyle("width:" + (dia_importar.getAnchoPanel() - 5) + "px;");
-		gri_cuerpo.setMensajeInfo("Esta opci�n  permite subir valores a un rubro a partir de un archivo xls");
+		gri_cuerpo.setMensajeInfo("Esta opción  permite subir valores a un rubro a partir de un archivo xls");
 		gri_cuerpo.getChildren().add(gri_impo);
 		gri_cuerpo.getChildren().add(gri_valida);
 		gri_cuerpo.getChildren().add(edi_mensajes);
@@ -437,8 +437,8 @@ public class pre_rol extends Pantalla{
 		sel_tab_periodo.setId("sel_tab_periodo");
 		sel_tab_periodo.setSeleccionTabla(ser_nomina.getSqlSeleccionTablaPeriodoRol(), "IDE_GEPRO");
 		sel_tab_periodo.setRadio();
-		sel_tab_periodo.getTab_seleccion().getColumna("detalle_geani").setFiltro(true);
-		sel_tab_periodo.getTab_seleccion().getColumna("detalle_gemes").setFiltro(true);
+		sel_tab_periodo.getTab_seleccion().getColumna("nom_geani").setFiltro(true);
+		sel_tab_periodo.getTab_seleccion().getColumna("nombre_gemes").setFiltro(true);
 		gru_pantalla.getChildren().add(sel_tab_periodo);
 		sel_tab_periodo.getBot_aceptar().setMetodo("aceptarReporte");
 		agregarComponente(sel_tab_periodo);
@@ -486,7 +486,7 @@ public class pre_rol extends Pantalla{
 
 		sel_cal_mes.setId("sel_cal_mes");
 		sel_cal_mes.setMultiple(true);
-		sel_cal_mes.setTitle("ESCOJA EL RANGO DE FECHAS ESCOJA EL MES Y EL A�O");
+		sel_cal_mes.setTitle("ESCOJA EL RANGO DE FECHAS ESCOJA EL MES Y EL AñO");
 		sel_cal_mes.setDynamic(false);
 		agregarComponente(sel_cal_mes);
 
@@ -739,14 +739,14 @@ public class pre_rol extends Pantalla{
 		String ide_srimr=ser_nomina.getSriImpuestoRenta(fecha_fin_gepro).getValor("IDE_SRIMR");
 
 		if (ide_srimr==null || ide_srimr.isEmpty()){
-			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe impuesto a la renta para el a�o del periodo seleccionado");
+			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe impuesto a la renta para el Año del periodo seleccionado");
 			return;
 		}
 		
 		
 		// validamos que exista configuarcion de detalles de la tabla del sri para retenciones
 		if (ser_nomina.getSriDetalleImpuestoRenta(ide_srimr).getTotalFilas()==0){
-			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe la configuracion de la tabla de impuesto a la renta del sri para el a�o del periodo seleccionado");
+			utilitario.agregarMensajeInfo("No se puede calcular la renta", "No existe la configuracion de la tabla de impuesto a la renta del sri para el Año del periodo seleccionado");
 			return;
 		}
 		String str_tip_nom_renta=utilitario.getVariable("p_nrh_tipo_nomina_para_calcular_renta");
@@ -1247,7 +1247,7 @@ public class pre_rol extends Pantalla{
 				for (int i = 0; i < str.length; i++) {				
 					TablaGenerica tab=utilitario.consultar("select * from NRH_DETALLE_RUBRO a where a.ide_nrdtn ="+str[i]+" and IDE_NRRUB="+aut_rubros.getValor());
 					if(tab.isEmpty()){
-						str_msg_adve+=getFormatoAdvertencia("No existe configuraci�n del rubro "+((Object[])aut_rubros.getValue())[1]+" en el tipo de N�mina "+tab_rol.getValorArreglo(i, "ide_nrdtn", 1)+" "+tab_rol.getValorArreglo(i, "ide_nrdtn", 2));	
+						str_msg_adve+=getFormatoAdvertencia("No existe configuración del rubro "+((Object[])aut_rubros.getValue())[1]+" en el tipo de N�mina "+tab_rol.getValorArreglo(i, "ide_nrdtn", 1)+" "+tab_rol.getValorArreglo(i, "ide_nrdtn", 2));	
 					}				
 				}
 
@@ -1311,7 +1311,7 @@ public class pre_rol extends Pantalla{
 								
 								if(tab_detarol.isEmpty()){
 									//No existe registro del rubro para el empleado
-									str_msg_adve+=getFormatoAdvertencia("No se puede asignar valor al rubro "+((Object[])aut_rubros.getValue())[1]+" al n�mero de cedula "+str_cedula+" ya que no existe configuraci�n, fila "+(i+1));
+									str_msg_adve+=getFormatoAdvertencia("No se puede asignar valor al rubro "+((Object[])aut_rubros.getValue())[1]+" al n�mero de cedula "+str_cedula+" ya que no existe configuración, fila "+(i+1));
 									
 									//MENSAJE Q PIDIO LA  MADRE
 									if(str.length==1){
@@ -1450,7 +1450,7 @@ public class pre_rol extends Pantalla{
 
 
 	/**
-	 * Genera un mensaje de informaci�n color azul
+	 * Genera un mensaje de información color azul
 	 * @param mensaje
 	 * @return
 	 */
@@ -2753,7 +2753,7 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                                                          //str_mail="hhsoul_louis@hotmail.com";
                                                          continue;
                                                  }
-                                                 String str_mensaje="Fecha Generaci�n: "+utilitario.getFechaLarga(utilitario.getFechaActual())+" Hora : "+utilitario.getHoraActual()+" "+
+                                                 String str_mensaje="Fecha Generación: "+utilitario.getFechaLarga(utilitario.getFechaActual())+" Hora : "+utilitario.getHoraActual()+" "+
                                                  "Funcionario(a): "+filaActual.getCampos()[2]+" Para su conocimiento, le adjuntamos un archivo pdf con el detalle del rol de pago generado por el Sistema de Gest�on de Talento Humano.";
                                                  //Mismo proceso de llamar a reporte boleta individual
                                                  
