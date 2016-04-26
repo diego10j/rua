@@ -116,7 +116,7 @@ public class ServicioContabilidadGeneral {
     }
 
     /**
-     * Retorna el saldo contable inicial de una cuenta a una determindada fecha
+     * Retorna el saldo inicial de una cuenta a una determindada fecha
      *
      * @param ide_cndpc
      * @param fecha
@@ -146,6 +146,49 @@ public class ServicioContabilidadGeneral {
             }
         }
         return saldo;
+    }
+
+    /**
+     * Retorna el saldo de una cuenta a una determindada fecha
+     *
+     * @param ide_cndpc
+     * @param fecha
+     * @return
+     */
+    public double getSaldoCuenta(String ide_cndpc, String fecha) {
+        //Retorna el saldo inicial de una cuenta segun el periodo activo
+        double saldo = 0;
+        String sql = "Select dpc.ide_cndpc,sum(dcc.valor_cndcc*sc.signo_cnscu) as valor "
+                + "from con_cab_comp_cont ccc "
+                + "inner join  con_det_comp_cont dcc on ccc.ide_cnccc=dcc.ide_cnccc "
+                + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
+                + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
+                + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
+                + "WHERE  ccc.fecha_trans_cnccc<= '" + fecha + "' "
+                + "and ccc.ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") "
+                + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and dpc.ide_cndpc=" + ide_cndpc + " "
+                + "GROUP BY dpc.ide_cndpc ";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor(0, "valor") != null) {
+                try {
+                    saldo = Double.parseDouble(tab_saldo.getValor(0, "valor"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return saldo;
+    }
+
+    /**
+     * Retorna el saldo de la cuenta contable
+     *
+     * @param ide_cndpc
+     * @return
+     */
+    public double getSaldoCuenta(String ide_cndpc) {
+        return getSaldoCuenta(ide_cndpc, utilitario.getFechaActual());
     }
 
     /**
