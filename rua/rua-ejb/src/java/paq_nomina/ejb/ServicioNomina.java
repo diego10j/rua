@@ -103,14 +103,14 @@ public class ServicioNomina {
 		System.out.println("tab de rol "+tab_drol.getSql());
 		
 		if (tab_drol.getTotalFilas()>0){
-			TablaGenerica tab_per=utilitario.consultar("select IDE_GEPRO,DETALLE_GEMES,DETALLE_GEANI from GEN_PERIDO_ROL pro " +
+			TablaGenerica tab_per=utilitario.consultar("select IDE_GEPRO,nombre_gemes,nom_geani as DETALLE_GEANI from GEN_PERIDO_ROL pro " +
 					"inner join GEN_MES mes on MES.ide_gemes=PRO.IDE_GEMES " +
 					"inner join GEN_ANIO ani on ani.ide_geani=PRO.IDE_GEANI " +
 					"where IDE_GEPRO IN ( " +
 					""+ide_gepro+" " +
 					") ORDER by mes.ide_gemes DESC ");
-			String mes=tab_per.getValor("DETALLE_GEMES");
-			String anio=tab_per.getValor("DETALLE_GEANI");		
+			String mes=tab_per.getValor("nombre_gemes");
+			String anio=tab_per.getValor("nom_geani");		
 			String str="No se puede generar la accion en la fecha "+fecha_accion+", " +
 					"Debido a que el empleado seleccionado consta en la " +
 					"nomina "+getTipoEmpleado(getDetalleTipoNomina(getRol(tab_drol.getValor("ide_nrrol")).getValor("ide_nrdtn")).getValor("ide_gttem")).getValor("detalle_gttem")+" " +
@@ -271,8 +271,8 @@ public class ServicioNomina {
 
 	public String getSqlComboPeriodoRol(){
 		String sql_combo_gepro="SELECT PER.IDE_GEPRO, " +
-		"mes.detalle_gemes ||' '|| " + 
-		"ani.detalle_geani ||' '|| " +
+		"mes.nombre_gemes ||' '|| " + 
+		"ani.nom_geani ||' '|| " +
 		"(case when TIR.DETALLE_NRTIT is null then '' else TIR.DETALLE_NRTIT end)||' '|| " + 
 		"(case when PER.FECHA_INICIAL_GEPRO is null then '1900-01-01' else PER.FECHA_INICIAL_GEPRO END)||'  '|| " +
 		"(case when PER.FECHA_FINAL_GEPRO is null then '1900-01-01' else PER.FECHA_FINAL_GEPRO end )||' '|| " +
@@ -291,7 +291,7 @@ public class ServicioNomina {
 
 	public String getSqlSeleccionTablaPeriodoRol(){
 		String sql_combo_gepro="SELECT PER.IDE_GEPRO, " +
-				"mes.detalle_gemes, ani.detalle_geani ," +
+				"mes.nombre_gemes, ani.nom_geani ," +
 				"TIR.DETALLE_NRTIT ||' '|| CASE WHEN PER.DETALLE_PERIODO_GEPRO IS NULL THEN NULL ELSE PER.DETALLE_PERIODO_GEPRO END as DETALLE_NRTIT,  " +
 				"case when (PER.FECHA_INICIAL_GEPRO) is null then NULL else (PER.FECHA_INICIAL_GEPRO) END as fecha_ini, " +
 				"case when (PER.FECHA_FINAL_GEPRO) is null then NULL else (PER.FECHA_FINAL_GEPRO) end as fecha_fin  " +
@@ -852,7 +852,7 @@ public class ServicioNomina {
 				"emp.primer_nombre_gtemp ||' '|| " +
 				"(case when emp.segundo_nombre_gtemp is null then '' else emp.segundo_nombre_gtemp end) as nombres, " +
 				"a.tipo_nomina, "+
-				"ani.detalle_geani ||' '||mes.detalle_gemes as periodo, " +
+				"ani.nom_geani ||' '||mes.nombre_gemes as periodo, " +
 				"a.detalle_nrrub, " +
 				"a.valor " +
 				"from ( " +
@@ -910,7 +910,7 @@ public class ServicioNomina {
 				"emp.primer_nombre_gtemp ||' '|| " +
 				"(case when emp.segundo_nombre_gtemp is null then '' else emp.segundo_nombre_gtemp end) as nombres, " +
 				"a.tipo_nomina, "+
-				"ani.detalle_geani ||' '||mes.detalle_gemes as periodo, " +
+				"ani.nom_geani ||' '||mes.nombre_gemes as periodo, " +
 				"a.detalle_nrrub, " +
 				"a.valor " +
 				"from ( " +
@@ -1051,7 +1051,7 @@ public class ServicioNomina {
 				str_ide_gepro="";
 				tab_gen_per=utilitario.consultar("select * from GEN_PERIDO_ROL " +
 						"where ((IDE_GEMES BETWEEN "+mes_ini+" and "+mes_fin+") " +
-						"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (DETALLE_GEANI) like '"+anio_ini+"'))");
+						"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (nom_geani) like '"+anio_ini+"'))");
 				for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
 					str_ide_gepro+=tab_gen_per.getValor(j, "IDE_GEPRO")+",";
 				}
@@ -1077,7 +1077,7 @@ public class ServicioNomina {
 
 					tab_gen_per=utilitario.consultar("select * from GEN_PERIDO_ROL " +
 							"where ((IDE_GEMES BETWEEN "+ide_gemes_ini_aux+" and "+ide_gemes_fin_aux+") " +
-							"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (DETALLE_GEANI) like '"+ide_geani_aux+"'))");
+							"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (nom_geani) like '"+ide_geani_aux+"'))");
 					for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
 						str_ide_gepro+=tab_gen_per.getValor(j, "IDE_GEPRO")+",";
 					}
@@ -1709,12 +1709,12 @@ public class ServicioNomina {
 
 		String sql="SELECT A.IDE_NRROL, " +
 				"A.DETALLE_NRTIT," +
-				"A.DETALLE_GEANI," +
-				"A.DETALLE_GEMES," +
+				"A.nom_geani," +
+				"A.nombre_gemes," +
 				"A.TOT_INGRESOS," +
 				"B.TOT_EGRESOS " +
 				"FROM " +
-				"(select DER.IDE_NRROL,TIR.DETALLE_NRTIT,ANI.DETALLE_GEANI,MES.DETALLE_GEMES,DER.VALOR_NRDRO AS TOT_INGRESOS " +
+				"(select DER.IDE_NRROL,TIR.DETALLE_NRTIT,ANI.nom_geani,MES.nombre_gemes,DER.VALOR_NRDRO AS TOT_INGRESOS " +
 				"from NRH_ROL ROL " +
 				"INNER JOIN NRH_DETALLE_ROL DER ON DER.IDE_NRROL=ROL.IDE_NRROL " +
 				"INNER JOIN NRH_DETALLE_RUBRO DRU ON DRU.IDE_NRDER=DER.IDE_NRDER " +
@@ -1727,7 +1727,7 @@ public class ServicioNomina {
 				//total ingresos
 				"AND RUB.IDE_NRRUB IN ("+utilitario.getVariable("p_nrh_rubro_total_ingresos")+") " +
 				"ORDER BY DER.IDE_NRROL ASC) A, "+
-				"(select DER.IDE_NRROL,TIR.DETALLE_NRTIT,ANI.DETALLE_GEANI,MES.DETALLE_GEMES,DER.VALOR_NRDRO AS TOT_EGRESOS " +
+				"(select DER.IDE_NRROL,TIR.DETALLE_NRTIT,ANI.nom_geani,MES.nombre_gemes,DER.VALOR_NRDRO AS TOT_EGRESOS " +
 				"from NRH_ROL ROL " +
 				"INNER JOIN NRH_DETALLE_ROL DER ON DER.IDE_NRROL=ROL.IDE_NRROL " +
 				"INNER JOIN NRH_DETALLE_RUBRO DRU ON DRU.IDE_NRDER=DER.IDE_NRDER " +
@@ -1812,8 +1812,8 @@ public class ServicioNomina {
 		// CONFIGURAMOS FECHA INICIO DE CALCULO Y FECHA FIN DE CALCULO DE ACUMULADOS PARA CALCULO DE
 		// APORTACIONES acumulado Y TOTAL RETENIDO acumulado 
 
-		// obtenemos el a�o
-		String anio=getAnio(tab_periodo_rol.getValor("IDE_GEANI")).getValor("DETALLE_GEANI");
+		// obtenemos el Año
+		String anio=getAnio(tab_periodo_rol.getValor("IDE_GEANI")).getValor("nom_geani");
 
 		// fecha inicio de calculo(aa/mm/dd), siempre inicia (1 de enero del anio del periodo) 
 		String str_fecha_ini_calculo=anio+"-1-1";
