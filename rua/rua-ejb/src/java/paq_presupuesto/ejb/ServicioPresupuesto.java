@@ -15,9 +15,9 @@ import framework.aplicacion.TablaGenerica;
 public class ServicioPresupuesto {
 	private Utilitario utilitario= new Utilitario();
 	/**
-	 * Metodo que devuelve el Catalogo Presupuestario por los a�os vigentes
+	 * Metodo que devuelve el Catalogo Presupuestario por los Años vigentes
 	 * @param estado recibe el o los estados true y false, ejemplo: true o false
-	 * @param ide_geani recibe el a�o para filtar el ctalaogo presupuestario 
+	 * @param ide_geani recibe el Año para filtar el ctalaogo presupuestario 
 	 * @return String SQL Clasificador Presupuestario
 	 */
  public String getCatalogoPresupuestarioAnio(String estado,String ide_geani){
@@ -93,7 +93,7 @@ public String getPoa (String ide_geani,String activo,String presupuesto){
 	String tab_poa=("select a.ide_prpoa,detalle_subactividad,presupuesto_inicial_prpoa,codigo_clasificador_prcla,codigo_subactividad,detalle_programa,descripcion_clasificador_prcla,programa," +
 			" detalle_proyecto,proyecto,detalle_producto,producto,detalle_actividad,actividad," +
 			" subactividad,fecha_inicio_prpoa,fecha_fin_prpoa,num_resolucion_prpoa," +
-			" presupuesto_codificado_prpoa,reforma_prpoa,detalle_geani,detalle_geare" +
+			" presupuesto_codificado_prpoa,reforma_prpoa,nom_geani as detalle_geani,detalle_geare" +
 			" from pre_poa a left join  gen_anio b on a.ide_geani= b.ide_geani left join pre_clasificador c on a.ide_prcla = c.ide_prcla left join " +
 			" (select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto," +
 			" proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad," +
@@ -160,12 +160,12 @@ public String getPoaSaldosFuenteFinanciamiento(String ide_geani,String ide_prfuf
 	      sql+="select row_number() over(order by detalle_subactividad,a.ide_prpoa,b.ide_prfuf) as codigo,a.ide_prpoa,b.ide_prfuf,detalle_subactividad,descripcion_clasificador_prcla,num_resolucion_prpoa,detalle_prfuf,valor_asignado,valor_reformado,valor_saldo_fuente,"
 			+" codigo_clasificador_prcla,codigo_subactividad,"
 			+" detalle_proyecto,detalle_producto,detalle_actividad,fecha_inicio_prpoa,fecha_fin_prpoa,"
-			+" presupuesto_inicial_prpoa,presupuesto_codificado_prpoa,reforma_prpoa,detalle_geani,detalle_geare,detalle_programa"
+			+" presupuesto_inicial_prpoa,presupuesto_codificado_prpoa,reforma_prpoa,nom_geani as detalle_geani,detalle_geare,detalle_programa"
 			+" from ("
 			+" select a.ide_prpoa,codigo_clasificador_prcla,codigo_subactividad,detalle_programa,detalle_subactividad,descripcion_clasificador_prcla,programa,"
 			+" detalle_proyecto,proyecto,detalle_producto,producto,detalle_actividad,actividad,"
 			+" subactividad,fecha_inicio_prpoa,fecha_fin_prpoa,num_resolucion_prpoa,presupuesto_inicial_prpoa,"
-			+" presupuesto_codificado_prpoa,reforma_prpoa,detalle_geani,detalle_geare"
+			+" presupuesto_codificado_prpoa,reforma_prpoa,nom_geani as detalle_geani,detalle_geare"
 			+" from pre_poa a left join  gen_anio b on a.ide_geani= b.ide_geani left join pre_clasificador c on a.ide_prcla = c.ide_prcla left join" 
 			+" (select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto,"
 			+" proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad,"
@@ -250,13 +250,13 @@ public String getCertificacion(String activo){
 /**
  * Metodo que devuelve el POA a ser aprobado para la generacion del Presupuesto Inicial de Gastos
  * @param estado recibe el o los estados true y false, ejemplo: true o false
- * @param ide_geani recibe el a�o para filtar el POA 
+ * @param ide_geani recibe el Año para filtar el POA 
  * @return String SQL POA
  */
 public String getPoaPorAprobarse(String estado,String ide_geani){
  
  String tab_presupesto="select ide_prpoa,a.ide_prcla,a.ide_prfup,presupuesto_inicial_prpoa,codigo_clasificador_prcla,codigo_subactividad,descripcion_clasificador_prcla,"
-+" detalle_subactividad,detalle_actividad,d.ide_geani,detalle_geani"
++" detalle_subactividad,detalle_actividad,d.ide_geani,nom_geani as detalle_geani"
 +" from pre_poa a"
 +" left join ( "
 +" select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,"
@@ -288,8 +288,8 @@ public String getPoaPorAprobarse(String estado,String ide_geani){
 +" and d.pre_ide_prfup = e.ide_prfup"
  +" ) b on a.ide_prfup = b.ide_prfup"
 +" left join pre_clasificador c on a.ide_prcla = c.ide_prcla" 
-+" left join ( select a.ide_geani,ide_prfup,detalle_geani from cont_vigente a, gen_anio b where  a.ide_geani = b.ide_geani" 
-+" and not ide_prfup is null order by detalle_geani desc"
++" left join ( select a.ide_geani,ide_prfup,nom_geani as detalle_geani from cont_vigente a, gen_anio b where  a.ide_geani = b.ide_geani" 
++" and not ide_prfup is null order by nom_geani desc"
   +" ) d on a.ide_prfup = d.ide_prfup"
 +" where activo_prpoa in ("+estado+") and ide_prpro is null and d.ide_geani ="+ide_geani
 +" order by codigo_clasificador_prcla,codigo_subactividad";
@@ -299,7 +299,7 @@ public String getPoaPorAprobarse(String estado,String ide_geani){
 /**
  * Metodo que devuelve el valor del financiamiento inicial por fuente de financiamiento
  * @param ide_prfuf recibe el codigo de la fuente de financiamiento
- * @param ide_geani recibe el a�o para filtar el POA 
+ * @param ide_geani recibe el Año para filtar el POA 
  * @return String SQL Valor inicial fuente de financiamiento
  */
 public String getInicialFuenteFinanciamiento(String ide_prfuf,String ide_geani){
@@ -310,7 +310,7 @@ public String getInicialFuenteFinanciamiento(String ide_prfuf,String ide_geani){
 /**
  * Metodo que devuelve el valor del ejecucion por fuente de financiamiento
  * @param ide_prfuf recibe el codigo de la fuente de financiamiento
- * @param ide_geani recibe el a�o para filtar el POA 
+ * @param ide_geani recibe el Año para filtar el POA 
  * @return String SQL Valor ejecutado en el poa por fuente de financiamiento
  */
 public String getEjecutaFuenteFinanciamiento(String ide_prfuf,String ide_geani,String codigo){
