@@ -275,12 +275,8 @@ public class pre_contabilidad extends Pantalla {
         fis_consulta.getChildren().add(gr_nivel);
 
         Grid gri_fechas = new Grid();
-        gri_fechas.setColumns(5);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
-        cal_fecha_inicio = new Calendario();
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-        gri_fechas.getChildren().add(cal_fecha_inicio);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
+        gri_fechas.setColumns(3);
+        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA :</strong>"));
         cal_fecha_fin = new Calendario();
         cal_fecha_fin.setFechaActual();
         gri_fechas.getChildren().add(cal_fecha_fin);
@@ -300,7 +296,7 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta = new Tabla();
         tab_consulta.setNumeroTabla(-1);
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql(ser_contabilidad.getSqlBalanceGeneral(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_consulta.setSql(ser_contabilidad.getSqlBalanceGeneral(cal_fecha_fin.getFecha()));
         tab_consulta.setScrollable(true);
         tab_consulta.setScrollHeight(280);
         tab_consulta.setLectura(true);
@@ -324,9 +320,10 @@ public class pre_contabilidad extends Pantalla {
     }
 
     public void actualizarBalanceGeneral() {
-        tab_consulta.setSql(ser_contabilidad.getSqlBalanceGeneral(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_consulta.setSql(ser_contabilidad.getSqlBalanceGeneral(cal_fecha_fin.getFecha()));
         tab_consulta.ejecutarSql();
         calcularBalance();
+        System.out.println(ser_contabilidad.getTotalesBalanceGeneral(cal_fecha_fin.getFecha()));
     }
 
     /**
@@ -334,7 +331,7 @@ public class pre_contabilidad extends Pantalla {
      */
     private void calcularBalance() {
         int nivel_tope = 0;
-        if (rad_niveles != null) {
+        if (rad_niveles.getValue() != null) {
             try {
                 nivel_tope = Integer.parseInt(String.valueOf(rad_niveles.getValue()));
             } catch (Exception e) {
@@ -366,13 +363,20 @@ public class pre_contabilidad extends Pantalla {
                         if (padre != null && !padre.isEmpty()) {
                             lis_padres.add(padre);
                         }
+                        int intOptimiza = 0;
                         for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
                             if (padre != null && !padre.isEmpty() && tab_consulta.getValor(j, "con_ide_cndpc") != null && !tab_consulta.getValor(j, "con_ide_cndpc").isEmpty()) {
                                 if (padre.equals(tab_consulta.getValor(j, "con_ide_cndpc"))) {
+                                    intOptimiza = 1;
                                     try {
                                         valor_acu = valor_acu + Double.parseDouble(tab_consulta.getValor(j, "valor"));
                                     } catch (Exception e) {
                                     }
+                                }
+                            } else {
+                                //DFJ
+                                if (intOptimiza == 1) {
+                                    break;
                                 }
                             }
                         }
@@ -383,6 +387,7 @@ public class pre_contabilidad extends Pantalla {
                     }
                 }
             }
+            //Asigna valor acumulado al padre
             for (int i = 0; i < lis_padres.size(); i++) {
                 padre = lis_padres.get(i).toString();
                 for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
@@ -391,13 +396,14 @@ public class pre_contabilidad extends Pantalla {
                             tab_consulta.setValor(j, "valor", utilitario.getFormatoNumero(lis_valor_padre.get(i).toString()));
                         } catch (Exception e) {
                         }
+                        break;
                     }
                 }
             }
             nivel = nivel - 1;
         } while (nivel >= 2);
 
-        //elimina cuentas con saldo 0 mayores que el nivel tope
+        //elimina cuentas con saldo 0 y las cuentas mayores que el nivel tope
         Iterator<Fila> it = tab_consulta.getFilas().iterator();
         int numColumnaNivel = tab_consulta.getNumeroColumna("ide_cnncu");
         int numColumnaValor = tab_consulta.getNumeroColumna("valor");
@@ -430,11 +436,7 @@ public class pre_contabilidad extends Pantalla {
 
         Grid gri_fechas = new Grid();
         gri_fechas.setColumns(5);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
-        cal_fecha_inicio = new Calendario();
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-        gri_fechas.getChildren().add(cal_fecha_inicio);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
+        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA :</strong>"));
         cal_fecha_fin = new Calendario();
         cal_fecha_fin.setFechaActual();
         gri_fechas.getChildren().add(cal_fecha_fin);
@@ -454,7 +456,7 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta = new Tabla();
         tab_consulta.setNumeroTabla(-1);
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql(ser_contabilidad.getSqlEstadoResultados(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_consulta.setSql(ser_contabilidad.getSqlEstadoResultados(cal_fecha_fin.getFecha()));
         tab_consulta.setScrollable(true);
         tab_consulta.setScrollHeight(280);
         tab_consulta.setLectura(true);
@@ -478,9 +480,10 @@ public class pre_contabilidad extends Pantalla {
     }
 
     public void actualizarEstadoResultados() {
-        tab_consulta.setSql(ser_contabilidad.getSqlEstadoResultados(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_consulta.setSql(ser_contabilidad.getSqlEstadoResultados(cal_fecha_fin.getFecha()));
         tab_consulta.ejecutarSql();
         calcularBalance();
+        System.out.println(ser_contabilidad.getTotalesEstadoResultados(cal_fecha_fin.getFecha()));
     }
 
     /**
