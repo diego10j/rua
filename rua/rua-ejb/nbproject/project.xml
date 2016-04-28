@@ -18,9 +18,6 @@
             <included-library dirs="200">file.reference.TSA.jar</included-library>
             <included-library dirs="200">file.reference.Trust.jar</included-library>
             <included-library dirs="200">file.reference.XADES.jar</included-library>
-            <included-library dirs="200">file.reference.bcmail-jdk15-1.43.jar</included-library>
-            <included-library dirs="200">file.reference.bcprov-jdk15-1.43.jar</included-library>
-            <included-library dirs="200">file.reference.bctsp-jdk15-1.43.jar</included-library>
             <included-library dirs="200">file.reference.cliente-file-ws.jar</included-library>
             <included-library dirs="200">file.reference.firma-xades.jar</included-library>
             <included-library dirs="200">file.reference.jconn4.jar</included-library>
