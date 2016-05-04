@@ -69,10 +69,10 @@ public class pre_empleado extends Pantalla {
     private Tabla tab_sri_impuesto_renta = new Tabla();
     private Tabla tab_sri_gastos_deducible = new Tabla();
     private Tabla tab_deta_empleado_depar = new Tabla();
-    private PanelMenu pam_menu = new PanelMenu();
-    private Panel pan_opcion = new Panel();
+    private final PanelMenu pam_menu = new PanelMenu();
+    private final Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
-    private Efecto efecto = new Efecto();
+    private final Efecto efecto = new Efecto();
     private Division div_division = new Division();
     private SeleccionTabla set_empleado = new SeleccionTabla();
     private Reporte rep_reporte = new Reporte();
