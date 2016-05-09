@@ -63,3 +63,16 @@ and fecha_trans_incci BETWEEN '2011-06-01'  and '2013-03-08'
 and ide_inepi=1
 and ide_inbod=1
 ORDER BY cci.fecha_trans_incci,dci.ide_indci asc
+
+
+
+
+Factuta Ventas Para todas las facturas
+1) Hace la factura normal-electronica
+2) Forma de pago   solo si es de contado (registra a que cuenta caja-bancos ingresa)
+***
+En opciones de facturas no contabilizadas 
+1)Seleccionar facturas y generar comprobante de contabilidad (Componente Comp Conta Generico)
+3)Opcion para ingresar comprobante y asignar num de comprobante a facturas seleccionadas
+
+***Perfeccionar Comprobnate de Contabilidad Generico
