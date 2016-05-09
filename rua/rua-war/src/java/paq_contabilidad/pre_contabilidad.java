@@ -173,7 +173,7 @@ public class pre_contabilidad extends Pantalla {
                 tab_consulta.setValor(i, "debe", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_consulta.getValor(i, "valor_cndcc")))));
                 dou_debe += Double.parseDouble(tab_consulta.getValor(i, "debe"));
             } else {
-                tab_consulta.setValor(i, "haber", utilitario.getFormatoNumero(tab_consulta.getValor(i, "valor_cndcc")));
+                tab_consulta.setValor(i, "haber", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_consulta.getValor(i, "valor_cndcc")))));
                 dou_haber += Double.parseDouble(tab_consulta.getValor(i, "haber"));
             }
             dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_consulta.getValor(i, "valor_cndcc"));

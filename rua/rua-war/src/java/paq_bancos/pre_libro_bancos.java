@@ -8,6 +8,7 @@ package paq_bancos;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Division;
 import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -33,8 +34,6 @@ public class pre_libro_bancos extends Pantalla {
     private final ServicioTesoreria ser_tesoreria = (ServicioTesoreria) utilitario.instanciarEJB(ServicioTesoreria.class);
     private final Calendario cal_fecha_inicio = new Calendario();
     private final Calendario cal_fecha_fin = new Calendario();
-    private Texto tex_saldo_inicial = new Texto();
-    private Texto tex_saldo_final = new Texto();
 
     private Tabla tab_movimientos = new Tabla();
 
@@ -45,61 +44,28 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuentas.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
         aut_cuentas.setMetodoChange("actualizarMovimientos");
 
-        bar_botones.quitarBotonEliminar();
-        bar_botones.quitarBotonGuardar();
-        bar_botones.quitarBotonInsertar();
-        bar_botones.quitarBotonsNavegacion();
+        bar_botones.limpiar();
 
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
         bar_botones.agregarComponente(aut_cuentas);
 
         bar_botones.agregarSeparador();
 
-        Fieldset fis_consulta = new Fieldset();
-        Grid gri_fechas = new Grid();
-        gri_fechas.setColumns(7);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
+        bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
 
         cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-        gri_fechas.getChildren().add(cal_fecha_inicio);
-        gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
+        bar_botones.agregarComponente(cal_fecha_inicio);
+        bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
 
         cal_fecha_fin.setFechaActual();
-        gri_fechas.getChildren().add(cal_fecha_fin);
-        fis_consulta.getChildren().add(gri_fechas);
+        bar_botones.agregarComponente(cal_fecha_fin);
 
         Boton bot_consultar = new Boton();
         bot_consultar.setValue("Consultar");
         bot_consultar.setMetodo("actualizarMovimientos");
         bot_consultar.setIcon("ui-icon-search");
 
-        gri_fechas.getChildren().add(bot_consultar);
-
-        fis_consulta.getChildren().add(gri_fechas);
-
-        PanelGrid gri_saldos = new PanelGrid(); 
-        gri_saldos.setColumns(4);
-        Etiqueta eti_sinicial = new Etiqueta("<strong>SALDO INICIAL :</strong>");        
-        gri_saldos.getChildren().add(eti_sinicial);
-        tex_saldo_inicial = new Texto();
-        tex_saldo_inicial.setId("tex_saldo_inicial");
-        tex_saldo_inicial.setDisabled(true);
-        tex_saldo_inicial.setValue("0.00");
-        tex_saldo_inicial.setSize(10);
-        tex_saldo_inicial.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-        gri_saldos.getChildren().add(tex_saldo_inicial);
-        Etiqueta eti_sfinal = new Etiqueta("<strong>SALDO FINAL :</strong>");        
-        gri_saldos.getChildren().add(eti_sfinal);
-        tex_saldo_final = new Texto();
-        tex_saldo_final.setId("tex_saldo_final");
-        tex_saldo_final.setDisabled(true);
-        tex_saldo_final.setStyle("font-size: 13px;font-weight: bold;text-align: right;");
-        tex_saldo_final.setSize(10);
-        tex_saldo_final.setValue("0.00");
-        gri_saldos.getChildren().add(tex_saldo_final);
-        gri_fechas.getChildren().add(new Espacio("50", "5"));
-
-        gri_fechas.getChildren().add(gri_saldos);
+        bar_botones.agregarBoton(bot_consultar);
 
         tab_movimientos.setId("tab_movimientos");
         tab_movimientos.setSql(ser_tesoreria.getSqlTransaccionesCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -115,22 +81,23 @@ public class pre_libro_bancos extends Pantalla {
         tab_movimientos.getColumna("SALDO").alinearDerecha();
         tab_movimientos.getColumna("SALDO").setLongitud(25);
         tab_movimientos.getColumna("SALDO").alinearDerecha();
+        tab_movimientos.getColumna("SALDO").setSuma(false);
         tab_movimientos.getColumna("SALDO").setEstilo("font-weight: bold;");
         tab_movimientos.getColumna("IDE_CNCCC").setFiltroContenido();
         tab_movimientos.getColumna("numero_teclb").setFiltroContenido();
         tab_movimientos.getColumna("beneficiari_teclb").setFiltroContenido();
         tab_movimientos.getColumna("nombre_tettb").setFiltroContenido();
-        tab_movimientos.setColumnaSuma("INGRESOS,EGRESOS");
+        tab_movimientos.setColumnaSuma("INGRESOS,EGRESOS,SALDO");
+
         tab_movimientos.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_movimientos);
-        Grupo gru_grupo = new Grupo();
-        gru_grupo.setStyle("overflow: auto;display: block;");
-        gru_grupo.getChildren().add(fis_consulta);
-        gru_grupo.getChildren().add(pat_panel);
 
-        agregarComponente(gru_grupo);
+        Division div = new Division();
+        div.dividir1(pat_panel);
+
+        agregarComponente(div);
 
     }
 
@@ -153,10 +120,23 @@ public class pre_libro_bancos extends Pantalla {
                 dou_saldo_actual = dou_saldo_inicial;
                 tab_movimientos.setEmptyMessage("No existen Transacciones en el rango de fechas seleccionado");
             }
-            tex_saldo_inicial.setValue(utilitario.getFormatoNumero(dou_saldo_inicial));
-            tex_saldo_final.setValue(utilitario.getFormatoNumero(dou_saldo_actual));
+
+            //INSERTA PRIMERA FILA SALDO INICIAL
+            if (dou_saldo_inicial != 0) {
+                tab_movimientos.setLectura(false);
+                tab_movimientos.insertar();
+                tab_movimientos.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
+                tab_movimientos.setValor("NOMBRE_TETTB", "SALDO INICIAL");
+                tab_movimientos.setValor("OBSERVACION_TECLB", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+                tab_movimientos.setValor("FECHA_TRANS_TECLB", cal_fecha_inicio.getFecha());
+                tab_movimientos.setLectura(true);
+            }
             utilitario.addUpdate("tex_saldo_inicial,tex_saldo_final");
+            //ASIGNA SALDOS FINALES
+            tab_movimientos.getColumna("saldo").setTotal(dou_saldo_actual);
+
         }
+
     }
 
     public void actualizarMovimientos(SelectEvent evt) {

@@ -87,13 +87,13 @@ public class pre_comprobante_conta extends Pantalla {
             bar_botones.agregarComponente(new Etiqueta("TIPO DE COMPROBANTE :"));
             bar_botones.agregarComponente(com_tipo_comprobante);
 
-            bar_botones.agregarComponente(new Etiqueta("<strong>DEL</strong>"));
+            bar_botones.agregarComponente(new Etiqueta("DEL "));
             cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-            cal_fecha_inicio.setSize(6);
+            cal_fecha_inicio.setSize(8);
             bar_botones.agregarComponente(cal_fecha_inicio);
-            bar_botones.agregarComponente(new Etiqueta("<strong> AL </strong>"));
+            bar_botones.agregarComponente(new Etiqueta("AL "));
             cal_fecha_fin.setFechaActual();
-            cal_fecha_fin.setSize(6);
+            cal_fecha_fin.setSize(8);
             bar_botones.agregarComponente(cal_fecha_fin);
             Boton bot_consultar = new Boton();
             bot_consultar.setTitle("Consultar");
