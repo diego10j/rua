@@ -68,8 +68,8 @@ ORDER BY cci.fecha_trans_incci,dci.ide_indci asc
 
 
 Factuta Ventas Para todas las facturas
-1) Hace la factura normal-electronica
-2) Forma de pago   solo si es de contado (registra a que cuenta caja-bancos ingresa)
+1) Hace la factura normal-electronica y guardar cxc    ---OK
+2) Separa pago de factura cxc
 ***
 En opciones de facturas no contabilizadas 
 1)Seleccionar facturas y generar comprobante de contabilidad (Componente Comp Conta Generico)

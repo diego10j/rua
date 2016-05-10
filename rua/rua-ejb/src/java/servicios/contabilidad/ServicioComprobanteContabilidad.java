@@ -6,6 +6,8 @@
 package servicios.contabilidad;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Tabla;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import sistema.aplicacion.Utilitario;
 
@@ -16,6 +18,8 @@ import sistema.aplicacion.Utilitario;
 @Stateless
 public class ServicioComprobanteContabilidad {
 
+    @EJB
+    private ServicioContabilidadGeneral ser_contabilidad;
     private final Utilitario utilitario = new Utilitario();
 
     public String getSqlTiposComprobante() {
@@ -302,6 +306,93 @@ public class ServicioComprobanteContabilidad {
         tab_detalles.setCondicion("ide_cnccc=" + ide_cnccc);
         tab_detalles.ejecutarSql();
         return tab_detalles;
+    }
+
+    /**
+     * Retorna Sql para visualizar el detalle de un asiento mostrando en
+     * columnas separadas el debe, haber
+     *
+     * @param ide_cnccc
+     * @return
+     */
+    public String getSqlDetalleAsiento(String ide_cnccc) {
+        return "select a.ide_cndcc,codig_recur_cndpc,nombre_cndpc,\n"
+                + "case when ide_cnlap = 1 THEN valor_cndcc  end as DEBE, case when ide_cnlap = 0 THEN valor_cndcc end as HABER,\n"
+                + "observacion_cndcc from con_det_comp_cont a\n"
+                + "INNER JOIN con_det_plan_cuen b on a.ide_cndpc=b.ide_cndpc\n"
+                + "where ide_cnccc=" + ide_cnccc + "\n"
+                + "order by ide_cnlap desc";
+    }
+
+    /**
+     * Retorna sql para visualizar cabecera de un asiento
+     *
+     * @param ide_cnccc
+     * @return
+     */
+    public String getSqlCabeceraAsiento(String ide_cnccc) {
+        return "select a.ide_cnccc,nom_usua,nombre_cntcm,nom_modu,nom_geper,fecha_trans_cnccc,observacion_cnccc,\n"
+                + "numero_cnccc from con_cab_comp_cont a\n"
+                + "inner join sis_usuario b on a.ide_usua=b.ide_usua\n"
+                + "inner join con_tipo_comproba c on a.ide_cntcm=c.ide_cntcm\n"
+                + "left join sis_modulo d on a.ide_modu=d.ide_modu\n"
+                + "left join gen_persona e on a.ide_geper=e.ide_geper\n"
+                + "where ide_cnccc=" + ide_cnccc + "";
+    }
+
+    /**
+     * Asigna las configuraciones de la cabecera de un comprobante
+     *
+     * @param tabla
+     */
+    public void configurarTablaCabeceraComprobante(Tabla tabla) {
+        tabla.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
+        tabla.setCondicionSucursal(true);
+        tabla.getColumna("ide_cneco").setCombo(getSqlEstadosComprobante());
+        tabla.getColumna("fecha_siste_cnccc").setVisible(false);
+        tabla.getColumna("numero_cnccc").setEtiqueta();
+        tabla.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
+        tabla.getColumna("fecha_siste_cnccc").setValorDefecto(utilitario.getFechaActual());
+        tabla.getColumna("fecha_trans_cnccc").setValorDefecto(utilitario.getFechaActual());
+        tabla.getColumna("hora_sistem_cnccc").setVisible(false);
+        tabla.getColumna("hora_sistem_cnccc").setValorDefecto(utilitario.getHoraActual());
+        tabla.getColumna("ide_cntcm").setVisible(false);
+        tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
+        tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tabla.getColumna("ide_usua").setLectura(true);
+        tabla.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
+        tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
+        tabla.getColumna("ide_geper").setAutoCompletar();
+        tabla.getColumna("ide_geper").setRequerida(true);
+        tabla.setCondicion("ide_cntcm=-1");//vacio 
+        tabla.setValidarInsertar(true);
+        tabla.setRecuperarLectura(true);
+        tabla.setTipoFormulario(true);
+        tabla.getGrid().setColumns(6);
+        tabla.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
+        tabla.getColumna("ide_cneco").setLectura(true);
+        tabla.setCampoOrden("ide_cnccc desc");
+    }
+
+    /**
+     * Asigna las configuraciones de los detalles de un comprobante
+     *
+     * @param tabla
+     */
+    public void configurarTablaDetalleComprobante(Tabla tabla) {
+        tabla.setTabla("con_det_comp_cont", "ide_cndcc", -1);
+        tabla.getColumna("ide_cndcc").setVisible(false);
+        tabla.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentas());
+        tabla.getColumna("ide_cndpc").setAutoCompletar();
+        tabla.getColumna("ide_cndpc").setRequerida(true);
+        tabla.getColumna("ide_cnlap").setCombo(getSqlLugarAplica());
+        tabla.getColumna("ide_cnlap").setPermitirNullCombo(false);
+        tabla.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
+        tabla.getColumna("ide_cnlap").setLongitud(10);
+        tabla.setCampoOrden("ide_cnlap desc");
+        tabla.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
+        tabla.setCampoOrden("ide_cnlap desc");
+        tabla.setRows(10);
     }
 
 }
