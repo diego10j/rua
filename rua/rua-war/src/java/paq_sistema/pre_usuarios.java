@@ -4,6 +4,7 @@
  */
 package paq_sistema;
 
+import framework.componentes.AutoCompletar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import framework.componentes.Texto;
 
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.event.SelectEvent;
 import sistema.aplicacion.Pantalla;
 import servicios.sistema.ServicioSeguridad;
 
@@ -59,12 +61,26 @@ public class pre_usuarios extends Pantalla {
             .getLongitudMinimaLogin();
     private final Texto tex_nick;
 
+    private AutoCompletar aut_usuarios = new AutoCompletar();
+
     public pre_usuarios() {
 
         Boton bot_generar = new Boton();
         Boton bot_activar = new Boton();
         Boton bot_desbloquear = new Boton();
 
+        aut_usuarios.setId("aut_usuarios");
+        aut_usuarios.setAutoCompletar(ser_seguridad.getSqlUsuarios());
+        aut_usuarios.setMetodoChange("seleccionarUsuario");
+        aut_usuarios.setAutocompletarContenido();
+        aut_usuarios.setTitle("BUSCAR USUARIO");
+        bar_botones.agregarComponente(aut_usuarios);
+
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
+        bar_botones.agregarSeparador();
         bot_generar.setValue("Generar Nueva Clave");
         bot_generar.setMetodo("abrirGenerarClave");
         bar_botones.agregarBoton(bot_generar);
@@ -231,6 +247,19 @@ public class pre_usuarios extends Pantalla {
         //Para activar o desactivar el campo nick	
         tex_nick = ((Texto) utilitario.getComponente(tab_tabla1.getColumna("NICK_USUA").getId()));
         cambiarEstadoNick();
+
+    }
+
+    public void limpiar() {
+        aut_usuarios.limpiar();
+    }
+
+    public void seleccionarUsuario(SelectEvent evt) {
+        aut_usuarios.onSelect(evt);
+        if (aut_usuarios.getValor() != null) {
+            tab_tabla1.setFilaActual(aut_usuarios.getValor());
+            utilitario.addUpdate("tab_tabla1");
+        }
     }
 
     /**
@@ -484,7 +513,9 @@ public class pre_usuarios extends Pantalla {
                 tab_tabla3.guardar();
             }
         }
-        guardarPantalla();
+        if (guardarPantalla().isEmpty()) {
+            aut_usuarios.actualizar();
+        }
         cambiarEstadoNick();
     }
 
@@ -603,4 +634,13 @@ public class pre_usuarios extends Pantalla {
     public void setDia_estado_usuarios(Dialogo dia_estado_usuarios) {
         this.dia_estado_usuarios = dia_estado_usuarios;
     }
+
+    public AutoCompletar getAut_usuarios() {
+        return aut_usuarios;
+    }
+
+    public void setAut_usuarios(AutoCompletar aut_usuarios) {
+        this.aut_usuarios = aut_usuarios;
+    }
+
 }
