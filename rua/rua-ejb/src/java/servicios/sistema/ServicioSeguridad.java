@@ -842,6 +842,11 @@ public class ServicioSeguridad {
 
     }
 
+       public String getSqlUsuarios() {
+        return "SELECT IDE_USUA,NOM_USUA,nick_usua from SIS_USUARIO order by NOM_USUA";
+
+    }
+    
     public TablaGenerica getUltimoAccesoUsuario(String ide_usua) {
         return utilitario.consultar("select * from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " \n"
                 + "and ide_auac = (select max(ide_auac) from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " and fin_auac=true)");
