@@ -567,5 +567,5 @@ public class ServicioProducto {
                 + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
                 + "order by 3,nom_geper desc";
     }
-
+    
 }
