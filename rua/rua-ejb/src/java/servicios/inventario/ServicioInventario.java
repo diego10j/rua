@@ -107,16 +107,51 @@ public class ServicioInventario {
         return ltab_tipo_transaccion.getValor("signo_intci");
     }
 
+    /**
+     * Elimina cabeceraq y detalles de un comprobante de inventario
+     *
+     * @param ide_incci
+     */
     public void eliminarComprobanteInventario(String ide_incci) {
-            
+        utilitario.getConexion().agregarSqlPantalla("delete from  inv_det_comp_inve where ide_incci=" + ide_incci);
+        utilitario.getConexion().agregarSqlPantalla("delete from  inv_cab_comp_inve where ide_incci=" + ide_incci);
+
     }
 
+    /**
+     * Cambia a anulado un comprobante de inventario
+     *
+     * @param ide_incci
+     */
     public void anularComprobanteInventario(String ide_incci) {
-
+        String p_estado_anulado_inv = "0"; //******PONER VARIABLE
+        cambiarEstadoComprobanteInventario(ide_incci, p_estado_anulado_inv);
     }
 
+    /**
+     * Cambia de estado un comprobante de inventario
+     *
+     * @param ide_incci
+     * @param ide_inepi
+     */
+    public void cambiarEstadoComprobanteInventario(String ide_incci, String ide_inepi) {
+        utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + ide_inepi + "where ide_incci=" + ide_incci);
+    }
+
+    /**
+     * Retorna el codido (ide_incci)
+     *
+     * @param ide_cccfa
+     * @return
+     */
     public String getCodigoComprobnateTransaccionVenta(String ide_cccfa) {
-        return null;
+        String p_tipo_transaccion_inv_venta = utilitario.getVariable("p_inv_tipo_transaccion_venta");
+        String sql = "SELECT ide_cccfa,ide_incci FROM inv_det_comp_inve a "
+                + "inner join inv_cab_comp_inve b on a.ide_incci=b.ide_incci "
+                + "where a.ide_cccfa=" + ide_cccfa + " "
+                + "and ide_intti=" + p_tipo_transaccion_inv_venta + " "
+                + "group by ide_cccfa,ide_incci";
+        return utilitario.consultar(sql).getValor("ide_incci");
     }
 
 }
