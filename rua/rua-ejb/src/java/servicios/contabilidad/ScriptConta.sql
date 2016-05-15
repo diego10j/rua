@@ -92,3 +92,57 @@ COMMENT ON COLUMN cont_asiento_tipo.hora_ingre IS 'Este campo define la ultima h
 COMMENT ON COLUMN cont_asiento_tipo.usuario_actua IS 'Este campo define el ultimo usuario que realiza la actualizacion del registro.';
 COMMENT ON COLUMN cont_asiento_tipo.fecha_actua IS 'Este campo define la ultima fecha que realiza la actualizacion del registro.';
 COMMENT ON COLUMN cont_asiento_tipo.hora_actua IS 'Este campo define la hora que se realizo el ingreso por primera ves el registro.';
+--------------------------------------------------
+
+
+DROP TABLE pre_asociacion_presupuestaria;
+
+CREATE TABLE pre_asociacion_presupuestaria
+(
+  ide_prasp bigint NOT NULL, -- Este campo define la clave primaria de la tabla pre_asociacion_presupuestaria
+  ide_prcla bigint, -- Este campo define la clave primaria de la tabla pre_clasificador.
+  ide_cocac bigint, -- Este campo define la clave primaria de la tabla cont_catalogo_cuenta
+  ide_cnlap bigint, -- Este campo define la clave primaria de la tabla gen_lugar_aplica valor entero generado.
+  ide_prmop bigint, -- Este campo define la clave primaria de la tabla pre_asociacion_presupuestaria
+  activo_prasp boolean NOT NULL, -- Define el estado del registro si se encuentra activo o inactivo.
+  usuario_ingre character varying(50), -- Este campo define el ultimo usuario que realiza la actualizacion del registro.
+  fecha_ingre date, -- Este campo define la fecha que se realizo el ingreso por primera ves el registro.
+  hora_ingre time without time zone, -- Este campo define la ultima hora que el usuario realiza la actualizacion del registro.
+  usuario_actua character varying(50), -- Este campo define el ultimo usuario que realiza la actualizacion del registro.
+  fecha_actua date, -- Este campo define la ultima fecha que realiza la actualizacion del registro.
+  hora_actua time without time zone, -- Este campo define la hora que se realizo el ingreso por primera ves el registro.
+  cuenta_padre_prasp boolean,
+  pagado integer,
+  devengado integer,
+  ide_cndpc integer,
+  CONSTRAINT pk_pre_asociacion_presupuestar PRIMARY KEY (ide_prasp),
+  CONSTRAINT fk_pre_asoc_reference_gen_luga FOREIGN KEY (ide_cnlap)
+      REFERENCES con_lugar_aplicac (ide_cnlap) MATCH SIMPLE
+      ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT fk_pre_asoc_reference_pre_clas FOREIGN KEY (ide_prcla)
+      REFERENCES pre_clasificador (ide_prcla) MATCH SIMPLE
+      ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT fk_pre_asoc_reference_pre_movi FOREIGN KEY (ide_prmop)
+      REFERENCES pre_movimiento_presupuestario (ide_prmop) MATCH SIMPLE
+      ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT pk_plan_deta_cuenta_rua FOREIGN KEY (ide_cndpc)
+      REFERENCES con_det_plan_cuen (ide_cndpc) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE pre_asociacion_presupuestaria OWNER TO postgres;
+COMMENT ON TABLE pre_asociacion_presupuestaria IS 'pre_asociacion_presupuestaria';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.ide_prasp IS 'Este campo define la clave primaria de la tabla pre_asociacion_presupuestaria';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.ide_prcla IS 'Este campo define la clave primaria de la tabla pre_clasificador.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.ide_cocac IS 'Este campo define la clave primaria de la tabla cont_catalogo_cuenta';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.ide_cnlap IS 'Este campo define la clave primaria de la tabla gen_lugar_aplica valor entero generado.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.ide_prmop IS 'Este campo define la clave primaria de la tabla pre_asociacion_presupuestaria';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.activo_prasp IS 'Define el estado del registro si se encuentra activo o inactivo.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.usuario_ingre IS 'Este campo define el ultimo usuario que realiza la actualizacion del registro.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.fecha_ingre IS 'Este campo define la fecha que se realizo el ingreso por primera ves el registro.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.hora_ingre IS 'Este campo define la ultima hora que el usuario realiza la actualizacion del registro.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.usuario_actua IS 'Este campo define el ultimo usuario que realiza la actualizacion del registro.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.fecha_actua IS 'Este campo define la ultima fecha que realiza la actualizacion del registro.';
+COMMENT ON COLUMN pre_asociacion_presupuestaria.hora_actua IS 'Este campo define la hora que se realizo el ingreso por primera ves el registro.';
