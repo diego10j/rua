@@ -25,6 +25,7 @@ import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
+import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioProducto;
@@ -56,6 +57,11 @@ public class pre_articulos extends Pantalla {
     private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
     private AutoCompletar aut_cuentas;
     private Tabla tab_movimientos;
+    @EJB
+    private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
+
+    private Tabla tab_asiento_tipo;
+    private Tabla tab_detalle_asiento;
 
     //Opcion 3
     private Tabla tab_clientesFacturas;
@@ -452,7 +458,54 @@ public class pre_articulos extends Pantalla {
             bot_cambia.setMetodo("activaCambiarCuenta");
             gri_contenido.getChildren().add(bot_cambia);
             gru_grupo.getChildren().add(gri_contenido);
-            gru_grupo.getChildren().add(new Etiqueta("<p style='padding-top:10px;'><strong >NOTA: </strong> La cuenta contable seleccionada se relacionará a los movimientos-transacciones que se realicen con el Producto seleccionado a partir que se <strong>guarde </strong> el cambio. </p>"));
+
+            tab_asiento_tipo = new Tabla();
+            tab_detalle_asiento = new Tabla();
+            tab_asiento_tipo.setId("tab_asiento_tipo");
+            tab_asiento_tipo.setSql("SELECT ide_conac,detalle_conac,nom_modu from cont_nombre_asiento_contable a\n"
+                    + "inner join sis_modulo b on a.ide_modu=b.ide_modu\n"
+                    + "WHERE activo_conac=true order by detalle_conac");
+            tab_asiento_tipo.setLectura(true);
+            tab_asiento_tipo.setScrollable(true);
+            tab_asiento_tipo.setScrollHeight(150);
+            tab_asiento_tipo.agregarRelacion(tab_detalle_asiento);
+            tab_asiento_tipo.dibujar();
+            PanelTabla pat_panel1 = new PanelTabla();
+            pat_panel1.setPanelTabla(tab_asiento_tipo);
+            gru_grupo.getChildren().add(pat_panel1);
+            gru_grupo.getChildren().add(new Separator());
+
+            tab_detalle_asiento.setId("tab_detalle_asiento");
+            tab_detalle_asiento.setTabla("cont_asiento_tipo", "ide_coast", -1);
+            tab_detalle_asiento.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentas());
+            tab_detalle_asiento.getColumna("ide_cndpc").setAutoCompletar();
+            tab_detalle_asiento.getColumna("ide_cndpc").setRequerida(true);
+            tab_detalle_asiento.getColumna("ide_cnlap").setCombo(ser_comprobante.getSqlLugarAplica());
+            tab_detalle_asiento.getColumna("ide_cnlap").setPermitirNullCombo(false);
+            tab_detalle_asiento.getColumna("ide_cnlap").setLongitud(10);
+            tab_detalle_asiento.getColumna("ide_inarti").setValorDefecto(aut_productos.getValor());
+            tab_detalle_asiento.getColumna("ide_inarti").setVisible(false);
+
+            tab_detalle_asiento.getColumna("ide_prcla").setCombo("pre_clasificador", "ide_prcla", "codigo_clasificador_prcla,descripcion_clasificador_prcla", "");
+            tab_detalle_asiento.getColumna("ide_prcla").setAutoCompletar();
+            tab_detalle_asiento.getColumna("ide_prmop").setCombo("pre_movimiento_presupuestario", "ide_prmop", "detalle_prmop", "");
+            tab_detalle_asiento.setCondicion("ide_inarti=" + aut_productos.getValor() + " or ide_inarti is null");
+            tab_detalle_asiento.setRecuperarLectura(true);
+            tab_detalle_asiento.setCampoOrden("ide_inarti desc");
+            tab_detalle_asiento.dibujar();
+            for (int i = 0; i < tab_detalle_asiento.getTotalFilas(); i++) {
+                if (tab_detalle_asiento.getValor(i, "ide_inarti") != null) {
+                    if (tab_detalle_asiento.getValor(i, "ide_inarti").equals(aut_productos.getValor())) {
+                        tab_detalle_asiento.getFila(i).setLectura(false);
+                        break;
+                    }
+                }
+            }
+
+            PanelTabla pat_panel2 = new PanelTabla();
+            pat_panel2.setPanelTabla(tab_detalle_asiento);
+            gru_grupo.getChildren().add(pat_panel2);
+
         }
         mep_menu.dibujar(4, "CONFIGURACIÓN DE CUENTA CONTABLE", gru_grupo);
     }
@@ -890,6 +943,8 @@ public class pre_articulos extends Pantalla {
             //FORMULARIO PRODUCTO
             tab_producto.limpiar();
             tab_producto.insertar();
+        } else if (mep_menu.getOpcion() == 4) {
+            tab_detalle_asiento.insertar();
         } else {
             dibujarProducto();
             tab_producto.insertar();
@@ -911,6 +966,7 @@ public class pre_articulos extends Pantalla {
                 }
             }
         } else if (mep_menu.getOpcion() == 4) {
+            tab_detalle_asiento.guardar();
             //Cambiar Cuenta Contable
             if (guardarPantalla().isEmpty()) {
                 aut_cuentas.setDisabled(true);
@@ -1023,6 +1079,22 @@ public class pre_articulos extends Pantalla {
 
     public void setTab_preciosCompras(Tabla tab_preciosCompras) {
         this.tab_preciosCompras = tab_preciosCompras;
+    }
+
+    public Tabla getTab_asiento_tipo() {
+        return tab_asiento_tipo;
+    }
+
+    public void setTab_asiento_tipo(Tabla tab_asiento_tipo) {
+        this.tab_asiento_tipo = tab_asiento_tipo;
+    }
+
+    public Tabla getTab_detalle_asiento() {
+        return tab_detalle_asiento;
+    }
+
+    public void setTab_detalle_asiento(Tabla tab_detalle_asiento) {
+        this.tab_detalle_asiento = tab_detalle_asiento;
     }
 
 }

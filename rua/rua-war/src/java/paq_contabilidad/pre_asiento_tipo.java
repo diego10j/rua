@@ -43,8 +43,7 @@ public class pre_asiento_tipo extends Pantalla {
         tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
         tab_tabla2.getColumna("ide_cndpc").setRequerida(true);
         tab_tabla2.getColumna("ide_cnlap").setCombo(ser_comprobante.getSqlLugarAplica());
-        tab_tabla2.getColumna("ide_cnlap").setPermitirNullCombo(false);
-        tab_tabla2.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
+        tab_tabla2.getColumna("ide_cnlap").setPermitirNullCombo(false);        
         tab_tabla2.getColumna("ide_cnlap").setLongitud(10);
         tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "");
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
