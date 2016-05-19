@@ -346,7 +346,7 @@ public class ServicioComprobanteContabilidad {
      * @param tabla
      */
     public void configurarTablaCabeceraComprobante(Tabla tabla) {
-        tabla.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
+        tabla.setTabla("con_cab_comp_cont", "ide_cnccc", 999);
         tabla.setCondicionSucursal(true);
         tabla.getColumna("ide_cneco").setCombo(getSqlEstadosComprobante());
         tabla.getColumna("fecha_siste_cnccc").setVisible(false);
@@ -371,7 +371,7 @@ public class ServicioComprobanteContabilidad {
         tabla.getGrid().setColumns(6);
         tabla.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
         tabla.getColumna("ide_cneco").setLectura(true);
-        tabla.setCampoOrden("ide_cnccc desc");
+        tabla.setCampoOrden("ide_cnccc desc"); 
     }
 
     /**
