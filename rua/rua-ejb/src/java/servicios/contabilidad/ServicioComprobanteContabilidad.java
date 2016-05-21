@@ -388,7 +388,8 @@ public class ServicioComprobanteContabilidad {
         tabla.getColumna("ide_cnlap").setCombo(getSqlLugarAplica());
         tabla.getColumna("ide_cnlap").setPermitirNullCombo(false);
         tabla.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
-        tabla.getColumna("ide_cnlap").setLongitud(10);
+        tabla.getColumna("ide_cnlap").setLongitud(5);
+        tabla.getColumna("ide_cnlap").setAncho(5);
         tabla.setCampoOrden("ide_cnlap desc");
         tabla.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
         tabla.setCampoOrden("ide_cnlap desc");

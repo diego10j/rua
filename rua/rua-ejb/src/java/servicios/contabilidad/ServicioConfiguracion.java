@@ -165,4 +165,13 @@ public class ServicioConfiguracion {
         return null;
     }
 
+    public String getSqlAsientosTipo() {
+        return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a INNER JOIN sis_modulo b on a.ide_modu=b.ide_modu";//!!!!!***AGREAGAR MULTIEMPRESA
+    }
+
+    public TablaGenerica getCuentasAsientoTipo(String ide_conac) {
+        //Solo cuentas especificas 
+        return utilitario.consultar("SELECT * FROM cont_asiento_tipo WHERE ide_conac=" + ide_conac + " and ide_inarti is null order by ide_cnlap");
+    }
+
 }
