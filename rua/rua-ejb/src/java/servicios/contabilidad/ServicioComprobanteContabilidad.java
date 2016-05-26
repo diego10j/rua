@@ -359,7 +359,7 @@ public class ServicioComprobanteContabilidad {
         tabla.getColumna("ide_cntcm").setVisible(false);
         tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
         tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
-        tabla.getColumna("ide_usua").setLectura(true);
+        tabla.getColumna("ide_usua").setLectura(true);       
         tabla.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
         tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
         tabla.getColumna("ide_geper").setAutoCompletar();
