@@ -25,6 +25,7 @@ import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
+import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import servicios.sri.ServicioComprobatesElectronicos;
 import sistema.aplicacion.Utilitario;
@@ -44,6 +45,8 @@ public class FacturaCxC extends Dialogo {
     private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
+    @EJB
+    private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
 
     private final Tabulador tab_factura = new Tabulador();
     private Tabla tab_cab_factura = new Tabla();
@@ -84,7 +87,7 @@ public class FacturaCxC extends Dialogo {
     private Tabla tab_cab_retencion = new Tabla();
     private Tabla tab_det_retencion = new Tabla();
 
-    public FacturaCxC() {
+    public FacturaCxC() {        
         this.setWidth("95%");
         this.setHeight("90%");
         this.setTitle("GENERAR FACTURA DE VENTA");
@@ -778,6 +781,8 @@ public class FacturaCxC extends Dialogo {
             if (tab_deta_factura.guardar()) {
                 //Guarda la cuenta por cobrar
                 ser_factura.generarTransaccionFactura(tab_cab_factura);
+                //Transaccion de Inventario
+                ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
                 String ide_srcom = null; //IDE COMPROBANTE ELECTRONICO
                 //SI ESTA ACTIVA FACTURACION ELECTRONICA
                 if (utilitario.getVariable("p_sri_activa_comp_elect") != null && utilitario.getVariable("p_sri_activa_comp_elect").equalsIgnoreCase("true")) {

@@ -246,6 +246,7 @@ public class CuentaCxc extends Dialogo {
     public void aceptar() {
         if (validar()) {
             cargarPagoCxC(Double.parseDouble(tex_valor_pagar_cxc.getValue().toString()));
+            this.cerrar();
         }
     }
 
