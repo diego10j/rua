@@ -46,7 +46,7 @@ public class pre_clasificador extends Pantalla {
 		tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
 		tab_presupuesto.agregarRelacion(tab_vigente);				
 		tab_presupuesto.setCampoPadre("pre_ide_prcla"); //necesarios para el arbol
-		tab_presupuesto.setCampoNombre("(select codigo_clasificador_prcla||' '||descripcion_clasificador_prcla as descripcion_clasificador_prcla from pre_clasificador b where b. ide_prcla=pre_clasificador.ide_prcla)"); //necesarios para el arbol
+		tab_presupuesto.setCampoNombre("(select codigo_clasificador_prcla||' '||descripcion_clasificador_prcla as descripcion_clasificador_prcla from pre_clasificador b where b. ide_prcla=a.ide_prcla)"); //necesarios para el arbol
 		tab_presupuesto.agregarArbol(arb_clasificador);//necesarios para el arbol
 		  List lista = new ArrayList();
 	       Object fila1[] = {
