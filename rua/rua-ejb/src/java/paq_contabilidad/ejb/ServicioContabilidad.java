@@ -165,10 +165,10 @@ public TablaGenerica getTablaCuentaContable ( String activo){
 	
 	return tab_cuenta_contable;	
 }
+
 public String getCuentaContable (String activo){
-	String cuentacontable ="select ide_cocac,cue_codigo_cocac,cue_descripcion_cocac" +
-			"  from cont_catalogo_cuenta " +
-			"  WHERE activo_cocac IN ("+activo+")order by cue_codigo_cocac ";
+	String cuentacontable ="select ide_cndpc as ide_cocac, codig_recur_cndpc as cue_codigo_cocac, nombre_cndpc as cue_descripcion_cocac from con_det_plan_cuen a, con_cab_plan_cuen b " 
+                +" where a.ide_cncpc=b.ide_cncpc and activo_cncpc in ("+activo+")";
 	return cuentacontable;
 }
 
@@ -231,17 +231,6 @@ public String servicioCatalogoCuentaAnio (String estado, String ide_geani){
 	
 	String catalogo_cuenta_anio="select ide_cndpc as ide_cocac, codig_recur_cndpc as cue_codigo_cocac, nombre_cndpc as cue_descripcion_cocac from con_det_plan_cuen a, con_cab_plan_cuen b " 
                 +" where a.ide_cncpc=b.ide_cncpc and activo_cncpc in ("+estado+")";
-	return catalogo_cuenta_anio;
-}
-
-/**
- * Metodo que devuelve la Cuenta Cantable para cargar en los combos
- * @return String SQL Cuenta Contable 
- */
-public String servicioCatalogoCuentaCombo (){
-	
-	String catalogo_cuenta_anio="select a.ide_cocac,cue_codigo_cocac,cue_descripcion_cocac " +
-			" from cont_catalogo_cuenta a order by cue_codigo_cocac";
 	return catalogo_cuenta_anio;
 }
 public String getInventario(String ide_geani,String carga,String material){
