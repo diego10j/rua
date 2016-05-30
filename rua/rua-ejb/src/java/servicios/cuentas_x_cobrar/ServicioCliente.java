@@ -7,27 +7,23 @@ package servicios.cuentas_x_cobrar;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.ServicioBase;
 import servicios.contabilidad.ServicioConfiguracion;
-import sistema.aplicacion.Utilitario;
 
 /**
  *
  * @author dfjacome
  */
 @Stateless
-public class ServicioCliente {
+public class ServicioCliente extends ServicioBase {
 
     /**
      * Codigo Padre de todos los clientes para el campo GEN_IDE_GEPER
      */
     public final static String P_PADRE_CLIENTES = "1";
-    private final Utilitario utilitario = new Utilitario();
-
-    private Map parametros;
 
     @EJB
     private ServicioConfiguracion ser_configuracion;
@@ -35,7 +31,7 @@ public class ServicioCliente {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "IDE_SUCU", "IDE_EMPR", "IDE_USUA");
+        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA", "p_cxc_estado_factura_normal");
     }
 
     /**

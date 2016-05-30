@@ -9,23 +9,29 @@ import comprobantesElectronicos.dao.ComprobanteDAOLocal;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.ServicioBase;
 import servicios.contabilidad.ServicioContabilidadGeneral;
-import sistema.aplicacion.Utilitario;
 
 /**
  *
  * @author DIEGOFERNANDOJACOMEG
  */
 @Stateless
-public class ServicioFacturaCxC {
+public class ServicioFacturaCxC extends ServicioBase {
 
     @EJB
     private ServicioContabilidadGeneral ser_tesoreria;
-    private final Utilitario utilitario = new Utilitario();
     @EJB
     private ComprobanteDAOLocal comprobateElectronico;
+
+    @PostConstruct
+    public void init() {
+        //Recupera todos los parametros que se van a ocupar en el EJB
+        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA", "p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago", "");
+    }
 
     /**
      * Retorna la sentencia SQL con los puntos de emision de facturas x empresa
@@ -33,7 +39,7 @@ public class ServicioFacturaCxC {
      * @return
      */
     public String getSqlPuntosEmision() {
-        return "select ide_ccdaf,serie_ccdaf, autorizacion_ccdaf,observacion_ccdaf from cxc_datos_fac where ide_empr=" + utilitario.getVariable("IDE_EMPR");
+        return "select ide_ccdaf,serie_ccdaf, autorizacion_ccdaf,observacion_ccdaf from cxc_datos_fac where ide_empr=" + parametros.get("IDE_EMPR");
     }
 
     /**
@@ -72,7 +78,7 @@ public class ServicioFacturaCxC {
                 + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf + " "
-                // + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                // + " and a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
@@ -92,8 +98,8 @@ public class ServicioFacturaCxC {
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf + " "
-                + "AND a.ide_ccefa !=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                //    + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "AND a.ide_ccefa !=" + parametros.get("p_cxc_estado_factura_normal")
+                //    + " and a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
@@ -114,9 +120,9 @@ public class ServicioFacturaCxC {
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf + " "
-                + "AND a.ide_ccefa =" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + "AND a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal")
                 + " and a.ide_cnccc is null "
-                //    + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                //    + " and a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
@@ -135,13 +141,13 @@ public class ServicioFacturaCxC {
                 + "observacion_cccfa, fecha_trans_cccfa,cf.ide_cnccc "
                 + "from cxc_detall_transa dt "
                 + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr  "
-                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "left join gen_persona b on cf.ide_geper=b.ide_geper "
                 + "where cf.ide_ccdaf=" + ide_ccdaf + " "
                 + "and fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
-                // + " and cf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                // + " and cf.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "GROUP BY cf.ide_cccfa,nom_geper,identificac_geper "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
                 + "ORDER BY secuencial_cccfa desc,cf.ide_cccfa desc";
@@ -184,7 +190,7 @@ public class ServicioFacturaCxC {
         tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
         tab_det_tran_cxc.setCondicion("ide_ccdtr=" + ide_ccctr);
         tab_det_tran_cxc.ejecutarSql();
-        String str_p_cxc_tipo_trans_factura = utilitario.getVariable("p_cxc_tipo_trans_factura");//Tipo transaccion Factura     
+        String str_p_cxc_tipo_trans_factura = parametros.get("p_cxc_tipo_trans_factura");//Tipo transaccion Factura     
         tab_cab_tran_cxc.limpiar();
         tab_det_tran_cxc.limpiar();
         tab_cab_tran_cxc.insertar();
@@ -196,7 +202,7 @@ public class ServicioFacturaCxC {
             tab_cab_tran_cxc.setValor("observacion_ccctr", "V/. Factura " + tab_cab_factura.getValor("secuencial_cccfa") + " ");
             tab_cab_tran_cxc.guardar();
             tab_det_tran_cxc.insertar();
-            tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+            tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
             tab_det_tran_cxc.setValor("ide_ccctr", tab_cab_tran_cxc.getValor("ide_ccctr"));
             tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
             tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
@@ -230,12 +236,12 @@ public class ServicioFacturaCxC {
         tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
         tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
         tab_det_tran_cxc.ejecutarSql();
-        String str_p_cxc_tipo_trans_pago = utilitario.getVariable("p_cxc_tipo_trans_pago");
+        String str_p_cxc_tipo_trans_pago = parametros.get("p_cxc_tipo_trans_pago");
 
         tab_det_tran_cxc.insertar();
         tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
         tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
-        tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
         tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
         tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
 
@@ -257,12 +263,12 @@ public class ServicioFacturaCxC {
         tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
         tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
         tab_det_tran_cxc.ejecutarSql();
-        String str_p_cxc_tipo_trans_pago = utilitario.getVariable("p_cxc_tipo_trans_pago");
+        String str_p_cxc_tipo_trans_pago = parametros.get("p_cxc_tipo_trans_pago");
 
         tab_det_tran_cxc.insertar();
         tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
         tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
-        tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
         tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
         tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
 
@@ -303,13 +309,13 @@ public class ServicioFacturaCxC {
      * @return
      */
     public String getSqlTotalVentasMensuales(String ide_ccdaf, String anio) {
-        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
+
         return "select nombre_gemes,"
-                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
+                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_ccdaf=" + ide_ccdaf + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + ") "
                 + "from gen_mes "
                 + "order by ide_gemes";
     }
@@ -325,7 +331,7 @@ public class ServicioFacturaCxC {
         return "select count(ide_cccfa) as num_facturas,sum(total_cccfa) as total "
                 + "from cxc_cabece_factura "
                 + "where fecha_emisi_cccfa='" + utilitario.getFechaActual() + "' "
-                + "and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + "and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal")
                 + " and ide_ccdaf=" + ide_ccdaf;
     }
 
@@ -341,7 +347,7 @@ public class ServicioFacturaCxC {
                 + "from cxc_cabece_factura "
                 + "where  EXTRACT(MONTH FROM fecha_emisi_cccfa)=" + utilitario.getMes(utilitario.getFechaActual())
                 + " and EXTRACT(YEAR FROM fecha_emisi_cccfa)=" + utilitario.getAnio(utilitario.getFechaActual())
-                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal")
                 + " and ide_ccdaf=" + ide_ccdaf;
     }
 
@@ -356,7 +362,7 @@ public class ServicioFacturaCxC {
         return "select count(ide_cccfa) as num_facturas,sum(total_cccfa) as total "
                 + "from cxc_cabece_factura "
                 + "where EXTRACT(YEAR FROM fecha_emisi_cccfa)=" + utilitario.getAnio(utilitario.getFechaActual())
-                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal")
                 + " and ide_ccdaf=" + ide_ccdaf;
     }
 
@@ -367,7 +373,7 @@ public class ServicioFacturaCxC {
      */
     public String getSqlAniosFacturacion() {
         return "select distinct EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as anio,EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as nom_anio  "
-                + "from cxc_cabece_factura where ide_empr=" + utilitario.getVariable("ide_empr") + " order by 1 desc ";
+                + "from cxc_cabece_factura where ide_empr=" + parametros.get("ide_empr") + " order by 1 desc ";
     }
 
     /**
@@ -376,7 +382,7 @@ public class ServicioFacturaCxC {
      * @return
      */
     public String getSqlMeses() {
-        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + utilitario.getVariable("ide_empr") + " order by ide_gemes";
+        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + parametros.get("ide_empr") + " order by ide_gemes";
     }
 
     /**
@@ -398,7 +404,7 @@ public class ServicioFacturaCxC {
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "where fecha_emisi_cccfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_ccdaf=" + ide_ccdaf
-                + " and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal")
                 + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
