@@ -174,4 +174,23 @@ public class ServicioConfiguracion {
         return utilitario.consultar("SELECT * FROM cont_asiento_tipo WHERE ide_conac=" + ide_conac + " and ide_inarti is null order by ide_cnlap");
     }
 
+    /**
+     * Retorna el porcentaje de Iva vigente
+     *
+     * @return
+     */
+    public double getPorcentajeIva() {
+        double valor = 0;
+        try {
+            String p_con_porcentaje_imp_iva = utilitario.getVariable("p_con_porcentaje_imp_iva");
+            TablaGenerica tab_porcen = utilitario.consultar("select ide_cnpim,porcentaje_cnpim from con_porcen_impues where ide_cnpim=" + p_con_porcentaje_imp_iva);
+            if (tab_porcen.isEmpty() == false) {
+                valor = Double.parseDouble(tab_porcen.getValor("porcentaje_cnpim"));
+            }
+        } catch (Exception e) {
+        }
+
+        return valor;
+    }
+
 }
