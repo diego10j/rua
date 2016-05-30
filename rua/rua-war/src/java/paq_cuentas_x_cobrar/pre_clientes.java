@@ -76,6 +76,7 @@ public class pre_clientes extends Pantalla {
         aut_clientes.setSize(75);
         aut_clientes.setAutocompletarContenido(); // no startWith para la busqueda
         aut_clientes.setMetodoChange("seleccionarCliente");
+        aut_clientes.setGlobal(true);
         bar_botones.agregarComponente(aut_clientes);
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
