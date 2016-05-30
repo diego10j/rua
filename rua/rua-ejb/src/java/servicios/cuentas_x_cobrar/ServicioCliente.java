@@ -7,6 +7,8 @@ package servicios.cuentas_x_cobrar;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.contabilidad.ServicioConfiguracion;
@@ -25,8 +27,16 @@ public class ServicioCliente {
     public final static String P_PADRE_CLIENTES = "1";
     private final Utilitario utilitario = new Utilitario();
 
+    private Map parametros;
+
     @EJB
     private ServicioConfiguracion ser_configuracion;
+
+    @PostConstruct
+    public void init() {
+        //Recupera todos los parametros que se van a ocupar en el EJB
+        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "IDE_SUCU", "IDE_EMPR", "IDE_USUA");
+    }
 
     /**
      * Retorna los datos de un cliente
@@ -187,9 +197,9 @@ public class ServicioCliente {
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti \n"
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "where cf.ide_geper=" + ide_geper + " "
-                + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and cdf.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
     }
 
@@ -208,7 +218,7 @@ public class ServicioCliente {
                 + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA "
                 + "INNER JOIN cxc_cabece_transa d on a.ide_ccctr=d.ide_ccctr "
                 + "WHERE ide_geper=" + ide_geper + " "
-                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "AND a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY FECHA_TRANS_CCDTR,IDE_CCDTR";
     }
@@ -227,7 +237,7 @@ public class ServicioCliente {
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "where ide_geper=" + ide_geper + " "
                 + "and fecha_trans_ccdtr <'" + fecha + "' "
-                + "and dt.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and dt.ide_sucu=" + parametros.get("IDE_SUCU") + " "
                 + "group by ide_geper";
         TablaGenerica tab_saldo = utilitario.consultar(sql);
         if (tab_saldo.getTotalFilas() > 0) {
@@ -258,11 +268,11 @@ public class ServicioCliente {
                 + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end as OBSERVACION "
                 + "from cxc_detall_transa dt "
                 + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
-                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "where ct.ide_geper=" + ide_geper + " "
-                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ct.ide_sucu=" + parametros.get("ide_sucu") + " "
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,serie_ccdaf,cf.secuencial_cccfa, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
@@ -280,10 +290,10 @@ public class ServicioCliente {
                 + "case when (cf.observacion_cccfa) is NULL then ct.observacion_ccctr else cf.observacion_cccfa end "
                 + "from cxc_detall_transa dt "
                 + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
-                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "where ct.ide_geper=" + ide_geper + " "
-                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ct.ide_sucu=" + parametros.get("ide_sucu") + " "
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
@@ -300,13 +310,12 @@ public class ServicioCliente {
      * @return
      */
     public String getSqlTotalVentasMensualesCliente(String ide_geper, String anio) {
-        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
         return "select nombre_gemes,"
-                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_geper=" + ide_geper + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + " and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
-                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
+                + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_geper=" + ide_geper + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") and ide_geper=" + ide_geper + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + ") "
                 + "from gen_mes "
                 + "order by ide_gemes";
     }
@@ -319,15 +328,15 @@ public class ServicioCliente {
      * @return
      */
     public String getSqlProductosVendidos(String ide_geper) {
-        String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
+
         return "select distinct a.ide_inarti,nombre_inarti,max(b.fecha_emisi_cccfa) as fecha_ultima_venta,\n"
-                + "(select precio_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + p_cxc_estado_factura_normal + " and ide_geper=" + ide_geper + " and ide_inarti=a.ide_inarti order by fecha_emisi_cccfa desc limit 1) as ultimo_precio\n"
+                + "(select precio_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " and ide_geper=" + ide_geper + " and ide_inarti=a.ide_inarti order by fecha_emisi_cccfa desc limit 1) as ultimo_precio\n"
                 + "from cxc_deta_factura a \n"
                 + "inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa\n"
                 + "inner join inv_articulo c on a.ide_inarti=c.ide_inarti\n"
-                + "where ide_ccefa=" + p_cxc_estado_factura_normal + " "
+                + "where ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "and ide_geper=" + ide_geper + " "
-                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "AND a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
                 + "group by a.ide_inarti,nombre_inarti \n"
                 + "order by nombre_inarti";
     }
