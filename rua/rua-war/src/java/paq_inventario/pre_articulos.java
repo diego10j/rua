@@ -88,7 +88,7 @@ public class pre_articulos extends Pantalla {
         aut_productos.setAutoCompletar(ser_producto.getSqlProductosCombo());
         aut_productos.setSize(75);
         aut_productos.setAutocompletarContenido(); // no startWith para la busqueda
-        aut_productos.setMetodoChange("seleccionarProducto");
+        aut_productos.setMetodoChangeRuta("pre_index.clase.seleccionarProducto");
         bar_botones.agregarComponente(aut_productos);
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");

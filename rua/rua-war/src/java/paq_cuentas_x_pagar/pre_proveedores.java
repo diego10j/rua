@@ -70,7 +70,7 @@ public class pre_proveedores extends Pantalla {
         aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
         aut_proveedor.setSize(75);
         aut_proveedor.setAutocompletarContenido(); // no startWith para la busqueda
-        aut_proveedor.setMetodoChange("seleccionarProveedor");
+        aut_proveedor.setMetodoChangeRuta("pre_index.clase.seleccionarProveedor");
         bar_botones.agregarComponente(aut_proveedor);
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
