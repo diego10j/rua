@@ -23,14 +23,15 @@ import servicios.contabilidad.ServicioContabilidadGeneral;
 public class ServicioFacturaCxC extends ServicioBase {
 
     @EJB
-    private ServicioContabilidadGeneral ser_tesoreria;
+    private ServicioContabilidadGeneral ser_conta_general;
     @EJB
     private ComprobanteDAOLocal comprobateElectronico;
 
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA", "p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago", "");
+        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA",
+                "p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago");
     }
 
     /**
@@ -210,7 +211,7 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_det_tran_cxc.setValor("valor_ccdtr", tab_cab_factura.getValor("total_cccfa"));
             tab_det_tran_cxc.setValor("observacion_ccdtr", tab_cab_tran_cxc.getValor("observacion_ccctr"));
             tab_det_tran_cxc.setValor("numero_pago_ccdtr", "0");
-            tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cccfa")), ser_tesoreria.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
+            tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cccfa")), ser_conta_general.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
             tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
             tab_det_tran_cxc.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxc.guardar();

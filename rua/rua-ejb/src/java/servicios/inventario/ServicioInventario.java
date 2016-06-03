@@ -154,4 +154,9 @@ public class ServicioInventario {
         return utilitario.consultar(sql).getValor("ide_incci");
     }
 
+    
+    //CXP
+    
+    
+    
 }
