@@ -455,7 +455,7 @@ public class FacturaCxC extends Dialogo {
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (tarifaIVA * 100) + "% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
