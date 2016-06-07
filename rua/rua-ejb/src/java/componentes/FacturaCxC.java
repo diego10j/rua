@@ -472,7 +472,6 @@ public class FacturaCxC extends Dialogo {
         gri_valores.getChildren().add(tex_total);
 
         gri_total.getChildren().add(gri_valores);
-
         grupo.getChildren().add(gri_total);
         return grupo;
     }

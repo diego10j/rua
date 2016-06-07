@@ -6,6 +6,7 @@
 package paq_cuentas_x_cobrar;
 
 import componentes.FacturaCxC;
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -16,10 +17,15 @@ import framework.componentes.Grupo;
 
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.sri.ServicioComprobatesElectronicos;
@@ -58,16 +64,19 @@ public class pre_facturasCxC extends Pantalla {
     //Facturacion Electrónica
     @EJB
     private final ServicioComprobatesElectronicos ser_comprobante = (ServicioComprobatesElectronicos) utilitario.instanciarEJB(ServicioComprobatesElectronicos.class);
-
     private Combo com_estados_fe;
     private Tabla tab_facturas_fe;
     private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
+
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
 
     public pre_facturasCxC() {
 
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
-        bar_botones.quitarBotonEliminar();
+        bar_botones.quitarBotonEliminar();        
+        bar_botones.agregarReporte();
 
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodo("actualizarFacturas");
@@ -110,6 +119,12 @@ public class pre_facturasCxC extends Pantalla {
 
         vipdf_comprobante.setId("vipdf_comprobante");
         agregarComponente(vipdf_comprobante);
+
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_rep.setId("sel_rep");
+        agregarComponente(rep_reporte);
+        agregarComponente(sel_rep);
     }
 
     public void dibujarFacturas() {
@@ -386,6 +401,52 @@ public class pre_facturasCxC extends Pantalla {
         fcc_factura.dibujar();
     }
 
+    @Override
+    public void abrirListaReportes() {
+//Se ejecuta cuando da click en el boton de Reportes de la Barra    
+        rep_reporte.dibujar();
+    }
+    Map parametro = new HashMap();
+
+    @Override
+    public void aceptarReporte() {
+//Se ejecuta cuando se selecciona un reporte de la lista
+        if (rep_reporte.getReporteSelecionado().equals("Facturas")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValor("ide_cccfa")));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_rep");
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Comprobante Contabilidad")) {
+            if (rep_reporte.isVisible()) {
+                if (tab_facturas.getValor("ide_cnccc") != null && !tab_facturas.getValor("ide_cnccc").isEmpty()) {
+                    parametro = new HashMap();
+                    rep_reporte.cerrar();
+                    parametro.put("ide_cnccc", Long.parseLong(tab_facturas.getValor("ide_cnccc")));
+                    parametro.put("ide_cnlap_haber", utilitario.getVariable("p_con_lugar_haber"));
+                    parametro.put("ide_cnlap_debe", utilitario.getVariable("p_con_lugar_debe"));
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("rep_reporte,sel_rep");
+                } else {
+                    utilitario.agregarMensajeInfo("Comprobante de Contabilidad", "La factura seleccionada no tiene Comprobante de Contabilidad");
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Facturas A6")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValor("ide_cccfa")));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_rep");
+            }
+        }
+    }
+
     public void actualizarFacturas() {
         if (mep_menu.getOpcion() == 1) {
             tab_facturas.setSql(ser_factura.getSqlFacturas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -529,6 +590,22 @@ public class pre_facturasCxC extends Pantalla {
 
     public void setVipdf_comprobante(VisualizarPDF vipdf_comprobante) {
         this.vipdf_comprobante = vipdf_comprobante;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
     }
 
 }
