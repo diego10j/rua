@@ -88,6 +88,19 @@ public class ServicioProducto {
         tabla.getColumna("hace_kardex_inarti").setValorDefecto("true");
         tabla.getColumna("es_combo_inarti").setValorDefecto("false");
         tabla.getColumna("nombre_inarti").setRequerida(true);
+        tabla.getColumna("iva_inarti").setRadio(getListaTipoIVA(), "1");
+        tabla.getColumna("iva_inarti").setRadioVertical(true);
+        tabla.setTipoFormulario(true);
+        tabla.getGrid().setColumns(4);
+        tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");// cargar un combo de una con el ide, nombre
+    }
+
+    /**
+     * Lista con los tipos de Iva que pueden tener un articulo
+     *
+     * @return
+     */
+    public List getListaTipoIVA() {
         List lista = new ArrayList();
         Object fila1[] = {
             "1", "SI"
@@ -101,11 +114,7 @@ public class ServicioProducto {
         lista.add(fila1);
         lista.add(fila2);
         lista.add(fila3);
-        tabla.getColumna("iva_inarti").setRadio(lista, "1");
-        tabla.getColumna("iva_inarti").setRadioVertical(true);
-        tabla.setTipoFormulario(true);
-        tabla.getGrid().setColumns(4);
-        tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");// cargar un combo de una con el ide, nombre
+        return lista;
     }
 
     /**
@@ -567,5 +576,5 @@ public class ServicioProducto {
                 + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
                 + "order by 3,nom_geper desc";
     }
-    
+
 }

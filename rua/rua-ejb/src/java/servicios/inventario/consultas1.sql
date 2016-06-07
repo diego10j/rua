@@ -77,3 +77,5 @@ En opciones de facturas no contabilizadas
 3)Opcion para ingresar comprobante y asignar num de comprobante a facturas seleccionadas
 
 ***Perfeccionar Comprobnate de Contabilidad Generico
+
+VERIFICAR SI SE ESTA GUARDANDO EN BASE_TARIFA0, BASE NO OBJENTO EN FACTURAS CXC

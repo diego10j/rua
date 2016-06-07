@@ -99,7 +99,7 @@ public class FacturaCxC extends Dialogo {
         tab_factura.setWidgetVar("w_factura");
         tab_factura.agregarTab("FACTURA ", null);//0 
         tab_factura.agregarTab("DETALLE PAGO", null);//1
-        tab_factura.agregarTab("ASIENTO DE VENTA", null);//2       
+        tab_factura.agregarTab("ASIENTO CONTABLE", null);//2       
         tab_factura.agregarTab("RETENCIÓN", null);//3
         this.setDialogo(tab_factura);
         men_factura.setId("men_factura");
@@ -285,7 +285,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.setRuta("pre_index.clase." + getId());
         tab_cab_factura.setId("tab_cab_factura");
         tab_cab_factura.setIdCompleto("tab_factura:tab_cab_factura");
-        tab_cab_factura.setTabla("cxc_cabece_factura", "ide_cccfa", -1);
+        tab_cab_factura.setTabla("cxc_cabece_factura", "ide_cccfa", 999);
         tab_cab_factura.setMostrarNumeroRegistros(false);
         tab_cab_factura.getColumna("ide_cnccc").setVisible(false);
         tab_cab_factura.getColumna("ide_cccfa").setVisible(false);
@@ -367,7 +367,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.setId("tab_deta_factura");
         tab_deta_factura.setIdCompleto("tab_factura:tab_deta_factura");
         tab_deta_factura.setRuta("pre_index.clase." + getId());
-        tab_deta_factura.setTabla("cxc_deta_factura", "ide_ccdfa", -1);
+        tab_deta_factura.setTabla("cxc_deta_factura", "ide_ccdfa", 999);
         tab_deta_factura.getColumna("ide_ccdfa").setVisible(false);
         tab_deta_factura.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
         tab_deta_factura.getColumna("ide_inarti").setAutoCompletar();
@@ -749,6 +749,7 @@ public class FacturaCxC extends Dialogo {
     public void eliminar() {
         if (tab_deta_factura.isFocus()) {
             tab_deta_factura.eliminar();
+            calcularTotalFactura();
         }
     }
 
