@@ -209,7 +209,7 @@ public class pre_detalle_tipo_nomina extends Pantalla {
 
 		set_periodo_rol.setId("set_periodo_rol");
 		set_periodo_rol.setSeleccionTabla("select IDE_NRROL, " +
-				"DETALLE_GTTEM ||' '|| nombre_gemes || '  ' || DETALLE_GEANI || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
+				"DETALLE_GTTEM ||' '|| nombre_gemes || '  ' || nom_GEANI || ' ' || TIT.DETALLE_NRTIT AS PERIODO_NOMINA " +
 				"from nrh_ROL rol " +
 				"inner join GEN_PERIDO_ROL PRO on PRO.IDE_GEPRO=ROL.IDE_GEPRO " +
 				"inner join NRH_TIPO_ROL TIT ON TIT.IDE_NRTIT=PRO.IDE_NRTIT "+
