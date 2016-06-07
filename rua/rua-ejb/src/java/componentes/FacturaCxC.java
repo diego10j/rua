@@ -455,7 +455,7 @@ public class FacturaCxC extends Dialogo {
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + tarifaIVA + "% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (tarifaIVA * 100) + "% :<s/trong>"));
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
@@ -709,7 +709,7 @@ public class FacturaCxC extends Dialogo {
             String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_grabada;
-                porcentaje_iva = tarifaIVA / 100;
+                porcentaje_iva = tarifaIVA;
                 valor_iva = base_grabada * porcentaje_iva; //0.12
             } else if (iva.equals("-1")) { // NO IVA
                 base_tarifa0 = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_tarifa0;
