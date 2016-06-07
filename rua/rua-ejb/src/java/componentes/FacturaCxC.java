@@ -410,6 +410,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("total_ccdfa").setEstilo("font-size:14px;font-weight: bold;");
         tab_deta_factura.getColumna("total_ccdfa").alinearDerecha();
         tab_deta_factura.getColumna("precio_promedio_ccdfa").setLectura(true);
+        tab_deta_factura.getColumna("ALTERNO_CCDFA").setValorDefecto("00");
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(150);
         tab_deta_factura.setRecuperarLectura(true);
