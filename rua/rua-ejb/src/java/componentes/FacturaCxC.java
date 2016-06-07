@@ -92,20 +92,6 @@ public class FacturaCxC extends Dialogo {
     private Tabla tab_cab_retencion = new Tabla();
     private Tabla tab_det_retencion = new Tabla();
 
-    @Override
-    public void dibujar() {
-        tab_factura.getTab(0).getChildren().clear();
-        tab_factura.getTab(1).getChildren().clear();
-        tab_factura.getTab(2).getChildren().clear();
-        tab_factura.getTab(3).getChildren().clear();
-
-        tab_factura.getTab(0).getChildren().add(dibujarFactura());
-        tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
-        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
-        tab_factura.getTab(3).getChildren().add(dibujarRetencion());
-        super.dibujar();
-    }
-
     public FacturaCxC() {
         this.setWidth("95%");
         this.setHeight("90%");
@@ -133,7 +119,6 @@ public class FacturaCxC extends Dialogo {
 //        tab_factura.getTab(2).getChildren().clear();
 //        tab_factura.getTab(3).getChildren().clear();
         this.setTitle(titulo);
-//
 //        tab_factura.getTab(0).getChildren().add(dibujarFactura());
 //        tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
 //        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
@@ -145,6 +130,14 @@ public class FacturaCxC extends Dialogo {
      * Configuraciones para crear una factura
      */
     public void nuevaFactura() {
+
+        tab_factura.getTab(0).getChildren().clear();
+        tab_factura.getTab(1).getChildren().clear();
+        tab_factura.getTab(2).getChildren().clear();
+        tab_factura.getTab(3).getChildren().clear();
+
+        tab_factura.getTab(0).getChildren().add(dibujarFactura());
+
         opcion = 1;  // GENERA FACTURA
         ocultarTabs(); //Ocilta todas las tabas
         setActivarFactura(true); //activa solo tab de Fcatura de venta
