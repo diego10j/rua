@@ -92,6 +92,20 @@ public class FacturaCxC extends Dialogo {
     private Tabla tab_cab_retencion = new Tabla();
     private Tabla tab_det_retencion = new Tabla();
 
+    @Override
+    public void dibujar() {
+        tab_factura.getTab(0).getChildren().clear();
+        tab_factura.getTab(1).getChildren().clear();
+        tab_factura.getTab(2).getChildren().clear();
+        tab_factura.getTab(3).getChildren().clear();
+
+        tab_factura.getTab(0).getChildren().add(dibujarFactura());
+        tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
+        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
+        tab_factura.getTab(3).getChildren().add(dibujarRetencion());
+        super.dibujar();
+    }
+
     public FacturaCxC() {
         this.setWidth("95%");
         this.setHeight("90%");
@@ -114,16 +128,16 @@ public class FacturaCxC extends Dialogo {
     }
 
     public void setFacturaCxC(String titulo) {
-        tab_factura.getTab(0).getChildren().clear();
-        tab_factura.getTab(1).getChildren().clear();
-        tab_factura.getTab(2).getChildren().clear();
-        tab_factura.getTab(3).getChildren().clear();
+//        tab_factura.getTab(0).getChildren().clear();
+//        tab_factura.getTab(1).getChildren().clear();
+//        tab_factura.getTab(2).getChildren().clear();
+//        tab_factura.getTab(3).getChildren().clear();
         this.setTitle(titulo);
-
-        tab_factura.getTab(0).getChildren().add(dibujarFactura());
-        tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
-        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
-        tab_factura.getTab(3).getChildren().add(dibujarRetencion());
+//
+//        tab_factura.getTab(0).getChildren().add(dibujarFactura());
+//        tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
+//        tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
+//        tab_factura.getTab(3).getChildren().add(dibujarRetencion());
         this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
     }
 
