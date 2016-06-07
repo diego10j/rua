@@ -45,7 +45,7 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 		tab_asociacion_presupuestaria.getColumna("pagado").setAutoCompletar();	
 		tab_asociacion_presupuestaria.getColumna("ide_cocac").setCombo(ser_contabilidad.getCuentaContable("true,false"));
 		tab_asociacion_presupuestaria.getColumna("ide_cocac").setAutoCompletar();
-		tab_asociacion_presupuestaria.getColumna("ide_cnlap").setCombo("ide_cnlap","ide_cnlap","nombre_cnlap","");
+		tab_asociacion_presupuestaria.getColumna("ide_cnlap").setCombo("con_lugar_aplicac","ide_cnlap","nombre_cnlap","");
 		tab_asociacion_presupuestaria.getColumna("ide_prmop").setCombo("pre_movimiento_presupuestario","ide_prmop","detalle_prmop","");
 
 		tab_asociacion_presupuestaria.dibujar();
