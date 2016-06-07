@@ -11,7 +11,6 @@ import framework.componentes.Tabla;
 
 /**
  *
- * @author Diego
  */
 public class pre_tipo_nomina extends Pantalla {
 
