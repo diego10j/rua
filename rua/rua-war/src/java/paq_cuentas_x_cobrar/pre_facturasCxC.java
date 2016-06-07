@@ -6,7 +6,6 @@
 package paq_cuentas_x_cobrar;
 
 import componentes.FacturaCxC;
-import framework.aplicacion.TablaGenerica;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -24,7 +23,6 @@ import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
@@ -109,11 +107,10 @@ public class pre_facturasCxC extends Pantalla {
         mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturasPorCobrar", "ui-icon-calculator");
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Grafico de Ventas", "dibujarGraficoVentas", "ui-icon-clock");
-        mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");
+       // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");
         mep_menu.agregarItem("Reporte de Ventas", "dibujarReporteVentas", "ui-icon-calendar");
         mep_menu.agregarSubMenu("FACTURACIÓN ELECTRÓNICA");
         mep_menu.agregarItem("Facturas Eléctrónicas", "dibujarFacturaElectronica", "ui-icon-signal-diag");
-
         agregarComponente(mep_menu);
         dibujarFacturas();
 
