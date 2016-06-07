@@ -23,6 +23,7 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
+import servicios.contabilidad.ServicioConfiguracion;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioInventario;
@@ -48,6 +49,9 @@ public class FacturaCxC extends Dialogo {
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
 
+    @EJB
+    private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
+
     private final Tabulador tab_factura = new Tabulador();
     private Tabla tab_cab_factura = new Tabla();
     private Tabla tab_deta_factura = new Tabla();
@@ -57,6 +61,7 @@ public class FacturaCxC extends Dialogo {
     private final Texto tex_iva = new Texto();
     private final Texto tex_total = new Texto();
     private final Combo com_pto_emision = new Combo();
+    private double tarifaIVA = 0;
 
     //FORMA DE PAGO
     private Tabla tab_deta_pago = new Tabla();
@@ -87,7 +92,7 @@ public class FacturaCxC extends Dialogo {
     private Tabla tab_cab_retencion = new Tabla();
     private Tabla tab_det_retencion = new Tabla();
 
-    public FacturaCxC() {        
+    public FacturaCxC() {
         this.setWidth("95%");
         this.setHeight("90%");
         this.setTitle("GENERAR FACTURA DE VENTA");
@@ -104,6 +109,8 @@ public class FacturaCxC extends Dialogo {
         this.setDialogo(tab_factura);
         men_factura.setId("men_factura");
         utilitario.getPantalla().getChildren().add(men_factura);
+        //Recupera porcentaje iva
+        tarifaIVA = ser_configuracion.getPorcentajeIva();
     }
 
     public void setFacturaCxC(String titulo) {
@@ -448,7 +455,7 @@ public class FacturaCxC extends Dialogo {
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA 12% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + tarifaIVA + "% :<s/trong>"));
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
@@ -702,7 +709,7 @@ public class FacturaCxC extends Dialogo {
             String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_grabada;
-                porcentaje_iva = (Double.parseDouble(utilitario.getVariable("p_sri_porcentajeIva_comp_elect"))) / 100;
+                porcentaje_iva = tarifaIVA / 100;
                 valor_iva = base_grabada * porcentaje_iva; //0.12
             } else if (iva.equals("-1")) { // NO IVA
                 base_tarifa0 = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_tarifa0;
