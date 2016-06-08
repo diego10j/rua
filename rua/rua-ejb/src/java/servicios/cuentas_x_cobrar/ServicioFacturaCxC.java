@@ -203,7 +203,7 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_cab_tran_cxc.setValor("observacion_ccctr", "V/. Factura " + tab_cab_factura.getValor("secuencial_cccfa") + " ");
             tab_cab_tran_cxc.guardar();
             tab_det_tran_cxc.insertar();
-            tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
+            tab_det_tran_cxc.setValor("ide_usua", parametros.get("IDE_USUA"));
             tab_det_tran_cxc.setValor("ide_ccctr", tab_cab_tran_cxc.getValor("ide_ccctr"));
             tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
             tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
@@ -242,7 +242,7 @@ public class ServicioFacturaCxC extends ServicioBase {
         tab_det_tran_cxc.insertar();
         tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
         tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
-        tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_usua", parametros.get("IDE_USUA"));
         tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
         tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
 
@@ -269,7 +269,7 @@ public class ServicioFacturaCxC extends ServicioBase {
         tab_det_tran_cxc.insertar();
         tab_det_tran_cxc.setValor("ide_teclb", ide_teclb);
         tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
-        tab_det_tran_cxc.setValor("ide_usua", parametros.get("ide_usua"));
+        tab_det_tran_cxc.setValor("ide_usua", parametros.get("IDE_USUA"));
         tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_pago);
         tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
 
@@ -374,7 +374,7 @@ public class ServicioFacturaCxC extends ServicioBase {
      */
     public String getSqlAniosFacturacion() {
         return "select distinct EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as anio,EXTRACT(YEAR FROM fecha_emisi_cccfa)||'' as nom_anio  "
-                + "from cxc_cabece_factura where ide_empr=" + parametros.get("ide_empr") + " order by 1 desc ";
+                + "from cxc_cabece_factura where ide_empr=" + parametros.get("IDE_EMPR") + " order by 1 desc ";
     }
 
     /**
@@ -383,7 +383,7 @@ public class ServicioFacturaCxC extends ServicioBase {
      * @return
      */
     public String getSqlMeses() {
-        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + parametros.get("ide_empr") + " order by ide_gemes";
+        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + parametros.get("IDE_EMPR") + " order by ide_gemes";
     }
 
     /**

@@ -90,6 +90,7 @@ public class ServicioProducto {
         tabla.getColumna("nombre_inarti").setRequerida(true);
         tabla.getColumna("iva_inarti").setRadio(getListaTipoIVA(), "1");
         tabla.getColumna("iva_inarti").setRadioVertical(true);
+        tabla.getColumna("INV_IDE_INARTI").setVisible(false);         	
         tabla.setTipoFormulario(true);
         tabla.getGrid().setColumns(4);
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");// cargar un combo de una con el ide, nombre

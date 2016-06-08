@@ -171,6 +171,16 @@ public class FacturaCxC extends Dialogo {
      */
     public void verFactura(String ide_cccfa) {
         if (ide_cccfa != null) {
+            tab_factura.getTab(0).getChildren().clear();
+            tab_factura.getTab(1).getChildren().clear();
+            tab_factura.getTab(2).getChildren().clear();
+            tab_factura.getTab(3).getChildren().clear();
+
+            tab_factura.getTab(0).getChildren().add(dibujarFactura());
+            tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
+            tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
+            tab_factura.getTab(3).getChildren().add(dibujarRetencion());
+
             opcion = 2;
             //Carga la Factura
             activarTabs();
@@ -179,7 +189,7 @@ public class FacturaCxC extends Dialogo {
             tab_cab_factura.setCondicion("ide_cccfa=" + ide_cccfa);
             tab_cab_factura.ejecutarSql();
             com_pto_emision.setValue(tab_cab_factura.getValor("ide_ccdaf"));
-            tab_deta_factura.setValorForanea(tab_cab_factura.getValorSeleccionado());
+            tab_deta_factura.setCondicion("ide_cccfa="+tab_cab_factura.getValorSeleccionado());
             tab_deta_factura.ejecutarSql();
             tex_iva.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("valor_iva_cccfa")));
             //Carga totales y observacion
@@ -368,7 +378,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("ide_usua").setVisible(false);
         tab_cab_factura.setTipoFormulario(true);
         tab_cab_factura.getGrid().setColumns(6);
-        tab_cab_factura.agregarRelacion(tab_deta_factura);
+        //tab_cab_factura.agregarRelacion(tab_deta_factura);
         tab_cab_factura.setCondicion("ide_cccfa=-1");
         tab_cab_factura.getColumna("base_grabada_cccfa").setVisible(false);
         tab_cab_factura.getColumna("base_no_objeto_iva_cccfa").setVisible(false);
@@ -388,6 +398,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("ide_inarti").setNombreVisual("ARTICULO");
         tab_deta_factura.getColumna("ide_inarti").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".seleccionarProducto");
         tab_deta_factura.getColumna("ide_inarti").setRequerida(true);
+        tab_deta_factura.getColumna("ide_cccfa").setVisible(false);
         tab_deta_factura.getColumna("SECUENCIAL_CCDFA").setVisible(false);
         tab_deta_factura.getColumna("ide_inarti").setOrden(1);
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setNombreVisual("CANTIDAD");
@@ -793,6 +804,10 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.setValor("solo_guardar_cccfa", "true");
         //SOLO GUARDA LA FACTURA
         if (tab_cab_factura.guardar()) {
+            String ide_cccfa = tab_cab_factura.getValor("ide_cccfa");
+            for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
+                tab_deta_factura.setValor(i, "ide_cccfa", ide_cccfa);
+            }
             if (tab_deta_factura.guardar()) {
                 //Guarda la cuenta por cobrar
                 ser_factura.generarTransaccionFactura(tab_cab_factura);

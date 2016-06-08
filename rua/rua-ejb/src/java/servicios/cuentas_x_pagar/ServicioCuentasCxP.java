@@ -60,7 +60,7 @@ public class ServicioCuentasCxP extends ServicioBase {
             }
             tab_cab_tran_cxp.guardar();
             tab_det_tran_cxp.insertar();
-            tab_det_tran_cxp.setValor("ide_usua", parametros.get("ide_usua"));
+            tab_det_tran_cxp.setValor("ide_usua", parametros.get("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", tab_cab_tran_cxp.getValor("ide_cpctr"));
             tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
