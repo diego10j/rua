@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="427" pageHeight="597" whenNoDataType="AllSectionsNoDetail" columnWidth="387" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3f9c6dba-fab8-4364-b91b-399bea5a48c4">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.5026296018031553"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="167"/>
+	<property name="ireport.y" value="192"/>
 	<parameter name="ide_cccfa" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -45,12 +45,12 @@ AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
 		<groupExpression><![CDATA[$F{secuencial_cccfa}]]></groupExpression>
 	</group>
 	<title>
-		<band height="105" splitType="Stretch"/>
+		<band height="103" splitType="Stretch"/>
 	</title>
 	<pageHeader>
 		<band height="73" splitType="Stretch">
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="4f3b1551-f9f5-4de6-8701-dbbef4b0e4e3" x="85" y="1" width="202" height="15"/>
+				<reportElement uuid="4f3b1551-f9f5-4de6-8701-dbbef4b0e4e3" x="87" y="1" width="202" height="15"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
@@ -86,7 +86,7 @@ AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="56" y="1" width="30" height="15"/>
+				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="54" y="1" width="35" height="15"/>
 				<textElement/>
 				<text><![CDATA[Quito,]]></text>
 			</staticText>
@@ -111,6 +111,7 @@ AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="010697a7-d236-469d-a92e-06438150c711" x="271" y="0" width="53" height="15"/>
+				<box rightPadding="3"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
@@ -118,6 +119,7 @@ AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="963c04e5-b179-47e9-8222-77e9bba3be4a" x="331" y="0" width="55" height="15"/>
+				<box rightPadding="5"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
@@ -128,30 +130,30 @@ AND FACTURA.ide_cccfa=$P{ide_cccfa}]]>
 	<columnFooter>
 		<band height="90">
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-				<reportElement uuid="d17142f5-2dec-432f-a948-61e789edbc58" x="334" y="59" width="54" height="15"/>
-				<box rightPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<reportElement uuid="d17142f5-2dec-432f-a948-61e789edbc58" x="333" y="39" width="54" height="12"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_iva_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-				<reportElement uuid="93826fdd-42e1-40fd-a786-340b46699431" x="334" y="74" width="54" height="15"/>
-				<box rightPadding="3"/>
+				<reportElement uuid="93826fdd-42e1-40fd-a786-340b46699431" x="334" y="52" width="54" height="12"/>
+				<box rightPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="4b79361e-cd48-4e51-9529-2197b8d62b4a" x="334" y="41" width="54" height="15"/>
-				<box rightPadding="3"/>
+				<reportElement uuid="4b79361e-cd48-4e51-9529-2197b8d62b4a" x="334" y="24" width="54" height="15"/>
+				<box rightPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{var_iva_cero}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="4bb01748-73ee-4879-87ed-d4f577323131" x="333" y="25" width="54" height="15"/>
-				<box rightPadding="3"/>
+				<reportElement uuid="4bb01748-73ee-4879-87ed-d4f577323131" x="333" y="8" width="54" height="15"/>
+				<box rightPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{total_ccdfa_1}]]></textFieldExpression>
 			</textField>

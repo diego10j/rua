@@ -12,7 +12,6 @@ import sistema.aplicacion.Pantalla;
 public class pre_datos_factura_cxc extends Pantalla {
 
     private Tabla tab_tabla = new Tabla();
-    private Division div_division = new Division();
 
     public pre_datos_factura_cxc() {
 
@@ -22,9 +21,9 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
+        Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
-
         agregarComponente(div_division);
 
     }
