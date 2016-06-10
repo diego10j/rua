@@ -31,7 +31,7 @@ public class ServicioCliente extends ServicioBase {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA", "p_cxc_estado_factura_normal");
+        parametros = utilitario.getVariables("p_cxc_estado_factura_normal");
     }
 
     /**
@@ -193,7 +193,7 @@ public class ServicioCliente extends ServicioBase {
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti \n"
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "where cf.ide_geper=" + ide_geper + " "
-                + "and cdf.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
+                + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
@@ -214,7 +214,7 @@ public class ServicioCliente extends ServicioBase {
                 + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA "
                 + "INNER JOIN cxc_cabece_transa d on a.ide_ccctr=d.ide_ccctr "
                 + "WHERE ide_geper=" + ide_geper + " "
-                + "AND a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
+                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY FECHA_TRANS_CCDTR,IDE_CCDTR";
     }
@@ -233,7 +233,7 @@ public class ServicioCliente extends ServicioBase {
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "where ide_geper=" + ide_geper + " "
                 + "and fecha_trans_ccdtr <'" + fecha + "' "
-                + "and dt.ide_sucu=" + parametros.get("IDE_SUCU") + " "
+                + "and dt.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "group by ide_geper";
         TablaGenerica tab_saldo = utilitario.consultar(sql);
         if (tab_saldo.getTotalFilas() > 0) {
@@ -268,7 +268,7 @@ public class ServicioCliente extends ServicioBase {
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "where ct.ide_geper=" + ide_geper + " "
-                + "and ct.ide_sucu=" + parametros.get("IDE_SUCU") + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,serie_ccdaf,cf.secuencial_cccfa, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
@@ -289,7 +289,7 @@ public class ServicioCliente extends ServicioBase {
                 + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "where ct.ide_geper=" + ide_geper + " "
-                + "and ct.ide_sucu=" + parametros.get("IDE_SUCU") + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
@@ -332,7 +332,7 @@ public class ServicioCliente extends ServicioBase {
                 + "inner join inv_articulo c on a.ide_inarti=c.ide_inarti\n"
                 + "where ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "and ide_geper=" + ide_geper + " "
-                + "AND a.IDE_SUCU =" + parametros.get("IDE_SUCU") + " "
+                + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "group by a.ide_inarti,nombre_inarti \n"
                 + "order by nombre_inarti";
     }

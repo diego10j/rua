@@ -26,7 +26,7 @@ public class ServicioCuentasCxP extends ServicioBase {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar
-        parametros = utilitario.getVariables("IDE_SUCU", "IDE_EMPR", "IDE_USUA", "p_cxp_tipo_trans_factura");
+        parametros = utilitario.getVariables("p_cxp_tipo_trans_factura");
 
     }
 
@@ -60,7 +60,7 @@ public class ServicioCuentasCxP extends ServicioBase {
             }
             tab_cab_tran_cxp.guardar();
             tab_det_tran_cxp.insertar();
-            tab_det_tran_cxp.setValor("ide_usua", parametros.get("IDE_USUA"));
+            tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", tab_cab_tran_cxp.getValor("ide_cpctr"));
             tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
