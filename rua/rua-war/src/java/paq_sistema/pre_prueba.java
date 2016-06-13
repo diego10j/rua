@@ -26,7 +26,8 @@ public class pre_prueba extends Pantalla {
         asi.setId("asi");
         agregarComponente(asi);
 
-        dcp.setId("dcp");        
+        dcp.setId("dcp");       
+        dcp.setDocumentoCxP("CREAR DOCUMENTO CXP");
         agregarComponente(dcp);
     }
 
@@ -42,7 +43,7 @@ public class pre_prueba extends Pantalla {
 
     @Override
     public void eliminar() {
-        dcp.setDocumentoCxP("CREAR DOCUMENTO CXP");
+        
         dcp.dibujar();
     }
 
