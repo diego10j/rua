@@ -2305,14 +2305,16 @@ public class pre_empleado extends Pantalla {
 		tab_empleado.getColumna("IDE_GTGEN").setRequerida(true);
 		tab_empleado.getColumna("IDE_GTESC").setRequerida(true);
 		tab_empleado.getColumna("IDE_GEDIP").setRequerida(true);
-		tab_empleado.getColumna("PATH_FOTO_GTEMP").setUpload("fotos");
+		tab_empleado.getColumna("PATH_FOTO_GTEMP").setUpload();
 		tab_empleado.getColumna("PATH_FOTO_GTEMP").setValorDefecto("imagenes/im_empleado.png");
-		tab_empleado.getColumna("PATH_FOTO_GTEMP").setImagen("128", "128");
+		tab_empleado.getColumna("PATH_FOTO_GTEMP").setImagen();
 		tab_empleado.getColumna("SEPARACION_BIENES_GTEMP").setCheck();
 		tab_empleado.getColumna("SEPARACION_BIENES_GTEMP").setValorDefecto("false");
 		tab_empleado.getColumna("fecha_ingreso_gtemp").setMetodoChange("mismaFecha");
 		tab_empleado.getColumna("DISCAPACITADO_GTEMP").setCheck();
-		tab_empleado.getColumna("PATH_FIRMA_GTEMP").setUpload("firmas");
+		tab_empleado.getColumna("PATH_FIRMA_GTEMP").setUpload();
+		tab_empleado.getColumna("PATH_FIRMA_GTEMP").setImagen();
+                
 		tab_empleado.getColumna("carnet_extranjeria_gtemp").setVisible(false);
 		tab_empleado.getColumna("fecha_ingreso_pais_gtemp").setVisible(false);
 		tab_empleado.getColumna("ide_gttis").setVisible(false);
