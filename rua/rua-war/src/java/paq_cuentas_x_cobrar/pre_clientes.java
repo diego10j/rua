@@ -435,6 +435,15 @@ public class pre_clientes extends Pantalla {
         mep_menu.dibujar(7, "CLASIFICACIÓN DE CLIENTES", gru_grupo);
     }
 
+    public void agregarPadre() {
+        if (mep_menu.getOpcion() == 7) {
+            TablaGenerica tab_padre_cliente = new TablaGenerica();
+            tab_padre_cliente.setTabla("gen_persona", "ide_geper");
+            tab_padre_cliente.setCondicion("ide_geper=-1");
+            tab_padre_cliente.ejecutarSql();
+        }
+    }
+
     public void dibujarGrafico() {
         Grupo gru_grupo = new Grupo();
         if (isClienteSeleccionado()) {
