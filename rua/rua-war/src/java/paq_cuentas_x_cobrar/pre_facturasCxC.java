@@ -73,9 +73,10 @@ public class pre_facturasCxC extends Pantalla {
 
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
-        bar_botones.quitarBotonEliminar();        
+        bar_botones.quitarBotonEliminar();
         bar_botones.agregarReporte();
 
+        com_pto_emision.setId("com_pto_emision");
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodo("actualizarFacturas");
         com_pto_emision.eliminarVacio();
@@ -97,7 +98,7 @@ public class pre_facturasCxC extends Pantalla {
         bar_botones.agregarComponente(bot_consultar);
 
         fcc_factura.setId("fcc_factura");
-        fcc_factura.setFacturaCxC("GENERAR FACTURA DE VENTA");
+        fcc_factura.getBot_aceptar().setMetodo("guardar");
         agregarComponente(fcc_factura);
 
         mep_menu.setMenuPanel("OPCIONES FACTURA", "20%");
@@ -107,7 +108,7 @@ public class pre_facturasCxC extends Pantalla {
         mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturasPorCobrar", "ui-icon-calculator");
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Grafico de Ventas", "dibujarGraficoVentas", "ui-icon-clock");
-       // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");
+        // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");
         mep_menu.agregarItem("Reporte de Ventas", "dibujarReporteVentas", "ui-icon-calendar");
         mep_menu.agregarSubMenu("FACTURACIÓN ELECTRÓNICA");
         mep_menu.agregarItem("Facturas Eléctrónicas", "dibujarFacturaElectronica", "ui-icon-signal-diag");
@@ -412,7 +413,7 @@ public class pre_facturasCxC extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValor("ide_cccfa")));
+                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValorSeleccionado()));
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_rep.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_rep");
@@ -436,7 +437,7 @@ public class pre_facturasCxC extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValor("ide_cccfa")));
+                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValorSeleccionado()));
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_rep.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_rep");
@@ -501,7 +502,16 @@ public class pre_facturasCxC extends Pantalla {
 
     @Override
     public void guardar() {
-
+        if (fcc_factura.isVisible()) {
+            fcc_factura.guardar();
+            if (fcc_factura.isVisible() == false) {
+                //actualiza el punto de emision seleccionado y la tabla
+                com_pto_emision.setValue(fcc_factura.getComboPuntoEmision().getValue());
+                dibujarFacturas();
+                tab_facturas.setFilaActual(fcc_factura.getTab_cab_factura().getValor("ide_cccfa"));
+                utilitario.addUpdate("com_pto_emision,tab_facturas");
+            }
+        }
     }
 
     @Override

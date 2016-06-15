@@ -759,10 +759,15 @@ public class pre_clientes extends Pantalla {
 
     @Override
     public void eliminar() {
-        if (mep_menu.getOpcion() == 1) {
-            //FORMULARIO CLIENTE
-            tab_cliente.eliminar();
+
+        //FORMULARIO CLIENTE
+        if (tab_cliente.eliminar()) {
+            aut_clientes.actualizar();
+            aut_clientes.setSize(75);
+            utilitario.addUpdate("aut_clientes");
+            limpiar();
         }
+
     }
 
     public AutoCompletar getAut_clientes() {

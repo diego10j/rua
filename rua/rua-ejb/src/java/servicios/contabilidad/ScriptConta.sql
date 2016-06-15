@@ -146,3 +146,7 @@ COMMENT ON COLUMN pre_asociacion_presupuestaria.hora_ingre IS 'Este campo define
 COMMENT ON COLUMN pre_asociacion_presupuestaria.usuario_actua IS 'Este campo define el ultimo usuario que realiza la actualizacion del registro.';
 COMMENT ON COLUMN pre_asociacion_presupuestaria.fecha_actua IS 'Este campo define la ultima fecha que realiza la actualizacion del registro.';
 COMMENT ON COLUMN pre_asociacion_presupuestaria.hora_actua IS 'Este campo define la hora que se realizo el ingreso por primera ves el registro.';
+
+
+ALTER TABLE cxc_cabece_factura
+  ADD COLUMN telefono_cccfa character varying(30);

@@ -2,13 +2,13 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="297" pageHeight="421" whenNoDataType="AllSectionsNoDetail" columnWidth="297" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="50b114ce-f905-417a-8617-466b3b7e5b93">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="118"/>
+	<property name="ireport.y" value="48"/>
 	<parameter name="ide_cccfa" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT FACTURA.secuencial_cccfa,FACTURA.fecha_emisi_cccfa,PERSONA.nom_geper,PERSONA.identificac_geper,
-PERSONA.direccion_geper,PERSONA.telefono_geper,DETALLE.cantidad_ccdfa,ARTICULO.nombre_inarti,DETALLE.observacion_ccdfa,DETALLE.precio_ccdfa,
+FACTURA.direccion_cccfa as direccion_geper,FACTURA.telefono_cccfa  as telefono_geper,DETALLE.cantidad_ccdfa,ARTICULO.nombre_inarti,DETALLE.observacion_ccdfa,DETALLE.precio_ccdfa,
 DETALLE.total_ccdfa ,FACTURA.base_no_objeto_iva_cccfa,FACTURA.base_tarifa0_cccfa,FACTURA.base_grabada_cccfa,
 FACTURA.valor_iva_cccfa,FACTURA.total_cccfa
 FROM cxc_cabece_factura AS FACTURA
@@ -20,10 +20,19 @@ WHERE PERSONA.es_cliente_geper=TRUE AND ARTICULO.nivel_inarti='HIJO'
 	</queryString>
 	<field name="secuencial_cccfa" class="java.lang.String"/>
 	<field name="fecha_emisi_cccfa" class="java.sql.Date"/>
-	<field name="nom_geper" class="java.lang.String"/>
-	<field name="identificac_geper" class="java.lang.String"/>
-	<field name="direccion_geper" class="java.lang.String"/>
-	<field name="telefono_geper" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="identificac_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[empleado
+este campo es para guardar la cedula del empleado]]></fieldDescription>
+	</field>
+	<field name="direccion_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="telefono_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
 	<field name="cantidad_ccdfa" class="java.math.BigDecimal"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="observacion_ccdfa" class="java.lang.String"/>
@@ -41,7 +50,7 @@ WHERE PERSONA.es_cliente_geper=TRUE AND ARTICULO.nivel_inarti='HIJO'
 		<variableExpression><![CDATA[$F{total_ccdfa}]]></variableExpression>
 	</variable>
 	<title>
-		<band height="159" splitType="Stretch">
+		<band height="161" splitType="Stretch">
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
 				<reportElement uuid="6f4cd965-31ac-43f5-9f48-f9b92bae5393" x="75" y="92" width="124" height="12"/>
 				<textElement>
