@@ -1,0 +1,425 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package paq_prestamos;
+
+import componentes.FacturaCxC;
+import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
+import framework.componentes.Etiqueta;
+import framework.componentes.Grupo;
+import framework.componentes.MenuPanel;
+import framework.componentes.PanelTabla;
+import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
+import org.primefaces.component.panelgrid.PanelGrid;
+import org.primefaces.component.separator.Separator;
+import org.primefaces.event.SelectEvent;
+import servicios.contabilidad.ServicioContabilidadGeneral;
+import servicios.prestamo.ServicioPrestamo;
+import sistema.aplicacion.Pantalla;
+
+/**
+ *
+ * @author djacomee
+ */
+public class pre_prestamos extends Pantalla {
+
+    @EJB
+    private final ServicioPrestamo ser_prestamo = (ServicioPrestamo) utilitario.instanciarEJB(ServicioPrestamo.class);
+    @EJB
+    private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
+
+    private final MenuPanel mep_menu = new MenuPanel();
+    private AutoCompletar aut_prestamos = new AutoCompletar();
+
+    private Tabla tab_tabla1;
+
+    private Tabla tab_tabla2;
+
+    private FacturaCxC fcc_factura = new FacturaCxC();
+
+    public pre_prestamos() {
+
+        bar_botones.quitarBotonsNavegacion();
+        bar_botones.agregarComponente(new Etiqueta("PRESTAMO :"));
+        aut_prestamos.setId("aut_prestamos");
+        aut_prestamos.setAutoCompletar(ser_prestamo.getSqlComboPrestamos());
+        aut_prestamos.setSize(75);
+        aut_prestamos.setAutocompletarContenido(); // no startWith para la busqueda
+        aut_prestamos.setMetodoChangeRuta("pre_index.clase.seleccionarPrestamo");
+
+        bar_botones.agregarComponente(aut_prestamos);
+        Boton bot_clean = new Boton();
+        bot_clean.setIcon("ui-icon-cancel");
+        bot_clean.setTitle("Limpiar");
+        bot_clean.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_clean);
+
+        mep_menu.setMenuPanel("OPCIONES PRESTAMOS", "20%");
+        mep_menu.agregarItem("Información Prestamo", "dibujarPrestamo", "ui-icon-contact");
+        mep_menu.agregarItem("Tabla de Amortización", "dibujarTabla", "ui-icon-calculator");
+        mep_menu.agregarItem("Pagar Prestamo", "dibujarPagar", "ui-icon-check");
+        mep_menu.agregarSubMenu("INFORMES");
+        mep_menu.agregarItem("Listado de Prestamos", "dibujarListaPrestamos", "ui-icon-note");
+
+        agregarComponente(mep_menu);
+
+        fcc_factura.setId("fcc_factura");
+        fcc_factura.getBot_aceptar().setMetodo("guardar");
+        fcc_factura.setTitle("FACTURA DE PRESTAMOS");
+        agregarComponente(fcc_factura);
+
+    }
+
+    /**
+     * Selecciona un prestamo en el autocompletar
+     *
+     * @param evt
+     */
+    public void seleccionarPrestamo(SelectEvent evt) {
+        aut_prestamos.onSelect(evt);
+        if (aut_prestamos != null) {
+            switch (mep_menu.getOpcion()) {
+                case 1:
+                    dibujarPrestamo();
+                    break;
+                case 2:
+                    dibujarTabla();
+                    break;
+                case 3:
+                    dibujarListaPrestamos();
+                    break;
+                case 4:
+                    dibujarPagar();
+                    break;
+                default:
+                    dibujarPrestamo();
+            }
+        } else {
+            limpiar();
+        }
+    }
+
+    /**
+     * Limpia la pantalla y el autocompletar
+     */
+    public void limpiar() {
+        aut_prestamos.limpiar();
+        mep_menu.limpiar();
+    }
+
+    public void dibujarPrestamo() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setTabla("iyp_cab_prestamo", "ide_ipcpr", 1);
+        tab_tabla1.setCondicion("ide_ipcpr=-1");
+        tab_tabla1.getColumna("ide_iptpr").setCombo("iyp_tipo_prestamo", "ide_iptpr", "nombre_iptpr", "");
+        tab_tabla1.getColumna("ide_iptpr").setValorDefecto(utilitario.getVariable("p_iyp_tipo_prestamo"));
+        tab_tabla1.getColumna("ide_ipepr").setCombo("iyp_estado_prestamos", "ide_ipepr", "nombre_ipepr", "");
+        tab_tabla1.getColumna("ide_ipepr").setValorDefecto(utilitario.getVariable("p_iyp_estado_normal"));
+        tab_tabla1.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentasHijas());
+        tab_tabla1.getColumna("ide_cndpc").setAutoCompletar();
+        tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_tabla1.getColumna("fecha_transaccion_ipcpr").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla1.getColumna("fecha_transaccion_ipcpr").setLectura(true);
+        tab_tabla1.getColumna("ide_tecba").setCombo("select tes_cuenta_banco.ide_tecba,tes_banco.nombre_teban,tes_cuenta_banco.nombre_tecba from  tes_banco,tes_cuenta_banco,sis_empresa where tes_banco.ide_teban=tes_cuenta_banco.ide_teban and sis_empresa.ide_empr=" + utilitario.getVariable("ide_empr") + " and tes_cuenta_banco.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        tab_tabla1.getColumna("ide_usua").setVisible(false);
+        tab_tabla1.getColumna("ide_tecba").setRequerida(true);
+        tab_tabla1.getColumna("monto_ipcpr").setRequerida(true);
+        tab_tabla1.getColumna("ide_cndpc").setRequerida(true);
+        tab_tabla1.getColumna("interes_ipcpr").setRequerida(true);
+        tab_tabla1.getColumna("num_pagos_ipcpr").setRequerida(true);
+        tab_tabla1.getColumna("ide_ipepr").setRequerida(true);
+        tab_tabla1.getColumna("ide_iptpr").setRequerida(true);
+        tab_tabla1.getColumna("num_dias_ipcpr").setRequerida(true);
+        tab_tabla1.getColumna("observacion_ipcpr").setRequerida(true);
+        tab_tabla1.getColumna("fecha_sistema_ipcpr").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
+        tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
+        tab_tabla1.getColumna("hora_sistema_ipcpr").setVisible(false);
+        tab_tabla1.getColumna("genera_asiento_ipcpr").setValorDefecto("true");
+        tab_tabla1.setTipoFormulario(true);
+        tab_tabla1.getGrid().setColumns(4);
+        List lista = new ArrayList();
+        Object fila1[] = {
+            true, "INGRESO"
+        };
+        Object fila2[] = {
+            false, "EGRESO"
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        tab_tabla1.getColumna("es_ingreso_ipcpr").setCombo(lista);
+        tab_tabla1.getColumna("es_ingreso_ipcpr").setOrden(2);
+        tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_cliente_geper=TRUE AND nivel_geper='HIJO'");
+        tab_tabla1.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla1.getColumna("ide_geper").setRequerida(true);
+        tab_tabla1.getColumna("fecha_sistema_ipcpr").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
+        tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
+        tab_tabla1.getColumna("hora_sistema_ipcpr").setVisible(false);
+        tab_tabla1.getColumna("ide_cnccc").setLectura(true);
+        tab_tabla1.setCondicion("ide_ipcpr=" + aut_prestamos.getValor());
+        tab_tabla1.setMostrarNumeroRegistros(false);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        mep_menu.dibujar(1, "DATOS DEL PRESTAMO", pat_panel);
+
+    }
+
+    public void dibujarTabla() {
+        Grupo gru_grupo = new Grupo();
+        if (isPrestamoSeleccionado()) {
+            tab_tabla2 = new Tabla();
+            tab_tabla2.setId("tab_tabla2");
+            tab_tabla2.setNumeroTabla(-1);
+            tab_tabla2.setSql(ser_prestamo.getSqlTablaAmortizacion(aut_prestamos.getValor()));
+            tab_tabla2.setLectura(true);
+            tab_tabla2.getColumna("ide_ipdpr").setVisible(false);
+            tab_tabla2.getColumna("ide_cccfa").setVisible(false);
+            tab_tabla2.getColumna("fecha_ipdpr").setNombreVisual("fecha");
+            tab_tabla2.getColumna("fecha_prestamo_ipcpr").setVisible(false);
+            tab_tabla2.getColumna("monto_ipcpr").setVisible(false);
+            tab_tabla2.getColumna("num_dias_ipcpr").setVisible(false);
+            tab_tabla2.getColumna("interes_ipcpr").setVisible(false);
+            tab_tabla2.getColumna("capital").alinearDerecha();
+            tab_tabla2.getColumna("interes").alinearDerecha();
+            tab_tabla2.getColumna("cuota").alinearDerecha();
+            tab_tabla2.getColumna("banco").setLongitud(50);
+            tab_tabla2.setColumnaSuma("capital,interes,cuota");
+            tab_tabla2.setValueExpression("rowStyleClass", "fila.campos[6] eq 'false' ? 'text-green' :  null");
+            tab_tabla2.setScrollable(true);
+            tab_tabla2.setRows(999);
+            tab_tabla2.setScrollHeight(400);
+            tab_tabla2.dibujar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_tabla2);
+            PanelGrid pgrid = new PanelGrid();
+            pgrid.setColumns(8);
+            pgrid.setStyle("width:100%;");
+            pgrid.getFacets().put("header", new Etiqueta(aut_prestamos.getValorArreglo(1)));
+            pgrid.getChildren().add(new Etiqueta("<strong>FECHA DEL PRESTAMO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(utilitario.getFormatoFecha(utilitario.getFecha(tab_tabla2.getValor("fecha_prestamo_ipcpr")), "dd-MM-yyyy")));
+            pgrid.getChildren().add(new Etiqueta("<strong>MONTO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla2.getValor("monto_ipcpr")));
+            pgrid.getChildren().add(new Etiqueta("<strong>NUM DIAS PLAZO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla2.getValor("num_dias_ipcpr")));
+            pgrid.getChildren().add(new Etiqueta("<strong>% INTERES :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla2.getValor("interes_ipcpr")));
+            gru_grupo.getChildren().add(pgrid);
+            gru_grupo.getChildren().add(new Separator());
+            gru_grupo.getChildren().add(pat_panel);
+        }
+        mep_menu.dibujar(2, "TABLA DE AMORTIZACION", gru_grupo);
+    }
+
+    public void dibujarListaPrestamos() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_prestamo.getSqlPrestamos());
+        tab_tabla1.getColumna("ide_ipcpr").setVisible(false);
+        tab_tabla1.getColumna("tipo").setLongitud(10);
+        tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_tabla1.getColumna("fecha_prestamo_ipcpr").setNombreVisual("FECHA");
+        tab_tabla1.getColumna("num_prestamo_ipcpr").setNombreVisual("NUM. PRESTAMO");
+        tab_tabla1.getColumna("monto_ipcpr").setNombreVisual("MONTO");
+        tab_tabla1.getColumna("monto_ipcpr").alinearDerecha();
+        tab_tabla1.getColumna("interes_ipcpr").setNombreVisual("% INTERES");
+        tab_tabla1.getColumna("interes_ipcpr").alinearDerecha();
+        tab_tabla1.getColumna("num_pagos_ipcpr").setNombreVisual("NUM. PAGOS");
+        tab_tabla1.getColumna("num_pagos_ipcpr").alinearDerecha();
+        tab_tabla1.getColumna("pagos").setNombreVisual("PAGADOS");
+        tab_tabla1.getColumna("pagos").alinearDerecha();
+        tab_tabla1.getColumna("valor_pagado").setNombreVisual("VALOR PAGADO");
+        tab_tabla1.getColumna("valor_pagado").alinearDerecha();
+        tab_tabla1.getColumna("capital").alinearDerecha();
+        tab_tabla1.getColumna("interes").alinearDerecha();
+        tab_tabla1.getColumna("cuota").alinearDerecha();
+        tab_tabla1.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
+
+        tab_tabla1.setNumeroTabla(-1);
+        tab_tabla1.setScrollable(true);
+        tab_tabla1.setScrollHeight(430);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        mep_menu.dibujar(3, "LISTADO PRESTAMOS", pat_panel);
+
+    }
+
+    public void dibujarPagar() {
+        Grupo gru_grupo = new Grupo();
+        if (isPrestamoSeleccionado()) {
+            tab_tabla1 = new Tabla();
+            tab_tabla1.setId("tab_tabla1");
+            tab_tabla1.setSql(ser_prestamo.getSqlPagosPrestamo(aut_prestamos.getValor()));
+            tab_tabla1.setCampoPrimaria("ide_ipdpr");
+            tab_tabla1.getColumna("ide_ipdpr").setVisible(false);
+            tab_tabla1.getColumna("ide_ipcpr").setVisible(false);
+            tab_tabla1.getColumna("ide_ipcpr").setEtiqueta();
+            tab_tabla1.getColumna("num_ipdpr").setEtiqueta();
+            tab_tabla1.getColumna("fecha_ipdpr").setEtiqueta();
+            tab_tabla1.getColumna("capital_ipdpr").setEtiqueta();
+            tab_tabla1.getColumna("interes_ipdpr").setEtiqueta();
+            tab_tabla1.getColumna("cuota_ipdpr").setEtiqueta();
+            tab_tabla1.getColumna("ide_cndpc").setVisible(false);
+            tab_tabla1.getColumna("ide_ipcpr").setLectura(false);
+            tab_tabla1.getColumna("num_ipdpr").setNombreVisual("NUMERO");
+            tab_tabla1.getColumna("fecha_ipdpr").setNombreVisual("FECHA");
+            tab_tabla1.getColumna("capital_ipdpr").setNombreVisual("CAPITAL");
+            tab_tabla1.getColumna("interes_ipdpr").setNombreVisual("INTERES");
+            tab_tabla1.getColumna("cuota_ipdpr").setNombreVisual("CUOTA");
+            tab_tabla1.getColumna("pagado_ipdpr").setNombreVisual("PAGAR");
+            tab_tabla1.getColumna("fecha_prestamo_ipcpr").setVisible(false);
+            tab_tabla1.getColumna("monto_ipcpr").setVisible(false);
+            tab_tabla1.getColumna("num_dias_ipcpr").setVisible(false);
+            tab_tabla1.getColumna("interes_ipcpr").setVisible(false);
+            tab_tabla1.getColumna("ide_geper").setVisible(false);
+            tab_tabla1.setNumeroTabla(-1);
+            tab_tabla1.setScrollable(true);
+            tab_tabla1.setScrollHeight(330);
+            tab_tabla1.dibujar();
+            tab_tabla1.setRows(999);
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_tabla1);
+            pat_panel.setMensajeInfo("Seleccione los dividendos que desea pagar");
+            pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+            PanelGrid pgrid = new PanelGrid();
+            pgrid.setColumns(8);
+            pgrid.setStyle("width:100%;");
+            pgrid.getFacets().put("header", new Etiqueta(aut_prestamos.getValorArreglo(1)));
+            pgrid.getChildren().add(new Etiqueta("<strong>FECHA DEL PRESTAMO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(utilitario.getFormatoFecha(utilitario.getFecha(tab_tabla1.getValor("fecha_prestamo_ipcpr")), "dd-MM-yyyy")));
+            pgrid.getChildren().add(new Etiqueta("<strong>MONTO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla1.getValor("monto_ipcpr")));
+            pgrid.getChildren().add(new Etiqueta("<strong>NUM DIAS PLAZO :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla1.getValor("num_dias_ipcpr")));
+            pgrid.getChildren().add(new Etiqueta("<strong>% INTERES :</strong>"));
+            pgrid.getChildren().add(new Etiqueta(tab_tabla1.getValor("interes_ipcpr")));
+            gru_grupo.getChildren().add(pgrid);
+            gru_grupo.getChildren().add(new Separator());
+            gru_grupo.getChildren().add(new Etiqueta("<div align='center'>"));
+            gru_grupo.getChildren().add(pat_panel);
+
+            Boton bot_pagar = new Boton();
+            bot_pagar.setValue("Aceptar");
+            bot_pagar.setMetodo("pagarPrestamo");
+            bot_pagar.setIcon("ui-icon-pencil");
+            gru_grupo.getChildren().add(bot_pagar);
+            gru_grupo.getChildren().add(new Etiqueta("</div>"));
+        }
+        mep_menu.dibujar(4, "PAGAR PRESTAMO", gru_grupo);
+    }
+
+    /**
+     * Validacion para que se seleccione un prestamo del Autocompletar
+     *
+     * @return
+     */
+    private boolean isPrestamoSeleccionado() {
+        if (aut_prestamos.getValor() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un Préstamo", "Seleccione un préstamo de la lista del Autocompletar");
+            return false;
+        }
+        return true;
+    }
+
+    public void pagarPrestamo() {
+        double dou_interes = 0;
+        String cuotas = "";
+        for (int i = 0; i < tab_tabla1.getTotalFilas(); i++) {
+            if (tab_tabla1.getValor(i, "pagado_ipdpr").equalsIgnoreCase("true")) {
+                dou_interes += Double.parseDouble(tab_tabla1.getValor(i, "interes_ipdpr"));
+                if (!cuotas.isEmpty()) {
+                    cuotas += ", ";
+                }
+                cuotas += "" + tab_tabla1.getValor(i, "num_ipdpr");
+            }
+        }
+        if (dou_interes > 0) {
+            fcc_factura.nuevaFactura();
+            fcc_factura.setCliente(tab_tabla1.getValor("ide_geper"));
+            fcc_factura.setObservacion("Préstamo cuota " + cuotas);
+            fcc_factura.getTab_cab_factura().setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(dou_interes));
+            fcc_factura.getTab_cab_factura().setValor("total_cccfa", utilitario.getFormatoNumero(dou_interes));
+            //Detalle
+            fcc_factura.getTab_deta_factura().insertar();
+            fcc_factura.getTab_deta_factura().setValor("cantidad_ccdfa", "1");
+            fcc_factura.getTab_deta_factura().setValor("precio_ccdfa", utilitario.getFormatoNumero(dou_interes));
+            fcc_factura.getTab_deta_factura().setValor("total_ccdfa", utilitario.getFormatoNumero(dou_interes));
+            fcc_factura.getTab_deta_factura().setValor("observacion_ccdfa", "Préstamo cuota " + cuotas);
+            fcc_factura.getTab_deta_factura().setValor("ide_inarti", utilitario.getVariable("p_iyp_aporte_deta_factura"));
+            fcc_factura.getTab_deta_factura().setValor("iva_inarti_ccdfa", "1");
+            fcc_factura.calcularTotalFactura();
+            fcc_factura.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Seleccionar dividendos", "El valor a facturar debe ser mayor a 0");
+        }
+    }
+
+    @Override
+    public void insertar() {
+        aut_prestamos.limpiar();
+        //FORMULARIO PRESTAMO
+        tab_tabla1.limpiar();
+        tab_tabla1.insertar();
+    }
+
+    @Override
+    public void guardar() {
+        if (mep_menu.getOpcion() == 4) {
+            if (fcc_factura.isVisible()) {
+                fcc_factura.guardar();
+                //Cambiar de estado a pagado las dividendos seleccionados
+            }
+        }
+    }
+
+    @Override
+    public void eliminar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public AutoCompletar getAut_prestamos() {
+        return aut_prestamos;
+    }
+
+    public void setAut_prestamos(AutoCompletar aut_prestamos) {
+        this.aut_prestamos = aut_prestamos;
+    }
+
+    public Tabla getTab_tabla1() {
+        return tab_tabla1;
+    }
+
+    public void setTab_tabla1(Tabla tab_tabla1) {
+        this.tab_tabla1 = tab_tabla1;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
+    }
+
+    public FacturaCxC getFcc_factura() {
+        return fcc_factura;
+    }
+
+    public void setFcc_factura(FacturaCxC fcc_factura) {
+        this.fcc_factura = fcc_factura;
+    }
+
+}

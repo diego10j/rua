@@ -153,7 +153,7 @@ public class FacturaCxC extends Dialogo {
      * Configuraciones para ver una factura
      *
      * @param ide_cccfa
-     */ 
+     */
     public void verFactura(String ide_cccfa) {
         if (ide_cccfa != null) {
             tab_factura.getTab(0).getChildren().clear();
@@ -299,9 +299,9 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("ide_cccfa").setVisible(false);
         tab_cab_factura.getColumna("ide_cncre").setVisible(false);
         tab_cab_factura.getColumna("ide_vgven").setVisible(false);
-        
+
         tab_cab_factura.getColumna("telefono_cccfa").setNombreVisual("TELEFONO");
-        tab_cab_factura.getColumna("telefono_cccfa").setOrden(5);        
+        tab_cab_factura.getColumna("telefono_cccfa").setOrden(5);
         tab_cab_factura.getColumna("ide_cntdo").setVisible(false);
         tab_cab_factura.getColumna("ide_cntdo").setValorDefecto(utilitario.getVariable("p_con_tipo_documento_factura"));
         tab_cab_factura.getColumna("ide_ccefa").setVisible(false);
@@ -619,13 +619,34 @@ public class FacturaCxC extends Dialogo {
     public void seleccionarCliente(SelectEvent evt) {
         tab_cab_factura.modificar(evt);
         if (tab_cab_factura.getValor("ide_geper") != null) {
-            TablaGenerica tag_cliente = ser_cliente.getCliente(tab_cab_factura.getValor("ide_geper"));
+            setCliente(tab_cab_factura.getValor("ide_geper"));
+        }
+    }
+
+    /**
+     * Asigna el cliente de la factura
+     *
+     * @param ide_geper
+     */
+    public void setCliente(String ide_geper) {
+        if (ide_geper != null) {
+            TablaGenerica tag_cliente = ser_cliente.getCliente(ide_geper);
             if (tag_cliente.isEmpty() == false) {
+                tab_cab_factura.setValor("ide_geper", ide_geper);
                 tab_cab_factura.setValor("direccion_cccfa", tag_cliente.getValor("direccion_geper"));
                 tab_cab_factura.setValor("telefono_cccfa", tag_cliente.getValor("telefono_geper"));
                 utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa", "");
             }
         }
+    }
+
+    /**
+     * Asigna observacion a la factura
+     *
+     * @param observacion
+     */
+    public void setObservacion(String observacion) {
+        ate_observacion.setValue(observacion);
     }
 
     /**
@@ -690,7 +711,7 @@ public class FacturaCxC extends Dialogo {
     /**
      * Calcula totales de la factura
      */
-    private void calcularTotalFactura() {
+    public void calcularTotalFactura() {
         double base_grabada = 0;
         double base_no_objeto = 0;
         double base_tarifa0 = 0;

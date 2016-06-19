@@ -728,15 +728,12 @@ public class pre_clientes extends Pantalla {
 
     @Override
     public void insertar() {
+
         aut_clientes.limpiar();
-        if (mep_menu.getOpcion() == 1) {
-            //FORMULARIO CLIENTE
-            tab_cliente.limpiar();
-            tab_cliente.insertar();
-        } else {
-            dibujarCliente();
-            tab_cliente.insertar();
-        }
+        //FORMULARIO CLIENTE
+        tab_cliente.limpiar();
+        tab_cliente.insertar();
+
     }
 
     @Override
