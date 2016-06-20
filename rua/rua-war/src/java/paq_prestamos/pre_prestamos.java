@@ -9,12 +9,18 @@ import componentes.FacturaCxC;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Radio;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
@@ -38,18 +44,22 @@ public class pre_prestamos extends Pantalla {
     private AutoCompletar aut_prestamos = new AutoCompletar();
 
     private Tabla tab_tabla1;
-
     private Tabla tab_tabla2;
-
     private FacturaCxC fcc_factura = new FacturaCxC();
+    private Radio rad_hace_factrua = new Radio();
+
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
 
     public pre_prestamos() {
 
         bar_botones.quitarBotonsNavegacion();
+        bar_botones.agregarReporte();
+
         bar_botones.agregarComponente(new Etiqueta("PRESTAMO :"));
         aut_prestamos.setId("aut_prestamos");
         aut_prestamos.setAutoCompletar(ser_prestamo.getSqlComboPrestamos());
-        aut_prestamos.setSize(75);
+        aut_prestamos.setSize(100);
         aut_prestamos.setAutocompletarContenido(); // no startWith para la busqueda
         aut_prestamos.setMetodoChangeRuta("pre_index.clase.seleccionarPrestamo");
 
@@ -74,6 +84,59 @@ public class pre_prestamos extends Pantalla {
         fcc_factura.setTitle("FACTURA DE PRESTAMOS");
         agregarComponente(fcc_factura);
 
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_formato.setId("sel_formato");
+        agregarComponente(rep_reporte);
+        agregarComponente(sel_formato);
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+
+    @Override
+    public void aceptarReporte() {
+        Map parametro = new HashMap();
+        if (rep_reporte.getReporteSelecionado().equals("Facturas")) {
+            if (mep_menu.getOpcion() == 2) { //Valida que se seleccione una factura
+                if (rep_reporte.isVisible()) {
+                    if (tab_tabla2.getValor("ide_cccfa") != null) {
+                        rep_reporte.cerrar();
+                        parametro.put("ide_cccfa", Long.parseLong(tab_tabla2.getValor("ide_cccfa")));
+                        sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                        sel_formato.dibujar();
+                        utilitario.addUpdate("rep_reporte,sel_rep");
+                    } else {
+                        utilitario.agregarMensajeInfo("Seleccionar Factura", "El dividendo seleccionado no tiene Factura");
+                    }
+
+                } else {
+                    utilitario.agregarMensajeInfo("Seleccionar Factura", "Debe seleccionar un dividendo de la Tabla de Amortización");
+                }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Listado de Prestamos por Entidad Bancaria")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sel_formato.setSeleccionFormatoReporte(null, rep_reporte.getPath());
+                sel_formato.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_formato");
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Tabla de Amortizacion")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                System.out.println("si entra");
+                rep_reporte.cerrar();
+                parametro.put("ide_ipcpr", Long.parseLong(tab_tabla1.getValor("ide_ipcpr")));
+                parametro.put("es_ingreso_ipcpr", Boolean.parseBoolean(tab_tabla1.getValor("es_ingreso_ipcpr")));
+                System.out.println(tab_tabla1.getValor("es_ingreso_ipcpr"));
+                sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_formato.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_formato");
+            }
+        }
     }
 
     /**
@@ -125,8 +188,9 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentasHijas());
         tab_tabla1.getColumna("ide_cndpc").setAutoCompletar();
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_tabla1.getColumna("FECHA_PRESTAMO_IPCPR").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_transaccion_ipcpr").setValorDefecto(utilitario.getFechaActual());
-        tab_tabla1.getColumna("fecha_transaccion_ipcpr").setLectura(true);
+        tab_tabla1.getColumna("fecha_transaccion_ipcpr").setVisible(false);
         tab_tabla1.getColumna("ide_tecba").setCombo("select tes_cuenta_banco.ide_tecba,tes_banco.nombre_teban,tes_cuenta_banco.nombre_tecba from  tes_banco,tes_cuenta_banco,sis_empresa where tes_banco.ide_teban=tes_cuenta_banco.ide_teban and sis_empresa.ide_empr=" + utilitario.getVariable("ide_empr") + " and tes_cuenta_banco.ide_sucu=" + utilitario.getVariable("ide_sucu"));
         tab_tabla1.getColumna("ide_usua").setVisible(false);
         tab_tabla1.getColumna("ide_tecba").setRequerida(true);
@@ -193,9 +257,12 @@ public class pre_prestamos extends Pantalla {
             tab_tabla2.getColumna("interes").alinearDerecha();
             tab_tabla2.getColumna("cuota").alinearDerecha();
             tab_tabla2.getColumna("banco").setLongitud(50);
+            tab_tabla2.getColumna("banco").setVisible(false);////!!!!!CAMBIAR
+            tab_tabla2.getColumna("documento").setVisible(false);////!!!!CAMBIAR
             tab_tabla2.setColumnaSuma("capital,interes,cuota");
             tab_tabla2.setValueExpression("rowStyleClass", "fila.campos[6] eq 'false' ? 'text-green' :  null");
             tab_tabla2.setScrollable(true);
+            tab_tabla2.setOrdenar(false);
             tab_tabla2.setRows(999);
             tab_tabla2.setScrollHeight(400);
             tab_tabla2.dibujar();
@@ -244,7 +311,7 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("interes").alinearDerecha();
         tab_tabla1.getColumna("cuota").alinearDerecha();
         tab_tabla1.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
-
+        tab_tabla1.setOrdenar(false);
         tab_tabla1.setNumeroTabla(-1);
         tab_tabla1.setScrollable(true);
         tab_tabla1.setScrollHeight(430);
@@ -287,7 +354,7 @@ public class pre_prestamos extends Pantalla {
             tab_tabla1.getColumna("ide_geper").setVisible(false);
             tab_tabla1.setNumeroTabla(-1);
             tab_tabla1.setScrollable(true);
-            tab_tabla1.setScrollHeight(330);
+            tab_tabla1.setScrollHeight(270);
             tab_tabla1.dibujar();
             tab_tabla1.setRows(999);
             PanelTabla pat_panel = new PanelTabla();
@@ -311,10 +378,17 @@ public class pre_prestamos extends Pantalla {
             gru_grupo.getChildren().add(new Etiqueta("<div align='center'>"));
             gru_grupo.getChildren().add(pat_panel);
 
+            Grid gri = new Grid();
+            gri.setColumns(2);
+            gri.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR FACTURA SOBRE EL INTERES ? </div>"));
+            rad_hace_factrua.setRadio(utilitario.getListaPregunta());
+            rad_hace_factrua.setValue(true);
+            gri.getChildren().add(rad_hace_factrua);
+            gru_grupo.getChildren().add(gri);
             Boton bot_pagar = new Boton();
             bot_pagar.setValue("Aceptar");
             bot_pagar.setMetodo("pagarPrestamo");
-            bot_pagar.setIcon("ui-icon-pencil");
+            bot_pagar.setIcon("ui-icon-check");
             gru_grupo.getChildren().add(bot_pagar);
             gru_grupo.getChildren().add(new Etiqueta("</div>"));
         }
@@ -337,6 +411,7 @@ public class pre_prestamos extends Pantalla {
     public void pagarPrestamo() {
         double dou_interes = 0;
         String cuotas = "";
+        String pagados = "";
         for (int i = 0; i < tab_tabla1.getTotalFilas(); i++) {
             if (tab_tabla1.getValor(i, "pagado_ipdpr").equalsIgnoreCase("true")) {
                 dou_interes += Double.parseDouble(tab_tabla1.getValor(i, "interes_ipdpr"));
@@ -344,50 +419,160 @@ public class pre_prestamos extends Pantalla {
                     cuotas += ", ";
                 }
                 cuotas += "" + tab_tabla1.getValor(i, "num_ipdpr");
+                if (!pagados.isEmpty()) {
+                    pagados += ", ";
+                }
+                pagados += "" + tab_tabla1.getValor(i, "ide_ipdpr");
             }
         }
-        if (dou_interes > 0) {
-            fcc_factura.nuevaFactura();
-            fcc_factura.setCliente(tab_tabla1.getValor("ide_geper"));
-            fcc_factura.setObservacion("Préstamo cuota " + cuotas);
-            fcc_factura.getTab_cab_factura().setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(dou_interes));
-            fcc_factura.getTab_cab_factura().setValor("total_cccfa", utilitario.getFormatoNumero(dou_interes));
-            //Detalle
-            fcc_factura.getTab_deta_factura().insertar();
-            fcc_factura.getTab_deta_factura().setValor("cantidad_ccdfa", "1");
-            fcc_factura.getTab_deta_factura().setValor("precio_ccdfa", utilitario.getFormatoNumero(dou_interes));
-            fcc_factura.getTab_deta_factura().setValor("total_ccdfa", utilitario.getFormatoNumero(dou_interes));
-            fcc_factura.getTab_deta_factura().setValor("observacion_ccdfa", "Préstamo cuota " + cuotas);
-            fcc_factura.getTab_deta_factura().setValor("ide_inarti", utilitario.getVariable("p_iyp_aporte_deta_factura"));
-            fcc_factura.getTab_deta_factura().setValor("iva_inarti_ccdfa", "1");
-            fcc_factura.calcularTotalFactura();
-            fcc_factura.dibujar();
+        if (rad_hace_factrua.getValue().toString().equals("true")) {
+            if (dou_interes > 0) {
+                fcc_factura.nuevaFactura();
+                fcc_factura.setCliente(tab_tabla1.getValor("ide_geper"));
+                fcc_factura.setObservacion("Préstamo cuota " + cuotas);
+                fcc_factura.getTab_cab_factura().setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(dou_interes));
+                fcc_factura.getTab_cab_factura().setValor("total_cccfa", utilitario.getFormatoNumero(dou_interes));
+                //Detalle
+                fcc_factura.getTab_deta_factura().insertar();
+                fcc_factura.getTab_deta_factura().setValor("cantidad_ccdfa", "1");
+                fcc_factura.getTab_deta_factura().setValor("precio_ccdfa", utilitario.getFormatoNumero(dou_interes));
+                fcc_factura.getTab_deta_factura().setValor("total_ccdfa", utilitario.getFormatoNumero(dou_interes));
+                fcc_factura.getTab_deta_factura().setValor("observacion_ccdfa", "Préstamo cuota " + cuotas);
+                fcc_factura.getTab_deta_factura().setValor("ide_inarti", utilitario.getVariable("p_iyp_aporte_deta_factura"));
+                fcc_factura.getTab_deta_factura().setValor("iva_inarti_ccdfa", "1");
+                fcc_factura.calcularTotalFactura();
+                fcc_factura.dibujar();
+            } else {
+                utilitario.agregarMensajeError("Seleccionar dividendos", "El valor a facturar debe ser mayor a 0");
+            }
         } else {
-            utilitario.agregarMensajeError("Seleccionar dividendos", "El valor a facturar debe ser mayor a 0");
+            //no hace factura solo cambia estado a pagado los seleccionados
+            utilitario.getConexion().getSqlPantalla().clear();
+            if (pagados.isEmpty() == false) {
+                utilitario.getConexion().agregarSql(ser_prestamo.getSqlPagarDividendos(pagados, null));
+            }
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla1.ejecutarSql();
+            }
         }
+
     }
 
     @Override
     public void insertar() {
         aut_prestamos.limpiar();
         //FORMULARIO PRESTAMO
+        dibujarPrestamo();
         tab_tabla1.limpiar();
         tab_tabla1.insertar();
     }
 
     @Override
     public void guardar() {
+        if (mep_menu.getOpcion() == 1) {
+            if (validarPrestamo()) {
+                if (tab_tabla1.guardar()) {
+                    //Generar Tabla de Amortizacion
+                    ser_prestamo.generarTablaAmortizacion(tab_tabla1);
+                    if (guardarPantalla().isEmpty()) {
+                        aut_prestamos.actualizar();
+                        aut_prestamos.setSize(100);
+                        aut_prestamos.setValor(tab_tabla1.getValor("ide_ipcpr"));
+                        utilitario.addUpdate("aut_prestamos");
+                        utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
+                    }
+                }
+
+            }
+        }
         if (mep_menu.getOpcion() == 4) {
             if (fcc_factura.isVisible()) {
-                fcc_factura.guardar();
                 //Cambiar de estado a pagado las dividendos seleccionados
+                String pagados = "";
+                String seleccionado = "";
+                for (int i = 0; i < tab_tabla1.getTotalFilas(); i++) {
+                    if (tab_tabla1.getValor(i, "pagado_ipdpr").equalsIgnoreCase("true")) {
+                        if (!pagados.isEmpty()) {
+                            pagados += ", ";
+                        }
+                        pagados += "" + tab_tabla1.getValor(i, "ide_ipdpr");
+                        seleccionado = tab_tabla1.getValor(i, "ide_ipdpr");
+                    }
+                }
+                fcc_factura.guardar();
+                if (fcc_factura.isVisible() == false) {
+                    //GUARDO LA FACTURA SIN ERRORES
+                    if (pagados.isEmpty() == false) {
+                        String ide_cccfa = fcc_factura.getTab_cab_factura().getValor("ide_cccfa");
+                        if (ide_cccfa != null) {
+                            utilitario.getConexion().ejecutarSql(ser_prestamo.getSqlPagarDividendos(pagados, ide_cccfa));
+                        }
+                    }
+                    if (seleccionado.isEmpty() == false) {
+                        dibujarTabla();
+                        tab_tabla2.setFilaActual(seleccionado);
+                    }
+                }
             }
         }
     }
 
+    public boolean validarPrestamo() {
+        if (tab_tabla1.getValor("ide_tecba") == null || tab_tabla1.getValor("ide_tecba").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se pudo guardar", "Debe seleccionar la Entidad Bancaria");
+            return false;
+        }
+        if (tab_tabla1.getValor("monto_ipcpr") == null || tab_tabla1.getValor("monto_ipcpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se pudo guardar", "Debe ingresar el Monto del Prestamo");
+            return false;
+        }
+        if (tab_tabla1.getValor("interes_ipcpr") == null || tab_tabla1.getValor("interes_ipcpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se pudo guardar", "Debe ingresar el Interes");
+            return false;
+        }
+        if (tab_tabla1.getValor("ide_cndpc") == null || tab_tabla1.getValor("ide_cndpc").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se pudo guardar", "Debe Ingresar  la Cuenta Contable");
+            return false;
+        }
+        if (tab_tabla1.getValor("num_pagos_ipcpr") == null || tab_tabla1.getValor("num_pagos_ipcpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el numero de pagos");
+            return false;
+        }
+        if (tab_tabla1.getValor("ide_iptpr") == null || tab_tabla1.getValor("ide_iptpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe seleccionar el Tipo de Prestamo");
+            return false;
+        }
+        if (tab_tabla1.getValor("ide_ipepr") == null || tab_tabla1.getValor("ide_ipepr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe seleccionar el estado del Prestamo");
+            return false;
+        }
+        if (tab_tabla1.getValor("num_dias_ipcpr") == null || tab_tabla1.getValor("num_dias_ipcpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el numero de Dias ");
+            return false;
+        }
+        if (tab_tabla1.getValor("observacion_ipcpr") == null || tab_tabla1.getValor("observacion_ipcpr").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar la Observación");
+            return false;
+        }
+        if (tab_tabla1.getValor("ide_geper") == null || tab_tabla1.getValor("ide_geper").isEmpty()) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el Beneficiario");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (tab_tabla1.isFilaInsertada()) {
+            tab_tabla1.eliminar();
+        } else {
+            ser_prestamo.eliminarPrestamo(tab_tabla1.getValor("ide_ipcpr"));
+            if (guardarPantalla().isEmpty()) {
+                aut_prestamos.actualizar();
+                aut_prestamos.setSize(100);
+                limpiar();
+            }
+        }
     }
 
     public AutoCompletar getAut_prestamos() {
@@ -420,6 +605,22 @@ public class pre_prestamos extends Pantalla {
 
     public void setFcc_factura(FacturaCxC fcc_factura) {
         this.fcc_factura = fcc_factura;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_formato() {
+        return sel_formato;
+    }
+
+    public void setSel_formato(SeleccionFormatoReporte sel_formato) {
+        this.sel_formato = sel_formato;
     }
 
 }

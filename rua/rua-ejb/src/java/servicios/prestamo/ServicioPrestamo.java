@@ -5,6 +5,10 @@
  */
 package servicios.prestamo;
 
+import framework.aplicacion.TablaGenerica;
+import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
 
@@ -59,4 +63,118 @@ public class ServicioPrestamo extends ServicioBase {
                 + "ORDER BY dp.num_ipdpr,dp.fecha_ipdpr ASC";
     }
 
+    public String getSqlPagarDividendos(String ide_ipcpr, String ide_cccfa) {
+        if (ide_cccfa == null || ide_cccfa.isEmpty()) {
+            return "update iyp_deta_prestamo set pagado_ipdpr=true where ide_ipdpr in (" + ide_ipcpr + ")";
+        } else {
+            return "update iyp_deta_prestamo set pagado_ipdpr=true,ide_cccfa=" + ide_cccfa + " where ide_ipdpr in (" + ide_ipcpr + ")";
+        }
+
+    }
+
+    public void generarTablaAmortizacion(Tabla tab_tabla1) {
+        double monto = 0;
+        double tasa_interes_anual = 0;
+        double tasa_interes_mensual = 0;
+        double num_pagos = 0;
+        double num_dias = 0;
+        String fecha = "";
+        if (tab_tabla1.getValor("monto_ipcpr") != null && !tab_tabla1.getValor("monto_ipcpr").isEmpty()) {
+            monto = Double.parseDouble(tab_tabla1.getValor("monto_ipcpr"));
+        }
+        if (tab_tabla1.getValor("interes_ipcpr") != null && !tab_tabla1.getValor("interes_ipcpr").isEmpty()) {
+            tasa_interes_anual = Double.parseDouble(tab_tabla1.getValor("interes_ipcpr"));
+        }
+        if (tab_tabla1.getValor("num_pagos_ipcpr") != null && !tab_tabla1.getValor("num_pagos_ipcpr").isEmpty()) {
+            num_pagos = Double.parseDouble(tab_tabla1.getValor("num_pagos_ipcpr"));
+        }
+        if (tab_tabla1.getValor("num_dias_ipcpr") != null && !tab_tabla1.getValor("num_dias_ipcpr").isEmpty()) {
+            num_dias = Double.parseDouble(tab_tabla1.getValor("num_dias_ipcpr"));
+        }
+        if (tab_tabla1.getValor("fecha_prestamo_ipcpr") != null && !tab_tabla1.getValor("fecha_prestamo_ipcpr").isEmpty()) {
+            fecha = tab_tabla1.getValor("fecha_prestamo_ipcpr");
+        }
+
+        System.out.println("monto " + monto);
+        System.out.println("tasa " + tasa_interes_anual);
+        System.out.println("num pag " + num_pagos);
+        System.out.println("num dias " + num_dias);
+        List lis_capital = new ArrayList();
+        List lis_interes = new ArrayList();
+        List lis_cuota = new ArrayList();
+        List lis_fecha = new ArrayList();
+        if (monto != 0) {
+            if (tasa_interes_anual != 0) {
+                if (num_pagos != 0) {
+                    if (num_dias != 0) {
+                        if (!fecha.equals("")) {
+                            tasa_interes_mensual = (tasa_interes_anual / 12);
+                            System.out.println("tasa de nteres mensual " + tasa_interes_mensual);
+                            double aux_interes_mesual = tasa_interes_mensual / 100;
+                            double aux_interes_n = 0;
+                            aux_interes_n = (Math.pow((1 + aux_interes_mesual), num_pagos));
+                            double cuotafija = 0;
+                            cuotafija = monto * ((aux_interes_mesual * aux_interes_n) / (aux_interes_n - 1));
+                            System.out.println("cuota fija " + cuotafija);
+                            double plazo = num_dias / 360;
+                            System.out.println("plazo " + plazo);
+                            double interes100 = tasa_interes_anual / 100;
+                            System.out.println("interes100 " + interes100);
+                            double capital = 0;
+                            double subcapital = monto;
+                            double sum_capital = 0;
+                            System.out.println("subcapital " + subcapital);
+                            double interes = 0;
+
+                            for (int i = 0; i < num_pagos; i++) {
+                                interes = interes100 * plazo * subcapital;
+                                capital = cuotafija - interes;
+                                sum_capital = capital + sum_capital;
+                                subcapital = monto - sum_capital;
+                                fecha = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha), Integer.parseInt(tab_tabla1.getValor("num_dias_ipcpr").toString())));
+                                lis_capital.add(capital);
+                                lis_cuota.add(cuotafija);
+                                lis_interes.add(interes);
+                                lis_fecha.add(fecha);
+
+                                System.out.println("capital:  " + capital + "   interes " + interes + "     cuota " + cuotafija);
+                            }
+                            TablaGenerica tab_tabla2 = new TablaGenerica();
+                            tab_tabla2.setTabla("iyp_deta_prestamo", "ide_ipdpr");
+                            tab_tabla2.setCondicion("ide_ipdpr=-1");
+                            tab_tabla2.ejecutarSql();
+                            for (int i = 0; i < lis_capital.size(); i++) {
+                                tab_tabla2.insertar();
+                                System.out.println("total de filas" + tab_tabla2.getTotalFilas());
+                                tab_tabla2.setValor("ide_ipcpr", tab_tabla1.getValor("ide_ipcpr"));
+                                tab_tabla2.setValor("capital_ipdpr", utilitario.getFormatoNumero(lis_capital.get(lis_capital.size() - i - 1)));
+                                tab_tabla2.setValor("cuota_ipdpr", utilitario.getFormatoNumero(lis_cuota.get(lis_cuota.size() - i - 1)));
+                                tab_tabla2.setValor("interes_ipdpr", utilitario.getFormatoNumero(lis_interes.get(lis_interes.size() - i - 1)));
+                                tab_tabla2.setValor("fecha_ipdpr", lis_fecha.get(lis_fecha.size() - i - 1) + "");
+                                tab_tabla2.setValor("num_ipdpr", lis_capital.size() - i + "");
+                            }
+                            tab_tabla2.guardar();
+                        } else {
+                            utilitario.agregarMensajeError("No se puede cacular la tabla de amortización", "Ingrese la fecha del prestamo");
+                        }
+                    } else {
+                        utilitario.agregarMensajeError("No se puede cacular la tabla de amortización", "Ingrese el numero de dias");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("No se puede cacular la tabla de amortización", "Ingrese el numero de pagos");
+                }
+
+            } else {
+                utilitario.agregarMensajeError("No se puede cacular la tabla de amortización", "Ingrese el Interes ");
+            }
+
+        } else {
+            utilitario.agregarMensajeError("No se puede cacular la tabla de amortización", "Ingrese el monto");
+        }
+    }
+
+    public void eliminarPrestamo(String ide_ipcpr) {
+        utilitario.getConexion().agregarSql("DELETE FROM iyp_deta_prestamo WHERE ide_ipcpr=" + ide_ipcpr);
+        utilitario.getConexion().agregarSql("DELETE FROM iyp_cab_prestamo WHERE ide_ipcpr=" + ide_ipcpr);
+    }
 }

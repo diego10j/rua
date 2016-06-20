@@ -113,6 +113,20 @@ public class Utilitario extends Framework {
         return lista;
     }
 
+    public List getListaPregunta() {
+        //pARA USAR EN TODAS LAS TABLAS QUE SEAN RECURSIVAS
+        List lista = new ArrayList();
+        Object fila1[] = {
+            true, "SI"
+        };
+        Object fila2[] = {
+            false, "NO"
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        return lista;
+    }
+
     /**
      * Verifica que un número de ruc sea válido
      *
@@ -972,9 +986,10 @@ public class Utilitario extends Framework {
         }
         return str_valor;
     }
-	/*Valida el ingreso de solo numeros enteros positivos (telefono)
-	 * 
-	 */
+    /*Valida el ingreso de solo numeros enteros positivos (telefono)
+     * 
+     */
+
     public boolean isEnteroPositivo(String numero_validar) {
         try {
             int int_num_val = Integer.parseInt(numero_validar);
@@ -1001,6 +1016,7 @@ public class Utilitario extends Framework {
         }
         return false;
     }
+
     public boolean isEnteroPositivoyCero(String numero_validar) {
         try {
             int int_num_val = Integer.parseInt(numero_validar);

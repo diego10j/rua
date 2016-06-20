@@ -731,6 +731,7 @@ public class pre_clientes extends Pantalla {
 
         aut_clientes.limpiar();
         //FORMULARIO CLIENTE
+        dibujarCliente();
         tab_cliente.limpiar();
         tab_cliente.insertar();
 

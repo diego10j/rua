@@ -58,7 +58,7 @@ public class FacturaCxC extends Dialogo {
     private final Texto tex_subtotal0 = new Texto();
     private final Texto tex_iva = new Texto();
     private final Texto tex_total = new Texto();
-    private final Combo com_pto_emision = new Combo();
+    private Combo com_pto_emision = new Combo();
     private double tarifaIVA = 0;
 
     //FORMA DE PAGO
@@ -277,6 +277,7 @@ public class FacturaCxC extends Dialogo {
      * @return
      */
     private Grupo dibujarFactura() {
+        com_pto_emision = new Combo();
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodoRuta("pre_index.clase." + getId() + ".cargarMaximoSecuencialFactura");
 
@@ -768,10 +769,14 @@ public class FacturaCxC extends Dialogo {
      * Elimina en los detalles de Factura y Comprobante de Venta
      */
     public void eliminar() {
-        if (tab_deta_factura.isFocus()) {
-            tab_deta_factura.eliminar();
-            calcularTotalFactura();
+        try {
+            if (tab_deta_factura.isFocus()) {
+                tab_deta_factura.eliminar();
+                calcularTotalFactura();
+            }
+        } catch (Exception e) {
         }
+
     }
 
     /**
