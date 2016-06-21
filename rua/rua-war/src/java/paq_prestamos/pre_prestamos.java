@@ -439,7 +439,7 @@ public class pre_prestamos extends Pantalla {
                 fcc_factura.getTab_deta_factura().setValor("total_ccdfa", utilitario.getFormatoNumero(dou_interes));
                 fcc_factura.getTab_deta_factura().setValor("observacion_ccdfa", "Préstamo cuota " + cuotas);
                 fcc_factura.getTab_deta_factura().setValor("ide_inarti", utilitario.getVariable("p_iyp_aporte_deta_factura"));
-                fcc_factura.getTab_deta_factura().setValor("iva_inarti_ccdfa", "1");
+                fcc_factura.getTab_deta_factura().setValor("iva_inarti_ccdfa", "-1");//no iva
                 fcc_factura.calcularTotalFactura();
                 fcc_factura.dibujar();
             } else {

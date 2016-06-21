@@ -959,10 +959,19 @@ public class FacturaCxC extends Dialogo {
                     return false;
                 }
                 if (tab_deta_factura.getValor(i, "alterno_ccdfa") == null || tab_deta_factura.getValor("alterno_ccdfa").isEmpty()) {
-                    utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar un alterno");
+                    utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar un alterno en los Detalles de la factura ");
                     return false;
                 }
             }
+        }
+        double dou_total = 0;
+        try {
+            dou_total = Double.parseDouble(tab_cab_factura.getValor("total_cccfa"));
+        } catch (Exception e) {
+        }
+        if (dou_total <= 0) {
+            utilitario.agregarMensajeError("No se puede guardar la Factura", "El total de la factura debe ser mayor a 0");
+            return false;
         }
 
         return true;

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="297" pageHeight="421" whenNoDataType="AllSectionsNoDetail" columnWidth="297" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="50b114ce-f905-417a-8617-466b3b7e5b93">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="96"/>
 	<parameter name="ide_cccfa" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -52,42 +52,42 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<title>
 		<band height="161" splitType="Stretch">
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="6f4cd965-31ac-43f5-9f48-f9b92bae5393" x="75" y="92" width="124" height="12"/>
+				<reportElement uuid="6f4cd965-31ac-43f5-9f48-f9b92bae5393" x="75" y="93" width="124" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_emisi_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="fa4bab24-8d88-48bb-9683-49c46dc168d8" x="52" y="105" width="216" height="12"/>
+				<reportElement uuid="fa4bab24-8d88-48bb-9683-49c46dc168d8" x="52" y="106" width="245" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4695416e-7d82-4383-9451-8466055efb44" x="52" y="133" width="214" height="12"/>
+				<reportElement uuid="4695416e-7d82-4383-9451-8466055efb44" x="52" y="134" width="214" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="e0a33ca0-4845-4fa7-be0b-e0a33784b034" x="189" y="118" width="70" height="12"/>
+				<reportElement uuid="e0a33ca0-4845-4fa7-be0b-e0a33784b034" x="189" y="119" width="70" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{telefono_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="7ba8cdda-2cb2-4a5b-a998-f6d371d08b0e" x="52" y="118" width="100" height="12"/>
+				<reportElement uuid="7ba8cdda-2cb2-4a5b-a998-f6d371d08b0e" x="52" y="119" width="100" height="12"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="ef818356-8131-466b-8da0-aa784d690f4d" x="52" y="92" width="42" height="12"/>
+				<reportElement uuid="ef818356-8131-466b-8da0-aa784d690f4d" x="52" y="93" width="42" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -98,9 +98,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<detail>
 		<band height="10" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="f7b12008-ebbe-4a43-b4ea-518fbd89c42e" x="43" y="-1" width="126" height="11"/>
-				<box leftPadding="2"/>
-				<textElement>
+				<reportElement uuid="f7b12008-ebbe-4a43-b4ea-518fbd89c42e" x="43" y="-1" width="129" height="11"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
@@ -108,21 +108,21 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<textField pattern="###0" isBlankWhenNull="true">
 				<reportElement uuid="605f93c8-6439-4299-8673-05c1b37df7d7" x="26" y="-1" width="58" height="11"/>
 				<box rightPadding="0"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_ccdfa}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="a3b02718-2d2b-465a-8142-b04b309de4bc" x="186" y="-1" width="40" height="11"/>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{precio_ccdfa}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="22890dbd-e781-40ac-82b7-d5bb0468c507" x="228" y="-1" width="40" height="11"/>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_ccdfa}]]></textFieldExpression>
