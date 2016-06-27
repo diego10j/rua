@@ -955,7 +955,7 @@ public class pre_articulos extends Pantalla {
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
             //FORMULARIO PRODUCTO
-            if (true) { //!!!!!!!!******Validar Dtaoss Producto
+            if (true) { //!!!!!!!!******Validar Datos Producto
                 tab_producto.guardar();
                 if (guardarPantalla().isEmpty()) {
                     //Actualiza el autocompletar

@@ -337,4 +337,42 @@ public class ServicioCliente extends ServicioBase {
                 + "order by nombre_inarti";
     }
 
+    /**
+     * Validaciones para crear o modificar un Cliente
+     *
+     * @return
+     */
+    public boolean validarCliente(Tabla tab_cliente) {
+        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
+            if (utilitario.validarCedula(tab_cliente.getValor("identificac_geper"))) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
+                return false;
+            }
+        }
+        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
+            if (utilitario.validarRUC(tab_cliente.getValor("identificac_geper"))) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
+                return false;
+            }
+        }
+        if (tab_cliente.getValor("ide_cntco") == null || tab_cliente.getValor("ide_cntco").isEmpty()) {
+            utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
+            return false;
+        }
+
+        if (tab_cliente.getValor("DIRECCION_GEPER") == null || tab_cliente.getValor("DIRECCION_GEPER").isEmpty()) {
+            utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar la dirección");
+            return false;
+        }
+
+        if (tab_cliente.getValor("TELEFONO_GEPER") == null || tab_cliente.getValor("TELEFONO_GEPER").isEmpty()) {
+            utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar un número de teléfono");
+            return false;
+        }
+        //      }
+        return true;
+    }
+
 }

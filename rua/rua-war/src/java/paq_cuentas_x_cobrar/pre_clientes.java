@@ -646,34 +646,6 @@ public class pre_clientes extends Pantalla {
     }
 
     /**
-     * Validaciones para crear o modificar un Cliente
-     *
-     * @return
-     */
-    private boolean validarCliente() {
-        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
-            if (utilitario.validarCedula(tab_cliente.getValor("identificac_geper"))) {
-            } else {
-                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
-                return false;
-            }
-        }
-        if (tab_cliente.getValor("ide_getid") != null && tab_cliente.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
-            if (utilitario.validarRUC(tab_cliente.getValor("identificac_geper"))) {
-            } else {
-                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
-                return false;
-            }
-        }
-        if (tab_cliente.getValor("ide_cntco") == null || tab_cliente.getValor("ide_cntco").isEmpty()) {
-            utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
-            return false;
-        }
-        //      }
-        return true;
-    }
-
-    /**
      * Calcula el saldo por cobrar del Cliente
      *
      * @return
@@ -741,7 +713,7 @@ public class pre_clientes extends Pantalla {
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
             //FORMULARIO CLIENTE
-            if (validarCliente()) {
+            if (ser_cliente.validarCliente(tab_cliente)) {
                 tab_cliente.guardar();
                 if (guardarPantalla().isEmpty()) {
                     //Actualiza el autocompletar

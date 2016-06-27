@@ -7,8 +7,10 @@ package componentes;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
+import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
+import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -19,6 +21,7 @@ import framework.componentes.Tabulador;
 import framework.componentes.Texto;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.component.overlaypanel.OverlayPanel;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
@@ -62,13 +65,13 @@ public class FacturaCxC extends Dialogo {
     private double tarifaIVA = 0;
 
     //FORMA DE PAGO
-    private Tabla tab_deta_pago = new Tabla();
+    private Tabla tab_deta_pago;
 
     //CONTABILIDAD Asiento de Venta
     @EJB
     private final ServicioComprobanteContabilidad ser_comp_contabilidad = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
-    private Tabla tab_cab_conta = new Tabla();
-    private Tabla tab_deta_conta = new Tabla();
+    private Tabla tab_cab_conta;
+    private Tabla tab_deta_conta;
     private final AreaTexto ate_observacion_conta = new AreaTexto();
 
     //COMPROBANTES ELECTRONICOS
@@ -87,8 +90,16 @@ public class FacturaCxC extends Dialogo {
     private final Mensaje men_factura = new Mensaje();
 
     //RETENCION
-    private Tabla tab_cab_retencion = new Tabla();
-    private Tabla tab_det_retencion = new Tabla();
+    private Tabla tab_cab_retencion;
+    private Tabla tab_det_retencion;
+
+    //CLIENTE
+    private Tabla tab_creacion_cliente;
+    private Dialogo dia_creacion_cliente;
+
+    //PRODUCTO
+    private Tabla tab_creacion_producto;
+    private Dialogo dia_creacion_producto;
 
     public FacturaCxC() {
         this.setWidth("95%");
@@ -109,21 +120,33 @@ public class FacturaCxC extends Dialogo {
         utilitario.getPantalla().getChildren().add(men_factura);
         //Recupera porcentaje iva
         tarifaIVA = ser_configuracion.getPorcentajeIva();
+        dia_creacion_cliente = new Dialogo();
+        dia_creacion_cliente.setId("dia_creacion_cliente");
+        dia_creacion_cliente.setTitle("CREAR CLIENTE");
+        dia_creacion_cliente.setHeight("65%");
+        dia_creacion_cliente.setWidth("55%");
+        utilitario.getPantalla().getChildren().add(dia_creacion_cliente);
+
+        dia_creacion_producto = new Dialogo();
+        dia_creacion_producto.setId("dia_creacion_producto");
+        dia_creacion_producto.setTitle("CREAR PRODUCTO");
+        dia_creacion_producto.setHeight("65%");
+        dia_creacion_producto.setWidth("40%");
+        utilitario.getPantalla().getChildren().add(dia_creacion_producto);
     }
 
     /**
      * Configuraciones para crear una factura
      */
     public void nuevaFactura() {
-
+        opcion = 1;  // GENERA FACTURA
         tab_factura.getTab(0).getChildren().clear();
         tab_factura.getTab(1).getChildren().clear();
         tab_factura.getTab(2).getChildren().clear();
         tab_factura.getTab(3).getChildren().clear();
 
         tab_factura.getTab(0).getChildren().add(dibujarFactura());
-
-        opcion = 1;  // GENERA FACTURA
+        utilitario.getConexion().getSqlPantalla().clear();//LIMPIA SQL EXISTENTES
         ocultarTabs(); //Ocilta todas las tabas
         setActivarFactura(true); //activa solo tab de Fcatura de venta
         seleccionarTab(0);
@@ -283,9 +306,132 @@ public class FacturaCxC extends Dialogo {
 
         Grupo grupo = new Grupo();
         Grid gri_pto = new Grid();
-        gri_pto.setColumns(4);
+        gri_pto.setColumns(9);
         gri_pto.getChildren().add(new Etiqueta("<strong>PUNTO DE EMISIÓN :</strong>"));
         gri_pto.getChildren().add(com_pto_emision);
+
+        if (opcion == 1) {
+            dia_creacion_producto.getGri_cuerpo().getChildren().clear();
+            dia_creacion_cliente.getGri_cuerpo().getChildren().clear();
+            gri_pto.getChildren().add(new Espacio("10", "1"));
+            Boton botCrearCliente = new Boton();
+            botCrearCliente.setId("botCrearCliente");
+            botCrearCliente.setValue("Crear Cliente");
+            botCrearCliente.setIcon("ui-icon-person");
+            botCrearCliente.setMetodoRuta("pre_index.clase." + getId() + ".abrirCliente");
+            gri_pto.getChildren().add(botCrearCliente);
+            gri_pto.getChildren().add(new Espacio("5", "1"));
+
+            Boton botCrearProducto = new Boton();
+            botCrearProducto.setId("botCrearProducto");
+            botCrearProducto.setValue("Crear Producto");
+            botCrearProducto.setIcon("ui-icon-cart");
+            botCrearProducto.setMetodoRuta("pre_index.clase." + getId() + ".abrirProducto");
+            gri_pto.getChildren().add(botCrearProducto);
+
+            dia_creacion_cliente.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardarCliente");
+            dia_creacion_cliente.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            tab_creacion_cliente = new Tabla();
+            tab_creacion_cliente.setId("tab_creacion_cliente");
+            tab_creacion_cliente.setRuta("pre_index.clase." + getId());
+            tab_creacion_cliente.setIdCompleto("tab_factura:tab_creacion_cliente");
+            ser_cliente.configurarTablaCliente(tab_creacion_cliente);
+            tab_creacion_cliente.setTabla("gen_persona", "ide_geper", -1);
+            tab_creacion_cliente.setCondicion("ide_geper=-1");
+            tab_creacion_cliente.getGrid().setColumns(2);
+            tab_creacion_cliente.getColumna("ide_geper").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_GEGEN").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_VGECL").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_GEUBI").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_VGTCL").setVisible(false);
+            tab_creacion_cliente.getColumna("FAX_GEPER").setVisible(false);
+            tab_creacion_cliente.getColumna("PAGINA_WEB_GEPER").setVisible(false);
+            tab_creacion_cliente.getColumna("REPRE_LEGAL_GEPER").setVisible(false);
+
+            tab_creacion_cliente.getColumna("IDE_GETID").setNombreVisual("TIPO DE IDENTIFICACION");
+            tab_creacion_cliente.getColumna("IDE_GETID").setOrden(1);
+            tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setNombreVisual("IDENTIFICACION");
+            tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setOrden(2);
+            tab_creacion_cliente.getColumna("NOM_GEPER").setNombreVisual("NOMBRE");
+            tab_creacion_cliente.getColumna("NOM_GEPER").setOrden(3);
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setNombreVisual("NOMBRE COMERCIAL");
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setOrden(4);
+            tab_creacion_cliente.getColumna("IDE_CNTCO").setNombreVisual("TIPO DE CONTRIBUYENTE");
+            tab_creacion_cliente.getColumna("IDE_CNTCO").setOrden(5);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setNombreVisual("DIRECCION");
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setOrden(6);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setNombreVisual("TELEFONO");
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setOrden(7);
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("CONTACTO_GEPER").setNombreVisual("CONTACTO");
+            tab_creacion_cliente.getColumna("CONTACTO_GEPER").setOrden(8);
+            tab_creacion_cliente.getColumna("MOVIL_GEPER").setNombreVisual("CELULAR");
+            tab_creacion_cliente.getColumna("MOVIL_GEPER").setOrden(9);
+            tab_creacion_cliente.getColumna("CORREO_GEPER").setNombreVisual("E-MAIL");
+            tab_creacion_cliente.getColumna("CORREO_GEPER").setOrden(10);
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setNombreVisual("OBSERVACION");
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setOrden(11);
+
+            tab_creacion_cliente.setMostrarNumeroRegistros(false);
+            tab_creacion_cliente.dibujar();
+            tab_creacion_cliente.insertar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_creacion_cliente);
+            pat_panel.getMenuTabla().setRendered(false);
+            pat_panel.setStyle("overflow:hiden");
+            dia_creacion_cliente.setDialogo(pat_panel);
+
+            ///PRODUCTO 
+            dia_creacion_producto.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardarProducto");
+            dia_creacion_producto.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            tab_creacion_producto = new Tabla();
+            tab_creacion_producto.setId("tab_creacion_producto");
+            tab_creacion_producto.setRuta("pre_index.clase." + getId());
+            tab_creacion_producto.setIdCompleto("tab_factura:tab_creacion_producto");
+            ser_producto.configurarTablaProducto(tab_creacion_producto);
+            tab_creacion_producto.setTabla("inv_articulo", "ide_inarti", 999);
+            tab_creacion_producto.setCondicion("ide_inarti=-1");
+            tab_creacion_producto.setMostrarNumeroRegistros(false);
+            tab_creacion_producto.getColumna("IDE_INARTI").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_INFAB").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_INEPR").setVisible(false);
+            tab_creacion_producto.getColumna("ES_COMBO_INARTI").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_GEORG").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_GEORG").setVisible(false);
+            tab_creacion_producto.getColumna("nivel_inarti").setVisible(false);
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setNombreVisual("NOMBRE");
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setOrden(1);
+            tab_creacion_producto.getColumna("CODIGO_INARTI").setNombreVisual("CODIGO");
+            tab_creacion_producto.getColumna("CODIGO_INARTI").setOrden(2);
+            tab_creacion_producto.getColumna("IDE_INMAR").setNombreVisual("MARCA");
+            tab_creacion_producto.getColumna("IDE_INMAR").setOrden(3);
+            tab_creacion_producto.getColumna("IDE_INUNI").setNombreVisual("UNIDAD");
+            tab_creacion_producto.getColumna("IDE_INUNI").setOrden(4);
+            tab_creacion_producto.getColumna("IDE_INTPR").setNombreVisual("TIPO PRODUCTO");
+            tab_creacion_producto.getColumna("IDE_INTPR").setOrden(5);
+            tab_creacion_producto.getColumna("IVA_INARTI").setNombreVisual("IVA ?");
+            tab_creacion_producto.getColumna("IVA_INARTI").setRequerida(true);
+            tab_creacion_producto.getColumna("IVA_INARTI").setOrden(6);
+            tab_creacion_producto.getColumna("ICE_INARTI").setNombreVisual("APLICA ICE ?");
+            tab_creacion_producto.getColumna("ICE_INARTI").setOrden(7);
+            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setNombreVisual("HACE KARDEX ?");
+            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setOrden(8);
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACION");
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
+            tab_creacion_producto.getGrid().setColumns(2);
+            tab_creacion_producto.dibujar();
+            tab_creacion_producto.insertar();
+            tab_creacion_producto.setValor("nivel_inarti", "HIJO");
+            PanelTabla pat_panel2 = new PanelTabla();
+            pat_panel2.setPanelTabla(tab_creacion_producto);
+            pat_panel2.getMenuTabla().setRendered(false);
+            pat_panel2.setStyle("overflow:hiden");
+            dia_creacion_producto.setDialogo(pat_panel2);
+
+        }
 
         grupo.getChildren().add(gri_pto);
 
@@ -429,7 +575,6 @@ public class FacturaCxC extends Dialogo {
         Grid gri_total = new Grid();
         gri_total.setWidth("100%");
         gri_total.setStyle("width:" + (getAnchoPanel() - 10) + "px;border:1px");
-
         gri_total.setColumns(2);
 
         Grid gri_observa = new Grid();
@@ -784,7 +929,7 @@ public class FacturaCxC extends Dialogo {
      */
     public void guardar() {
 
-        if (opcion == 1) {//CREA FACTURA
+        if (opcion == 1) {//CREA FACTURA            
             if (tabActiva == 0) {  //TAB ACTIVA  FACTURA
                 //Asigna punto de emision seleccionado y si solo guarda la factura
                 tab_cab_factura.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
@@ -827,6 +972,41 @@ public class FacturaCxC extends Dialogo {
                         facturacionElectronica(ide_srcom);
                     }
                     this.cerrar();
+                }
+            }
+        }
+    }
+
+    public void guardarProducto() {
+        if (true) { //!!!!!!!!******Validar Datos Producto
+            if (tab_creacion_producto.guardar()) {
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    tab_deta_factura.actualizarCombos();
+                    tab_deta_factura.insertar();
+                    tab_deta_factura.setValor("ide_inarti", tab_creacion_producto.getValor("ide_inarti"));
+                    tab_deta_factura.setValor("iva_inarti_ccdfa", tab_creacion_producto.getValor("IVA_INARTI"));
+                    utilitario.addUpdate("tab_factura:tab_deta_factura");
+                    tab_creacion_producto.limpiar();
+                    tab_creacion_producto.insertar();
+                    dia_creacion_producto.cerrar();
+                }
+            }
+        }
+    }
+
+    public void guardarCliente() {
+        if (ser_cliente.validarCliente(tab_creacion_cliente)) {
+            if (tab_creacion_cliente.guardar()) {
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    //Se guardo correctamente
+                    tab_cab_factura.actualizarCombos();
+                    tab_cab_factura.setValor("ide_geper", tab_creacion_cliente.getValor("ide_geper"));
+                    tab_cab_factura.setValor("direccion_cccfa", tab_creacion_cliente.getValor("direccion_geper"));
+                    tab_cab_factura.setValor("telefono_cccfa", tab_creacion_cliente.getValor("telefono_geper"));
+                    utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa,ide_geper", "");
+                    tab_creacion_cliente.limpiar();
+                    tab_creacion_cliente.insertar();
+                    dia_creacion_cliente.cerrar();
                 }
             }
         }
@@ -984,6 +1164,23 @@ public class FacturaCxC extends Dialogo {
         super.cerrar(); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void cerrarDialogos() {
+        if (dia_creacion_cliente != null && dia_creacion_cliente.isVisible()) {
+            dia_creacion_cliente.cerrar();
+        }
+        if (dia_creacion_producto != null && dia_creacion_producto.isVisible()) {
+            dia_creacion_producto.cerrar();
+        }
+    }
+
+    public void abrirProducto() {
+        dia_creacion_producto.dibujar();
+    }
+
+    public void abrirCliente() {
+        dia_creacion_cliente.dibujar();
+    }
+
     public Tabla getTab_cab_factura() {
         return tab_cab_factura;
     }
@@ -1075,6 +1272,38 @@ public class FacturaCxC extends Dialogo {
 
     public Combo getComboPuntoEmision() {
         return com_pto_emision;
+    }
+
+    public Tabla getTab_creacion_cliente() {
+        return tab_creacion_cliente;
+    }
+
+    public void setTab_creacion_cliente(Tabla tab_creacion_cliente) {
+        this.tab_creacion_cliente = tab_creacion_cliente;
+    }
+
+    public Dialogo getDia_creacion_cliente() {
+        return dia_creacion_cliente;
+    }
+
+    public void setDia_creacion_cliente(Dialogo dia_creacion_cliente) {
+        this.dia_creacion_cliente = dia_creacion_cliente;
+    }
+
+    public Dialogo getDia_creacion_producto() {
+        return dia_creacion_producto;
+    }
+
+    public void setDia_creacion_producto(Dialogo dia_creacion_producto) {
+        this.dia_creacion_producto = dia_creacion_producto;
+    }
+
+    public Tabla getTab_creacion_producto() {
+        return tab_creacion_producto;
+    }
+
+    public void setTab_creacion_producto(Tabla tab_creacion_producto) {
+        this.tab_creacion_producto = tab_creacion_producto;
     }
 
 }
