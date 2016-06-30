@@ -19,9 +19,9 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
-import org.primefaces.component.overlaypanel.OverlayPanel;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
@@ -300,6 +300,7 @@ public class FacturaCxC extends Dialogo {
      * @return
      */
     private Grupo dibujarFactura() {
+        utilitario.getConexion().setImprimirSqlConsola(true);
         com_pto_emision = new Combo();
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodoRuta("pre_index.clase." + getId() + ".cargarMaximoSecuencialFactura");
@@ -540,7 +541,6 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setOrden(3);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
-
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(4);
@@ -568,7 +568,8 @@ public class FacturaCxC extends Dialogo {
         pat_panel.getMenuTabla().getItem_formato().setRendered(false);
         pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertar");
         pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
-
+        pat_panel.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
         grupo.getChildren().add(tab_cab_factura);
         grupo.getChildren().add(pat_panel);
 
@@ -586,7 +587,7 @@ public class FacturaCxC extends Dialogo {
         Grid gri_valores = new Grid();
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(4);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA 12% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
@@ -946,7 +947,7 @@ public class FacturaCxC extends Dialogo {
      * Guarda la Factura
      */
     public void generarFactura() {
-        //Siempre solo guarda la factura
+        //Siempre solo guarda la factura       
         tab_cab_factura.setValor("solo_guardar_cccfa", "true");
         //SOLO GUARDA LA FACTURA
         if (tab_cab_factura.guardar()) {
@@ -980,16 +981,22 @@ public class FacturaCxC extends Dialogo {
     public void guardarProducto() {
         if (true) { //!!!!!!!!******Validar Datos Producto
             if (tab_creacion_producto.guardar()) {
+                //Respalda insertadas para que no guarde
+                List<String> lis_resp_cab = tab_cab_factura.getInsertadas();
+                List<String> lis_resp_deta = tab_deta_factura.getInsertadas();
                 if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                     tab_deta_factura.actualizarCombos();
                     tab_deta_factura.insertar();
+                    lis_resp_deta.add(tab_deta_factura.getFilaSeleccionada().getRowKey());
                     tab_deta_factura.setValor("ide_inarti", tab_creacion_producto.getValor("ide_inarti"));
                     tab_deta_factura.setValor("iva_inarti_ccdfa", tab_creacion_producto.getValor("IVA_INARTI"));
                     utilitario.addUpdate("tab_factura:tab_deta_factura");
                     tab_creacion_producto.limpiar();
-                    tab_creacion_producto.insertar();
+                    //tab_creacion_producto.insertar();
                     dia_creacion_producto.cerrar();
                 }
+                tab_cab_factura.setInsertadas(lis_resp_cab);
+                tab_deta_factura.setInsertadas(lis_resp_deta);
             }
         }
     }
@@ -997,6 +1004,10 @@ public class FacturaCxC extends Dialogo {
     public void guardarCliente() {
         if (ser_cliente.validarCliente(tab_creacion_cliente)) {
             if (tab_creacion_cliente.guardar()) {
+                //Respalda insertadas para que no guarde
+                List<String> lis_resp_cab = tab_cab_factura.getInsertadas();
+                List<String> lis_resp_deta = tab_deta_factura.getInsertadas();
+
                 if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                     //Se guardo correctamente
                     tab_cab_factura.actualizarCombos();
@@ -1005,9 +1016,11 @@ public class FacturaCxC extends Dialogo {
                     tab_cab_factura.setValor("telefono_cccfa", tab_creacion_cliente.getValor("telefono_geper"));
                     utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa,ide_geper", "");
                     tab_creacion_cliente.limpiar();
-                    tab_creacion_cliente.insertar();
+                    //tab_creacion_cliente.insertar();
                     dia_creacion_cliente.cerrar();
                 }
+                tab_cab_factura.setInsertadas(lis_resp_cab);
+                tab_deta_factura.setInsertadas(lis_resp_deta);
             }
         }
     }
@@ -1174,10 +1187,14 @@ public class FacturaCxC extends Dialogo {
     }
 
     public void abrirProducto() {
+        tab_creacion_producto.limpiar();
+        tab_creacion_producto.insertar();
         dia_creacion_producto.dibujar();
     }
 
     public void abrirCliente() {
+        tab_creacion_cliente.limpiar();
+        tab_creacion_cliente.insertar();
         dia_creacion_cliente.dibujar();
     }
 
