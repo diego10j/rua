@@ -84,7 +84,7 @@ public class pre_proveedores extends Pantalla {
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Transacciones Proveedor", "dibujarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Productos Proveedor", "dibujarProductos", "ui-icon-cart");
-        mep_menu.agregarItem("Facturas Por Pagar", "dibujarFacturas", "ui-icon-calculator");
+        mep_menu.agregarItem("Documentos Por Pagar", "dibujarFacturas", "ui-icon-calculator");
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");

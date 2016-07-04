@@ -300,7 +300,7 @@ public class FacturaCxC extends Dialogo {
      * @return
      */
     private Grupo dibujarFactura() {
-        utilitario.getConexion().setImprimirSqlConsola(true);
+        //utilitario.getConexion().setImprimirSqlConsola(true);
         com_pto_emision = new Combo();
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
         com_pto_emision.setMetodoRuta("pre_index.clase." + getId() + ".cargarMaximoSecuencialFactura");

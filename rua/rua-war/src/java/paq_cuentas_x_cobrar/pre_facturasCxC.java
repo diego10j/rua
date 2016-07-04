@@ -103,7 +103,7 @@ public class pre_facturasCxC extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES FACTURA", "20%");
         mep_menu.agregarItem("Listado de Facturas", "dibujarFacturas", "ui-icon-note");
-        mep_menu.agregarItem("Facturas No Contabilizadas", "dibujarFacturasNoContabilizadas", "ui-icon-notice");
+        mep_menu.agregarItem("Generar Comprobante Contabilidad", "dibujarFacturasNoContabilizadas", "ui-icon-notice");
         mep_menu.agregarItem("Facturas Anuladas", "dibujarFacturasAnuladas", "ui-icon-cancel");
         mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturasPorCobrar", "ui-icon-calculator");
         mep_menu.agregarSubMenu("INFORMES");

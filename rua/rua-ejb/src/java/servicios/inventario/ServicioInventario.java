@@ -67,6 +67,102 @@ public class ServicioInventario {
         tab_det_comp_inv.guardar();
     }
 
+    public void generarComprobanteTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
+        String p_estado_normal_inventario = utilitario.getVariable("p_inv_estado_normal");
+        String p_tipo_transaccion_inv_compra = utilitario.getVariable("p_inv_tipo_transaccion_compra");
+
+        //Cabecera         
+        TablaGenerica tab_cab_comp_inv = new TablaGenerica();
+        tab_cab_comp_inv.setTabla("inv_cab_comp_inve", "ide_incci");
+        tab_cab_comp_inv.setCondicion("ide_incci=-1");
+        tab_cab_comp_inv.ejecutarSql();
+        tab_cab_comp_inv.insertar();
+        tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inventario);  /////variable estado normal de inventario
+        tab_cab_comp_inv.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_cab_comp_inv.setValor("ide_inbod", "1");   ///variable para bodega por defecto
+        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario());  /// calcular numero de comprobante de inventario
+        tab_cab_comp_inv.setValor("ide_geper", tab_factura_cxp.getValor("ide_geper"));
+        tab_cab_comp_inv.setValor("fecha_trans_incci", tab_factura_cxp.getValor("fecha_emisi_cpcfa"));
+        tab_cab_comp_inv.setValor("observacion_incci", tab_factura_cxp.getValor("observacion_cpcfa"));
+        tab_cab_comp_inv.setValor("fecha_siste_incci", utilitario.getFechaActual());
+        tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
+        tab_cab_comp_inv.setValor("ide_intti", p_tipo_transaccion_inv_compra);   ////variable titpo transaccion compra 
+        //tab_cab_comp_inv.setValor("ide_cnccc", ide_cnccc);
+        //Detalles
+
+        TablaGenerica tab_det_comp_inv = new TablaGenerica();
+        tab_det_comp_inv.setTabla("inv_det_comp_inve", "ide_indci");
+        tab_det_comp_inv.setCondicion("ide_indci=-1");
+        tab_det_comp_inv.ejecutarSql();
+        tab_cab_comp_inv.guardar();
+
+        double porce_descuento = 0;
+        if (tab_factura_cxp.getValor("porcen_desc_cpcfa") != null) {
+            try {
+                porce_descuento = Double.parseDouble(tab_factura_cxp.getValor("porcen_desc_cpcfa"));
+            } catch (Exception e) {
+            }
+
+        }
+
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+
+//                if (haceKardex(tab_tabla2.getValor(i, "ide_inarti"))) {
+            //  if (in.esTipoCombo(tab_tabla2.getValor(i, "ide_inarti")) == false) {
+            tab_det_comp_inv.insertar();
+            if (tab_detalle.getValor(i, "iva_inarti_cpdfa") != null
+                    && !tab_detalle.getValor(i, "iva_inarti_cpdfa").isEmpty()
+                    && tab_detalle.getValor(i, "iva_inarti_cpdfa").equals("1")) {
+//                    System.out.println(in.aplicaIva(tab_tabla2.getValor(i, "ide_inarti")) + "    " + tab_tabla2.getValor(i, "ide_inarti"));
+//                    if (in.aplicaIva(tab_tabla2.getValor(i, "ide_inarti"))) {
+                try {
+                    //double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa")) + (Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa")) * p_porcentaje_iva);
+                    double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa"));
+                    if (porce_descuento > 0) {
+                        ///aplico &  descuento                                
+                        precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa"));
+                        double valor_descuento = precio * (porce_descuento / 100);
+                        precio = precio - valor_descuento;
+                        //  precio = precio + (precio * p_porcentaje_iva);
+                    }
+                    double valor = (Double.parseDouble(tab_detalle.getValor(i, "cantidad_cpdfa")) * precio);
+                    tab_det_comp_inv.setValor("precio_indci", precio + "");
+                    tab_det_comp_inv.setValor("valor_indci", valor + "");
+//                    String precio_promedio = in.getPrecioPromedioTransaccionPositiva(tab_tabla2.getValor(i, "ide_inarti"), "1", valor, Double.parseDouble(tab_tabla2.getValor(i, "cantidad_cpdfa")));
+//                    if (precio_promedio != null) {
+//                        tab_det_comp_inv.setValor("precio_promedio_indci", precio_promedio);
+//                    }
+                } catch (Exception e) {
+                }
+            } else {
+
+                double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa"));
+                if (porce_descuento > 0) {
+                    ///aplico &  descuento                                
+                    precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa"));
+                    precio = precio - (precio * (porce_descuento / 100));
+                }
+                double valor = Double.parseDouble(tab_detalle.getValor(i, "cantidad_cpdfa")) * precio;
+
+                tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio));
+                tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(valor));
+//                String precio_promedio = in.getPrecioPromedioTransaccionPositiva(tab_tabla2.getValor(i, "ide_inarti"), "1", Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")), Double.parseDouble(tab_tabla2.getValor(i, "cantidad_cpdfa")));
+//                if (precio_promedio != null) {
+//                    tab_det_comp_inv.setValor("precio_promedio_indci", precio_promedio);
+//                }
+            }
+            tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
+            tab_det_comp_inv.setValor("ide_cpcfa", tab_factura_cxp.getValor("ide_cpcfa"));
+            tab_det_comp_inv.setValor("ide_incci", tab_cab_comp_inv.getValor("ide_incci"));
+            tab_det_comp_inv.setValor("cantidad_indci", tab_detalle.getValor(i, "cantidad_cpdfa"));
+            tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_cpdfa"));
+        }
+                //}
+
+        // }
+        tab_det_comp_inv.guardar();
+    }
+
     /**
      * Genera secuencial de comprobante
      *
@@ -154,9 +250,5 @@ public class ServicioInventario {
         return utilitario.consultar(sql).getValor("ide_incci");
     }
 
-    
     //CXP
-    
-    
-    
 }

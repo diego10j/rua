@@ -90,7 +90,7 @@ public class ServicioProducto {
         tabla.getColumna("nombre_inarti").setRequerida(true);
         tabla.getColumna("iva_inarti").setRadio(getListaTipoIVA(), "1");
         tabla.getColumna("iva_inarti").setRadioVertical(true);
-        tabla.getColumna("INV_IDE_INARTI").setVisible(false);         	
+        tabla.getColumna("INV_IDE_INARTI").setVisible(false);
         tabla.setTipoFormulario(true);
         tabla.getGrid().setColumns(4);
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");// cargar un combo de una con el ide, nombre
@@ -471,7 +471,7 @@ public class ServicioProducto {
                 + "left join cxc_datos_fac df on cf.ide_ccdaf=df.ide_ccdaf "
                 + "left join gen_persona p on cf.ide_geper=p.ide_geper "
                 + "where cdf.ide_inarti=" + ide_inarti + " "
-                + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                // + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and cf.fecha_emisi_cccfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and cf.ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal") + " "
                 + "ORDER BY cf.fecha_emisi_cccfa,serie_ccdaf, secuencial_cccfa";
@@ -492,7 +492,8 @@ public class ServicioProducto {
                 + "left join cxp_cabece_factur cf on cf.ide_cpcfa=cdf.ide_cpcfa "
                 + "left join inv_articulo iart on iart.ide_inarti=cdf.ide_inarti "
                 + "left join gen_persona p on cf.ide_geper=p.ide_geper "
-                + "where cdf.ide_inarti=" + ide_inarti + " and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "where cdf.ide_inarti=" + ide_inarti + " "
+                //  + "and cdf.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + " and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal")
                 + " and cf.fecha_emisi_cpcfa  BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "ORDER BY cf.fecha_emisi_cpcfa, numero_cpcfa";
