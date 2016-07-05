@@ -22,7 +22,7 @@ public class ServicioProveedor {
     /**
      * Codigo Padre de todos los proveedores para el campo GEN_IDE_GEPER
      */
-    public final static String P_PADRE_PROVEEDORES = "2";
+    public final static String P_PADRE_PROVEEDORES = "1";
     private final Utilitario utilitario = new Utilitario();
 
     @EJB
@@ -311,4 +311,31 @@ public class ServicioProveedor {
                 + "from cxp_cabece_factur where ide_empr=" + utilitario.getVariable("ide_empr") + " order by 1 desc ";
     }
 
+    /**
+     * Validaciones para crear o modificar un Proveedor
+     *
+     * @return
+     */
+    public boolean validarProveedor(Tabla tab_proveedor) {
+        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
+            if (utilitario.validarCedula(tab_proveedor.getValor("identificac_geper"))) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
+                return false;
+            }
+        }
+        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
+            if (utilitario.validarRUC(tab_proveedor.getValor("identificac_geper"))) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
+                return false;
+            }
+        }
+        if (tab_proveedor.getValor("ide_cntco") == null || tab_proveedor.getValor("ide_cntco").isEmpty()) {
+            utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
+            return false;
+        }
+        //      }
+        return true;
+    }
 }

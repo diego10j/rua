@@ -32,17 +32,17 @@ import sistema.aplicacion.Pantalla;
  * @author dfjacome
  */
 public class pre_proveedores extends Pantalla {
-
+    
     @EJB
     private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
-
+    
     private final MenuPanel mep_menu = new MenuPanel();
     private AutoCompletar aut_proveedor = new AutoCompletar();
 
     //Consultas
     private Calendario cal_fecha_inicio;
     private Calendario cal_fecha_fin;
-
+    
     private Tabla tab_proveedor; //formulario proveedor    
     private Tabla tab_transacciones_cxp; //transacciones proveedor
     private Tabla tab_productos; //transacciones proveedor
@@ -60,12 +60,12 @@ public class pre_proveedores extends Pantalla {
     private GraficoCartesiano gca_grafico;
     private Combo com_periodo;
     private Tabla tab_compra_productos;
-
+    
     public pre_proveedores() {
-
+        
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PROVEEDOR :"));
-
+        
         aut_proveedor.setId("aut_proveedor");
         aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
         aut_proveedor.setSize(75);
@@ -77,7 +77,7 @@ public class pre_proveedores extends Pantalla {
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
-
+        
         mep_menu.setMenuPanel("OPCIONES PROVEEDOR", "20%");
         mep_menu.agregarItem("Información Proveedor", "dibujarProveedor", "ui-icon-person");
         mep_menu.agregarItem("Clasificación Proveedores", "dibujarEstructura", "ui-icon-arrow-4-diag");
@@ -91,9 +91,9 @@ public class pre_proveedores extends Pantalla {
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Gráfico de Compras", "dibujarGrafico", "ui-icon-bookmark");
         mep_menu.agregarItem("Productos Comprados", "dibujarProductosComprados", "ui-icon-cart");
-
+        
         agregarComponente(mep_menu);
-
+        
     }
 
     /**
@@ -156,14 +156,14 @@ public class pre_proveedores extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(1, "DATOS DEL PROVEEDOR", pat_panel);
     }
-
+    
     public void dibujarTransacciones() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
-
+            
             Fieldset fis_consulta = new Fieldset();
             fis_consulta.setLegend("Detalle de la Consulta");
-
+            
             Grid gri_fechas = new Grid();
             gri_fechas.setColumns(5);
             gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
@@ -175,20 +175,20 @@ public class pre_proveedores extends Pantalla {
             cal_fecha_fin.setFechaActual();
             gri_fechas.getChildren().add(cal_fecha_fin);
             fis_consulta.getChildren().add(gri_fechas);
-
+            
             Boton bot_consultar = new Boton();
             bot_consultar.setValue("Consultar");
             bot_consultar.setMetodo("actualizarTransacciones");
             bot_consultar.setIcon("ui-icon-search");
-
+            
             gri_fechas.getChildren().add(bot_consultar);
-
+            
             fis_consulta.getChildren().add(gri_fechas);
             gru_grupo.getChildren().add(fis_consulta);
-
+            
             Separator separar = new Separator();
             fis_consulta.getChildren().add(separar);
-
+            
             tab_transacciones_cxp = new Tabla();
             tab_transacciones_cxp.setNumeroTabla(2);
             tab_transacciones_cxp.setId("tab_transacciones_cxp");
@@ -224,18 +224,18 @@ public class pre_proveedores extends Pantalla {
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_transacciones_cxp);
             gru_grupo.getChildren().add(pat_panel);
-
+            
             actualizarSaldoxPagar();
         }
         mep_menu.dibujar(2, "TRANSACCIONES DEL PROVEEDOR", gru_grupo);
     }
-
+    
     public void dibujarProductos() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
             Fieldset fis_consulta = new Fieldset();
             fis_consulta.setLegend("Detalle de la Consulta");
-
+            
             Grid gri_fechas = new Grid();
             gri_fechas.setColumns(5);
             gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
@@ -247,14 +247,14 @@ public class pre_proveedores extends Pantalla {
             cal_fecha_fin.setFechaActual();
             gri_fechas.getChildren().add(cal_fecha_fin);
             fis_consulta.getChildren().add(gri_fechas);
-
+            
             Boton bot_consultar = new Boton();
             bot_consultar.setValue("Consultar");
             bot_consultar.setMetodo("actualizarProducots");
             bot_consultar.setIcon("ui-icon-search");
-
+            
             gri_fechas.getChildren().add(bot_consultar);
-
+            
             fis_consulta.getChildren().add(gri_fechas);
             gru_grupo.getChildren().add(fis_consulta);
             tab_productos = new Tabla();
@@ -262,7 +262,7 @@ public class pre_proveedores extends Pantalla {
             tab_productos.setId("tab_productos");
             tab_productos.setSql(ser_proveedor.getSqlProductosProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_productos.getColumna("ide_cpdfa").setVisible(false);
-
+            
             tab_productos.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA");
             tab_productos.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
             tab_productos.getColumna("nombre_inarti").setNombreVisual("ARTICULO");
@@ -274,7 +274,7 @@ public class pre_proveedores extends Pantalla {
             tab_productos.getColumna("valor_cpdfa").setEstilo("font-weight: bold");
             tab_productos.getColumna("nombre_inarti").setFiltroContenido();
             tab_productos.getColumna("numero_cpcfa").setFiltroContenido();
-
+            
             tab_productos.setLectura(true);
             tab_productos.setScrollable(true);
             tab_productos.setScrollHeight(300);
@@ -283,10 +283,10 @@ public class pre_proveedores extends Pantalla {
             pat_panel.setPanelTabla(tab_productos);
             gru_grupo.getChildren().add(pat_panel);
         }
-
+        
         mep_menu.dibujar(3, "PRODUCTOS COMPRADOS POR EL PROVEEDOR", gru_grupo);
     }
-
+    
     public void dibujarConfiguraCuenta() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
@@ -297,7 +297,7 @@ public class pre_proveedores extends Pantalla {
             aut_cuentas.setDisabled(true);
             aut_cuentas.setMetodoChange("seleccionarCuentaContable");
             aut_cuentas.setValor(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()));
-
+            
             Grid gri_contenido = new Grid();
             gri_contenido.setColumns(3);
             gri_contenido.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
@@ -312,17 +312,17 @@ public class pre_proveedores extends Pantalla {
         }
         mep_menu.dibujar(4, "CONFIGURACIÓN DE CUENTA CONTABLE", gru_grupo);
     }
-
+    
     public void dibujarMovimientos() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
             TablaGenerica tab_cuenta = ser_contabilidad.getCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()));
             if (!tab_cuenta.isEmpty()) {
-
+                
                 Fieldset fis_consulta = new Fieldset();
                 fis_consulta.setLegend("Detalle de la Consulta");
                 fis_consulta.getChildren().add(new Etiqueta("<p style='font-size:16px;padding-bottom:5px;'> <strong>" + tab_cuenta.getValor("codig_recur_cndpc") + "</strong> &nbsp; " + tab_cuenta.getValor("nombre_cndpc") + "</p>"));
-
+                
                 Grid gri_fechas = new Grid();
                 gri_fechas.setColumns(5);
                 gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
@@ -334,19 +334,19 @@ public class pre_proveedores extends Pantalla {
                 cal_fecha_fin.setFechaActual();
                 gri_fechas.getChildren().add(cal_fecha_fin);
                 fis_consulta.getChildren().add(gri_fechas);
-
+                
                 Boton bot_consultar = new Boton();
                 bot_consultar.setValue("Consultar");
                 bot_consultar.setMetodo("actualizarMovimientos");
                 bot_consultar.setIcon("ui-icon-search");
-
+                
                 gri_fechas.getChildren().add(bot_consultar);
-
+                
                 Separator separar = new Separator();
                 fis_consulta.getChildren().add(separar);
-
+                
                 gru_grupo.getChildren().add(fis_consulta);
-
+                
                 tab_movimientos = new Tabla();
                 tab_movimientos.setNumeroTabla(4);
                 tab_movimientos.setId("tab_movimientos");
@@ -380,7 +380,7 @@ public class pre_proveedores extends Pantalla {
         }
         mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
     }
-
+    
     public void dibujarFacturas() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
@@ -406,14 +406,14 @@ public class pre_proveedores extends Pantalla {
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_facturas);
             gru_grupo.getChildren().add(pat_panel);
-
+            
             if (tab_facturas.isEmpty()) {
                 tab_facturas.setEmptyMessage("No tiene facturas por pagar al proveedor seleccionado");
             }
         }
         mep_menu.dibujar(6, "FACTURAS POR PAGAR AL PROVEEDOR", gru_grupo);
     }
-
+    
     public void dibujarEstructura() {
         Grupo gru_grupo = new Grupo();
         arb_estructura = new Arbol();
@@ -432,13 +432,13 @@ public class pre_proveedores extends Pantalla {
         gru_grupo.getChildren().add(paa_panel);
         mep_menu.dibujar(7, "CLASIFICACIÓN DE PROVEEDORES", gru_grupo);
     }
-
+    
     public void dibujarGrafico() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
             gca_grafico = new GraficoCartesiano();
             gca_grafico.setId("gca_grafico");
-
+            
             com_periodo = new Combo();
             com_periodo.setMetodo("actualizarGrafico");
             com_periodo.setCombo(ser_proveedor.getSqlAniosCompras());
@@ -455,7 +455,7 @@ public class pre_proveedores extends Pantalla {
             tab_grafico.getColumna("iva").alinearDerecha();
             tab_grafico.getColumna("total").alinearDerecha();
             tab_grafico.dibujar();
-
+            
             Grid gri_opciones = new Grid();
             gri_opciones.setColumns(2);
             gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
@@ -463,16 +463,16 @@ public class pre_proveedores extends Pantalla {
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.getChildren().add(gri_opciones);
             pat_panel.setPanelTabla(tab_grafico);
-
+            
             gca_grafico.setTitulo("COMPRAS MENSUALES");
             gca_grafico.agregarSerie(tab_grafico, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
-
+            
             gru_grupo.getChildren().add(pat_panel);
             gru_grupo.getChildren().add(gca_grafico);
         }
         mep_menu.dibujar(8, "GRAFICO DE COMPRAS", gru_grupo);
     }
-
+    
     public void dibujarProductosComprados() {
         Grupo gru_grupo = new Grupo();
         if (isProveedorSeleccionado()) {
@@ -496,7 +496,7 @@ public class pre_proveedores extends Pantalla {
             PanelTabla pat_panel1 = new PanelTabla();
             pat_panel1.setPanelTabla(tab_compra_productos);
             gru_grupo.getChildren().add(pat_panel1);
-
+            
         }
         mep_menu.dibujar(9, "PRODUCTOS COMPRADOS", gru_grupo);
     }
@@ -538,7 +538,7 @@ public class pre_proveedores extends Pantalla {
         tab_productos.setSql(ser_proveedor.getSqlProductosProveedor(aut_proveedor.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_productos.ejecutarSql();
         if (tab_productos.isEmpty()) {
-
+            
             tab_productos.setEmptyMessage("No Productos en el rango de fechas seleccionado");
         }
     }
@@ -547,26 +547,26 @@ public class pre_proveedores extends Pantalla {
      * Actualiza los solados que se visualizan en pantalla
      */
     private void actualizarSaldosContable() {
-
+        
         double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()), cal_fecha_inicio.getFecha());
         double dou_saldo_inicial = saldo_anterior;
         double dou_saldo_actual = 0;
         double dou_debe = 0;
         double dou_haber = 0;
         String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
-
+        
         for (int i = 0; i < tab_movimientos.getTotalFilas(); i++) {
             if (tab_movimientos.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
                 tab_movimientos.setValor(i, "debe", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc")))));
                 dou_debe += Double.parseDouble(tab_movimientos.getValor(i, "debe"));
-
+                
             } else {
                 tab_movimientos.setValor(i, "haber", utilitario.getFormatoNumero(tab_movimientos.getValor(i, "valor_cndcc")));
                 dou_haber += Double.parseDouble(tab_movimientos.getValor(i, "haber"));
             }
             dou_saldo_actual = saldo_anterior + Double.parseDouble(tab_movimientos.getValor(i, "valor_cndcc"));
             tab_movimientos.setValor(i, "saldo", utilitario.getFormatoNumero(dou_saldo_actual));
-
+            
             saldo_anterior = dou_saldo_actual;
         }
         if (tab_movimientos.isEmpty()) {
@@ -619,7 +619,7 @@ public class pre_proveedores extends Pantalla {
                 }
             }
         }
-
+        
     }
 
     /**
@@ -636,34 +636,6 @@ public class pre_proveedores extends Pantalla {
     }
 
     /**
-     * Validaciones para crear o modificar un Proveedor
-     *
-     * @return
-     */
-    private boolean validarProveedor() {
-        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
-            if (utilitario.validarCedula(tab_proveedor.getValor("identificac_geper"))) {
-            } else {
-                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
-                return false;
-            }
-        }
-        if (tab_proveedor.getValor("ide_getid") != null && tab_proveedor.getValor("ide_getid").equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
-            if (utilitario.validarRUC(tab_proveedor.getValor("identificac_geper"))) {
-            } else {
-                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
-                return false;
-            }
-        }
-        if (tab_proveedor.getValor("ide_cntco") == null || tab_proveedor.getValor("ide_cntco").isEmpty()) {
-            utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
-            return false;
-        }
-        //      }
-        return true;
-    }
-
-    /**
      * Calcula el saldo por cobrar del Proveedor
      *
      * @return
@@ -674,7 +646,7 @@ public class pre_proveedores extends Pantalla {
         double dou_saldo_actual = 0;
         double dou_ingresos = 0;
         double dou_egresos = 0;
-
+        
         for (int i = 0; i < tab_transacciones_cxp.getTotalFilas(); i++) {
             if (tab_transacciones_cxp.getValor(i, "ingresos") != null) {
                 dou_ingresos += Double.parseDouble(tab_transacciones_cxp.getValor(i, "ingresos"));
@@ -683,7 +655,7 @@ public class pre_proveedores extends Pantalla {
                 dou_egresos += Double.parseDouble(tab_transacciones_cxp.getValor(i, "egresos"));
                 dou_saldo_actual = saldo_anterior - Double.parseDouble(tab_transacciones_cxp.getValor(i, "egresos"));
             }
-
+            
             tab_transacciones_cxp.setValor(i, "saldo", utilitario.getFormatoNumero(dou_saldo_actual));
             saldo_anterior = dou_saldo_actual;
         }
@@ -704,7 +676,7 @@ public class pre_proveedores extends Pantalla {
         tab_transacciones_cxp.getColumna("saldo").setTotal(dou_saldo_actual);
         tab_transacciones_cxp.getColumna("INGRESOS").setTotal(dou_ingresos);
         tab_transacciones_cxp.getColumna("EGRESOS").setTotal(dou_egresos);
-
+        
     }
 
     /**
@@ -714,26 +686,26 @@ public class pre_proveedores extends Pantalla {
         aut_proveedor.limpiar();
         mep_menu.limpiar();
     }
-
+    
     @Override
     public void insertar() {
         if (mep_menu.getOpcion() == -1) {
             //PANTALLA LIMPIA
             dibujarProveedor();
         }
-
+        
         if (mep_menu.getOpcion() == 1) {
             //FORMULARIO Proveedor
             aut_proveedor.limpiar();
             tab_proveedor.insertar();
         }
     }
-
+    
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
             //FORMULARIO Proveedor
-            if (validarProveedor()) {
+            if (ser_proveedor.validarProveedor(tab_proveedor)) {
                 tab_proveedor.guardar();
                 if (guardarPantalla().isEmpty()) {
                     //Actualiza el autocompletar
@@ -752,9 +724,9 @@ public class pre_proveedores extends Pantalla {
             //Classificacion de Proveedores
             guardarPantalla();
         }
-
+        
     }
-
+    
     @Override
     public void eliminar() {
         if (mep_menu.getOpcion() == 1) {
@@ -762,93 +734,93 @@ public class pre_proveedores extends Pantalla {
             tab_proveedor.eliminar();
         }
     }
-
+    
     public AutoCompletar getAut_proveedor() {
         return aut_proveedor;
     }
-
+    
     public void setAut_proveedor(AutoCompletar aut_proveedor) {
         this.aut_proveedor = aut_proveedor;
     }
-
+    
     public Tabla getTab_proveedor() {
         return tab_proveedor;
     }
-
+    
     public void setTab_proveedor(Tabla tab_proveedor) {
         this.tab_proveedor = tab_proveedor;
     }
-
+    
     public Tabla getTab_transacciones_cxp() {
         return tab_transacciones_cxp;
     }
-
+    
     public void setTab_transacciones_cxp(Tabla tab_transacciones_cxp) {
         this.tab_transacciones_cxp = tab_transacciones_cxp;
     }
-
+    
     public Tabla getTab_productos() {
         return tab_productos;
     }
-
+    
     public void setTab_productos(Tabla tab_productos) {
         this.tab_productos = tab_productos;
     }
-
+    
     public AutoCompletar getAut_cuentas() {
         return aut_cuentas;
     }
-
+    
     public void setAut_cuentas(AutoCompletar aut_cuentas) {
         this.aut_cuentas = aut_cuentas;
     }
-
+    
     public Tabla getTab_movimientos() {
         return tab_movimientos;
     }
-
+    
     public void setTab_movimientos(Tabla tab_movimientos) {
         this.tab_movimientos = tab_movimientos;
     }
-
+    
     public Tabla getTab_facturas() {
         return tab_facturas;
     }
-
+    
     public void setTab_facturas(Tabla tab_facturas) {
         this.tab_facturas = tab_facturas;
     }
-
+    
     public Arbol getArb_estructura() {
         return arb_estructura;
     }
-
+    
     public void setArb_estructura(Arbol arb_estructura) {
         this.arb_estructura = arb_estructura;
     }
-
+    
     public Tabla getTab_grafico() {
         return tab_grafico;
     }
-
+    
     public void setTab_grafico(Tabla tab_grafico) {
         this.tab_grafico = tab_grafico;
     }
-
+    
     public GraficoCartesiano getGca_grafico() {
         return gca_grafico;
     }
-
+    
     public void setGca_grafico(GraficoCartesiano gca_grafico) {
         this.gca_grafico = gca_grafico;
     }
-
+    
     public Tabla getTab_compra_productos() {
         return tab_compra_productos;
     }
-
+    
     public void setTab_compra_productos(Tabla tab_compra_productos) {
         this.tab_compra_productos = tab_compra_productos;
     }
-
+    
 }

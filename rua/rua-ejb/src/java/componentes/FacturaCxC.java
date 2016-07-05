@@ -587,7 +587,7 @@ public class FacturaCxC extends Dialogo {
         Grid gri_valores = new Grid();
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(4);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
@@ -597,7 +597,7 @@ public class FacturaCxC extends Dialogo {
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA 0% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :<s/trong>"));
         tex_subtotal0.setDisabled(true);
         tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal0);

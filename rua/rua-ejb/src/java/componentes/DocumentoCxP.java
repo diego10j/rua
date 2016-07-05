@@ -7,8 +7,10 @@ package componentes;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
+import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
+import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -21,7 +23,9 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
+import servicios.contabilidad.ServicioConfiguracion;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
+import servicios.cuentas_x_pagar.ServicioProveedor;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Utilitario;
@@ -56,6 +60,18 @@ public class DocumentoCxP extends Dialogo {
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
+    @EJB
+    private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
+    @EJB
+    private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
+    private double tarifaIVA = 0;
+    //CLIENTE
+    private Tabla tab_creacion_cliente;
+    private Dialogo dia_creacion_cliente;
+
+    //PRODUCTO
+    private Tabla tab_creacion_producto;
+    private Dialogo dia_creacion_producto;
 
     public DocumentoCxP() {
         //Recupera todos los parametros que se van a utilizar
@@ -72,6 +88,22 @@ public class DocumentoCxP extends Dialogo {
         tab_documenoCxP.setWidgetVar("w_documenoCxP");
         tab_documenoCxP.agregarTab("DOCUMENTO POR PAGAR ", null);//0        
         this.setDialogo(tab_documenoCxP);
+
+        //Recupera porcentaje iva
+        tarifaIVA = ser_configuracion.getPorcentajeIva();
+        dia_creacion_cliente = new Dialogo();
+        dia_creacion_cliente.setId("dia_creacion_cliente");
+        dia_creacion_cliente.setTitle("CREAR PROVEEDOR");
+        dia_creacion_cliente.setHeight("65%");
+        dia_creacion_cliente.setWidth("55%");
+        utilitario.getPantalla().getChildren().add(dia_creacion_cliente);
+
+        dia_creacion_producto = new Dialogo();
+        dia_creacion_producto.setId("dia_creacion_producto");
+        dia_creacion_producto.setTitle("CREAR PRODUCTO");
+        dia_creacion_producto.setHeight("65%");
+        dia_creacion_producto.setWidth("40%");
+        utilitario.getPantalla().getChildren().add(dia_creacion_producto);
     }
 
     public void setDocumentoCxP(String titulo) {
@@ -103,9 +135,133 @@ public class DocumentoCxP extends Dialogo {
         //com_tipo_documento.eliminarVacio();
 
         Grid gri_pto = new Grid();
-        gri_pto.setColumns(4);
+        gri_pto.setColumns(9);
         gri_pto.getChildren().add(new Etiqueta("<strong>TIPO DE DOCUMENTO :</strong>"));
         gri_pto.getChildren().add(com_tipo_documento);
+
+        if (opcion == 1) {
+            dia_creacion_producto.getGri_cuerpo().getChildren().clear();
+            dia_creacion_cliente.getGri_cuerpo().getChildren().clear();
+            gri_pto.getChildren().add(new Espacio("10", "1"));
+            Boton botCrearCliente = new Boton();
+            botCrearCliente.setId("botCrearCliente");
+            botCrearCliente.setValue("Crear Cliente");
+            botCrearCliente.setIcon("ui-icon-person");
+            botCrearCliente.setMetodoRuta("pre_index.clase." + getId() + ".abrirProveedor");
+            gri_pto.getChildren().add(botCrearCliente);
+            gri_pto.getChildren().add(new Espacio("5", "1"));
+
+            Boton botCrearProducto = new Boton();
+            botCrearProducto.setId("botCrearProducto");
+            botCrearProducto.setValue("Crear Producto");
+            botCrearProducto.setIcon("ui-icon-cart");
+            botCrearProducto.setMetodoRuta("pre_index.clase." + getId() + ".abrirProducto");
+            gri_pto.getChildren().add(botCrearProducto);
+
+            dia_creacion_cliente.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardarProveedor");
+            dia_creacion_cliente.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            tab_creacion_cliente = new Tabla();
+            tab_creacion_cliente.setId("tab_creacion_cliente");
+            tab_creacion_cliente.setRuta("pre_index.clase." + getId());
+            tab_creacion_cliente.setIdCompleto("tab_documenoCxP:tab_creacion_cliente");
+            ser_proveedor.configurarTablaProveedor(tab_creacion_cliente);
+            tab_creacion_cliente.setTabla("gen_persona", "ide_geper", -1);
+            tab_creacion_cliente.setCondicion("ide_geper=-1");
+            tab_creacion_cliente.getGrid().setColumns(2);
+            tab_creacion_cliente.getColumna("ide_geper").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_GEGEN").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_VGECL").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_GEUBI").setVisible(false);
+            tab_creacion_cliente.getColumna("IDE_VGTCL").setVisible(false);
+            tab_creacion_cliente.getColumna("FAX_GEPER").setVisible(false);
+            tab_creacion_cliente.getColumna("PAGINA_WEB_GEPER").setVisible(false);
+            tab_creacion_cliente.getColumna("REPRE_LEGAL_GEPER").setVisible(false);
+
+            tab_creacion_cliente.getColumna("IDE_GETID").setNombreVisual("TIPO DE IDENTIFICACION");
+            tab_creacion_cliente.getColumna("IDE_GETID").setOrden(1);
+            tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setNombreVisual("IDENTIFICACION");
+            tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setOrden(2);
+            tab_creacion_cliente.getColumna("NOM_GEPER").setNombreVisual("NOMBRE");
+            tab_creacion_cliente.getColumna("NOM_GEPER").setOrden(3);
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setNombreVisual("NOMBRE COMERCIAL");
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setOrden(4);
+            tab_creacion_cliente.getColumna("IDE_CNTCO").setNombreVisual("TIPO DE CONTRIBUYENTE");
+            tab_creacion_cliente.getColumna("IDE_CNTCO").setOrden(5);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setNombreVisual("DIRECCION");
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setOrden(6);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setNombreVisual("TELEFONO");
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setOrden(7);
+            tab_creacion_cliente.getColumna("TELEFONO_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("CONTACTO_GEPER").setNombreVisual("CONTACTO");
+            tab_creacion_cliente.getColumna("CONTACTO_GEPER").setOrden(8);
+            tab_creacion_cliente.getColumna("MOVIL_GEPER").setNombreVisual("CELULAR");
+            tab_creacion_cliente.getColumna("MOVIL_GEPER").setOrden(9);
+            tab_creacion_cliente.getColumna("CORREO_GEPER").setNombreVisual("E-MAIL");
+            tab_creacion_cliente.getColumna("CORREO_GEPER").setOrden(10);
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setNombreVisual("OBSERVACION");
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setOrden(11);
+
+            tab_creacion_cliente.setMostrarNumeroRegistros(false);
+            tab_creacion_cliente.dibujar();
+            tab_creacion_cliente.insertar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_creacion_cliente);
+            pat_panel.getMenuTabla().setRendered(false);
+            pat_panel.setStyle("overflow:hiden");
+            dia_creacion_cliente.setDialogo(pat_panel);
+
+            ///PRODUCTO 
+            dia_creacion_producto.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardarProducto");
+            dia_creacion_producto.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            tab_creacion_producto = new Tabla();
+            tab_creacion_producto.setId("tab_creacion_producto");
+            tab_creacion_producto.setRuta("pre_index.clase." + getId());
+            tab_creacion_producto.setIdCompleto("tab_documenoCxP:tab_creacion_producto");
+            ser_producto.configurarTablaProducto(tab_creacion_producto);
+            tab_creacion_producto.setTabla("inv_articulo", "ide_inarti", 999);
+            tab_creacion_producto.setCondicion("ide_inarti=-1");
+            tab_creacion_producto.setMostrarNumeroRegistros(false);
+            tab_creacion_producto.getColumna("IDE_INARTI").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_INFAB").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_INEPR").setVisible(false);
+            tab_creacion_producto.getColumna("ES_COMBO_INARTI").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_GEORG").setVisible(false);
+            tab_creacion_producto.getColumna("IDE_GEORG").setVisible(false);
+            tab_creacion_producto.getColumna("nivel_inarti").setVisible(false);
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setNombreVisual("NOMBRE");
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setOrden(1);
+            tab_creacion_producto.getColumna("CODIGO_INARTI").setNombreVisual("CODIGO");
+            tab_creacion_producto.getColumna("CODIGO_INARTI").setOrden(2);
+            tab_creacion_producto.getColumna("IDE_INMAR").setNombreVisual("MARCA");
+            tab_creacion_producto.getColumna("IDE_INMAR").setOrden(3);
+            tab_creacion_producto.getColumna("IDE_INUNI").setNombreVisual("UNIDAD");
+            tab_creacion_producto.getColumna("IDE_INUNI").setOrden(4);
+            tab_creacion_producto.getColumna("IDE_INTPR").setNombreVisual("TIPO PRODUCTO");
+            tab_creacion_producto.getColumna("IDE_INTPR").setOrden(5);
+            tab_creacion_producto.getColumna("IVA_INARTI").setNombreVisual("IVA ?");
+            tab_creacion_producto.getColumna("IVA_INARTI").setRequerida(true);
+            tab_creacion_producto.getColumna("IVA_INARTI").setOrden(6);
+            tab_creacion_producto.getColumna("ICE_INARTI").setNombreVisual("APLICA ICE ?");
+            tab_creacion_producto.getColumna("ICE_INARTI").setOrden(7);
+            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setNombreVisual("HACE KARDEX ?");
+            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setOrden(8);
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACION");
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
+            tab_creacion_producto.getGrid().setColumns(2);
+            tab_creacion_producto.dibujar();
+            tab_creacion_producto.insertar();
+            tab_creacion_producto.setValor("nivel_inarti", "HIJO");
+            PanelTabla pat_panel2 = new PanelTabla();
+            pat_panel2.setPanelTabla(tab_creacion_producto);
+            pat_panel2.getMenuTabla().setRendered(false);
+            pat_panel2.setStyle("overflow:hiden");
+            dia_creacion_producto.setDialogo(pat_panel2);
+
+        }
+
         grupo.getChildren().add(gri_pto);
 
         tab_cab_documento = new Tabla();
@@ -298,17 +454,17 @@ public class DocumentoCxP extends Dialogo {
         tex_valor_descuento.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_valor_descuento);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA 12% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal12.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal12);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTAL TARIFA 0% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :<s/trong>"));
         tex_subtotal0.setDisabled(true);
         tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal0.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal0);
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA 12% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_iva.setValue(utilitario.getFormatoNumero("0"));
@@ -343,6 +499,7 @@ public class DocumentoCxP extends Dialogo {
     }
 
     public void guardar() {
+        System.out.println("xxxx====");
         utilitario.getConexion().setImprimirSqlConsola(true);
         tab_cab_documento.setValor("ide_cntdo", String.valueOf(com_tipo_documento.getValue()));
         tab_cab_documento.setValor("observacion_cpcfa", String.valueOf(ate_observacion.getValue()));
@@ -411,14 +568,14 @@ public class DocumentoCxP extends Dialogo {
         double base_no_objeto = 0;
         double base_tarifa0 = 0;
         double valor_iva = 0;
-        double porcentaje_iva = 0;
+        // double porcentaje_iva = 0;
 
         for (int i = 0; i < tab_det_documento.getTotalFilas(); i++) {
             String iva = tab_det_documento.getValor(i, "iva_inarti_cpdfa");
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_det_documento.getValor(i, "valor_cpdfa")) + base_grabada;
-                porcentaje_iva = (Double.parseDouble(utilitario.getVariable("p_sri_porcentajeIva_comp_elect"))) / 100;
-                valor_iva = base_grabada * porcentaje_iva; //0.12
+                //porcentaje_iva = (Double.parseDouble(utilitario.getVariable("p_sri_porcentajeIva_comp_elect"))) / 100;
+                valor_iva = base_grabada * tarifaIVA; //0.12
             } else if (iva.equals("-1")) { // NO IVA
                 base_tarifa0 = Double.parseDouble(tab_det_documento.getValor(i, "valor_cpdfa")) + base_tarifa0;
             } else if (iva.equals("0")) { // NO OBJETO
@@ -629,6 +786,55 @@ public class DocumentoCxP extends Dialogo {
         }
     }
 
+    public void guardarProducto() {
+        if (true) { //!!!!!!!!******Validar Datos Producto
+            if (tab_creacion_producto.guardar()) {
+                //Respalda insertadas para que no guarde
+                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
+                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    tab_det_documento.actualizarCombos();
+                    tab_det_documento.insertar();
+                    lis_resp_deta.add(tab_det_documento.getFilaSeleccionada().getRowKey());
+                    tab_det_documento.setValor("ide_inarti", tab_creacion_producto.getValor("ide_inarti"));
+                    tab_det_documento.setValor("iva_inarti_cpdfa", tab_creacion_producto.getValor("IVA_INARTI"));
+                    utilitario.addUpdate("tab_documenoCxP:tab_det_documento");
+                    tab_creacion_producto.limpiar();
+                    //tab_creacion_producto.insertar();
+                    dia_creacion_producto.cerrar();
+                }
+                tab_cab_documento.setInsertadas(lis_resp_cab);
+                tab_det_documento.setInsertadas(lis_resp_deta);
+            }
+        }
+    }
+
+    public void guardarProveedor() {
+        if (ser_proveedor.validarProveedor(tab_creacion_cliente)) {
+            if (tab_creacion_cliente.guardar()) {
+                //Respalda insertadas para que no guarde
+                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
+                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
+
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    //Se guardo correctamente
+                    tab_cab_documento.actualizarCombos();
+                    tab_cab_documento.setValor("ide_geper", tab_creacion_cliente.getValor("ide_geper"));
+                    //tab_cab_documento.setValor("direccion_cccfa", tab_creacion_cliente.getValor("direccion_geper"));
+                    //tab_cab_documento.setValor("telefono_cccfa", tab_creacion_cliente.getValor("telefono_geper"));
+                    // utilitario.addUpdateTabla(tab_cab_documento, "direccion_cccfa,telefono_cccfa,ide_geper", "");
+                    utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
+                    //utilitario.addUpdateTabla(tab_cab_documento, "ide_geper", "");
+                    tab_creacion_cliente.limpiar();
+                    //tab_creacion_cliente.insertar();
+                    dia_creacion_cliente.cerrar();
+                }
+                tab_cab_documento.setInsertadas(lis_resp_cab);
+                tab_det_documento.setInsertadas(lis_resp_deta);
+            }
+        }
+    }
+
     public Tabla getTab_cab_documento() {
         return tab_cab_documento;
     }
@@ -677,6 +883,68 @@ public class DocumentoCxP extends Dialogo {
         if (tab_datos_documento.isFilaInsertada()) {
             tab_datos_documento.setValor("ide_geper", tab_cab_documento.getValor("ide_geper"));
         }
+    }
+
+    public void cerrarDialogos() {
+        if (dia_creacion_cliente != null && dia_creacion_cliente.isVisible()) {
+            dia_creacion_cliente.cerrar();
+        }
+        if (dia_creacion_producto != null && dia_creacion_producto.isVisible()) {
+            dia_creacion_producto.cerrar();
+        }
+    }
+
+    public void abrirProducto() {
+        if (tab_cab_documento.getValor("ide_geper") != null) {
+            tab_creacion_producto.limpiar();
+            tab_creacion_producto.insertar();
+            dia_creacion_producto.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un Proveedor", "");
+        }
+    }
+
+    public void abrirProveedor() {
+        if (com_tipo_documento.getValue() != null) {
+            tab_creacion_cliente.limpiar();
+            tab_creacion_cliente.insertar();
+            dia_creacion_cliente.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un Tipo de Documento", "");
+        }
+
+    }
+
+    public Tabla getTab_creacion_cliente() {
+        return tab_creacion_cliente;
+    }
+
+    public void setTab_creacion_cliente(Tabla tab_creacion_cliente) {
+        this.tab_creacion_cliente = tab_creacion_cliente;
+    }
+
+    public Dialogo getDia_creacion_cliente() {
+        return dia_creacion_cliente;
+    }
+
+    public void setDia_creacion_cliente(Dialogo dia_creacion_cliente) {
+        this.dia_creacion_cliente = dia_creacion_cliente;
+    }
+
+    public Tabla getTab_creacion_producto() {
+        return tab_creacion_producto;
+    }
+
+    public void setTab_creacion_producto(Tabla tab_creacion_producto) {
+        this.tab_creacion_producto = tab_creacion_producto;
+    }
+
+    public Dialogo getDia_creacion_producto() {
+        return dia_creacion_producto;
+    }
+
+    public void setDia_creacion_producto(Dialogo dia_creacion_producto) {
+        this.dia_creacion_producto = dia_creacion_producto;
     }
 
 }
