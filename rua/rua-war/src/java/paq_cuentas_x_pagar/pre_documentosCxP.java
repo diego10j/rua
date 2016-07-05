@@ -26,7 +26,7 @@ import sistema.aplicacion.Pantalla;
  * @author DIEGOFERNANDOJACOMEG
  */
 public class pre_documentosCxP extends Pantalla {
-    
+
     private final MenuPanel mep_menu = new MenuPanel();
     private final Combo com_tipo_documento = new Combo();
     private final Calendario cal_fecha_inicio = new Calendario();
@@ -34,42 +34,42 @@ public class pre_documentosCxP extends Pantalla {
     private DocumentoCxP dcp_documento = new DocumentoCxP();
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
-    
+
     private Tabla tab_tabla1 = new Tabla();
     private Combo com_periodo;
     private GraficoCartesiano gca_facturas;
     private GraficoPastel gpa_facturas;
-    
+
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
-        
+
         com_tipo_documento.setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
         com_tipo_documento.setMetodo("actualizarFiltros");
-        
+
         bar_botones.agregarComponente(new Etiqueta("TIPO DE DOCUMENTO :"));
         bar_botones.agregarComponente(com_tipo_documento);
-        
+
         bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
         cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         bar_botones.agregarComponente(cal_fecha_inicio);
-        
+
         bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
         cal_fecha_fin.setFechaActual();
         bar_botones.agregarComponente(cal_fecha_fin);
-        
+
         Boton bot_consultar = new Boton();
         bot_consultar.setTitle("Buscar");
         bot_consultar.setMetodo("actualizarFiltros");
         bot_consultar.setIcon("ui-icon-search");
         bar_botones.agregarComponente(bot_consultar);
-        
+
         dcp_documento.setId("dcp_documento");
         dcp_documento.setDocumentoCxP("INGRESAR DOCUMENTO POR PAGAR");
         dcp_documento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(dcp_documento);
-        
+
         mep_menu.setMenuPanel("OPCIONES DOCUMENTOS POR PAGAR", "20%");
         mep_menu.agregarItem("Listado de Documentos CxP ", "dibujarDocumentos", "ui-icon-note");
         mep_menu.agregarItem("Generar Comprobante Contabilidad", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
@@ -84,7 +84,7 @@ public class pre_documentosCxP extends Pantalla {
         agregarComponente(mep_menu);
         dibujarDocumentos();
     }
-    
+
     public void dibujarDocumentos() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -114,7 +114,7 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(1, "LISTADO DE DOCUMENTOS POR PAGAR", gru);
     }
-    
+
     public void dibujarDocumentosNoContabilizadas() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -140,7 +140,7 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "DOCUMENTOS POR PAGAR SIN COMPROBANTE CONTABLE", gru);
     }
-    
+
     public void dibujarDocumentosNoRetencion() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -167,7 +167,7 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(3, "DOCUMENTOS POR PAGAR SIN COMPROBANTE DE RETENCION", gru);
     }
-    
+
     public void dibujarDocumentosAnulados() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -194,7 +194,7 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "DOCUMENTOS POR PAGAR ANULADOS", gru);
     }
-    
+
     public void dibujarDocumentosPorPagar() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -220,23 +220,23 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(5, "DOCUMENTOS PENDIENTES DE PAGO", gru);
     }
-    
+
     public void dibujarGraficoCompras() {
         Grupo grupo = new Grupo();
         gca_facturas = new GraficoCartesiano();
         gca_facturas.setId("gca_facturas");
-        
+
         gpa_facturas = new GraficoPastel();
         gpa_facturas.setId("gpa_facturas");
         gpa_facturas.setShowDataLabels(true);
         gpa_facturas.setStyle("width:300px;");
-        
+
         com_periodo = new Combo();
         com_periodo.setMetodo("actualizarFiltros");
         com_periodo.setCombo(ser_cuentas_cxp.getSqlAniosFacturacion());
         com_periodo.eliminarVacio();
         com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
-        
+
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_cuentas_cxp.getSqlTotalComprasMensuales(String.valueOf(com_periodo.getValue())));
@@ -262,17 +262,17 @@ public class pre_documentosCxP extends Pantalla {
         gri.getChildren().add(pat_panel);
         gri.getChildren().add(gpa_facturas);
         grupo.getChildren().add(gri);
-        
+
         gca_facturas.setTitulo("COMPRAS MENSUALES");
         gca_facturas.agregarSerie(tab_tabla1, "nombre_gemes", "total", "COMPRAS " + String.valueOf(com_periodo.getValue()));
         grupo.getChildren().add(gca_facturas);
         mep_menu.dibujar(6, "GRAFICOS DE COMPRAS", grupo);
     }
-    
+
     public void dibujarFacturaElectronica() {
-        
+
     }
-    
+
     public void actualizarFiltros() {
         switch (mep_menu.getOpcion()) {
             case 1:
@@ -307,39 +307,47 @@ public class pre_documentosCxP extends Pantalla {
             default:
                 break;
         }
-        
+
     }
-    
+
     @Override
     public void insertar() {
         dcp_documento.nuevoDocumento();
         dcp_documento.dibujar();
     }
-    
+
     @Override
     public void guardar() {
-        
+        if (dcp_documento.isVisible()) {
+            dcp_documento.guardar();
+            if (dcp_documento.isVisible() == false) {
+                //actualiza el punto de emision seleccionado y la tabla                
+                dibujarDocumentos();
+                tab_tabla1.setFilaActual(dcp_documento.getTab_cab_documento().getValor("ide_cpcfa"));
+                utilitario.addUpdate("tab_tabla1");
+            }
+        }
     }
-    
+
     @Override
     public void eliminar() {
-        
+
     }
-    
+
     public DocumentoCxP getDcp_documento() {
         return dcp_documento;
     }
-    
+
     public void setDcp_documento(DocumentoCxP dcp_documento) {
         this.dcp_documento = dcp_documento;
     }
-    
+
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
-    
+
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
-    
+
 }
