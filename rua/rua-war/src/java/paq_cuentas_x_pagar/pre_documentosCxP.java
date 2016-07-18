@@ -6,6 +6,8 @@
 package paq_cuentas_x_pagar;
 
 import componentes.DocumentoCxP;
+import componentes.Retencion;
+import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
@@ -39,6 +41,8 @@ public class pre_documentosCxP extends Pantalla {
     private Combo com_periodo;
     private GraficoCartesiano gca_facturas;
     private GraficoPastel gpa_facturas;
+
+    private Retencion ret_retencion = new Retencion();
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -83,6 +87,9 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.agregarItem("Ingresar Factura ", "dibujarFacturaElectronica", "ui-icon-signal-diag");
         agregarComponente(mep_menu);
         dibujarDocumentos();
+
+        ret_retencion.setId("ret_retencion");
+        agregarComponente(ret_retencion);
     }
 
     public void dibujarDocumentos() {
@@ -142,6 +149,14 @@ public class pre_documentosCxP extends Pantalla {
     }
 
     public void dibujarDocumentosNoRetencion() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Generar Comprobante de Retención");
+        bot_ver.setMetodo("abrirRetencion");
+        bar_menu.agregarComponente(bot_ver);
+
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentosNoRetencion(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_tipo_documento.getValue())));
@@ -164,6 +179,7 @@ public class pre_documentosCxP extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(3, "DOCUMENTOS POR PAGAR SIN COMPROBANTE DE RETENCION", gru);
     }
@@ -329,6 +345,11 @@ public class pre_documentosCxP extends Pantalla {
         }
     }
 
+    public void abrirRetencion() {
+        ret_retencion.nuevaRetencionCompra(tab_tabla1.getValor("ide_cpcfa"));
+        ret_retencion.dibujar();
+    }
+
     @Override
     public void eliminar() {
 
@@ -348,6 +369,14 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public Retencion getRet_retencion() {
+        return ret_retencion;
+    }
+
+    public void setRet_retencion(Retencion ret_retencion) {
+        this.ret_retencion = ret_retencion;
     }
 
 }
