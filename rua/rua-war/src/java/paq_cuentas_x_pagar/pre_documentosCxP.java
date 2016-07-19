@@ -16,9 +16,13 @@ import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import sistema.aplicacion.Pantalla;
@@ -44,10 +48,15 @@ public class pre_documentosCxP extends Pantalla {
 
     private Retencion ret_retencion = new Retencion();
 
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+
     public pre_documentosCxP() {
+
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
+        bar_botones.agregarReporte();
 
         com_tipo_documento.setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
         com_tipo_documento.setMetodo("actualizarFiltros");
@@ -84,21 +93,64 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.agregarItem("Grafico de Compras", "dibujarGraficoCompras", "ui-icon-clock");
         // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");        
         mep_menu.agregarSubMenu("FACTURAS ELECTRONICAS");
-        mep_menu.agregarItem("Ingresar Factura ", "dibujarFacturaElectronica", "ui-icon-signal-diag");
+        mep_menu.agregarItem("Seleccionar Factura XML", "dibujarFacturaElectronica", "ui-icon-signal-diag");
         agregarComponente(mep_menu);
         dibujarDocumentos();
 
         ret_retencion.setId("ret_retencion");
+        ret_retencion.getBot_aceptar().setMetodo("guardar");
         agregarComponente(ret_retencion);
+
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_rep.setId("sel_rep");
+        agregarComponente(rep_reporte);
+        agregarComponente(sel_rep);
+
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    Map parametro = new HashMap();
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Comprobante de Retención")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                parametro.put("ide_cncre", Long.parseLong(tab_tabla1.getValor("ide_cncre")));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_rep");
+            }
+        }
     }
 
     public void dibujarDocumentos() {
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Ver Documento");
+        bot_ver.setMetodo("verDocumento");
+        bar_menu.agregarComponente(bot_ver);
+
+        Boton bot_anular = new Boton();
+        bot_anular.setValue("Anular Documento");
+        bot_anular.setMetodo("anularDocumento");
+        bar_menu.agregarComponente(bot_anular);
+
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentos(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_tipo_documento.getValue())));
         tab_tabla1.setCampoPrimaria("ide_cpcfa");
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cpefa").setVisible(false);
+        tab_tabla1.getColumna("ide_cncre").setVisible(false);
         tab_tabla1.getColumna("nombre_cpefa").setFiltroContenido();
         tab_tabla1.getColumna("numero_cpcfa").setFiltroContenido();
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
@@ -118,6 +170,7 @@ public class pre_documentosCxP extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(1, "LISTADO DE DOCUMENTOS POR PAGAR", gru);
     }
@@ -289,6 +342,19 @@ public class pre_documentosCxP extends Pantalla {
 
     }
 
+    public void anularDocumento() {
+
+    }
+
+    public void verDocumento() {
+        if (tab_tabla1.getValorSeleccionado() != null) {
+            dcp_documento.verDocumento(tab_tabla1.getValorSeleccionado());
+            dcp_documento.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un Documento", "");
+        }
+    }
+
     public void actualizarFiltros() {
         switch (mep_menu.getOpcion()) {
             case 1:
@@ -342,6 +408,13 @@ public class pre_documentosCxP extends Pantalla {
                 tab_tabla1.setFilaActual(dcp_documento.getTab_cab_documento().getValor("ide_cpcfa"));
                 utilitario.addUpdate("tab_tabla1");
             }
+        } else if (ret_retencion.isVisible()) {
+            ret_retencion.guardar();
+            if (ret_retencion.isVisible() == false) {
+                dibujarDocumentos();
+                tab_tabla1.setFilaActual(ret_retencion.getIde_cpcfa());
+                utilitario.addUpdate("tab_tabla1");
+            }
         }
     }
 
@@ -377,6 +450,22 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setRet_retencion(Retencion ret_retencion) {
         this.ret_retencion = ret_retencion;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
     }
 
 }
