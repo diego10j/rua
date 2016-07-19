@@ -200,7 +200,7 @@ public class ServicioProveedor {
                 + "WHERE a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "AND  ide_geper=" + ide_geper + " "
                 + "AND fecha_trans_cpdtr BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "ORDER BY fecha_trans_cpdtr";
+                + "ORDER BY fecha_trans_cpdtr,ide_cpdtr";
     }
 
     /**

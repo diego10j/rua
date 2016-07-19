@@ -67,6 +67,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_pago_inversion", "Indica que el tipo de transaccion pago de inversion (pago Inversion Terminada) ", "16", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_pago_interes_inversion", "Indica que el tipo de transaccion pago de intereses de la inversion (Pago de intereses) ", "19", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_renova_interes_reinver", "Indica que el tipo de transaccion renovacion de intereses de inversion (Interes de Nueva Renovacion de Inversion) ", "20", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
+        lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_retencion", "Indica que el tipo de transaccion Retencion ", "21", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
 
 
         /*

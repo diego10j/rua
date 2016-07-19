@@ -214,7 +214,7 @@ public class FacturaCxC extends Dialogo {
             tex_subtotal0.setValue(utilitario.getFormatoNumero(dou_subt0 + dou_subtno));
             tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("base_grabada_cccfa")));
             tex_total.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cccfa")));
-            ate_observacion.setValue(tab_cab_factura.getValor("observacion_cccfa "));
+            ate_observacion.setValue(tab_cab_factura.getValor("observacion_cccfa"));
             if (tab_cab_factura.getFilaSeleccionada() != null) {
                 tab_cab_factura.getFilaSeleccionada().setLectura(true);
             }
