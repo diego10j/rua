@@ -123,6 +123,7 @@ public class Retencion extends Dialogo {
         tab_dt_retencion.setTabla("con_detall_retenc", "ide_cndre", 999);
         tab_dt_retencion.setCondicion("ide_cndre=-1");
         tab_dt_retencion.getColumna("ide_cncim").setCombo("con_cabece_impues", "ide_cncim", "nombre_cncim,casillero_cncim", "");
+        tab_dt_retencion.getColumna("ide_cncim").setAutoCompletar();
         tab_dt_retencion.getColumna("ide_cncim").setNombreVisual("IMPUESTO");
         tab_dt_retencion.getColumna("valor_cndre").setEtiqueta();
         tab_dt_retencion.getColumna("valor_cndre").setValorDefecto(utilitario.getFormatoNumero("0"));

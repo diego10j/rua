@@ -494,17 +494,17 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("base_tarifa0_cccfa").setEstilo("font-size: 16px;font-weight: bold;text-decoration: underline");
         tab_cab_factura.getColumna("base_tarifa0_cccfa").setValorDefecto("0");
         tab_cab_factura.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cndfp!=" + utilitario.getVariable("p_con_for_pag_reembolso_caja"));
-        tab_cab_factura.getColumna("ide_cndfp").setPermitirNullCombo(false);
         tab_cab_factura.getColumna("ide_cndfp").setOrden(4);
         tab_cab_factura.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
         tab_cab_factura.getColumna("ide_cndfp").setEstilo("width:140px");
         tab_cab_factura.getColumna("ide_cndfp").setRequerida(true);
+        tab_cab_factura.getColumna("TARIFA_IVA_CCCFA").setVisible(false);
         tab_cab_factura.setCondicionSucursal(false);
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setOrden(6);
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setNombreVisual("DIRECCIÓN");
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setRequerida(true);
         tab_cab_factura.getColumna("OBSERVACION_CCCFA").setVisible(false);
-        tab_cab_factura.getColumna("ide_cndfp").setValorDefecto(utilitario.getVariable("p_con_deta_pago_efectivo"));
+        //tab_cab_factura.getColumna("ide_cndfp").setValorDefecto(utilitario.getVariable("p_con_deta_pago_efectivo"));
         tab_cab_factura.getColumna("solo_guardar_cccfa").setVisible(false);
         tab_cab_factura.getColumna("ide_geubi").setVisible(false);
         tab_cab_factura.getColumna("ide_usua").setVisible(false);
@@ -935,6 +935,7 @@ public class FacturaCxC extends Dialogo {
                 //Asigna punto de emision seleccionado y si solo guarda la factura
                 tab_cab_factura.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
                 tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));
+                tab_cab_factura.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero(tarifaIVA));
                 //valida la factura
                 if (validarFactura()) {
                     generarFactura();
