@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_comp_rete" language="groovy" pageWidth="555" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_comp_rete" language="groovy" pageWidth="555" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ef622b23-b903-460b-8b0f-5a853f4cc1f8">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -43,32 +43,32 @@ where cf.ide_cncre=$P{ide_cncre}   and cr.ide_cncre=$P{ide_cncre}]]>
 	<detail>
 		<band height="19" splitType="Stretch">
 			<textField pattern="#,##0.00;(#,##0.00)">
-				<reportElement x="212" y="4" width="72" height="13"/>
+				<reportElement uuid="7a416baf-8aa6-4701-afff-d55efe59f70d" x="212" y="4" width="72" height="13"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{base_cndre}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="303" y="4" width="59" height="13"/>
+				<reportElement uuid="ebf6a971-5981-4745-ae43-d84ff6e8bab7" x="303" y="4" width="59" height="13"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_cnimp}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="375" y="4" width="45" height="13"/>
+				<reportElement uuid="9d96f815-9993-48e7-bcb8-7d01ba7bc257" x="375" y="4" width="45" height="13"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{casillero_cncim}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)">
-				<reportElement x="453" y="4" width="27" height="13"/>
+				<reportElement uuid="e93aa10a-9ca9-499c-ad7e-ecb7576ab0ac" x="453" y="4" width="27" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{porcentaje_cndre}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)">
-				<reportElement x="502" y="4" width="50" height="13"/>
+				<reportElement uuid="c122011e-5b10-4f04-bf33-f617782a48b8" x="502" y="4" width="50" height="13"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{valor_cndre}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="480" y="4" width="12" height="13"/>
+				<reportElement uuid="0a887ce7-2f0e-446e-aa31-3fc32a017799" x="480" y="4" width="12" height="13"/>
 				<textElement/>
 				<text><![CDATA[%]]></text>
 			</staticText>
@@ -83,14 +83,16 @@ where cf.ide_cncre=$P{ide_cncre}   and cr.ide_cncre=$P{ide_cncre}]]>
 	<summary>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="428" y="61" width="82" height="16"/>
-				<textElement>
+				<reportElement uuid="318c574c-b725-434d-bc8b-0276a9b64324" x="375" y="61" width="135" height="16"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
 					<font size="10" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Total a Retener:]]></text>
 			</staticText>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-				<reportElement x="509" y="61" width="34" height="16"/>
+				<reportElement uuid="61864b16-6588-4c07-afcf-375dbe77707f" x="509" y="61" width="43" height="16"/>
+				<box rightPadding="5"/>
 				<textElement textAlignment="Right">
 					<font size="10" isBold="true" isUnderline="true"/>
 				</textElement>
