@@ -113,8 +113,8 @@ public class FacturaCxC extends Dialogo {
         tab_factura.setWidgetVar("w_factura");
         tab_factura.agregarTab("FACTURA ", null);//0 
         tab_factura.agregarTab("DETALLE PAGO", null);//1
-        tab_factura.agregarTab("ASIENTO CONTABLE", null);//2       
-        tab_factura.agregarTab("RETENCIÓN", null);//3
+        tab_factura.agregarTab("COMPROBANTE DE CONTABILIDAD", null);//2       
+        tab_factura.agregarTab("COMPROBANTE DE RETENCIÓN", null);//3
         this.setDialogo(tab_factura);
         men_factura.setId("men_factura");
         utilitario.getPantalla().getChildren().add(men_factura);
@@ -185,9 +185,6 @@ public class FacturaCxC extends Dialogo {
             tab_factura.getTab(3).getChildren().clear();
 
             tab_factura.getTab(0).getChildren().add(dibujarFactura());
-            tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
-            tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
-            tab_factura.getTab(3).getChildren().add(dibujarRetencion());
 
             opcion = 2;
             //Carga la Factura
@@ -196,6 +193,15 @@ public class FacturaCxC extends Dialogo {
             this.getBot_aceptar().setRendered(false);
             tab_cab_factura.setCondicion("ide_cccfa=" + ide_cccfa);
             tab_cab_factura.ejecutarSql();
+
+            tab_factura.getTab(1).getChildren().add(dibujarDetallePago());
+            if (tab_cab_factura.getValor("ide_cnccc") != null) {
+                tab_factura.getTab(2).getChildren().add(dibujarAsientoVenta());
+            }
+            if (tab_cab_factura.getValor("ide_cncre") != null) {
+                tab_factura.getTab(3).getChildren().add(dibujarRetencion());
+            }
+
             com_pto_emision.setValue(tab_cab_factura.getValor("ide_ccdaf"));
             tab_deta_factura.setCondicion("ide_cccfa=" + tab_cab_factura.getValorSeleccionado());
             tab_deta_factura.ejecutarSql();
@@ -234,11 +240,6 @@ public class FacturaCxC extends Dialogo {
             verDetallePago(tab_cab_factura.getValorSeleccionado());
 
             /**
-             * COMPROBANTE DE VENTA
-             */
-            verComprobanteVenta(tab_cab_factura.getValor("ide_cnccc"));
-
-            /**
              * RETENCION DE VENTA
              */
         } else {
@@ -249,23 +250,6 @@ public class FacturaCxC extends Dialogo {
     public void verDetallePago(String ide_cccfa) {
         tab_deta_pago.setSql(ser_factura.getSqlPagosFactura(ide_cccfa));
         tab_deta_pago.ejecutarSql();
-    }
-
-    /**
-     * Visualiza un comprobante de venta , No se puede editar
-     *
-     * @param ide_cnccc
-     */
-    public void verComprobanteVenta(String ide_cnccc) {
-        tab_cab_conta.setCondicion("ide_cnccc=" + ide_cnccc);
-        tab_cab_conta.ejecutarSql();
-        if (tab_cab_conta.isEmpty()) {
-            tab_cab_conta.insertar();
-        }
-
-        tab_deta_conta.setSql(ser_comp_contabilidad.getSqlDetalleAsiento(tab_cab_conta.getValorSeleccionado()));
-        tab_deta_conta.ejecutarSql();
-        ate_observacion_conta.setValue(tab_cab_conta.getValor("observacion_cnccc "));
     }
 
     private Grupo dibujarDetallePago() {
@@ -619,37 +603,36 @@ public class FacturaCxC extends Dialogo {
         tab_deta_conta = new Tabla();
         tab_cab_conta.setRuta("pre_index.clase." + getId());
         tab_cab_conta.setId("tab_cab_conta");
-        tab_cab_conta.setIdCompleto("tab_factura:tab_cab_conta");
-        tab_cab_conta.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
-        tab_cab_conta.setCondicion("ide_cnccc=-1");
+        tab_cab_conta.setIdCompleto("tab_documenoCxP:tab_cab_conta");
+        if (tab_cab_factura.getValor("ide_cnccc") != null) {
+            tab_cab_conta.setSql(ser_comp_contabilidad.getSqlCabeceraAsiento(tab_cab_factura.getValor("ide_cnccc")));
+        } else {
+            tab_cab_conta.setSql(ser_comp_contabilidad.getSqlCabeceraAsiento("-1"));
+        }
+
         tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("TRANSACCIÓN");
-        tab_cab_conta.getColumna("fecha_siste_cnccc").setVisible(false);
-        tab_cab_conta.getColumna("numero_cnccc").setLectura(true);
+        tab_cab_conta.getColumna("ide_cnccc").setEtiqueta();
+        tab_cab_conta.getColumna("numero_cnccc").setEtiqueta();
         tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_conta.getColumna("numero_cnccc").setNombreVisual("NUM. COMPROBANTE");
         tab_cab_conta.getColumna("numero_cnccc").setOrden(5);
         tab_cab_conta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
         tab_cab_conta.getColumna("fecha_trans_cnccc").setOrden(1);
-        tab_cab_conta.getColumna("fecha_trans_cnccc").setRequerida(true);
+        tab_cab_conta.getColumna("fecha_trans_cnccc").setEtiqueta();
+        tab_cab_conta.getColumna("nom_usua").setVisible(false);
+        tab_cab_conta.getColumna("fecha_siste_cnccc").setVisible(false);
         tab_cab_conta.getColumna("hora_sistem_cnccc").setVisible(false);
-        tab_cab_conta.getColumna("ide_usua").setVisible(false);
-        tab_cab_conta.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
-        tab_cab_conta.getColumna("ide_modu").setLectura(true);
-        tab_cab_conta.getColumna("ide_modu").setNombreVisual("MÓDULO");
-        tab_cab_conta.getColumna("ide_modu").setOrden(4);
-        tab_cab_conta.getColumna("ide_modu").setEstilo("width:150px");
-        tab_cab_conta.getColumna("ide_geper").setCombo(tab_cab_factura.getColumna("ide_geper").getListaCombo());
-        tab_cab_conta.getColumna("ide_geper").setAutoCompletar();
-        tab_cab_conta.getColumna("ide_geper").setLectura(true);
-        tab_cab_conta.getColumna("ide_geper").setNombreVisual("BENEFICIARIO");
-        tab_cab_conta.getColumna("ide_geper").setOrden(2);
-        tab_cab_conta.getColumna("ide_geper").setRequerida(true);
-        tab_cab_conta.getColumna("ide_cneco").setVisible(false);
-        tab_cab_conta.getColumna("ide_cntcm").setLectura(true);
-        tab_cab_conta.getColumna("ide_cntcm").setCombo("con_tipo_comproba", "ide_cntcm", "nombre_cntcm", "");
-        tab_cab_conta.getColumna("ide_cntcm").setNombreVisual("TIPO COMPROBANTE");
-        tab_cab_conta.getColumna("ide_cntcm").setEstilo("width:100px");
-        tab_cab_conta.getColumna("ide_cntcm").setOrden(3);
+        tab_cab_conta.getColumna("nom_modu").setEtiqueta();
+        tab_cab_conta.getColumna("nom_modu").setNombreVisual("MÓDULO");
+        tab_cab_conta.getColumna("nom_modu").setOrden(4);
+        tab_cab_conta.getColumna("nom_modu").setEstilo("width:150px");
+        tab_cab_conta.getColumna("nom_geper").setEtiqueta();
+        tab_cab_conta.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_cab_conta.getColumna("nom_geper").setOrden(2);
+        tab_cab_conta.getColumna("nombre_cntcm").setEtiqueta();
+        tab_cab_conta.getColumna("nombre_cntcm").setNombreVisual("TIPO COMPROBANTE");
+        tab_cab_conta.getColumna("nombre_cntcm").setEstilo("width:100px");
+        tab_cab_conta.getColumna("nombre_cntcm").setOrden(3);
         tab_cab_conta.getColumna("OBSERVACION_CNCCC").setVisible(false);
         tab_cab_conta.setTipoFormulario(true);
         tab_cab_conta.getGrid().setColumns(6);
@@ -660,18 +643,20 @@ public class FacturaCxC extends Dialogo {
 
         tab_deta_conta.setRuta("pre_index.clase." + getId());
         tab_deta_conta.setId("tab_deta_conta");
-        tab_deta_conta.setIdCompleto("tab_factura:tab_deta_conta");
-        tab_deta_conta.setSql(ser_comp_contabilidad.getSqlDetalleAsiento("-1"));
+        tab_deta_conta.setIdCompleto("tab_documenoCxP:tab_deta_conta");
+        tab_deta_conta.setSql(ser_comp_contabilidad.getSqlDetalleAsiento(tab_cab_conta.getValorSeleccionado()));
         tab_deta_conta.getColumna("ide_cndcc").setVisible(false);
-        tab_deta_conta.getColumna("codig_recur_cndpc").setNombreVisual("CODIGO CUENTA");
+        tab_deta_conta.getColumna("codig_recur_cndpc").setNombreVisual("CÓDIGO CUENTA");
         tab_deta_conta.getColumna("nombre_cndpc").setNombreVisual("CUENTA");
         tab_deta_conta.getColumna("observacion_cndcc").setNombreVisual("observacion");
         tab_deta_conta.setColumnaSuma("debe,haber");
         tab_deta_conta.getColumna("debe").alinearDerecha();
+        tab_deta_conta.getColumna("debe").setLongitud(25);
         tab_deta_conta.getColumna("haber").alinearDerecha();
-        tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACION");
+        tab_deta_conta.getColumna("haber").setLongitud(25);
+        tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
         tab_deta_conta.setScrollable(true);
-        tab_deta_conta.setScrollHeight(220);
+        tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //300
         tab_deta_conta.setLectura(true);
         tab_deta_conta.dibujar();
 
@@ -681,17 +666,23 @@ public class FacturaCxC extends Dialogo {
         pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
         pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
         pat_panel.getMenuTabla().getItem_formato().setRendered(false);
-        pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertar");
-        pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
+        pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
 
         grupo.getChildren().add(tab_cab_conta);
         grupo.getChildren().add(pat_panel);
 
         Grid gri_observa = new Grid();
+        gri_observa.setColumns(2);
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
+        gri_observa.getChildren().add(new Etiqueta(""));
+        ate_observacion_conta.setValue(tab_cab_conta.getValor("observacion_cnccc"));
         ate_observacion_conta.setCols(120);
         ate_observacion_conta.setDisabled(true);
         gri_observa.getChildren().add(ate_observacion_conta);
+        if (tab_cab_factura.getValor("ide_cnccc") != null) {
+            gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cab_conta.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cab_conta.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cab_conta.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
+        }
         grupo.getChildren().add(gri_observa);
         return grupo;
     }
