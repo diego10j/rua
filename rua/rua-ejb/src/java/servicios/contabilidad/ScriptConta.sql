@@ -148,5 +148,25 @@ COMMENT ON COLUMN pre_asociacion_presupuestaria.fecha_actua IS 'Este campo defin
 COMMENT ON COLUMN pre_asociacion_presupuestaria.hora_actua IS 'Este campo define la hora que se realizo el ingreso por primera ves el registro.';
 
 
+--CAMBIOS VARIOS'
+--GUARDAR TELEFONO EN LA FACTURA DE VENTA
 ALTER TABLE cxc_cabece_factura
   ADD COLUMN telefono_cccfa character varying(30);
+
+--GUARDAR TARIFA DEL IVA EN FACTURA DE VENTA
+ALTER TABLE cxc_cabece_factura
+  ADD COLUMN tarifa_iva_cccfa  numeric(12,2);
+
+--ACTUALIZA TARIFA IVA EN FACTURAS ANTERIORES AL 1 DE JUNIO DEL 2016
+UPDATE cxc_cabece_factura set tarifa_iva_cccfa=0.12 WHERE  fecha_emisi_cccfa <= '2016/05/31';
+UPDATE cxc_cabece_factura set tarifa_iva_cccfa=0.14 WHERE  fecha_emisi_cccfa > '2016/05/31';
+
+
+
+--GUARDAR TARIFA DEL IVA EN DOCUMENTOS CXP
+ALTER TABLE cxp_cabece_factur
+  ADD COLUMN tarifa_iva_cpcfa  numeric(12,2);
+
+--ACTUALIZA TARIFA IVA EN FACTURAS ANTERIORES AL 1 DE JUNIO DEL 2016
+UPDATE cxp_cabece_factur set tarifa_iva_cpcfa=0.12 WHERE  fecha_emisi_cpcfa <= '2016/05/31';
+UPDATE cxp_cabece_factur set tarifa_iva_cpcfa=0.14 WHERE  fecha_emisi_cpcfa > '2016/05/31';

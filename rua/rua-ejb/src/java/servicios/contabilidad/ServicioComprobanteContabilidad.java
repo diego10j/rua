@@ -331,8 +331,8 @@ public class ServicioComprobanteContabilidad {
      * @return
      */
     public String getSqlCabeceraAsiento(String ide_cnccc) {
-        return "select a.ide_cnccc,nom_usua,nombre_cntcm,nom_modu,nom_geper,fecha_trans_cnccc,observacion_cnccc,\n"
-                + "numero_cnccc from con_cab_comp_cont a\n"
+        return "select a.ide_cnccc,fecha_trans_cnccc,numero_cnccc,nom_usua,nombre_cntcm,nom_modu,nom_geper,observacion_cnccc\n"
+                + ",fecha_siste_cnccc,hora_sistem_cnccc from con_cab_comp_cont a\n"
                 + "inner join sis_usuario b on a.ide_usua=b.ide_usua\n"
                 + "inner join con_tipo_comproba c on a.ide_cntcm=c.ide_cntcm\n"
                 + "left join sis_modulo d on a.ide_modu=d.ide_modu\n"
@@ -359,7 +359,7 @@ public class ServicioComprobanteContabilidad {
         tabla.getColumna("ide_cntcm").setVisible(false);
         tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
         tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
-        tabla.getColumna("ide_usua").setLectura(true);       
+        tabla.getColumna("ide_usua").setLectura(true);
         tabla.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
         tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
         tabla.getColumna("ide_geper").setAutoCompletar();
@@ -371,7 +371,7 @@ public class ServicioComprobanteContabilidad {
         tabla.getGrid().setColumns(6);
         tabla.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
         tabla.getColumna("ide_cneco").setLectura(true);
-        tabla.setCampoOrden("ide_cnccc desc"); 
+        tabla.setCampoOrden("ide_cnccc desc");
     }
 
     /**
