@@ -139,6 +139,8 @@ public class DocumentoCxP extends Dialogo {
         this.getBot_aceptar().setRendered(true);
         this.setTitle("NUEVO DOCUMENTO POR PAGAR");
         ate_observacion.setDisabled(false);
+        tex_otros_valores.setDisabled(false);
+        tex_valor_descuento.setDisabled(false);
         ate_observacion.setValue("");
         tab_documenoCxP.getTab(0).getChildren().clear();
         tab_documenoCxP.getTab(1).getChildren().clear();
@@ -175,8 +177,12 @@ public class DocumentoCxP extends Dialogo {
         com_tipo_documento.setValue(tab_cab_factura.getValor("ide_cntdo"));
         tab_det_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
         tab_det_documento.ejecutarSql();
-        tab_documenoCxP.getTab(1).getChildren().add(dibujarComprobanteRetencion());
-        tab_documenoCxP.getTab(2).getChildren().add(dibujarAsiento());
+        if (tab_cab_documento.getValor("ide_cncre") != null) {
+            tab_documenoCxP.getTab(1).getChildren().add(dibujarComprobanteRetencion());
+        }
+        if (tab_cab_documento.getValor("ide_cnccc") != null) {
+            tab_documenoCxP.getTab(2).getChildren().add(dibujarAsiento());
+        }
         tab_documenoCxP.getTab(3).getChildren().add(dibujarDetallePago());
 
         tex_iva.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_iva_cpcfa")));
@@ -199,6 +205,8 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.getFilaSeleccionada().setLectura(true);
         }
         ate_observacion.setDisabled(true);
+        tex_otros_valores.setDisabled(true);
+        tex_valor_descuento.setDisabled(true);
         com_tipo_documento.setDisabled(true);
         //Desactiva click derecho insertar y eliminar
         try {
@@ -324,7 +332,6 @@ public class DocumentoCxP extends Dialogo {
         tab_dt_rete.getColumna("ide_cndre").setVisible(false);
         tab_dt_rete.getColumna("ide_cncre").setVisible(false);
         tab_dt_rete.setScrollable(true);
-        tab_dt_rete.setScrollWidth(getAnchoPanel() - 15);
         tab_dt_rete.setScrollHeight(getAltoPanel() - 240);
         tab_dt_rete.setRows(100);
         tab_dt_rete.setLectura(true);
@@ -603,6 +610,7 @@ public class DocumentoCxP extends Dialogo {
         tab_det_documento.getColumna("iva_inarti_cpdfa").setPermitirNullCombo(false);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setOrden(4);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setLongitud(-1);
+        tab_det_documento.getColumna("iva_inarti_cpdfa").setNombreVisual("APLICA IVA");
         tab_det_documento.getColumna("iva_inarti_cpdfa").setMetodoChangeRuta(tab_det_documento.getRuta() + ".cambioPrecioCantidadIva");
         tab_det_documento.getColumna("credi_tribu_cpdfa").setVisible(false);
         tab_det_documento.getColumna("devolucion_cpdfa").setVisible(false);
@@ -706,11 +714,13 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_conta.getColumna("fecha_trans_cnccc").setOrden(1);
         tab_cab_conta.getColumna("fecha_trans_cnccc").setEtiqueta();
         tab_cab_conta.getColumna("nom_usua").setVisible(false);
+        tab_cab_conta.getColumna("fecha_siste_cnccc").setVisible(false);
+        tab_cab_conta.getColumna("hora_sistem_cnccc").setVisible(false);
         tab_cab_conta.getColumna("nom_modu").setEtiqueta();
         tab_cab_conta.getColumna("nom_modu").setNombreVisual("MÓDULO");
         tab_cab_conta.getColumna("nom_modu").setOrden(4);
         tab_cab_conta.getColumna("nom_modu").setEstilo("width:150px");
-        tab_cab_conta.getColumna("nom_geper").setLectura(true);
+        tab_cab_conta.getColumna("nom_geper").setEtiqueta();
         tab_cab_conta.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
         tab_cab_conta.getColumna("nom_geper").setOrden(2);
         tab_cab_conta.getColumna("nombre_cntcm").setEtiqueta();
@@ -740,7 +750,7 @@ public class DocumentoCxP extends Dialogo {
         tab_deta_conta.getColumna("haber").setLongitud(25);
         tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
         tab_deta_conta.setScrollable(true);
-        tab_deta_conta.setScrollHeight(getAltoPanel() - 300); //300
+        tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //300
         tab_deta_conta.setLectura(true);
         tab_deta_conta.dibujar();
 
@@ -757,11 +767,16 @@ public class DocumentoCxP extends Dialogo {
         grupo.getChildren().add(pat_panel);
 
         Grid gri_observa = new Grid();
+        gri_observa.setColumns(2);
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
-        ate_observacion_conta.setValue(tab_deta_conta.getValor("OBSERVACION_CNDCC"));
+        gri_observa.getChildren().add(new Etiqueta(""));
+        ate_observacion_conta.setValue(tab_cab_conta.getValor("observacion_cnccc"));
         ate_observacion_conta.setCols(120);
         ate_observacion_conta.setDisabled(true);
         gri_observa.getChildren().add(ate_observacion_conta);
+        if (tab_cab_documento.getValor("ide_cnccc") != null) {
+            gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cab_conta.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cab_conta.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cab_conta.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
+        }
         grupo.getChildren().add(gri_observa);
         return grupo;
     }
@@ -946,11 +961,13 @@ public class DocumentoCxP extends Dialogo {
             return false;
         } else {
             String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
-            if (autorizacion != null) {
-                if (autorizacion.length() != 37 || autorizacion.length() != 49 || autorizacion.length() != 10) {
-                    utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
-                    return false;
-                }
+            boolean correcto = false;
+            if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                correcto = true;
+            }
+            if (correcto == false) {
+                utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
+                return false;
             }
         }
 
@@ -1096,7 +1113,11 @@ public class DocumentoCxP extends Dialogo {
     public void validarAutorizacion() {
         String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
         if (autorizacion != null) {
-            if (autorizacion.length() != 37 || autorizacion.length() != 49 || autorizacion.length() != 10) {
+            boolean correcto = false;
+            if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                correcto = true;
+            }
+            if (correcto == false) {
                 utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
             }
         }
