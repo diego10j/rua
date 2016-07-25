@@ -409,7 +409,8 @@ public class pre_facturasCxC extends Pantalla {
     @Override
     public void aceptarReporte() {
 //Se ejecuta cuando se selecciona un reporte de la lista
-        if (rep_reporte.getReporteSelecionado().equals("Facturas")) {
+        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas A6")
+                || rep_reporte.getReporteSelecionado().equals("Facturas Nueva") || rep_reporte.getReporteSelecionado().equals("Facturas con Formato")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -432,15 +433,6 @@ public class pre_facturasCxC extends Pantalla {
                 } else {
                     utilitario.agregarMensajeInfo("Comprobante de Contabilidad", "La factura seleccionada no tiene Comprobante de Contabilidad");
                 }
-            }
-        } else if (rep_reporte.getReporteSelecionado().equals("Facturas A6")) {
-            if (rep_reporte.isVisible()) {
-                parametro = new HashMap();
-                rep_reporte.cerrar();
-                parametro.put("ide_cccfa", Long.parseLong(tab_facturas.getValorSeleccionado()));
-                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                sel_rep.dibujar();
-                utilitario.addUpdate("rep_reporte,sel_rep");
             }
         }
     }

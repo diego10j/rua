@@ -1803,7 +1803,6 @@ public class pre_factura_cxp extends Pantalla {
                 descuento = Double.parseDouble(tab_tabla1.getValor("descuento_cpcfa"));
             } catch (Exception e) {
             }
-
         }
 
         if (tab_tabla1.getValor("base_no_objeto_iva_cpcfa") != null) {
@@ -1849,7 +1848,6 @@ public class pre_factura_cxp extends Pantalla {
         if (tab_tabla1.getTotalFilas() > 0) {
             tab_tabla1.setValor("total_cpcfa", utilitario.getFormatoNumero(total_fac, 2));
             tab_tabla1.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(val_iva, 2));
-
         }
 
         utilitario.addUpdate("pac_acordion");

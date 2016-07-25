@@ -99,7 +99,8 @@ public class pre_prestamos extends Pantalla {
     @Override
     public void aceptarReporte() {
         Map parametro = new HashMap();
-        if (rep_reporte.getReporteSelecionado().equals("Facturas")) {
+        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas A6")
+                || rep_reporte.getReporteSelecionado().equals("Facturas Nueva") || rep_reporte.getReporteSelecionado().equals("Facturas con Formato")) {
             if (mep_menu.getOpcion() == 2) { //Valida que se seleccione una factura
                 if (rep_reporte.isVisible()) {
                     if (tab_tabla2.getValor("ide_cccfa") != null) {
