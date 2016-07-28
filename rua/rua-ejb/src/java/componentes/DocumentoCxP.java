@@ -21,9 +21,9 @@ import framework.componentes.Texto;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.component.UIComponent;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.separator.Separator;
-import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
@@ -89,11 +89,25 @@ public class DocumentoCxP extends Dialogo {
     private Tabla tab_deta_conta;
     private final AreaTexto ate_observacion_conta = new AreaTexto();
 
+    //REEMBOLSOS
+    private Tabla tab_com_reembolso;
+
     public DocumentoCxP() {
         //utilitario.getConexion().setImprimirSqlConsola(true);
         //Recupera todos los parametros que se van a utilizar
         parametros = utilitario.getVariables("ide_usua", "ide_empr", "ide_sucu",
-                "p_cxp_estado_factura_normal");
+                "p_cxp_estado_factura_normal",
+                "p_con_for_pag_reembolso_caja",
+                "p_con_for_pag_anticipo",
+                "p_sri_tip_sus_tri02",
+                "p_con_tipo_documento_factura",
+                "p_con_tipo_documento_nota_credito",
+                "p_con_tipo_documento_reembolso",
+                "p_con_tipo_documento_factura",
+                "p_con_tipo_documento_nota_venta",
+                "p_con_tipo_documento_liquidacion_compra",
+                "p_gen_tipo_iden_ruc",
+                "p_con_tipo_contribuyente_rise");
 
         this.setWidth("95%");
         this.setHeight("90%");
@@ -208,6 +222,42 @@ public class DocumentoCxP extends Dialogo {
         tex_otros_valores.setDisabled(true);
         tex_valor_descuento.setDisabled(true);
         com_tipo_documento.setDisabled(true);
+
+        //ver reembolso
+        if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_reembolso"))) {
+            tab_com_reembolso.setRendered(true);
+            tab_com_reembolso.setCondicion("ide_rem_cpcfa=" + tab_cab_documento.getValor("ide_cpcfa"));
+            tab_com_reembolso.ejecutarSql();
+            //Activa click derecho insertar y eliminar
+            try {
+                PanelTabla pat_panel = (PanelTabla) tab_com_reembolso.getParent();
+                pat_panel.getMenuTabla().getItem_insertar().setDisabled(true);
+                pat_panel.getMenuTabla().getItem_eliminar().setDisabled(true);
+            } catch (Exception e) {
+            }
+            tab_det_documento.setScrollHeight(getAltoPanel() - 445);
+        } else {
+            tab_com_reembolso.setRendered(false);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 335);
+        }
+
+        boolean bol_esnota = false;
+        if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+            bol_esnota = true;
+            tab_det_documento.setScrollHeight(getAltoPanel() - 385);
+        }
+        for (int i = 0; i < tab_cab_documento.getGrid().getChildren().size(); i++) {
+            if (tab_cab_documento.getGrid().getChildren().get(i).getId() != null) {
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNTDO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(bol_esnota);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(bol_esnota);
+                }
+            }
+        }
         //Desactiva click derecho insertar y eliminar
         try {
             PanelTabla pat_panel = (PanelTabla) tab_det_documento.getParent();
@@ -215,7 +265,6 @@ public class DocumentoCxP extends Dialogo {
             pat_panel.getMenuTabla().getItem_eliminar().setDisabled(true);
         } catch (Exception e) {
         }
-
     }
 
     private Grupo dibujarDetallePago() {
@@ -361,7 +410,6 @@ public class DocumentoCxP extends Dialogo {
         Grupo grupo = new Grupo();
 
         com_tipo_documento = new Combo();
-        //com_tipo_documento.setCombo("select ide_cntdo,nombre_cntdo from con_tipo_document where ide_cntdo in (" + utilitario.getVariable("p_con_tipo_documento_reembolso") + "," + utilitario.getVariable("p_con_tipo_documento_factura") + "," + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + "," + utilitario.getVariable("p_con_tipo_documento_nota_venta") + ")");
         com_tipo_documento.setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
         com_tipo_documento.setMetodoRuta("pre_index.clase." + getId() + ".cambiarTipoDocumento");
         //com_tipo_documento.eliminarVacio();
@@ -500,14 +548,14 @@ public class DocumentoCxP extends Dialogo {
         tab_det_documento = new Tabla();
         tab_cab_documento.setRuta("pre_index.clase." + getId());
         tab_cab_documento.setId("tab_cab_documento");
-        tab_cab_documento.setIdCompleto("tab_documenoCxP:tab_cab_factura");
+        tab_cab_documento.setIdCompleto("tab_documenoCxP:tab_cab_documento");
         tab_cab_documento.setMostrarNumeroRegistros(false);
         tab_cab_documento.setTabla("cxp_cabece_factur", "ide_cpcfa", 999);
         tab_cab_documento.getColumna("ide_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("ide_cntdo").setVisible(false);
         tab_cab_documento.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
         tab_cab_documento.getColumna("ide_cpefa").setVisible(false);
-        tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cndfp not in ( " + utilitario.getVariable("p_con_for_pag_reembolso_caja") + "," + utilitario.getVariable("p_con_for_pag_anticipo") + " )");
+        tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cndfp not in ( " + parametros.get("p_con_for_pag_reembolso_caja") + "," + parametros.get("p_con_for_pag_anticipo") + " )");
         tab_cab_documento.getColumna("ide_cndfp").setRequerida(true);
         tab_cab_documento.getColumna("TARIFA_IVA_CPCFA").setVisible(false);
         tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
@@ -553,7 +601,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("base_tarifa0_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("otros_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("ide_srtst").setCombo("sri_tipo_sustento_tributario", "ide_srtst", "alterno_srtst,nombre_srtst", "");
-        tab_cab_documento.getColumna("ide_srtst").setValorDefecto(utilitario.getVariable("p_sri_tip_sus_tri02"));
+        tab_cab_documento.getColumna("ide_srtst").setValorDefecto(parametros.get("p_sri_tip_sus_tri02"));
         tab_cab_documento.getColumna("ide_srtst").setNombreVisual("SUSTENTO TRIBUTARIO");
         tab_cab_documento.getColumna("ide_srtst").setOrden(7);
         tab_cab_documento.getColumna("ide_cncre").setVisible(false);
@@ -567,9 +615,55 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getGrid().setColumns(6);
         tab_cab_documento.setCondicion("ide_cpcfa=-1");
         tab_cab_documento.setRecuperarLectura(true);
+
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setOrden(8);
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setNombreVisual("TIPO DOC. MODI.");
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setOrden(9);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setNombreVisual("FECHA EMISIÓN DOC. MODI.");
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setOrden(10);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setNombreVisual("NÚMERO DOC. MODI.");
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setMascara("999-999-99999999");
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setQuitarCaracteresEspeciales(true);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setNombreVisual("AUTORIZACIÓN DOC. MODI.");
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setOrden(11);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarAutorizacion");
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setOrden(12);
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setNombreVisual("MOTIVO");
+        tab_cab_documento.getColumna("ide_rem_cpcfa").setVisible(false);
+        //solo para que dibuje el *
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
+
         tab_cab_documento.dibujar();
         //tab_cab_documento.agregarRelacion(tab_det_documento);
         tab_cab_documento.insertar();
+
+        for (int i = 0; i < tab_cab_documento.getGrid().getChildren().size(); i++) {
+            if (tab_cab_documento.getGrid().getChildren().get(i).getId() != null) {
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNTDO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
+                }
+            }
+        }
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(false);
 
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_cab_documento);
@@ -608,6 +702,7 @@ public class DocumentoCxP extends Dialogo {
         tab_det_documento.getColumna("iva_inarti_cpdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_det_documento.getColumna("iva_inarti_cpdfa").setMetodoChangeRuta(tab_det_documento.getRuta() + ".cambioPrecioCantidadIva");
         tab_det_documento.getColumna("iva_inarti_cpdfa").setPermitirNullCombo(false);
+        tab_det_documento.getColumna("iva_inarti_cpdfa").setValorDefecto("1");
         tab_det_documento.getColumna("iva_inarti_cpdfa").setOrden(4);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setLongitud(-1);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setNombreVisual("APLICA IVA");
@@ -633,6 +728,93 @@ public class DocumentoCxP extends Dialogo {
         pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
         pat_panel.setStyle("width:100%;height:100%;overflow: hidden;display: block;");
         grupo.getChildren().add(pat_panel);
+
+        tab_com_reembolso = new Tabla();
+        tab_com_reembolso.setRuta("pre_index.clase." + getId());
+        tab_com_reembolso.setRendered(false);
+        tab_com_reembolso.setHeader("DATOS COMPROBANTE DE REEMBOLSO");
+        tab_com_reembolso.setId("tab_com_reembolso");
+        tab_com_reembolso.setTabla("cxp_cabece_factur", "ide_cpcfa", 999);
+        tab_com_reembolso.setIdCompleto("tab_documenoCxP:tab_com_reembolso");
+        //oculta todos las columnas
+        for (int i = 0; i < tab_com_reembolso.getTotalColumnas(); i++) {
+            tab_com_reembolso.getColumnas()[i].setVisible(false);
+        }
+        tab_com_reembolso.getColumna("ide_cntdo").setVisible(true);
+        tab_com_reembolso.getColumna("ide_cntdo").setNombreVisual("TIPO DOCUMENTO");
+        tab_com_reembolso.getColumna("ide_cntdo").setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
+        tab_com_reembolso.getColumna("ide_cntdo").setRequerida(true);
+        tab_com_reembolso.getColumna("ide_cntdo").setOrden(0);
+
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setOrden(1);
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("IDENTIFICACIÓN");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
+
+        tab_com_reembolso.getColumna("ide_cntdo").setLongitud(-1);
+        tab_com_reembolso.getColumna("numero_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
+        tab_com_reembolso.getColumna("numero_cpcfa").setOrden(2);
+        tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
+        tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_com_reembolso.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
+        tab_com_reembolso.getColumna("numero_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setValorDefecto(utilitario.getFechaActual());
+        tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA EMISIÓN");
+        tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setOrden(3);
+        tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("autorizacio_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("autorizacio_cpcfa").setNombreVisual("AUTORIZACIÓN");
+        tab_com_reembolso.getColumna("autorizacio_cpcfa").setOrden(4);
+        tab_com_reembolso.getColumna("autorizacio_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarAutorizacion");
+        tab_com_reembolso.getColumna("autorizacio_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("base_no_objeto_iva_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("base_no_objeto_iva_cpcfa").setValorDefecto("0");
+        tab_com_reembolso.getColumna("base_no_objeto_iva_cpcfa").setOrden(5);
+        tab_com_reembolso.getColumna("base_no_objeto_iva_cpcfa").setNombreVisual("BASE NO OBJ. IVA");
+        tab_com_reembolso.getColumna("base_no_objeto_iva_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("base_tarifa0_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("base_tarifa0_cpcfa").setValorDefecto("0");
+        tab_com_reembolso.getColumna("base_tarifa0_cpcfa").setOrden(6);
+        tab_com_reembolso.getColumna("base_tarifa0_cpcfa").setNombreVisual("BASE 0%");
+        tab_com_reembolso.getColumna("base_tarifa0_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setValorDefecto("0");
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setOrden(7);
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setNombreVisual("BASE IVA");
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setOrden(8);
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setValorDefecto("0");
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setNombreVisual("IVA");
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("valor_ice_cpcfa").setVisible(true);
+        tab_com_reembolso.getColumna("valor_ice_cpcfa").setOrden(9);
+        tab_com_reembolso.getColumna("valor_ice_cpcfa").setValorDefecto("0");
+        tab_com_reembolso.getColumna("valor_ice_cpcfa").setNombreVisual("ICE");
+        tab_com_reembolso.getColumna("valor_ice_cpcfa").setRequerida(true);
+        tab_com_reembolso.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
+        tab_com_reembolso.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_com_reembolso.getColumna("fecha_trans_cpcfa").setValorDefecto(utilitario.getFechaActual());
+        tab_com_reembolso.setScrollable(true);
+        tab_com_reembolso.setScrollHeight(55);
+        tab_com_reembolso.setRecuperarLectura(true);
+        tab_com_reembolso.setCondicion("ide_cpcfa=-1");
+        tab_com_reembolso.dibujar();
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_com_reembolso);
+        pat_panel2.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_guardar().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_formato().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertar");
+        pat_panel2.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
+        pat_panel2.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
+        pat_panel2.getMenuTabla().getItem_eliminar().setRendered(true);
+        // pat_panel2.setStyle("width:100%;height:100%;overflow: hidden;display: block;");
+        grupo.getChildren().add(pat_panel2);
 
         Grid gri_total = new Grid();
         gri_total.setWidth("100%");
@@ -750,7 +932,7 @@ public class DocumentoCxP extends Dialogo {
         tab_deta_conta.getColumna("haber").setLongitud(25);
         tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
         tab_deta_conta.setScrollable(true);
-        tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //300
+        tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //240
         tab_deta_conta.setLectura(true);
         tab_deta_conta.dibujar();
 
@@ -789,12 +971,21 @@ public class DocumentoCxP extends Dialogo {
                 utilitario.agregarMensajeInfo("Seleccione Proveedor", "Debe seleccionar un proveedor para realizar el documento");
             }
         }
+        if (tab_com_reembolso.isFocus()) {
+            if (tab_cab_documento.getValor("ide_geper") != null) {
+                tab_com_reembolso.insertar();
+            } else {
+                utilitario.agregarMensajeInfo("Seleccione Proveedor", "Debe seleccionar un proveedor para realizar el documento");
+            }
+        }
     }
 
     public void eliminar() {
         if (tab_det_documento.isFocus()) {
             tab_det_documento.eliminar();
             calcularTotalDocumento();
+        } else if (tab_com_reembolso.isFocus()) {
+            tab_com_reembolso.eliminar();
         }
     }
 
@@ -806,6 +997,7 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
             tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros_valores.getValue()));
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
+
             if (validarDocumento()) {
 
                 if (tab_cab_documento.guardar()) {
@@ -814,12 +1006,19 @@ public class DocumentoCxP extends Dialogo {
                         tab_det_documento.setValor(i, "ide_cpcfa", ide_cccfa);
                     }
                     if (tab_det_documento.guardar()) {
-                        //Guarda la cuenta por pagar
-                        ser_cuentas_cxp.generarTransaccionCompra(tab_cab_documento);
-                        //Transaccion de Inventario
-                        ser_inventario.generarComprobanteTransaccionCompra(tab_cab_documento, tab_det_documento);
-                        if (utilitario.getConexion().guardarPantalla().isEmpty()) {
-                            this.cerrar();
+                        if (tab_com_reembolso.isRendered()) {
+                            for (int i = 0; i < tab_com_reembolso.getTotalFilas(); i++) {
+                                tab_com_reembolso.setValor(i, "ide_rem_cpcfa", ide_cccfa);
+                            }
+                        }
+                        if (tab_com_reembolso.guardar()) {
+                            //Guarda la cuenta por pagar
+                            ser_cuentas_cxp.generarTransaccionCompra(tab_cab_documento);
+                            //Transaccion de Inventario
+                            ser_inventario.generarComprobanteTransaccionCompra(tab_cab_documento, tab_det_documento);
+                            if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                                this.cerrar();
+                            }
                         }
                     }
                 }
@@ -956,6 +1155,10 @@ public class DocumentoCxP extends Dialogo {
             utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número del Documento");
             return false;
         }
+        if (tab_cab_documento.getValor("observacion_cpcfa") == null || tab_cab_documento.getValor("observacion_cpcfa").isEmpty()) {
+            utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la observacion del Documento");
+            return false;
+        }
         if (tab_cab_documento.getValor("autorizacio_cpcfa") == null || tab_cab_documento.getValor("autorizacio_cpcfa").isEmpty()) {
             utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número de Autorizacion del Documento");
             return false;
@@ -970,12 +1173,6 @@ public class DocumentoCxP extends Dialogo {
                 return false;
             }
         }
-
-        if (tab_cab_documento.getValor("observacion_cpcfa") == null || tab_cab_documento.getValor("observacion_cpcfa").isEmpty()) {
-            utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la observacion del Documento");
-            return false;
-        }
-
         if (tab_det_documento.getTotalFilas() == 0) {
             utilitario.agregarMensajeError("No se puede guardar el Documento", "Debe ingresar detalles al Documento");
             return false;
@@ -1004,12 +1201,149 @@ public class DocumentoCxP extends Dialogo {
             utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
             return false;
         }
-
+        //Valida que no se haya ingresado ya el documento
         List lis_numeros_fact = utilitario.getConexion().consultar("select * from cxp_cabece_factur where numero_cpcfa='" + tab_cab_documento.getValor("numero_cpcfa") + "' and ide_geper=" + tab_cab_documento.getValor("ide_geper") + " and autorizacio_cpcfa='" + tab_cab_documento.getValor("autorizacio_cpcfa") + "'");
         if (lis_numeros_fact.size() > 0) {
-            utilitario.agregarMensajeError("Error al guardar la Factura", "El número de factura del proveedor ya existe ");
+            utilitario.agregarMensajeError("Error al guardar el Documento", "El número de del documento ingresado ya existe ");
             return false;
         }
+
+        //Validaciones Nota de Crédito
+        if (tab_cab_documento.getColumna("autorizacio_nc_cpcfa").isVisible()) {
+            String autorizacion = tab_cab_documento.getValor("autorizacio_nc_cpcfa");
+            if (autorizacion != null) {
+                boolean correcto = false;
+                if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                    correcto = true;
+                }
+                if (correcto == false) {
+                    utilitario.agregarMensajeInfo("Error al guardar el Documento", "La longitud del Número de Autorización del Documento Modificado no es válido " + autorizacion);
+                    return false;
+                }
+            } else {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número de Autorizacion del Documento Modificado");
+                return false;
+            }
+        }
+        if (tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").isVisible()) {
+            if (tab_cab_documento.getValor("ide_cntdo_nc_cpcfa") == null || tab_cab_documento.getValor("ide_cntdo_nc_cpcfa").isEmpty()) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "Debe seleccionar el Tipo de Documento Modificado");
+                return false;
+            }
+        }
+        if (tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").isVisible()) {
+            if (tab_cab_documento.getValor("fecha_emision_nc_cpcfa") == null || tab_cab_documento.getValor("fecha_emision_nc_cpcfa").isEmpty()) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la Fecha de emisión del Documento Modificado");
+                return false;
+            }
+        }
+        if (tab_cab_documento.getColumna("numero_nc_cpcfa").isVisible()) {
+            if (tab_cab_documento.getValor("numero_nc_cpcfa") == null || tab_cab_documento.getValor("numero_nc_cpcfa").isEmpty()) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número del Documento Modificado");
+                return false;
+            }
+        }
+        if (tab_cab_documento.getColumna("motivo_nc_cpcfa").isVisible()) {
+            if (tab_cab_documento.getValor("motivo_nc_cpcfa") == null || tab_cab_documento.getValor("motivo_nc_cpcfa").isEmpty()) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Motivo de la Nota de Crédito");
+                return false;
+            }
+        }
+        //Fin Validaciones Nota de Crédito
+
+        //Validacion Comprobantes de Remmbolso
+        if (tab_com_reembolso.isRendered()) {
+            for (int i = 0; i < tab_com_reembolso.getTotalFilas(); i++) {
+                //autorizacio_cpcfa
+                String autorizacion = tab_com_reembolso.getValor(i, "autorizacio_cpcfa");
+                if (autorizacion != null) {
+                    boolean correcto = false;
+                    if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                        correcto = true;
+                    }
+                    if (correcto == false) {
+                        utilitario.agregarMensajeInfo("La longitud del Número de Autorización del Comprobante de Reembolso no es válido", autorizacion);
+                        return false;
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número de Autorizacion del Comprobante de Reembolso");
+                    return false;
+                }
+
+                if (tab_com_reembolso.getValor(i, "ide_cntdo") == null || tab_com_reembolso.getValor(i, "ide_cntdo").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe seleccionar el Tipo de Documento del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "numero_cpcfa") == null || tab_com_reembolso.getValor(i, "numero_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el Número del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "fecha_emisi_cpcfa") == null || tab_com_reembolso.getValor(i, "fecha_emisi_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la fecha de emisión del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "autorizacio_cpcfa") == null || tab_com_reembolso.getValor(i, "autorizacio_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la Autorización del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "base_no_objeto_iva_cpcfa") == null || tab_com_reembolso.getValor(i, "base_no_objeto_iva_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el valor de la Base no Objeto  IVA del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "base_tarifa0_cpcfa") == null || tab_com_reembolso.getValor(i, "base_tarifa0_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el valor de la Base 0% Número del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "base_grabada_cpcfa") == null || tab_com_reembolso.getValor(i, "base_grabada_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el valor de la Base IVA del Número del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "valor_iva_cpcfa") == null || tab_com_reembolso.getValor(i, "valor_iva_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el IVA del Número del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "valor_ice_cpcfa") == null || tab_com_reembolso.getValor(i, "valor_ice_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar el ICE del Número del Comprobante de Reembolso");
+                    return false;
+                }
+                if (tab_com_reembolso.getValor(i, "motivo_nc_cpcfa") == null || tab_com_reembolso.getValor(i, "motivo_nc_cpcfa").isEmpty()) {
+                    utilitario.agregarMensajeError("Error al guardar el Documento", "Debe ingresar la Identificación del Provvedor del Comprobante de Reembolso");
+                    return false;
+                }
+            }
+            //valida total factura con total reembolso
+            for (int i = 0; i < tab_com_reembolso.getTotalFilas(); i++) {
+                //asigna total
+                double dou_baseiva = 0;
+                double dou_base0 = 0;
+                double dou_basenoobjeto = 0;
+                double dou_iva = 0;
+                try {
+                    dou_baseiva = Double.parseDouble(tab_com_reembolso.getValor(i, "base_grabada_cpcfa"));
+                } catch (Exception e) {
+                }
+                try {
+                    dou_base0 = Double.parseDouble(tab_com_reembolso.getValor(i, "base_tarifa0_cpcfa"));
+                } catch (Exception e) {
+                }
+                try {
+                    dou_basenoobjeto = Double.parseDouble(tab_com_reembolso.getValor(i, "base_no_objeto_iva_cpcfa"));
+                } catch (Exception e) {
+                }
+                try {
+                    dou_iva = Double.parseDouble(tab_com_reembolso.getValor(i, "valor_iva_cpcfa"));
+                } catch (Exception e) {
+                }
+                tab_com_reembolso.setValor(i, "total_cpcfa", utilitario.getFormatoNumero(dou_baseiva + dou_base0 + dou_basenoobjeto + dou_iva));
+            }
+            //valida total factura con total reembolso
+            if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso");
+                return false;
+            }
+
+        }
+        //Fin validaciones reembolsos
         return true;
     }
 
@@ -1017,6 +1351,52 @@ public class DocumentoCxP extends Dialogo {
      * Cambia tipo de documento
      */
     public void cambiarTipoDocumento() {
+        boolean bol_esnota = false;
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+            bol_esnota = true;
+            tab_det_documento.setScrollHeight(getAltoPanel() - 385);
+        } else {
+            tab_det_documento.setScrollHeight(getAltoPanel() - 335);
+        }
+
+        for (int i = 0; i < tab_cab_documento.getGrid().getChildren().size(); i++) {
+            if (tab_cab_documento.getGrid().getChildren().get(i).getId() != null) {
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNTDO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(bol_esnota);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(bol_esnota);
+                }
+            }
+        }
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setVisible(bol_esnota);
+        tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(bol_esnota);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setVisible(bol_esnota);
+        tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(bol_esnota);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setVisible(bol_esnota);
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(bol_esnota);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setVisible(bol_esnota);
+        tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setRequerida(bol_esnota);
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setVisible(bol_esnota);
+        tab_cab_documento.getColumna("motivo_nc_cpcfa").setRequerida(bol_esnota);
+
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso"))) {
+            //Activa tabla  y disminuye tamaño del detalle
+            tab_com_reembolso.setRendered(true);
+            tab_com_reembolso.limpiar();
+            tab_det_documento.setScrollHeight(getAltoPanel() - 445);
+            try {
+                PanelTabla pat_panel = (PanelTabla) tab_com_reembolso.getParent();
+                pat_panel.getMenuTabla().getItem_insertar().setDisabled(false);
+                pat_panel.getMenuTabla().getItem_eliminar().setDisabled(false);
+            } catch (Exception e) {
+            }
+        } else {
+            tab_com_reembolso.setRendered(false);
+        }
+        utilitario.addUpdate("tab_documenoCxP:0:tab_com_reembolso,tab_documenoCxP:0:tab_cab_documento,tab_documenoCxP:0:tab_det_documento,tab_documenoCxP:0:panel_tab_com_reembolso");
         if (com_tipo_documento.getValue() != null) {
             cargarProveedores();
         }
@@ -1024,20 +1404,19 @@ public class DocumentoCxP extends Dialogo {
 
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(utilitario.getVariable("p_con_tipo_documento_factura"))) {
-            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + utilitario.getVariable("p_gen_tipo_iden_ruc"));
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
-            utilitario.addUpdate("tab_documenoCxP:tab_cab_factura");
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
             tab_cab_documento.setValor("numero_cpcfa", "");
             utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
         }
         // diferencte de ruc
-        if (com_tipo_documento.getValue().equals(utilitario.getVariable("p_con_tipo_documento_liquidacion_compra"))) {
-            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid!=" + utilitario.getVariable("p_gen_tipo_iden_ruc"));
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_liquidacion_compra"))) {
+            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid!=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             //Carga secuencial y autorizacion de liquidaciones en compra
-            TablaGenerica tab_cxp_cab = utilitario.consultar("select * from cxp_cabece_factur where ide_empr=" + utilitario.getVariable("ide_empr") + " and  ide_cntdo=" + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + " order by numero_cpcfa desc limit 1");
+            TablaGenerica tab_cxp_cab = utilitario.consultar("select * from cxp_cabece_factur where ide_empr=" + utilitario.getVariable("ide_empr") + " and  ide_cntdo=" + parametros.get("p_con_tipo_documento_liquidacion_compra") + " order by numero_cpcfa desc limit 1");
             if (tab_cxp_cab.getTotalFilas() > 0) {
                 tab_cab_documento.setValor("autorizacio_cpcfa", tab_cxp_cab.getValor(0, "autorizacio_cpcfa"));
                 String num_liq = tab_cxp_cab.getValor(0, "numero_cpcfa");
@@ -1048,13 +1427,11 @@ public class DocumentoCxP extends Dialogo {
                 tab_cab_documento.setValor("numero_cpcfa", num_liquidacion);
                 utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
             }
-            utilitario.addUpdate("tab_documenoCxP:tab_cab_factura");
         }
         // solo rise
-        if (com_tipo_documento.getValue().equals(utilitario.getVariable("p_con_tipo_documento_nota_venta"))) {
-            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_cntco = " + utilitario.getVariable("p_con_tipo_contribuyente_rise"));
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta"))) {
+            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_cntco = " + parametros.get("p_con_tipo_contribuyente_rise"));
             tab_cab_documento.setValor("ide_geper", null);
-            utilitario.addUpdate("tab_documenoCxP:tab_cab_factura");
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
             tab_cab_documento.setValor("numero_cpcfa", "");
             utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
@@ -1110,6 +1487,9 @@ public class DocumentoCxP extends Dialogo {
         }
     }
 
+    /**
+     * Valida numero de autorizacion
+     */
     public void validarAutorizacion() {
         String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
         if (autorizacion != null) {
@@ -1119,6 +1499,30 @@ public class DocumentoCxP extends Dialogo {
             }
             if (correcto == false) {
                 utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
+            }
+        }
+        if (tab_cab_documento.getColumna("autorizacio_nc_cpcfa").isVisible()) {
+            autorizacion = tab_cab_documento.getValor("autorizacio_nc_cpcfa");
+            if (autorizacion != null) {
+                boolean correcto = false;
+                if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                    correcto = true;
+                }
+                if (correcto == false) {
+                    utilitario.agregarMensajeInfo("La longitud del Número de Autorización del Documento Modificado no es válido", autorizacion);
+                }
+            }
+        } else if (tab_com_reembolso.isRendered()) {
+            //autorizacio_cpcfa
+            autorizacion = tab_com_reembolso.getValor("autorizacio_cpcfa");
+            if (autorizacion != null) {
+                boolean correcto = false;
+                if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                    correcto = true;
+                }
+                if (correcto == false) {
+                    utilitario.agregarMensajeInfo("La longitud del Número de Autorización del Comprobante de Reembolso no es válido", autorizacion);
+                }
             }
         }
     }
@@ -1286,6 +1690,14 @@ public class DocumentoCxP extends Dialogo {
 
     public void setTab_deta_conta(Tabla tab_deta_conta) {
         this.tab_deta_conta = tab_deta_conta;
+    }
+
+    public Tabla getTab_com_reembolso() {
+        return tab_com_reembolso;
+    }
+
+    public void setTab_com_reembolso(Tabla tab_com_reembolso) {
+        this.tab_com_reembolso = tab_com_reembolso;
     }
 
 }

@@ -131,7 +131,9 @@ public class ServicioCuentasCxP extends ServicioBase {
         return "select ide_cntdo,nombre_cntdo from con_tipo_document where ide_cntdo in ("
                 + utilitario.getVariable("p_con_tipo_documento_factura") + ","
                 + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + ","
-                + utilitario.getVariable("p_con_tipo_documento_nota_venta") + ")";
+                + utilitario.getVariable("p_con_tipo_documento_nota_venta") + ","
+                + utilitario.getVariable("p_con_tipo_documento_reembolso") + ","
+                + utilitario.getVariable("p_con_tipo_documento_nota_credito") + ")";
     }
 
     /**
@@ -154,7 +156,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "\n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -181,7 +183,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "\n"
-                + " and a.ide_cnccc is null \n"
+                + " and a.ide_cnccc is null and ide_rem_cpcfa is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -206,7 +208,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "\n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
                 + " and ide_cncre is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
@@ -233,7 +235,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "\n"
-                + " and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_anulada") + " \n"
+                + " and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_anulada") + " and ide_rem_cpcfa is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -265,7 +267,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "left join cxp_cabece_factur cf on cf.ide_cpcfa=ct.ide_cpcfa and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " "
                 + "left join cxp_tipo_transacc tt on tt.ide_cpttr=dt.ide_cpttr "
                 + "inner join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo "
-                + "where cf.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "where cf.ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_rem_cpcfa is null "
                 + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + strCondicionTipoDoc
                 + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa,nombre_cntdo, "
@@ -283,11 +285,11 @@ public class ServicioCuentasCxP extends ServicioBase {
     public String getSqlTotalComprasMensuales(String anio) {
 
         return "select nombre_gemes,\n"
-                + "(select count(ide_cpcfa) as num_documentos from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "),\n"
-                + "(select sum(base_grabada_cpcfa) as compras12 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "),\n"
-                + "(select sum(base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa) as compras0 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "),\n"
-                + "(select sum(valor_iva_cpcfa) as iva from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")   and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "),\n"
-                + "(select sum(total_cpcfa) as total from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") \n"
+                + "(select count(ide_cpcfa) as num_documentos from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
+                + "(select sum(base_grabada_cpcfa) as compras12 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
+                + "(select sum(base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa) as compras0 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
+                + "(select sum(valor_iva_cpcfa) as iva from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")   and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
+                + "(select sum(total_cpcfa) as total from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null) \n"
                 + "from gen_mes \n"
                 + "order by ide_gemes";
     }

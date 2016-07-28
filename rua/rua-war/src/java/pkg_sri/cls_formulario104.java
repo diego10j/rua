@@ -5,7 +5,6 @@
 package pkg_sri;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Tabla;
 import java.util.List;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -30,7 +29,7 @@ public class cls_formulario104 {
     private String fecha_inicio = "";
     private String fecha_fin = "";
     private String porcentaje_iva = "";
-    private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v429, v431, v480, v481, v482, v483, v484, v485, v499;
+    private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v423, v429, v431, v480, v481, v482, v483, v484, v485, v499;
     private String v501, v502, v503, v504, v505, v506, v507, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v553, v554;
     private String v601, v602, v605, v607, v609, v611, v613, v615, v617, v619, v621, v699;
     private String v721, v723, v725, v799, v859;
@@ -56,7 +55,7 @@ public class cls_formulario104 {
                 //CABECERA
                 Element cabecera = doc_formulario104.createElement("cabecera");
                 raiz.appendChild(cabecera);
-                cabecera.appendChild(crearElemento("codigo_version_formulario", null, "04201201"));
+                cabecera.appendChild(crearElemento("codigo_version_formulario", null, "04201604"));
                 cabecera.appendChild(crearElemento("ruc", null, tab_empresa.getValor("identificacion_empr")));
                 cabecera.appendChild(crearElemento("codigo_moneda", null, "1"));
 
@@ -67,14 +66,14 @@ public class cls_formulario104 {
                 /**
                  * VENTAS
                  */
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "31"}, getTipoDeclaracion())); // O ORIGINAL S SUTITUTIVA
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "101"}, mes)); // MES
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "102"}, anio)); // AÑO
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "101"}, mes)); // MES
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "31"}, getTipoDeclaracion())); // O ORIGINAL S SUTITUTIVA
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "104"}, getNumSustituye())); //NUMERO DE FORMULARIO QUE LO SUSTITUYE
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "198"}, tab_empresa.getValor("identi_repre_empr")));//IDENTIDFICACION REPRESENTANTE
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "199"}, "0200749620001")); //RUC CONTADOR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));
+//detalle.appendChild(crearElementoCDATA("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "201"}, tab_empresa.getValor("identificacion_empr")));
-                detalle.appendChild(crearElementoCDATA("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));
+
                 //Consulta las ventas por el campo alterno
                 v401 = consultarAlternoVentas("401");
                 v402 = consultarAlternoVentas("402");
@@ -86,15 +85,6 @@ public class cls_formulario104 {
                 v408 = consultarAlternoVentas("408");
                 v409 = consultarAlternoVentas("401,402,403,404,405,406,407");
                 v431 = consultarAlternoVentas("431");
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "401"}, v401));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "402"}, v402));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "403"}, v403));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "404"}, v404));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "405"}, v405));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "406"}, v406));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "407"}, v407));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "408"}, v408));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "409"}, v409));
                 //Valor Bruto  -N/C  => valores brutos restados los descuentos y devoluciones que afecten a las ventas del período declarado
                 v411 = v401;
                 v412 = v402;
@@ -105,31 +95,12 @@ public class cls_formulario104 {
                 v417 = v407;
                 v418 = v408;
                 v419 = utilitario.getFormatoNumero(Double.parseDouble(v411) + Double.parseDouble(v412) + Double.parseDouble(v413) + Double.parseDouble(v414) + Double.parseDouble(v415) + Double.parseDouble(v416) + Double.parseDouble(v417) + Double.parseDouble(v418));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "411"}, v411));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "412"}, v412));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "413"}, v413));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "414"}, v414));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "415"}, v415));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "416"}, v416));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "417"}, v417));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "418"}, v418));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "419"}, v419));
                 //Calculo del IVA
                 v421 = utilitario.getFormatoNumero(Double.parseDouble(v411) * Double.parseDouble(porcentaje_iva));
                 v422 = utilitario.getFormatoNumero(Double.parseDouble(v412) * Double.parseDouble(porcentaje_iva));
                 v429 = utilitario.getFormatoNumero((Double.parseDouble(v421) + Double.parseDouble(v422)));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "421"}, v421));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "422"}, v422));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "429"}, v429));
 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "431"}, v431));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "432"}, "0.00")); //Notas de crédito tarífa 0% 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "433"}, "0.00"));//Notas de crédito tarífa 12% 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "434"}, "0.00"));//IVA Notas de crédito tarífa 12% 
-
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "443"}, "0.00"));//Ingresos por rembolsos
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "444"}, "0.00"));//IVA Ingresos por rembolsos
-
+                v423 = "0"; //**************!!!!BUSCAR
                 v480 = consultarVentas12Contado();
                 v481 = consultarVentas12Credito();
                 v482 = v429;
@@ -137,14 +108,47 @@ public class cls_formulario104 {
                 v484 = utilitario.getFormatoNumero(Double.parseDouble(v480) * Double.parseDouble(porcentaje_iva));
                 v485 = utilitario.getFormatoNumero(Double.parseDouble(v482) - Double.parseDouble(v484));
                 v499 = utilitario.getFormatoNumero(Double.parseDouble(v483) + Double.parseDouble(v484));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "480"}, v480));//Ventas 12% contado
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "481"}, v481));//Ventas 12% crédito
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "482"}, v482)); //= 429 TOTAL IVA
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "483"}, v483));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "484"}, v484)); //IVA Ventas 12% contado
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "485"}, v485));//482 - 484
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "499"}, v499));//483+484
 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "411"}, v411));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "401"}, v401));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "421"}, v421));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "422"}, v422));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "412"}, v412));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "402"}, v402));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "402"}, v423));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "413"}, v413));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "403"}, v403));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "404"}, v404));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "414"}, v414));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "405"}, v405));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "415"}, v415));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "406"}, v406));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "416"}, v416));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "417"}, v417));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "407"}, v407));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "418"}, v418));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "408"}, v408));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "419"}, v419));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "409"}, v409));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "429"}, v429));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "431"}, v431));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "441"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "442"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "443"}, "0.00"));//Ingresos por rembolsos
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "453"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "434"}, "0.00"));//IVA Notas de crédito tarífa 12% 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "444"}, "0.00"));//IVA Ingresos por rembolsos
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "454"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "499"}, v499));//483+484
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "485"}, v485));//482 - 484
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "484"}, v484)); //IVA Ventas 12% contado
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "483"}, v483));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "482"}, v482)); //= 429 TOTAL IVA
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "481"}, v481));//Ventas 12% crédito
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "480"}, v480));//Ventas 12% contado 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "510"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "500"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "520"}, "0.00"));//!!!!!****** BUSCAR 
                 /**
                  * COMPRAS
                  */
@@ -158,14 +162,6 @@ public class cls_formulario104 {
                 v509 = consultarAlternoCompras("501,502,503,504,505,506,507");
                 v531 = consultarAlternoCompras("531");
                 v532 = consultarAlternoCompras("532");
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "501"}, v501));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "502"}, v502));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "503"}, v503));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "504"}, v504));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "505"}, v505));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "506"}, v506));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "507"}, v507));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "509"}, v509));
                 //Valor Bruto  -N/C  => valores brutos restados los descuentos y devoluciones que afecten a las ventas del período declarado
                 v511 = v501;
                 v512 = v502;
@@ -176,15 +172,6 @@ public class cls_formulario104 {
                 v517 = v507;
                 v518 = "0.00";///PARA LOS DE RISE
                 v519 = utilitario.getFormatoNumero(Double.parseDouble(v511) + Double.parseDouble(v512) + Double.parseDouble(v513) + Double.parseDouble(v514) + Double.parseDouble(v515) + Double.parseDouble(v516) + Double.parseDouble(v517) + Double.parseDouble(v518));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "511"}, v511));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "512"}, v512));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "513"}, v513));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "514"}, v514));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "515"}, v515));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "516"}, v516));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "517"}, v517));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "518"}, v518));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "519"}, v519));
                 //Calculo del IVA
                 v521 = utilitario.getFormatoNumero(Double.parseDouble(v511) * Double.parseDouble(porcentaje_iva));
                 v522 = utilitario.getFormatoNumero(Double.parseDouble(v512) * Double.parseDouble(porcentaje_iva));
@@ -192,21 +179,6 @@ public class cls_formulario104 {
                 v524 = utilitario.getFormatoNumero(Double.parseDouble(v514) * Double.parseDouble(porcentaje_iva));
                 v525 = utilitario.getFormatoNumero(Double.parseDouble(v515) * Double.parseDouble(porcentaje_iva));
                 v529 = utilitario.getFormatoNumero((Double.parseDouble(v521) + Double.parseDouble(v522) + Double.parseDouble(v523) + Double.parseDouble(v524) + Double.parseDouble(v525)));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "521"}, v521));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "522"}, v522));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "523"}, v523));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "524"}, v524));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "525"}, v525));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "529"}, v529));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "531"}, v531));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "532"}, v532));
-
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "533"}, "0.00"));//NOTAS DE CREDITO 0%
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "534"}, "0.00"));//NOTAS DE CREDITO 12%
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "535"}, "0.00"));//REMBOLSOS
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "544"}, "0.00"));//IVA NOTAS DE CREDITO 12%
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "545"}, "0.00"));//IVA REMBOLSOS
-
                 if (Double.parseDouble(v419) > 0) {
                     v553 = utilitario.getFormatoNumero((Double.parseDouble(v411) + Double.parseDouble(v412) + Double.parseDouble(v415) + Double.parseDouble(v416) + Double.parseDouble(v417) + Double.parseDouble(v418)) / Double.parseDouble(v419), 4);
                 } else {
@@ -214,9 +186,44 @@ public class cls_formulario104 {
                 }
 
                 v554 = utilitario.getFormatoNumero((Double.parseDouble(v521) + Double.parseDouble(v522) + Double.parseDouble(v524) + Double.parseDouble(v525)) * Double.parseDouble(v553));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "553"}, v553));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "554"}, v554));
 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "511"}, v511));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "521"}, v521));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "501"}, v501));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "512"}, v512));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "502"}, v502));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "522"}, v522));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "523"}, v523));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "503"}, v503));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "513"}, v513));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "514"}, v514));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "504"}, v504));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "524"}, v524));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "525"}, v525));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "505"}, v505));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "515"}, v515));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "526"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "506"}, v506));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "516"}, v516));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "517"}, v517));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "507"}, v507));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "508"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "518"}, v518));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "529"}, v529));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "519"}, v519));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "509"}, v509));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "541"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "531"}, v531));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "532"}, v532));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "542"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "543"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "544"}, "0.00"));//IVA NOTAS DE CREDITO 12%
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "554"}, v554));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "555"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "545"}, "0.00"));//IVA REMBOLSOS
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "535"}, "0.00"));//REMBOLSOS
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "563"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "564"}, "0.00"));//!!!!!****** BUSCAR 
                 //RESUMEN
                 v601 = utilitario.getFormatoNumero((Double.parseDouble(v499) - Double.parseDouble(v554)));
                 v602 = v601;
@@ -240,14 +247,23 @@ public class cls_formulario104 {
                 v699 = utilitario.getFormatoNumero(Double.parseDouble(v619) + Double.parseDouble(v621));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "601"}, v601));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "602"}, v602));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "603"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "604"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "605"}, v605));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "606"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "607"}, v607));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "608"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "609"}, v609));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "610"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "611"}, v611));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "642"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "613"}, v613));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "614"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "615"}, v615));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "617"}, v617));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "618"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "619"}, v619));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "620"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "621"}, v621));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "699"}, v699));
                 //AGENTE DE RETENCIÓN DE IVA
@@ -259,7 +275,12 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "721"}, v721));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "723"}, v723));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "725"}, v725));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "727"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "729"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "731"}, "0.00"));//!!!!!****** BUSCAR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "799"}, v799));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "800"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "801"}, "0.00"));//!!!!!****** BUSCAR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "859"}, v859));
                 //INTERESES POR SUSTITUCIÓN DE FORMULARIO
                 v890 = "0.00";
@@ -267,11 +288,11 @@ public class cls_formulario104 {
                 v898 = "0.00";
                 v899 = "0.00";
                 v880 = "0.00";
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "880"}, v880));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "890"}, v890));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "897"}, v897));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "898"}, v898));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "899"}, v899));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "880"}, v880));
                 //VALORES A PAGAR Y FORMA DE PAGO
                 v902 = utilitario.getFormatoNumero((Double.parseDouble(v859) - Double.parseDouble(v898)));
                 v903 = "0.00";
@@ -291,33 +312,38 @@ public class cls_formulario104 {
                 v917 = "0.00";
                 v918 = "";
                 v919 = "0.00";
-
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "902"}, v859));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "903"}, v903));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "904"}, v904));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "999"}, v999));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "905"}, v905));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "906"}, v906));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "907"}, v907));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "908"}, v908));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "909"}, v909));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "910"}, v910));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "911"}, v911));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "912"}, v912));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "913"}, v913));
-
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "910"}, v910));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "908"}, v908));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "915"}, v915));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "913"}, v913));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "911"}, v911));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "909"}, v909));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "916"}, v916));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "917"}, v917));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "918"}, v918));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "919"}, v919));
-
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "917"}, v917));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "198"}, tab_empresa.getValor("identi_repre_empr")));//IDENTIDFICACION REPRESENTANTE
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "199"}, "0200749620001")); //RUC CONTADOR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "922"}, "16")); //BANCO  === RED BANCARIA
-
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "999"}, v999));
-
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "925"}, "0.00"));//!!!!!****** BUSCAR
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "920"}, "0.00"));//!!!!!****** BUSCAR
+                //  detalle.appendChild(crearElemento("campo", new String[]{"numero", "432"}, "0.00")); //Notas de crédito tarífa 0% 
+                // detalle.appendChild(crearElemento("campo", new String[]{"numero", "433"}, "0.00"));//Notas de crédito tarífa 12% 
+                //detalle.appendChild(crearElemento("campo", new String[]{"numero", "533"}, "0.00"));//NOTAS DE CREDITO 0%
+                // detalle.appendChild(crearElemento("campo", new String[]{"numero", "534"}, "0.00"));//NOTAS DE CREDITO 12%
+                // detalle.appendChild(crearElemento("campo", new String[]{"numero", "553"}, v553));
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario104);
-                String master = System.getProperty("user.dir");
+                System.out.println(source + ".. " + doc_formulario104 + " --- " + doc_formulario104.getTextContent());
+                String master = "D:/";
                 nombre = "04ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;
@@ -329,6 +355,7 @@ public class cls_formulario104 {
         } catch (Exception e) {
             System.err.println("Error al generar el Formulario 104: " + e.getMessage());
             utilitario.agregarMensajeError("No se pudo generar el Formulario", "No hay información para generar el formulario");
+            e.printStackTrace();
         }
     }
 

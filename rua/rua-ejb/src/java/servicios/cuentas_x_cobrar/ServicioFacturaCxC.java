@@ -30,7 +30,7 @@ public class ServicioFacturaCxC extends ServicioBase {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables( "p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago");
+        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago");
     }
 
     /**
@@ -414,6 +414,73 @@ public class ServicioFacturaCxC extends ServicioBase {
 
     public String getSqlActualizaPagoFactura(String ide_cccfa) {
         return "update cxc_cabece_factura set pagado_cccfa=true where ide_cccfa=" + ide_cccfa;
+    }
+
+    /**
+     * Cambia de estado a anulado la factura y la transaccion cxc
+     *
+     * @param ide_cccfa
+     */
+    public void anularFactura(String ide_cccfa) {
+        //Anula Fctura
+        utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_anulada") + " where ide_cccfa=" + ide_cccfa);
+        //Transaccion CXC Generar reverso de la transaccion FACTURA
+        TablaGenerica tab_cab = utilitario.consultar("SELECT ide_cccfa,ide_ccctr,secuencial_cccfa from cxc_cabece_transa where ide_cccfa=" + ide_cccfa);
+        if (tab_cab.getTotalFilas() > 0) {
+            reversarTransaccionCxC(tab_cab.getValor("ide_ccctr"), "V./ ANULACIÓN FACTURA : " + tab_cab.getValor("secuencial_cccfa") + " " + tab_cab.getValor("secuencial_cccfa"));
+        }
+        //Anula transaccion inventario
+        utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci in (select ide_incci from inv_det_comp_inve where ide_cccfa=" + ide_cccfa + " group by ide_incci)");
+        ////////****!!!!!!!!!!!crear variable  p_inv_estado_anulado
+    }
+
+    public void reversarTransaccionCxC(String ide_ccctr, String observacion) {
+        if (ide_ccctr != null && !ide_ccctr.isEmpty()) {
+
+            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+            tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr");
+            tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
+            tab_det_tran_cxc.ejecutarSql();
+
+            TablaGenerica tab_det = utilitario.consultar("SELECT * from cxc_detall_transa where ide_ccctr=" + ide_ccctr);
+            tab_det_tran_cxc.limpiar();
+            for (int i = 0; i < tab_det.getTotalFilas(); i++) {
+                tab_det_tran_cxc.insertar();
+                tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+                tab_det_tran_cxc.setValor("ide_cccfa", tab_det.getValor(i, "ide_cccfa"));
+                tab_det_tran_cxc.setValor("ide_cnccc", tab_det.getValor(i, "ide_cnccc"));
+                tab_det_tran_cxc.setValor("ide_teclb", tab_det.getValor(i, "ide_teclb"));
+                tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+                if (tab_det.getValor(i, "ide_ccttr") != null && !tab_det.getValor(i, "ide_ccttr").isEmpty()) {
+                    if (Integer.parseInt(getSignoTransaccionCxC(tab_det.getValor(i, "ide_ccttr"))) > 0) {
+                        tab_det_tran_cxc.setValor("ide_ccttr", utilitario.getVariable("p_cxc_tipo_trans_reversar_menos"));
+                    } else {
+                        tab_det_tran_cxc.setValor("ide_ccttr", utilitario.getVariable("p_cxc_tipo_trans_reversar_mas"));
+                    }
+                }
+                tab_det_tran_cxc.setValor("fecha_trans_ccdtr", utilitario.getFechaActual());
+                tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFechaActual());
+                tab_det_tran_cxc.setValor("numero_pago_ccdtr", tab_det.getValor(i, "numero_pago_ccdtr"));
+                tab_det_tran_cxc.setValor("valor_ccdtr", tab_det.getValor(i, "valor_ccdtr"));
+                tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_det.getValor(i, "docum_relac_ccdtr"));
+                tab_det_tran_cxc.setValor("observacion_ccdtr", observacion);
+            }
+            tab_det_tran_cxc.guardar();
+        }
+    }
+
+    public String getSignoTransaccionCxC(String ide_ccttr) {
+        TablaGenerica tab_tipo_transacciones = utilitario.consultar("select * from cxc_tipo_transacc where ide_ccttr=" + ide_ccttr);
+        if (tab_tipo_transacciones.getTotalFilas() > 0) {
+            if (tab_tipo_transacciones.getValor(0, "signo_ccttr") != null && !tab_tipo_transacciones.getValor(0, "signo_ccttr").isEmpty()) {
+                return tab_tipo_transacciones.getValor(0, "signo_ccttr");
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
 }

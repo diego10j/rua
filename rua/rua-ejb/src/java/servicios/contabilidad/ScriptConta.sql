@@ -170,3 +170,28 @@ ALTER TABLE cxp_cabece_factur
 --ACTUALIZA TARIFA IVA EN FACTURAS ANTERIORES AL 1 DE JUNIO DEL 2016
 UPDATE cxp_cabece_factur set tarifa_iva_cpcfa=0.12 WHERE  fecha_emisi_cpcfa <= '2016/05/31';
 UPDATE cxp_cabece_factur set tarifa_iva_cpcfa=0.14 WHERE  fecha_emisi_cpcfa > '2016/05/31';
+
+
+--CAMPOS NOTA DE CREDITO
+--TIPO DOCUMENTO NC
+ALTER TABLE cxp_cabece_factur  ADD COLUMN ide_cntdo_nc_cpcfa integer;
+--FECHA EMISION NC
+ALTER TABLE cxp_cabece_factur  ADD COLUMN fecha_emision_nc_cpcfa date;
+--NUMERO DOCUMENTO NC
+ALTER TABLE cxp_cabece_factur  ADD COLUMN numero_nc_cpcfa character varying(20);
+--AUTORIZACION NC
+ALTER TABLE cxp_cabece_factur  ADD COLUMN autorizacio_nc_cpcfa character varying(50);
+--MOTIVO NC
+ALTER TABLE cxp_cabece_factur  ADD COLUMN motivo_nc_cpcfa character varying(60);
+--fk
+ALTER TABLE cxp_cabece_factur ADD CONSTRAINT fk_cxp_cabe_relations_con_tipo_nc FOREIGN KEY (ide_cntdo_nc_cpcfa)
+REFERENCES con_tipo_document (ide_cntdo) MATCH SIMPLE
+ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--FACTURAS DE REEMBOLSO RECURSIVO
+ALTER TABLE cxp_cabece_factur  ADD COLUMN ide_rem_cpcfa bigint;
+
+ALTER TABLE cxp_cabece_factur ADD CONSTRAINT fk_cxp_cabe_relations_rembolso FOREIGN KEY (ide_rem_cpcfa)
+REFERENCES cxp_cabece_factur (ide_cpcfa) MATCH SIMPLE
+ON UPDATE RESTRICT ON DELETE RESTRICT;
