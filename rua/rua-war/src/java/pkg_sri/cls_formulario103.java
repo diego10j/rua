@@ -5,7 +5,6 @@
 package pkg_sri;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Tabla;
 import java.util.List;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -25,8 +24,8 @@ public class cls_formulario103 {
     private String nombre = "";
     private String tipoDeclaracion = "O";
     private String numSustituye = "";
-    private Utilitario utilitario = new Utilitario();
-    private String[] nom_mes = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
+    private final Utilitario utilitario = new Utilitario();
+    private final String[] nom_mes = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     private String fecha_inicio = "";
     private String fecha_fin = "";
     private String v302, v303, v304, v307, v308, v309, v310, v312, v319, v320, v322, v323, v325, v327, v328, v332, v340, v341, v342, v343, v344, v349, v352, v353, v354, v357, v358, v359, v360, v362, v369, v370, v372, v373, v375, v377, v378, v390, v391, v392, v393, v394, v399;
@@ -34,7 +33,7 @@ public class cls_formulario103 {
     private String v890, v897, v898, v899, v880;
     private String v902, v903, v904, v999, v905, v907, v908, v909, v910, v911, v912, v913, v915;
 
-    public void Formulario103(String anio, String mes) {
+    public String Formulario103(String anio, String mes) {
         try {
             fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
             fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
@@ -63,7 +62,8 @@ public class cls_formulario103 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "198"}, tab_empresa.getValor("identi_repre_empr")));//IDENTIDFICACION REPRESENTANTE
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "199"}, "0200749620001")); //RUC CONTADOR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "201"}, tab_empresa.getValor("identificacion_empr")));//RUC
-                detalle.appendChild(crearElementoCDATA("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));//NOMBRE
+                //detalle.appendChild(crearElementoCDATA("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));//NOMBRE
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "202"}, tab_empresa.getValor("nom_empr")));//NOMBRE
                 //base
                 v302 = consultarRenta(utilitario.getVariable("p_sri_base_renta"));
                 v303 = consultarBaseCasillero("303");
@@ -238,11 +238,13 @@ public class cls_formulario103 {
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.transform(source, result);
                 transformer.transform(source, console);
+                return utilitario.getStringFromDocument(doc_formulario103);
             }
         } catch (Exception e) {
             System.err.println("Error al generar el Formulario 103: " + e.getMessage());
             utilitario.agregarMensajeError("No se pudo generar el Formulario", "No hay información para generar el formulario");
         }
+        return null;
     }
 
     private Element crearElemento(String nombre, String[] atributos, String texto) {
@@ -284,7 +286,7 @@ public class cls_formulario103 {
             } catch (Exception e) {
                 dou_valor = 0;
             }
-        }        
+        }
         return utilitario.getFormatoNumero(dou_valor);
     }
 
@@ -316,7 +318,7 @@ public class cls_formulario103 {
                 + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
                 + " AND ci.casillero_cncim in (" + utilitario.generarComillaSimple(casillero) + ") "
                 + " and es_venta_cncre=false");
-        
+
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");

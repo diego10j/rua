@@ -28,7 +28,7 @@ public class pre_configuracion_impuestos extends Pantalla {
     public pre_configuracion_impuestos() {
         com_impuesto.setCombo("select ide_cnimp,nombre_cnimp from con_impuesto");
         com_impuesto.setMetodo("seleccionarCombo");
-        bar_botones.agregarComponente(new Etiqueta("IMPUESTO :"));
+        bar_botones.agregarComponente(new Etiqueta("TIPO IMPUESTO :"));
         bar_botones.agregarComponente(com_impuesto);
         bar_botones.quitarBotonsNavegacion();
 

@@ -20,7 +20,7 @@ import servicios.ServicioBase;
 public class ServicioPrestamo extends ServicioBase {
 
     public String getSqlComboPrestamos() {
-        return "SELECT ide_ipcpr,nom_geper,num_prestamo_ipcpr,identificac_geper,nombre_teban,nombre_tecba\n"
+        return "SELECT ide_ipcpr,ide_ipcpr,nom_geper,num_prestamo_ipcpr,identificac_geper,nombre_teban,nombre_tecba\n"
                 + "from  iyp_cab_prestamo a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                 + "left join tes_cuenta_banco c on a.ide_tecba=c.ide_tecba\n"
@@ -152,6 +152,7 @@ public class ServicioPrestamo extends ServicioBase {
                                 tab_tabla2.setValor("interes_ipdpr", utilitario.getFormatoNumero(lis_interes.get(lis_interes.size() - i - 1)));
                                 tab_tabla2.setValor("fecha_ipdpr", lis_fecha.get(lis_fecha.size() - i - 1) + "");
                                 tab_tabla2.setValor("num_ipdpr", lis_capital.size() - i + "");
+                                tab_tabla2.setValor("pagado_ipdpr", "false");
                             }
                             tab_tabla2.guardar();
                         } else {

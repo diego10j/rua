@@ -25,11 +25,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
+import java.io.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.script.ScriptEngine;
@@ -43,6 +44,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.util.Constants;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -673,7 +675,7 @@ public class Utilitario extends Framework {
         StreamedContent content;
         InputStream stream = null;
         try {
-            if (path.startsWith("/")) {
+            if (path.startsWith("/") && path.startsWith("/opt") == false) { //rua
                 stream = ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(path);
             } else {
                 stream = new FileInputStream(path);
@@ -1030,5 +1032,20 @@ public class Utilitario extends Framework {
             return false;
         }
         return false;
+    }
+
+    public String getStringFromDocument(Document doc) {
+        try {
+            DOMSource domSource = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+            return writer.toString();
+        } catch (TransformerException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

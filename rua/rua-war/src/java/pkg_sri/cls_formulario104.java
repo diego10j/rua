@@ -11,6 +11,10 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import java.io.File;
+import java.util.Date;
+import jxl.*;
+import jxl.write.*;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -36,7 +40,7 @@ public class cls_formulario104 {
     private String v890, v897, v898, v899, v880;
     private String v902, v903, v904, v999, v905, v906, v907, v908, v909, v910, v911, v912, v913, v915, v916, v917, v918, v919;
 
-    public void Formulario104(String anio, String mes) {
+    public String Formulario104(String anio, String mes) {
         try {
             fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
             fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
@@ -342,8 +346,9 @@ public class cls_formulario104 {
                 // detalle.appendChild(crearElemento("campo", new String[]{"numero", "553"}, v553));
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario104);
-                System.out.println(source + ".. " + doc_formulario104 + " --- " + doc_formulario104.getTextContent());
-                String master = "D:/";
+                //System.out.println(source + ".. " + doc_formulario104 + " --- " + doc_formulario104.getTextContent());
+                // String master = "D:/";
+                String master = System.getProperty("user.dir");
                 nombre = "04ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;
@@ -351,12 +356,14 @@ public class cls_formulario104 {
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.transform(source, result);
                 transformer.transform(source, console);
+                return utilitario.getStringFromDocument(doc_formulario104);
             }
         } catch (Exception e) {
             System.err.println("Error al generar el Formulario 104: " + e.getMessage());
             utilitario.agregarMensajeError("No se pudo generar el Formulario", "No hay información para generar el formulario");
             e.printStackTrace();
         }
+        return null;
     }
 
     private String consultarAlternoCompras(String alterno) {

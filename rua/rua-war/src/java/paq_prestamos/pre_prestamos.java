@@ -474,13 +474,15 @@ public class pre_prestamos extends Pantalla {
             if (validarPrestamo()) {
                 if (tab_tabla1.guardar()) {
                     //Generar Tabla de Amortizacion
-                    ser_prestamo.generarTablaAmortizacion(tab_tabla1);
+                    if (tab_tabla1.isFilaInsertada()) {
+                        ser_prestamo.generarTablaAmortizacion(tab_tabla1);
+                        utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
+                    }
                     if (guardarPantalla().isEmpty()) {
                         aut_prestamos.actualizar();
                         aut_prestamos.setSize(100);
                         aut_prestamos.setValor(tab_tabla1.getValor("ide_ipcpr"));
                         utilitario.addUpdate("aut_prestamos");
-                        utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
                     }
                 }
 

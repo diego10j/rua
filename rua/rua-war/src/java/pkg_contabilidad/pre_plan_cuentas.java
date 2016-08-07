@@ -47,7 +47,7 @@ public class pre_plan_cuentas extends Pantalla {
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("con_cab_plan_cuen", "ide_cncpc", 1);
         tab_tabla1.onSelect("seleccionarTabla1"); // ejecuta  seleccionar_tabla1  cuando se seleciona una fila de la tabla1
-
+        tab_tabla1.getColumna("ide_cncpc").setVisible(false);
         tab_tabla1.agregarRelacion(tab_tabla2);// crea la relación entre la 
         tab_tabla1.getColumna("activo_cncpc").setComentario("Sirve para identificar al Plan de Cuentas vigente o activo");
         tab_tabla1.getColumna("activo_cncpc").setMetodoChange("cambiarPlanActivo");
@@ -58,14 +58,17 @@ public class pre_plan_cuentas extends Pantalla {
         //Configurar tabla2
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("con_det_plan_cuen", "ide_cndpc", 2);
+        tab_tabla2.getColumna("ide_cndpc").setVisible(false);
         tab_tabla2.getColumna("ide_cntcu").setCombo("con_tipo_cuenta", "ide_cntcu", "nombre_cntcu", "");
+        tab_tabla2.getColumna("ide_cntcu").setLongitud(-1);
         tab_tabla2.getColumna("nivel_cndpc").setCombo(utilitario.getListaNiveles());
+        tab_tabla2.getColumna("nivel_cndpc").setLongitud(-1);
         if (tab_tabla1.getValorSeleccionado() != null) {// si hay datos en la tabla1
             // entonces configura mascara en el campo codig_recur_cndpc  de la tabla 2
             tab_tabla2.getColumna("codig_recur_cndpc").setMascara(tab_tabla1.getValor("mascara_cncpc"));
             tab_tabla2.setCampoRecursivo("codig_recur_cndpc", tab_tabla1.getValor("mascara_cncpc"));
         }
-        tab_tabla2.setCampoNombre("nombre_cndpc");
+        tab_tabla2.setCampoNombre("codig_recur_cndpc || ' ' || nombre_cndpc");
         tab_tabla2.setCampoPadre("con_ide_cndpc");
         tab_tabla2.getColumna("ide_cnncu").setLectura(true);
         tab_tabla2.getColumna("codig_recur_cndpc").setLectura(false);
@@ -82,10 +85,10 @@ public class pre_plan_cuentas extends Pantalla {
         arb_arbol.dibujar();
 
         Division div_vertical = new Division();
-        div_vertical.dividir2(arb_arbol, pat_panel2, "20%", "V");
+        div_vertical.dividir2(arb_arbol, pat_panel2, "45%", "V");
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pat_panel1, div_vertical, "30%", "H");
+        div_division.dividir2(pat_panel1, div_vertical, "10%", "H");
 
         agregarComponente(div_division);
         agregarComponente(rep_reporte);
