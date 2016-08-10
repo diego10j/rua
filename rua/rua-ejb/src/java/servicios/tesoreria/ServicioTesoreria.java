@@ -24,7 +24,8 @@ public class ServicioTesoreria {
     @EJB
     private ServicioContabilidadGeneral ser_tesoreria;
 
-    private final Utilitario utilitario = new Utilitario();  
+    private final Utilitario utilitario = new Utilitario();
+
     /**
      * Retorna sentencia SQL para obtener las cuentas bancarias de una empresa,
      * para ser usada en Combos, Autocompletar
@@ -104,9 +105,35 @@ public class ServicioTesoreria {
                 + "group by ide_tecba";
         TablaGenerica tab_saldo = utilitario.consultar(sql);
         if (tab_saldo.getTotalFilas() > 0) {
-            if (tab_saldo.getValor(0, "valor") != null) {
+            if (tab_saldo.getValor("valor") != null) {
                 try {
-                    saldo = Double.parseDouble(tab_saldo.getValor(0, "valor"));
+                    saldo = Double.parseDouble(tab_saldo.getValor("valor"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return saldo;
+    }
+
+    /**
+     * Retorna el saldo de una cuenta
+     *
+     * @param ide_tecba
+     * @return
+     */
+    public double getSaldoCuenta(String ide_tecba) {
+        double saldo = 0;
+        String sql = "select ide_tecba,sum(valor_teclb * signo_tettb) as valor "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "group by ide_tecba";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor("valor") != null) {
+                try {
+                    saldo = Double.parseDouble(tab_saldo.getValor("valor"));
                 } catch (Exception e) {
                 }
             }
@@ -351,6 +378,34 @@ public class ServicioTesoreria {
 
         }
         return maximo;
+    }
+
+    /**
+     * Sql con las cuentas que tiene la empresa
+     *
+     * @return
+     */
+    public String getSqlPosicionConsolidada() {
+        return "select a.ide_tecba,nombre_teban,nombre_tecba,nombre_tetcb,ide_cndpc, \n"
+                + "(Select sum(dcc.valor_cndcc*sc.signo_cnscu) as valor \n"
+                + "from con_cab_comp_cont ccc \n"
+                + "inner join  con_det_comp_cont dcc on ccc.ide_cnccc=dcc.ide_cnccc \n"
+                + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc \n"
+                + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu \n"
+                + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap \n"
+                + "WHERE  ccc.ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") \n"
+                + "and dpc.ide_cndpc=a.ide_cndpc\n"
+                + "GROUP BY dpc.ide_cndpc ) as saldo_contable, \n"
+                + "(select sum(valor_teclb * signo_tettb) as valor \n"
+                + "from tes_cab_libr_banc aa \n"
+                + "inner join tes_tip_tran_banc bb on aa.ide_tettb=bb.ide_tettb \n"
+                + "where ide_tecba=a.ide_tecba and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + "\n"
+                + "group by ide_tecba) as saldo_disponible \n"
+                + "from tes_cuenta_banco a\n"
+                + "inner join tes_banco b on a.ide_teban= b.ide_teban\n"
+                + "inner join tes_tip_cuen_banc c on a.ide_tetcb = c.ide_tetcb\n"
+                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "order by nombre_teban,nombre_tecba";
     }
 
 }

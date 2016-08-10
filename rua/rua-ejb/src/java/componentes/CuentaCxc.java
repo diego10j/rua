@@ -69,16 +69,16 @@ public class CuentaCxc extends Dialogo {
 
         Grid gri1 = new Grid();
         gri1.setColumns(6);
-        gri1.getChildren().add(new Etiqueta("<strong>CLIENTE :</strong>"));
+        gri1.getChildren().add(new Etiqueta("<strong>CLIENTE : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         aut_cliente_cxc = new AutoCompletar();
         aut_cliente_cxc.setId("aut_cliente_cxc");
         aut_cliente_cxc.setRuta("pre_index.clase." + getId());
         aut_cliente_cxc.setMetodoChangeRuta("pre_index.clase." + getId() + ".cargarCuentasporCobrar");
         aut_cliente_cxc.setAutocompletarContenido();
         aut_cliente_cxc.setAutoCompletar(ser_cliente.getSqlComboClientes());
-
+        aut_cliente_cxc.setSize(70);
         gri1.getChildren().add(aut_cliente_cxc);
-        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CUENTA DESTINO :</strong>"));
+        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CUENTA DESTINO : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         aut_cuenta_cxc = new AutoCompletar();
         aut_cuenta_cxc.setId("aut_cuenta_cxc");
         aut_cuenta_cxc.setRuta("pre_index.clase." + getId());
@@ -90,28 +90,27 @@ public class CuentaCxc extends Dialogo {
 
         Grid gri2 = new Grid();
         gri2.setColumns(6);
-        gri2.getChildren().add(new Etiqueta("<strong>TIPO DE TRANSACCIÓN :</strong>"));
+        gri2.getChildren().add(new Etiqueta("<strong>TIPO DE TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         com_tip_tran_cxc = new Combo();
         com_tip_tran_cxc.setMetodoRuta("pre_index.clase." + getId() + ".cambioTipoTransBanco");
         com_tip_tran_cxc.setCombo(ser_tesoreria.getSqlTipoTransaccionPositivo());
         gri2.getChildren().add(com_tip_tran_cxc);
-        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;NUM. DOCUMENTO :</strong>"));
+        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;NUM. DOCUMENTO : </strong>"));
         tex_num_cxc = new Texto();
         tex_num_cxc.setId("tex_num_cxc");
         gri2.getChildren().add(tex_num_cxc);
 
-        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA :</strong>"));
+        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         cal_fecha_pago_cxc = new Calendario();
         cal_fecha_pago_cxc.setFechaActual();
         gri2.getChildren().add(cal_fecha_pago_cxc);
 
         Grid gri3 = new Grid();
         gri3.setColumns(2);
-        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN :</strong>"));
+        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         ate_observacion_cxc = new Texto();
         ate_observacion_cxc.setStyle("width:" + (getAnchoPanel() - 140) + "px");
         gri3.getChildren().add(ate_observacion_cxc);
-
         contenido.getChildren().add(gri1);
         contenido.getChildren().add(gri2);
         contenido.getChildren().add(gri3);
@@ -328,10 +327,9 @@ public class CuentaCxc extends Dialogo {
             String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cabecera, aut_cuenta_cxc.getValor(), Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(tex_num_cxc.getValue()), cal_fecha_pago_cxc.getFecha(), String.valueOf(com_tip_tran_cxc.getValue()));
             ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion_cxc.getValue()), String.valueOf(tex_num_cxc.getValue()));
         }
-        
-        utilitario.getConexion().setImprimirSqlConsola(true);
-        utilitario.getConexion().guardarPantalla();
 
+        //utilitario.getConexion().setImprimirSqlConsola(true);
+        utilitario.getConexion().guardarPantalla();
     }
 
     /**

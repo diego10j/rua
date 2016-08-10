@@ -532,4 +532,12 @@ public class pre_documentosCxP extends Pantalla {
         this.asc_asiento = asc_asiento;
     }
 
+    public GraficoCartesiano getGca_facturas() {
+        return gca_facturas;
+    }
+
+    public void setGca_facturas(GraficoCartesiano gca_facturas) {
+        this.gca_facturas = gca_facturas;
+    }
+
 }

@@ -74,6 +74,7 @@ public class pre_asientos extends Pantalla {
         tab_cab_conta.setId("tab_cab_conta");
         tab_cab_conta.setSql(ser_comp_contabilidad.getSqlCabeceraAsiento("-1"));
         tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("TRANSACCIÓN");
+        tab_cab_conta.getColumna("ide_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_conta.getColumna("ide_cnccc").setEtiqueta();
         tab_cab_conta.getColumna("numero_cnccc").setEtiqueta();
         tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
