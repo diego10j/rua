@@ -523,4 +523,13 @@ public class pre_documentosCxP extends Pantalla {
     public void setTab_seleccion(Tabla tab_tabla) {
         this.tab_tabla1 = tab_tabla;
     }
+
+    public AsientoContable getAsc_asiento() {
+        return asc_asiento;
+    }
+
+    public void setAsc_asiento(AsientoContable asc_asiento) {
+        this.asc_asiento = asc_asiento;
+    }
+
 }
