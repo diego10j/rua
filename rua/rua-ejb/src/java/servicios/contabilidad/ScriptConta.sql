@@ -195,3 +195,11 @@ ALTER TABLE cxp_cabece_factur  ADD COLUMN ide_rem_cpcfa bigint;
 ALTER TABLE cxp_cabece_factur ADD CONSTRAINT fk_cxp_cabe_relations_rembolso FOREIGN KEY (ide_rem_cpcfa)
 REFERENCES cxp_cabece_factur (ide_cpcfa) MATCH SIMPLE
 ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+--asiento tipo add columna tipo comprobante 
+ALTER TABLE "public"."cont_nombre_asiento_contable"
+ADD COLUMN "ide_cntcm" int4;
+ALTER TABLE "public"."cont_nombre_asiento_contable"
+ALTER COLUMN "ide_cntcm" SET NOT NULL;
+ALTER TABLE "public"."cont_nombre_asiento_contable"
+ADD CONSTRAINT "fk_tipo_comp_asiento_tipo" FOREIGN KEY ("ide_cntcm") REFERENCES "public"."con_tipo_comproba" ("ide_cntcm");

@@ -217,6 +217,7 @@ public class FacturaCxC extends Dialogo {
                 dou_subtno = Double.parseDouble(tab_cab_factura.getValor("base_no_objeto_iva_cccfa"));
             } catch (Exception e) {
             }
+            this.setTitle("FACTURA N. " + tab_cab_factura.getValor("secuencial_cccfa"));
             tex_subtotal0.setValue(utilitario.getFormatoNumero(dou_subt0 + dou_subtno));
             tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("base_grabada_cccfa")));
             tex_total.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cccfa")));
@@ -648,7 +649,6 @@ public class FacturaCxC extends Dialogo {
         tab_deta_conta.getColumna("ide_cndcc").setVisible(false);
         tab_deta_conta.getColumna("codig_recur_cndpc").setNombreVisual("CÓDIGO CUENTA");
         tab_deta_conta.getColumna("nombre_cndpc").setNombreVisual("CUENTA");
-        tab_deta_conta.getColumna("observacion_cndcc").setNombreVisual("observacion");
         tab_deta_conta.setColumnaSuma("debe,haber");
         tab_deta_conta.getColumna("debe").alinearDerecha();
         tab_deta_conta.getColumna("debe").setLongitud(25);

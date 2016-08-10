@@ -37,7 +37,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("0", "p_con_deficit_ejercicio_presente", "Indica la configuracion para la cuenta de Deficit del Ejercicio Presente ", "4481", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
 
         lis_parametros.add(new Parametro("0", "p_con_tipo_documento_nota_credito", "Comprobante tipo nota de credito ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
-
+        lis_parametros.add(new Parametro("0", "p_con_usa_presupuesto", "Indica si la empresa maneja el módulo de presupuesto", "false"));
         /*
          * INVENTARIO MODULO =1
          */

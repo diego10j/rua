@@ -88,7 +88,7 @@ public class pre_plan_cuentas extends Pantalla {
         div_vertical.dividir2(arb_arbol, pat_panel2, "45%", "V");
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pat_panel1, div_vertical, "10%", "H");
+        div_division.dividir2(pat_panel1, div_vertical, "11%", "H");
 
         agregarComponente(div_division);
         agregarComponente(rep_reporte);

@@ -115,7 +115,7 @@ public class ServicioFacturaCxC extends ServicioBase {
     public String getSqlFacturasNoContabilizadas(String ide_ccdaf, String fechaInicio, String fechaFin) {
         return "select a.ide_cccfa, secuencial_cccfa,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                 + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                + "observacion_cccfa, fecha_trans_cccfa "
+                + "observacion_cccfa, fecha_trans_cccfa,a.ide_geper "
                 + "from cxc_cabece_factura a "
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "

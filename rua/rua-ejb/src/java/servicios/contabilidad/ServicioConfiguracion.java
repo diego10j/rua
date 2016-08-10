@@ -174,6 +174,11 @@ public class ServicioConfiguracion {
         return utilitario.consultar("SELECT * FROM cont_asiento_tipo WHERE ide_conac=" + ide_conac + " and ide_inarti is null order by ide_cnlap");
     }
 
+    public TablaGenerica getCabeceraAsientoTipo(String ide_conac) {
+        //Solo cuentas especificas 
+        return utilitario.consultar("SELECT * FROM cont_nombre_asiento_contable WHERE ide_conac=" + ide_conac);
+    }
+
     /**
      * Retorna el porcentaje de Iva vigente
      *

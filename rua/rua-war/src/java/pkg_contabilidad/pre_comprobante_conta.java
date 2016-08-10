@@ -75,6 +75,9 @@ public class pre_comprobante_conta extends Pantalla {
     //Consultas por rango de fechas
     private final Calendario cal_fecha_inicio = new Calendario();
     private final Calendario cal_fecha_fin = new Calendario();
+    private Map parametro = new HashMap();
+    private String fecha_fin;
+    private String fecha_inicio;
 
     public pre_comprobante_conta() {
         //Recuperar el plan de cuentas activo
@@ -513,8 +516,7 @@ public class pre_comprobante_conta extends Pantalla {
             }
         } else if (tab_tabla2.isFocus()) {
             tab_tabla2.insertar();
-        }
-        else if (tab_presupuesto.isFocus()) {
+        } else if (tab_presupuesto.isFocus()) {
             tab_presupuesto.insertar();
         }
     }
@@ -529,7 +531,7 @@ public class pre_comprobante_conta extends Pantalla {
                 }
                 tab_tabla1.guardar();
                 tab_tabla2.guardar();
-                tab_presupuesto.guardar(); 
+                tab_presupuesto.guardar();
                 utilitario.getConexion().guardarPantalla();
             }
         }
@@ -671,9 +673,6 @@ public class pre_comprobante_conta extends Pantalla {
         }
         int_count_deseleccion += 1;
     }
-    Map parametro = new HashMap();
-    String fecha_fin;
-    String fecha_inicio;
 
     @Override
     public void aceptarReporte() {

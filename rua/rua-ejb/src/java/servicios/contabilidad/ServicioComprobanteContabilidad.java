@@ -168,7 +168,7 @@ public class ServicioComprobanteContabilidad {
                     return false;
                 }
             }
-            tab_periodo = utilitario.consultar("SELECT  1 FROM con_periodo WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and estado_cnper=true AND '" + fecha + "' BETWEEN fecha_inicio_cnper and fecha_fin_cnper ");
+            tab_periodo = utilitario.consultar("SELECT  * FROM con_periodo WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and estado_cnper=true AND '" + fecha + "' BETWEEN fecha_inicio_cnper and fecha_fin_cnper ");
             if (tab_periodo.getTotalFilas() > 0) {
                 return true;
             } else {
@@ -357,7 +357,7 @@ public class ServicioComprobanteContabilidad {
         tabla.getColumna("hora_sistem_cnccc").setVisible(false);
         tabla.getColumna("hora_sistem_cnccc").setValorDefecto(utilitario.getHoraActual());
         tabla.getColumna("ide_cntcm").setVisible(false);
-        tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
+        //tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
         tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tabla.getColumna("ide_usua").setLectura(true);
         tabla.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
@@ -388,12 +388,25 @@ public class ServicioComprobanteContabilidad {
         tabla.getColumna("ide_cnlap").setCombo(getSqlLugarAplica());
         tabla.getColumna("ide_cnlap").setPermitirNullCombo(false);
         tabla.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
-        tabla.getColumna("ide_cnlap").setLongitud(5);
-        tabla.getColumna("ide_cnlap").setAncho(5);
+        tabla.getColumna("ide_cnlap").setLongitud(-1);
         tabla.setCampoOrden("ide_cnlap desc");
         tabla.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
         tabla.setCampoOrden("ide_cnlap desc");
         tabla.setRows(10);
+    }
+
+    public boolean anularComprobante(String ide_cnccc) {
+        TablaGenerica tab_busca = utilitario.consultar("SELECT * FROM con_cab_comp_cont where ide_cnccc=" + ide_cnccc);
+        String p_con_estado_comprobante_anulado = utilitario.getVariable("p_con_estado_comprobante_anulado");
+        if (tab_busca.getTotalFilas() > 0) {
+            // if (!tab_busca.getValor("ide_cneco").equals(p_con_estado_comprobante_anulado)) {
+            utilitario.getConexion().agregarSqlPantalla("update con_cab_comp_cont set ide_cneco=" + p_con_estado_comprobante_anulado + " where ide_cnccc=" + ide_cnccc);
+            utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + ide_cnccc);
+            return true;
+            //  }
+
+        }
+        return false;
     }
 
 }

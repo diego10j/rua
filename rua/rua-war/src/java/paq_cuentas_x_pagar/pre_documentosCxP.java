@@ -5,6 +5,7 @@
  */
 package paq_cuentas_x_pagar;
 
+import componentes.AsientoContable;
 import componentes.DocumentoCxP;
 import componentes.Retencion;
 import framework.componentes.Barra;
@@ -51,6 +52,8 @@ public class pre_documentosCxP extends Pantalla {
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
 
+    private AsientoContable asc_asiento = new AsientoContable();
+
     public pre_documentosCxP() {
 
         bar_botones.quitarBotonsNavegacion();
@@ -85,7 +88,7 @@ public class pre_documentosCxP extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES DOCUMENTOS POR PAGAR", "20%");
         mep_menu.agregarItem("Listado de Documentos CxP ", "dibujarDocumentos", "ui-icon-note");
-        mep_menu.agregarItem("Generar Comprobante Contabilidad", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
         mep_menu.agregarItem("Generar Comprobante Retención", "dibujarDocumentosNoRetencion", "ui-icon-notice");
         mep_menu.agregarItem("Documentos Anulados", "dibujarDocumentosAnulados", "ui-icon-cancel");
         mep_menu.agregarItem("Documentos Por Pagar", "dibujarDocumentosPorPagar", "ui-icon-calculator");
@@ -106,6 +109,10 @@ public class pre_documentosCxP extends Pantalla {
         sel_rep.setId("sel_rep");
         agregarComponente(rep_reporte);
         agregarComponente(sel_rep);
+
+        asc_asiento.setId("asc_asiento");
+        asc_asiento.getBot_aceptar().setMetodo("guardar");
+        agregarComponente(asc_asiento);
 
     }
 
@@ -176,8 +183,21 @@ public class pre_documentosCxP extends Pantalla {
     }
 
     public void dibujarDocumentosNoContabilizadas() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Asiento Contable");
+        bot_asi.setMetodo("abrirGeneraAsiento");
+        bar_menu.agregarComponente(bot_asi);
+        bar_menu.agregarSeparador();
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Ver Factura");
+        bot_ver.setMetodo("abrirVerFactura");
+        bar_menu.agregarComponente(bot_ver);
+
         tab_tabla1 = new Tabla();
-        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setId("tab_seleccion");
         tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentosNoContabilidad(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_tipo_documento.getValue())));
         tab_tabla1.setCampoPrimaria("ide_cpcfa");
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
@@ -192,13 +212,27 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
         tab_tabla1.getColumna("total_cpcfa").setEstilo("font-size: 12px;font-weight: bold;");
         tab_tabla1.setRows(20);
-        tab_tabla1.setLectura(true);
+        //tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setSeleccionTabla("multiple");
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
+
         mep_menu.dibujar(2, "DOCUMENTOS POR PAGAR SIN COMPROBANTE CONTABLE", gru);
+    }
+
+    public void abrirGeneraAsiento() {
+        if (tab_tabla1.getFilasSeleccionadas() != null) {
+            asc_asiento.dibujar();
+            asc_asiento.setAsientoDocumentosCxP(tab_tabla1.getFilasSeleccionadas());
+            asc_asiento.getBot_aceptar().setMetodo("guardar");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos una Factura", "");
+        }
     }
 
     public void dibujarDocumentosNoRetencion() {
@@ -347,11 +381,20 @@ public class pre_documentosCxP extends Pantalla {
     }
 
     public void verDocumento() {
-        if (tab_tabla1.getValorSeleccionado() != null) {
-            dcp_documento.verDocumento(tab_tabla1.getValorSeleccionado());
-            dcp_documento.dibujar();
+        if (mep_menu.getOpcion() == 2) {
+            if (tab_tabla1.getSeleccionados() != null && tab_tabla1.getSeleccionados().length > 0) {
+                dcp_documento.verDocumento(tab_tabla1.getSeleccionados()[0].getRowKey());
+                dcp_documento.dibujar();
+            } else {
+                utilitario.agregarMensajeInfo("Debe seleccionar una Factura", "");
+            }
         } else {
-            utilitario.agregarMensajeInfo("Seleccione un Documento", "");
+            if (tab_tabla1.getValorSeleccionado() != null) {
+                dcp_documento.verDocumento(tab_tabla1.getValorSeleccionado());
+                dcp_documento.dibujar();
+            } else {
+                utilitario.agregarMensajeInfo("Seleccione un Documento", "");
+            }
         }
     }
 
@@ -415,6 +458,11 @@ public class pre_documentosCxP extends Pantalla {
                 tab_tabla1.setFilaActual(ret_retencion.getIde_cpcfa());
                 utilitario.addUpdate("tab_tabla1");
             }
+        } else if (asc_asiento.isVisible()) {
+            asc_asiento.guardar();
+            if (asc_asiento.isVisible() == false) {
+                dibujarDocumentosNoContabilizadas();
+            }
         }
     }
 
@@ -468,4 +516,11 @@ public class pre_documentosCxP extends Pantalla {
         this.sel_rep = sel_rep;
     }
 
+    public Tabla getTab_seleccion() {
+        return tab_tabla1;
+    }
+
+    public void setTab_seleccion(Tabla tab_tabla) {
+        this.tab_tabla1 = tab_tabla;
+    }
 }

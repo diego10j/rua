@@ -6,6 +6,7 @@
 package paq_contabilidad;
 
 import framework.aplicacion.Fila;
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -15,14 +16,23 @@ import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
+import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.reportes.ReporteDataSource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
+import pkg_contabilidad.cls_contabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import sistema.aplicacion.Pantalla;
 
@@ -45,9 +55,24 @@ public class pre_contabilidad extends Pantalla {
     private Calendario cal_fecha_fin;
     private Radio rad_niveles;
 
+    //Reportes
+    private final String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
+    private final String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private SeleccionTabla sel_tab = new SeleccionTabla();
+    private SeleccionTabla sel_tab_nivel = new SeleccionTabla();
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
+    private cls_contabilidad con = new cls_contabilidad();
+    private List lis_ide_cndpc_deseleccionados = new ArrayList();
+    private int int_count_deseleccion = 0;
+    private Map parametro = new HashMap();
+    private String fecha_fin;
+    private String fecha_inicio;
+
     public pre_contabilidad() {
         bar_botones.limpiar();
-        bar_botones.agregarComponente(new Etiqueta("CUENTA CONTABLE :"));
+        bar_botones.agregarReporte();
 
         mep_menu.setMenuPanel("INFORMES CONTABLIDAD", "20%");
         mep_menu.agregarItem("Libro Mayor", "dibujarLibroMayor", "ui-icon-bookmark"); //1
@@ -57,6 +82,40 @@ public class pre_contabilidad extends Pantalla {
         mep_menu.agregarSubMenu("GRAFICOS");
         mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-bookmark");
         agregarComponente(mep_menu);
+
+        //Reportes
+        //seleccion de las cuentas para reporte libro mayor
+        sel_tab.setId("sel_tab");
+        sel_tab.setSeleccionTabla(ser_contabilidad.getSqlCuentasHijas(), "ide_cndpc");
+        sel_tab.getTab_seleccion().getColumna("nombre_cndpc").setFiltro(true);
+        sel_tab.getTab_seleccion().getColumna("codig_recur_cndpc").setFiltro(true);
+        sel_tab.getTab_seleccion().onSelectCheck("seleccionaCuentaContable");
+        sel_tab.getTab_seleccion().onUnselectCheck("deseleccionaCuentaContable");
+        sel_tab.setDynamic(false);
+        agregarComponente(sel_tab);
+
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_tab.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_tab.getBot_aceptar().setUpdate("sel_tab ");
+
+        sel_tab_nivel.setId("sel_tab_nivel");
+        sel_tab_nivel.setTitle("Seleccione El Nivel");
+        sel_tab_nivel.setSeleccionTabla(ser_contabilidad.getSqlNivelesPlandeCuentas(), "ide_cnncu");
+        sel_tab_nivel.setRadio();
+        agregarComponente(sel_tab_nivel);
+
+        sel_tab_nivel.getBot_aceptar().setMetodo("aceptarReporte");
+
+        agregarComponente(rep_reporte);
+
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango_reporte.setMultiple(false);
+        agregarComponente(sec_rango_reporte);
+
+        sel_rep.setId("sel_rep");
+        agregarComponente(sel_rep);
 
     }
 
@@ -167,7 +226,6 @@ public class pre_contabilidad extends Pantalla {
         double dou_saldo_actual = 0;
         double dou_debe = 0;
         double dou_haber = 0;
-        String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             if (tab_consulta.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
                 tab_consulta.setValor(i, "debe", utilitario.getFormatoNumero(Math.abs(Double.parseDouble(tab_consulta.getValor(i, "valor_cndcc")))));
@@ -519,6 +577,454 @@ public class pre_contabilidad extends Pantalla {
     public void eliminar() {
     }
 
+    @Override
+    public void aceptarReporte() {
+//Se ejecuta cuando se selecciona un reporte de la lista        
+        if (rep_reporte.getReporteSelecionado().equals("Libro Diario")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+
+            } else if (sec_rango_reporte.isVisible()) {
+                String estado = "" + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comp_final");
+                parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+
+                parametro.put("ide_cneco", estado);
+                parametro.put("ide_cnlap_haber", p_con_lugar_haber);
+                parametro.put("ide_cnlap_debe", p_con_lugar_debe);
+                sec_rango_reporte.cerrar();
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep,sec_rango_reporte");
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Balance General Consolidado")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
+                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                        fecha_fin = sec_rango_reporte.getFecha2String();
+                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                            sec_rango_reporte.cerrar();
+                            sel_tab_nivel.dibujar();
+                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
+                        } else {
+                            utilitario.agregarMensajeError("Atencion", "El rango de fechas seleccionado no se encuentra en ningun Periodo Contable");
+                        }
+                    } else {
+                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicial");
+                }
+            } else if (sel_tab_nivel.isVisible()) {
+                if (sel_tab_nivel.getValorSeleccionado() != null) {
+                    System.out.println("fecha fin " + fecha_fin);
+                    parametro.put("p_activo", utilitario.getVariable("p_con_tipo_cuenta_activo"));
+                    parametro.put("p_pasivo", utilitario.getVariable("p_con_tipo_cuenta_pasivo"));
+                    parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
+                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                    if (tab_datos.getTotalFilas() > 0) {
+                        parametro.put("logo", tab_datos.getValor(0, "logo_empr"));
+                        parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                        parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                        parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                        parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                        parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+
+                    }
+                    parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
+                    parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
+                    TablaGenerica tab_balance = con.generarBalanceGeneral(true, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
+                    parametro.put("titulo", "BALANCE GENERAL CONSOLIDADO");
+                    if (tab_balance.getTotalFilas() > 0) {
+                        List lis_totales = con.obtenerTotalesBalanceGeneral(true, fecha_inicio, fecha_fin);
+                        double tot_activo = Double.parseDouble(lis_totales.get(0) + "");
+                        double tot_pasivo = Double.parseDouble(lis_totales.get(1) + "");
+                        double tot_patrimonio = Double.parseDouble(lis_totales.get(2) + "");
+                        double utilidad_perdida = tot_activo - tot_pasivo - tot_patrimonio;
+                        double total = tot_pasivo + tot_patrimonio + utilidad_perdida;
+                        parametro.put("p_tot_activo", tot_activo);
+                        parametro.put("p_total", total);
+                        parametro.put("p_utilidad_perdida", utilidad_perdida);
+                        parametro.put("p_tot_pasivo", tot_pasivo);
+                        parametro.put("p_tot_patrimonio", (tot_patrimonio));
+                    }
+                    sel_tab_nivel.cerrar();
+                    ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.dibujar();
+
+                    utilitario.addUpdate("sel_rep,sel_tab_nivel");
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Balance General")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
+                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                        fecha_fin = sec_rango_reporte.getFecha2String();
+                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                            sec_rango_reporte.cerrar();
+                            sel_tab_nivel.dibujar();
+                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
+                        } else {
+                            utilitario.agregarMensajeError("Atencion", "El rango de fechas seleccionado no se encuentra en ningun Periodo Contable");
+                        }
+
+                    } else {
+                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicial");
+                }
+            } else if (sel_tab_nivel.isVisible()) {
+                if (sel_tab_nivel.getValorSeleccionado() != null) {
+                    System.out.println("fecha fin " + fecha_fin);
+                    parametro.put("p_activo", utilitario.getVariable("p_con_tipo_cuenta_activo"));
+                    parametro.put("p_pasivo", utilitario.getVariable("p_con_tipo_cuenta_pasivo"));
+                    parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
+                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                    if (tab_datos.getTotalFilas() > 0) {
+                        parametro.put("logo", tab_datos.getValor(0, "logo_empr"));
+                        parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                        parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                        parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                        parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                        parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+
+                    }
+                    parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
+                    parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
+                    TablaGenerica tab_balance = con.generarBalanceGeneral(false, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
+                    parametro.put("titulo", "BALANCE GENERAL");
+                    if (tab_balance.getTotalFilas() > 0) {
+                        List lis_totales = con.obtenerTotalesBalanceGeneral(false, fecha_inicio, fecha_fin);
+                        double tot_activo = Double.parseDouble(lis_totales.get(0) + "");
+                        double tot_pasivo = Double.parseDouble(lis_totales.get(1) + "");
+                        double tot_patrimonio = Double.parseDouble(lis_totales.get(2) + "");
+                        double utilidad_perdida = tot_activo - tot_pasivo - tot_patrimonio;
+                        double total = tot_pasivo + tot_patrimonio + utilidad_perdida;
+                        parametro.put("p_tot_activo", tot_activo);
+                        parametro.put("p_total", total);
+                        parametro.put("p_utilidad_perdida", utilidad_perdida);
+                        parametro.put("p_tot_pasivo", tot_pasivo);
+                        parametro.put("p_tot_patrimonio", (tot_patrimonio));
+                    }
+                    sel_tab_nivel.cerrar();
+                    ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.dibujar();
+
+                    utilitario.addUpdate("sel_rep,sel_tab_nivel");
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Estado de Resultados Consolidado")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
+                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                        fecha_fin = sec_rango_reporte.getFecha2String();
+                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                            sec_rango_reporte.cerrar();
+                            sel_tab_nivel.dibujar();
+                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
+                        }
+                    } else {
+                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+                }
+            } else if (sel_tab_nivel.isVisible()) {
+                if (sel_tab_nivel.getValorSeleccionado() != null) {
+                    parametro.put("p_ingresos", utilitario.getVariable("p_con_tipo_cuenta_ingresos"));
+                    parametro.put("p_gastos", utilitario.getVariable("p_con_tipo_cuenta_gastos"));
+                    parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
+                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                    if (tab_datos.getTotalFilas() > 0) {
+                        parametro.put("logo", tab_datos.getValor(0, "logo_empr"));
+                        parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                        parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                        parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                        parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                        parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+                    }
+
+                    parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
+                    parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
+                    TablaGenerica tab_estado = con.generarEstadoResultados(true, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
+                    if (tab_estado.getTotalFilas() > 0) {
+                        List lis_totales = con.obtenerTotalesEstadoResultados(true, fecha_inicio, fecha_fin);
+                        double tot_ingresos = Double.parseDouble(lis_totales.get(0) + "");
+                        double tot_gastos = Double.parseDouble(lis_totales.get(1) + "");
+                        double tot_costos = Double.parseDouble(lis_totales.get(2) + "");
+                        double utilidad_perdida = tot_ingresos - (tot_gastos + tot_costos);
+                        parametro.put("p_tot_ingresos", tot_ingresos);
+                        parametro.put("p_tot_gastos", tot_gastos);
+                        parametro.put("p_tot_costos", tot_costos);
+                        parametro.put("p_utilidad", utilidad_perdida);
+                    }
+                    parametro.put("titulo", "ESTADO DE RESULTADOS CONSOLIDADO");
+                    ReporteDataSource data = new ReporteDataSource(tab_estado);
+                    sel_tab_nivel.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("sel_rep,sel_tab_nivel");
+                }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Estado de Resultados")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
+                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                        fecha_fin = sec_rango_reporte.getFecha2String();
+                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                            sec_rango_reporte.cerrar();
+                            sel_tab_nivel.dibujar();
+                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
+                        }
+                    } else {
+                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+                }
+            } else if (sel_tab_nivel.isVisible()) {
+                if (sel_tab_nivel.getValorSeleccionado() != null) {
+                    parametro.put("p_ingresos", utilitario.getVariable("p_con_tipo_cuenta_ingresos"));
+                    parametro.put("p_gastos", utilitario.getVariable("p_con_tipo_cuenta_gastos"));
+                    parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
+                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                    if (tab_datos.getTotalFilas() > 0) {
+                        parametro.put("logo", tab_datos.getValor(0, "logo_empr"));
+                        parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                        parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                        parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                        parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                        parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+                    }
+
+                    parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
+                    parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
+                    TablaGenerica tab_estado = con.generarEstadoResultados(false, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
+                    if (tab_estado.getTotalFilas() > 0) {
+                        List lis_totales = con.obtenerTotalesEstadoResultados(false, fecha_inicio, fecha_fin);
+                        double tot_ingresos = Double.parseDouble(lis_totales.get(0) + "");
+                        double tot_gastos = Double.parseDouble(lis_totales.get(1) + "");
+                        double tot_costos = Double.parseDouble(lis_totales.get(2) + "");
+                        double utilidad_perdida = tot_ingresos - (tot_gastos + tot_costos);
+                        parametro.put("p_tot_ingresos", tot_ingresos);
+                        parametro.put("p_tot_gastos", tot_gastos);
+                        parametro.put("p_tot_costos", tot_costos);
+                        parametro.put("p_utilidad", utilidad_perdida);
+                    }
+                    ReporteDataSource data = new ReporteDataSource(tab_estado);
+                    parametro.put("titulo", "ESTADO DE RESULTADOS");
+                    sel_tab_nivel.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("sel_rep,sel_tab_nivel");
+                }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Libro Mayor")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                lis_ide_cndpc_sel.clear();
+                lis_ide_cndpc_deseleccionados.clear();
+                int_count_deseleccion = 0;
+                int_count_seleccion = 0;
+                sel_tab.getTab_seleccion().setSeleccionados(null);
+//                utilitario.ejecutarJavaScript(sel_tab.getTab_seleccion().getId() + ".clearFilters();");
+                sel_tab.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_tab");
+            } else {
+                if (sel_tab.isVisible()) {
+
+                    if (sel_tab.getSeleccionados() != null && !sel_tab.getSeleccionados().isEmpty()) {
+                        System.out.println("nn " + sel_tab.getSeleccionados());
+                        parametro.put("ide_cndpc", sel_tab.getSeleccionados());//lista sel                     
+                        sel_tab.cerrar();
+                        String estado = "" + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comp_final");
+                        parametro.put("ide_cneco", estado);
+                        sec_rango_reporte.setMultiple(true);
+                        sec_rango_reporte.dibujar();
+                        utilitario.addUpdate("sel_tab,sec_rango_reporte");
+
+                    } else {
+                        utilitario.agregarMensajeInfo("Debe seleccionar al menos una cuenta contable", "");
+                    }
+//                    if (lis_ide_cndpc_deseleccionados.size() == 0) {
+//                        System.out.println("sel tab lis " + sel_tab.getSeleccionados());
+//                        parametro.put("ide_cndpc", sel_tab.getSeleccionados());//lista sel                     
+//                    } else {
+//                        System.out.println("sel tab " + utilitario.generarComillasLista(lis_ide_cndpc_deseleccionados));
+//                        parametro.put("ide_cndpc", utilitario.generarComillasLista(lis_ide_cndpc_deseleccionados));//lista sel                     
+//                    }
+                } else if (sec_rango_reporte.isVisible()) {
+                    if (sec_rango_reporte.isFechasValidas()) {
+                        parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                        parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                        parametro.put("ide_cnlap_haber", p_con_lugar_haber);
+                        parametro.put("ide_cnlap_debe", p_con_lugar_debe);
+                        sec_rango_reporte.cerrar();
+                        sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                        sel_rep.dibujar();
+                        utilitario.addUpdate("sel_rep,sec_rango_reporte");
+                    } else {
+                        utilitario.agregarMensajeInfo("Las fechas seleccionadas no son correctas", "");
+                    }
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Balance de Comprobacion")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+
+            } else {
+                if (sec_rango_reporte.isVisible()) {
+                    if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
+                        if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                            String fecha_fin1 = sec_rango_reporte.getFecha2String();
+                            String fecha_inicio1 = sec_rango_reporte.getFecha1String();
+                            System.out.println("fecha fin " + fecha_fin1);
+                            sec_rango_reporte.cerrar();
+
+                            TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                            if (tab_datos.getTotalFilas() > 0) {
+                                parametro.put("logo", tab_datos.getValor(0, "logo_empr"));
+                                parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                                parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                                parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                                parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                                parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+                            }
+                            String fechaPeriodoActivo = con.obtenerFechaInicialPeriodoActivo();
+//                        if (fechaPeriodoActivo != null && !fechaPeriodoActivo.isEmpty()) {
+                            parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio1));
+                            parametro.put("fecha_fin", getFormatoFecha(fecha_fin1));
+                            TablaGenerica tab_bal = con.generarBalanceComprobacion(fechaPeriodoActivo, fecha_fin1);
+                            double suma_debe = 0;
+                            double suma_haber = 0;
+                            double suma_deudor = 0;
+                            double suma_acreedor = 0;
+                            for (int i = 0; i < tab_bal.getTotalFilas() - 1; i++) {
+                                suma_debe = Double.parseDouble(tab_bal.getValor(i, "debe")) + suma_debe;
+                                suma_haber = Double.parseDouble(tab_bal.getValor(i, "haber")) + suma_haber;
+                                suma_deudor = Double.parseDouble(tab_bal.getValor(i, "deudor")) + suma_deudor;
+                                suma_acreedor = Double.parseDouble(tab_bal.getValor(i, "acreedor")) + suma_acreedor;
+                            }
+                            parametro.put("tot_debe", suma_debe);
+                            parametro.put("tot_haber", suma_haber);
+                            parametro.put("tot_deudor", suma_deudor);
+                            parametro.put("tot_acreedor", suma_acreedor);
+                            ReporteDataSource data = new ReporteDataSource(tab_bal);
+                            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                            sel_rep.dibujar();
+                            utilitario.addUpdate("sel_rep,sec_rango_reporte");
+                        }
+//                    }
+                    } else {
+                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+                    }
+                } else {
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+                }
+            }
+
+        }
+    }
+    private List lis_ide_cndpc_sel = new ArrayList();
+    private int int_count_seleccion = 0;
+
+    public void seleccionaCuentaContable(SelectEvent evt) {
+        sel_tab.getTab_seleccion().seleccionarFila(evt);
+        for (Fila actual : sel_tab.getTab_seleccion().getSeleccionados()) {
+            int band = 0;
+            for (int i = 0; i < lis_ide_cndpc_sel.size(); i++) {
+                if (actual.getRowKey().equals(lis_ide_cndpc_sel.get(i))) {
+                    band = 1;
+                    break;
+                }
+            }
+            if (band == 0) {
+                lis_ide_cndpc_sel.add(actual.getRowKey());
+            }
+        }
+        if (int_count_seleccion == 0) {
+            lis_ide_cndpc_deseleccionados = lis_ide_cndpc_sel;
+        }
+        int_count_seleccion += 1;
+
+    }
+
+    public void deseleccionaCuentaContable(UnselectEvent evt) {
+        //tab_tabla2.modificar(evt);
+        for (Fila actual : sel_tab.getTab_seleccion().getSeleccionados()) {
+            int band = 0;
+            for (int i = 0; i < lis_ide_cndpc_deseleccionados.size(); i++) {
+                if (actual.getRowKey().equals(lis_ide_cndpc_deseleccionados.get(i))) {
+                    band = 1;
+                    break;
+                }
+            }
+            if (band == 0) {
+                lis_ide_cndpc_deseleccionados.add(actual.getRowKey());
+            }
+        }
+        int_count_deseleccion += 1;
+    }
+
+    public String getFormatoFecha(String fecha) {
+        String mes = utilitario.getNombreMes(utilitario.getMes(fecha));
+        String dia = utilitario.getDia(fecha) + "";
+        String anio = utilitario.getAnio(fecha) + "";
+        String fecha_formato = dia + " DE " + mes + " DEL " + anio;
+        return fecha_formato;
+    }
+
+    @Override
+    public void abrirListaReportes() {
+//Se ejecuta cuando da click en el boton de Reportes de la Barra 
+        sec_rango_reporte.getCal_fecha1().setValue(null);
+        sec_rango_reporte.getCal_fecha2().setValue(null);
+        rep_reporte.dibujar();
+
+    }
+
     public AutoCompletar getAut_cuenta() {
         return aut_cuenta;
     }
@@ -534,4 +1040,45 @@ public class pre_contabilidad extends Pantalla {
     public void setTab_consulta(Tabla tab_consulta) {
         this.tab_consulta = tab_consulta;
     }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
+    }
+
+    public SeleccionTabla getSel_tab() {
+        return sel_tab;
+    }
+
+    public void setSel_tab(SeleccionTabla sel_tab) {
+        this.sel_tab = sel_tab;
+    }
+
+    public SeleccionTabla getSel_tab_nivel() {
+        return sel_tab_nivel;
+    }
+
+    public void setSel_tab_nivel(SeleccionTabla sel_tab_nivel) {
+        this.sel_tab_nivel = sel_tab_nivel;
+    }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
+    }
+
 }

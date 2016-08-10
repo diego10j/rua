@@ -1048,4 +1048,15 @@ public class Utilitario extends Framework {
             return null;
         }
     }
+
+    public int getAltoPantalla() {
+        if (getVariable("ALTO_PANTALLA") != null) {
+            try {
+                Double dou_alto = Double.parseDouble(getVariable("ALTO_PANTALLA"));
+                return dou_alto.intValue();
+            } catch (Exception e) {
+            }
+        }
+        return 1000;
+    }
 }
