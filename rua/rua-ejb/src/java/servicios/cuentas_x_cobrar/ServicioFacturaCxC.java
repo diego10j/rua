@@ -50,7 +50,7 @@ public class ServicioFacturaCxC extends ServicioBase {
      */
     public int getSecuencialFactura(String ide_ccdaf) {
         int max = 0;
-        TablaGenerica tab_secuencia = utilitario.consultar("select ide_ccdaf,MAX(secuencial_cccfa) as num_max FROM cxc_cabece_factura where ide_ccdaf=" + ide_ccdaf + " GROUP BY ide_ccdaf ");
+        TablaGenerica tab_secuencia = utilitario.consultar("select ide_ccdaf,max(CAST(coalesce(secuencial_cccfa, '0') AS Integer)) as num_max FROM cxc_cabece_factura where ide_ccdaf=" + ide_ccdaf + " GROUP BY ide_ccdaf ");
         if (tab_secuencia.isEmpty() == false) {
             try {
                 max = Integer.parseInt(tab_secuencia.getValor("num_max"));
