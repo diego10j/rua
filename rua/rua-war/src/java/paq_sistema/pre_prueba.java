@@ -5,6 +5,7 @@
 package paq_sistema;
 
 import componentes.AsientoContable;
+import componentes.CuentaCxP;
 import componentes.CuentaCxc;
 import componentes.DocumentoCxP;
 import sistema.aplicacion.Pantalla;
@@ -15,7 +16,7 @@ import sistema.aplicacion.Pantalla;
  */
 public class pre_prueba extends Pantalla {
 
-    private CuentaCxc fac = new CuentaCxc();
+    private CuentaCxP fac = new CuentaCxP();
     private DocumentoCxP dcp = new DocumentoCxP();
     private AsientoContable asi = new AsientoContable();
 
@@ -26,7 +27,7 @@ public class pre_prueba extends Pantalla {
         asi.setId("asi");
         agregarComponente(asi);
 
-        dcp.setId("dcp");       
+        dcp.setId("dcp");
         dcp.setDocumentoCxP("CREAR DOCUMENTO CXP");
         agregarComponente(dcp);
     }
@@ -43,15 +44,15 @@ public class pre_prueba extends Pantalla {
 
     @Override
     public void eliminar() {
-        
+
         dcp.dibujar();
     }
 
-    public CuentaCxc getFac() {
+    public CuentaCxP getFac() {
         return fac;
     }
 
-    public void setFac(CuentaCxc fac) {
+    public void setFac(CuentaCxP fac) {
         this.fac = fac;
     }
 

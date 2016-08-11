@@ -7,6 +7,7 @@ package servicios.cuentas_x_pagar;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -125,6 +126,32 @@ public class ServicioCuentasCxP extends ServicioBase {
             ide_cpctr = tab_cab_tran_cxp.getValor("ide_cpctr");
         }
         return ide_cpctr;
+    }
+
+    public String generarTransaccionPago(TablaGenerica tab_cab_factura, String ide_cpctr, String ide_teclb, double valor, String observacion, String num_documento) {
+        TablaGenerica tab_det_tran_cxp = new TablaGenerica();
+        tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
+        tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
+        tab_det_tran_cxp.setCondicion("ide_cpdtr=-1");
+        tab_det_tran_cxp.ejecutarSql();
+        tab_det_tran_cxp.insertar();
+        String str_p_cxp_tipo_trans_pago = utilitario.getVariable("p_cxp_tipo_trans_pago");
+        tab_det_tran_cxp.setValor("ide_teclb", ide_teclb);
+        tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
+        tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+        tab_det_tran_cxp.setValor("ide_cpttr", str_p_cxp_tipo_trans_pago);
+        tab_det_tran_cxp.setValor("ide_cpctr", ide_cpctr);
+        tab_det_tran_cxp.setValor("fecha_trans_cpdtr", utilitario.getFechaActual());
+        tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(valor));
+        tab_det_tran_cxp.setValor("observacion_cpdtr", observacion);
+        tab_det_tran_cxp.setValor("numero_pago_cpdtr", getNumeroPagoDocumento(ide_cpctr) + "");
+        tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFechaActual());
+        if (num_documento == null || num_documento.isEmpty()) {
+            num_documento = tab_cab_factura.getValor("numero_cpcfa");
+        }
+        tab_det_tran_cxp.setValor("docum_relac_cpdtr", num_documento);
+        tab_det_tran_cxp.guardar();
+        return tab_det_tran_cxp.getValor("ide_cpdtr");
     }
 
     public String getSqlTipoDocumentosCxP() {
@@ -331,6 +358,25 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "where numero_pago_cpdtr > 0 \n"
                 + "and ide_cpcfa=" + ide_cpcfa + "\n"
                 + "order by fecha_trans_cpdtr";
+    }
+
+    public String getSqlCabeceraDocumento(String ide_cpcfa) {
+        return "SELECT * from cxp_cabece_factur where ide_cpcfa=" + ide_cpcfa;
+    }
+
+    public String getNumeroPagoDocumento(String ide_cpctr) {
+        //RETORNA EL PAGO MAXIMO 
+        System.out.println("select max(numero_pago_ccdtr) from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
+        List lis_sql = utilitario.getConexion().consultar("select max(numero_pago_cpdtr) from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
+        int num = 0;
+        if (lis_sql.get(0) != null) {
+            num = Integer.parseInt(lis_sql.get(0) + "") + 1;
+        }
+        return (num + 1) + "";
+    }
+
+    public String getSqlActualizaPagoDocumento(String ide_cpcfa) {
+        return "update cxp_cabece_factur set pagado_cpcfa=true where ide_cpcfa=" + ide_cpcfa;
     }
 
 }

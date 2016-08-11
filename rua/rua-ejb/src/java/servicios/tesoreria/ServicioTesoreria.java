@@ -288,6 +288,37 @@ public class ServicioTesoreria {
         return String.valueOf(ide_teclb);
     }
 
+    public String generarPagoFacturaCxP(TablaGenerica tab_cab_factura_cxp, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion) {
+        //Si noy numero de documento, asigna el secuencial de la factura
+        if (numero == null || numero.isEmpty()) {
+            numero = tab_cab_factura_cxp.getValor("numero_cpcfa");
+        }
+
+        String observacion = "V/. Pago Factura " + tab_cab_factura_cxp.getValor("numero_cpcfa");
+        //Si no hay fecha de pago, se asigna la fecha de la factura
+        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxp.getValor("fecha_emisi_cpcfa"));
+        }
+        //Si tipo transaccion, busca un tipo de transaccion cxc
+        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
+            tipoTransaccion = getTipoTransaccionCxP(tab_cab_factura_cxp.getValor("ide_cndfp"));
+        }
+
+        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
+                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
+                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
+                + "beneficiari_teclb, observacion_teclb) "
+                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
+                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+                + "'" + fechaTransaccion + "', "
+                + "NULL, false, '" + getPersona(tab_cab_factura_cxp.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+        utilitario.getConexion().agregarSqlPantalla(sql);
+        return String.valueOf(ide_teclb);
+    }
+
     /**
      * Retorna lps datos de Una Persona
      *

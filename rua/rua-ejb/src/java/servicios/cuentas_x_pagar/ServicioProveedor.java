@@ -111,7 +111,7 @@ public class ServicioProveedor {
         tabla.getColumna("IDE_VGECL").setVisible(false);
         tabla.getColumna("ide_gegen").setVisible(false);
         tabla.getColumna("IDE_VGTCL").setVisible(false);
-        
+
         tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tabla.getColumna("identificac_geper").setUnico(true);
@@ -234,6 +234,27 @@ public class ServicioProveedor {
             }
         }
         return saldo;
+    }
+
+    public String getSqlCuentasPorPagar(String ide_geper) {
+        String str_sql_cxp = "select dt.ide_cpctr,"
+                + "dt.ide_cpcfa,"
+                + "case when (cf.fecha_emisi_cpcfa) is null then ct.fecha_trans_cpctr else cf.fecha_emisi_cpcfa end,"
+                + "cf.numero_cpcfa,"
+                + "cf.total_cpcfa,"
+                + "sum (dt.valor_cpdtr*tt.signo_cpttr)-sum (dt.valor_anticipo_cpdtr) as saldo_x_pagar, "
+                + "case when (cf.observacion_cpcfa) is NULL then ct.observacion_cpctr else cf.observacion_cpcfa end "
+                + "from cxp_detall_transa dt "
+                + "left join cxp_cabece_transa ct on dt.ide_cpctr=ct.ide_cpctr "
+                + "left join cxp_cabece_factur cf on cf.ide_cpcfa=ct.ide_cpcfa and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " "
+                + "left join cxp_tipo_transacc tt on tt.ide_cpttr=dt.ide_cpttr "
+                + "where ct.ide_geper=" + ide_geper + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa, "
+                + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa "
+                + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr)-sum (dt.valor_anticipo_cpdtr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
+        return str_sql_cxp;
     }
 
     /**
