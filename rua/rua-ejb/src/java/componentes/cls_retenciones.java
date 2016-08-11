@@ -241,7 +241,7 @@ public class cls_retenciones {
     }
 
     public String getNumeroRetencion(String autorizacion, boolean es_venta) {
-        String str_sql = "select MAX(numero_cncre) as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+        String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and autorizacion_cncre ='" + autorizacion + "' ";
         if (es_venta) {
             str_sql += "and es_venta_cncre is true ";
