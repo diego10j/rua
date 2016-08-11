@@ -50,7 +50,6 @@ public class CuentaCxc extends Dialogo {
     private AutoCompletar aut_cuenta_cxc;
     private Combo com_tip_tran_cxc;
     private Texto tex_num_cxc;
-    private Texto ate_observacion_cxc;
     private Tabla tab_cuentas_x_cobrar;
     private Texto tex_diferencia_cxc;
     private Texto tex_valor_pagar_cxc;
@@ -105,15 +104,9 @@ public class CuentaCxc extends Dialogo {
         cal_fecha_pago_cxc.setFechaActual();
         gri2.getChildren().add(cal_fecha_pago_cxc);
 
-        Grid gri3 = new Grid();
-        gri3.setColumns(2);
-        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        ate_observacion_cxc = new Texto();
-        ate_observacion_cxc.setStyle("width:" + (getAnchoPanel() - 140) + "px");
-        gri3.getChildren().add(ate_observacion_cxc);
         contenido.getChildren().add(gri1);
         contenido.getChildren().add(gri2);
-        contenido.getChildren().add(gri3);
+
         contenido.getChildren().add(new Separator());
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);
@@ -161,7 +154,7 @@ public class CuentaCxc extends Dialogo {
         tab_cuentas_x_cobrar.getColumna("observacion_cccfa").setNombreVisual("OBSERVACIÓN");
 
         tab_cuentas_x_cobrar.setScrollable(true);
-        tab_cuentas_x_cobrar.setScrollHeight(getAltoPanel() - 275);
+        tab_cuentas_x_cobrar.setScrollHeight(getAltoPanel() - 225);
         tab_cuentas_x_cobrar.setCampoPrimaria("ide_ccctr");
         tab_cuentas_x_cobrar.setLectura(true);
         tab_cuentas_x_cobrar.setTipoSeleccion(true);
@@ -324,8 +317,9 @@ public class CuentaCxc extends Dialogo {
             String ide_ccctr = String.valueOf(obj_fila[1]);
             //TRANSACCION EN TESORERIA y TRANSACCION CXC
             TablaGenerica tab_cabecera = utilitario.consultar(ser_factura.getSqlCabeceraFactura(String.valueOf(obj_fila[0])));
-            String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cabecera, aut_cuenta_cxc.getValor(), Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(tex_num_cxc.getValue()), cal_fecha_pago_cxc.getFecha(), String.valueOf(com_tip_tran_cxc.getValue()));
-            ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion_cxc.getValue()), String.valueOf(tex_num_cxc.getValue()));
+            String observacion = "V/. PAGO FACTURA " + tab_cabecera.getValor("secuencial_cccfa");
+            String ide_teclb = ser_tesoreria.generarPagoFacturaCxC(tab_cabecera, aut_cuenta_cxc.getValor(), Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(tex_num_cxc.getValue()), cal_fecha_pago_cxc.getFecha(), String.valueOf(com_tip_tran_cxc.getValue()), observacion);
+            ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), observacion, String.valueOf(tex_num_cxc.getValue()));
         }
 
         //utilitario.getConexion().setImprimirSqlConsola(true);
@@ -363,16 +357,16 @@ public class CuentaCxc extends Dialogo {
         }
 
         if (tex_valor_pagar_cxc.getValue() == null || tex_valor_pagar_cxc.getValue().toString().isEmpty()) {
-            utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR A PAGAR'", "");
+            utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR A COBRAR'", "");
             return false;
         } else {
             try {
                 if (Double.parseDouble(tex_valor_pagar_cxc.getValue().toString()) <= 0) {
-                    utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                    utilitario.agregarMensajeError("El 'VALOR A COBRAR' no es válido", "");
                     return false;
                 }
             } catch (Exception e) {
-                utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                utilitario.agregarMensajeError("El 'VALOR A COBRAR' no es válido", "");
                 return false;
             }
         }
@@ -380,11 +374,11 @@ public class CuentaCxc extends Dialogo {
         if (tex_diferencia_cxc.getValue() != null) {
             try {
                 if (Double.parseDouble(tex_diferencia_cxc.getValue().toString()) < 0) {
-                    utilitario.agregarMensajeError("El 'VALOR A PAGAR' es mayor al saldo total de la cuenta por cobrar", "");
+                    utilitario.agregarMensajeError("El 'VALOR A COBRAR' es mayor al saldo total de la cuenta por cobrar", "");
                     return false;
                 }
             } catch (Exception e) {
-                utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                utilitario.agregarMensajeError("El 'VALOR A COBRAR' no es válido", "");
                 return false;
             }
         }
@@ -426,7 +420,6 @@ public class CuentaCxc extends Dialogo {
         cal_fecha_pago_cxc.limpiar();
         com_tip_tran_cxc.setValue(null);
         tex_num_cxc.limpiar();
-        ate_observacion_cxc.limpiar();
     }
 
     public AutoCompletar getAut_cliente_cxc() {
