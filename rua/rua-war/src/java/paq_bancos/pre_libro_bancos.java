@@ -5,7 +5,8 @@
  */
 package paq_bancos;
 
-import componentes.CuentaCxc;
+import componentes.CuentaCxP;
+import componentes.CuentaCxC;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -36,7 +37,10 @@ public class pre_libro_bancos extends Pantalla {
     private Tabla tab_tabla1;
 
     ///Cuentas por Cobrar
-    private CuentaCxc cxc_cuenta = new CuentaCxc();
+    private CuentaCxC cxc_cuenta = new CuentaCxC();
+
+    ///Cuentas por Pagar
+    private CuentaCxP cxp_cuenta = new CuentaCxP();
 
     public pre_libro_bancos() {
 
@@ -49,7 +53,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Otras Transacciones", "dibujarOtros", "ui-icon-calculator");
         mep_menu.agregarItem("Transferencias entre Cuentas", "dibujarTransferencias", "ui-icon-calculator");
         mep_menu.agregarSubMenu("HERRAMIENTAS");
-        mep_menu.agregarItem("Conciliar", "dibujarConciliar", "ui-icon-pencil");      
+        mep_menu.agregarItem("Conciliar", "dibujarConciliar", "ui-icon-pencil");
 
         agregarComponente(mep_menu);
 
@@ -84,6 +88,9 @@ public class pre_libro_bancos extends Pantalla {
 
         cxc_cuenta.setId("cxc_cuenta");
         agregarComponente(cxc_cuenta);
+
+        cxp_cuenta.setId("cxp_cuenta");
+        agregarComponente(cxp_cuenta);
     }
 
     public void dibujarPosicion() {
@@ -159,6 +166,11 @@ public class pre_libro_bancos extends Pantalla {
     public void dibujarCxC() {
         cxc_cuenta.dibujar();
     }
+    
+       public void dibujarCxP() {
+        cxp_cuenta.dibujar();
+    }
+
 
     private void actualizarSaldos() {
         if (aut_cuentas.getValor() != null) {
@@ -251,12 +263,19 @@ public class pre_libro_bancos extends Pantalla {
         this.tab_tabla1 = tab_tabla1;
     }
 
-    public CuentaCxc getCxc_cuenta() {
+    public CuentaCxC getCxc_cuenta() {
         return cxc_cuenta;
     }
 
-    public void setCxc_cuenta(CuentaCxc cxc_cuenta) {
+    public void setCxc_cuenta(CuentaCxC cxc_cuenta) {
         this.cxc_cuenta = cxc_cuenta;
     }
 
+    public CuentaCxP getCxp_cuenta() {
+        return cxp_cuenta;
+    }
+
+    public void setCxp_cuenta(CuentaCxP cxp_cuenta) {
+        this.cxp_cuenta = cxp_cuenta;
+    }
 }

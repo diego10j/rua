@@ -6,7 +6,7 @@ package paq_sistema;
 
 import componentes.AsientoContable;
 import componentes.CuentaCxP;
-import componentes.CuentaCxc;
+import componentes.CuentaCxC;
 import componentes.DocumentoCxP;
 import sistema.aplicacion.Pantalla;
 
