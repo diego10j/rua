@@ -365,8 +365,7 @@ public class ServicioCuentasCxP extends ServicioBase {
     }
 
     public String getNumeroPagoDocumento(String ide_cpctr) {
-        //RETORNA EL PAGO MAXIMO 
-        System.out.println("select max(numero_pago_ccdtr) from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
+        //RETORNA EL PAGO MAXIMO         
         List lis_sql = utilitario.getConexion().consultar("select max(numero_pago_cpdtr) from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
         int num = 0;
         if (lis_sql.get(0) != null) {
