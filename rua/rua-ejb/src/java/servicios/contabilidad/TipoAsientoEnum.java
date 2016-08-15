@@ -14,7 +14,8 @@ public enum TipoAsientoEnum {
     FACTURAS_CXC("1"),
     PAGO_FACTURAS_CXC("2"),
     DOCUMENTOS_CXP("3"),
-    PAGO_DOCUMENTOS_CXP("4");
+    PAGO_DOCUMENTOS_CXP("4"),
+    LIBRO_BANCOS("5");
 
     private final String codigo;
 

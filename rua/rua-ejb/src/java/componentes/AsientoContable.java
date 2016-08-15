@@ -14,6 +14,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -23,6 +24,7 @@ import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.contabilidad.TipoAsientoEnum;
+import servicios.tesoreria.ServicioTesoreria;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -38,13 +40,13 @@ public class AsientoContable extends Dialogo {
     private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
     @EJB
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
+    @EJB
+    private final ServicioTesoreria ser_tesoreria = (ServicioTesoreria) utilitario.instanciarEJB(ServicioTesoreria.class);
 
     private final Etiqueta eti_suma_debe = new Etiqueta();
     private final Etiqueta eti_suma_haber = new Etiqueta();
     private final Etiqueta eti_suma_diferencia = new Etiqueta();
     private final Map<String, String> parametros;
-    private final String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
-    private final String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
 
     private AutoCompletar aut_asiento_tipo;
 
@@ -59,8 +61,11 @@ public class AsientoContable extends Dialogo {
     //Tipo Asiento que se va a generar
     private String tipo = null;
 
+    private int reporteComprobante = 1;// reporte comprobante
+
     public AsientoContable() {
-        parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto");
+        parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
+                "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso", "p_con_tipo_comprobante_egreso");
         this.setWidth("95%");
         this.setHeight("90%");
         this.setTitle("ASIENTO CONTABLE");
@@ -234,9 +239,9 @@ public class AsientoContable extends Dialogo {
         double dou_haber = 0;
         for (int i = 0; i < tab_deta_asiento.getTotalFilas(); i++) {
             try {
-                if (tab_deta_asiento.getValor(i, "ide_cnlap").equals(p_con_lugar_debe)) {
+                if (tab_deta_asiento.getValor(i, "ide_cnlap").equals(parametros.get("p_con_lugar_debe"))) {
                     dou_debe += Double.parseDouble(tab_deta_asiento.getValor(i, "valor_cndcc"));
-                } else if (tab_deta_asiento.getValor(i, "ide_cnlap").equals(p_con_lugar_haber)) {
+                } else if (tab_deta_asiento.getValor(i, "ide_cnlap").equals(parametros.get("p_con_lugar_haber"))) {
                     dou_haber += Double.parseDouble(tab_deta_asiento.getValor(i, "valor_cndcc"));
                 }
             } catch (Exception e) {
@@ -299,6 +304,7 @@ public class AsientoContable extends Dialogo {
                         if (tab_presupuesto != null) {
                             tab_presupuesto.guardar();
                         }
+                        //utilitario.getConexion().setImprimirSqlConsola(true);
                         completarAsiento(tab_cabe_asiento.getValor("ide_cnccc"));
                         if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                             this.cerrar();
@@ -312,11 +318,36 @@ public class AsientoContable extends Dialogo {
 
     public void verAsientoContable(String ide_cnccc) {
         Map parametros_rep = new HashMap();
-        parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
-        parametros_rep.put("ide_cnlap_debe", p_con_lugar_debe);
-        parametros_rep.put("ide_cnlap_haber", p_con_lugar_haber);
         vpd_asiento.setTitle("ASIENTO CONTABLE N. " + ide_cnccc);
-        vpd_asiento.setVisualizarPDF("rep_contabilidad/rep_comprobante_contabilidad.jasper", parametros_rep);
+        if (reporteComprobante == 1) {
+            parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
+            parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
+            parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
+            
+            vpd_asiento.setVisualizarPDF("rep_contabilidad/rep_comprobante_contabilidad.jasper", parametros_rep);
+        }
+        if (reporteComprobante == 2) {//cheque
+            TablaGenerica tab_lib_banc = utilitario.consultar("select * from tes_cab_libr_banc where ide_cnccc =" + ide_cnccc);
+            parametros_rep.put("beneficiario", tab_lib_banc.getValor("beneficiari_teclb") + "");
+            parametros_rep.put("monto", tab_lib_banc.getValor("valor_teclb") + "");
+            parametros_rep.put("anio", utilitario.getAnio(tab_lib_banc.getValor("fecha_trans_teclb")) + "");
+            parametros_rep.put("mes", utilitario.getMes(tab_lib_banc.getValor("fecha_trans_teclb")) + "");
+            parametros_rep.put("dia", utilitario.getDia(tab_lib_banc.getValor("fecha_trans_teclb")) + "");
+            parametros_rep.put("monto_letras", ser_tesoreria.agregarAsteriscosCheque(utilitario.getLetrasDolarNumero(tab_lib_banc.getValor("valor_teclb"))));
+            parametros_rep.put("ide_cnccc", Long.parseLong(tab_lib_banc.getValor("ide_cnccc")));
+            parametros_rep.put("ide_cnlap_haber", utilitario.getVariable("p_con_lugar_haber"));
+            parametros_rep.put("ide_cnlap_debe", utilitario.getVariable("p_con_lugar_debe"));
+            parametros_rep.put("p_num_cheque", tab_lib_banc.getValor("numero_teclb") + "");
+            parametros_rep.put("p_num_trans", tab_lib_banc.getValor("ide_teclb") + "");
+            TablaGenerica tab_persona = ser_tesoreria.getPersona(tab_cabe_asiento.getValor("ide_geper"));
+            if (tab_persona.isEmpty() == false) {
+                parametros_rep.put("p_identificacion", tab_persona.getValor("identificac_geper"));
+            } else {
+                parametros_rep.put("p_identificacion", "");
+            }
+            vpd_asiento.setVisualizarPDF("rep_bancos/rep_cheque.jasper", parametros_rep);
+
+        }
         vpd_asiento.dibujar();
     }
 
@@ -344,6 +375,11 @@ public class AsientoContable extends Dialogo {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc                
                 utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ")");
                 utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0");
+            } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
+                //Asigna el ide_cnccc a la transaccion cxc o cxp y al libro bancos               
+                utilitario.getConexion().agregarSqlPantalla("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
             }
         }
     }
@@ -380,7 +416,7 @@ public class AsientoContable extends Dialogo {
                 if (boo_mismo_clie) {
                     tab_cabe_asiento.setValor("ide_geper", str_ide_geper);//sociedad salesianos                
                 } else {
-                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_gen_beneficiario_roles"));//sociedad salesianos                
+                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
                 }
                 tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
             }
@@ -397,7 +433,6 @@ public class AsientoContable extends Dialogo {
     public void setAsientoDocumentosCxP(String ide_cpcfa) {
         this.relacion = ide_cpcfa;
         this.tipo = TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo();
-
         //Consulta las facturas
         TablaGenerica tab_fac = utilitario.consultar("SELECT * FROM cxp_cabece_factur WHERE ide_cpcfa in (" + ide_cpcfa + ")");
         if (tab_fac.isEmpty() == false) {
@@ -426,7 +461,7 @@ public class AsientoContable extends Dialogo {
                 if (boo_mismo_clie) {
                     tab_cabe_asiento.setValor("ide_geper", str_ide_geper);//sociedad salesianos                
                 } else {
-                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_gen_beneficiario_roles"));//sociedad salesianos                
+                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
                 }
                 tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
             }
@@ -439,6 +474,11 @@ public class AsientoContable extends Dialogo {
     public void setAsientoPagoDocumentosCxP(String ide_cpcfa) {
         this.relacion = ide_cpcfa;
         this.tipo = TipoAsientoEnum.PAGO_DOCUMENTOS_CXP.getCodigo();
+    }
+
+    public void setAsientoLibroBancos(String ide_teclb) {
+        this.relacion = ide_teclb;
+        this.tipo = TipoAsientoEnum.LIBRO_BANCOS.getCodigo();
     }
 
     public Tabla getTab_cabe_asiento() {
@@ -473,4 +513,31 @@ public class AsientoContable extends Dialogo {
         this.tab_presupuesto = tab_presupuesto;
     }
 
+    public String getLugarAplicaDebe() {
+        return parametros.get("p_con_lugar_debe");
+    }
+
+    public String getLugarAplicaHaber() {
+        return parametros.get("p_con_lugar_haber");
+    }
+
+    public String getTipoComprobanteDiario() {
+        return parametros.get("p_con_tipo_comprobante_diario");
+    }
+
+    public String getTipoComprobanteIngreso() {
+        return parametros.get("p_con_tipo_comprobante_ingreso");
+    }
+
+    public String getTipoComprobanteEgreso() {
+        return parametros.get("p_con_tipo_comprobante_egreso");
+    }
+
+    public void setReporteCheque() {
+        reporteComprobante = 2;
+    }
+
+    public void setReporteComprobante() {
+        reporteComprobante = 1;
+    }
 }

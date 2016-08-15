@@ -77,7 +77,14 @@ public class CuentaCxc extends Dialogo {
         aut_cliente_cxc.setAutoCompletar(ser_cliente.getSqlComboClientes());
         aut_cliente_cxc.setSize(70);
         gri1.getChildren().add(aut_cliente_cxc);
-        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CUENTA DESTINO : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        cal_fecha_pago_cxc = new Calendario();
+        cal_fecha_pago_cxc.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago_cxc);
+
+        Grid gri2 = new Grid();
+        gri2.setColumns(6);
+        gri2.getChildren().add(new Etiqueta("<strong>A LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         aut_cuenta_cxc = new AutoCompletar();
         aut_cuenta_cxc.setId("aut_cuenta_cxc");
         aut_cuenta_cxc.setRuta("pre_index.clase." + getId());
@@ -85,10 +92,8 @@ public class CuentaCxc extends Dialogo {
         aut_cuenta_cxc.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
         aut_cuenta_cxc.setDropdown(true);
         aut_cuenta_cxc.setAutocompletarContenido();
-        gri1.getChildren().add(aut_cuenta_cxc);
+        gri2.getChildren().add(aut_cuenta_cxc);
 
-        Grid gri2 = new Grid();
-        gri2.setColumns(6);
         gri2.getChildren().add(new Etiqueta("<strong>TIPO DE TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         com_tip_tran_cxc = new Combo();
         com_tip_tran_cxc.setMetodoRuta("pre_index.clase." + getId() + ".cambioTipoTransBanco");
@@ -99,14 +104,8 @@ public class CuentaCxc extends Dialogo {
         tex_num_cxc.setId("tex_num_cxc");
         gri2.getChildren().add(tex_num_cxc);
 
-        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        cal_fecha_pago_cxc = new Calendario();
-        cal_fecha_pago_cxc.setFechaActual();
-        gri2.getChildren().add(cal_fecha_pago_cxc);
-
         contenido.getChildren().add(gri1);
         contenido.getChildren().add(gri2);
-
         contenido.getChildren().add(new Separator());
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);

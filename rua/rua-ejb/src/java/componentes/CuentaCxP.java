@@ -50,7 +50,6 @@ public class CuentaCxP extends Dialogo {
     private AutoCompletar aut_cuenta_cxp;
     private Combo com_tip_tran_cxp;
     private Texto tex_num_cxp;
-
     private Tabla tab_cuentas_x_pagar;
     private Texto tex_diferencia_cxp;
     private Texto tex_valor_pagar_cxp;
@@ -61,24 +60,27 @@ public class CuentaCxP extends Dialogo {
         this.setTitle("CUENTAS POR PAGAR A PROVEDORES");
         this.setResizable(false);
         this.setDynamic(false);
-
     }
 
     public Grid construir() {
         Grid contenido = new Grid();
-
         Grid gri1 = new Grid();
         gri1.setColumns(6);
         gri1.getChildren().add(new Etiqueta("<strong>PROVEEDOR : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         aut_provee_cxp = new AutoCompletar();
         aut_provee_cxp.setId("aut_provee_cxp");
         aut_provee_cxp.setRuta("pre_index.clase." + getId());
-        aut_provee_cxp.setMetodoChangeRuta("pre_index.clase." + getId() + ".cargarCuentasporCobrar");
+        aut_provee_cxp.setMetodoChangeRuta("pre_index.clase." + getId() + ".cargarCuentasporPagar");
         aut_provee_cxp.setAutocompletarContenido();
         aut_provee_cxp.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
         aut_provee_cxp.setSize(70);
         gri1.getChildren().add(aut_provee_cxp);
-        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CUENTA ORIGEN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        cal_fecha_pago_cxp = new Calendario();
+        cal_fecha_pago_cxp.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago_cxp);
+        Grid gri2 = new Grid();
+        gri2.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         aut_cuenta_cxp = new AutoCompletar();
         aut_cuenta_cxp.setId("aut_cuenta_cxp");
         aut_cuenta_cxp.setRuta("pre_index.clase." + getId());
@@ -86,9 +88,7 @@ public class CuentaCxP extends Dialogo {
         aut_cuenta_cxp.setAutoCompletar(ser_tesoreria1.getSqlComboCuentas());
         aut_cuenta_cxp.setDropdown(true);
         aut_cuenta_cxp.setAutocompletarContenido();
-        gri1.getChildren().add(aut_cuenta_cxp);
-
-        Grid gri2 = new Grid();
+        gri2.getChildren().add(aut_cuenta_cxp);
         gri2.setColumns(6);
         gri2.getChildren().add(new Etiqueta("<strong>TIPO DE TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         com_tip_tran_cxp = new Combo();
@@ -99,18 +99,11 @@ public class CuentaCxP extends Dialogo {
         tex_num_cxp = new Texto();
         tex_num_cxp.setId("tex_num_cxp");
         gri2.getChildren().add(tex_num_cxp);
-
-        gri2.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        cal_fecha_pago_cxp = new Calendario();
-        cal_fecha_pago_cxp.setFechaActual();
-        gri2.getChildren().add(cal_fecha_pago_cxp);
-
         contenido.getChildren().add(gri1);
         contenido.getChildren().add(gri2);
         contenido.getChildren().add(new Separator());
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);
-
         Etiqueta eti_valor_cobrar = new Etiqueta();
         Etiqueta eti_diferencia_cxc = new Etiqueta();
         eti_valor_cobrar.setValue("VALOR A PAGAR :");
@@ -124,8 +117,8 @@ public class CuentaCxP extends Dialogo {
         tex_valor_pagar_cxp = new Texto();
         // tex_valor_pagar_cxp.setSoloNumeros();
         tex_valor_pagar_cxp.setId("tex_valor_pagar_cxp");
-        tex_valor_pagar_cxp.setMetodoKeyPressRuta("pre_index.clase." + getId() + ".calcular_diferencia_cxc");
-        tex_valor_pagar_cxp.setMetodoChangeRuta("pre_index.clase." + getId() + ".calcular_diferencia_cxc");
+        tex_valor_pagar_cxp.setMetodoKeyPressRuta("pre_index.clase." + getId() + ".calcularDiferenciaCxP");
+        tex_valor_pagar_cxp.setMetodoChangeRuta("pre_index.clase." + getId() + ".calcularDiferenciaCxP");
         eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;");
         tex_valor_pagar_cxp.setStyle("font-size: 14px;font-weight: bold");
         gri4.getChildren().add(eti_valor_cobrar);
@@ -134,7 +127,6 @@ public class CuentaCxP extends Dialogo {
         gri4.getChildren().add(tex_diferencia_cxp);
         contenido.getChildren().add(gri4);
         contenido.getChildren().add(new Separator());
-
         tab_cuentas_x_pagar = new Tabla();
         tab_cuentas_x_pagar.setId("tab_cuentas_x_pagar");
         tab_cuentas_x_pagar.setRuta("pre_index.clase." + getId());
@@ -146,13 +138,11 @@ public class CuentaCxP extends Dialogo {
         tab_cuentas_x_pagar.getColumna("total_cpcfa").alinearDerecha();
         tab_cuentas_x_pagar.getColumna("ide_cpcfa").setVisible(false);
         tab_cuentas_x_pagar.getColumna("numero_cpcfa").setLongitud(25);
-
         tab_cuentas_x_pagar.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA");
         tab_cuentas_x_pagar.getColumna("numero_cpcfa").setNombreVisual("NUM. FACTURA");
         tab_cuentas_x_pagar.getColumna("total_cpcfa").setNombreVisual("TOTAL");
         tab_cuentas_x_pagar.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
         tab_cuentas_x_pagar.getColumna("observacion_cpcfa").setNombreVisual("OBSERVACIÓN");
-
         tab_cuentas_x_pagar.setScrollable(true);
         tab_cuentas_x_pagar.setScrollHeight(getAltoPanel() - 225);
         tab_cuentas_x_pagar.setCampoPrimaria("ide_cpctr");
@@ -160,13 +150,10 @@ public class CuentaCxP extends Dialogo {
         tab_cuentas_x_pagar.setTipoSeleccion(true);
         tab_cuentas_x_pagar.setCondicion("ide_cpctr=-1");
         tab_cuentas_x_pagar.setColumnaSuma("saldo_x_pagar");
-
-        tab_cuentas_x_pagar.onSelectCheck("pre_index.clase." + getId() + ".seleccionaFacturaCxC");
-        tab_cuentas_x_pagar.onUnselectCheck("pre_index.clase." + getId() + ".deseleccionaFacturaCxC");
+        tab_cuentas_x_pagar.onSelectCheck("pre_index.clase." + getId() + ".seleccionaFacturaCxP");
+        tab_cuentas_x_pagar.onUnselectCheck("pre_index.clase." + getId() + ".deseleccionaFacturaCxP");
         tab_cuentas_x_pagar.dibujar();
-
         contenido.getChildren().add(tab_cuentas_x_pagar);
-
         contenido.setStyle("width:" + (getAnchoPanel() - 10) + "px; height:" + (getAltoPanel() - 5) + "px;overflow:auto;display:block;");
         this.getGri_cuerpo().getChildren().clear();
         this.setDialogo(contenido);
@@ -180,7 +167,7 @@ public class CuentaCxP extends Dialogo {
      *
      * @param evt
      */
-    public void cargarCuentasporCobrar(SelectEvent evt) {
+    public void cargarCuentasporPagar(SelectEvent evt) {
         aut_provee_cxp.onSelect(evt);
         tab_cuentas_x_pagar.setSql(ser_proveedor.getSqlCuentasPorPagar(aut_provee_cxp.getValor()));
         tab_cuentas_x_pagar.ejecutarSql();
@@ -191,17 +178,17 @@ public class CuentaCxP extends Dialogo {
         }
     }
 
-    public void deseleccionaFacturaCxC(UnselectEvent evt) {
+    public void deseleccionaFacturaCxP(UnselectEvent evt) {
         double total = 0;
         for (Fila actual : tab_cuentas_x_pagar.getSeleccionados()) {
             total = Double.parseDouble(actual.getCampos()[5] + "") + total;
         }
         tex_valor_pagar_cxp.setValue(utilitario.getFormatoNumero(total));
         utilitario.addUpdate("tex_valor_pagar_cxp");
-        calcular_diferencia_cxc();
+        calcularDiferenciaCxP();
     }
 
-    public void seleccionaFacturaCxC(SelectEvent evt) {
+    public void seleccionaFacturaCxP(SelectEvent evt) {
         tab_cuentas_x_pagar.seleccionarFila(evt);
         double total = 0;
         for (Fila actual : tab_cuentas_x_pagar.getSeleccionados()) {
@@ -209,10 +196,10 @@ public class CuentaCxP extends Dialogo {
         }
         tex_valor_pagar_cxp.setValue(utilitario.getFormatoNumero(total));
         utilitario.addUpdate("tex_valor_pagar_cxp");
-        calcular_diferencia_cxc();
+        calcularDiferenciaCxP();
     }
 
-    public void calcular_diferencia_cxc() {
+    public void calcularDiferenciaCxP() {
         double diferencia = 0;
         if (tex_valor_pagar_cxp.getValue() != null) {
             if (!tex_valor_pagar_cxp.getValue().toString().isEmpty()) {
@@ -248,7 +235,6 @@ public class CuentaCxP extends Dialogo {
     }
 
     public void cambioTipoTransBanco() {
-//        CAMBIE
         if (com_tip_tran_cxp.getValue() != null) {
             if (aut_cuenta_cxp.getValor() != null) {
                 tex_num_cxp.setValue(ser_tesoreria1.getNumMaximoTipoTransaccion(aut_cuenta_cxp.getValor() + "", com_tip_tran_cxp.getValue() + ""));
@@ -262,11 +248,8 @@ public class CuentaCxP extends Dialogo {
 
     public void cargarPagoCxP(double total_a_pagar) {
         List lis_fact_pagadas = new ArrayList();
-        String str_num_doc_factura_cxp = "";
         for (int i = 0; i < tab_cuentas_x_pagar.getListaFilasSeleccionadas().size(); i++) {
             double monto_sobrante = 0;
-            str_num_doc_factura_cxp = tab_cuentas_x_pagar.getListaFilasSeleccionadas().get(i).getCampos()[3] + "";
-
             double valor_x_pagar = Double.parseDouble(tab_cuentas_x_pagar.getListaFilasSeleccionadas().get(i).getCampos()[5] + "");
             if (valor_x_pagar > 0) {
                 if (total_a_pagar >= valor_x_pagar) {
@@ -305,12 +288,9 @@ public class CuentaCxP extends Dialogo {
                 }
             }
         }
-
-        for (int i = 0; i < lis_fact_pagadas.size(); i++) {
-
-            Object obj_fila[] = (Object[]) lis_fact_pagadas.get(i);
+        for (Object lis_fact_pagada : lis_fact_pagadas) {
+            Object[] obj_fila = (Object[]) lis_fact_pagada;
             System.out.println("ide_cpcfa " + obj_fila[0] + " ide_cpctr " + obj_fila[1] + " valor " + obj_fila[2]);
-
             String ide_ccctr = String.valueOf(obj_fila[1]);
             //TRANSACCION EN TESORERIA y TRANSACCION CXP
             TablaGenerica tab_cabecera = utilitario.consultar(ser_cuentas_cxp.getSqlCabeceraDocumento(String.valueOf(obj_fila[0])));
@@ -323,7 +303,7 @@ public class CuentaCxP extends Dialogo {
     }
 
     /**
-     * Validaciones de la Transaccion CXC de Pago
+     * Validaciones de la Transaccion CXP de Pago
      *
      * @return
      */
@@ -331,7 +311,7 @@ public class CuentaCxP extends Dialogo {
         if (com_tip_tran_cxp.getValue() != null) {
             //realizo_pago_sin_bancos_cxp = false;
             if (aut_cuenta_cxp.getValor() == null) {
-                utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA ORIGEN' ", "");
+                utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
                 return false;
             }
         }

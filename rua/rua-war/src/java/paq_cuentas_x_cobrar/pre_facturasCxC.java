@@ -548,7 +548,6 @@ public class pre_facturasCxC extends Pantalla {
                 dibujarFacturasNoContabilizadas();
             }
         }
-
     }
 
     @Override

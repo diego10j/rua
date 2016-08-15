@@ -10,6 +10,7 @@ import framework.componentes.Tabla;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import persistencia.Conexion;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import sistema.aplicacion.Utilitario;
@@ -78,9 +79,21 @@ public class ServicioTesoreria {
      * @param fechaFin
      * @return
      */
+    public String getSqlTransaccionesCuentaNoConciliado(String ide_tecba, String fechaInicio, String fechaFin) {
+        return "select fecha_trans_teclb,numero_teclb,nombre_tettb,beneficiari_teclb,"
+                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS,observacion_teclb,ide_cnccc,ide_teclb "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "and fecha_trans_teclb BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and conciliado_teclb=false "
+                + "order by fecha_trans_teclb,ide_teclb";
+    }
+
     public String getSqlTransaccionesCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
         return "select fecha_trans_teclb,numero_teclb,nombre_tettb,beneficiari_teclb,"
-                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_cnccc,ide_teclb "
+                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_cnccc,ide_teclb,conciliado_teclb as conciliado "
                 + "from tes_cab_libr_banc a "
                 + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
                 + "where ide_tecba=" + ide_tecba + " "
@@ -207,6 +220,74 @@ public class ServicioTesoreria {
             return null;
         }
 
+    }
+
+    public String generarLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero) {
+        TablaGenerica tab_cab_libro_banco = new TablaGenerica();
+        tab_cab_libro_banco.setTabla("tes_cab_libr_banc", "ide_teclb", -1);
+        tab_cab_libro_banco.setCondicion("ide_teclb=-1");
+        tab_cab_libro_banco.ejecutarSql();
+        if (numero == null || numero.isEmpty()) {
+            numero = "000000";
+        }
+        tab_cab_libro_banco.insertar();
+        tab_cab_libro_banco.setValor("ide_teelb", utilitario.getVariable("p_tes_estado_lib_banco_normal"));
+        tab_cab_libro_banco.setValor("valor_teclb", utilitario.getFormatoNumero(valor));
+        tab_cab_libro_banco.setValor("numero_teclb", numero);
+        tab_cab_libro_banco.setValor("fecha_trans_teclb", fecha);
+        tab_cab_libro_banco.setValor("fecha_venci_teclb", fecha);
+        tab_cab_libro_banco.setValor("beneficiari_teclb", beneficiario);
+        tab_cab_libro_banco.setValor("ide_tecba", ide_tecba);//Cuenta bancaria
+        tab_cab_libro_banco.setValor("ide_tettb", ide_tettb);
+        tab_cab_libro_banco.setValor("observacion_teclb", observacion);
+        tab_cab_libro_banco.setValor("conciliado_teclb", "false");
+        tab_cab_libro_banco.guardar();
+        return tab_cab_libro_banco.getValor("ide_teclb");
+    }
+
+    public String generarLibroBancoTransferir(String fecha, String ide_tettb, String ide_tecba, String ide_tecba2, double valor, String observacion, String numero) {
+        String ide_geper = utilitario.getVariable("p_con_beneficiario_empresa");
+        String beneficiario = getPersona(ide_geper).getValor("nom_geper");
+        TablaGenerica tab_cab_libro_banco = new TablaGenerica();
+        tab_cab_libro_banco.setTabla("tes_cab_libr_banc", "ide_teclb", -1);
+        tab_cab_libro_banco.setCondicion("ide_teclb=-1");
+        tab_cab_libro_banco.ejecutarSql();
+        if (numero == null || numero.isEmpty()) {
+            numero = "000000";
+        }
+        // inserto el retiro de la cuenta origen
+        tab_cab_libro_banco.limpiar();
+        tab_cab_libro_banco.insertar();
+
+        tab_cab_libro_banco.setValor("ide_teelb", utilitario.getVariable("p_tes_estado_lib_banco_normal"));
+        tab_cab_libro_banco.setValor("valor_teclb", utilitario.getFormatoNumero(valor));
+        tab_cab_libro_banco.setValor("numero_teclb", numero);
+        tab_cab_libro_banco.setValor("fecha_trans_teclb", fecha);
+        tab_cab_libro_banco.setValor("fecha_venci_teclb", fecha);
+        tab_cab_libro_banco.setValor("beneficiari_teclb", beneficiario);
+        tab_cab_libro_banco.setValor("conciliado_teclb", "false");
+        tab_cab_libro_banco.setValor("ide_tecba", ide_tecba);//Cuenta bancaria
+        tab_cab_libro_banco.setValor("ide_tettb", ide_tettb);
+        tab_cab_libro_banco.setValor("observacion_teclb", observacion);
+
+        // inserto el ingreso a la cuenta destino
+        tab_cab_libro_banco.insertar();
+        tab_cab_libro_banco.setValor("ide_teelb", utilitario.getVariable("p_tes_estado_lib_banco_normal"));
+        tab_cab_libro_banco.setValor("valor_teclb", utilitario.getFormatoNumero(valor));
+        tab_cab_libro_banco.setValor("numero_teclb", numero);
+        tab_cab_libro_banco.setValor("fecha_trans_teclb", utilitario.getFechaActual());
+        tab_cab_libro_banco.setValor("fecha_venci_teclb", fecha);
+        tab_cab_libro_banco.setValor("beneficiari_teclb", beneficiario);
+        tab_cab_libro_banco.setValor("ide_tecba", ide_tecba2);
+        //if (getParametroCuentaBanco(ide_tecba, "ide_tecba", "ide_tetcb").equals(utilitario.getVariable("p_tes_tipo_cuenta_banco_virtual"))) {
+        //    tab_cab_libro_banco.setValor("ide_tettb", utilitario.getVariable("p_tes_tran_deposito"));
+        // } else {
+        tab_cab_libro_banco.setValor("ide_tettb", utilitario.getVariable("p_tes_tran_transferencia_mas"));
+        //}
+        tab_cab_libro_banco.setValor("observacion_teclb", observacion);
+        tab_cab_libro_banco.setValor("conciliado_teclb", "false");
+        tab_cab_libro_banco.guardar();
+        return tab_cab_libro_banco.getValor(0, "ide_teclb") + "," + tab_cab_libro_banco.getValor(1, "ide_teclb");
     }
 
     /**
@@ -344,7 +425,7 @@ public class ServicioTesoreria {
      * @return
      */
     public String getSqlTipoTransaccionPositivo() {
-        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=1";
+        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=1 order by nombre_tettb";
     }
 
     /**
@@ -354,7 +435,11 @@ public class ServicioTesoreria {
      * @return
      */
     public String getSqlTipoTransaccionNegativo() {
-        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=-1";
+        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + "and signo_tettb=-1 order by nombre_tettb";
+    }
+
+    public String getSqlTipoTransaccion() {
+        return "select ide_tettb,nombre_tettb from tes_tip_tran_banc where ide_empr=" + utilitario.getVariable("ide_empr") + " order by nombre_tettb";
     }
 
     /**
@@ -445,6 +530,53 @@ public class ServicioTesoreria {
                 + "inner join tes_tip_cuen_banc c on a.ide_tetcb = c.ide_tetcb\n"
                 + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
                 + "order by nombre_teban,nombre_tecba";
+    }
+
+    /**
+     * Retorna el signo de un tipo transaccion
+     *
+     * @param ide_tettb
+     * @return 1= positivo ; -1 negativo
+     */
+    public String getSignoTransaccion(String ide_tettb) {
+        TablaGenerica tab_tipo_transacciones = utilitario.consultar("select ide_tettb,signo_tettb from tes_tip_tran_banc where ide_tettb=" + ide_tettb);
+        if (tab_tipo_transacciones.getTotalFilas() > 0) {
+            if (tab_tipo_transacciones.getValor(0, "signo_tettb") != null && !tab_tipo_transacciones.getValor(0, "signo_tettb").isEmpty()) {
+                return tab_tipo_transacciones.getValor(0, "signo_tettb");
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public String getCuentaContable(String ide_tecba) {
+        TablaGenerica tab_cuenta_banco = utilitario.consultar("select ide_tecba,ide_cndpc from tes_cuenta_banco where ide_tecba=" + ide_tecba);
+        if (tab_cuenta_banco.getTotalFilas() > 0) {
+            if (tab_cuenta_banco.getValor("ide_cndpc") != null) {
+                return tab_cuenta_banco.getValor("ide_cndpc");
+            } else {
+                return null;
+            }
+        } else {
+            System.out.println("cuenta bancaria asiento vacia ");
+            return null;
+        }
+    }
+
+    public String agregarAsteriscosCheque(String monto_letras) {
+        String x = "*";
+        String monto_x = "";
+        for (int i = 1; i < 50 - monto_letras.length(); i++) {
+            x = x.concat("*");
+        }
+        monto_x = monto_letras.concat(x);
+        return monto_x;
+    }
+
+    public void conciliarMovimientos(String ide_teclb) {
+        utilitario.getConexion().ejecutarSql("update tes_cab_libr_banc set conciliado_teclb=true where ide_teclb in(" + ide_teclb + ")");        
     }
 
 }
