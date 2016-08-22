@@ -459,7 +459,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("pagado_cccfa").setVisible(false);
         tab_cab_factura.getColumna("total_cccfa").setEtiqueta();
         tab_cab_factura.getColumna("total_cccfa").setEstilo("font-size: 16px;font-weight: bold;text-decoration: underline");
-        tab_cab_factura.getColumna("total_cccfa").setValorDefecto("0,00");
+        tab_cab_factura.getColumna("total_cccfa").setValorDefecto("0");
         tab_cab_factura.getColumna("secuencial_cccfa").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_factura.getColumna("secuencial_cccfa").setLongitud(10);
         tab_cab_factura.getColumna("secuencial_cccfa").setOrden(1);

@@ -447,13 +447,13 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_fac.insertar();
             tab_fac.setValor("secuencial_cccfa", secuencial_cccfa);
             tab_fac.setValor("ide_ccdaf", ide_ccdaf);
-            tab_fac.setValor("ide_ccefa", parametros.get("p_cxc_estado_factura_normal"));
+            tab_fac.setValor("ide_ccefa", parametros.get("p_cxc_estado_factura_anulada"));
             tab_fac.setValor("ide_cntdo", utilitario.getVariable("p_con_tipo_documento_factura"));
             tab_fac.setValor("ide_usua", utilitario.getVariable("ide_usua"));
             tab_fac.setValor("fecha_trans_cccfa", utilitario.getFechaActual());
             tab_fac.setValor("fecha_emisi_cccfa", utilitario.getFechaActual());
             tab_fac.setValor("pagado_cccfa", "false");
-            tab_fac.setValor("total_cccfa", "0,00");
+            tab_fac.setValor("total_cccfa", "0");
             tab_fac.setValor("base_grabada_cccfa", "0");
             tab_fac.setValor("valor_iva_cccfa", "0");
             tab_fac.setValor("base_no_objeto_iva_cccfa", "0");
