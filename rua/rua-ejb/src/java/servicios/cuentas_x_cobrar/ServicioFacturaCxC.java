@@ -425,13 +425,42 @@ public class ServicioFacturaCxC extends ServicioBase {
         //Anula Fctura
         utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_anulada") + " where ide_cccfa=" + ide_cccfa);
         //Transaccion CXC Generar reverso de la transaccion FACTURA
-        TablaGenerica tab_cab = utilitario.consultar("SELECT ide_cccfa,ide_ccctr,secuencial_cccfa from cxc_cabece_transa where ide_cccfa=" + ide_cccfa);
+        TablaGenerica tab_cab = utilitario.consultar("SELECT a.ide_cccfa,ide_ccctr,secuencial_cccfa from cxc_cabece_transa a inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa where a.ide_cccfa=" + ide_cccfa + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal"));
         if (tab_cab.getTotalFilas() > 0) {
-            reversarTransaccionCxC(tab_cab.getValor("ide_ccctr"), "V./ ANULACIÓN FACTURA : " + tab_cab.getValor("secuencial_cccfa") + " " + tab_cab.getValor("secuencial_cccfa"));
+            reversarTransaccionCxC(tab_cab.getValor("ide_ccctr"), "V./ ANULACIÓN FACTURA : " + tab_cab.getValor("secuencial_cccfa"));
         }
         //Anula transaccion inventario
         utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci in (select ide_incci from inv_det_comp_inve where ide_cccfa=" + ide_cccfa + " group by ide_incci)");
         ////////****!!!!!!!!!!!crear variable  p_inv_estado_anulado
+    }
+
+    public void anularSecuencial(String secuencial_cccfa, String ide_ccdaf) {
+        TablaGenerica tab_fac = new TablaGenerica();
+        tab_fac.setTabla("cxc_cabece_factura", "ide_cccfa");
+        tab_fac.setCondicion("secuencial_cccfa='" + secuencial_cccfa + "' and ide_ccdaf=" + ide_ccdaf);
+        tab_fac.ejecutarSql();
+        if (tab_fac.isEmpty() == false) {
+            //existe
+            anularFactura(tab_fac.getValor("ide_cccfa"));
+        } else {
+            //no existe , inserta la factura anulada
+            tab_fac.insertar();
+            tab_fac.setValor("secuencial_cccfa", secuencial_cccfa);
+            tab_fac.setValor("ide_ccdaf", ide_ccdaf);
+            tab_fac.setValor("ide_ccefa", parametros.get("p_cxc_estado_factura_normal"));
+            tab_fac.setValor("ide_cntdo", utilitario.getVariable("p_con_tipo_documento_factura"));
+            tab_fac.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+            tab_fac.setValor("fecha_trans_cccfa", utilitario.getFechaActual());
+            tab_fac.setValor("fecha_emisi_cccfa", utilitario.getFechaActual());
+            tab_fac.setValor("pagado_cccfa", "false");
+            tab_fac.setValor("total_cccfa", "0,00");
+            tab_fac.setValor("base_grabada_cccfa", "0");
+            tab_fac.setValor("valor_iva_cccfa", "0");
+            tab_fac.setValor("base_no_objeto_iva_cccfa", "0");
+            tab_fac.setValor("base_tarifa0_cccfa", "0");
+            tab_fac.setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+            tab_fac.guardar();
+        }
     }
 
     public void reversarTransaccionCxC(String ide_ccctr, String observacion) {

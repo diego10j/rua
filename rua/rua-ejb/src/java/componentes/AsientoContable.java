@@ -14,7 +14,6 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;

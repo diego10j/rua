@@ -11,9 +11,11 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Mascara;
 
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
@@ -26,6 +28,7 @@ import framework.componentes.graficos.GraficoPastel;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.component.fieldset.Fieldset;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.sri.ServicioComprobatesElectronicos;
 import sistema.aplicacion.Pantalla;
@@ -64,6 +67,7 @@ public class pre_facturasCxC extends Pantalla {
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
 
     private AsientoContable asc_asiento = new AsientoContable();
+    private Mascara mas_secuencial;
 
     public pre_facturasCxC() {
 
@@ -137,6 +141,7 @@ public class pre_facturasCxC extends Pantalla {
 
         Boton bot_anular = new Boton();
         bot_anular.setValue("Anular Factura");
+        bot_anular.setMetodo("anularFactura");
         bar_menu.agregarComponente(bot_anular);
 
         Boton bot_retención = new Boton();
@@ -246,7 +251,28 @@ public class pre_facturasCxC extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
 
-        mep_menu.dibujar(3, "FACTURAS ANULADAS", pat_panel);
+        mas_secuencial = new Mascara();
+        mas_secuencial.setMask("999999999");
+
+        Fieldset fie_anula = new Fieldset();
+        fie_anula.setLegend("Ingresar Factura Anulada");
+
+        Grid gri = new Grid();
+        gri.setColumns(4);
+        gri.getChildren().add(new Etiqueta("<strong>NUM. SECUENCIAL :</strong> <span style='color:red;font-weight: bold;'> *</span>"));
+        gri.getChildren().add(mas_secuencial);
+        gri.getChildren().add(new Espacio("5", "5"));
+        Boton bot_anula = new Boton();
+        bot_anula.setValue("Anular");
+        bot_anula.setMetodo("ingresarAnulada");
+        gri.getChildren().add(bot_anula);
+
+        fie_anula.getChildren().add(gri);
+
+        Grupo gru = new Grupo();
+        gru.getChildren().add(fie_anula);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(3, "FACTURAS ANULADAS", gru);
     }
 
     public void dibujarFacturasPorCobrar() {
@@ -428,13 +454,11 @@ public class pre_facturasCxC extends Pantalla {
             } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar una Factura", "");
             }
+        } else if (tab_tabla.getValorSeleccionado() != null) {
+            fcc_factura.verFactura(tab_tabla.getValor("ide_cccfa"));
+            fcc_factura.dibujar();
         } else {
-            if (tab_tabla.getValorSeleccionado() != null) {
-                fcc_factura.verFactura(tab_tabla.getValor("ide_cccfa"));
-                fcc_factura.dibujar();
-            } else {
-                utilitario.agregarMensajeInfo("Debe seleccionar una Factura", "");
-            }
+            utilitario.agregarMensajeInfo("Debe seleccionar una Factura", "");
         }
 
     }
@@ -547,6 +571,28 @@ public class pre_facturasCxC extends Pantalla {
             if (asc_asiento.isVisible() == false) {
                 dibujarFacturasNoContabilizadas();
             }
+        }
+    }
+
+    public void anularFactura() {
+        if (tab_tabla.getValor("ide_cccfa") != null) {
+            ser_factura.anularFactura(tab_tabla.getValor("ide_cccfa"));
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.actualizar();
+            }
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar una Factura", "");
+        }
+    }
+
+    public void ingresarAnulada() {
+        if (mas_secuencial.getValue() != null) {
+            ser_factura.anularSecuencial(String.valueOf(mas_secuencial.getValue()), String.valueOf(com_pto_emision.getValue()));
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.actualizar();
+            }
+        } else {
+            utilitario.agregarMensajeError("Debe ingresar el Número Secuencial de laFactura", "");
         }
     }
 
