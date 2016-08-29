@@ -15,6 +15,7 @@ import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -22,6 +23,7 @@ import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
@@ -177,7 +179,10 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("SALDO").alinearDerecha();
         tab_tabla1.getColumna("SALDO").setSuma(false);
         tab_tabla1.getColumna("SALDO").setEstilo("font-weight: bold;");
-        tab_tabla1.getColumna("IDE_CNCCC").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("numero_teclb").setFiltroContenido();
         tab_tabla1.getColumna("beneficiari_teclb").setFiltroContenido();
         tab_tabla1.getColumna("nombre_tettb").setFiltroContenido();
@@ -551,7 +556,10 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("EGRESOS").setLongitud(25);
         tab_tabla1.getColumna("INGRESOS").alinearDerecha();
         tab_tabla1.getColumna("INGRESOS").setLongitud(25);
-        tab_tabla1.getColumna("IDE_CNCCC").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("numero_teclb").setFiltroContenido();
         tab_tabla1.getColumna("beneficiari_teclb").setFiltroContenido();
         tab_tabla1.getColumna("nombre_tettb").setFiltroContenido();
@@ -1252,6 +1260,18 @@ public class pre_libro_bancos extends Pantalla {
         return true;
     }
 
+     /**
+     * Abre el asiento contable seleccionado
+     *
+     * @param evt
+     */
+    public void abrirAsiento(ActionEvent evt) {
+        Link lin_ide_cnccc = (Link) evt.getComponent();
+        asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
+        tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
+        asc_asiento.dibujar();
+    }
+    
     public AutoCompletar getAut_cuentas() {
         return aut_cuentas;
     }

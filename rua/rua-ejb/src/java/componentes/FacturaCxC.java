@@ -614,6 +614,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_conta.getColumna("ide_cnccc").setNombreVisual("TRANSACCIÓN");
         tab_cab_conta.getColumna("ide_cnccc").setEtiqueta();
         tab_cab_conta.getColumna("numero_cnccc").setEtiqueta();
+        tab_cab_conta.getColumna("ide_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_conta.getColumna("numero_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
         tab_cab_conta.getColumna("numero_cnccc").setNombreVisual("NUM. COMPROBANTE");
         tab_cab_conta.getColumna("numero_cnccc").setOrden(5);
@@ -657,6 +658,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
         tab_deta_conta.setScrollable(true);
         tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //300
+        tab_deta_conta.setScrollWidth(getAnchoPanel() - 15);
         tab_deta_conta.setLectura(true);
         tab_deta_conta.dibujar();
 

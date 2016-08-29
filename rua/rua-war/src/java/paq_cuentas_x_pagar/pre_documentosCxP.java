@@ -15,6 +15,7 @@ import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -25,6 +26,7 @@ import framework.componentes.graficos.GraficoPastel;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import sistema.aplicacion.Pantalla;
 
@@ -163,6 +165,9 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
@@ -255,6 +260,9 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
@@ -283,6 +291,9 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
@@ -474,6 +485,18 @@ public class pre_documentosCxP extends Pantalla {
     @Override
     public void eliminar() {
 
+    }
+
+    /**
+     * Abre el asiento contable seleccionado
+     *
+     * @param evt
+     */
+    public void abrirAsiento(ActionEvent evt) {
+        Link lin_ide_cnccc = (Link) evt.getComponent();
+        asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
+        tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
+        asc_asiento.dibujar();
     }
 
     public DocumentoCxP getDcp_documento() {

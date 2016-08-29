@@ -208,7 +208,7 @@ public class ServicioCliente extends ServicioBase {
      * @return
      */
     public String getSqlTransaccionesCliente(String ide_geper, String fechaInicio, String fechaFin) {
-        return "SELECT FECHA_TRANS_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, '' SALDO,OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, FECHA_VENCI_CCDTR,IDE_CCDTR,IDE_TECLB,NUMERO_PAGO_CCDTR "
+        return "SELECT a.ide_ccdtr,FECHA_TRANS_CCDTR, IDE_CNCCC, nombre_ccttr as TRANSACCION,DOCUM_RELAC_CCDTR, case when signo_ccttr = 1 THEN VALOR_CCDTR  end as INGRESOS,case when signo_ccttr = -1 THEN VALOR_CCDTR end as EGRESOS, '' SALDO,OBSERVACION_CCDTR as OBSERVACION, NOM_USUA as USUARIO, FECHA_VENCI_CCDTR,IDE_TECLB,NUMERO_PAGO_CCDTR "
                 + "FROM cxc_detall_transa a "
                 + "INNER JOIN  cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR "
                 + "INNER JOIN  sis_usuario c on a.IDE_USUA =c.IDE_USUA "
@@ -216,7 +216,7 @@ public class ServicioCliente extends ServicioBase {
                 + "WHERE ide_geper=" + ide_geper + " "
                 + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                 + "AND FECHA_TRANS_CCDTR BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "ORDER BY FECHA_TRANS_CCDTR,IDE_CCDTR";
+                + "ORDER BY FECHA_TRANS_CCDTR,a.IDE_CCDTR";
     }
 
     /**

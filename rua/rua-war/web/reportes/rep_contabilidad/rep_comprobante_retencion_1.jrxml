@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_retencion_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a5e0ed11-c805-4c4e-915c-9dcbe7456ec6">
-	<property name="ireport.zoom" value="1.4641000000000006"/>
-	<property name="ireport.x" value="125"/>
-	<property name="ireport.y" value="115"/>
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="71"/>
 	<parameter name="ide_cncre" class="java.lang.Long"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/Inspectoria"]]></defaultValueExpression>
@@ -82,7 +82,7 @@ where cf.ide_cncre=$P{ide_cncre}  and cr.ide_cncre=$P{ide_cncre}]]>
 				<textFieldExpression><![CDATA[$F{numero_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="25d90b73-99a8-440f-a69b-a36a4c80af70" x="133" y="60" width="228" height="14"/>
+				<reportElement uuid="25d90b73-99a8-440f-a69b-a36a4c80af70" x="132" y="60" width="228" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
@@ -93,14 +93,9 @@ where cf.ide_cncre=$P{ide_cncre}  and cr.ide_cncre=$P{ide_cncre}]]>
 	<columnHeader>
 		<band height="47" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c03363f5-33fd-4297-a658-d779df19e502" x="65" y="5" width="58" height="14"/>
+				<reportElement uuid="c03363f5-33fd-4297-a658-d779df19e502" x="74" y="10" width="58" height="14"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{ejer_fiscal}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement uuid="895c86db-f8bc-4475-86a6-47dada0ee560" x="19" y="18" width="135" height="14"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{observacion_cncre}==null? new String(""):$F{observacion_cncre}]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement uuid="f25a5350-f60f-4629-9834-37c412c52c99" x="-11" y="10" width="50" height="35"/>

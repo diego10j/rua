@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9c58ee3d-1878-4a32-80b9-4c9cace6c749">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -44,32 +44,32 @@ and imp.ide_cnimp=cim.ide_cnimp]]>
 	<pageHeader>
 		<band height="80" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="117" y="30" width="164" height="16"/>
+				<reportElement uuid="d34d85f9-a4a9-4d7d-a136-a6ab207bdcb8" x="117" y="30" width="164" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="117" y="52" width="164" height="16"/>
+				<reportElement uuid="e05cce2b-458c-47b4-a953-f7a4bf90a4ba" x="117" y="52" width="164" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="376" y="10" width="100" height="16"/>
+				<reportElement uuid="d2d5884c-77ea-4f4f-9075-05f8d618da1b" x="376" y="10" width="100" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{fecha_emisi_cncre}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="376" y="30" width="100" height="16"/>
+				<reportElement uuid="8942c6df-bfea-49fc-acef-07cbf78ddd25" x="376" y="30" width="100" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_cntdo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="376" y="52" width="100" height="16"/>
+				<reportElement uuid="492d7c5b-dcc6-4505-836b-362e7ed3a36d" x="376" y="52" width="100" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numero_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="120" y="6" width="228" height="20"/>
+				<reportElement uuid="f7e5389d-1e13-4c0d-a54e-9d349e9b70c4" x="120" y="6" width="228" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
@@ -78,32 +78,32 @@ and imp.ide_cnimp=cim.ide_cnimp]]>
 	<columnHeader>
 		<band height="57" splitType="Stretch">
 			<staticText>
-				<reportElement x="25" y="19" width="85" height="20"/>
+				<reportElement uuid="00c9d0ab-0b23-41ac-b64a-db2c1fa2fab4" x="25" y="19" width="85" height="20"/>
 				<textElement/>
 				<text><![CDATA[Ejercicio fiscal]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="129" y="0" width="65" height="55"/>
+				<reportElement uuid="2a08aca2-1105-4a73-9664-e5ed3208d637" x="129" y="0" width="65" height="55"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Base Imponible para la Retencion]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="348" y="19" width="77" height="20"/>
+				<reportElement uuid="a89dc32b-b667-4ba7-81d1-4f989e5917cf" x="348" y="19" width="77" height="20"/>
 				<textElement/>
 				<text><![CDATA[% de retencion]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="451" y="19" width="76" height="20"/>
+				<reportElement uuid="ecf2de34-75aa-4f39-8cfa-7c12c65f6af0" x="451" y="19" width="76" height="20"/>
 				<textElement/>
 				<text><![CDATA[Valor Retenido]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="217" y="19" width="50" height="20"/>
+				<reportElement uuid="e01e3641-f855-4df2-a2ce-1da99d0ffe62" x="217" y="19" width="50" height="20"/>
 				<textElement/>
 				<text><![CDATA[Impuesto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="289" y="8" width="38" height="40"/>
+				<reportElement uuid="7bba83e1-d88a-4d6b-8149-ae474ad049b5" x="289" y="8" width="38" height="40"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Codigo del Impuesto]]></text>
 			</staticText>
@@ -112,37 +112,37 @@ and imp.ide_cnimp=cim.ide_cnimp]]>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField>
-				<reportElement x="36" y="1" width="58" height="13"/>
+				<reportElement uuid="1034e2f2-62d6-41e8-8307-87bb10cfb008" x="36" y="1" width="58" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{ejer_fiscal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="129" y="1" width="65" height="13"/>
+				<reportElement uuid="ce6cebed-1dd9-4f70-8de9-47de58c833e9" x="129" y="1" width="65" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{base_cndre}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="361" y="1" width="31" height="13"/>
+				<reportElement uuid="9d33b227-3550-438f-9db7-f244a80837cd" x="361" y="1" width="31" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{porcentaje_cndre}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="461" y="1" width="76" height="13"/>
+				<reportElement uuid="aab0af7b-271e-4954-9be3-490c4dd0d4de" x="461" y="1" width="76" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{valor_cndre}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="392" y="1" width="12" height="13"/>
+				<reportElement uuid="ba2f029b-93bb-4275-8017-2812bb4fda42" x="392" y="1" width="12" height="13"/>
 				<textElement/>
 				<text><![CDATA[%]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="292" y="1" width="44" height="13"/>
+				<reportElement uuid="507b3814-2ef4-4045-a034-64ab6d0b4a18" x="292" y="1" width="44" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{casillero_cncim}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="220" y="1" width="50" height="13"/>
+				<reportElement uuid="dac4ee21-c788-4828-9f48-f397fa3fcb82" x="220" y="1" width="50" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_cnimp}]]></textFieldExpression>
 			</textField>
@@ -157,12 +157,12 @@ and imp.ide_cnimp=cim.ide_cnimp]]>
 	<summary>
 		<band height="28" splitType="Stretch">
 			<textField>
-				<reportElement x="461" y="4" width="76" height="20"/>
+				<reportElement uuid="70c4a45f-6e5b-4630-91a4-a3b0d84f2135" x="461" y="4" width="76" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{valor_cndre_1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="372" y="4" width="79" height="20"/>
+				<reportElement uuid="bf0e6edc-d442-4db7-8df9-82fed029231d" x="372" y="4" width="79" height="20"/>
 				<textElement/>
 				<text><![CDATA[Total a Retener]]></text>
 			</staticText>

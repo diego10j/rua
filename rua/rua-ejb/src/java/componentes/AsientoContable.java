@@ -6,10 +6,12 @@
 package componentes;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AreaTexto;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
@@ -61,10 +63,12 @@ public class AsientoContable extends Dialogo {
     private String tipo = null;
 
     private int reporteComprobante = 1;// reporte comprobante
+    //Para ver un asiento contable
+    private String ide_cnccc = null;
 
     public AsientoContable() {
         parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
-                "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso", "p_con_tipo_comprobante_egreso");
+                "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso", "p_con_tipo_comprobante_egreso", "p_con_beneficiario_empresa");
         this.setWidth("95%");
         this.setHeight("90%");
         this.setTitle("ASIENTO CONTABLE");
@@ -74,7 +78,12 @@ public class AsientoContable extends Dialogo {
         utilitario.getPantalla().getChildren().add(vpd_asiento);
     }
 
-    private void construir() {
+    //Asigna un asiento contable para dibujarlo
+    public void setAsientoContable(String ide_cnccc) {
+        this.ide_cnccc = ide_cnccc;
+    }
+
+    private void dibujarNuevoAsiento() {
         Grid contenido = new Grid();
         //Asientos tipo
         aut_asiento_tipo = new AutoCompletar();
@@ -205,6 +214,93 @@ public class AsientoContable extends Dialogo {
 
     }
 
+    private void dibujarVerAsiento() {
+        this.setTitle("ASIENTO CONTABLE N. " + ide_cnccc);
+        Grupo contenido = new Grupo();
+        AreaTexto ate_observacion_conta = new AreaTexto();
+        tab_cabe_asiento = new Tabla();
+        tab_deta_asiento = new Tabla();
+        tab_cabe_asiento.setId("tab_cabe_asiento");
+        tab_cabe_asiento.setRuta("pre_index.clase." + getId());
+        tab_cabe_asiento.setSql(ser_comprobante.getSqlCabeceraAsiento(ide_cnccc));
+        tab_cabe_asiento.getColumna("ide_cnccc").setNombreVisual("TRANSACCIÓN");
+        tab_cabe_asiento.getColumna("ide_cnccc").setEtiqueta();
+        tab_cabe_asiento.getColumna("ide_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
+        tab_cabe_asiento.getColumna("numero_cnccc").setEtiqueta();
+        tab_cabe_asiento.getColumna("numero_cnccc").setEstilo("font-size: 14px;font-weight: bold;text-align: right;");
+        tab_cabe_asiento.getColumna("numero_cnccc").setNombreVisual("NUM. COMPROBANTE");
+        tab_cabe_asiento.getColumna("numero_cnccc").setOrden(5);
+        tab_cabe_asiento.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
+        tab_cabe_asiento.getColumna("fecha_trans_cnccc").setOrden(1);
+        tab_cabe_asiento.getColumna("fecha_trans_cnccc").setEtiqueta();
+        tab_cabe_asiento.getColumna("nom_usua").setVisible(false);
+        tab_cabe_asiento.getColumna("fecha_siste_cnccc").setVisible(false);
+        tab_cabe_asiento.getColumna("hora_sistem_cnccc").setVisible(false);
+        tab_cabe_asiento.getColumna("nom_modu").setEtiqueta();
+        tab_cabe_asiento.getColumna("nom_modu").setNombreVisual("MÓDULO");
+        tab_cabe_asiento.getColumna("nom_modu").setOrden(4);
+        tab_cabe_asiento.getColumna("nom_modu").setEstilo("width:150px");
+        tab_cabe_asiento.getColumna("nom_geper").setEtiqueta();
+        tab_cabe_asiento.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_cabe_asiento.getColumna("nom_geper").setOrden(2);
+        tab_cabe_asiento.getColumna("nombre_cntcm").setEtiqueta();
+        tab_cabe_asiento.getColumna("nombre_cntcm").setNombreVisual("TIPO COMPROBANTE");
+        tab_cabe_asiento.getColumna("nombre_cntcm").setEstilo("width:100px");
+        tab_cabe_asiento.getColumna("nombre_cntcm").setOrden(3);
+        tab_cabe_asiento.getColumna("OBSERVACION_CNCCC").setVisible(false);
+        tab_cabe_asiento.setTipoFormulario(true);
+        tab_cabe_asiento.getGrid().setColumns(6);
+        tab_cabe_asiento.setMostrarNumeroRegistros(false);
+        tab_cabe_asiento.setLectura(true);
+        tab_cabe_asiento.dibujar();
+        tab_cabe_asiento.setLectura(false);
+
+        tab_deta_asiento.setId("tab_deta_asiento");
+        tab_deta_asiento.setRuta("pre_index.clase." + getId());
+        tab_deta_asiento.setSql(ser_comprobante.getSqlDetalleAsiento(tab_cabe_asiento.getValorSeleccionado()));
+        tab_deta_asiento.getColumna("ide_cndcc").setVisible(false);
+        tab_deta_asiento.getColumna("codig_recur_cndpc").setNombreVisual("CÓDIGO CUENTA");
+        tab_deta_asiento.getColumna("nombre_cndpc").setNombreVisual("CUENTA");
+        tab_deta_asiento.setColumnaSuma("debe,haber");
+        tab_deta_asiento.getColumna("debe").alinearDerecha();
+        tab_deta_asiento.getColumna("debe").setLongitud(25);
+        tab_deta_asiento.getColumna("haber").alinearDerecha();
+        tab_deta_asiento.getColumna("haber").setLongitud(25);
+        tab_deta_asiento.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
+        tab_deta_asiento.setScrollable(true);
+        tab_deta_asiento.setScrollHeight(getAltoPanel() - 210);
+        tab_deta_asiento.setScrollWidth(getAnchoPanel() - 15);
+        tab_deta_asiento.setLectura(true);
+        tab_deta_asiento.dibujar();
+
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_deta_asiento);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_formato().setRendered(false);
+        pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel.setStyle("overflow:hidden;");
+        contenido.getChildren().add(tab_cabe_asiento);
+        contenido.getChildren().add(pat_panel);
+
+        Grid gri_observa = new Grid();
+        gri_observa.setColumns(2);
+        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
+        gri_observa.getChildren().add(new Etiqueta(""));
+        ate_observacion_conta.setValue(tab_cabe_asiento.getValor("observacion_cnccc"));
+        ate_observacion_conta.setCols(100);
+        ate_observacion_conta.setDisabled(true);
+        gri_observa.getChildren().add(ate_observacion_conta);
+        gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cabe_asiento.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cabe_asiento.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cabe_asiento.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
+        contenido.getChildren().add(gri_observa);
+        contenido.setStyle("overflow:hidden;");
+        this.getGri_cuerpo().getChildren().clear();
+        this.setDialogo(contenido);
+        this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
+    }
+
     public void cargarCuentasAsientoTipo(SelectEvent evt) {
         aut_asiento_tipo.onSelect(evt);
         if (aut_asiento_tipo.getValor() != null) {
@@ -292,27 +388,32 @@ public class AsientoContable extends Dialogo {
     }
 
     public void guardar() {
-        if (validarComprobante()) {
-            if (ser_comprobante.isPeriodoValido(tab_cabe_asiento.getValor("fecha_trans_cnccc"))) {
-                if (tab_cabe_asiento.isFilaInsertada()) {
-                    tab_cabe_asiento.setValor("hora_sistem_cnccc", utilitario.getHoraActual());
-                    tab_cabe_asiento.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_cabe_asiento.getValor("fecha_trans_cnccc")));
-                }
-                if (tab_cabe_asiento.guardar()) {
-                    if (tab_deta_asiento.guardar()) {
-                        if (tab_presupuesto != null) {
-                            tab_presupuesto.guardar();
-                        }
-                        //utilitario.getConexion().setImprimirSqlConsola(true);
-                        completarAsiento(tab_cabe_asiento.getValor("ide_cnccc"));
-                        if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
-                            this.cerrar();
-                            verAsientoContable(tab_cabe_asiento.getValor("ide_cnccc"));
+        if (ide_cnccc == null) {
+            if (validarComprobante()) {
+                if (ser_comprobante.isPeriodoValido(tab_cabe_asiento.getValor("fecha_trans_cnccc"))) {
+                    if (tab_cabe_asiento.isFilaInsertada()) {
+                        tab_cabe_asiento.setValor("hora_sistem_cnccc", utilitario.getHoraActual());
+                        tab_cabe_asiento.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_cabe_asiento.getValor("fecha_trans_cnccc")));
+                    }
+                    if (tab_cabe_asiento.guardar()) {
+                        if (tab_deta_asiento.guardar()) {
+                            if (tab_presupuesto != null) {
+                                tab_presupuesto.guardar();
+                            }
+                            //utilitario.getConexion().setImprimirSqlConsola(true);
+                            completarAsiento(tab_cabe_asiento.getValor("ide_cnccc"));
+                            if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
+                                this.cerrar();
+                                verAsientoContable(tab_cabe_asiento.getValor("ide_cnccc"));
+                            }
                         }
                     }
                 }
             }
+        } else {
+            this.cerrar();
         }
+
     }
 
     public void verAsientoContable(String ide_cnccc) {
@@ -322,7 +423,7 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
-            
+
             vpd_asiento.setVisualizarPDF("rep_contabilidad/rep_comprobante_contabilidad.jasper", parametros_rep);
         }
         if (reporteComprobante == 2) {//cheque
@@ -334,8 +435,8 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("dia", utilitario.getDia(tab_lib_banc.getValor("fecha_trans_teclb")) + "");
             parametros_rep.put("monto_letras", ser_tesoreria.agregarAsteriscosCheque(utilitario.getLetrasDolarNumero(tab_lib_banc.getValor("valor_teclb"))));
             parametros_rep.put("ide_cnccc", Long.parseLong(tab_lib_banc.getValor("ide_cnccc")));
-            parametros_rep.put("ide_cnlap_haber", utilitario.getVariable("p_con_lugar_haber"));
-            parametros_rep.put("ide_cnlap_debe", utilitario.getVariable("p_con_lugar_debe"));
+            parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
+            parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("p_num_cheque", tab_lib_banc.getValor("numero_teclb") + "");
             parametros_rep.put("p_num_trans", tab_lib_banc.getValor("ide_teclb") + "");
             TablaGenerica tab_persona = ser_tesoreria.getPersona(tab_cabe_asiento.getValor("ide_geper"));
@@ -360,8 +461,19 @@ public class AsientoContable extends Dialogo {
 
     @Override
     public void dibujar() {
-        construir();
+        if (ide_cnccc == null) {
+            dibujarNuevoAsiento();
+        } else {
+            dibujarVerAsiento();
+        }
         super.dibujar();
+
+    }
+
+    @Override
+    public void cerrar() {
+        super.cerrar(); //To change body of generated methods, choose Tools | Templates.
+        ide_cnccc = null;
     }
 
     private void completarAsiento(String ide_cnccc) {
@@ -413,9 +525,9 @@ public class AsientoContable extends Dialogo {
                     str_observa += "" + tab_fac.getValor(i, "secuencial_cccfa");
                 }
                 if (boo_mismo_clie) {
-                    tab_cabe_asiento.setValor("ide_geper", str_ide_geper);//sociedad salesianos                
+                    tab_cabe_asiento.setValor("ide_geper", str_ide_geper);
                 } else {
-                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+                    tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
                 }
                 tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
             }
@@ -460,7 +572,7 @@ public class AsientoContable extends Dialogo {
                 if (boo_mismo_clie) {
                     tab_cabe_asiento.setValor("ide_geper", str_ide_geper);//sociedad salesianos                
                 } else {
-                    tab_cabe_asiento.setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+                    tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
                 }
                 tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
             }
@@ -530,6 +642,10 @@ public class AsientoContable extends Dialogo {
 
     public String getTipoComprobanteEgreso() {
         return parametros.get("p_con_tipo_comprobante_egreso");
+    }
+
+    public String getBeneficiarioEmpresa() {
+        return parametros.get("p_con_beneficiario_empresa"); //sociedad salesianos
     }
 
     public void setReporteCheque() {

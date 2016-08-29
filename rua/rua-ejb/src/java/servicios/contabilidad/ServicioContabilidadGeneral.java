@@ -34,6 +34,10 @@ public class ServicioContabilidadGeneral {
         return utilitario.consultar("SELECT * FROM con_det_plan_cuen where ide_cndpc=" + ide_cndpc);
     }
 
+    public TablaGenerica getCuentaporCodigo(String codig_recur_cndpc) {
+        return utilitario.consultar("SELECT * FROM con_det_plan_cuen where codig_recur_cndpc in (" + codig_recur_cndpc + ")");
+    }
+
     /**
      * Retorna la sentencia SQL para obtener cuentas de tipo ACTIVOS de la
      * empresa
@@ -113,6 +117,23 @@ public class ServicioContabilidadGeneral {
                 + "WHERE CUENTA.ide_cndpc=" + ide_cndpc + " and fecha_trans_cnccc BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "and ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") "
                 + "and cab.ide_sucu=" + utilitario.getVariable("ide_sucu") + " ORDER BY CAB.fecha_trans_cnccc,cab.ide_cnccc asc";
+    }
+
+    public String getSqlMovimientosCuentaPersona(String ide_cndpc, String fechaInicio, String fechaFin, String ide_geper) {
+        return "SELECT CAB.fecha_trans_cnccc,CAB.ide_cnccc ,PERSO.nom_geper as BENEFICIARIO, "
+                + "DETA.ide_cnlap,'' as DEBE, '' as HABER, "
+                + "(DETA.valor_cndcc * sc.signo_cnscu) as valor_cndcc,'' as SALDO, CAB.observacion_cnccc as OBSERVACION "
+                + "from con_cab_comp_cont CAB "
+                + "left join gen_persona PERSO on CAB.ide_geper=PERSO.ide_geper "
+                + "inner join  con_det_comp_cont DETA on CAB.ide_cnccc=DETA.ide_cnccc "
+                + "inner join con_det_plan_cuen CUENTA on  CUENTA.ide_cndpc = DETA.ide_cndpc "
+                + "inner join con_tipo_cuenta tc on CUENTA.ide_cntcu=tc.ide_cntcu "
+                + "inner join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and DETA.ide_cnlap=sc.ide_cnlap "
+                + "WHERE CUENTA.ide_cndpc=" + ide_cndpc + " and fecha_trans_cnccc BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") "
+                + "and cab.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and cab.ide_geper=" + ide_geper + " "
+                + "ORDER BY CAB.fecha_trans_cnccc,cab.ide_cnccc asc";
     }
 
     /**

@@ -40,6 +40,8 @@ public class pre_configuracion_impuestos extends Pantalla {
         tab_tabla1.getColumna("ide_cncim").setVisible(false);
         tab_tabla1.setCampoOrden("casillero_cncim");
         tab_tabla1.setRows(25);
+        tab_tabla1.setValidarInsertar(true);
+        tab_tabla1.setHeader("IMPUESTOS");
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -48,6 +50,7 @@ public class pre_configuracion_impuestos extends Pantalla {
         tab_tabla2.setCondicion("ide_cncim=-1");
         tab_tabla2.ejecutarSql();
 
+        tab_tabla3.setHeader("CONFIGURACIÓN");
         tab_tabla3.setId("tab_tabla3");
         tab_tabla3.setTabla("con_detall_impues", "ide_cndim", 3);
         tab_tabla3.setCondicion("ide_cnvim=-1");
@@ -56,6 +59,7 @@ public class pre_configuracion_impuestos extends Pantalla {
         tab_tabla3.getColumna("ide_cntdo").setCombo("con_tipo_document", "ide_cntdo", "nombre_cntdo", "");
         tab_tabla3.getColumna("ide_cntco").setCombo("con_tipo_contribu", "ide_cntco", "nombre_cntco", "");
         tab_tabla3.setRows(25);
+        tab_tabla3.setValidarInsertar(true);
         tab_tabla3.dibujar();
         PanelTabla pat_panel3 = new PanelTabla();
         pat_panel3.setPanelTabla(tab_tabla3);
@@ -85,15 +89,33 @@ public class pre_configuracion_impuestos extends Pantalla {
         if (tab_tabla1.isFocus()) {
             tab_tabla1.insertar();
             tab_tabla1.setValor("ide_cnimp", String.valueOf(com_impuesto.getValue()));
+            tab_tabla2.limpiar();
+            tab_tabla3.limpiar();
         } else if (tab_tabla3.isFocus()) {
-            tab_tabla3.insertar();
-            tab_tabla3.setValor("ide_cnvim", tab_tabla2.getValor("ide_cnvim"));
+            if (tab_tabla1.isEmpty() == false) {
+                tab_tabla3.insertar();
+                tab_tabla3.setValor("ide_cnvim", tab_tabla2.getValor("ide_cnvim"));
+            } else {
+                utilitario.agregarMensaje("Debe insertar un Impuesto", "");
+            }
         }
     }
 
     @Override
     public void guardar() {
         tab_tabla1.guardar();
+        if (tab_tabla1.isFilaInsertada() || tab_tabla1.isEmpty()) {
+            tab_tabla2.insertar();
+            tab_tabla2.setValor("nombre_cnvim", "PERIODO ACTUAL *");
+            tab_tabla2.setValor("ide_cncim", tab_tabla1.getValor("ide_cncim"));
+            tab_tabla2.setValor("fecha_inici_cnvim", utilitario.getFechaActual());
+            tab_tabla2.setValor("fecha_final_cnvim", utilitario.getFechaActual());
+            tab_tabla2.setValor("estado_cnvim", "true");
+            tab_tabla2.guardar();
+        }
+        if (tab_tabla3.isFilaInsertada()) {
+            tab_tabla3.setValor("ide_cnvim", tab_tabla2.getValor("ide_cnvim"));
+        }
         tab_tabla3.guardar();
         utilitario.getConexion().guardarPantalla();
     }
@@ -101,16 +123,27 @@ public class pre_configuracion_impuestos extends Pantalla {
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
+        if (tab_tabla1.isFocus()) {
+            if (tab_tabla1.eliminar()) {
+                actualizaSeleccion();
+            }
+        } else if (tab_tabla3.isFocus()) {
+            tab_tabla3.eliminar();
+        }
     }
 
     public void seleccionarTabla1(AjaxBehaviorEvent evt) {
-        tab_tabla1.seleccionarFila(evt);
-        actualizaSeleccion();
+        if (tab_tabla1.isFilaInsertada() == false) {
+            tab_tabla1.seleccionarFila(evt);
+            actualizaSeleccion();
+        }
     }
 
     public void seleccionarTabla1(SelectEvent evt) {
-        tab_tabla1.seleccionarFila(evt);
-        actualizaSeleccion();
+        if (tab_tabla1.isFilaInsertada() == false) {
+            tab_tabla1.seleccionarFila(evt);
+            actualizaSeleccion();
+        }
     }
 
     private void actualizaSeleccion() {
