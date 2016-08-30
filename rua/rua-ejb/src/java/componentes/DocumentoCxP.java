@@ -21,7 +21,6 @@ import framework.componentes.Texto;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.component.UIComponent;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.separator.Separator;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
@@ -785,8 +784,10 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.getColumna("base_grabada_cpcfa").setOrden(7);
         tab_com_reembolso.getColumna("base_grabada_cpcfa").setRequerida(true);
         tab_com_reembolso.getColumna("base_grabada_cpcfa").setNombreVisual("BASE IVA");
+        tab_com_reembolso.getColumna("base_grabada_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".calculaIvaReembolso");
         tab_com_reembolso.getColumna("valor_iva_cpcfa").setVisible(true);
         tab_com_reembolso.getColumna("valor_iva_cpcfa").setOrden(8);
+        tab_com_reembolso.getColumna("valor_iva_cpcfa").setEtiqueta();
         tab_com_reembolso.getColumna("valor_iva_cpcfa").setValorDefecto("0");
         tab_com_reembolso.getColumna("valor_iva_cpcfa").setNombreVisual("IVA");
         tab_com_reembolso.getColumna("valor_iva_cpcfa").setRequerida(true);
@@ -1525,6 +1526,18 @@ public class DocumentoCxP extends Dialogo {
                 }
             }
         }
+    }
+
+    public void calculaIvaReembolso(AjaxBehaviorEvent evt) {
+        tab_com_reembolso.modificar(evt);
+        double base = 0;
+        try {
+            base = Double.parseDouble(tab_com_reembolso.getValor("base_grabada_cpcfa"));
+        } catch (Exception e) {
+        }
+        double iva = base * tarifaIVA;
+        tab_com_reembolso.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(iva));
+        utilitario.addUpdateTabla(tab_com_reembolso, "valor_iva_cpcfa", "");
     }
 
     public Tabla getTab_cab_documento() {

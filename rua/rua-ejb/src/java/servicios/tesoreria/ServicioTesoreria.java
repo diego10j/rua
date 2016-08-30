@@ -223,6 +223,10 @@ public class ServicioTesoreria {
     }
 
     public String generarLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero) {
+        return generarTablaLibroBanco(beneficiario, fecha, ide_tettb, ide_tecba, valor, observacion, numero).getValor("ide_teclb");
+    }
+
+    public TablaGenerica generarTablaLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero) {
         TablaGenerica tab_cab_libro_banco = new TablaGenerica();
         tab_cab_libro_banco.setTabla("tes_cab_libr_banc", "ide_teclb", -1);
         tab_cab_libro_banco.setCondicion("ide_teclb=-1");
@@ -242,7 +246,7 @@ public class ServicioTesoreria {
         tab_cab_libro_banco.setValor("observacion_teclb", observacion);
         tab_cab_libro_banco.setValor("conciliado_teclb", "false");
         tab_cab_libro_banco.guardar();
-        return tab_cab_libro_banco.getValor("ide_teclb");
+        return tab_cab_libro_banco;
     }
 
     public String generarLibroBancoTransferir(String fecha, String ide_tettb, String ide_tecba, String ide_tecba2, double valor, String observacion, String numero) {
@@ -290,123 +294,139 @@ public class ServicioTesoreria {
         return tab_cab_libro_banco.getValor(0, "ide_teclb") + "," + tab_cab_libro_banco.getValor(1, "ide_teclb");
     }
 
-    /**
-     * Genera una transaccion en bancos/caja de un pago de una factura CxC
-     *
-     * @param tab_cab_factura_cxc Cabecera de Factura Cxc
-     * @param ide_tecba Cuenta Destino
-     * @param valor Valor
-     * @param observacion Observación
-     * @param numero Numero de Documento Relacionado
-     * @param fechaTransaccion Fecha de Pago
-     * @return ide_teclb
-     */
-    public String generarPagoFacturaCxC(Tabla tab_cab_factura_cxc, String ide_tecba, double valor, String observacion, String numero, String fechaTransaccion) {
-        if (numero == null || numero.isEmpty()) {
-            numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
-        }
-
-        if (observacion == null || observacion.isEmpty()) {
-            observacion = "V/. PAGO FACTURA " + tab_cab_factura_cxc.getValor("secuencial_cccfa");
-        }
-
-        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
-            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
-        }
-
+//    /**
+//     * Genera una transaccion en bancos/caja de un pago de una factura CxC
+//     *
+//     * @param tab_cab_factura_cxc Cabecera de Factura Cxc
+//     * @param ide_tecba Cuenta Destino
+//     * @param valor Valor
+//     * @param observacion Observación
+//     * @param numero Numero de Documento Relacionado
+//     * @param fechaTransaccion Fecha de Pago
+//     * @return ide_teclb
+//     */
+//    public String generarPagoFacturaCxC(Tabla tab_cab_factura_cxc, String ide_tecba, double valor, String observacion, String numero, String fechaTransaccion) {
+//        if (numero == null || numero.isEmpty()) {
+//            numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
+//        }
+//
+//        if (observacion == null || observacion.isEmpty()) {
+//            observacion = "V/. PAGO FACTURA " + tab_cab_factura_cxc.getValor("secuencial_cccfa");
+//        }
+//
+//        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+//            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
+//        }
+//
+//        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+//        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
+//                + "ide_sucu, ide_tettb, ide_teelb, ide_empr, ide_cnccc, valor_teclb, numero_teclb, "
+//                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
+//                + "beneficiari_teclb, observacion_teclb) "
+//                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
+//                + "" + getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp")) + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+//                + "" + utilitario.getVariable("ide_empr") + ", " + tab_cab_factura_cxc.getValor("ide_cnccc") + ", "
+//                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+//                + "'" + fechaTransaccion + "', "
+//                + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+//        utilitario.getConexion().agregarSqlPantalla(sql);
+//        return String.valueOf(ide_teclb);
+//    }
+    public String generarTransaccion(String ide_tecba, String ide_tettb, double valor, String observacion, String numero, String fechaTransaccion, String beneficiario) {
         long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+        if (numero == null || numero.isEmpty()) {
+            numero = "000000";
+        }
         String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
                 + "ide_sucu, ide_tettb, ide_teelb, ide_empr, ide_cnccc, valor_teclb, numero_teclb, "
                 + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
                 + "beneficiari_teclb, observacion_teclb) "
-                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
-                + "" + getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp")) + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
-                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", " + tab_cab_factura_cxc.getValor("ide_cnccc") + ", "
+                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_sucu") + ",  "
+                + "" + ide_tettb + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ","
+                + "" + utilitario.getVariable("ide_empr") + ", null, "
                 + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
                 + "'" + fechaTransaccion + "', "
-                + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+                + "NULL, false, '" + beneficiario + "', '" + observacion + "')";
         utilitario.getConexion().agregarSqlPantalla(sql);
         return String.valueOf(ide_teclb);
     }
 
-    /**
-     * Genera una transaccion en bancos/caja de un pago de una factura CxC
-     *
-     * @param tab_cab_factura_cxc Factura
-     * @param ide_tecba Cuenta Banco-Cajsa
-     * @param valor Valor
-     * @param numero Numero de Documento
-     * @param fechaTransaccion Fecha de Transaccion
-     * @param tipoTransaccion Tipo de Transaccion Tesoreria
-     *
-     * @return ide_teclb generado
-     */
-    public String generarPagoFacturaCxC(TablaGenerica tab_cab_factura_cxc, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion, String observacion) {
-        //Si noy numero de documento, asigna el secuencial de la factura
-        if (numero == null || numero.isEmpty()) {
-            numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
-        }
-
-        if (observacion == null || observacion.isEmpty()) {
-            observacion = "V/. PAGO FACTURA N." + tab_cab_factura_cxc.getValor("secuencial_cccfa");
-        }
-        //Si no hay fecha de pago, se asigna la fecha de la factura
-        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
-            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
-        }
-        //Si tipo transaccion, busca un tipo de transaccion cxc
-        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
-            tipoTransaccion = getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp"));
-        }
-
-        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
-        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
-                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
-                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
-                + "beneficiari_teclb, observacion_teclb) "
-                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
-                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
-                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
-                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
-                + "'" + fechaTransaccion + "', "
-                + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
-        utilitario.getConexion().agregarSqlPantalla(sql);
-        return String.valueOf(ide_teclb);
-    }
-
-    public String generarPagoFacturaCxP(TablaGenerica tab_cab_factura_cxp, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion, String observacion) {
-        //Si noy numero de documento, asigna el secuencial de la factura
-        if (numero == null || numero.isEmpty()) {
-            numero = tab_cab_factura_cxp.getValor("numero_cpcfa");
-        }
-        if (observacion == null || observacion.isEmpty()) {
-            observacion = "V/. PAGO " + ser_cuentas_cxp.getNombreTipoDocumento(tab_cab_factura_cxp.getValor("ide_cntdo")) + " N." + tab_cab_factura_cxp.getValor("numero_cpcfa");
-        }
-
-        //Si no hay fecha de pago, se asigna la fecha de la factura
-        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
-            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxp.getValor("fecha_emisi_cpcfa"));
-        }
-        //Si tipo transaccion, busca un tipo de transaccion cxc
-        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
-            tipoTransaccion = getTipoTransaccionCxP(tab_cab_factura_cxp.getValor("ide_cndfp"));
-        }
-
-        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
-        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
-                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
-                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
-                + "beneficiari_teclb, observacion_teclb) "
-                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
-                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
-                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
-                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
-                + "'" + fechaTransaccion + "', "
-                + "NULL, false, '" + getPersona(tab_cab_factura_cxp.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
-        utilitario.getConexion().agregarSqlPantalla(sql);
-        return String.valueOf(ide_teclb);
-    }
-
+//    /**
+//     * Genera una transaccion en bancos/caja de un pago de una factura CxC
+//     *
+//     * @param tab_cab_factura_cxc Factura
+//     * @param ide_tecba Cuenta Banco-Cajsa
+//     * @param valor Valor
+//     * @param numero Numero de Documento
+//     * @param fechaTransaccion Fecha de Transaccion
+//     * @param tipoTransaccion Tipo de Transaccion Tesoreria
+//     *
+//     * @return ide_teclb generado
+//     */
+//    public String generarPagoFacturaCxC(TablaGenerica tab_cab_factura_cxc, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion, String observacion) {
+//        //Si noy numero de documento, asigna el secuencial de la factura
+//        if (numero == null || numero.isEmpty()) {
+//            numero = tab_cab_factura_cxc.getValor("secuencial_cccfa");
+//        }
+//
+//        if (observacion == null || observacion.isEmpty()) {
+//            observacion = "V/. PAGO FACTURA N." + tab_cab_factura_cxc.getValor("secuencial_cccfa");
+//        }
+//        //Si no hay fecha de pago, se asigna la fecha de la factura
+//        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+//            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxc.getValor("fecha_emisi_cccfa"));
+//        }
+//        //Si tipo transaccion, busca un tipo de transaccion cxc
+//        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
+//            tipoTransaccion = getTipoTransaccionCxC(tab_cab_factura_cxc.getValor("ide_cndfp"));
+//        }
+//
+//        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+//        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
+//                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
+//                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
+//                + "beneficiari_teclb, observacion_teclb) "
+//                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
+//                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+//                + "" + utilitario.getVariable("ide_empr") + ", "
+//                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+//                + "'" + fechaTransaccion + "', "
+//                + "NULL, false, '" + getPersona(tab_cab_factura_cxc.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+//        utilitario.getConexion().agregarSqlPantalla(sql);
+//        return String.valueOf(ide_teclb);
+//    }
+//    public String generarPagoFacturaCxP(TablaGenerica tab_cab_factura_cxp, String ide_tecba, double valor, String numero, String fechaTransaccion, String tipoTransaccion, String observacion) {
+//        //Si noy numero de documento, asigna el secuencial de la factura
+//        if (numero == null || numero.isEmpty()) {
+//            numero = tab_cab_factura_cxp.getValor("numero_cpcfa");
+//        }
+//        if (observacion == null || observacion.isEmpty()) {
+//            observacion = "V/. PAGO " + ser_cuentas_cxp.getNombreTipoDocumento(tab_cab_factura_cxp.getValor("ide_cntdo")) + " N." + tab_cab_factura_cxp.getValor("numero_cpcfa");
+//        }
+//
+//        //Si no hay fecha de pago, se asigna la fecha de la factura
+//        if (fechaTransaccion == null || fechaTransaccion.isEmpty()) {
+//            fechaTransaccion = utilitario.getFormatoFecha(tab_cab_factura_cxp.getValor("fecha_emisi_cpcfa"));
+//        }
+//        //Si tipo transaccion, busca un tipo de transaccion cxc
+//        if (tipoTransaccion == null || tipoTransaccion.isEmpty()) {
+//            tipoTransaccion = getTipoTransaccionCxP(tab_cab_factura_cxp.getValor("ide_cndfp"));
+//        }
+//
+//        long ide_teclb = utilitario.getConexion().getMaximo("tes_cab_libr_banc", "ide_teclb", 1);
+//        String sql = "INSERT INTO tes_cab_libr_banc (ide_teclb, ide_tecba, "
+//                + "ide_sucu, ide_tettb, ide_teelb, ide_empr,  valor_teclb, numero_teclb, "
+//                + "fecha_trans_teclb, fecha_venci_teclb, fec_cam_est_teclb, conciliado_teclb, "
+//                + "beneficiari_teclb, observacion_teclb) "
+//                + "VALUES (" + ide_teclb + ", " + ide_tecba + ", " + utilitario.getVariable("ide_empr") + ",  "
+//                + "" + tipoTransaccion + ", " + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+//                + "" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", "
+//                + "" + utilitario.getFormatoNumero(valor) + ", '" + numero + "', '" + fechaTransaccion + "', "
+//                + "'" + fechaTransaccion + "', "
+//                + "NULL, false, '" + getPersona(tab_cab_factura_cxp.getValor("ide_geper")).getValor("nom_geper") + "', '" + observacion + "')";
+//        utilitario.getConexion().agregarSqlPantalla(sql);
+//        return String.valueOf(ide_teclb);
+//    }
     /**
      * Retorna lps datos de Una Persona
      *
@@ -576,7 +596,7 @@ public class ServicioTesoreria {
     }
 
     public void conciliarMovimientos(String ide_teclb) {
-        utilitario.getConexion().ejecutarSql("update tes_cab_libr_banc set conciliado_teclb=true where ide_teclb in(" + ide_teclb + ")");        
+        utilitario.getConexion().ejecutarSql("update tes_cab_libr_banc set conciliado_teclb=true where ide_teclb in(" + ide_teclb + ")");
     }
 
 }

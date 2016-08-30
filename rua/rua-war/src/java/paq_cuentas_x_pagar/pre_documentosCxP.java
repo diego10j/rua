@@ -57,7 +57,6 @@ public class pre_documentosCxP extends Pantalla {
     private AsientoContable asc_asiento = new AsientoContable();
 
     public pre_documentosCxP() {
-
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
@@ -231,7 +230,7 @@ public class pre_documentosCxP extends Pantalla {
     }
 
     public void abrirGeneraAsiento() {
-        if (tab_tabla1.getFilasSeleccionadas() != null) {
+        if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().length() > 0) {
             asc_asiento.dibujar();
             asc_asiento.setAsientoDocumentosCxP(tab_tabla1.getFilasSeleccionadas());
             asc_asiento.getBot_aceptar().setMetodo("guardar");
@@ -318,6 +317,10 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.setCampoPrimaria("ide_cpctr");
         tab_tabla1.getColumna("ide_cpctr").setVisible(false);
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
+        tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
+        tab_tabla1.getColumna("identificac_geper").setNombreVisual("IDENTIFICACIÓN");
         tab_tabla1.getColumna("fecha").setVisible(true);
         tab_tabla1.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
         tab_tabla1.getColumna("numero_cpcfa").setFiltroContenido();
@@ -399,13 +402,11 @@ public class pre_documentosCxP extends Pantalla {
             } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar una Factura", "");
             }
+        } else if (tab_tabla1.getValorSeleccionado() != null) {
+            dcp_documento.verDocumento(tab_tabla1.getValorSeleccionado());
+            dcp_documento.dibujar();
         } else {
-            if (tab_tabla1.getValorSeleccionado() != null) {
-                dcp_documento.verDocumento(tab_tabla1.getValorSeleccionado());
-                dcp_documento.dibujar();
-            } else {
-                utilitario.agregarMensajeInfo("Seleccione un Documento", "");
-            }
+            utilitario.agregarMensajeInfo("Seleccione un Documento", "");
         }
     }
 
