@@ -40,9 +40,9 @@ public class pre_configuracion_impuestos extends Pantalla {
         tab_tabla1.getColumna("ide_cncim").setVisible(false);
         tab_tabla1.setCampoOrden("casillero_cncim");
         tab_tabla1.setRows(25);
-        tab_tabla1.setValidarInsertar(true);
         tab_tabla1.setHeader("IMPUESTOS");
         tab_tabla1.dibujar();
+        tab_tabla1.setValidarInsertar(true);
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
 
@@ -122,25 +122,32 @@ public class pre_configuracion_impuestos extends Pantalla {
 
     @Override
     public void eliminar() {
-        utilitario.getTablaisFocus().eliminar();
         if (tab_tabla1.isFocus()) {
-            if (tab_tabla1.eliminar()) {
-                actualizaSeleccion();
+            if (tab_tabla3.isEmpty()) {
+                if (tab_tabla1.isFilaInsertada() == false) {
+                    utilitario.getConexion().ejecutarSql("DELETE FROM con_vigenc_impues WHERE ide_cncim=" + tab_tabla1.getValor("ide_cncim"));
+                }
+                if (tab_tabla1.eliminar()) {
+                    actualizaSeleccion();
+                }
+            } else {
+                utilitario.agregarMensajeError("No se puede eliminar la fila", "Tiene Detalles de configuración");
             }
+
         } else if (tab_tabla3.isFocus()) {
             tab_tabla3.eliminar();
         }
     }
 
     public void seleccionarTabla1(AjaxBehaviorEvent evt) {
-        if (tab_tabla1.isFilaInsertada() == false) {
+        if (tab_tabla1.getInsertadas().isEmpty()) {
             tab_tabla1.seleccionarFila(evt);
             actualizaSeleccion();
         }
     }
 
     public void seleccionarTabla1(SelectEvent evt) {
-        if (tab_tabla1.isFilaInsertada() == false) {
+        if (tab_tabla1.getInsertadas().isEmpty()) {
             tab_tabla1.seleccionarFila(evt);
             actualizaSeleccion();
         }

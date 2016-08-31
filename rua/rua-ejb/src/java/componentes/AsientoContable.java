@@ -8,6 +8,7 @@ package componentes;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -68,7 +69,8 @@ public class AsientoContable extends Dialogo {
 
     public AsientoContable() {
         parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
-                "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso", "p_con_tipo_comprobante_egreso", "p_con_beneficiario_empresa");
+                "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso",
+                "p_con_tipo_comprobante_egreso", "p_con_beneficiario_empresa", "p_tes_tran_cheque");
         this.setWidth("95%");
         this.setHeight("90%");
         this.setTitle("ASIENTO CONTABLE");
@@ -86,6 +88,7 @@ public class AsientoContable extends Dialogo {
     private void dibujarNuevoAsiento() {
         Grid contenido = new Grid();
         //Asientos tipo
+        ide_cnccc = null;
         aut_asiento_tipo = new AutoCompletar();
         aut_asiento_tipo.setRuta("pre_index.clase." + getId());
         aut_asiento_tipo.setId("aut_asiento_tipo");
@@ -290,12 +293,23 @@ public class AsientoContable extends Dialogo {
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
         gri_observa.getChildren().add(new Etiqueta(""));
         ate_observacion_conta.setValue(tab_cabe_asiento.getValor("observacion_cnccc"));
-        ate_observacion_conta.setCols(100);
+        ate_observacion_conta.setCols(90);
         ate_observacion_conta.setDisabled(true);
-        gri_observa.getChildren().add(ate_observacion_conta);
+
+        Grid griaux = new Grid();
+        griaux.setColumns(2);
+
+        Boton bot_imprimir = new Boton();
+        bot_imprimir.setValue("Imprimir");
+        bot_imprimir.setIcon("ui-icon-print");
+        bot_imprimir.setMetodoRuta("pre_index.clase." + getId() + ".imprimir");
+        griaux.getChildren().add(ate_observacion_conta);
+        griaux.getChildren().add(bot_imprimir);
+        gri_observa.getChildren().add(griaux);
         gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cabe_asiento.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cabe_asiento.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cabe_asiento.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
         contenido.getChildren().add(gri_observa);
         contenido.setStyle("overflow:hidden;");
+
         this.getGri_cuerpo().getChildren().clear();
         this.setDialogo(contenido);
         this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
@@ -400,9 +414,10 @@ public class AsientoContable extends Dialogo {
                             if (tab_presupuesto != null) {
                                 tab_presupuesto.guardar();
                             }
-                            //utilitario.getConexion().setImprimirSqlConsola(true);
-                            completarAsiento(tab_cabe_asiento.getValor("ide_cnccc"));
+                            //utilitario.getConexion().setImprimirSqlConsola(true);                            
                             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
+                                ide_cnccc = tab_cabe_asiento.getValor("ide_cnccc");
+                                completarAsiento(tab_cabe_asiento.getValor("ide_cnccc"));
                                 this.cerrar();
                                 verAsientoContable(tab_cabe_asiento.getValor("ide_cnccc"));
                             }
@@ -414,6 +429,19 @@ public class AsientoContable extends Dialogo {
             this.cerrar();
         }
 
+    }
+
+    public void imprimir() {
+        if (ide_cnccc != null) {
+            //SI EL ASIENTO ES TIPO CHEQUE            
+            TablaGenerica tab_consulta = utilitario.consultar("select ide_cnccc,ide_tettb from tes_cab_libr_banc  where ide_cnccc=" + ide_cnccc + " and ide_tettb=" + parametros.get("p_tes_tran_cheque"));
+            if (tab_consulta.isEmpty() == false) {
+                setReporteCheque();
+            } else {
+                setReporteComprobante();
+            }
+            verAsientoContable(ide_cnccc);
+        }
     }
 
     public void verAsientoContable(String ide_cnccc) {
@@ -439,7 +467,7 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("p_num_cheque", tab_lib_banc.getValor("numero_teclb") + "");
             parametros_rep.put("p_num_trans", tab_lib_banc.getValor("ide_teclb") + "");
-            TablaGenerica tab_persona = ser_tesoreria.getPersona(tab_cabe_asiento.getValor("ide_geper"));
+            TablaGenerica tab_persona = ser_tesoreria.getPersona(ser_comprobante.getCabeceraComprobante(ide_cnccc).getValor("ide_geper"));
             if (tab_persona.isEmpty() == false) {
                 parametros_rep.put("p_identificacion", tab_persona.getValor("identificac_geper"));
             } else {
@@ -472,25 +500,27 @@ public class AsientoContable extends Dialogo {
 
     @Override
     public void cerrar() {
-        super.cerrar(); //To change body of generated methods, choose Tools | Templates.
-        ide_cnccc = null;
+        super.cerrar(); //To change body of generated methods, choose Tools | Templates.      
     }
 
     private void completarAsiento(String ide_cnccc) {
         if (tipo != null) {
             if (tipo.equals(TipoAsientoEnum.FACTURAS_CXC.getCodigo())) {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc                
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ")");
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ") and numero_pago_ccdtr=0");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ")");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ") and numero_pago_ccdtr=0");
             } else if (tipo.equals(TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo())) {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc                
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ")");
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ")");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0");
             } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
-                //Asigna el ide_cnccc a la transaccion cxc o cxp y al libro bancos               
-                utilitario.getConexion().agregarSqlPantalla("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                //Asigna el ide_cnccc a la  facturas, documentos cxp,transaccion cxc o cxp y al libro bancos               
+                utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + "))");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + "))");
+
             }
         }
     }
@@ -582,6 +612,31 @@ public class AsientoContable extends Dialogo {
 
     }
 
+    public void setAsientoTipoSistema(TipoAsientoEnum tipoAsientoEnum, Tabla... tablas) {
+        TablaGenerica tab_ast = ser_configuracion.getCabeceraAsientoTipo(tipoAsientoEnum.getCodigo());
+        tab_cabe_asiento.setValor("ide_modu", tab_ast.getValor("ide_modu"));
+        tab_cabe_asiento.setValor("ide_cntcm", tab_ast.getValor("ide_cntcm"));
+        utilitario.addUpdate("tab_cabe_asiento");
+        TablaGenerica tab_cuentas = ser_configuracion.getCuentasAsientoTipo(tipoAsientoEnum.getCodigo());
+        Map<String, String> map_campos = new HashMap();
+        for (int i = 0; i < tab_cuentas.getTotalFilas(); i++) {
+            tab_deta_asiento.insertar();
+            tab_deta_asiento.setValor("ide_cndpc", tab_cuentas.getValor(i, "ide_cndpc"));
+            tab_deta_asiento.setValor("ide_cnlap", tab_cuentas.getValor(i, "ide_cnlap"));
+
+            if (tab_cuentas.getValor(i, "columna_coast") != null) {
+                map_campos.put(tab_cuentas.getValor(i, "columna_coast"), null);
+            }
+
+        }
+
+        for (Tabla tablaActual : tablas) {
+            //recorre las columnas de todas las tablas
+
+        }
+
+    }
+
     public void setAsientoPagoDocumentosCxP(String ide_cpcfa) {
         this.relacion = ide_cpcfa;
         this.tipo = TipoAsientoEnum.PAGO_DOCUMENTOS_CXP.getCodigo();
@@ -655,4 +710,9 @@ public class AsientoContable extends Dialogo {
     public void setReporteComprobante() {
         reporteComprobante = 1;
     }
+
+    public String getIde_cnccc() {
+        return ide_cnccc;
+    }
+
 }

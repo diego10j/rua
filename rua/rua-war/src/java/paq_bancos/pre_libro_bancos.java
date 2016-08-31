@@ -797,11 +797,8 @@ public class pre_libro_bancos extends Pantalla {
     public void guardar() {
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
-            System.out.println("//... " + asc_asiento.isVisible());
             if (asc_asiento.isVisible() == false) {
                 utilitario.agregarMensaje("Se Guardo correctamente", "");
-                dibujarPosicion();
-                utilitario.addUpdate("@form");
             }
         }
     }
@@ -880,6 +877,7 @@ public class pre_libro_bancos extends Pantalla {
         if (validarCxP()) {
             String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             generarAsiento(ide_teclb);
+            dibujarCxP();
         }
     }
 
@@ -888,6 +886,7 @@ public class pre_libro_bancos extends Pantalla {
             String ide_teclb = ser_tesoreria.generarLibroBanco(tex_beneficiario.getValue().toString(), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
             generarAsiento(ide_teclb);
+            dibujarOtros();
         }
     }
 
@@ -906,6 +905,7 @@ public class pre_libro_bancos extends Pantalla {
             String ide_teclb = ser_tesoreria.generarLibroBancoTransferir(cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), aut_cuenta1.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
             generarAsiento(ide_teclb);
+            dibujarTransferencias();
         }
     }
 
@@ -958,6 +958,10 @@ public class pre_libro_bancos extends Pantalla {
         for (Object lis_fact_pagada : lis_fact_pagadas) {
             Object[] obj_fila = (Object[]) lis_fact_pagada;
             System.out.println("ide_cpcfa " + obj_fila[0] + " ide_cpctr " + obj_fila[1] + " valor " + obj_fila[2]);
+            if (obj_fila[0] != null) {
+                //Actualiza cxp_detall_transa libro banco generado
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_teclb=" + ide_teclb + " WHERE ide_cpcfa =" + obj_fila[0] + " and ide_teclb is null");
+            }
             String ide_ccctr = String.valueOf(obj_fila[1]);
             //TRANSACCION EN TESORERIA y TRANSACCION CXP
             TablaGenerica tab_cabecera = utilitario.consultar(ser_cuentas_cxp.getSqlCabeceraDocumento(String.valueOf(obj_fila[0])));
@@ -1226,6 +1230,7 @@ public class pre_libro_bancos extends Pantalla {
         if (validarCxC()) {
             String ide_teclb = cargarPagoCxC(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             generarAsiento(ide_teclb);
+            dibujarCxC();
         }
     }
 
@@ -1303,6 +1308,11 @@ public class pre_libro_bancos extends Pantalla {
         for (Object lis_fact_pagada : lis_fact_pagadas) {
             Object[] obj_fila = (Object[]) lis_fact_pagada;
             System.out.println("ide_cccfa " + obj_fila[0] + " ide_ccctr " + obj_fila[1] + "*** valor " + obj_fila[2]);
+            if (obj_fila[0] != null) {
+                //Actualiza cxc_detall_transa libro banco generado
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_teclb=" + ide_teclb + " WHERE ide_cccfa =" + obj_fila[0] + " and ide_teclb is null");
+            }
+
             String ide_ccctr = String.valueOf(obj_fila[1]);
             //TRANSACCION EN TESORERIA y TRANSACCION CXC
             TablaGenerica tab_cabecera = utilitario.consultar(ser_factura.getSqlCabeceraFactura(String.valueOf(obj_fila[0])));
