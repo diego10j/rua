@@ -285,6 +285,23 @@ public class ServicioProveedor {
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
     }
 
+    public String getSqlComboFacturasPorPagar(String ide_geper) {
+        return "select dt.ide_cpctr,"
+                + "coalesce(nombre_cntdo,'Cuenta por Pagar'),coalesce(cf.numero_cpcfa,''),"
+                + "sum (dt.valor_cpdtr*tt.signo_cpttr) as saldo_x_pagar "
+                + "from cxp_detall_transa dt "
+                + "left join cxp_cabece_transa ct on dt.ide_cpctr=ct.ide_cpctr "
+                + "left join cxp_cabece_factur cf on cf.ide_cpcfa=ct.ide_cpcfa and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " "
+                + "left join cxp_tipo_transacc tt on tt.ide_cpttr=dt.ide_cpttr "
+                + "left join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo "
+                + "where ct.ide_geper=" + ide_geper + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa,nombre_cntdo, "
+                + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa "
+                + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
+    }
+
     /**
      * Compras Mensuales en un año de un cliente
      *

@@ -520,7 +520,6 @@ public class AsientoContable extends Dialogo {
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + "))");
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + "))");
-
             }
         }
     }
@@ -559,7 +558,9 @@ public class AsientoContable extends Dialogo {
                 } else {
                     tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
                 }
-                tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+                if (tab_cabe_asiento.getValor("observacion_cnccc") == null) {
+                    tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+                }
             }
         } else {
             utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe la Factura");
@@ -604,7 +605,10 @@ public class AsientoContable extends Dialogo {
                 } else {
                     tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
                 }
-                tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+
+                if (tab_cabe_asiento.getValor("observacion_cnccc") == null) {
+                    tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+                }
             }
         } else {
             utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe el Documento");

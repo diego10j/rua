@@ -308,7 +308,7 @@ public class Retencion extends Dialogo {
     }
 
     public void guardar() {
-        utilitario.getConexion().setImprimirSqlConsola(true);
+        //utilitario.getConexion().setImprimirSqlConsola(true);
         tab_cb_retencion.setValor("OBSERVACION_CNCRE", String.valueOf(ate_observacion.getValue()));
         if (validarComprobanteRetencion()) {
             tab_dto_proveedor.guardar();

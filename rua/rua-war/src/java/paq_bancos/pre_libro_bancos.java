@@ -140,6 +140,8 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("nombre_teban").setNombreVisual("BANCO");
         tab_tabla1.getColumna("nombre_teban").setLongitud(55);
         tab_tabla1.getColumna("nombre_tecba").setNombreVisual("CUENTA");
+        //  tab_tabla1.getColumna("nombre_tecba").setLink();
+        //  tab_tabla1.getColumna("nombre_tecba").setMetodoChange("cargarMovimientosCuenta");
         tab_tabla1.getColumna("nombre_tetcb").setNombreVisual("TIPO");
         tab_tabla1.getColumna("saldo_contable").setNombreVisual("SALDO CONTABLE");
         tab_tabla1.getColumna("saldo_contable").setLongitud(25);
@@ -1420,6 +1422,14 @@ public class pre_libro_bancos extends Pantalla {
         asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
         tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
+    }
+
+    public void cargarMovimientosCuenta(ActionEvent evt) {
+        Link lin_ide_tecba = (Link) evt.getComponent();
+        tab_tabla1.setFilaActual(lin_ide_tecba.getDir());
+        aut_cuentas.setValor(tab_tabla1.getValor("ide_tecba"));
+        utilitario.addUpdate("aut_cuentas");
+        dibujarMovimienots();
     }
 
     public AutoCompletar getAut_cuentas() {

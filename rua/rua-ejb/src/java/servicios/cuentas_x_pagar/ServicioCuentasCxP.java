@@ -216,7 +216,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         if (tipoDocumento != null && tipoDocumento.isEmpty() == false && tipoDocumento.equalsIgnoreCase("null") == false) {
             strCondicionTipoDoc = " and a.ide_cntdo=" + tipoDocumento + " ";
         }
-        return "select a.ide_cpcfa,fecha_emisi_cpcfa,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,a.ide_cnccc,numero_cncre,a.ide_cncre \n"
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa,a.ide_cnccc,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,numero_cncre,a.ide_cncre \n"
                 + " from cxp_cabece_factur a \n"
                 + " inner join gen_persona b on a.ide_geper=b.ide_geper \n"
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
@@ -269,7 +269,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         if (tipoDocumento != null && tipoDocumento.isEmpty() == false && tipoDocumento.equalsIgnoreCase("null") == false) {
             strCondicionTipoDoc = " and a.ide_cntdo=" + tipoDocumento + " ";
         }
-        return "select a.ide_cpcfa,fecha_emisi_cpcfa,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,a.ide_cnccc \n"
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa,a.ide_cnccc,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa \n"
                 + " from cxp_cabece_factur a \n"
                 + " inner join gen_persona b on a.ide_geper=b.ide_geper \n"
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
@@ -294,7 +294,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         if (tipoDocumento != null && tipoDocumento.isEmpty() == false && tipoDocumento.equalsIgnoreCase("null") == false) {
             strCondicionTipoDoc = " and a.ide_cntdo=" + tipoDocumento + " ";
         }
-        return "select a.ide_cpcfa,fecha_emisi_cpcfa,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,a.ide_cnccc,numero_cncre \n"
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa,a.ide_cnccc,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa ,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,numero_cncre \n"
                 + " from cxp_cabece_factur a \n"
                 + " inner join gen_persona b on a.ide_geper=b.ide_geper \n"
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"

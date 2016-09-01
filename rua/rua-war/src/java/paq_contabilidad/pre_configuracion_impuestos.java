@@ -104,7 +104,7 @@ public class pre_configuracion_impuestos extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla1.guardar();
-        if (tab_tabla1.isFilaInsertada() || tab_tabla1.isEmpty()) {
+        if (tab_tabla1.isFilaInsertada() || tab_tabla2.isEmpty()) {
             tab_tabla2.insertar();
             tab_tabla2.setValor("nombre_cnvim", "PERIODO ACTUAL *");
             tab_tabla2.setValor("ide_cncim", tab_tabla1.getValor("ide_cncim"));

@@ -614,7 +614,7 @@ public class pre_facturasCxC extends Pantalla {
     public void ingresarAnulada() {
         if (mas_secuencial.getValue() != null) {
             ser_factura.anularSecuencial(String.valueOf(mas_secuencial.getValue()), String.valueOf(com_pto_emision.getValue()));
-            utilitario.getConexion().setImprimirSqlConsola(true);
+            //utilitario.getConexion().setImprimirSqlConsola(true);
             if (guardarPantalla().isEmpty()) {
                 tab_tabla.actualizar();
                 mas_secuencial.limpiar();

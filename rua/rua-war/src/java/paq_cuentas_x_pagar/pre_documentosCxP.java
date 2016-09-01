@@ -12,6 +12,7 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -55,6 +56,8 @@ public class pre_documentosCxP extends Pantalla {
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
 
     private AsientoContable asc_asiento = new AsientoContable();
+
+    private Confirmar con_confirmar = new Confirmar();
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -115,6 +118,13 @@ public class pre_documentosCxP extends Pantalla {
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
 
+        con_confirmar.setId("con_confirmar");
+        con_confirmar.setWidgetVar("con_confirmar");
+        con_confirmar.setMessage("Desea Generar el Comprobante de Retención?");
+        con_confirmar.getBot_aceptar().setOncomplete("con_confirmar.hide();");
+        con_confirmar.getBot_aceptar().setMetodo("abrirRetencion");
+        con_confirmar.getBot_cancelar().setOnclick("con_confirmar.hide();");
+        agregarComponente(con_confirmar);
     }
 
     @Override
@@ -159,7 +169,7 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cpefa").setVisible(false);
         tab_tabla1.getColumna("ide_cncre").setVisible(false);
-        tab_tabla1.getColumna("nombre_cpefa").setFiltroContenido();
+        tab_tabla1.getColumna("nombre_cpefa").setVisible(false);
         tab_tabla1.getColumna("numero_cpcfa").setFiltroContenido();
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
@@ -462,6 +472,7 @@ public class pre_documentosCxP extends Pantalla {
                 dibujarDocumentos();
                 tab_tabla1.setFilaActual(dcp_documento.getTab_cab_documento().getValor("ide_cpcfa"));
                 utilitario.addUpdate("tab_tabla1");
+                con_confirmar.dibujar();
             }
         } else if (ret_retencion.isVisible()) {
             ret_retencion.guardar();
@@ -562,6 +573,14 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setGca_facturas(GraficoCartesiano gca_facturas) {
         this.gca_facturas = gca_facturas;
+    }
+
+    public Confirmar getCon_confirmar() {
+        return con_confirmar;
+    }
+
+    public void setCon_confirmar(Confirmar con_confirmar) {
+        this.con_confirmar = con_confirmar;
     }
 
 }
