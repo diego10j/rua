@@ -76,7 +76,10 @@ public class pre_libro_bancos extends Pantalla {
     private Texto tex_diferencia;
     private Texto tex_valor_pagar;
     private Texto tex_beneficiario;
+    private Texto tex_identificacion;
+    private Combo com_tipo_identificacion;
     private AreaTexto ate_observacion;
+    private String str_ide_geper;
 
     public pre_libro_bancos() {
 
@@ -101,6 +104,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuentas.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
         aut_cuentas.setMetodoChange("actualizarMovimientos");
         aut_cuentas.setGlobal(true);
+        aut_cuentas.setValue(null);
 
         bar_botones.limpiar();
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
@@ -495,8 +499,26 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void dibujarOtros() {
+        str_ide_geper = null;
         Grid contenido = new Grid();
         contenido.setWidth("100%");
+        Grid grid2 = new Grid();
+        grid2.setColumns(2);
+
+        grid2.getChildren().add(new Etiqueta("<strong>IDENTIFICACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        grid2.getChildren().add(new Etiqueta("<strong>TIPO DE IDENTIFICACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+
+        tex_identificacion = new Texto();
+        tex_identificacion.setId("tex_identificacion");
+        tex_identificacion.setSize(15);
+        tex_identificacion.setMetodoChange("buscarPersona");
+        grid2.getChildren().add(tex_identificacion);
+
+        com_tipo_identificacion = new Combo();
+        com_tipo_identificacion.setId("com_tipo_identificacion");
+        com_tipo_identificacion.setCombo(ser_tesoreria.getSqlComboTipoIdentificacion());
+        grid2.getChildren().add(com_tipo_identificacion);
+
         Grid grid1 = new Grid();
         grid1.setColumns(3);
         grid1.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
@@ -504,6 +526,7 @@ public class pre_libro_bancos extends Pantalla {
         grid1.getChildren().add(new Etiqueta());
 
         tex_beneficiario = new Texto();
+        tex_beneficiario.setId("tex_beneficiario");
         tex_beneficiario.setSize(70);
         grid1.getChildren().add(tex_beneficiario);
         cal_fecha_pago = new Calendario();
@@ -551,6 +574,7 @@ public class pre_libro_bancos extends Pantalla {
         gri4.getChildren().add(eti_valor_cobrar);
         gri4.getChildren().add(tex_valor_pagar);
 
+        contenido.getChildren().add(grid2);
         contenido.getChildren().add(grid1);
         contenido.getChildren().add(gri4);
         contenido.getChildren().add(gri3);
@@ -560,6 +584,36 @@ public class pre_libro_bancos extends Pantalla {
         bot_aceptar.setMetodo("aceptarOtros");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(5, "OTRAS TRANSACCIONES", contenido);
+    }
+
+    private boolean validarCedula() {
+        if (com_tipo_identificacion.getValue() != null && tex_identificacion.getValue() != null) {
+            if (com_tipo_identificacion.getValue().toString().equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
+                if (utilitario.validarCedula(tex_identificacion.getValue().toString()) == false) {
+                    utilitario.agregarMensajeError("El número de cédula no es válido", "");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void buscarPersona() {
+        str_ide_geper = null;
+        if (tex_identificacion.getValue() != null) {
+            if (tex_identificacion.getValue().toString().trim().isEmpty() == false) {
+                TablaGenerica tab_per = ser_tesoreria.getPersonaporIdentificacion(tex_identificacion.getValue().toString().trim());
+                if (tab_per.isEmpty() == false) {
+                    tex_beneficiario.setValue(tab_per.getValor("nom_geper"));
+                    com_tipo_identificacion.setValue(tab_per.getValor("ide_getid"));
+                    str_ide_geper = tab_per.getValor("ide_geper");
+                } else {
+                    tex_beneficiario.limpiar();
+                    com_tipo_identificacion.limpiar();
+                }
+                utilitario.addUpdate("tex_beneficiario,com_tipo_identificacion");
+            }
+        }
     }
 
     public void dibujarTransferencias() {
@@ -686,6 +740,7 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     private void generarAsiento(String ide_teclb) {
+        asc_asiento.nuevoAsiento();
         asc_asiento.dibujar();
         if (ate_observacion != null) {
             if (ate_observacion.getValue() != null) {
@@ -705,11 +760,27 @@ public class pre_libro_bancos extends Pantalla {
                 asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
                 asc_asiento.getTab_cabe_asiento().setValor("ide_cntcm", asc_asiento.getTipoComprobanteEgreso());
             }
-            if (aut_persona != null) {
-                asc_asiento.getTab_cabe_asiento().setValor("ide_geper", aut_persona.getValor());
+            //////////
+            if (str_ide_geper != null) {
+                try {
+                    Object obj_persona[] = new Object[3];
+                    obj_persona[0] = str_ide_geper;
+                    obj_persona[1] = tex_beneficiario.getValue().toString();
+                    obj_persona[2] = tex_identificacion.getValue().toString();
+                    asc_asiento.getTab_cabe_asiento().getColumna("ide_geper").getListaCombo().add(obj_persona);
+                    asc_asiento.getTab_cabe_asiento().setValor("ide_geper", str_ide_geper);
+                } catch (Exception e) {
+                    asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+                }
+
             } else {
-                asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+                if (aut_persona != null) {
+                    asc_asiento.getTab_cabe_asiento().setValor("ide_geper", aut_persona.getValor());
+                } else {
+                    asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
+                }
             }
+
             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_tesoreria.getCuentaContable(aut_cuenta.getValor()));
             asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
             asc_asiento.calcularTotal();
@@ -885,6 +956,11 @@ public class pre_libro_bancos extends Pantalla {
 
     public void aceptarOtros() {
         if (validarOtros()) {
+            if (str_ide_geper == null) {
+                //Crea el beneficiario
+                str_ide_geper = ser_tesoreria.crearBeneficiario(tex_identificacion.getValue().toString(), com_tipo_identificacion.getValue().toString(), tex_beneficiario.getValue().toString());
+            }
+
             String ide_teclb = ser_tesoreria.generarLibroBanco(tex_beneficiario.getValue().toString(), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
             generarAsiento(ide_teclb);
@@ -990,13 +1066,27 @@ public class pre_libro_bancos extends Pantalla {
             return false;
         }
 
+        if (com_tipo_identificacion.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar una 'TIPO DE IDENTIFICACIÓN' ", "");
+            return false;
+        }
+
         if (tex_beneficiario.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar un 'BENEFICIARIO' ", "");
             return false;
         }
 
+        if (tex_identificacion.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe ingresar la 'IDENTIFICACIÓN' ", "");
+            return false;
+        }
+
         if (ate_observacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
+            return false;
+        }
+
+        if (validarCedula() == false) {
             return false;
         }
 
@@ -1014,6 +1104,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
+
         return true;
     }
 

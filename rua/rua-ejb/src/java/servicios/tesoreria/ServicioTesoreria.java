@@ -6,11 +6,9 @@
 package servicios.tesoreria;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Tabla;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import persistencia.Conexion;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import sistema.aplicacion.Utilitario;
@@ -435,7 +433,6 @@ public class ServicioTesoreria {
      */
     public TablaGenerica getPersona(String ide_geper) {
         return utilitario.consultar("select * from gen_persona where ide_geper=" + ide_geper);
-
     }
 
     /**
@@ -597,6 +594,37 @@ public class ServicioTesoreria {
 
     public void conciliarMovimientos(String ide_teclb) {
         utilitario.getConexion().ejecutarSql("update tes_cab_libr_banc set conciliado_teclb=true where ide_teclb in(" + ide_teclb + ")");
+    }
+
+    /**
+     * Retorna tipos de identificacion exceto ruc
+     *
+     * @return
+     */
+    public String getSqlComboTipoIdentificacion() {
+        return "select  ide_getid,nombre_getid from  gen_tipo_identifi where ide_getid !=" + utilitario.getVariable("p_gen_tipo_identificacion_ruc");
+    }
+
+    public TablaGenerica getPersonaporIdentificacion(String identificac_geper) {
+        return utilitario.consultar("select * from gen_persona where identificac_geper='" + identificac_geper + "'");
+    }
+
+    public String crearBeneficiario(String identificac_geper, String ide_getid, String nom_geper) {
+        TablaGenerica tabla = new TablaGenerica();
+        tabla.setTabla("gen_persona", "ide_geper", -1);
+        tabla.setCondicion("ide_geper=-1");
+        tabla.ejecutarSql();
+        tabla.insertar();
+        tabla.setValor("es_proveedo_geper", "true");
+        tabla.setValor("es_cliente_geper", "false");
+        tabla.setValor("nivel_geper", "HIJO");
+        tabla.setValor("fecha_ingre_geper", utilitario.getFechaActual());
+        tabla.setValor("ide_cntco", "2");
+        tabla.setValor("identificac_geper", identificac_geper);
+        tabla.setValor("ide_getid", ide_getid);
+        tabla.setValor("nom_geper", nom_geper);
+        tabla.guardar();
+        return tabla.getValor("ide_geper");
     }
 
 }

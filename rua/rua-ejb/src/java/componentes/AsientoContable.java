@@ -719,4 +719,8 @@ public class AsientoContable extends Dialogo {
         return ide_cnccc;
     }
 
+    public void nuevoAsiento() {
+        this.ide_cnccc = null;
+    }
+
 }
