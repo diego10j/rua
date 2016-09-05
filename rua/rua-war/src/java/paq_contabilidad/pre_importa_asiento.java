@@ -10,6 +10,7 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
@@ -64,27 +65,11 @@ public class pre_importa_asiento extends Pantalla {
         gri_archivo.setWidth("95%");
         gri_archivo.setColumns(3);
 
-        Grid gri_emp = new Grid();
-        gri_emp.setColumns(4);
-        Etiqueta eti_lbl_emp = new Etiqueta();
-        eti_lbl_emp.setStyle("font-size: 12px;font-weight: bold;");
-        eti_lbl_emp.setValue("EMPRESA :");
-        gri_emp.getChildren().add(eti_lbl_emp);
-        Etiqueta eti_emp = new Etiqueta();
-        eti_emp.setStyle("font-size: 12px;");
-        eti_emp.setValue(ser_sistema.getEmpresa().getValor("nom_empr"));
-        gri_emp.getChildren().add(eti_emp);
-
-        Etiqueta eti_lbl_sucu = new Etiqueta();
-        eti_lbl_sucu.setStyle("font-size: 12px;font-weight: bold;");
-        eti_lbl_sucu.setValue("SUCURSAL :");
-        gri_emp.getChildren().add(eti_lbl_sucu);
         Etiqueta eti_sucu = new Etiqueta();
         eti_sucu.setStyle("font-size: 12px;");
         eti_sucu.setValue(ser_sistema.getSucursal().getValor("nom_sucu"));
-        gri_emp.getChildren().add(eti_sucu);
 
-        bar_botones.agregarComponente(gri_emp);
+        bar_botones.agregarComponente(eti_sucu);
 
         Grid gri_matriz = new Grid();
         gri_matriz.setMensajeInfo("Seleccione un archivo Excel con extensión <strong>.xls<strong>");
@@ -92,6 +77,7 @@ public class pre_importa_asiento extends Pantalla {
         gri_matriz.setColumns(4);
 
         gri_matriz.getChildren().add(new Etiqueta("Número o Nombre de la Hoja"));
+        tex_numero_hoja.setValue("1");
         gri_matriz.getChildren().add(tex_numero_hoja);
         gri_matriz.getChildren().add(new Etiqueta("Número de Fila con los Nombres de las Columnas"));
         tex_columna.setSize(5);
@@ -165,10 +151,11 @@ public class pre_importa_asiento extends Pantalla {
         pat_panel.setPanelTabla(tab_detalle);
         agregarComponente(pat_panel);
 
-        Grid gri = new Grid();
+        Grupo gri = new Grupo();
+
         gri.getChildren().add(new Etiqueta("<div align='center'>"));
 
-        gri.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR FACTURA SOBRE EL INTERES ? </div>"));
+        gri.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR UN NUEVO ASIENTO ? </div>"));
         rad_nuevo_asiento.setRadio(utilitario.getListaPregunta());
         rad_nuevo_asiento.setValue(true);
         gri.getChildren().add(rad_nuevo_asiento);
@@ -178,7 +165,7 @@ public class pre_importa_asiento extends Pantalla {
         bot_subir.setMetodo("subirAsiento");
         gri.getChildren().add(bot_subir);
         gri.getChildren().add(new Etiqueta("</div>"));
-        agregarComponente(gri);
+        pat_panel.setFooter(gri);
         asc_asiento.setId("asc_asiento");
         agregarComponente(asc_asiento);
 
@@ -210,7 +197,7 @@ public class pre_importa_asiento extends Pantalla {
                     }
                 }
             } else {
-                hoja = archivoExcel.getSheet(int_numero_hoja);
+                hoja = archivoExcel.getSheet(int_numero_hoja - 1);
             }
 
             if (hoja == null) {
@@ -280,8 +267,8 @@ public class pre_importa_asiento extends Pantalla {
                 tab_detalle.insertar();
                 tab_detalle.setValor("codig_recur_cndpc", codig_recur_cndpc);
                 tab_detalle.setValor("nombre_cndpc", nombre_cndpc);
-                tab_detalle.setValor("debe", utilitario.getFormatoNumero(debe));
-                tab_detalle.setValor("haber", utilitario.getFormatoNumero(haber));
+                tab_detalle.setValor("debe", utilitario.getFormatoNumero(debe.replace(",", ".")));
+                tab_detalle.setValor("haber", utilitario.getFormatoNumero(haber.replace(",", ".")));
             }
             tab_detalle.sumarColumnas();
             upl_importa.setNombreReal(event.getFile().getFileName());
@@ -294,10 +281,10 @@ public class pre_importa_asiento extends Pantalla {
 
     public void subirAsiento() {
         if (!tab_detalle.isEmpty()) {
-            if (tab_detalle.getSumaColumna("debe") != tab_detalle.getSumaColumna("haber")) {
-                utilitario.agregarMensajeError("El Asiento no esta cuadrado", "Verificar la sumatoria del DEBE y del HABER");
-                return;
-            }
+//            if (tab_detalle.getSumaColumna("debe") != tab_detalle.getSumaColumna("haber")) {
+//                utilitario.agregarMensajeError("El Asiento no esta cuadrado", "Verificar la sumatoria del DEBE y del HABER");
+//                return;
+//            }
 
             if (rad_nuevo_asiento.getValue().toString().equals("false")) {
                 //valida que se ingres el numero de asiento
@@ -324,12 +311,12 @@ public class pre_importa_asiento extends Pantalla {
                                 ide_cndpc = tab_cuentas.getValor(j, "ide_cndpc");
                                 break;
                             }
-                            if (ide_cndpc == null) {
-                                tab_detalle.setValor(i, "OBSERVACION_CNDCC", "NO EXISTE EL CÓDIGO DE CUENTA");
-                                correcto = false;
-                            } else {
-                                tab_detalle.setValor(i, "ide_cndcc", ide_cndpc);  //asigna el ide_cndcc
-                            }
+                        }
+                        if (ide_cndpc == null) {
+                            tab_detalle.setValor(i, "OBSERVACION_CNDCC", "NO EXISTE EL CÓDIGO DE CUENTA");
+                            correcto = false;
+                        } else {
+                            tab_detalle.setValor(i, "ide_cndcc", ide_cndpc);  //asigna el ide_cndcc
                         }
                     } else {
                         tab_detalle.setValor(i, "OBSERVACION_CNDCC", "CÓDIGO DE CUENTA NO VÁLIDO");

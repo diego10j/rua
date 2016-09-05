@@ -171,6 +171,10 @@ public class pre_plan_cuentas extends Pantalla {
         utilitario.addUpdate("arb_arbol");
     }
 
+    public void seleccionarTabla1(AjaxBehaviorEvent evt) {
+
+    }
+
     @Override
     public void inicio() {
         //Para controlar  boton inicio      

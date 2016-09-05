@@ -123,7 +123,7 @@ public class pre_asientos extends Pantalla {
         tab_deta_conta.setScrollHeight(utilitario.getAltoPantalla() - 190); //300
         tab_deta_conta.setLectura(true);
         tab_deta_conta.dibujar();
-        tab_deta_conta.setRows(200);
+        tab_deta_conta.setRows(5000);
         tab_deta_conta.setValueExpression("rowStyleClass", "fila.campos[3] eq '0.00' ? 'text-red' : fila.campos[4] eq '0.00' ? 'text-red' : null");
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_deta_conta);
