@@ -19,23 +19,27 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioContabilidadGeneral {
-
+    
     public static String P_TIPO_CUENTA_ACTIVO = "0";
     public static String P_TIPO_CUENTA_PASIVO = "4";
     private final Utilitario utilitario = new Utilitario();
-
+    
     @PostConstruct
     public void init() {
         P_TIPO_CUENTA_ACTIVO = "0"; ///******PONER EN VARIABLE
         P_TIPO_CUENTA_PASIVO = "4"; ///******PONER EN VARIABLE
     }
-
+    
     public TablaGenerica getCuenta(String ide_cndpc) {
         return utilitario.consultar("SELECT * FROM con_det_plan_cuen where ide_cndpc=" + ide_cndpc);
     }
-
+    
     public TablaGenerica getCuentaporCodigo(String codig_recur_cndpc) {
         return utilitario.consultar("SELECT * FROM con_det_plan_cuen where codig_recur_cndpc in (" + codig_recur_cndpc + ")");
+    }
+    
+    public String getSqlPeridos() {
+        return "select * from con_periodo where ide_sucu=" + utilitario.getVariable("ide_sucu") + " order by ide_cnper desc";
     }
 
     /**
@@ -118,7 +122,7 @@ public class ServicioContabilidadGeneral {
                 + "and ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") "
                 + "and cab.ide_sucu=" + utilitario.getVariable("ide_sucu") + " ORDER BY CAB.fecha_trans_cnccc,cab.ide_cnccc asc";
     }
-
+    
     public String getSqlMovimientosCuentaPersona(String ide_cndpc, String fechaInicio, String fechaFin, String ide_geper) {
         return "SELECT CAB.fecha_trans_cnccc,CAB.ide_cnccc ,PERSO.nom_geper as BENEFICIARIO, "
                 + "DETA.ide_cnlap,'' as DEBE, '' as HABER, "
@@ -294,11 +298,11 @@ public class ServicioContabilidadGeneral {
      * @return
      */
     private String getSqlBalances(String fecha_fin, String p_tipo_cuentas) {
-
+        
         String estado_normal = utilitario.getVariable("p_con_estado_comprobante_normal");
         String estado_inicial = utilitario.getVariable("p_con_estado_comp_inicial");
         String estado_final = utilitario.getVariable("p_con_estado_comp_final");
-
+        
         return "(SELECT * FROM (select dpc.ide_cndpc,dpc.codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || dpc.nombre_cndpc as nombre_cndpc,dpc.ide_cnncu, "
                 + "sum(dcc.valor_cndcc*sc.signo_cnscu) as valor,"
                 + "con_ide_cndpc,dpc.ide_cntcu from  "
@@ -334,9 +338,9 @@ public class ServicioContabilidadGeneral {
         String p_gastos = utilitario.getVariable("p_con_tipo_cuenta_gastos");
         String p_costos = utilitario.getVariable("p_con_tipo_cuenta_costos");
         String p_tipo_cuentas = p_ingresos + "," + p_costos + "," + p_gastos;
-
+        
         String sql = getSqlTotalesBalances(fecha_final, p_tipo_cuentas);
-
+        
         TablaGenerica tab_estado = utilitario.consultar(sql);
         double tot_ingresos = 0;
         double tot_gastos = 0;
@@ -367,10 +371,10 @@ public class ServicioContabilidadGeneral {
         String p_activo = utilitario.getVariable("p_con_tipo_cuenta_activo");
         String p_pasivo = utilitario.getVariable("p_con_tipo_cuenta_pasivo");
         String p_patrimonio = utilitario.getVariable("p_con_tipo_cuenta_patrimonio");
-
+        
         String p_tipo_cuentas = p_activo + "," + p_pasivo + "," + p_patrimonio;
         String sql = getSqlTotalesBalances(fecha_final, p_tipo_cuentas);
-
+        
         TablaGenerica tab_balance = utilitario.consultar(sql);
         double tot_activo = 0;
         double tot_pasivo = 0;
@@ -472,5 +476,5 @@ public class ServicioContabilidadGeneral {
         }
         return false;
     }
-
+    
 }

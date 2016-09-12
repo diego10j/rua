@@ -5,14 +5,18 @@
  */
 package paq_contabilidad;
 
+import componentes.AsientoContable;
 import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
+import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
@@ -28,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
@@ -70,11 +75,18 @@ public class pre_contabilidad extends Pantalla {
     private String fecha_fin;
     private String fecha_inicio;
 
+    private AsientoContable asc_asiento = new AsientoContable();
+    private Dialogo dia_cerrar_periodo = new Dialogo();
+
     public pre_contabilidad() {
         bar_botones.limpiar();
         bar_botones.agregarReporte();
 
         mep_menu.setMenuPanel("INFORMES CONTABLIDAD", "20%");
+
+        mep_menu.agregarItem("Plan de Cuentas", "dibujarPlan", "ui-icon-bookmark"); //5
+        mep_menu.agregarItem("Períodos Contales", "dibujarPeriodo", "ui-icon-bookmark"); //6
+
         mep_menu.agregarItem("Libro Mayor", "dibujarLibroMayor", "ui-icon-bookmark"); //1
         mep_menu.agregarItem("Libro Diario", "dibujarLibroDiario", "ui-icon-bookmark");//2
         mep_menu.agregarItem("Balance General", "dibujarBalanceGeneral", "ui-icon-bookmark");//3
@@ -116,6 +128,41 @@ public class pre_contabilidad extends Pantalla {
 
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
+
+        asc_asiento.setId("asc_asiento");
+        agregarComponente(asc_asiento);
+
+        dia_cerrar_periodo.setId("dia_cerrar_periodo");
+        dia_cerrar_periodo.setTitle("CONFIRMACION CIERRE DE PERIODO");
+        dia_cerrar_periodo.setWidth("45%");
+        dia_cerrar_periodo.setHeight("30%");
+
+        Grid gri = new Grid();
+        gri.setColumns(1);
+        Etiqueta eti_1 = new Etiqueta("ATENCION SE REALIZARA LAS SIGUIENTES ACCIONES: ");
+        eti_1.setStyle("font-size: 13px;font-weight:bold");
+        Etiqueta eti_2 = new Etiqueta("1.- SE CERRARA EL PERIODO ACTUAL Y QUEDARA INACTIVO ");
+        eti_2.setStyle("font-size: 11px;font-weight:text-decoration: underline");
+        Etiqueta eti_3 = new Etiqueta("2.- SE VA A GENERAR UN NUEVO PERIODO AUTOMATICAMENTE SIN FECHA DE CIERRE ");
+        eti_3.setStyle("font-size: 11px;font-weight:text-decoration: underline");
+        Etiqueta eti_4 = new Etiqueta("3.- SE GENERARA UN ASIENTO DE APERTURA DE CUENTAS ");
+        eti_4.setStyle("font-size: 11px;font-weight:text-decoration: underline");
+        Etiqueta eti_5 = new Etiqueta("ESTA SEGURO DE CONTINUAR CON EL CIERRE DE PERIODO: ");
+        eti_5.setStyle("font-size: 13px;font-weight:bold");
+        gri.getChildren().add(eti_1);
+        gri.getChildren().add(new Etiqueta(""));
+        gri.getChildren().add(new Etiqueta(""));
+        gri.getChildren().add(eti_2);
+        gri.getChildren().add(eti_3);
+        gri.getChildren().add(eti_4);
+        gri.getChildren().add(new Etiqueta(""));
+        gri.getChildren().add(new Etiqueta(""));
+        gri.getChildren().add(eti_5);
+        gri.setStyle("width:" + (dia_cerrar_periodo.getAnchoPanel() - 5) + "px; height:" + dia_cerrar_periodo.getAltoPanel() + "px;overflow:auto;display:block;");
+        dia_cerrar_periodo.setDialogo(gri);
+        dia_cerrar_periodo.getBot_aceptar().setMetodo("aceptarCierrePeriodo");
+
+        agregarComponente(dia_cerrar_periodo);
 
     }
 
@@ -182,6 +229,8 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setLectura(true);
         tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
         tab_consulta.getColumna("ide_cnccc").setFiltro(true);
+        tab_consulta.getColumna("IDE_CNCCC").setLink();
+        tab_consulta.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_consulta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
         tab_consulta.getColumna("ide_cnlap").setVisible(false);
         tab_consulta.getColumna("debe").setLongitud(20);
@@ -312,6 +361,79 @@ public class pre_contabilidad extends Pantalla {
         pat_panel.setPanelTabla(tab_consulta);
         gru_grupo.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "LIBRO DIARIO", gru_grupo);
+    }
+
+    public void dibujarPlan() {
+
+        Grupo gru_grupo = new Grupo();
+
+        tab_consulta = new Tabla();
+        tab_consulta.setNumeroTabla(-1);
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql(ser_contabilidad.getSqlCuentas());
+        tab_consulta.getColumna("ide_cndpc").setVisible(false);
+        tab_consulta.setLectura(true);
+        tab_consulta.getColumna("codig_recur_cndpc").setNombreVisual("CÓDIGO DE LA CUENTA");
+        tab_consulta.getColumna("codig_recur_cndpc").setFiltro(true);
+        tab_consulta.getColumna("nombre_cndpc").setNombreVisual("NOMBRE DE LA CUENTA");
+        tab_consulta.getColumna("nombre_cndpc").setFiltroContenido();
+        tab_consulta.setRows(30);
+        tab_consulta.setOrdenar(false);
+        tab_consulta.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_consulta);
+        gru_grupo.getChildren().add(pat_panel);
+        mep_menu.dibujar(5, "PLAN DE CUENTAS", gru_grupo);
+
+    }
+
+    public void confirmarCerrar() {
+        dia_cerrar_periodo.dibujar();
+    }
+
+    public void dibujarPeriodo() {
+
+        Grupo gru_grupo = new Grupo();
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Cerrar Periodo Contable");
+        bot_ver.setMetodo("confirmarCerrar");
+        bar_menu.agregarComponente(bot_ver);
+
+        gru_grupo.getChildren().add(bar_menu);
+
+        tab_consulta = new Tabla();
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setTabla("con_periodo", "ide_cnper", 999);
+        tab_consulta.getColumna("ide_cnper").setVisible(false);
+        tab_consulta.setCondicionSucursal(true);
+
+        tab_consulta.getColumna("nombre_cnper").setNombreVisual("NOMBRE");
+        tab_consulta.getColumna("fecha_inicio_cnper").setNombreVisual("FECHA INICIO");
+        tab_consulta.getColumna("fecha_fin_cnper").setNombreVisual("FECHA FIN");
+        tab_consulta.getColumna("estado_cnper").setNombreVisual("ACTIVO");
+        tab_consulta.getColumna("estado_cnper").setLectura(true);
+        tab_consulta.getColumna("cerrado_cnper").setNombreVisual("CERRADO");
+        tab_consulta.getColumna("cerrado_cnper").setLectura(true);
+
+        tab_consulta.getColumna("ide_cnccc_i").setNombreVisual("NUM. ASIENTO INICIAL");
+        tab_consulta.getColumna("ide_cnccc_i").setLink();
+        tab_consulta.getColumna("ide_cnccc_i").setMetodoChange("abrirAsiento");
+        tab_consulta.getColumna("ide_cnccc_c").setNombreVisual("NUM. ASIENTO CIERRE");
+        tab_consulta.getColumna("ide_cnccc_c").setLink();
+        tab_consulta.getColumna("ide_cnccc_c").setMetodoChange("abrirAsiento");
+
+        tab_consulta.setRows(20);
+
+        tab_consulta.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_consulta);
+        gru_grupo.getChildren().add(pat_panel);
+        mep_menu.dibujar(6, "PERÍODOS CONTABLES", gru_grupo);
+
     }
 
     public void actualizarLibroDiario() {
@@ -575,6 +697,10 @@ public class pre_contabilidad extends Pantalla {
 
     @Override
     public void eliminar() {
+    }
+
+    public void aceptarCierrePeriodo() {
+        dia_cerrar_periodo.cerrar();
     }
 
     @Override
@@ -1008,6 +1134,18 @@ public class pre_contabilidad extends Pantalla {
         int_count_deseleccion += 1;
     }
 
+    /**
+     * Abre el asiento contable seleccionado
+     *
+     * @param evt
+     */
+    public void abrirAsiento(ActionEvent evt) {
+        Link lin_ide_cnccc = (Link) evt.getComponent();
+        asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
+        tab_consulta.setFilaActual(lin_ide_cnccc.getDir());
+        asc_asiento.dibujar();
+    }
+
     public String getFormatoFecha(String fecha) {
         String mes = utilitario.getNombreMes(utilitario.getMes(fecha));
         String dia = utilitario.getDia(fecha) + "";
@@ -1079,6 +1217,22 @@ public class pre_contabilidad extends Pantalla {
 
     public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
         this.sec_rango_reporte = sec_rango_reporte;
+    }
+
+    public AsientoContable getAsc_asiento() {
+        return asc_asiento;
+    }
+
+    public void setAsc_asiento(AsientoContable asc_asiento) {
+        this.asc_asiento = asc_asiento;
+    }
+
+    public Dialogo getDia_cerrar_periodo() {
+        return dia_cerrar_periodo;
+    }
+
+    public void setDia_cerrar_periodo(Dialogo dia_cerrar_periodo) {
+        this.dia_cerrar_periodo = dia_cerrar_periodo;
     }
 
 }

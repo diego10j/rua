@@ -201,6 +201,7 @@ public class pre_asientos extends Pantalla {
 
     @Override
     public void insertar() {
+        asc_asiento.nuevoAsiento();
         asc_asiento.dibujar();
         limpiar();
     }

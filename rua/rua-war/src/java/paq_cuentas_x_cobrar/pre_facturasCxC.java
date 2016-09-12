@@ -228,6 +228,7 @@ public class pre_facturasCxC extends Pantalla {
 
     public void abrirGeneraAsiento() {
         if (tab_tabla.getFilasSeleccionadas() != null && tab_tabla.getFilasSeleccionadas().length() > 0) {
+            asc_asiento.nuevoAsiento();
             asc_asiento.dibujar();
             asc_asiento.setAsientoFacturasCxC(tab_tabla.getFilasSeleccionadas());
             asc_asiento.getBot_aceptar().setMetodo("guardar");

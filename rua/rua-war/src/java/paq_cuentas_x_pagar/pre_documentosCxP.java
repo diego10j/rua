@@ -137,12 +137,17 @@ public class pre_documentosCxP extends Pantalla {
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Comprobante de Retención")) {
             if (rep_reporte.isVisible()) {
-                parametro = new HashMap();
-                rep_reporte.cerrar();
-                parametro.put("ide_cncre", Long.parseLong(tab_tabla1.getValor("ide_cncre")));
-                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                sel_rep.dibujar();
-                utilitario.addUpdate("rep_reporte,sel_rep");
+                if (tab_tabla1.getValor("ide_cncre") != null) {
+                    parametro = new HashMap();
+                    rep_reporte.cerrar();
+                    parametro.put("ide_cncre", Long.parseLong(tab_tabla1.getValor("ide_cncre")));
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("rep_reporte,sel_rep");
+                } else {
+                    utilitario.agregarMensajeInfo("Seleccione un Comprobante de Retención", "");
+                }
+
             }
         }
     }
@@ -241,6 +246,7 @@ public class pre_documentosCxP extends Pantalla {
 
     public void abrirGeneraAsiento() {
         if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().length() > 0) {
+            asc_asiento.nuevoAsiento();
             asc_asiento.dibujar();
             asc_asiento.setAsientoDocumentosCxP(tab_tabla1.getFilasSeleccionadas());
             asc_asiento.getBot_aceptar().setMetodo("guardar");

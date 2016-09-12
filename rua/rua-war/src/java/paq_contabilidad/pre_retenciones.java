@@ -5,6 +5,7 @@
  */
 package paq_contabilidad;
 
+import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
@@ -12,7 +13,11 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import servicios.contabilidad.ServicioRetenciones;
 import sistema.aplicacion.Pantalla;
@@ -32,8 +37,16 @@ public class pre_retenciones extends Pantalla {
 
     private Tabla tab_tabla;
 
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+
     public pre_retenciones() {
-        bar_botones.limpiar();
+        bar_botones.quitarBotonsNavegacion();
+        bar_botones.quitarBotonInsertar();
+        bar_botones.quitarBotonGuardar();
+        bar_botones.quitarBotonEliminar();
+        bar_botones.agregarReporte();
+
         com_autoriza.setCombo(ser_retencion.getSqlComboAutorizaciones());
         com_autoriza.setMetodo("actualizarConsulta");
         bar_botones.agregarComponente(new Etiqueta("NUM. AUTORIZACIÓN: "));
@@ -62,13 +75,37 @@ public class pre_retenciones extends Pantalla {
         mep_menu.agregarItem("Listado de RetencionesVentas", "dibujarListadoVentas", "ui-icon-bookmark");//3
         agregarComponente(mep_menu);
         dibujarListado();
+
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_rep.setId("sel_rep");
+        agregarComponente(rep_reporte);
+        agregarComponente(sel_rep);
+    }
+
+    public void dibujarListadoVentas() {
+        Grupo gru_grupo = new Grupo();
+        mep_menu.dibujar(3, "COMPROBANTES DE RETENCIÓN EN VENTAS", gru_grupo);
     }
 
     public void dibujarListado() {
         Grupo gru_grupo = new Grupo();
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        Boton bot_anular = new Boton();
+        bot_anular.setValue("Anular Comprobante de Retención");
+        bot_anular.setMetodo("anularRetencion");
+        bar_menu.agregarComponente(bot_anular);
+
+        gru_grupo.getChildren().add(bar_menu);
+
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_retencion.getSqlRetenciones(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setCampoPrimaria("ide_cncre");
         tab_tabla.setLectura(true);
         tab_tabla.setRows(25);
         tab_tabla.dibujar();
@@ -78,6 +115,15 @@ public class pre_retenciones extends Pantalla {
         mep_menu.dibujar(1, "COMPROBANTES DE RETENCIÓN", gru_grupo);
     }
 
+    public void anularRetencion() {
+        if (tab_tabla.getValorSeleccionado() != null) {
+            ser_retencion.anularComprobanteRetencion(tab_tabla.getValorSeleccionado());
+            tab_tabla.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un Comprobante de Retención", "");
+        }
+    }
+
     public void actualizarConsulta() {
         if (mep_menu.getOpcion() == 1) {
             tab_tabla.setSql(ser_retencion.getSqlRetenciones(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -85,6 +131,31 @@ public class pre_retenciones extends Pantalla {
         } else if (mep_menu.getOpcion() == 2) {
             tab_tabla.setSql(ser_retencion.getSqlRetencionesAnuladas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla.ejecutarSql();
+        }
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    Map parametro = new HashMap();
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Comprobante de Retención")) {
+            if (rep_reporte.isVisible()) {
+                if (tab_tabla.getValor("ide_cncre") != null) {
+                    parametro = new HashMap();
+                    rep_reporte.cerrar();
+                    parametro.put("ide_cncre", Long.parseLong(tab_tabla.getValor("ide_cncre")));
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("rep_reporte,sel_rep");
+                } else {
+                    utilitario.agregarMensajeInfo("Seleccione un Comprobante de Retención", "");
+                }
+
+            }
         }
     }
 
@@ -122,6 +193,22 @@ public class pre_retenciones extends Pantalla {
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
     }
 
 }
