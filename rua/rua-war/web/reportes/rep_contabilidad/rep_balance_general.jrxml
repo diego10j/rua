@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03a399d4-09ad-48d2-bb1f-11a555a12712">
 	<property name="ireport.zoom" value="1.8150000000000004"/>
-	<property name="ireport.x" value="95"/>
-	<property name="ireport.y" value="80"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="203"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
 	<parameter name="p_patrimonio" class="java.lang.String"/>
@@ -101,7 +101,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<detail>
 		<band height="11" splitType="Stretch">
 			<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="0c0eb467-079a-4b3a-9ad3-eb1caeaa1d80" stretchType="RelativeToBandHeight" x="385" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
@@ -117,7 +117,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				</textElement>
 				<textFieldExpression><![CDATA[$V{lugar_debe}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="dbf928eb-1c2e-4627-bb00-1f9239ec7912" stretchType="RelativeToBandHeight" x="470" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
@@ -147,7 +147,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}.trim()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="4e41eefe-424d-4ed2-b97c-2b5cf82e7c58" stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
@@ -163,7 +163,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}.trim()]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

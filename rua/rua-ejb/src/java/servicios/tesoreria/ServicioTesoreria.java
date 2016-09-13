@@ -602,7 +602,7 @@ public class ServicioTesoreria {
      * @return
      */
     public String getSqlComboTipoIdentificacion() {
-        return "select  ide_getid,nombre_getid from  gen_tipo_identifi where ide_getid !=" + utilitario.getVariable("p_gen_tipo_identificacion_ruc");
+        return "select  ide_getid,nombre_getid from  gen_tipo_identifi ORDER BY nombre_getid";
     }
 
     public TablaGenerica getPersonaporIdentificacion(String identificac_geper) {
