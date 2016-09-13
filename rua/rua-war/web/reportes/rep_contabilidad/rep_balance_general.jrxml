@@ -134,7 +134,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textFieldExpression><![CDATA[$V{lugar_haber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="c62b9739-1809-4503-b9da-54a3b85bb273" x="0" y="0" width="115" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="c62b9739-1809-4503-b9da-54a3b85bb273" x="0" y="0" width="102" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="3">
@@ -150,7 +150,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}.trim()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="4e41eefe-424d-4ed2-b97c-2b5cf82e7c58" stretchType="RelativeToBandHeight" x="115" y="0" width="270" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="4e41eefe-424d-4ed2-b97c-2b5cf82e7c58" stretchType="RelativeToBandHeight" x="102" y="0" width="283" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean(!$F{valor}.equals("0")&&!$F{valor}.equals("0.0"))]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="3">
@@ -163,7 +163,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}.trim()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombre_cndpc}.trim()]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

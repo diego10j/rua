@@ -156,8 +156,7 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("saldo_disponible").setNombreVisual("SALDO DISPONIBLE");
         tab_tabla1.getColumna("saldo_disponible").alinearDerecha();
         tab_tabla1.getColumna("saldo_disponible").setLongitud(25);
-        tab_tabla1.getColumna("saldo_disponible").setTipoJava("java.lang.Number");
-        tab_tabla1.setColumnaSuma("saldo_disponible");
+        tab_tabla1.getColumna("saldo_disponible").setTipoJava("java.lang.Number");       
         tab_tabla1.setHeader("CUENTAS");
         tab_tabla1.dibujar();
         
