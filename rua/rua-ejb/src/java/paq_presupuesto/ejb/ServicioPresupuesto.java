@@ -18,14 +18,15 @@ public class ServicioPresupuesto {
 	 * Metodo que devuelve el Catalogo Presupuestario por los Años vigentes
 	 * @param estado recibe el o los estados true y false, ejemplo: true o false
 	 * @param ide_geani recibe el Año para filtar el ctalaogo presupuestario 
+         * @param tipo recibe el tipo 1 para cuentas tipo ingresos, 0 para cuentas tipo egresos 
 	 * @return String SQL Clasificador Presupuestario
 	 */
- public String getCatalogoPresupuestarioAnio(String estado,String ide_geani){
+ public String getCatalogoPresupuestarioAnio(String estado,String ide_geani,String tipo){
 	 
 	 String tab_presupesto="SELECT a.ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla " +
 	 		" FROM pre_clasificador a,cont_vigente b,gen_anio c where a.ide_prcla = b.ide_prcla" +
 			" and b.ide_geani= c.ide_geani and b.ide_geani ="+ide_geani +
-			" and activo_prcla in ("+estado+")order by codigo_clasificador_prcla";
+			" and activo_prcla in ("+estado+") and tipo_prcla in ("+tipo+") order by codigo_clasificador_prcla";
 	 	 return tab_presupesto;
 			 
  }
