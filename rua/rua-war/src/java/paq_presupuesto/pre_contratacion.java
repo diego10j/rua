@@ -299,7 +299,7 @@ public class pre_contratacion extends Pantalla{
 		set_clasificador.setId("set_clasificador");
 		set_clasificador.setTitle("SELECCIONE UNA PARTIDA PRESUPUESTARIA");
 		set_clasificador.setRadio(); //solo selecciona una opcion
-		set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1"), "ide_prcla"); 
+		set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1","0"), "ide_prcla"); 
 		set_clasificador.getTab_seleccion().getColumna("codigo_clasificador_prcla").setFiltroContenido(); //pone filtro
 		set_clasificador.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltroContenido();//pone filtro
 		set_clasificador.getBot_aceptar().setMetodo("aceptarClasificador");
@@ -309,7 +309,7 @@ public class pre_contratacion extends Pantalla{
 		set_clasificador_actua.setId("set_clasificador_actua");
 		set_clasificador_actua.setTitle("SELECCIONE UNA PARTIDA PRESUPUESTARIA");
 		set_clasificador_actua.setRadio(); //solo selecciona una opcion
-		set_clasificador_actua.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1"), "ide_prcla"); 
+		set_clasificador_actua.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1","0"), "ide_prcla"); 
 		set_clasificador_actua.getTab_seleccion().getColumna("codigo_clasificador_prcla").setFiltroContenido(); //pone filtro
 		set_clasificador_actua.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltroContenido();//pone filtro
 		set_clasificador_actua.getBot_aceptar().setMetodo("aceptarActualizaClasificador");
@@ -497,7 +497,7 @@ public class pre_contratacion extends Pantalla{
 			return;
 		}
 				
-		set_clasificador_actua.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
+		set_clasificador_actua.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString(),"0"));
 		set_clasificador_actua.getTab_seleccion().ejecutarSql();
 		set_clasificador_actua.dibujar();
 	}
@@ -515,7 +515,7 @@ public class pre_contratacion extends Pantalla{
 		}
 		*/
 		//Filtrar los clasificadores del Año seleccionado
-		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
+		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString(),"0"));
 		set_clasificador.getTab_seleccion().ejecutarSql();
 		set_clasificador.dibujar();
 	}

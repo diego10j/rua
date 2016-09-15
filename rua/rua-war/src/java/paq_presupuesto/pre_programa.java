@@ -32,21 +32,24 @@ public class pre_programa extends Pantalla {
 	
 
 	public pre_programa(){
-		/*
+		
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
 		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
-*/
+
 		tab_programa.setId("tab_programa");
 		tab_programa.setHeader("PROGRAMA");
 		tab_programa.setTabla("pre_programa", "ide_prpro", 1);
-		tab_programa.getColumna("ide_prfup").setVisible(false);
+		//tab_programa.getColumna("ide_prfup").setVisible(false);
+                tab_programa.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "");
 		tab_programa.getColumna("ide_prcla").setAutoCompletar();
 		tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
 		tab_programa.getColumna("ide_prcla").setLectura(true);
 		tab_programa.getColumna("activo_prpro").setValorDefecto("true");
 		tab_programa.agregarRelacion(tab_vigente);
+                tab_programa.setTipoFormulario(true);
+		tab_programa.getGrid().setColumns(2);
 		tab_programa.dibujar();
 		PanelTabla pat_progama=new PanelTabla();
 		pat_progama.setPanelTabla(tab_programa);
@@ -55,7 +58,7 @@ public class pre_programa extends Pantalla {
 		tab_vigente.setId("tab_vigente");
 		tab_vigente.setHeader("VIGENTE");
 		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
-		//tab_vigente.setCondicion("ide_covig=-1");
+		tab_vigente.setCondicion("ide_covig=-1");
 		tab_vigente.getColumna("ide_prcla").setVisible(false);
 		tab_vigente.getColumna("ide_prasp").setVisible(false);
 		tab_vigente.getColumna("ide_cocac").setVisible(false);
@@ -70,20 +73,20 @@ public class pre_programa extends Pantalla {
 		
 
 				Division div3 = new Division(); //UNE OPCION Y DIV 2
-				div3.dividir2(pat_progama, pat_vigente, "50%", "H");
+				div3.dividir2(pat_progama, pat_vigente, "30%", "H");
 				
 				agregarComponente(div3);
 				///clasificador
-				/*
+				
 				Boton bot_agregar=new Boton();
 				bot_agregar.setValue("Agregar Clasificador");
 				bot_agregar.setMetodo("agregarClasificador");
 				bar_botones.agregarBoton(bot_agregar);
-*/
+
 				set_clasificador.setId("set_clasificador");
 				set_clasificador.setTitle("SELECCIONE UNA PARTIDA PRESUPUESTARIA");
 				set_clasificador.setRadio(); //solo selecciona una opcion
-				set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1"), "ide_prcla"); 
+				set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1","0"), "ide_prcla"); 
 				set_clasificador.getTab_seleccion().getColumna("codigo_clasificador_prcla").setFiltroContenido(); //pone filtro
 				set_clasificador.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltroContenido();//pone filtro
 				set_clasificador.getBot_aceptar().setMetodo("aceptarClasificador");
@@ -108,17 +111,19 @@ public class pre_programa extends Pantalla {
 	
 	public void agregarClasificador(){
 		//si no selecciono ningun valor en el combo
+                
 		if(com_anio.getValue()==null){
 			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 			return;
 		}
+                
 		//Si la tabla esta vacia
 		if(tab_programa.isEmpty()){
 			utilitario.agregarMensajeInfo("No se puede agregar Clasificador, por que no existen registros", "");
 			return;
 		}
 		//Filtrar los clasificadores del Año seleccionado
-		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
+		set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString(),"0"));
 		set_clasificador.getTab_seleccion().ejecutarSql();
 		set_clasificador.dibujar();
 	}
@@ -153,11 +158,8 @@ public class pre_programa extends Pantalla {
 	@Override
 	public void insertar() {
 		// TODO Auto-generated method stub
-		if(com_anio.getValue()==null){
-			utilitario.agregarMensaje("No se puede insertar", "Debe Seleccionar un Año");
-			return;
-		}
-		else if (tab_programa.isFocus()) {
+
+		if (tab_programa.isFocus()) {
 			tab_programa.insertar();
 
 		}

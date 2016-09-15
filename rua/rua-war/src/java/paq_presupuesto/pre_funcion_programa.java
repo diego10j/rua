@@ -25,11 +25,12 @@ public class pre_funcion_programa extends Pantalla {
 	private Arbol arb_funcion_programa=new Arbol();
 	private SeleccionTabla set_sub_actividad=new SeleccionTabla();
 	public static String par_sub_activdad;
-
+/*
 	public static String par_sec_proyecto;
 	public static String par_sec_programa;
 	public static String par_sec_producto;
 	public static String par_sec_fase;
+*/        
 	public static String par_proyecto;
 	public static String par_programa;
 	public static String par_producto;
@@ -38,13 +39,14 @@ public class pre_funcion_programa extends Pantalla {
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
 	
 	public pre_funcion_programa (){
+            
 		par_sub_activdad=utilitario.getVariable("p_sub_actividad");
-
+/*
 		par_sec_proyecto=utilitario.getVariable("p_modulo_secuencialproyecto");
 		par_sec_programa=utilitario.getVariable("p_modulo_secuencialprograma");
 		par_sec_producto=utilitario.getVariable("p_modulo_secuencialproducto");
 		par_sec_fase=utilitario.getVariable("p_modulo_secuencialfase");
-		
+*/		
 		par_proyecto=utilitario.getVariable("p_proyecto");
 		par_programa=utilitario.getVariable("p_programa");
 		par_producto=utilitario.getVariable("p_producto");
@@ -76,7 +78,7 @@ public class pre_funcion_programa extends Pantalla {
 		tab_funcion_programa.dibujar();
 		PanelTabla pat_funcion_programa=new PanelTabla();
 		pat_funcion_programa.setPanelTabla(tab_funcion_programa);
-		agregarComponente(pat_funcion_programa);
+		//agregarComponente(pat_funcion_programa);
 		
 		arb_funcion_programa.setId("arb_funcion_programa");
 		arb_funcion_programa.onSelect("seleccionoClasificador");
@@ -90,13 +92,17 @@ public class pre_funcion_programa extends Pantalla {
 		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
 		tab_vigente.getColumna("ide_geani").setUnico(true);
 		tab_vigente.getColumna("ide_prfup").setUnico(true);
+		tab_vigente.getColumna("ide_prcla").setVisible(false);
+		tab_vigente.getColumna("ide_prasp").setVisible(false);
+		tab_vigente.getColumna("ide_cocac").setVisible(false);
+		tab_vigente.getColumna("ide_prpro").setVisible(false);
 		
 		tab_vigente.dibujar();
 		PanelTabla pat_panel2=new PanelTabla();
 		pat_panel2.setPanelTabla(tab_vigente);
 		
 		//division2
-      	Division div_vigente = new Division();
+                Division div_vigente = new Division();
  		div_vigente.setId("div_vigente");
  		div_vigente.dividir2( pat_funcion_programa, pat_panel2,"50%","h");
  		agregarComponente(div_vigente);
@@ -183,11 +189,12 @@ public void validaSubActividad(AjaxBehaviorEvent evt){
 
 	}
 	else {
-		actualizaCodigo();
+		//actualizaCodigo();
 	}
 	utilitario.addUpdateTabla(tab_funcion_programa, "detalle_prfup,codigo_prfup", "");
 	
 }
+/*
 public void actualizaCodigo(){
 	
 	TablaGenerica codigo_anterior=utilitario.consultar("select ide_prnfp,codigo_prfup from pre_funcion_programa where ide_prfup="+tab_funcion_programa.getValor("pre_ide_prfup"));
@@ -214,6 +221,7 @@ public void actualizaCodigo(){
 	utilitario.addUpdateTabla(tab_funcion_programa, "codigo_prfup", "");
 
 }
+*/
 	@Override
 	public void insertar() {
 		// TODO Auto-generated method stub
@@ -235,6 +243,7 @@ public void actualizaCodigo(){
 		
 		if(tab_funcion_programa.isEmpty()){
 			if (tab_funcion_programa.guardar()) {
+                            /*
 				   if(tab_funcion_programa.isFilaInsertada()){
 					   System.out.println("es uevo registro ");
 					if(tab_funcion_programa.getValor("ide_prnfp").equals(par_programa)){
@@ -254,6 +263,7 @@ public void actualizaCodigo(){
 
 					}
 				   }
+                                   */
 				if (tab_vigente.guardar()) {
 					guardarPantalla();
 					//Actualizar el arbol

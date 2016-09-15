@@ -14,7 +14,6 @@ import paq_contabilidad.ejb.ServicioContabilidad;
 import sistema.aplicacion.Pantalla;
 import org.primefaces.event.NodeSelectEvent;
 import paq_presupuesto.ejb.ServicioPresupuesto;
-
 public class pre_clasificador extends Pantalla {
 	private Tabla tab_presupuesto=new Tabla();
 	private Tabla tab_vigente=new Tabla();
@@ -23,7 +22,7 @@ public class pre_clasificador extends Pantalla {
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
 	 @EJB
         private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto)utilitario.instanciarEJB(ServicioPresupuesto.class);
-	
+		
 
 
 	public pre_clasificador(){
@@ -42,8 +41,7 @@ public class pre_clasificador extends Pantalla {
 		tab_presupuesto.getColumna("sigefc_prcla").setNombreVisual("SIGEF");
 		tab_presupuesto.getColumna("ide_prgre").setNombreVisual("GRUPO");
 		tab_presupuesto.getColumna("pre_ide_prcla").setCombo("select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_clasificador order by codigo_clasificador_prcla");
-		tab_presupuesto.getColumna("grupo_prcla").setCombo(ser_presupuesto.getListaGrupoCuentaPresupuesto());
-		tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
+		tab_presupuesto.getColumna("grupo_prcla").setCombo(ser_presupuesto.getListaGrupoCuentaPresupuesto());		tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
 		tab_presupuesto.agregarRelacion(tab_vigente);				
 		tab_presupuesto.setCampoPadre("pre_ide_prcla"); //necesarios para el arbol
 		tab_presupuesto.setCampoNombre("(select codigo_clasificador_prcla||' '||descripcion_clasificador_prcla as descripcion_clasificador_prcla from pre_clasificador b where b. ide_prcla=a.ide_prcla)"); //necesarios para el arbol
@@ -70,13 +68,13 @@ public class pre_clasificador extends Pantalla {
 		arb_clasificador.setDynamic(true);
 		arb_clasificador.dibujar();
 		
-		// tabla deaños vigente
+		// tabla deaÃ±os vigente
 		tab_vigente.setId("tab_vigente");
-		tab_vigente.setHeader("AñO VIGENTE");
+		tab_vigente.setHeader("AÑO VIGENTE");
 		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
-		tab_vigente.setCondicion("ide_covig=-1");
+		//tab_vigente.setCondicion("ide_covig=-1");
 		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
-		tab_vigente.getColumna("ide_geani").setUnico(true);
+                tab_vigente.getColumna("ide_geani").setUnico(true);
 		tab_vigente.getColumna("ide_prcla").setUnico(true);
 		tab_vigente.getColumna("ide_prasp").setVisible(false);
 		tab_vigente.getColumna("ide_cocac").setVisible(false);

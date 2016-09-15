@@ -146,7 +146,7 @@ public class pre_anual extends Pantalla{
 		set_clasificador.setId("set_clasificador");
 		set_clasificador.setTitle("SELECCIONE UNA PARTIDA PRESUPUESTARIA");
 		set_clasificador.setRadio(); //solo selecciona una opcion
-		set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1"), "ide_prcla"); 
+		set_clasificador.setSeleccionTabla(ser_presupuesto.getCatalogoPresupuestarioAnio("true", "-1","-1"), "ide_prcla"); 
 		set_clasificador.getTab_seleccion().getColumna("codigo_clasificador_prcla").setFiltro(true); //pone filtro
 		set_clasificador.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltro(true);//pone filtro
 		set_clasificador.getBot_aceptar().setMetodo("aceptarClasificador");
@@ -164,7 +164,7 @@ public class pre_anual extends Pantalla{
 				return;
 			}
 			//Filtrar los clasificadores del Año seleccionado
-			set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString()));
+			set_clasificador.getTab_seleccion().setSql(ser_presupuesto.getCatalogoPresupuestarioAnio("true",com_anio.getValue().toString(),"1"));
 			set_clasificador.getTab_seleccion().ejecutarSql();
 			set_clasificador.dibujar();
 		}
