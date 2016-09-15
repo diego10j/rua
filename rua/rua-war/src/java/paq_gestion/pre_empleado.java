@@ -4255,7 +4255,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 			tab_sri_gastos_deducible.getColumna("OBSERVACION_SRDEE").setLectura(false);			
 			tab_sri_gastos_deducible.getColumna("OBSERVACION_SRDEE").setLongitud(100);
 			tab_sri_gastos_deducible.setColumnaSuma("VALOR_DEDUCIBLE_SRDEE");
-			tab_sri_gastos_deducible.setCondicion("WHERE IDE_SRDED IN (SELECT IDE_SRDED FROM SRI_DEDUCIBLES WHERE IDE_SRIMR="+tab_sri_impuesto_renta.getValor("IDE_SRIMR")+") AND IDE_GTEMP= " +aut_empleado.getValor());						
+			tab_sri_gastos_deducible.setCondicion(" IDE_SRDED IN (SELECT IDE_SRDED FROM SRI_DEDUCIBLES WHERE IDE_SRIMR="+tab_sri_impuesto_renta.getValor("IDE_SRIMR")+") AND IDE_GTEMP= " +aut_empleado.getValor());						
 			tab_sri_gastos_deducible.setRecuperarLectura(true);
 			tab_sri_gastos_deducible.dibujar();
 
@@ -4301,7 +4301,7 @@ public void mismaFecha(AjaxBehaviorEvent evt){
 	public void seleccionarImpuestoRenta(SelectEvent evt){
 		tab_sri_impuesto_renta.seleccionarFila(evt);
 		tab_sri_gastos_deducible.getColumna("IDE_SRDED").setCombo("select IDE_SRDED,DETALLE_SRDED from  SRI_DEDUCIBLES WHERE IDE_SRIMR="+tab_sri_impuesto_renta.getValorSeleccionado());
-		tab_sri_gastos_deducible.setCondicion("WHERE IDE_SRDED IN (SELECT IDE_SRDED FROM SRI_DEDUCIBLES WHERE IDE_SRIMR="+tab_sri_impuesto_renta.getValor("IDE_SRIMR")+") AND IDE_GTEMP= "+aut_empleado.getValor());
+		tab_sri_gastos_deducible.setCondicion(" IDE_SRDED IN (SELECT IDE_SRDED FROM SRI_DEDUCIBLES WHERE IDE_SRIMR="+tab_sri_impuesto_renta.getValor("IDE_SRIMR")+") AND IDE_GTEMP= "+aut_empleado.getValor());
 		tab_sri_gastos_deducible.ejecutarSql();
 		tab_sri_gastos_deducible.sumarColumnas();		
 		System.out.println("sri gastos"+tab_sri_gastos_deducible.getSql());
