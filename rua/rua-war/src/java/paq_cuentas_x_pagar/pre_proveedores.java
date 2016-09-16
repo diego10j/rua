@@ -444,7 +444,7 @@ public class pre_proveedores extends Pantalla {
                 tab_tabla.setId("tab_tabla");
                 tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuentaPersona(ser_proveedor.getCuentaProveedor(aut_proveedor.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), aut_proveedor.getValor()));
                 tab_tabla.setLectura(true);
-                tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
+                tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
                 tab_tabla.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
                 tab_tabla.getColumna("ide_cnlap").setVisible(false);
                 tab_tabla.getColumna("debe").setLongitud(20);

@@ -179,9 +179,10 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
@@ -275,9 +276,10 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
@@ -306,9 +308,10 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();

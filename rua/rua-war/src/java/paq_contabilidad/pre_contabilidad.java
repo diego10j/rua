@@ -227,10 +227,11 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql(ser_contabilidad.getSqlMovimientosCuenta(aut_cuenta.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_consulta.setLectura(true);
-        tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
+        tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_consulta.getColumna("ide_cnccc").setFiltro(true);
         tab_consulta.getColumna("IDE_CNCCC").setLink();
         tab_consulta.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_consulta.getColumna("IDE_CNCCC").alinearCentro();
         tab_consulta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
         tab_consulta.getColumna("ide_cnlap").setVisible(false);
         tab_consulta.getColumna("debe").setLongitud(20);
@@ -339,7 +340,7 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setSql(ser_contabilidad.getSqlLibroDiario(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_consulta.getColumna("ide_cndcc").setVisible(false);
         tab_consulta.setLectura(true);
-        tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
+        tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_consulta.getColumna("ide_cnccc").setFiltro(true);
         tab_consulta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
         tab_consulta.getColumna("codig_recur_cndpc").setNombreVisual("CODIGO CUENTA CONTABLE");

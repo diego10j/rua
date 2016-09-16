@@ -157,7 +157,7 @@ public class ServicioInventario {
             tab_det_comp_inv.setValor("cantidad_indci", tab_detalle.getValor(i, "cantidad_cpdfa"));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_cpdfa"));
         }
-                //}
+        //}
 
         // }
         tab_det_comp_inv.guardar();
@@ -234,6 +234,37 @@ public class ServicioInventario {
         utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + ide_inepi + "where ide_incci=" + ide_incci);
     }
 
+    public String getSqlComprobantesInventario(String ide_inbod, String fecha_inicio, String fecha_fin) {
+        return "select a.ide_incci as cod,a.ide_incci,ide_inepi,a.ide_geper,fecha_trans_incci,a.ide_cnccc,numero_incci,nombre_intti,nom_geper,identificac_geper,\n"
+                + "case when signo_intci = 1 THEN sum(valor_indci)  end as INGRESO,\n"
+                + "case when signo_intci = -1 THEN sum(valor_indci)  end as EGRESO\n"
+                + "from inv_cab_comp_inve a\n"
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper \n"
+                + "inner join inv_tip_tran_inve c on a.ide_intti= c.ide_intti\n"
+                + "inner join inv_det_comp_inve d on a.ide_incci = d.ide_incci\n"
+                + "left join inv_tip_comp_inve e on c.ide_intci=e.ide_intci\n"
+                // + "where a.ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + "\n"
+                + "WHERE ide_inbod=" + ide_inbod + "\n"
+                + "and fecha_trans_incci BETWEEN '" + fecha_inicio + "'  and '" + fecha_fin + "'\n"
+                + "group by a.ide_incci,ide_inepi,a.ide_geper,numero_incci,fecha_trans_incci,nombre_intti,nom_geper,identificac_geper,signo_intci";
+    }
+
+    public String getSqlComprobantesInventarioNoConta(String ide_inbod, String fecha_inicio, String fecha_fin) {
+        return "select a.ide_incci,ide_inepi,a.ide_geper,fecha_trans_incci,numero_incci,nombre_intti,nom_geper,identificac_geper,\n"
+                + "case when signo_intci = 1 THEN sum(valor_indci)  end as INGRESO,\n"
+                + "case when signo_intci = -1 THEN sum(valor_indci)  end as EGRESO\n"
+                + "from inv_cab_comp_inve a\n"
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper \n"
+                + "inner join inv_tip_tran_inve c on a.ide_intti= c.ide_intti\n"
+                + "inner join inv_det_comp_inve d on a.ide_incci = d.ide_incci\n"
+                + "left join inv_tip_comp_inve e on c.ide_intci=e.ide_intci\n"
+                + "where a.ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + "\n"
+                + "AND ide_inbod=" + ide_inbod + "\n"
+                + "and fecha_trans_incci BETWEEN '" + fecha_inicio + "'  and '" + fecha_fin + "'\n"
+                + "and a.ide_cnccc is null\n"
+                + "group by a.ide_incci,ide_inepi,a.ide_geper,numero_incci,fecha_trans_incci,nombre_intti,nom_geper,identificac_geper,signo_intci";
+    }
+
     /**
      * Retorna el codido (ide_incci)
      *
@@ -250,5 +281,22 @@ public class ServicioInventario {
         return utilitario.consultar(sql).getValor("ide_incci");
     }
 
-    //CXP
+    public String getSqlSaldoProductos(String ide_inbod, String fecha) {
+        return "SELECT DETA.ide_indci,BODEGA.nombre_inbod AS BODEGA,ARTICULO.nombre_inarti AS ARTICULO,nombre_invmar AS MARCA, UNIDAD.nombre_inuni AS UNIDAD,\n"
+                + "sum(DETA.cantidad_indci * TIPO.signo_intci) AS EXISTENCIA,\n"
+                + "round(sum(DETA.valor_indci * TIPO.signo_intci),3) AS VALOR\n"
+                + "FROM inv_det_comp_inve  DETA\n"
+                + "LEFT JOIN inv_cab_comp_inve CAB ON DETA.ide_incci=CAB.ide_incci\n"
+                + "LEFT JOIN inv_tip_tran_inve TRANS ON  TRANS.ide_intti=CAB.ide_intti\n"
+                + "LEFT JOIN inv_articulo ARTICULO ON DETA.ide_inarti=ARTICULO.ide_inarti and hace_kardex_inarti=true\n"
+                + "LEFT JOIN inv_unidad UNIDAD ON ARTICULO.ide_inuni=UNIDAD.ide_inuni\n"
+                + "LEFT JOIN inv_bodega BODEGA ON CAB.ide_inbod=BODEGA.ide_inbod\n"
+                + "LEFT JOIN inv_tip_comp_inve TIPO ON TIPO.ide_intci=TRANS.ide_intci\n"
+                + "LEFT JOIN inv_marca m on ARTICULO.ide_inmar= m.ide_inmar\n"
+                + "WHERE BODEGA.ide_inbod =" + ide_inbod + "\n"
+                + "AND CAB.fecha_trans_incci <= '" + fecha + "'\n"
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + "\n" //comp es estado normal
+                + "GROUP BY DETA.ide_indci,BODEGA.nombre_inbod,ARTICULO.nombre_inarti,UNIDAD.nombre_inuni,ARTICULO.codigo_inarti,nombre_invmar\n"
+                + "ORDER BY BODEGA.nombre_inbod, ARTICULO.nombre_inarti";
+    }
 }

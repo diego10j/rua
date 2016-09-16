@@ -162,9 +162,10 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
         tab_tabla.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla.getColumna("IDE_CNCCC").setLink();
         tab_tabla.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla.getColumna("ventas0").alinearDerecha();
         tab_tabla.getColumna("ventas12").alinearDerecha();
         tab_tabla.getColumna("valor_iva_cccfa").alinearDerecha();
@@ -264,10 +265,10 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.getColumna("total_cccfa").alinearDerecha();
         tab_tabla.getColumna("total_cccfa").setEstilo("font-size: 12px;font-weight: bold;");
         tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla.getColumna("IDE_CNCCC").setLink();
         tab_tabla.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
-
+        tab_tabla.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla.setRows(15);
         tab_tabla.setLectura(true);
         tab_tabla.dibujar();
@@ -316,9 +317,10 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.getColumna("saldo_x_pagar").alinearDerecha();
         tab_tabla.getColumna("saldo_x_pagar").setEstilo("font-size: 12px;font-weight: bold;color:red");
         tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla.getColumna("IDE_CNCCC").setLink();
         tab_tabla.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla.setLectura(true);
         tab_tabla.setRows(15);
         tab_tabla.setColumnaSuma("total_cccfa,saldo_x_pagar");

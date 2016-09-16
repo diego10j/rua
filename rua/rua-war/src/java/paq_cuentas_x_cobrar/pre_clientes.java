@@ -24,7 +24,6 @@ import framework.componentes.graficos.GraficoCartesiano;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import org.primefaces.component.fieldset.Fieldset;
-import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioCliente;
@@ -406,7 +405,7 @@ public class pre_clientes extends Pantalla {
                 tab_tabla.setId("tab_tabla");
                 tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuentaPersona(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), aut_clientes.getValor()));
                 tab_tabla.setLectura(true);
-                tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+                tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
                 tab_tabla.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
                 tab_tabla.getColumna("ide_cnlap").setVisible(false);
                 tab_tabla.getColumna("debe").setLongitud(20);

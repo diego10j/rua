@@ -189,9 +189,10 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("SALDO").setSuma(false);
         tab_tabla1.getColumna("SALDO").setEstilo("font-weight: bold;");
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.getColumna("numero_teclb").setFiltroContenido();
         tab_tabla1.getColumna("beneficiari_teclb").setFiltroContenido();
         tab_tabla1.getColumna("nombre_tettb").setFiltroContenido();
@@ -713,9 +714,10 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("INGRESOS").alinearDerecha();
         tab_tabla1.getColumna("INGRESOS").setLongitud(25);
         tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO.");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.getColumna("numero_teclb").setFiltroContenido();
         tab_tabla1.getColumna("beneficiari_teclb").setFiltroContenido();
         tab_tabla1.getColumna("nombre_tettb").setFiltroContenido();

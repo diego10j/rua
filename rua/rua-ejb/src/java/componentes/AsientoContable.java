@@ -506,13 +506,15 @@ public class AsientoContable extends Dialogo {
     private void completarAsiento(String ide_cnccc) {
         if (tipo != null) {
             if (tipo.equals(TipoAsientoEnum.FACTURAS_CXC.getCodigo())) {
-                //Asigna el ide_cnccc a la factura y a la transaccion cxc                
+                //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario               
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ")");
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ") and numero_pago_ccdtr=0");
+                utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cccfa in(" + relacion + ")) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo())) {
-                //Asigna el ide_cnccc a la factura y a la transaccion cxc                
+                //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario                             
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ")");
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0");
+                utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in(" + relacion + ")) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
                 //Asigna el ide_cnccc a la  facturas, documentos cxp,transaccion cxc o cxp y al libro bancos               
                 utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
@@ -622,23 +624,66 @@ public class AsientoContable extends Dialogo {
         tab_cabe_asiento.setValor("ide_cntcm", tab_ast.getValor("ide_cntcm"));
         utilitario.addUpdate("tab_cabe_asiento");
         TablaGenerica tab_cuentas = ser_configuracion.getCuentasAsientoTipo(tipoAsientoEnum.getCodigo());
-        Map<String, String> map_campos = new HashMap();
+        Map<String, Double> map_campos = new HashMap();
+        //recupera columna configurada
+        for (int i = 0; i < tab_cuentas.getTotalFilas(); i++) {
+            if (tab_cuentas.getValor(i, "columna_coast") != null) {
+                //si no es un valor fijo
+                double valor = -1;
+                try {
+                    valor = Double.parseDouble(tab_cuentas.getValor(i, "columna_coast"));
+                } catch (Exception e) {
+                    valor = -1;
+                }
+                if (valor != -1) {
+                    map_campos.put(tab_cuentas.getValor(i, "columna_coast"), 0.00);
+                }
+            }
+        }
+
+        for (Tabla tablaActual : tablas) {
+            //recorre las columnas de todas las tablas
+            for (int i = 0; i < tablaActual.getTotalFilas(); i++) {
+                //recorre columnas
+                for (int j = 0; j < tablaActual.getTotalColumnas(); j++) {
+                    String nom_columna = tablaActual.getColumnas()[i].getNombre();
+
+                    if (map_campos.get(nom_columna) != null) {
+                        double valor = map_campos.get(nom_columna);
+                        double valor_columna = 0;
+                        try {
+                            valor_columna = Double.parseDouble(tablaActual.getValor(i, nom_columna));
+                        } catch (Exception e) {
+                            valor_columna = 0;
+                        }
+                        valor += valor_columna;
+                        map_campos.put(nom_columna, valor);
+                    }
+
+                }
+            }
+        }
+
         for (int i = 0; i < tab_cuentas.getTotalFilas(); i++) {
             tab_deta_asiento.insertar();
             tab_deta_asiento.setValor("ide_cndpc", tab_cuentas.getValor(i, "ide_cndpc"));
             tab_deta_asiento.setValor("ide_cnlap", tab_cuentas.getValor(i, "ide_cnlap"));
 
             if (tab_cuentas.getValor(i, "columna_coast") != null) {
-                map_campos.put(tab_cuentas.getValor(i, "columna_coast"), null);
+                //si no es un valor fijo
+                double valor = -1;
+                try {
+                    valor = Double.parseDouble(tab_cuentas.getValor(i, "columna_coast"));
+                } catch (Exception e) {
+                    valor = -1;
+                }
+                if (valor != -1) {
+                    tab_deta_asiento.setValor("VALOR_cndcc", utilitario.getFormatoNumero(map_campos.get(tab_cuentas.getValor(i, "columna_coast"))));
+                } else {
+                    tab_deta_asiento.setValor("VALOR_cndcc", utilitario.getFormatoNumero(valor));
+                }
             }
-
         }
-
-        for (Tabla tablaActual : tablas) {
-            //recorre las columnas de todas las tablas
-
-        }
-
     }
 
     public void setAsientoPagoDocumentosCxP(String ide_cpcfa) {
