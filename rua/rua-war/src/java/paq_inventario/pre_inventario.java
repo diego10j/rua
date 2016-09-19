@@ -31,27 +31,27 @@ import sistema.aplicacion.Pantalla;
  * @author djacome
  */
 public class pre_inventario extends Pantalla {
-    
+
     private final MenuPanel mep_menu = new MenuPanel();
     private final Calendario cal_fecha_inicio = new Calendario();
     private final Calendario cal_fecha_fin = new Calendario();
     private Tabla tab_tabla;
     private final Combo com_bodega = new Combo();
     private AsientoContable asc_asiento = new AsientoContable();
-    
+
     private Tabla tab_tabla2;
-    
+
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
     private AutoCompletar aut_productos;
     private String ide_incci_busca = null;
-    
+
     public pre_inventario() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonEliminar();
-        
+
         com_bodega.setId("com_bodega");
         com_bodega.setCombo("select ide_inbod,nombre_inbod from inv_bodega where nivel_inbod='HIJO' and ide_empr=" + utilitario.getVariable("ide_empr"));
         com_bodega.setMetodo("actualizarMovimientos");
@@ -67,9 +67,9 @@ public class pre_inventario extends Pantalla {
         Boton bot_consultar = new Boton();
         bot_consultar.setMetodo("actualizarMovimientos");
         bot_consultar.setIcon("ui-icon-search");
-        
+
         bar_botones.agregarBoton(bot_consultar);
-        
+
         mep_menu.setMenuPanel("INVENTARIO", "22%");
         mep_menu.agregarItem("Lista de Comprobantes", "dibujarComprobantes", "ui-icon-note");//1
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarComprobantesNoConta", "ui-icon-notice");//2
@@ -80,9 +80,9 @@ public class pre_inventario extends Pantalla {
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
-        
+
     }
-    
+
     public void dibujarComprobantes() {
         Grupo gru_grupo = new Grupo();
         if (isBodegaSeleccionado()) {
@@ -120,14 +120,14 @@ public class pre_inventario extends Pantalla {
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla);
             gru_grupo.getChildren().add(pat_panel);
-            
+
             if (tab_tabla.isEmpty()) {
                 tab_tabla.setEmptyMessage("No existen Comprobantes de Inventario");
             }
         }
         mep_menu.dibujar(1, "LISTADO DE COMPROBANTES DE INVENTARIO", gru_grupo);
     }
-    
+
     public void dibujarComprobantesNoConta() {
         Grupo gru_grupo = new Grupo();
         if (isBodegaSeleccionado()) {
@@ -139,7 +139,7 @@ public class pre_inventario extends Pantalla {
             bot_asi.setMetodo("abrirGeneraAsiento");
             bar_menu.agregarComponente(bot_asi);
             bar_menu.agregarSeparador();
-            
+
             tab_tabla = new Tabla();
             tab_tabla.setNumeroTabla(6);
             tab_tabla.setId("tab_tabla");
@@ -165,17 +165,17 @@ public class pre_inventario extends Pantalla {
             pat_panel.setPanelTabla(tab_tabla);
             gru_grupo.getChildren().add(bar_menu);
             gru_grupo.getChildren().add(pat_panel);
-            
+
             if (tab_tabla.isEmpty()) {
                 tab_tabla.setEmptyMessage("No existen Comprobantes de Inventario para Contabilizar");
             }
         }
         mep_menu.dibujar(2, "COMPROBANTES DE INVENTARIO NO CONTABILIZADOS", gru_grupo);
     }
-    
+
     public void dibujarKardex() {
         Grupo gru_grupo = new Grupo();
-        
+
         aut_productos = new AutoCompletar();
         aut_productos.setId("aut_productos");
         aut_productos.setAutoCompletar(ser_producto.getSqlProductosKardexCombo());
@@ -186,14 +186,14 @@ public class pre_inventario extends Pantalla {
         bar_menu.limpiar();
         bar_menu.agregarComponente(new Etiqueta("PRODUCTO :"));
         bar_menu.agregarComponente(aut_productos);
-        
+
         Boton bot_consultar = new Boton();
         bot_consultar.setValue("Consultar");
         bot_consultar.setMetodo("actualizarMovimientos");
         bot_consultar.setIcon("ui-icon-search");
-        
+
         bar_menu.agregarComponente(bot_consultar);
-        
+
         tab_tabla = new Tabla();
         tab_tabla.setNumeroTabla(-1);
         tab_tabla.setId("tab_tabla");
@@ -211,7 +211,7 @@ public class pre_inventario extends Pantalla {
         tab_tabla.getColumna("CANT_SALDO").setNombreVisual("CANT. SALDO");
         tab_tabla.getColumna("VUNI_SALDO").setNombreVisual("V/U SALDO");
         tab_tabla.getColumna("VTOT_SALDO").setNombreVisual("TOTAL SALDO");
-        
+
         tab_tabla.getColumna("CANT_INGRESO").alinearDerecha();
         tab_tabla.getColumna("VUNI_INGRESO").alinearDerecha();
         tab_tabla.getColumna("VTOT_INGRESO").alinearDerecha();
@@ -221,7 +221,7 @@ public class pre_inventario extends Pantalla {
         tab_tabla.getColumna("CANT_SALDO").alinearDerecha();
         tab_tabla.getColumna("VUNI_SALDO").alinearDerecha();
         tab_tabla.getColumna("VTOT_SALDO").alinearDerecha();
-        
+
         tab_tabla.getColumna("CANT_INGRESO").setLongitud(20);
         tab_tabla.getColumna("VUNI_INGRESO").setLongitud(20);
         tab_tabla.getColumna("VTOT_INGRESO").setLongitud(20);
@@ -231,11 +231,11 @@ public class pre_inventario extends Pantalla {
         tab_tabla.getColumna("CANT_SALDO").setLongitud(20);
         tab_tabla.getColumna("VUNI_SALDO").setLongitud(20);
         tab_tabla.getColumna("VTOT_SALDO").setLongitud(20);
-        
+
         tab_tabla.getColumna("CANT_SALDO").setEstilo("font-weight: bold;");
         tab_tabla.getColumna("VUNI_SALDO").setEstilo("font-weight: bold;");
         tab_tabla.getColumna("VTOT_SALDO").setEstilo("font-weight: bold;");
-        
+
         tab_tabla.getColumna("nombre_intti").setFiltroContenido();
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
         tab_tabla.setColumnaSuma("CANT_INGRESO,VTOT_INGRESO,CANT_EGRESO,VTOT_EGRESO,CANT_SALDO,VTOT_SALDO");
@@ -254,7 +254,7 @@ public class pre_inventario extends Pantalla {
         calculaKardex();
         mep_menu.dibujar(3, "KARDEX - PROMEDIO PONDERADO", gru_grupo);
     }
-    
+
     public void dibujarComprobanteInv() {
         Grupo gru_grupo = new Grupo();
         tab_tabla = new Tabla();
@@ -352,12 +352,12 @@ public class pre_inventario extends Pantalla {
         gru_grupo.getChildren().add(pat_panel2);
         mep_menu.dibujar(5, "COMPROBANTE DE INVENTARIO", gru_grupo);
     }
-    
+
     public void calcularTotalDetalles(AjaxBehaviorEvent evt) {
         tab_tabla2.modificar(evt);
         calcularDetalles();
     }
-    
+
     public void cargarPrecio(SelectEvent evt) {
         tab_tabla2.modificar(evt);
         List<Double> lisSaldos = ser_producto.getSaldoPromedioProductoBodega(tab_tabla2.getValor("ide_inarti"), utilitario.getFechaActual(), String.valueOf(com_bodega.getValue()));
@@ -365,7 +365,7 @@ public class pre_inventario extends Pantalla {
         tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
         utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
     }
-    
+
     private void calcularDetalles() {
         double dou_cantidad = 0;
         double dou_precio = 0;
@@ -388,11 +388,11 @@ public class pre_inventario extends Pantalla {
      */
     private void calculaKardex() {
         List<Double> lisSaldos = ser_producto.getSaldosInicialesKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), "");
-        
+
         double dou_canti = lisSaldos.get(0);
         double dou_precioi = lisSaldos.get(1);
         double dou_saldoi = lisSaldos.get(2);
-        
+
         double dou_cantf = dou_canti; //acumula
         double dou_preciof = dou_precioi;//acumula
         double dou_saldof = dou_saldoi;//acumula
@@ -401,7 +401,7 @@ public class pre_inventario extends Pantalla {
             double dou_cant_fila = 0;
             double dou_precio_fila = 0;
             double dou_saldo_fila = 0;
-            
+
             if (tab_tabla.getValor(i, "VTOT_INGRESO") != null && tab_tabla.getValor(i, "VTOT_INGRESO").isEmpty() == false) {
                 try {
                     dou_cant_fila = Double.parseDouble(tab_tabla.getValor(i, "CANT_INGRESO"));
@@ -434,13 +434,13 @@ public class pre_inventario extends Pantalla {
                     dou_saldof -= dou_saldo_fila;
                     dou_preciof = dou_saldof / dou_cantf;
                 }
-                
+
             }
             tab_tabla.setValor(i, "CANT_SALDO", utilitario.getFormatoNumero(dou_cantf));
             tab_tabla.setValor(i, "VUNI_SALDO", utilitario.getFormatoNumero(dou_preciof));
             tab_tabla.setValor(i, "VTOT_SALDO", utilitario.getFormatoNumero(dou_saldof));
         }
-        
+
         if (dou_saldoi != 0) {
             tab_tabla.setLectura(false);
             tab_tabla.insertar();
@@ -454,9 +454,9 @@ public class pre_inventario extends Pantalla {
         tab_tabla.getColumna("CANT_SALDO").setTotal(dou_cantf);
         tab_tabla.getColumna("VUNI_SALDO").setTotal(dou_preciof);
         tab_tabla.getColumna("VTOT_SALDO").setTotal(dou_saldof);
-        
+
     }
-    
+
     public void dibujarSaldos() {
         Grupo gru_grupo = new Grupo();
         if (isBodegaSeleccionado()) {
@@ -468,8 +468,8 @@ public class pre_inventario extends Pantalla {
             tab_tabla.getColumna("EXISTENCIA").alinearDerecha();
             tab_tabla.getColumna("VALOR").setEstilo("font-size: 13px;font-weight: bold");
             tab_tabla.getColumna("VALOR").alinearDerecha();
-            tab_tabla.setCampoPrimaria("ide_indci");
-            tab_tabla.getColumna("ide_indci").setVisible(false);
+            tab_tabla.setCampoPrimaria("ide_inarti");
+            tab_tabla.getColumna("ide_inarti").setVisible(false);
             tab_tabla.getColumna("ARTICULO").setFiltroContenido();
             tab_tabla.setColumnaSuma("EXISTENCIA,VALOR");
             tab_tabla.setRows(25);
@@ -481,7 +481,7 @@ public class pre_inventario extends Pantalla {
         }
         mep_menu.dibujar(4, "SALDOS DE PRODUCTOS INVENTARIO", gru_grupo);
     }
-    
+
     public void abrirGeneraAsiento() {
         if (tab_tabla.getFilasSeleccionadas() != null && tab_tabla.getFilasSeleccionadas().length() > 0) {
             asc_asiento.nuevoAsiento();
@@ -492,7 +492,7 @@ public class pre_inventario extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar almenos una Factura", "");
         }
     }
-    
+
     public void actualizarMovimientos() {
         if (isBodegaSeleccionado()) {
             if (tab_tabla != null) {
@@ -547,13 +547,13 @@ public class pre_inventario extends Pantalla {
         tab_tabla.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-    
+
     public void cargarComprobante(ActionEvent evt) {
         Link lin_ide_cnccc = (Link) evt.getComponent();
         ide_incci_busca = lin_ide_cnccc.getValue().toString();
         dibujarComprobanteInv();
     }
-    
+
     @Override
     public void insertar() {
         if (isBodegaSeleccionado()) {
@@ -568,15 +568,15 @@ public class pre_inventario extends Pantalla {
             ide_incci_busca = null;
             dibujarComprobanteInv();
         }
-        
+
     }
-    
+
     @Override
     public void guardar() {
         if (validar()) {
             if (tab_tabla.isFilaInsertada()) {
-                tab_tabla.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario());
                 tab_tabla.setValor("ide_inbod", String.valueOf(com_bodega.getValue()));
+                tab_tabla.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(com_bodega.getValue())));
             }
             if (tab_tabla.guardar()) {
                 String ide_incci = tab_tabla.getValor("ide_incci");
@@ -590,7 +590,7 @@ public class pre_inventario extends Pantalla {
             }
         }
     }
-    
+
     public boolean validar() {
         if (tab_tabla.getValor("ide_geper") == null || tab_tabla.getValor("ide_geper").isEmpty()) {
             utilitario.agregarMensajeInfo("No se pudo guardar", "Debe ingresar un Beneficiario");
@@ -624,9 +624,13 @@ public class pre_inventario extends Pantalla {
             utilitario.agregarMensajeInfo("No se puede guardar", "Debe ingresar el precio");
             return false;
         }
+        if (com_bodega.getValue() == null) {
+            utilitario.agregarMensajeInfo("No se puede guardar", "Debe seleccionar una  bodega");
+            return false;
+        }
         return true;
     }
-    
+
     @Override
     public void eliminar() {
         if (tab_tabla2 != null) {
@@ -637,37 +641,37 @@ public class pre_inventario extends Pantalla {
             }
         }
     }
-    
+
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
-    
+
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
+
     public AsientoContable getAsc_asiento() {
         return asc_asiento;
     }
-    
+
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
     }
-    
+
     public AutoCompletar getAut_productos() {
         return aut_productos;
     }
-    
+
     public void setAut_productos(AutoCompletar aut_productos) {
         this.aut_productos = aut_productos;
     }
-    
+
     public Tabla getTab_tabla2() {
         return tab_tabla2;
     }
-    
+
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
     }
-    
+
 }

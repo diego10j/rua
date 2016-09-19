@@ -70,6 +70,7 @@ public class pre_comp_inv extends Pantalla {
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
+        tab_tabla1.getColumna("ide_inbod").setRequerida(true);
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
@@ -193,7 +194,7 @@ public class pre_comp_inv extends Pantalla {
     public void guardar() {
         if (validar()) {
             if (tab_tabla1.isFilaInsertada()) {
-                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario());
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
             }
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {

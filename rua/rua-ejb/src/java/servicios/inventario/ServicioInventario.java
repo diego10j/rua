@@ -44,8 +44,10 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inv);  /////variable estado normal de inventario
         tab_cab_comp_inv.setValor("ide_intti", p_tipo_transaccion_inv_venta);   ////variable titpo transaccion compra 
         tab_cab_comp_inv.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-        tab_cab_comp_inv.setValor("ide_inbod", "1");   ///variable para bodega por defecto
-        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario());  /// calcular numero de comprobante de inventario
+
+        //Busca
+        tab_cab_comp_inv.setValor("ide_inbod", getBodegaSucursal());
+        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario(tab_cab_comp_inv.getValor("ide_inbod")));  /// calcular numero de comprobante de inventario
         tab_cab_comp_inv.setValor("fecha_trans_incci", tab_factura_cxc.getValor("fecha_emisi_cccfa"));
         tab_cab_comp_inv.setValor("observacion_incci", tab_factura_cxc.getValor("observacion_cccfa"));
         tab_cab_comp_inv.setValor("fecha_siste_incci", utilitario.getFechaActual());
@@ -67,6 +69,19 @@ public class ServicioInventario {
         tab_det_comp_inv.guardar();
     }
 
+    /**
+     * Retorna la bodega asociada a la sucursal
+     *
+     * @return
+     */
+    public String getBodegaSucursal() {
+        String ide_inbod = utilitario.consultar("SELECT * FROM inv_bodega  WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nivel_inbod='HIJO'").getValor("ide_inbod");
+        if (ide_inbod == null) {
+            ide_inbod = utilitario.consultar("SELECT * FROM inv_bodega where nivel_inbod='HIJO'").getValor("ide_inbod");
+        }
+        return ide_inbod;
+    }
+
     public void generarComprobanteTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
         String p_estado_normal_inventario = utilitario.getVariable("p_inv_estado_normal");
         String p_tipo_transaccion_inv_compra = utilitario.getVariable("p_inv_tipo_transaccion_compra");
@@ -79,8 +94,8 @@ public class ServicioInventario {
         tab_cab_comp_inv.insertar();
         tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inventario);  /////variable estado normal de inventario
         tab_cab_comp_inv.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-        tab_cab_comp_inv.setValor("ide_inbod", "1");   ///variable para bodega por defecto
-        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario());  /// calcular numero de comprobante de inventario
+        tab_cab_comp_inv.setValor("ide_inbod", getBodegaSucursal());
+        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario(tab_cab_comp_inv.getValor("ide_inbod")));  /// calcular numero de comprobante de inventario
         tab_cab_comp_inv.setValor("ide_geper", tab_factura_cxp.getValor("ide_geper"));
         tab_cab_comp_inv.setValor("fecha_trans_incci", tab_factura_cxp.getValor("fecha_emisi_cpcfa"));
         tab_cab_comp_inv.setValor("observacion_incci", tab_factura_cxp.getValor("observacion_cpcfa"));
@@ -164,15 +179,15 @@ public class ServicioInventario {
     }
 
     /**
-     * Genera secuencial de comprobante
+     * Genera secuencial de comprobante por bodega
      *
+     * @param ide_inbod
      * @return
      */
-    public String getSecuencialComprobanteInventario() {
+    public String getSecuencialComprobanteInventario(String ide_inbod) {
 
         List list = utilitario.getConexion().consultar("SELECT max(NUMERO_INCCI) FROM inv_cab_comp_inve "
-                + "WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + ""
-                + "AND ide_empr=" + utilitario.getVariable("ide_empr"));
+                + "WHERE ide_inbod=" + ide_inbod);
         String str_maximo = "0";
         if (list != null && !list.isEmpty()) {
             if (list.get(0) != null) {
@@ -282,21 +297,22 @@ public class ServicioInventario {
     }
 
     public String getSqlSaldoProductos(String ide_inbod, String fecha) {
-        return "SELECT DETA.ide_indci,BODEGA.nombre_inbod AS BODEGA,ARTICULO.nombre_inarti AS ARTICULO,nombre_invmar AS MARCA, UNIDAD.nombre_inuni AS UNIDAD,\n"
-                + "sum(DETA.cantidad_indci * TIPO.signo_intci) AS EXISTENCIA,\n"
-                + "round(sum(DETA.valor_indci * TIPO.signo_intci),3) AS VALOR\n"
-                + "FROM inv_det_comp_inve  DETA\n"
-                + "LEFT JOIN inv_cab_comp_inve CAB ON DETA.ide_incci=CAB.ide_incci\n"
-                + "LEFT JOIN inv_tip_tran_inve TRANS ON  TRANS.ide_intti=CAB.ide_intti\n"
-                + "LEFT JOIN inv_articulo ARTICULO ON DETA.ide_inarti=ARTICULO.ide_inarti and hace_kardex_inarti=true\n"
-                + "LEFT JOIN inv_unidad UNIDAD ON ARTICULO.ide_inuni=UNIDAD.ide_inuni\n"
-                + "LEFT JOIN inv_bodega BODEGA ON CAB.ide_inbod=BODEGA.ide_inbod\n"
-                + "LEFT JOIN inv_tip_comp_inve TIPO ON TIPO.ide_intci=TRANS.ide_intci\n"
-                + "LEFT JOIN inv_marca m on ARTICULO.ide_inmar= m.ide_inmar\n"
+
+        return "SELECT ARTICULO.ide_inarti,BODEGA.nombre_inbod AS BODEGA,ARTICULO.nombre_inarti AS ARTICULO,ARTICULO.codigo_inarti as CODIGO,nombre_invmar AS MARCA, UNIDAD.nombre_inuni AS UNIDAD, \n"
+                + "sum(DETA.cantidad_indci * TIPO.signo_intci) AS EXISTENCIA, \n"
+                + "round(sum(DETA.valor_indci * TIPO.signo_intci),3) AS VALOR \n"
+                + "FROM inv_det_comp_inve DETA \n"
+                + "LEFT JOIN inv_cab_comp_inve CAB ON DETA.ide_incci=CAB.ide_incci \n"
+                + "LEFT JOIN inv_tip_tran_inve TRANS ON TRANS.ide_intti=CAB.ide_intti \n"
+                + "LEFT JOIN inv_articulo ARTICULO ON DETA.ide_inarti=ARTICULO.ide_inarti --and hace_kardex_inarti=true \n"
+                + "LEFT JOIN inv_unidad UNIDAD ON ARTICULO.ide_inuni=UNIDAD.ide_inuni \n"
+                + "LEFT JOIN inv_bodega BODEGA ON CAB.ide_inbod=BODEGA.ide_inbod \n"
+                + "LEFT JOIN inv_tip_comp_inve TIPO ON TIPO.ide_intci=TRANS.ide_intci \n"
+                + "LEFT JOIN inv_marca m on ARTICULO.ide_inmar= m.ide_inmar \n"
                 + "WHERE BODEGA.ide_inbod =" + ide_inbod + "\n"
                 + "AND CAB.fecha_trans_incci <= '" + fecha + "'\n"
-                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + "\n" //comp es estado normal
-                + "GROUP BY DETA.ide_indci,BODEGA.nombre_inbod,ARTICULO.nombre_inarti,UNIDAD.nombre_inuni,ARTICULO.codigo_inarti,nombre_invmar\n"
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " \n"
+                + "GROUP BY ARTICULO.ide_inarti,BODEGA.nombre_inbod,UNIDAD.ide_inuni,nombre_invmar\n"
                 + "ORDER BY BODEGA.nombre_inbod, ARTICULO.nombre_inarti";
     }
 }

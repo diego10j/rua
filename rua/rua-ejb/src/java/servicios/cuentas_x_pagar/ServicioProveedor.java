@@ -146,8 +146,8 @@ public class ServicioProveedor {
         tabla.getColumna("IDE_RHFRE").setVisible(false);
         tabla.getColumna("IDE_USUA").setVisible(false);
         tabla.getColumna("GEN_IDE_GEPER").setVisible(false);
-        tabla.getColumna("NIVEL_GEPER").setVisible(false);
-        tabla.getColumna("GEN_IDE_GEPER").setValorDefecto(P_PADRE_PROVEEDORES); //padre de todos los proveedores
+        tabla.getColumna("GEN_IDE_GEPER").setVisible(true);
+        tabla.getColumna("GEN_IDE_GEPER").setCombo("select ide_geper,nom_geper from gen_persona where nivel_geper ='PADRE' and es_proveedo_geper=true order by nom_geper");
         tabla.getColumna("ide_tetcb").setVisible(false);
         tabla.getColumna("ide_coepr").setVisible(false);
         tabla.getColumna("es_proveedo_geper").setVisible(false);
