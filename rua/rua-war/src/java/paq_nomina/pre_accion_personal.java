@@ -968,7 +968,7 @@ public void cambiarPartida(){
 		aut_empleado.onSelect(evt);
 		if(aut_empleado.getValor()!=null){		
 
-			tab_partida_vigente.setCondicion(" WHERE IDE_GTEMP=" + aut_empleado.getValor()
+			tab_partida_vigente.setCondicion("IDE_GTEMP=" + aut_empleado.getValor()
 					+ " AND IDE_GEDED in (SELECT IDE_GEDED FROM GEN_DETALLE_EMPLEADO_DEPARTAME WHERE ACTIVO_GEDED=true and IDE_GTEMP=" + aut_empleado.getValor()+")");
 			tab_partida_vigente.ejecutarSql();
 			tab_deta_empleado_depar.setCondicion("IDE_GTEMP=" + aut_empleado.getValor());
