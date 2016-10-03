@@ -424,7 +424,7 @@ public class ServicioComprobanteContabilidad {
         return "select ide_prasp,a.ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_prmop from pre_asociacion_presupuestaria a\n"
                 + "left join pre_clasificador b on a.ide_prcla=b.ide_prcla and activo_prcla= true\n"
                 + "left join pre_movimiento_presupuestario c on a.ide_prmop=c.ide_prmop  and activo_prmop=true\n"
-                + "where ide_cndpc=" + ide_cndpc + "and ide_cnlap =" + ide_cnlap + "";
+                + "where ide_cndpc=" + ide_cndpc + " and ide_cnlap =" + ide_cnlap + "";
     }
     
 }
