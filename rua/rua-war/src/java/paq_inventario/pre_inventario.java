@@ -268,7 +268,9 @@ public class pre_inventario extends Pantalla {
         tab_tabla.getColumna("ide_geper").setAutoCompletar();
         tab_tabla.getColumna("ide_geper").setRequerida(true);
         tab_tabla.getColumna("ide_inepi").setCombo("inv_est_prev_inve", "ide_inepi", "nombre_inepi", "");
-        tab_tabla.getColumna("ide_intti").setCombo("inv_tip_tran_inve", "ide_intti", "nombre_intti", "");
+        tab_tabla.getColumna("ide_intti").setCombo("select ide_intti,nombre_intti,nombre_intci from inv_tip_tran_inve a\n"
+                + "inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
+                + "order by nombre_intci desc, nombre_intti");
         tab_tabla.getColumna("ide_inbod").setVisible(false);
         tab_tabla.getColumna("ide_intti").setRequerida(true);
         tab_tabla.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
@@ -364,6 +366,10 @@ public class pre_inventario extends Pantalla {
         double dou_precioi = lisSaldos.get(1);
         tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
         utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
+        double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), String.valueOf(com_bodega.getValue()));
+        if (dou_existencia <= 0) {
+            utilitario.agregarMensajeError("No hay existencia de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " en Bodega", "");
+        }
     }
 
     private void calcularDetalles() {
@@ -371,12 +377,17 @@ public class pre_inventario extends Pantalla {
         double dou_precio = 0;
         double dou_valor = 0;
         try {
-            dou_cantidad = Double.parseDouble(tab_tabla2.getValor(tab_tabla2.getFilaActual(), "cantidad_indci"));
-            dou_precio = Double.parseDouble(tab_tabla2.getValor(tab_tabla2.getFilaActual(), "precio_indci"));
+            dou_cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_indci"));
+            dou_precio = Double.parseDouble(tab_tabla2.getValor("precio_indci"));
         } catch (Exception e) {
             dou_cantidad = 0;
             dou_precio = 0;
         }
+        double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), String.valueOf(com_bodega.getValue()));
+        if (dou_cantidad > dou_existencia) {
+            utilitario.agregarMensajeError("La cantidad ingresada es mayor a la existencia en Inventario", "Existencia actual de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " es :" + utilitario.getFormatoNumero(dou_existencia));
+        }
+
         dou_valor = dou_cantidad * dou_precio;
         tab_tabla2.setValor("valor_indci", utilitario.getFormatoNumero(dou_valor));
         tab_tabla2.sumarColumnas();

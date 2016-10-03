@@ -20,7 +20,7 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioProducto {
-    
+
     private final Utilitario utilitario = new Utilitario();
     @EJB
     private ServicioConfiguracion ser_configuracion;
@@ -60,7 +60,7 @@ public class ServicioProducto {
         return "SELECT ide_inarti,nombre_inarti from inv_articulo arti "
                 + "where arti.ide_empr=" + utilitario.getVariable("ide_empr") + " and nivel_inarti='HIJO' ORDER BY nombre_inarti ";
     }
-    
+
     public String getSqlProductosKardexCombo() {
         return "SELECT ide_inarti,nombre_inarti from inv_articulo arti "
                 + "where arti.ide_empr=" + utilitario.getVariable("ide_empr") + " and nivel_inarti='HIJO' and hace_kardex_inarti=true ORDER BY nombre_inarti ";
@@ -88,11 +88,15 @@ public class ServicioProducto {
         tabla.getColumna("ide_inmar").setCombo("inv_marca", "ide_inmar", "nombre_invmar", "");
         tabla.getColumna("ide_inuni").setCombo("inv_unidad", "ide_inuni", "nombre_inuni", "");
         tabla.getColumna("ide_intpr").setCombo("inv_tipo_producto", "ide_intpr", "nombre_intpr", "");
+        tabla.getColumna("ide_intpr").setRequerida(true);
         tabla.getColumna("ide_inepr").setCombo("inv_estado_produc", "ide_inepr", "nombre_inepr", "");
         tabla.getColumna("nivel_inarti").setValorDefecto("HIJO");
         tabla.getColumna("hace_kardex_inarti").setValorDefecto("true");
         tabla.getColumna("es_combo_inarti").setValorDefecto("false");
         tabla.getColumna("nombre_inarti").setRequerida(true);
+
+        tabla.getColumna("nombre_inarti").setRequerida(true);
+
         tabla.getColumna("iva_inarti").setRadio(getListaTipoIVA(), "1");
         tabla.getColumna("iva_inarti").setRadioVertical(true);
         tabla.getColumna("INV_IDE_INARTI").setVisible(true);
@@ -185,6 +189,30 @@ public class ServicioProducto {
         return saldo;
     }
 
+    public double getCantidadProductoBodega(String ide_inarti, String ide_inbod) {
+        double saldo = 0;
+        String sql = "select dci.ide_inarti,sum(cantidad_indci * signo_intci) as cantidad "
+                + "from inv_det_comp_inve dci "
+                + "left join inv_cab_comp_inve cci on cci.ide_incci=dci.ide_incci "
+                + "left join inv_tip_tran_inve tti on tti.ide_intti=cci.ide_intti "
+                + "left join inv_tip_comp_inve tci on tci.ide_intci=tti.ide_intci "
+                + "where dci.ide_inarti=" + ide_inarti + " "
+                + "and dci.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ide_inbod=" + ide_inbod + " "
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " "
+                + "group by dci.ide_inarti";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor(0, "cantidad") != null) {
+                try {
+                    saldo = Double.parseDouble(tab_saldo.getValor(0, "cantidad"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return saldo;
+    }
+
     /**
      * Retorna el precio promedio de un Producto
      *
@@ -197,7 +225,7 @@ public class ServicioProducto {
         List<Double> resultado = new ArrayList();
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
         String strCondicionBodega = ide_inbod.isEmpty() ? "" : "and ide_inbod in (" + ide_inbod + ") \n";
-        
+
         TablaGenerica tab_kardex = utilitario.consultar("SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
                 + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
                 + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
@@ -226,7 +254,7 @@ public class ServicioProducto {
                 double dou_cant_fila = 0;
                 double dou_precio_fila = 0;
                 double dou_saldo_fila = 0;
-                
+
                 if (tab_kardex.getValor(i, "VTOT_INGRESO") != null && tab_kardex.getValor(i, "VTOT_INGRESO").isEmpty() == false) {
                     try {
                         dou_cant_fila = Double.parseDouble(tab_kardex.getValor(i, "CANT_INGRESO"));
@@ -312,7 +340,7 @@ public class ServicioProducto {
         if (tab_precio.isEmpty() == false) {
             if (tab_precio.getValor(0, "iva_inarti_ccdfa") != null) {
                 iva = tab_precio.getValor(0, "iva_inarti_ccdfa");
-                
+
             }
         }
         return iva;
@@ -361,7 +389,7 @@ public class ServicioProducto {
      */
     public String getSqlKardex(String ide_inarti, String fecha_inicio, String fecha_fin, String ide_inbod) {
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
-        
+
         String strCondicionBodega = ide_inbod.isEmpty() ? "" : " ide_inbod in (" + ide_inbod + ") \n";
         return "SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
                 + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
@@ -383,12 +411,12 @@ public class ServicioProducto {
                 + strCondicionBodega
                 + "ORDER BY cci.fecha_trans_incci asc,dci.ide_indci asc,signo_intci asc";
     }
-    
+
     public List<Double> getSaldosInicialesKardex(String ide_inarti, String fecha_fin, String ide_inbod) {
         List<Double> resultado = new ArrayList();
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
         String strCondicionBodega = ide_inbod.isEmpty() ? "" : "and ide_inbod in (" + ide_inbod + ") \n";
-        
+
         TablaGenerica tab_kardex = utilitario.consultar("SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
                 + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
                 + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
@@ -417,7 +445,7 @@ public class ServicioProducto {
                 double dou_cant_fila = 0;
                 double dou_precio_fila = 0;
                 double dou_saldo_fila = 0;
-                
+
                 if (tab_kardex.getValor(i, "VTOT_INGRESO") != null && tab_kardex.getValor(i, "VTOT_INGRESO").isEmpty() == false) {
                     try {
                         dou_cant_fila = Double.parseDouble(tab_kardex.getValor(i, "CANT_INGRESO"));
@@ -636,5 +664,5 @@ public class ServicioProducto {
                 + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
                 + "order by 3,nom_geper desc";
     }
-    
+
 }

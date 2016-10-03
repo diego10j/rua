@@ -14,7 +14,9 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,17 +69,39 @@ public class AsientoContable extends Dialogo {
     //Para ver un asiento contable
     private String ide_cnccc = null;
 
+    private SeleccionTabla set_asociacionPre;
+
+    private Texto tex_valor_pre;
+
     public AsientoContable() {
         parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
                 "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso",
                 "p_con_tipo_comprobante_egreso", "p_con_beneficiario_empresa", "p_tes_tran_cheque");
         this.setWidth("95%");
-        this.setHeight("90%");
+        this.setHeight("95%");
         this.setTitle("ASIENTO CONTABLE");
         this.setResizable(false);
         this.setDynamic(false);
         vpd_asiento.setId("vpd_asiento");
         utilitario.getPantalla().getChildren().add(vpd_asiento);
+
+        if (isPresupuesto()) {
+            set_asociacionPre = new SeleccionTabla();
+            set_asociacionPre.setId("set_asociacionPre");
+            set_asociacionPre.setHeight("ASOCIACION PRESUPUESTARIA");
+            set_asociacionPre.setWidth("85%");
+            set_asociacionPre.setHeight("60%");
+            set_asociacionPre.setSeleccionTabla(ser_comprobante.getSqlAsociacionPresupuestaria("-1", "-1"), "ide_prasp");
+
+            tex_valor_pre = new Texto();
+            tex_valor_pre.setSoloNumeros();
+            Grid gri1 = new Grid();
+            gri1.setColumns(2);
+            gri1.getChildren().add(new Etiqueta("VALOR :"));
+            gri1.getChildren().add(tex_valor_pre);
+            set_asociacionPre.getGri_cuerpo().setHeader(gri1);
+            utilitario.getPantalla().getChildren().add(set_asociacionPre);
+        }
     }
 
     //Asigna un asiento contable para dibujarlo
@@ -146,7 +170,7 @@ public class AsientoContable extends Dialogo {
         ser_comprobante.configurarTablaDetalleComprobante(tab_deta_asiento);
         tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 2);
         tab_deta_asiento.getColumna("valor_cndcc").setMetodoChangeRuta("pre_index.clase." + getId() + ".ingresaCantidad");
-        tab_deta_asiento.getColumna("ide_cnlap").setMetodoChangeRuta("pre_index.clase." + getId() + ".ingresaCantidad");
+        tab_deta_asiento.getColumna("ide_cnlap").setMetodoChangeRuta("pre_index.clase." + getId() + ".seleccionarLugarAplica");
         tab_deta_asiento.getColumna("ide_cndpc").setNombreVisual("CUENTA CONTABLE");
         tab_deta_asiento.getColumna("observacion_cndcc").setNombreVisual("OBSERVACIÓN");
         tab_deta_asiento.getColumna("VALOR_cndcc").setNombreVisual("VALOR");
@@ -154,10 +178,12 @@ public class AsientoContable extends Dialogo {
 
         tab_deta_asiento.setScrollable(true);
         tab_deta_asiento.setScrollWidth(getAnchoPanel() - 15);
-        if (parametros.get("p_con_usa_presupuesto") != null && parametros.get("p_con_usa_presupuesto").equals("false")) {
+        if (!isPresupuesto()) {
             tab_deta_asiento.setScrollHeight(getAltoPanel() - 200); //175 sin presupuesto
         } else {
             tab_deta_asiento.setScrollHeight(getAltoPanel() - 275); //300 con presupuesto  
+            set_asociacionPre.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".aceptarAsociacion");
+            set_asociacionPre.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cancelarAsociacion");
         }
         tab_deta_asiento.setRows(100);
         tab_deta_asiento.dibujar();
@@ -188,15 +214,16 @@ public class AsientoContable extends Dialogo {
 
         pat_panel2.setFooter(gri_totales);
 
-        if (parametros.get("p_con_usa_presupuesto") != null && parametros.get("p_con_usa_presupuesto").equals("true")) {
+        if (isPresupuesto()) {
             tab_presupuesto = new Tabla();
             tab_presupuesto.setId("tab_presupuesto");
             tab_presupuesto.setRuta("pre_index.clase." + getId());
             tab_presupuesto.setTabla("pre_mensual", "ide_prmen", 888);
-            tab_presupuesto.setHeader("PRESUUESTO");
+            tab_presupuesto.setHeader("PRESUPUESTO");
             tab_presupuesto.setScrollable(true);
             tab_presupuesto.setScrollWidth(getAnchoPanel() - 15);
             tab_presupuesto.setScrollHeight(60);
+            tab_presupuesto.setCondicion("ide_cndcc=-1");
             tab_presupuesto.dibujar();
             tab_presupuesto.insertar();
             PanelTabla pat_panel3 = new PanelTabla();
@@ -215,6 +242,25 @@ public class AsientoContable extends Dialogo {
         this.setDialogo(contenido);
         this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
 
+    }
+
+    public void aceptarAsociacion() {
+        if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
+            utilitario.agregarMensajeError("Debe ingresar un valor", "");
+        }
+        if (set_asociacionPre.getSeleccionados() != null) {
+            set_asociacionPre.cerrar();
+            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pre.getValue()));
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar una asociación presupuestaria", "");
+        }
+    }
+
+    public void cancelarAsociacion() {
+        set_asociacionPre.cerrar();
+        tab_deta_asiento.setValor("valor_cndcc", null);
+        tab_deta_asiento.setValor("ide_cnlap", null);
+        utilitario.addUpdate("tab_deta_asiento");
     }
 
     private void dibujarVerAsiento() {
@@ -330,6 +376,25 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cnlap", tab_cuentas.getValor(i, "ide_cnlap"));
             }
         }
+    }
+
+    public void seleccionarLugarAplica(AjaxBehaviorEvent evt) {
+        tab_deta_asiento.modificar(evt);
+        if (isPresupuesto()) {
+            //usa presupuesto
+            if (tab_deta_asiento.getValor("ide_cnlap") != null) {
+                //busca asociasion presupuestaria
+                set_asociacionPre.getTab_seleccion().setSql(ser_comprobante.getSqlAsociacionPresupuestaria(tab_deta_asiento.getValor("ide_cndpc"), tab_deta_asiento.getValor("ide_cnlap")));
+                set_asociacionPre.getTab_seleccion().ejecutarSql();
+                set_asociacionPre.getTab_seleccion().imprimirSql();
+                if (set_asociacionPre.getTab_seleccion().isEmpty() == false) {
+                    set_asociacionPre.dibujar();
+                }
+
+            }
+        }
+        calcularTotal();
+        utilitario.addUpdate("gri_totales");
     }
 
     public void ingresaCantidad(AjaxBehaviorEvent evt) {
@@ -766,6 +831,17 @@ public class AsientoContable extends Dialogo {
 
     public void nuevoAsiento() {
         this.ide_cnccc = null;
+    }
+
+    public final boolean isPresupuesto() {
+        if (parametros.get("p_con_usa_presupuesto") == null) {
+            return false;
+        } else if (parametros.get("p_con_usa_presupuesto").equals("false")) {
+            return false;
+        } else if (parametros.get("p_con_usa_presupuesto").equals("true")) {
+            return true;
+        }
+        return false;
     }
 
 }

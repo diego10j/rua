@@ -381,6 +381,8 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_producto.setTabla("inv_articulo", "ide_inarti", 999);
             tab_creacion_producto.setCondicion("ide_inarti=-1");
             tab_creacion_producto.setMostrarNumeroRegistros(false);
+            tab_creacion_producto.getColumna("INV_IDE_INARTI").setRequerida(true);
+            tab_creacion_producto.getColumna("INV_IDE_INARTI").setNombreVisual("GRUPO");
             tab_creacion_producto.getColumna("IDE_INARTI").setVisible(false);
             tab_creacion_producto.getColumna("IDE_INFAB").setVisible(false);
             tab_creacion_producto.getColumna("IDE_INEPR").setVisible(false);
