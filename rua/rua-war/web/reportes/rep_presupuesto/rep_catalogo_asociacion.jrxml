@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b884a89-d067-4769-8f9b-d0eed3343e6f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<queryString>
+		<![CDATA[select a.ide_prasp,cue_codigo_cocac||' '||cue_descripcion_cocac as cuenta_contable,codigo_clasificador_prcla ||' '||descripcion_clasificador_prcla as presupuesto,
+detalle_prmop,nombre_cnlap
+from pre_asociacion_presupuestaria a
+left join (select ide_cndpc as ide_cocac, codig_recur_cndpc as cue_codigo_cocac, nombre_cndpc as cue_descripcion_cocac from con_det_plan_cuen a, con_cab_plan_cuen b
+ where a.ide_cncpc=b.ide_cncpc) b on a.ide_cocac = b.ide_cocac
+left join pre_clasificador c on a.ide_prcla = c.ide_prcla
+left join pre_movimiento_presupuestario d on a.ide_prmop = d.ide_prmop
+left join  con_lugar_aplicac e on a.ide_cnlap = e.ide_cnlap
+order by cue_codigo_cocac,codigo_clasificador_prcla
+]]>
+	</queryString>
+	<field name="ide_prasp" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_asociacion_presupuestaria]]></fieldDescription>
+	</field>
+	<field name="cuenta_contable" class="java.lang.String"/>
+	<field name="presupuesto" class="java.lang.String"/>
+	<field name="detalle_prmop" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_prmop]]></fieldDescription>
+	</field>
+	<field name="nombre_cnlap" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="46" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="0474cd78-63d1-4a1a-9284-a3cf1b0c5a92" x="453" y="22" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="343bbce9-1bf1-41f3-acf4-b20c4a224a28" x="410" y="22" width="57" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Impreso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c51a4ca8-061b-4b09-a668-68749f227b1d" x="29" y="0" width="399" height="43"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASOCIACION CONTABLE - PRESUPUESTARIA]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="a697ae8c-9e4e-4e2b-96b0-ef0030efb28e" x="0" y="41" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="44df9a83-ac27-4198-ae53-9147c7271e79" x="0" y="45" width="555" height="1"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="26">
+			<staticText>
+				<reportElement uuid="67b0a5c2-3fd9-4e3a-9118-1afa284148e0" x="0" y="5" width="161" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA CONTABLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73f0d0e5-fdba-4a5b-9892-df3382296759" x="187" y="5" width="189" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA PRESUPUESTARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ebde4a37-0a21-43ab-bfa7-e981ae97871b" x="433" y="5" width="74" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOV. PRE.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="54956598-52ca-44c3-b68f-50104d9e80e4" x="493" y="5" width="60" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[LUGAR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="d847a10c-c91d-46cd-97b3-a2ecda99ed80" x="0" y="25" width="555" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="17">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9926165a-b5f8-4c4c-9c51-8cff9fb368e8" x="0" y="2" width="184" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta_contable}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4b9d6f39-1d96-427f-bd2a-be4c95aa5ffb" x="187" y="2" width="246" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{presupuesto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bcfec4da-114e-407d-b2e4-a58238c6aded" x="434" y="2" width="73" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_prmop}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1639e661-7e63-41c5-961d-0dff0fe0ff35" x="518" y="2" width="36" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cnlap}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
