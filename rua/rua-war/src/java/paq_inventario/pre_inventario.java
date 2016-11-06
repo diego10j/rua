@@ -584,10 +584,24 @@ public class pre_inventario extends Pantalla {
 
     @Override
     public void guardar() {
-        if (validar()) {
+        if (asc_asiento.isVisible()) {
+            asc_asiento.guardar();
+            if (asc_asiento.isVisible() == false) {
+                dibujarComprobantes();
+            }
+        } else {
+
             if (tab_tabla.isFilaInsertada()) {
-                tab_tabla.setValor("ide_inbod", String.valueOf(com_bodega.getValue()));
-                tab_tabla.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(com_bodega.getValue())));
+                if (validar()) {
+                    tab_tabla.setValor("ide_inbod", String.valueOf(com_bodega.getValue()));
+                    tab_tabla.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(com_bodega.getValue())));
+                } else {
+                    return;
+                }
+            } else if (tab_tabla.isFilaModificada()) {
+                if (!validar()) {
+                    return;
+                }
             }
             if (tab_tabla.guardar()) {
                 String ide_incci = tab_tabla.getValor("ide_incci");
@@ -599,7 +613,9 @@ public class pre_inventario extends Pantalla {
                     }
                 }
             }
+
         }
+
     }
 
     public boolean validar() {

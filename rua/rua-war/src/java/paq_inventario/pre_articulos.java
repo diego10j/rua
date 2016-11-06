@@ -727,39 +727,39 @@ public class pre_articulos extends Pantalla {
 
             tab_tabulador.agregarTab("VENTAS", pat_panel1);
 
-            tab_tabla = new Tabla();
-            tab_tabla.setId("tab_tabla");
-            tab_tabla.setIdCompleto("tab_tabulador:tab_tabla");
-            tab_tabla.setSql(ser_producto.getSqlUltimosPreciosCompras(aut_productos.getValor()));
-            tab_tabla.getColumna("ide_geper").setVisible(false);
-            tab_tabla.setRows(20);
-            tab_tabla.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
-            tab_tabla.getColumna("nom_geper").setFiltroContenido();
-            tab_tabla.getColumna("nom_geper").setLongitud(200);
-            tab_tabla.getColumna("fecha_ultima_venta").setNombreVisual("FECHA ULTIMA COMPRA");
-            tab_tabla.getColumna("fecha_ultima_venta").setLongitud(80);
-            tab_tabla.getColumna("ultima_cantidad").setNombreVisual("CANTIDAD");
-            tab_tabla.getColumna("ultima_cantidad").setFormatoNumero(2);
-            tab_tabla.getColumna("ultima_cantidad").alinearDerecha();
-            tab_tabla.getColumna("ultima_cantidad").setLongitud(100);
-            tab_tabla.getColumna("ultima_cantidad").setEstilo("font-size:14px");
+            tab_asiento_tipo = new Tabla();
+            tab_asiento_tipo.setId("tab_asiento_tipo");
+            tab_asiento_tipo.setIdCompleto("tab_tabulador:tab_asiento_tipo");
+            tab_asiento_tipo.setSql(ser_producto.getSqlUltimosPreciosCompras(aut_productos.getValor()));
+            tab_asiento_tipo.getColumna("ide_geper").setVisible(false);
+            tab_asiento_tipo.setRows(20);
+            tab_asiento_tipo.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
+            tab_asiento_tipo.getColumna("nom_geper").setFiltroContenido();
+            tab_asiento_tipo.getColumna("nom_geper").setLongitud(200);
+            tab_asiento_tipo.getColumna("fecha_ultima_venta").setNombreVisual("FECHA ULTIMA COMPRA");
+            tab_asiento_tipo.getColumna("fecha_ultima_venta").setLongitud(80);
+            tab_asiento_tipo.getColumna("ultima_cantidad").setNombreVisual("CANTIDAD");
+            tab_asiento_tipo.getColumna("ultima_cantidad").setFormatoNumero(2);
+            tab_asiento_tipo.getColumna("ultima_cantidad").alinearDerecha();
+            tab_asiento_tipo.getColumna("ultima_cantidad").setLongitud(100);
+            tab_asiento_tipo.getColumna("ultima_cantidad").setEstilo("font-size:14px");
 
-            tab_tabla.getColumna("ultimo_precio").setNombreVisual("PRECIO");
-            tab_tabla.getColumna("ultimo_precio").setFormatoNumero(2);
-            tab_tabla.getColumna("ultimo_precio").alinearDerecha();
-            tab_tabla.getColumna("ultimo_precio").setLongitud(100);
-            tab_tabla.getColumna("ultimo_precio").setEstilo("font-weight: bold;font-size:14px");
+            tab_asiento_tipo.getColumna("ultimo_precio").setNombreVisual("PRECIO");
+            tab_asiento_tipo.getColumna("ultimo_precio").setFormatoNumero(2);
+            tab_asiento_tipo.getColumna("ultimo_precio").alinearDerecha();
+            tab_asiento_tipo.getColumna("ultimo_precio").setLongitud(100);
+            tab_asiento_tipo.getColumna("ultimo_precio").setEstilo("font-weight: bold;font-size:14px");
 
-            tab_tabla.getColumna("valor_total").setNombreVisual("VALOR");
-            tab_tabla.getColumna("valor_total").setFormatoNumero(2);
-            tab_tabla.getColumna("valor_total").alinearDerecha();
-            tab_tabla.getColumna("valor_total").setLongitud(100);
-            tab_tabla.getColumna("valor_total").setEstilo("font-size:14px");
+            tab_asiento_tipo.getColumna("valor_total").setNombreVisual("VALOR");
+            tab_asiento_tipo.getColumna("valor_total").setFormatoNumero(2);
+            tab_asiento_tipo.getColumna("valor_total").alinearDerecha();
+            tab_asiento_tipo.getColumna("valor_total").setLongitud(100);
+            tab_asiento_tipo.getColumna("valor_total").setEstilo("font-size:14px");
 
-            tab_tabla.setLectura(true);
-            tab_tabla.dibujar();
+            tab_asiento_tipo.setLectura(true);
+            tab_asiento_tipo.dibujar();
             PanelTabla pat_panel2 = new PanelTabla();
-            pat_panel2.setPanelTabla(tab_tabla);
+            pat_panel2.setPanelTabla(tab_asiento_tipo);
 
             tab_tabulador.agregarTab("COMPRAS", pat_panel2);
 

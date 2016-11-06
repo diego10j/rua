@@ -471,22 +471,28 @@ public class pre_prestamos extends Pantalla {
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
-            if (validarPrestamo()) {
-                if (tab_tabla1.guardar()) {
-                    //Generar Tabla de Amortizacion
-                    if (tab_tabla1.isFilaInsertada()) {
-                        ser_prestamo.generarTablaAmortizacion(tab_tabla1);
-                        utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
-                    }
-                    if (guardarPantalla().isEmpty()) {
-                        aut_prestamos.actualizar();
-                        aut_prestamos.setSize(100);
-                        aut_prestamos.setValor(tab_tabla1.getValor("ide_ipcpr"));
-                        utilitario.addUpdate("aut_prestamos");
-                    }
+            //Generar Tabla de Amortizacion
+            if (tab_tabla1.isFilaInsertada()) {
+                if (validarPrestamo()) {
+                    ser_prestamo.generarTablaAmortizacion(tab_tabla1);
+                    utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
+                } else {
+                    return;
                 }
-
+            } else if (tab_tabla1.isFilaModificada()) {
+                if (!validarPrestamo()) {
+                    return;
+                }
             }
+            if (tab_tabla1.guardar()) {
+                if (guardarPantalla().isEmpty()) {
+                    aut_prestamos.actualizar();
+                    aut_prestamos.setSize(100);
+                    aut_prestamos.setValor(tab_tabla1.getValor("ide_ipcpr"));
+                    utilitario.addUpdate("aut_prestamos");
+                }
+            }
+
         }
         if (mep_menu.getOpcion() == 4) {
             if (fcc_factura.isVisible()) {
