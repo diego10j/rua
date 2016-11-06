@@ -120,7 +120,6 @@ public class ServicioInversiones extends ServicioBase {
     public String getSecuenciaCertificado(String ide_iptin) {
         int max = 0;
         TablaGenerica tab_secuencia = utilitario.consultar("select ide_iptin,max(CAST(coalesce(num_certificado_ipcer, '0') AS Integer)) as num_max FROM iyp_certificado WHERE ide_iptin=" + ide_iptin + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " GROUP BY ide_iptin");
-        tab_secuencia.imprimirSql();
         if (tab_secuencia.isEmpty() == false) {
             try {
                 max = Integer.parseInt(tab_secuencia.getValor("num_max"));

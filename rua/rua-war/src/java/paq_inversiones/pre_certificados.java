@@ -114,7 +114,7 @@ public class pre_certificados extends Pantalla {
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Certificados de Inversiones")) {
             if (rep_reporte.isVisible()) {
-                if (com_tipo_inversion.getValue() != null) {
+                if (tab_tabla1.getValor("ide_iptin") != null && !tab_tabla1.getValor("ide_iptin").isEmpty()) {
                     parametro = new HashMap();
                     rep_reporte.cerrar();
 
