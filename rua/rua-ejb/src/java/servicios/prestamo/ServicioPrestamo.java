@@ -20,7 +20,7 @@ import servicios.ServicioBase;
 public class ServicioPrestamo extends ServicioBase {
 
     public String getSqlComboPrestamos() {
-        return "SELECT ide_ipcpr,ide_ipcpr,nom_geper,num_prestamo_ipcpr,identificac_geper,nombre_teban,nombre_tecba\n"
+        return "SELECT ide_ipcpr,observacion_ipcpr,num_prestamo_ipcpr,identificac_geper,num_asiento_ant_sistema\n"
                 + "from  iyp_cab_prestamo a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                 + "left join tes_cuenta_banco c on a.ide_tecba=c.ide_tecba\n"
@@ -42,7 +42,7 @@ public class ServicioPrestamo extends ServicioBase {
 
     public String getSqlPrestamos() {
         return "select a.ide_ipcpr,a.fecha_prestamo_ipcpr,case when es_ingreso_ipcpr = true THEN 'INGRESO' else 'EGRESO'  end as tipo,\n"
-                + "num_prestamo_ipcpr,b.nom_geper,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
+                + "num_prestamo_ipcpr,observacion_ipcpr as nom_geper,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
                 + "(select sum(capital_ipdpr) as capital from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select sum(interes_ipdpr) as interes from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select sum(cuota_ipdpr) as cuota from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"

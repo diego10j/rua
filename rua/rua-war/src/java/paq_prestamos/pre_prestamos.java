@@ -224,6 +224,8 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_cliente_geper=TRUE AND nivel_geper='HIJO'");
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("ide_geper").setRequerida(true);
+        tab_tabla1.getColumna("ide_geper").setMetodoChange("seleccionaBeneficiario");
+
         tab_tabla1.getColumna("fecha_sistema_ipcpr").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
@@ -237,6 +239,13 @@ public class pre_prestamos extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(1, "DATOS DEL PRESTAMO", pat_panel);
 
+    }
+
+    public void seleccionaBeneficiario(SelectEvent evt) {
+        System.out.println("xxxxx");
+        tab_tabla1.seleccionarFila(evt);
+        tab_tabla1.setValor("observacion_ipcpr", aut_prestamos.getValorArreglo(1));
+        utilitario.addUpdateTabla(tab_tabla1, "observacion_ipcpr", "");
     }
 
     public void dibujarTabla() {
@@ -314,8 +323,7 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
         tab_tabla1.setOrdenar(false);
         tab_tabla1.setNumeroTabla(-1);
-        tab_tabla1.setScrollable(true);
-        tab_tabla1.setScrollHeight(430);
+        tab_tabla1.setRows(20);
         tab_tabla1.setLectura(true);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
