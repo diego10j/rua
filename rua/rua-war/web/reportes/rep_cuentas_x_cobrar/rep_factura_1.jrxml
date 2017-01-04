@@ -58,7 +58,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_emisi_cccfa}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="fa4bab24-8d88-48bb-9683-49c46dc168d8" x="52" y="106" width="245" height="12"/>
 				<textElement>
 					<font size="8"/>
