@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_rubros_periodo" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1566b1e-fb82-4969-ab24-b27dc9277814">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_nrdtn" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_nrrub" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geani_inicio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geani_fin" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gemes_inicio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gemes_fin" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.ide_nrrub,d.ide_gepro,c.detalle_nrrub,(case when sum(a.valor_nrdro) is null then 0 else  sum(a.valor_nrdro) end) as valor_rubro,f.detalle_gemes,e.ide_gemes,e.ide_geani,g.detalle_geani,b.ide_nrdtn
+FROM nrh_detalle_rol a
+LEFT JOIN (
+SELECT ide_nrder,ide_nrrub,ide_nrdtn FROM nrh_detalle_rubro
+)b ON a.ide_nrder=b.ide_nrder
+LEFT JOIN(
+SELECT ide_nrrub,detalle_nrrub FROM nrh_rubro
+)c ON c.ide_nrrub=b.ide_nrrub
+LEFT JOIN (
+SELECT ide_nrrol,ide_gepro,fecha_nrrol FROM nrh_rol
+)d ON d.ide_nrrol=a.ide_nrrol
+LEFT JOIN (
+SELECT ide_gepro,ide_gemes,ide_geani FROM gen_perido_rol
+)e ON e.ide_gepro=d.ide_gepro
+LEFT JOIN (
+SELECT ide_gemes,detalle_gemes FROM gen_mes
+)f ON f.ide_gemes=e.ide_gemes
+LEFT JOIN(
+SELECT ide_geani,detalle_geani FROM gen_anio
+)g ON g.ide_geani=e.ide_geani
+WHERE b.ide_nrdtn IN($P!{ide_nrdtn})
+AND c.ide_nrrub IN($P!{ide_nrrub})
+AND e.ide_geani between $P{ide_geani_inicio} and $P{ide_geani_fin}
+AND e.ide_gemes between $P{ide_gemes_inicio} and $P{ide_gemes_fin}
+GROUP BY c.ide_nrrub,c.detalle_nrrub,f.detalle_gemes,e.ide_gemes,e.ide_geani,g.detalle_geani,b.ide_nrdtn,d.ide_gepro
+HAVING (case when sum(a.valor_nrdro) is null then 0 else  sum(a.valor_nrdro) end)>0
+ORDER BY e.ide_geani,e.ide_gemes,f.detalle_gemes,c.detalle_nrrub,g.detalle_geani,b.ide_nrdtn]]>
+	</queryString>
+	<field name="ide_nrrub" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_rubro, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gepro" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gepro]]></fieldDescription>
+	</field>
+	<field name="detalle_nrrub" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del rubro para la generacion del respectivo rol, ejemplo DECIMO TERCER SUELDO, DECIMO CUARTO SUELDO, RETENCION A LA FUENTE, etc.]]></fieldDescription>
+	</field>
+	<field name="valor_rubro" class="java.math.BigDecimal"/>
+	<field name="detalle_gemes" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle del mes, ejemplo: enero, febrero, marzo, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_gemes" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gemes]]></fieldDescription>
+	</field>
+	<field name="ide_geani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_geani]]></fieldDescription>
+	</field>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="ide_nrdtn" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_nrdtn]]></fieldDescription>
+	</field>
+	<variable name="sumarubros" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_rubro}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="22" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="329f5a76-17a4-4edc-b797-386fed0beec6" x="0" y="0" width="802" height="22"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="10">
+			<textField>
+				<reportElement uuid="601cc11e-0e0d-4af8-8200-9f917af9be55" x="680" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de: "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="80851380-64ab-4627-b561-5e1552823bca" x="760" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="49" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="928fb3f8-c10f-40cf-a20f-1033cdece935" x="0" y="0" width="802" height="49"/>
+				<rowGroup name="DETALLE_NRRUB" width="102" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_nrrub}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="0c0e11be-f366-467c-b8ba-2974288a792d" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="102" height="24" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+								<box leftPadding="3"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_NRRUB}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="68bf2f99-d623-44f7-ae23-bb9e34868d6a" stretchType="RelativeToBandHeight" x="0" y="0" width="102" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total Rubros]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="DETALLE_GEANI" width="40" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_geani}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="8a9897ae-a52c-4221-a726-8e8893dd6e41" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_GEANI}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="4bc56407-cd66-46de-bc24-86817be9671a" x="0" y="0" width="40" height="12"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total Anual]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="IDE_GEMES" height="0" totalPosition="End">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{ide_gemes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="e929a496-3401-4974-809e-f59939d42db8" x="0" y="0" width="50" height="12" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total ]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="DETALLE_GEMES" height="12" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_gemes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="49c758c2-eedf-4ac2-8f75-7752d82149e9" style="Crosstab Data Text" x="0" y="0" width="50" height="12"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_GEMES}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="VALOR_RUBROMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{valor_rubro}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="12">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="ce726940-1599-47ea-92ab-551dde369b89" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="12" rowTotalGroup="DETALLE_NRRUB">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="fb209bef-1725-4ac9-be80-8cba7eb35ee9" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" height="12" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="418c6a6b-068f-462d-aa7d-0868ab79fb46" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="12" rowTotalGroup="DETALLE_NRRUB" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="4c2138fe-3b9a-4b90-a5c6-9cdfa3a7e795" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="12" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#BFE1FF" mode="Transparent">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="12" rowTotalGroup="DETALLE_NRRUB" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Transparent">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="12" rowTotalGroup="DETALLE_GEANI">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="e50bf8da-348b-47ba-b895-c049e97e03c6" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="12" rowTotalGroup="DETALLE_GEANI" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="7396e929-7c3d-4d26-94c6-fc377aa34345" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF"/>
+							<box rightPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_RUBROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="12" rowTotalGroup="DETALLE_GEANI" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#BFE1FF" mode="Transparent">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

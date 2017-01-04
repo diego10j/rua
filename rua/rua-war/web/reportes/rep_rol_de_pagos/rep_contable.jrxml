@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_contable" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0d2f182c-e6b8-4d9d-8fbd-fdac03defe3d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cnmoc" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_nrdtn" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombre_tipo_nomina" class="java.lang.String"/>
+	<parameter name="nombre_mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+DEM.IDE_GECUC,
+CUC.CODIGO_CUENTA_GECUC,
+CUC.DETALLE_GECUC,
+ARE.DETALLE_GEARE,
+sum(DEBE_CNDEM) AS DEBE,
+sum (HABER_CNDEM) AS HABER
+ from CNT_DETALLE_MOVIMIENTO DEM
+INNER JOIN GEN_CUENTA_CONTABLE CUC ON CUC.IDE_GECUC=DEM.IDE_GECUC
+INNER JOIN GEN_AREA ARE ON ARE.IDE_GEARE=DEM.IDE_GEARE
+where IDE_CNMOC=$P{ide_cnmoc}
+and IDE_NRDTN in ($P!{ide_nrdtn})
+GROUP BY DEM.IDE_GECUC,DEM.IDE_GEARE,IDE_GELUA ,ARE.DETALLE_GEARE,CUC.DETALLE_GECUC,
+CUC.CODIGO_CUENTA_GECUC
+
+ORDER BY IDE_GELUA ASC,DETALLE_GECUC DESC,DETALLE_GEARE ASC]]>
+	</queryString>
+	<field name="ide_gecuc" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_cuenta_contable valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="codigo_cuenta_gecuc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el codigo de la cuenta contable]]></fieldDescription>
+	</field>
+	<field name="detalle_gecuc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la cuenta contable.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="debe" class="java.math.BigDecimal"/>
+	<field name="haber" class="java.math.BigDecimal"/>
+	<variable name="sumardebe" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{debe}]]></variableExpression>
+	</variable>
+	<variable name="suma_haber" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{haber}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="65">
+			<textField>
+				<reportElement uuid="7d4a8ad1-e3ad-4c8b-8b01-9d4c4e43c7a2" x="0" y="26" width="415" height="13"/>
+				<box leftPadding="140"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre_tipo_nomina}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="905d6b0a-b7f0-40c3-a1a7-21925a601321" x="0" y="0" width="415" height="13"/>
+				<box leftPadding="140"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[BANCO DEL IESS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="04652a88-af32-4cbb-b921-616c4adfb523" x="0" y="13" width="415" height="13"/>
+				<box leftPadding="140"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE CONTABILIZACION]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ecd52d8c-fba9-481b-8fd3-c99d5729dfc7" x="0" y="39" width="415" height="13"/>
+				<box leftPadding="140"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MES "+$P{nombre_mes}+" "+$P{anio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ae4f805-015c-4085-bae2-b51d786cecf8" x="415" y="39" width="121" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="6c4c19dc-e252-4d00-a11d-244096c3570c" x="534" y="39" width="17" height="13"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h:mm a">
+				<reportElement uuid="ad87e1cc-d47d-4803-a786-73bd9d151959" x="477" y="22" width="78" height="13"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ecc370df-94db-41d0-b777-76a7db6c7ba5" x="415" y="22" width="62" height="13"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="17b883af-0689-4350-af86-72265fb7aa37" x="0" y="0" width="75" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Codigo Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fcd09edd-d8f2-4c79-bfdf-85b1c384b772" x="75" y="0" width="135" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Nombre de la Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="24f5cf10-d23e-4fe8-b1ba-dbc7de8600ac" x="210" y="0" width="149" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Centro de Costos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7774e067-e8cf-43bc-adeb-d05410edfe9a" x="359" y="0" width="98" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Debe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bdbea2d-4984-4a32-a111-00e4c7a29996" x="457" y="0" width="98" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Haber]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8da80ae6-32df-4ae7-8312-5db3f0a01cdd" stretchType="RelativeToBandHeight" x="0" y="0" width="75" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_cuenta_gecuc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f5e794f7-ef47-45e6-b4b8-f9a151268aae" stretchType="RelativeToBandHeight" x="75" y="0" width="135" height="12"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gecuc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9d20fef8-424b-4bc9-ae45-cd01e96638f0" stretchType="RelativeToBandHeight" x="210" y="0" width="149" height="12"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f5395496-879b-4052-a7d3-ccafcdb9594b" stretchType="RelativeToBandHeight" x="359" y="0" width="98" height="12"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debe}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="8d496c8a-9ea2-4639-b5c4-da96dd7a2853" stretchType="RelativeToBandHeight" x="457" y="0" width="98" height="12"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{haber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1d405242-c509-45cc-a2b7-10b40f748a48" x="0" y="0" width="359" height="15"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Totales:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7df95398-3f8b-49a2-b9a1-c5b2c2b34ccb" x="359" y="0" width="98" height="15"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{sumardebe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="06e11bb8-21b4-496f-8364-e7e956eb6146" x="457" y="0" width="98" height="15"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{suma_haber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

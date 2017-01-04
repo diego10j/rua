@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_costo_tipo_empleado" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="46eb81de-0d08-4fd1-97d6-976088b62791">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="IDE_GEPRO" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUCURSAL" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+PRO.IDE_GEPRO,
+PRO.IDE_GEANI,
+PRO.IDE_GEMES,
+GRO.ide_gegro,
+GRO.DETALLE_GEGRO,
+RUB.IDE_NRRUB,
+RUB.DETALLE_NRRUB,
+TEMP.ide_GTTEM,
+TEMP.DETALLE_GTTEM,
+DRO.VALOR_NRDRO,
+ROL.IDE_NRROL,
+ROL.FECHA_NRROL,
+MES.IDE_GEMES,
+MES.DETALLE_GEMES,
+ANI.IDE_GEANI,
+ANI.DETALLE_GEANI,
+SUCU.IDE_SUCU
+from NRH_DETALLE_ROL DRO
+inner join NRH_ROL rol on ROL.IDE_NRROL=DRO.IDE_NRROL
+INNER JOIN GEN_PERIDO_ROL PRO ON PRO.IDE_GEPRO=ROL.IDE_GEPRO
+INNER JOIN GEN_MES MES ON MES.IDE_GEMES=PRO.IDE_GEMES
+INNER JOIN GEN_ANIO ANI ON ANI.IDE_GEANI=PRO.IDE_GEANI
+inner join NRH_DETALLE_RUBRO DER on DER.IDE_NRDER=DRO.IDE_NRDER
+INNER JOIN NRH_RUBRO RUB ON RUB.IDE_NRRUB=DER.IDE_NRRUB
+INNER JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GEEDP=DRO.IDE_GEEDP
+inner join SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+INNER join  GEN_GRUPO_OCUPACIONAL Gro ON GRO.IDE_GEGRO=EDP.IDE_GEGRO
+INNER JOIN GTH_TIPO_EMPLEADO TEMP ON TEMP.IDE_GTTEM=EDP.IDE_GTTEM
+WHERE RUB.IDE_NRRUB = 131
+and  PRO.IDE_GEPRO in ($P!{IDE_GEPRO})
+and SUCU.IDE_SUCU=$P{SUCURSAL}
+AND EDP.ACTIVO_GEEDP=true
+GROUP BY
+PRO.IDE_GEPRO,
+PRO.IDE_GEANI,
+PRO.IDE_GEMES,
+GRO.ide_gegro,
+GRO.DETALLE_GEGRO,
+RUB.IDE_NRRUB,
+RUB.DETALLE_NRRUB,
+TEMP.ide_GTTEM,
+TEMP.DETALLE_GTTEM,
+DRO.VALOR_NRDRO,
+ROL.IDE_NRROL,
+ROL.FECHA_NRROL,
+MES.IDE_GEMES,
+MES.DETALLE_GEMES,
+ANI.IDE_GEANI,
+ANI.DETALLE_GEANI,
+SUCU.IDE_SUCU
+ORDER BY GRO.DETALLE_GEGRO]]>
+	</queryString>
+	<field name="ide_gepro" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gepro]]></fieldDescription>
+	</field>
+	<field name="ide_geani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_geani]]></fieldDescription>
+	</field>
+	<field name="ide_gemes" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gemes]]></fieldDescription>
+	</field>
+	<field name="ide_gegro" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gegro]]></fieldDescription>
+	</field>
+	<field name="detalle_gegro" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gegro]]></fieldDescription>
+	</field>
+	<field name="ide_nrrub" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_rubro, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_nrrub" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del rubro para la generacion del respectivo rol, ejemplo DECIMO TERCER SUELDO, DECIMO CUARTO SUELDO, RETENCION A LA FUENTE, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_gttem" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gth_tipo_empleado.]]></fieldDescription>
+	</field>
+	<field name="detalle_gttem" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gttem]]></fieldDescription>
+	</field>
+	<field name="valor_nrdro" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor generado por rubro sea ingreso o egreso para el empleado.]]></fieldDescription>
+	</field>
+	<field name="ide_nrrol" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_rol, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="fecha_nrrol" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de creacion del rol de pagos.]]></fieldDescription>
+	</field>
+	<field name="detalle_gemes" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle del mes, ejemplo: enero, febrero, marzo, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="ide_sucu" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_sucu]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="40" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="7e7bc476-4609-4f24-90ff-a942b67eb93e" x="0" y="0" width="842" height="40"/>
+				<crosstabHeaderCell>
+					<cellContents>
+						<staticText>
+							<reportElement uuid="5e43649c-7c7a-49ca-982a-efb59b89aa1a" style="Crosstab Data Text" x="0" y="0" width="25" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="5" isBold="true"/>
+							</textElement>
+							<text><![CDATA[COD]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="9e6b906a-3b65-47b1-bea4-0fb68f53bab4" style="Crosstab Data Text" x="25" y="0" width="88" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="5" isBold="true"/>
+							</textElement>
+							<text><![CDATA[TIPO EMPLEADO]]></text>
+						</staticText>
+					</cellContents>
+				</crosstabHeaderCell>
+				<rowGroup name="IDE_GTTEM" width="25" totalPosition="End">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{ide_gttem}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="4925e58e-edeb-4619-bf52-e75f2bfe8899" style="Crosstab Data Text" x="0" y="0" width="25" height="10"/>
+								<textElement verticalAlignment="Middle">
+									<font size="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{IDE_GTTEM}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="368bf050-04f8-4e9d-883e-72b48b14bc9f" x="0" y="0" width="113" height="10" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="5"/>
+								</textElement>
+								<text><![CDATA[TOTAL  VALOR TIPO EMPLEADO]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="DETALLE_GTTEM" width="88" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_gttem}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="9d5199a5-4063-4b93-b596-c69c7463701b" style="Crosstab Data Text" x="0" y="0" width="88" height="10"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_GTTEM}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="IDE_GEMES" height="0" totalPosition="End">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{ide_gemes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="413a5646-97ee-41cf-859b-82fb8f92d938" x="0" y="0" width="63" height="10" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="5"/>
+								</textElement>
+								<text><![CDATA[TOTALXANIO]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="DETALLE_GEMES" height="10" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_gemes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="d4f5496f-b140-4b06-8e09-d2fea4943a85" style="Crosstab Data Text" x="0" y="0" width="50" height="10"/>
+								<textElement verticalAlignment="Middle">
+									<font size="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_GEMES}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="VALOR_NRDROMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{valor_nrdro}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="10">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="d934ff00-15ba-48f7-af8f-3847aad0da16" style="Crosstab Data Text" x="0" y="0" width="50" height="10"/>
+							<box leftPadding="0" rightPadding="2"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="5"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_NRDROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="10" rowTotalGroup="IDE_GTTEM">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="743172cb-26c1-4818-844c-d51a4cc8a691" style="Crosstab Data Text" x="0" y="0" width="50" height="10" forecolor="#FFFFFF"/>
+							<box leftPadding="0" rightPadding="2"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="5"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_NRDROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="63" height="10" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="c9437644-e0cd-43f6-8f25-fd65a442d4bf" style="Crosstab Data Text" x="0" y="0" width="63" height="10" forecolor="#FFFFFF"/>
+							<box leftPadding="0" rightPadding="2"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="5"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_NRDROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="63" height="10" rowTotalGroup="IDE_GTTEM" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="bf84fb5f-1677-45dc-97a0-503678693729" style="Crosstab Data Text" x="0" y="0" width="63" height="10" forecolor="#FFFFFF"/>
+							<box leftPadding="0" rightPadding="2"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="5"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_NRDROMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="10" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="10" rowTotalGroup="IDE_GTTEM" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="0" rowTotalGroup="DETALLE_GTTEM">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="63" height="0" rowTotalGroup="DETALLE_GTTEM" columnTotalGroup="IDE_GEMES">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="0" rowTotalGroup="DETALLE_GTTEM" columnTotalGroup="DETALLE_GEMES">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

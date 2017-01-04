@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_liquidacion_haberes" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="8f866e31-aae5-4021-844c-30cf67ba0cb1">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="221"/>
+	<property name="ireport.y" value="245"/>
+	<parameter name="ide_nrrol" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geedp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_liquidacion_elaborado" class="java.lang.String"/>
+	<parameter name="p_liquidacion_revisado" class="java.lang.String"/>
+	<parameter name="p_liquidacion_aprobado" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT EMP.IDE_GTEMP,deta.ide_geedp,
+AREA.DETALLE_GEARE AS AREA,
+DEP.DETALLE_GEDEP AS DEPARTAMENTO,
+OCUPACIONAL.DETALLE_GEGRO AS GRUPO_OCUPACIONAL,
+FUNCIONAL.DETALLE_GECAF AS FUNCIONAL,
+EMP.APELLIDO_PATERNO_GTEMP ||'  '|| EMP.APELLIDO_MATERNO_GTEMP ||'  '|| EMP.PRIMER_NOMBRE_GTEMP ||'  '||EMP.SEGUNDO_NOMBRE_GTEMP AS EMPLEADO,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP AS CEDULA,
+SUCU.NOM_SUCU,par.fecha_liquidacion_geedp,emp.fecha_ingreso_gtemp,par.rmu_geedp,
+a.total_recibir,
+b.total_ingresos,
+c.total_egresos,
+RUB.DETALLE_NRRUB AS RUBROS,
+TIPORUBRO.IDE_NRTIR,(case when TIPORUBRO.IDE_NRTIR=0 then 1 when TIPORUBRO.IDE_NRTIR = 3 then 1 else 0 end ) as grupo_ingres_egre,
+TIPORUBRO.SIGNO_NRTIR,
+(case when TIPORUBRO.IDE_NRTIR = 2 then DETA.VALOR_NRDRO  when TIPORUBRO.IDE_NRTIR= 3  then DETA.VALOR_NRDRO else null end)AS MONTO_izquierda,
+(case when TIPORUBRO.IDE_NRTIR = 0 then DETA.VALOR_NRDRO  when TIPORUBRO.IDE_NRTIR= 1  then DETA.VALOR_NRDRO else null end)AS MONTO_derecha,
+
+detalle_motivo,detalle_accion,
+contrato.detalle_gttco
+FROM NRH_DETALLE_ROL DETA
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DETA.IDE_NRROL
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR PAR ON PAR.IDE_GEEDP=DETA.IDE_GEEDP
+LEFT JOIN GTH_TIPO_CONTRATO CONTRATO ON CONTRATO.IDE_GTTCO=PAR.IDE_GTTCO
+LEFT JOIN GTH_TIPO_EMPLEADO TIPOEMP ON TIPOEMP.IDE_GTTEM=PAR.IDE_GTTEM
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=PAR.IDE_SUCU
+LEFT JOIN NRH_DETALLE_RUBRO DERUBRO ON DERUBRO.IDE_NRDER=DETA.IDE_NRDER
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=PAR.IDE_GEDEP
+LEFT JOIN GEN_GRUPO_OCUPACIONAL OCUPACIONAL ON OCUPACIONAL.IDE_GEGRO=PAR.IDE_GEGRO
+LEFT JOIN GEN_CARGO_FUNCIONAL FUNCIONAL ON FUNCIONAL.IDE_GECAF=PAR.IDE_GECAF
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=PAR.IDE_GTEMP
+LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=PAR.IDE_GEARE
+LEFT JOIN NRH_RUBRO  RUB ON  DERUBRO.IDE_NRRUB=RUB.IDE_NRRUB
+LEFT JOIN NRH_TIPO_RUBRO TIPORUBRO ON TIPORUBRO.IDE_NRTIR=RUB.IDE_NRTIR
+LEFT JOIN GEN_PERIDO_ROL PERIODO ON PERIODO.IDE_GEPRO=ROL.IDE_GEPRO
+LEFT JOIN GEN_MES MES ON MES.IDE_GEMES=PERIODO.IDE_GEMES
+LEFT JOIN GEN_ANIO ANIO ON ANIO.IDE_GEANI=PERIODO.IDE_GEANI
+LEFT JOIN (
+SELECT ide_nrrol,ide_geedp,valor_nrdro as total_recibir from nrh_detalle_rol where ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 131)
+)a ON deta.ide_nrrol=a.ide_nrrol AND deta.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT ide_nrrol,ide_geedp,valor_nrdro as total_ingresos from nrh_detalle_rol where ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 256)
+)b ON deta.ide_nrrol=b.ide_nrrol AND deta.ide_geedp=b.ide_geedp
+LEFT JOIN (
+SELECT ide_nrrol,ide_geedp,valor_nrdro as total_egresos from nrh_detalle_rol where ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 255)
+)c ON deta.ide_nrrol=c.ide_nrrol AND deta.ide_geedp=c.ide_geedp
+left join (
+select a.ide_gemed,a.detalle_gemed as detalle_motivo,c.detalle_geaed as detalle_accion,c.ide_geaed,finiquito_contrato_geaed,
+ide_geded,ide_gtemp
+from gen_motivo_empleado_depa a,gen_accion_motivo_empleado b, gen_accion_empleado_depa c,
+gen_detalle_empleado_departame d
+where a.ide_gemed=b.ide_gemed
+and b.ide_geaed = c.ide_geaed
+and b.ide_geame= d.ide_geame
+and finiquito_contrato_geaed=true
+) d on par.ide_geded=d.ide_geded
+WHERE deta.ide_nrrol = ($P{ide_nrrol})
+and
+deta.ide_geedp in ($P!{ide_geedp})
+and TIPORUBRO.IDE_NRTIR in (
+0,1,2,3
+)
+and  DETA.VALOR_NRDRO !=0
+order by deta.ide_geedp,grupo_ingres_egre desc,TIPORUBRO.IDE_NRTIR desc]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="area" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="grupo_ocupacional" class="java.lang.String"/>
+	<field name="funcional" class="java.lang.String"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="fecha_liquidacion_geedp" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha del fin del contrato del empleado, cuando ya se da por terminado el contrato de la persona con la institucion contratante.]]></fieldDescription>
+	</field>
+	<field name="fecha_ingreso_gtemp" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ingreso_gtemp]]></fieldDescription>
+	</field>
+	<field name="rmu_geedp" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la remuneracion unificada del empleado, que mantiene con su respectivo contrato.]]></fieldDescription>
+	</field>
+	<field name="total_recibir" class="java.math.BigDecimal"/>
+	<field name="total_ingresos" class="java.math.BigDecimal"/>
+	<field name="total_egresos" class="java.math.BigDecimal"/>
+	<field name="rubros" class="java.lang.String"/>
+	<field name="ide_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla nrh_tipo_rubro. Para imprimir las liquidaciones se debe considerar que los rubros que se imprimen son los INGRESOS, EGRESOS, EGRESO INFORMATIVO, INGRESO INFORMATIVO, los informativos nunca s eimprimen, ejemplo: dias vacacion ingreso informativo.]]></fieldDescription>
+	</field>
+	<field name="grupo_ingres_egre" class="java.lang.Integer"/>
+	<field name="signo_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el signo por el cual va a multiplar el rubro si es egreso (-1), ingreso (1)]]></fieldDescription>
+	</field>
+	<field name="monto_izquierda" class="java.math.BigDecimal"/>
+	<field name="monto_derecha" class="java.math.BigDecimal"/>
+	<field name="detalle_motivo" class="java.lang.String"/>
+	<field name="detalle_accion" class="java.lang.String"/>
+	<field name="detalle_gttco" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gttco]]></fieldDescription>
+	</field>
+	<group name="IDE_GEEDP" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{ide_geedp}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="167">
+				<staticText>
+					<reportElement uuid="a3381019-9e23-4fde-9248-51d952f4643a" x="1" y="42" width="78" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Elaborado por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5cf06254-2265-4262-95ed-dba1b31167c5" x="1" y="94" width="78" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Revisado por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="85b6f168-4828-4de2-90b1-f75953035bb5" x="1" y="151" width="78" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Aprobado por:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="2b801cd6-daa7-4412-b056-5a408c1472fd" x="78" y="42" width="143" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{p_liquidacion_elaborado}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="1eab4ece-0fd8-48a3-b780-b9e1c268bf42" x="78" y="94" width="143" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{p_liquidacion_revisado}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="fdc3743d-96a6-4769-bf5f-2ce9ee5c1fdd" x="78" y="151" width="143" height="15"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{p_liquidacion_aprobado}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="2df1ee0d-853f-4fd5-a225-1581fad7d8ce" x="290" y="56" width="120" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.75"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement uuid="ee4d1c97-dcee-454f-8b52-d6a81d5864a7" x="290" y="108" width="120" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.75"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement uuid="f5dbf84a-58bc-4d1f-b764-018c27714c9f" x="290" y="165" width="120" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.75"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement uuid="7fbb0d20-ef86-427a-8076-1fa39ffad18a" x="0" y="0" width="452" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL POR COBRAR:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="c72f252a-0823-4187-8bac-f2507ddfacc6" x="452" y="0" width="100" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_recibir}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="GRUPO_INGRE_EGRE">
+		<groupExpression><![CDATA[$F{grupo_ingres_egre}]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<staticText>
+					<reportElement uuid="6899b8be-bb77-4a7e-81fe-4ec46c09d62c" x="0" y="15" width="396" height="15"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[RUBROS]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="95f2db46-f7ed-42f6-a71a-28268193a0d3" x="0" y="0" width="555" height="15"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{grupo_ingres_egre}==1?"INGRESOS":"EGRESOS"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="107f4255-1828-4be8-b562-fb2074aedef9" x="476" y="0" width="79" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{grupo_ingres_egre}==1?$F{total_ingresos}:$F{total_egresos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="c6b6eba0-3c80-44c4-92cb-8f9caa4c950f" x="210" y="0" width="266" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{grupo_ingres_egre}==1?"TOTAL DE INGRESOS:":"TOTAL DE EGRESOS:"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="69" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="0cb328a9-290d-449c-be5f-ecfc0719ca80" x="1" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="564bbf19-9ca8-48c9-aac6-c6270eb466a4" positionType="Float" x="1" y="52" width="555" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO DE TALENTO HUMANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e1910200-bf0d-4b29-b833-c353994c8262" positionType="Float" x="1" y="37" width="555" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GERENCIA ADMINISTRATIVA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="144" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cff4c590-ac13-4099-85be-7df142389fa1" x="0" y="0" width="94" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3fe5a67e-d962-418d-a091-3ce7964e3a2f" x="94" y="0" width="221" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empleado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="62ee2786-c6a7-4b06-a74f-d793c756fb57" x="0" y="42" width="94" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO FUNCIONAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ad0e66e1-daf1-4e30-be9b-6a3b38c5376b" x="94" y="42" width="221" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funcional}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="dc6ca748-4b17-4c94-85f4-28b0f5b46e5d" x="0" y="56" width="94" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRUPO OCUPACIONAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8226298a-3fc8-42c8-9b83-b8a4ee13ea0c" x="94" y="56" width="221" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grupo_ocupacional}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ce0648aa-3f46-4467-8e97-73edf2317eb4" x="314" y="28" width="71" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MODALIDAD:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bdebb273-2520-439d-b895-409ce5bd8ad6" x="384" y="28" width="171" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gttco}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6e40add8-5d90-4f2d-9d40-e768661fe48c" x="314" y="42" width="71" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e1a0e817-c2ac-40aa-9629-2f6a99d91b01" x="384" y="42" width="171" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_motivo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b0f491c0-4523-4e3c-a362-497c334de867" x="1" y="88" width="77" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INGRESO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="043a70e0-7fbb-4c16-96c5-51a26ef7ed4a" x="78" y="88" width="74" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_ingreso_gtemp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4ea1c8d9-1669-451a-90a1-5fb59bdb1aae" x="1" y="104" width="77" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA SALIDA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="a2c0cea6-e74f-414d-bc29-879ea3342020" x="78" y="103" width="74" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_liquidacion_geedp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ecc59bd1-7e66-4d45-96e1-71daefd4349a" x="1" y="118" width="77" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ULTIMA R.M.U.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="641f7f28-2a94-43e5-9315-0ae8722f09a7" x="78" y="118" width="74" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rmu_geedp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ea8bcf07-116a-4e84-acb3-325f62f50a26" x="384" y="0" width="171" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d3916f7d-ba19-4a5f-8731-8a8b28dc9e52" x="314" y="14" width="71" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUCURSAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="83308caa-6bf6-4a14-8d4c-6fbc718a13b2" x="94" y="14" width="221" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bb538677-98e3-4005-a049-8b500cea9bdd" x="94" y="28" width="221" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{departamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0e655f09-e8e2-41b1-8ea8-b83757409ba2" x="0" y="14" width="94" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AREA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6aa78cb6-7944-4ad6-99b6-c7a02c8ccf57" x="0" y="28" width="94" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4f91a876-4200-45dd-b731-141ee27e8abe" x="314" y="0" width="71" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEDULA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f7c8681c-01a5-4311-804a-404d0b6ae58c" x="385" y="15" width="171" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b4420696-de52-4d0a-915d-bbabc3c5165b" x="0" y="0" width="396" height="12"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rubros}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="92116568-6f65-4fb3-9e00-923484cf6eaa" x="476" y="0" width="79" height="12"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_derecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="34711909-0268-4765-9fcb-ac5f6ae56f6e" x="396" y="0" width="80" height="12"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_izquierda}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="990eb2ea-6dc3-4f0f-8cb5-3ac40e3f76c2" x="432" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pag. "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="b4c55319-82c9-40cf-8100-d071003f4868" x="512" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
