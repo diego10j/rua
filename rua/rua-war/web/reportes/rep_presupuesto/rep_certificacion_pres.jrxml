@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_poa" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Proyecto\\sampu\\WebContent\\reportes\\rep_sistema\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_geani" class="java.lang.Integer"/>
+	<parameter name="ide_prpoa" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.ide_prcer,fecha_prcer,detalle_prcer,nro_certificacion_prcer,valor_certificado_prpoc,codigo_clasificador_prcla,
+descripcion_clasificador_prcla ,detalle_prfup,codigo_prfup
+from pre_certificacion a,pre_poa_certificacion b,pre_poa c,pre_clasificador d,pre_funcion_programa e
+where a.ide_prcer = b.ide_prcer
+and b.ide_prpoa = c.ide_prpoa
+and c.ide_prcla = d.ide_prcla
+and c.ide_prfup = e.ide_prfup
+AND a.ide_prcer = $P{ide_geani}
+order by codigo_clasificador_prcla,codigo_prfup]]>
+	</queryString>
+	<field name="ide_prcer" class="java.lang.Long"/>
+	<field name="fecha_prcer" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_prcer]]></fieldDescription>
+	</field>
+	<field name="detalle_prcer" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_prcer]]></fieldDescription>
+	</field>
+	<field name="nro_certificacion_prcer" class="java.lang.Long">
+		<fieldDescription><![CDATA[nro_certificacion_prcer]]></fieldDescription>
+	</field>
+	<field name="valor_certificado_prpoc" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_certificado_prpoc]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="detalle_prfup" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_prfup]]></fieldDescription>
+	</field>
+	<field name="codigo_prfup" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_prfup]]></fieldDescription>
+	</field>
+	<variable name="suma_financiamiento" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_certificado_prpoc}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e07c312e-6ae2-46ff-8c35-ff115a52222a" x="0" y="0" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="64" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e162608f-10bd-492c-9353-e333c2d862d6" x="11" y="6" width="125" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INDENTIFICACION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="118d8a06-95c9-462f-bdf2-2abfa4eef45d" x="283" y="6" width="47" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d284b9dd-d1c0-44ae-868d-0d50ce494c0c" x="11" y="20" width="533" height="19"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_prcer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7ad91701-2d27-48bc-9415-2010d790d7bc" x="11" y="46" width="39" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d08717ca-d685-4d11-b8f2-ababad1b6d52" x="161" y="46" width="39" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="596c8ec6-2ec6-4ef4-af9a-ff6ebc3ea205" x="494" y="46" width="39" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="985e02e3-aeec-41f8-9f69-ea82cbb4f9cc" x="330" y="6" width="63" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_prcer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="a6142aca-04a9-461e-8568-ebadb8a82b6d" x="97" y="6" width="63" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_certificacion_prcer}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="020a31bb-97c4-4bd0-93e9-8b4c3c0b0b36" mode="Transparent" x="0" y="44" width="555" height="16"/>
+			</rectangle>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="5a1da1e9-c89d-4269-9be4-e8c543411ab8" x="4" y="2" width="118" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}+" - "+$F{codigo_prfup}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="8ff8ec04-0536-4dcb-9adf-b056b07b23f0" x="465" y="2" width="86" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_certificado_prpoc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="51ad19a4-3189-45e8-a61f-91f729c551fd" x="124" y="2" width="340" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a74adc82-bd15-47c3-ab2b-e2f27974e50b" x="430" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="5c0e1b59-fd1b-41e3-8467-b8c9f638aefa" x="510" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement uuid="825a246c-c90f-43da-859c-c02f6d830be3" x="344" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TOTAL: "]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="703029ee-99f0-4794-aeeb-bd96c5257596" x="448" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{suma_financiamiento}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="99774a2a-b994-4ac0-8b66-b13f7c37a8b3" mode="Transparent" x="280" y="3" width="275" height="20"/>
+			</rectangle>
+		</band>
+	</summary>
+</jasperReport>

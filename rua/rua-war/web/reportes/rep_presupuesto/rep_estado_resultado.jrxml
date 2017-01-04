@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_resultado" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prcer" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="jefe_presupuesto" class="java.lang.String"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Proyecto\\sampu\\WebContent\\reportes\\rep_sistema\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_geani" class="java.lang.Integer"/>
+	<parameter name="contador_general" class="java.lang.String"/>
+	<parameter name="cargo_gerente" class="java.lang.String"/>
+	<parameter name="gerente" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.ide_estado_resultado,des_cuenta,valor,orden,codigo,ide_grupo_estado,padre,fecha_inicial,fecha_final,valor_padre,
+(select valor from cont_estado_resultado where ide_estado_resultado = 54) as resultado
+from cont_estado_resultado a,
+( select ide_estado_resultado,des_cuenta as padre,valor as valor_padre from cont_estado_resultado ) b
+where a.ide_grupo_estado = b.ide_estado_resultado
+and valor != 0
+order by orden]]>
+	</queryString>
+	<field name="ide_estado_resultado" class="java.lang.Integer"/>
+	<field name="des_cuenta" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="orden" class="java.lang.Integer"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="ide_grupo_estado" class="java.lang.Integer"/>
+	<field name="padre" class="java.lang.String"/>
+	<field name="fecha_inicial" class="java.sql.Date"/>
+	<field name="fecha_final" class="java.sql.Date"/>
+	<field name="valor_padre" class="java.math.BigDecimal"/>
+	<field name="resultado" class="java.math.BigDecimal"/>
+	<variable name="valor_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_padre}]]></variableExpression>
+	</variable>
+	<variable name="sum_grupo" class="java.math.BigDecimal" resetType="Group" resetGroup="grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<group name="grupo">
+		<groupExpression><![CDATA[$F{ide_grupo_estado}]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<textField>
+					<reportElement uuid="9aa0491c-7b2f-4944-b2cd-06bdaac02395" x="69" y="3" width="443" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{padre}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="31">
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement uuid="dbe26f7b-8bd4-45ef-8419-2f31f93f4f5d" x="455" y="2" width="100" height="20" printWhenGroupChanges="grupo"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{valor_padre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="34547335-e4f9-487e-ab3a-837a8d46f885" x="326" y="2" width="119" height="20"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[     TOTAL:]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="66e55e88-e500-4b75-b6b9-6808ac8543e6" x="0" y="2" width="555" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2bfcc95-de21-47d1-9497-560b305405ea" x="1" y="0" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="41" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b2601dcb-c4b4-402b-adec-c2f239b5627b" x="1" y="21" width="555" height="20"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="3f0578a1-c02a-4386-b67f-59cc6b4c1750" x="59" y="0" width="443" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Desde: "+$F{fecha_inicial}+" al "+$F{fecha_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="172a1421-5849-4d10-936b-df5ead7936c8" x="3" y="21" width="62" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e88eca2-8883-42ea-8d43-a6cc6ea695b3" x="89" y="21" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="07f498ff-571b-4fce-b0b7-ef8efd0ce647" x="452" y="21" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="3" y="0" width="81" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="89" y="0" width="356" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_cuenta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d48f9756-0e6c-43f9-9431-cd3045f74a31" x="456" y="0" width="101" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="130" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d897297e-533a-4ab2-95ad-20166fb61a6b" x="84" y="10" width="361" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO DEL EJERCICIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2ab9115e-499e-4a78-bdfc-cded0f73797b" x="10" y="109" width="159" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CONTADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f544ffe2-a0d8-453b-8b60-534a4d9f0264" x="402" y="110" width="137" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[COORDINADOR FINANCIERO]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="05c4b93f-811a-4970-8b18-f27e7c7be42e" x="383" y="92" width="162" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="c24754f2-d6a2-41b0-a8aa-7f09357ec7e9" x="12" y="90" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="2053d05f-3d9c-4128-ad75-204f3ea14cda" x="373" y="95" width="183" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bcc5bd79-44a6-4ca0-b190-f537d4bb82b7" x="456" y="10" width="99" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resultado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2462f6ae-41f4-41ce-91e8-d4b19f644aeb" x="0" y="2" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="3255595b-d6c1-4a11-85d7-dd9dff4a406d" x="1" y="94" width="176" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{contador_general}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4837e67c-e91d-44d3-8a0d-dbe1fa416282" x="179" y="95" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gerente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="9f1a538d-0bc3-48c9-ab6f-ad53989de948" x="198" y="91" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="330df7a0-f3e4-423c-a84a-c521162126a7" x="179" y="111" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cargo_gerente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
