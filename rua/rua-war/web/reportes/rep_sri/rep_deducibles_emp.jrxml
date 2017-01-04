@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_deducibles_emp" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isSummaryWithPageHeaderAndFooter="true" uuid="0d28c9ef-fba8-400c-a000-a80ff7a9fd04">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_SRIMR" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+EMP.ACTIVO_GTEMP,
+EMP.IDE_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+DED.IDE_SRDED,
+IMP.IDE_SRIMR,
+DED.DETALLE_SRDED,
+DEE.VALOR_DEDUCIBLE_SRDEE,
+DED.FRACCION_BASICA_SRDED,
+DED.OBSERVACIONES_SRDED,
+IMP.DETALLE_SRIMR,
+IMP.FECHA_INICIO_SRIMR,
+IMP.FECHA_FIN_SRIMR,
+SUCU.IDE_SUCU,
+SUCU.NOM_SUCU,
+ARE.IDE_GEARE,
+ARE.DETALLE_GEARE,
+DEP.IDE_GEDEP,
+DEP.DETALLE_GEDEP,
+CAF.DETALLE_GECAF
+from SRI_DEDUCIBLES DED
+
+LEFT JOIN SRI_DEDUCIBLES_EMPLEADO DEE ON DED.IDE_SRDED=DEE.IDE_SRDED
+LEFT JOIN SRI_IMPUESTO_RENTA IMP ON IMP.IDE_SRIMR=DED.IDE_SRIMR
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=DEE.IDE_GTEMP
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GTEMP=EMP.IDE_GTEMP
+LEFT JOIN GEN_CARGO_FUNCIONAL CAF ON CAF.IDE_GECAF=EDP.IDE_GECAF
+LEFT JOIN SIS_SUCURSAL  SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+LEFT JOIN GEN_AREA ARE ON ARE.IDE_GEARE = EDP.IDE_GEARE
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=EDP.IDE_GEDEP
+WHERE EDP.ide_geedp in ($P!{IDE_GTEMP})
+AND IMP.IDE_SRIMR=$P{IDE_SRIMR}
+ORDER BY
+EMP.ACTIVO_GTEMP ASC,
+NOMBRES ASC]]>
+	</queryString>
+	<field name="activo_gtemp" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="ide_srded" class="java.lang.Integer"/>
+	<field name="ide_srimr" class="java.lang.Integer"/>
+	<field name="detalle_srded" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del deducible ejemplo; educacion, vivienda, salud, etc.]]></fieldDescription>
+	</field>
+	<field name="valor_deducible_srdee" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_deducible_srdee]]></fieldDescription>
+	</field>
+	<field name="fraccion_basica_srded" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la fraccion basica por el cual se va a multiplcar la fraccion basica gravada por cada año ejemplo 9720 * 1.3 veces. fraccion basica=1.3]]></fieldDescription>
+	</field>
+	<field name="observaciones_srded" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle del nombre del deducible ejemplo vivienda: comprende Gastos en la construccion, remodelacion, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_srimr" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_srimr]]></fieldDescription>
+	</field>
+	<field name="fecha_inicio_srimr" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_inicio_srimr]]></fieldDescription>
+	</field>
+	<field name="fecha_fin_srimr" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_fin_srimr]]></fieldDescription>
+	</field>
+	<field name="ide_sucu" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_sucu]]></fieldDescription>
+	</field>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="ide_geare" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_area, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_gedep" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gedep]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_gecaf" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del cargo y el puesto en el caso d emonte de piedad, ejemplo: PROFESIONAL 1, TECNICO A , TECNICO B, asi como los puestos: CAJERO, PQ Y PH, etc]]></fieldDescription>
+	</field>
+	<variable name="contador" class="java.lang.Integer" incrementType="Group" incrementGroup="GHJ" calculation="Count">
+		<variableExpression><![CDATA[$V{GHJ_COUNT}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<variable name="variable2" class="java.lang.String"/>
+	<group name="GHJ">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="178f618d-4eae-44c4-88ed-f8618a9a7d0d" x="0" y="0" width="842" height="50"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="11" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5d68c4c4-e39b-4929-bd8b-1e99c9c9e6e2" x="5" y="0" width="36" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[PERIODO :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7dbc30a3-fad1-4789-92b1-9abbc7df47c1" x="41" y="1" width="36" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_srimr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f6781f40-a397-4fab-ae9c-a645bf38cf3f" x="130" y="0" width="53" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INICIO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="0b323237-b780-4718-b1b7-d4549e033623" x="183" y="1" width="63" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_inicio_srimr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4d1816b9-9db7-4057-88ce-aeb82b1273ca" x="258" y="0" width="42" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA FIN:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="759b332a-d10e-4d11-8c4f-14c1038d5118" x="300" y="1" width="46" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_fin_srimr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0e6ff24e-d9e5-45e0-9887-2723c969ee47" x="16" y="0" width="100" height="0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9575d27b-8d75-4f83-96ce-a6adf939bc69" x="719" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="e63dfa38-346f-43e7-8981-4e719334ba24" x="798" y="0" width="40" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="46" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="b593773e-7ffe-4fca-a339-837baf9829d0" x="5" y="0" width="842" height="31"/>
+				<crosstabHeaderCell>
+					<cellContents>
+						<staticText>
+							<reportElement uuid="8daa14ac-4322-4aff-bdda-ab424d3f9784" style="Crosstab Data Text" x="0" y="0" width="20" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<text><![CDATA[COD.]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="d7e1fdc5-cf48-4957-802d-4cf4e9b817ca" style="Crosstab Data Text" x="20" y="0" width="149" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<text><![CDATA[COLABORADOR ]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="9417c8c6-5e44-429f-a6be-37f4244676db" style="Crosstab Data Text" x="169" y="0" width="146" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<text><![CDATA[CARGO]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="4ee903b8-1abd-4bbb-a733-5b984b6c53a8" style="Crosstab Data Text" x="315" y="0" width="68" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<text><![CDATA[SUCURSAL]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="7be33703-7159-4bed-a050-916eecb283c3" style="Crosstab Data Text" x="383" y="0" width="137" height="10"/>
+							<box>
+								<pen lineWidth="0.5"/>
+								<topPen lineWidth="0.5"/>
+								<leftPen lineWidth="0.5"/>
+								<bottomPen lineWidth="0.5"/>
+								<rightPen lineWidth="0.5"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<text><![CDATA[DEPARTAMENTO]]></text>
+						</staticText>
+					</cellContents>
+				</crosstabHeaderCell>
+				<rowGroup name="IDE_GTEMP" width="20" totalPosition="End">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$V{contador}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="2784dd88-c46c-40f8-910e-cba414dd3e6f" style="Crosstab Data Text" x="0" y="0" width="20" height="10" isPrintWhenDetailOverflows="true"/>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{IDE_GTEMP}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="cfe6e47a-8f48-490d-9b0c-59fa490958e9" x="20" y="1" width="160" height="9" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<text><![CDATA[Total Deducibles]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="NOMBRES" width="149" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{nombres}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="2112e784-1bdc-49a2-8c0f-33e1259a2b74" style="Crosstab Data Text" x="0" y="0" width="149" height="10" isPrintWhenDetailOverflows="true"/>
+								<box leftPadding="5"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{NOMBRES}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="CARGO" width="146">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_gecaf}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="471555b6-a8e3-4084-aeb7-1c3b05430d5b" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="10" isPrintWhenDetailOverflows="true"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{CARGO}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="SUCURSAL" width="68">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{nom_sucu}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="a02df929-779e-4004-bd4f-1c6e9f4721ca" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="10" isPrintWhenDetailOverflows="true"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SUCURSAL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="DEPARTAMENTO" width="137">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_gedep}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="ba67423f-628f-466e-b9d9-1d4aae9323f9" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="137" height="10" isPrintWhenDetailOverflows="true"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DEPARTAMENTO}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="DETALLE_SRDED" height="10" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{detalle_srded}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="e8672d8c-4b1d-4949-a2db-609baafbe412" style="Crosstab Data Text" x="0" y="0" width="50" height="10"/>
+								<textElement verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DETALLE_SRDED}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="dca6e7df-c501-4476-9e54-fd7a8737a31f" x="0" y="0" width="60" height="10"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<text><![CDATA[ Deducible Empleado]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="VALOR_DEDUCIBLE_SRDEEMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{valor_deducible_srdee}]]></measureExpression>
+				</measure>
+				<measure name="FRACCION_BASICA_SRDEDMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{fraccion_basica_srded}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="10">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="41da88f9-9b0b-4a1b-8565-fe3647b24df9" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="10" isPrintWhenDetailOverflows="true"/>
+							<box rightPadding="5"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_DEDUCIBLE_SRDEEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" height="10" rowTotalGroup="IDE_GTEMP">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="dd45e9f1-b951-4a90-87a6-cb5db8e6f634" style="Crosstab Data Text" x="0" y="0" width="50" height="10" forecolor="#FFFFFF"/>
+							<box rightPadding="5"/>
+							<textElement textAlignment="Right">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_DEDUCIBLE_SRDEEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="10" columnTotalGroup="DETALLE_SRDED">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="07a915d1-68ed-4c9c-9eef-125cb924798b" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="10" isPrintWhenDetailOverflows="true"/>
+							<box rightPadding="5"/>
+							<textElement textAlignment="Right" verticalAlignment="Top">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_DEDUCIBLE_SRDEEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="10" rowTotalGroup="IDE_GTEMP" columnTotalGroup="DETALLE_SRDED">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement uuid="cfa1ad81-8dd6-4b1e-a07f-4c2e0fd91e2a" style="Crosstab Data Text" x="0" y="0" width="60" height="9" forecolor="#FFFFFF"/>
+							<box rightPadding="5"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font size="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{VALOR_DEDUCIBLE_SRDEEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" height="0" rowTotalGroup="NOMBRES">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="0" rowTotalGroup="NOMBRES" columnTotalGroup="DETALLE_SRDED">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="CARGO">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="CARGO" columnTotalGroup="DETALLE_SRDED">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="SUCURSAL">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="SUCURSAL" columnTotalGroup="DETALLE_SRDED">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="DEPARTAMENTO">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="DEPARTAMENTO" columnTotalGroup="DETALLE_SRDED">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
