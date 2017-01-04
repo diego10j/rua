@@ -115,7 +115,7 @@ public class ServicioRetenciones extends ServicioBase {
         List lis_cabecera_retencion = utilitario.getConexion().consultar(str_sql);
         if (lis_cabecera_retencion.size() > 0) {
             if (lis_cabecera_retencion.get(0) != null && !lis_cabecera_retencion.get(0).toString().isEmpty()) {
-                String num_max = lis_cabecera_retencion.get(0) + "";
+                String num_max = "0" + lis_cabecera_retencion.get(0) + ""; //aumenta cero al inicio por int
                 String num_max_retencion = num_max.substring(0, 6);
                 String aux_num = num_max.substring(6, num_max.length());
                 try {
