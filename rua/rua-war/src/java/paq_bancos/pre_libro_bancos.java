@@ -6,6 +6,7 @@
 package paq_bancos;
 
 import componentes.AsientoContable;
+import framework.aplicacion.Columna;
 import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
@@ -13,8 +14,10 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.ItemMenu;
 import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
@@ -40,7 +43,7 @@ import sistema.aplicacion.Pantalla;
  * @author dfjacome
  */
 public class pre_libro_bancos extends Pantalla {
-    
+
     private final MenuPanel mep_menu = new MenuPanel();
     private AutoCompletar aut_cuentas = new AutoCompletar();
     @EJB
@@ -48,7 +51,7 @@ public class pre_libro_bancos extends Pantalla {
     private final Calendario cal_fecha_inicio = new Calendario();
     private final Calendario cal_fecha_fin = new Calendario();
     private Tabla tab_tabla1;
-    
+
     private AsientoContable asc_asiento = new AsientoContable();
 
     ///Cuentas por Cobrar
@@ -66,7 +69,7 @@ public class pre_libro_bancos extends Pantalla {
     ////CXP
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
-    
+
     private AutoCompletar aut_persona;
     private Calendario cal_fecha_pago;
     private AutoCompletar aut_cuenta;
@@ -80,9 +83,12 @@ public class pre_libro_bancos extends Pantalla {
     private Combo com_tipo_identificacion;
     private AreaTexto ate_observacion;
     private String str_ide_geper;
-    
+
+    private Dialogo dia_modifica = new Dialogo();
+    private Tabla tab_tabla2;
+
     public pre_libro_bancos() {
-        
+
         mep_menu.setMenuPanel("CONSULTAS", "20%");
         mep_menu.agregarItem("Posición Consolidada", "dibujarPosicion", "ui-icon-note");//1
         mep_menu.agregarItem("Consulta de Movimientos", "dibujarMovimienots", "ui-icon-note");//2
@@ -97,7 +103,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Conciliación Automática", "dibujarConciliarA", "ui-icon-calculator");//8
 
         agregarComponente(mep_menu);
-        
+
         aut_cuentas.setId("aut_cuentas");
         aut_cuentas.setAutocompletarContenido();
         aut_cuentas.setDropdown(true);
@@ -107,33 +113,40 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuentas.setValue(null);
         aut_cuentas.setGlobal(true);
         aut_cuentas.setMaxResults(15);
-        
+
         bar_botones.limpiar();
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
         bar_botones.agregarComponente(aut_cuentas);
         bar_botones.agregarSeparador();
         bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
-        
+
         cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         bar_botones.agregarComponente(cal_fecha_inicio);
         bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
-        
+
         cal_fecha_fin.setFechaActual();
         bar_botones.agregarComponente(cal_fecha_fin);
-        
+
         Boton bot_consultar = new Boton();
         bot_consultar.setMetodo("actualizarMovimientos");
         bot_consultar.setIcon("ui-icon-search");
-        
+
         bar_botones.agregarBoton(bot_consultar);
         dibujarPosicion();
-        
+
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
-        
+
+        dia_modifica.setId("dia_modifica");
+        dia_modifica.setHeight("50%");
+        dia_modifica.setWidth("40%");
+        dia_modifica.setTitle("MODIFICAR MOVIMIENTO");
+        dia_modifica.getBot_aceptar().setMetodo("aceptarModificar");
+        agregarComponente(dia_modifica);
+
     }
-    
+
     public void dibujarPosicion() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -156,20 +169,31 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("saldo_disponible").setNombreVisual("SALDO DISPONIBLE");
         tab_tabla1.getColumna("saldo_disponible").alinearDerecha();
         tab_tabla1.getColumna("saldo_disponible").setLongitud(25);
-        tab_tabla1.getColumna("saldo_disponible").setTipoJava("java.lang.Number");       
+        tab_tabla1.getColumna("saldo_disponible").setTipoJava("java.lang.Number");
         tab_tabla1.setHeader("CUENTAS");
         tab_tabla1.dibujar();
-        
+
         if (tab_tabla1.isEmpty() == false) {
             aut_cuentas.setValor(tab_tabla1.getValor("ide_tecba"));
         }
-        
+
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.setMensajeInfo(utilitario.getFechaLarga(utilitario.getFechaActual()));
         mep_menu.dibujar(1, "POSICIÓN CONSOLIDADA", pat_panel);
     }
-    
+
+    public void aceptarModificar() {
+        tab_tabla2.modificar(0);
+        if (tab_tabla2.guardar()) {
+            if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                dia_modifica.cerrar();
+                tab_tabla1.actualizar();
+            }
+        }
+
+    }
+
     public void dibujarMovimienots() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -201,18 +225,67 @@ public class pre_libro_bancos extends Pantalla {
         actualizarSaldos();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
+
+        ItemMenu itemedita = new ItemMenu();
+        itemedita.setValue("Modificar");
+        itemedita.setIcon("ui-icon-pencil");
+        itemedita.setMetodo("abrirModificar");
+        pat_panel.getMenuTabla().getChildren().add(itemedita);
+
+        tab_tabla2 = new Tabla();
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("tes_cab_libr_banc", "ide_teclb", 10);
+        tab_tabla2.setCondicion("ide_teclb=-1");
+        tab_tabla2.setTipoFormulario(true);
+        tab_tabla2.setMostrarNumeroRegistros(false);
+        tab_tabla2.getGrid().setColumns(2);
+        //oculta todas las columnas
+        for (Columna columna : tab_tabla2.getColumnas()) {
+            columna.setVisible(false);
+        }
+        tab_tabla2.getColumna("beneficiari_teclb").setVisible(true);
+        tab_tabla2.getColumna("beneficiari_teclb").setNombreVisual("BENEFICIARIO");
+        tab_tabla2.getColumna("fecha_trans_teclb").setVisible(true);
+        tab_tabla2.getColumna("fecha_trans_teclb").setNombreVisual("FECHA");
+        tab_tabla2.getColumna("ide_tettb").setVisible(true);
+        tab_tabla2.getColumna("ide_tettb").setNombreVisual("TIPO DE TRANSACCIÓN");
+        tab_tabla2.getColumna("ide_tettb").setCombo("tes_tip_tran_banc", "ide_tettb", "nombre_tettb", "");
+        tab_tabla2.getColumna("valor_teclb").setVisible(true);
+        tab_tabla2.getColumna("valor_teclb").setNombreVisual("VALOR");
+        tab_tabla2.getColumna("numero_teclb").setVisible(true);
+        tab_tabla2.getColumna("numero_teclb").setNombreVisual("NUM. DOCUMENTO");
+        tab_tabla2.getColumna("observacion_teclb").setVisible(true);
+        tab_tabla2.getColumna("observacion_teclb").setNombreVisual("OBSERVACIÓN");
+
+        tab_tabla2.dibujar();
+        PanelTabla pt = new PanelTabla();
+        pt.setPanelTabla(tab_tabla2);
+        pt.getMenuTabla().setRendered(false);
+        dia_modifica.getGri_cuerpo().getChildren().clear();
+        dia_modifica.setDialogo(tab_tabla2);
+ 
         mep_menu.dibujar(2, "CONSULTA DE MOVIMIENTOS", pat_panel);
     }
-    
+
+    public void abrirModificar() {
+        if (tab_tabla1.getFilaSeleccionada() != null) {
+            tab_tabla2.setCondicion("ide_teclb=" + tab_tabla1.getFilaSeleccionada().getCampos()[tab_tabla1.getNumeroColumna("ide_teclb")]);
+            tab_tabla2.ejecutarSql();
+            dia_modifica.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar un Moviento", "");
+        }
+    }
+
     public void dibujarCxC() {
         Grid contenido = new Grid();
-        
+
         Grid gri1 = new Grid();
         gri1.setColumns(3);
         gri1.getChildren().add(new Etiqueta("<strong>CLIENTE : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
-        
+
         aut_persona = new AutoCompletar();
         aut_persona.setId("aut_persona");
         aut_persona.setMetodoChange("cargarCuentasporCobrar");
@@ -220,12 +293,12 @@ public class pre_libro_bancos extends Pantalla {
         aut_persona.setAutoCompletar(ser_cliente.getSqlComboClientes());
         aut_persona.setSize(70);
         gri1.getChildren().add(aut_persona);
-        
+
         cal_fecha_pago = new Calendario();
         cal_fecha_pago.setFechaActual();
         gri1.getChildren().add(cal_fecha_pago);
         gri1.getChildren().add(new Etiqueta());
-        
+
         gri1.getChildren().add(new Etiqueta("<strong>A LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
@@ -237,18 +310,18 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setAutocompletarContenido();
         aut_cuenta.setSize(66);
         gri1.getChildren().add(aut_cuenta);
-        
+
         com_tip_tran = new Combo();
         com_tip_tran.setMetodo("cambioTipoTransBanco");
         com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionPositivo());
         gri1.getChildren().add(com_tip_tran);
-        
+
         tex_num = new Texto();
         tex_num.setId("tex_num");
         gri1.getChildren().add(tex_num);
-        
+
         contenido.getChildren().add(gri1);
-        
+
         Grid gri3 = new Grid();
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
@@ -258,7 +331,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.getChildren().add(ate_observacion);
         contenido.getChildren().add(gri3);
         contenido.getChildren().add(new Separator());
-        
+
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);
         Etiqueta eti_valor_cobrar = new Etiqueta();
@@ -282,9 +355,9 @@ public class pre_libro_bancos extends Pantalla {
         gri4.getChildren().add(tex_valor_pagar);
         gri4.getChildren().add(eti_diferencia_cxc);
         gri4.getChildren().add(tex_diferencia);
-        
+
         contenido.getChildren().add(gri4);
-        
+
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
         tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_cuenta.getValor()));
@@ -300,7 +373,7 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.getColumna("total_cccfa").setNombreVisual("TOTAL");
         tab_tabla1.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
         tab_tabla1.getColumna("observacion_cccfa").setNombreVisual("OBSERVACIÓN");
-        
+
         tab_tabla1.setScrollable(true);
         tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 380);
         tab_tabla1.setCampoPrimaria("ide_ccctr");
@@ -308,11 +381,11 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.setTipoSeleccion(true);
         tab_tabla1.setCondicion("ide_ccctr=-1");
         tab_tabla1.setColumnaSuma("saldo_x_pagar");
-        
+
         tab_tabla1.onSelectCheck("seleccionaFacturaCxC");
         tab_tabla1.onUnselectCheck("deseleccionaFacturaCxC");
         tab_tabla1.dibujar();
-        
+
         contenido.getChildren().add(tab_tabla1);
         contenido.getChildren().add(new Separator());
         Boton bot_aceptar = new Boton();
@@ -321,7 +394,7 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(5, "CUENTAS POR COBRAR A CLIENTES", contenido);
     }
-    
+
     public void dibujarCxP() {
         Grid contenido = new Grid();
         Grid gri1 = new Grid();
@@ -329,7 +402,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(new Etiqueta("<strong>PROVEEDOR : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
-        
+
         aut_persona = new AutoCompletar();
         aut_persona.setId("aut_persona");
         aut_persona.setMetodoChange("cargarCuentasporPagar");
@@ -341,11 +414,11 @@ public class pre_libro_bancos extends Pantalla {
         cal_fecha_pago.setFechaActual();
         gri1.getChildren().add(cal_fecha_pago);
         gri1.getChildren().add(new Etiqueta());
-        
+
         gri1.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
-        
+
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setMetodoChange("cambioCuenta");
@@ -362,7 +435,7 @@ public class pre_libro_bancos extends Pantalla {
         tex_num.setId("tex_num");
         gri1.getChildren().add(tex_num);
         contenido.getChildren().add(gri1);
-        
+
         Grid gri3 = new Grid();
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
@@ -372,7 +445,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.getChildren().add(ate_observacion);
         contenido.getChildren().add(gri3);
         contenido.getChildren().add(new Separator());
-        
+
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(4);
         Etiqueta eti_valor_cobrar = new Etiqueta();
@@ -395,9 +468,9 @@ public class pre_libro_bancos extends Pantalla {
         gri4.getChildren().add(tex_valor_pagar);
         gri4.getChildren().add(eti_diferencia);
         gri4.getChildren().add(tex_diferencia);
-        
+
         contenido.getChildren().add(gri4);
-        
+
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
         tab_tabla1.setSql(ser_proveedor.getSqlCuentasPorPagar(aut_cuenta.getValor()));
@@ -431,7 +504,7 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(4, "CUENTAS POR PAGAR A PROVEEDORES", contenido);
     }
-    
+
     public void dibujarAnticipo() {
         Grid contenido = new Grid();
         Grid gri1 = new Grid();
@@ -439,7 +512,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(new Etiqueta("<strong>PROVEEDOR : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
-        
+
         aut_persona = new AutoCompletar();
         aut_persona.setId("aut_persona");
         aut_persona.setAutocompletarContenido();
@@ -450,11 +523,11 @@ public class pre_libro_bancos extends Pantalla {
         cal_fecha_pago.setFechaActual();
         gri1.getChildren().add(cal_fecha_pago);
         gri1.getChildren().add(new Etiqueta());
-        
+
         gri1.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
-        
+
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setMetodoChange("cambioCuenta");
@@ -484,7 +557,7 @@ public class pre_libro_bancos extends Pantalla {
         gri4.getChildren().add(tex_valor_pagar);
         contenido.getChildren().add(new Separator());
         contenido.getChildren().add(gri4);
-        
+
         Grid gri3 = new Grid();
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
@@ -492,7 +565,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
         contenido.getChildren().add(gri3);
-        
+
         contenido.getChildren().add(new Separator());
         Boton bot_aceptar = new Boton();
         bot_aceptar.setValue("Aceptar");
@@ -500,34 +573,34 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(9, "ANTICIPO A PROVEEDORES", contenido);
     }
-    
+
     public void dibujarOtros() {
         str_ide_geper = null;
         Grid contenido = new Grid();
         contenido.setWidth("100%");
         Grid grid2 = new Grid();
         grid2.setColumns(2);
-        
+
         grid2.getChildren().add(new Etiqueta("<strong>IDENTIFICACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         grid2.getChildren().add(new Etiqueta("<strong>TIPO DE IDENTIFICACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        
+
         tex_identificacion = new Texto();
         tex_identificacion.setId("tex_identificacion");
         tex_identificacion.setSize(15);
         tex_identificacion.setMetodoChange("buscarPersona");
         grid2.getChildren().add(tex_identificacion);
-        
+
         com_tipo_identificacion = new Combo();
         com_tipo_identificacion.setId("com_tipo_identificacion");
         com_tipo_identificacion.setCombo(ser_tesoreria.getSqlComboTipoIdentificacion());
         grid2.getChildren().add(com_tipo_identificacion);
-        
+
         Grid grid1 = new Grid();
         grid1.setColumns(3);
         grid1.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         grid1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         grid1.getChildren().add(new Etiqueta());
-        
+
         tex_beneficiario = new Texto();
         tex_beneficiario.setId("tex_beneficiario");
         tex_beneficiario.setSize(70);
@@ -536,11 +609,11 @@ public class pre_libro_bancos extends Pantalla {
         cal_fecha_pago.setFechaActual();
         grid1.getChildren().add(cal_fecha_pago);
         grid1.getChildren().add(new Etiqueta());
-        
+
         grid1.getChildren().add(new Etiqueta("<strong>CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         grid1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         grid1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
-        
+
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setMetodoChange("cambioCuenta");
@@ -549,23 +622,23 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setAutocompletarContenido();
         aut_cuenta.setSize(66);
         grid1.getChildren().add(aut_cuenta);
-        
+
         com_tip_tran = new Combo();
         com_tip_tran.setMetodo("cambioTipoTransBanco");
         com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccion());
         grid1.getChildren().add(com_tip_tran);
-        
+
         tex_num = new Texto();
         tex_num.setId("tex_num");
         grid1.getChildren().add(tex_num);
-        
+
         Grid gri3 = new Grid();
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
-        
+
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(2);
         Etiqueta eti_valor_cobrar = new Etiqueta();
@@ -576,7 +649,7 @@ public class pre_libro_bancos extends Pantalla {
         tex_valor_pagar.setSoloNumeros();
         gri4.getChildren().add(eti_valor_cobrar);
         gri4.getChildren().add(tex_valor_pagar);
-        
+
         contenido.getChildren().add(grid2);
         contenido.getChildren().add(grid1);
         contenido.getChildren().add(gri4);
@@ -588,7 +661,7 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(5, "OTRAS TRANSACCIONES", contenido);
     }
-    
+
     private boolean validarCedula() {
         if (com_tipo_identificacion.getValue() != null && tex_identificacion.getValue() != null) {
             if (com_tipo_identificacion.getValue().toString().equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
@@ -605,7 +678,7 @@ public class pre_libro_bancos extends Pantalla {
         }
         return true;
     }
-    
+
     public void buscarPersona() {
         str_ide_geper = null;
         if (tex_identificacion.getValue() != null) {
@@ -623,11 +696,11 @@ public class pre_libro_bancos extends Pantalla {
             }
         }
     }
-    
+
     public void dibujarTransferencias() {
         Grid contenido = new Grid();
         contenido.setWidth("100%");
-        
+
         Grid gri1 = new Grid();
         gri1.setColumns(1);
         gri1.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
@@ -648,27 +721,27 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta1.setAutocompletarContenido();
         aut_cuenta1.setSize(66);
         gri1.getChildren().add(aut_cuenta1);
-        
+
         cal_fecha_pago = new Calendario();
         cal_fecha_pago.setFechaActual();
         gri1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(cal_fecha_pago);
-        
+
         Grid gri2 = new Grid();
         gri2.setColumns(2);
         gri2.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri2.getChildren().add(new Etiqueta("<strong>NUMERO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        
+
         com_tip_tran = new Combo();
         com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccion());
         com_tip_tran.setValue(utilitario.getVariable("p_tes_tran_transferencia_menos"));
         com_tip_tran.setDisabled(true);
         gri2.getChildren().add(com_tip_tran);
-        
+
         tex_num = new Texto();
         tex_num.setId("tex_num");
         gri2.getChildren().add(tex_num);
-        
+
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(2);
         Etiqueta eti_valor_cobrar = new Etiqueta();
@@ -679,14 +752,14 @@ public class pre_libro_bancos extends Pantalla {
         tex_valor_pagar.setSoloNumeros();
         gri4.getChildren().add(eti_valor_cobrar);
         gri4.getChildren().add(tex_valor_pagar);
-        
+
         Grid gri3 = new Grid();
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
-        
+
         contenido.getChildren().add(gri1);
         contenido.getChildren().add(gri2);
         contenido.getChildren().add(gri4);
@@ -698,7 +771,7 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(6, "TRANSFERENCIAS ENTRE CUENTAS", contenido);
     }
-    
+
     public void dibujarConciliarM() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
@@ -726,17 +799,17 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
-        
+
         Boton bot_conciliar = new Boton();
         bot_conciliar.setValue("Conciliar Selccionados");
         bot_conciliar.setMetodo("conciliarM");
         pat_panel.setFooter(bot_conciliar);
-        
+
         mep_menu.dibujar(7, "CONCILIAZIÓN MANUAL", pat_panel);
     }
-    
+
     public void conciliarM() {
-        
+
         if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().isEmpty() == false) {
             ser_tesoreria.conciliarMovimientos(tab_tabla1.getFilasSeleccionadas());
             utilitario.agregarMensaje("Se Guardo correctamente", tab_tabla1.getFilasSeleccionadas());
@@ -745,9 +818,9 @@ public class pre_libro_bancos extends Pantalla {
         } else {
             utilitario.agregarMensajeError("Debe seleccionar Movimientos", "");
         }
-        
+
     }
-    
+
     private void generarAsiento(String ide_teclb) {
         asc_asiento.nuevoAsiento();
         asc_asiento.dibujar();
@@ -781,7 +854,7 @@ public class pre_libro_bancos extends Pantalla {
                 } catch (Exception e) {
                     asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
                 }
-                
+
             } else {
                 if (aut_persona != null) {
                     asc_asiento.getTab_cabe_asiento().setValor("ide_geper", aut_persona.getValor());
@@ -789,11 +862,11 @@ public class pre_libro_bancos extends Pantalla {
                     asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
                 }
             }
-            
+
             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_tesoreria.getCuentaContable(aut_cuenta.getValor()));
             asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
             asc_asiento.calcularTotal();
-            
+
             if (com_tip_tran.getValue().equals(utilitario.getVariable("p_tes_tran_cheque"))) {
                 asc_asiento.setReporteCheque();
             } else {
@@ -813,9 +886,9 @@ public class pre_libro_bancos extends Pantalla {
             asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
             asc_asiento.calcularTotal();
         }
-        
+
     }
-    
+
     private void actualizarSaldos() {
         if (aut_cuentas.getValor() != null) {
             double saldo_anterior = ser_tesoreria.getSaldoInicialCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha());
@@ -849,12 +922,12 @@ public class pre_libro_bancos extends Pantalla {
             tab_tabla1.getColumna("saldo").setTotal(dou_saldo_actual);
         }
     }
-    
+
     public void actualizarMovimientos(SelectEvent evt) {
         aut_cuentas.onSelect(evt);
         actualizarMovimientos();
     }
-    
+
     public void actualizarMovimientos() {
         if (mep_menu.getOpcion() == 2) {
             if (aut_cuentas.getValor() != null) {
@@ -869,12 +942,12 @@ public class pre_libro_bancos extends Pantalla {
             dibujarMovimienots();
         }
     }
-    
+
     @Override
     public void insertar() {
-        
+
     }
-    
+
     @Override
     public void guardar() {
         if (asc_asiento.isVisible()) {
@@ -884,12 +957,12 @@ public class pre_libro_bancos extends Pantalla {
             }
         }
     }
-    
+
     @Override
     public void eliminar() {
-        
+
     }
-    
+
     @Override
     public void actualizar() {
         actualizarMovimientos();
@@ -912,7 +985,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeError("El Proveedor seleccionado no tiene cuentas por pagar", "");
         }
     }
-    
+
     public void deseleccionaFacturaCxP(UnselectEvent evt) {
         double total = 0;
         for (Fila actual : tab_tabla1.getSeleccionados()) {
@@ -922,7 +995,7 @@ public class pre_libro_bancos extends Pantalla {
         utilitario.addUpdate("tex_valor_pagar");
         calcularDiferenciaCxP();
     }
-    
+
     public void seleccionaFacturaCxP(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
         double total = 0;
@@ -933,7 +1006,7 @@ public class pre_libro_bancos extends Pantalla {
         utilitario.addUpdate("tex_valor_pagar");
         calcularDiferenciaCxP();
     }
-    
+
     public void calcularDiferenciaCxP() {
         double diferencia = 0;
         if (tex_valor_pagar.getValue() != null) {
@@ -954,7 +1027,7 @@ public class pre_libro_bancos extends Pantalla {
         }
         utilitario.addUpdate("tex_diferencia");
     }
-    
+
     public void aceptarCxP() {
         if (validarCxP()) {
             String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
@@ -962,21 +1035,21 @@ public class pre_libro_bancos extends Pantalla {
             dibujarCxP();
         }
     }
-    
+
     public void aceptarOtros() {
         if (validarOtros()) {
             if (str_ide_geper == null) {
                 //Crea el beneficiario
                 str_ide_geper = ser_tesoreria.crearBeneficiario(tex_identificacion.getValue().toString(), com_tipo_identificacion.getValue().toString(), tex_beneficiario.getValue().toString());
             }
-            
+
             String ide_teclb = ser_tesoreria.generarLibroBanco(tex_beneficiario.getValue().toString(), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
             generarAsiento(ide_teclb);
             dibujarOtros();
         }
     }
-    
+
     public void aceptarAnticipo() {
         if (validarAnticipo()) {
             TablaGenerica tab_libro = ser_tesoreria.generarTablaLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
@@ -986,7 +1059,7 @@ public class pre_libro_bancos extends Pantalla {
             generarAsiento(tab_libro.getValor("ide_teclb"));
         }
     }
-    
+
     public void aceptarTransferencia() {
         if (validarTransferencia()) {
             String ide_teclb = ser_tesoreria.generarLibroBancoTransferir(cal_fecha_pago.getFecha(),
@@ -995,9 +1068,9 @@ public class pre_libro_bancos extends Pantalla {
             dibujarTransferencias();
         }
     }
-    
+
     public String cargarPagoCxP(double total_a_pagar) {
-        
+
         List lis_fact_pagadas = new ArrayList();
         for (int i = 0; i < tab_tabla1.getListaFilasSeleccionadas().size(); i++) {
             double monto_sobrante = 0;
@@ -1041,7 +1114,7 @@ public class pre_libro_bancos extends Pantalla {
         }
         String ide_teclb = ser_tesoreria.generarLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
                 com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
-        
+
         for (Object lis_fact_pagada : lis_fact_pagadas) {
             Object[] obj_fila = (Object[]) lis_fact_pagada;
             System.out.println("ide_cpcfa " + obj_fila[0] + " ide_cpctr " + obj_fila[1] + " valor " + obj_fila[2]);
@@ -1069,36 +1142,36 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
             return false;
         }
-        
+
         if (aut_cuenta.getValor() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
             return false;
         }
-        
+
         if (com_tipo_identificacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'TIPO DE IDENTIFICACIÓN' ", "");
             return false;
         }
-        
+
         if (tex_beneficiario.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar un 'BENEFICIARIO' ", "");
             return false;
         }
-        
+
         if (tex_identificacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar la 'IDENTIFICACIÓN' ", "");
             return false;
         }
-        
+
         if (ate_observacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
-        
+
         if (validarCedula() == false) {
             return false;
         }
-        
+
         if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar un 'VALOR'", "");
             return false;
@@ -1113,7 +1186,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1127,17 +1200,17 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA ORIGEN' ", "");
             return false;
         }
-        
+
         if (aut_cuenta1.getValor() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA DESTINO' ", "");
             return false;
         }
-        
+
         if (ate_observacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
-        
+
         if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar un 'VALOR'", "");
             return false;
@@ -1169,22 +1242,22 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
-        
+
         if (aut_cuenta.getValor() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
             return false;
         }
-        
+
         if (aut_persona.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'PROVEEDOR' ", "");
             return false;
         }
-        
+
         if (tab_tabla1.isEmpty()) {
             utilitario.agregarMensajeInfo("El Proveedor seleccionado no tiene Cuentas por Pagar ", "");
             return false;
         }
-        
+
         if (tab_tabla1.getListaFilasSeleccionadas().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un Documento por Pagar", "");
             return false;
@@ -1203,7 +1276,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
-        
+
         if (tex_diferencia.getValue() != null) {
             try {
                 if (Double.parseDouble(tex_diferencia.getValue().toString()) < 0) {
@@ -1215,7 +1288,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
-        
+
         double total = 0;
         for (Fila actual : tab_tabla1.getSeleccionados()) {
             total = Double.parseDouble(actual.getCampos()[5] + "") + total;
@@ -1229,7 +1302,7 @@ public class pre_libro_bancos extends Pantalla {
         }
         return true;
     }
-    
+
     public boolean validarAnticipo() {
         if (com_tip_tran.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
@@ -1239,17 +1312,17 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
-        
+
         if (aut_cuenta.getValor() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
             return false;
         }
-        
+
         if (aut_persona.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'PROVEEDOR' ", "");
             return false;
         }
-        
+
         if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR A PAGAR'", "");
             return false;
@@ -1264,7 +1337,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1285,7 +1358,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeError("El cliente seleccionado no tiene cuentas por cobrar", "");
         }
     }
-    
+
     public void deseleccionaFacturaCxC(UnselectEvent evt) {
         double total = 0;
         for (Fila actual : tab_tabla1.getSeleccionados()) {
@@ -1295,7 +1368,7 @@ public class pre_libro_bancos extends Pantalla {
         utilitario.addUpdate("tex_valor_pagar");
         CalcularDiferenciaCxC();
     }
-    
+
     public void seleccionaFacturaCxC(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
         double total = 0;
@@ -1306,7 +1379,7 @@ public class pre_libro_bancos extends Pantalla {
         utilitario.addUpdate("tex_valor_pagar");
         CalcularDiferenciaCxC();
     }
-    
+
     public void CalcularDiferenciaCxC() {
         double diferencia = 0;
         if (tex_valor_pagar.getValue() != null) {
@@ -1327,7 +1400,7 @@ public class pre_libro_bancos extends Pantalla {
         }
         utilitario.addUpdate("tex_diferencia");
     }
-    
+
     public void aceptarCxC() {
         if (validarCxC()) {
             String ide_teclb = cargarPagoCxC(Double.parseDouble(tex_valor_pagar.getValue().toString()));
@@ -1335,12 +1408,12 @@ public class pre_libro_bancos extends Pantalla {
             dibujarCxC();
         }
     }
-    
+
     public void cambioCuenta(SelectEvent evt) {
         aut_cuenta.onSelect(evt);
         cambioTipoTransBanco();
     }
-    
+
     public void cambioTipoTransBanco() {
 //        CAMBIE
         if (com_tip_tran.getValue() != null) {
@@ -1353,23 +1426,23 @@ public class pre_libro_bancos extends Pantalla {
         }
         utilitario.addUpdate("tex_num,aut_cuenta");
     }
-    
+
     private String cargarPagoCxC(double total_a_pagar) {
-        
+
         List lis_fact_pagadas = new ArrayList();
-        
+
         for (int i = 0; i < tab_tabla1.getListaFilasSeleccionadas().size(); i++) {
             double monto_sobrante = 0;
-            
+
             double valor_x_pagar = Double.parseDouble(utilitario.getFormatoNumero(tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[5]));
             if (valor_x_pagar > 0) {
                 if (total_a_pagar >= valor_x_pagar) {
                     Object fila[] = {tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1], tab_tabla1.getListaFilasSeleccionadas().get(i).getRowKey(), utilitario.getFormatoNumero(tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[5])};
-                    
+
                     lis_fact_pagadas.add(fila);
-                    
+
                     monto_sobrante = total_a_pagar - valor_x_pagar;
-                    
+
                     if (tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1] != null) {
                         //ACTUALIZA LA FACTURA A PAGADA
                         utilitario.getConexion().agregarSqlPantalla(ser_factura.getSqlActualizaPagoFactura(String.valueOf(tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1])));
@@ -1403,10 +1476,10 @@ public class pre_libro_bancos extends Pantalla {
                 }
             }
         }
-        
+
         String ide_teclb = ser_tesoreria.generarLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
                 com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), ate_observacion.getValue().toString(), tex_num.getValue().toString());
-        
+
         for (Object lis_fact_pagada : lis_fact_pagadas) {
             Object[] obj_fila = (Object[]) lis_fact_pagada;
             System.out.println("ide_cccfa " + obj_fila[0] + " ide_ccctr " + obj_fila[1] + "*** valor " + obj_fila[2]);
@@ -1414,11 +1487,11 @@ public class pre_libro_bancos extends Pantalla {
                 //Actualiza cxc_detall_transa libro banco generado
                 utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_teclb=" + ide_teclb + " WHERE ide_cccfa =" + obj_fila[0] + " and ide_teclb is null");
             }
-            
+
             String ide_ccctr = String.valueOf(obj_fila[1]);
             //TRANSACCION EN TESORERIA y TRANSACCION CXC
             TablaGenerica tab_cabecera = utilitario.consultar(ser_factura.getSqlCabeceraFactura(String.valueOf(obj_fila[0])));
-            
+
             ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()));
         }
         return ide_teclb;
@@ -1432,12 +1505,12 @@ public class pre_libro_bancos extends Pantalla {
      * @return
      */
     private boolean validarCxC() {
-        
+
         if (com_tip_tran.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar el 'TIPO DE TRANSACCIÓN'", "");
             return false;
         }
-        
+
         if (ate_observacion.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
@@ -1446,7 +1519,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
             return false;
         }
-        
+
         if (aut_persona.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'CLIENTE' ", "");
             return false;
@@ -1459,7 +1532,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos una Factura", "");
             return false;
         }
-        
+
         if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR A COBRAR'", "");
             return false;
@@ -1474,7 +1547,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
         }
-        
+
         if (tex_diferencia.getValue() != null) {
             try {
                 if (Double.parseDouble(tex_diferencia.getValue().toString()) < 0) {
@@ -1497,18 +1570,18 @@ public class pre_libro_bancos extends Pantalla {
                 if (i == 0) {
                     dou_saldo_menor = dou_saldo_actual;
                 }
-                
+
                 if (dou_saldo_actual < dou_saldo_menor) {
                     dou_saldo_menor = dou_saldo_actual;
                 }
-                
+
             }
             if ((Double.parseDouble(tex_valor_pagar.getValue().toString())) < dou_saldo_menor) {
                 utilitario.agregarMensajeError("El 'VALOR A PAGAR' es menor que el saldo de las Facturas Seleccionadas, el valor mínimo a pagar es: " + utilitario.getFormatoNumero(dou_saldo_menor), "");
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1523,7 +1596,7 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-    
+
     public void cargarMovimientosCuenta(ActionEvent evt) {
         Link lin_ide_tecba = (Link) evt.getComponent();
         tab_tabla1.setFilaActual(lin_ide_tecba.getDir());
@@ -1531,61 +1604,77 @@ public class pre_libro_bancos extends Pantalla {
         utilitario.addUpdate("aut_cuentas");
         dibujarMovimienots();
     }
-    
+
     public AutoCompletar getAut_cuentas() {
         return aut_cuentas;
     }
-    
+
     public void setAut_cuentas(AutoCompletar aut_cuentas) {
         this.aut_cuentas = aut_cuentas;
     }
-    
+
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
-    
+
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
-    
+
     public AutoCompletar getAut_persona() {
         return aut_persona;
     }
-    
+
     public void setAut_persona(AutoCompletar aut_persona) {
         this.aut_persona = aut_persona;
     }
-    
+
     public AutoCompletar getAut_cuenta() {
         return aut_cuenta;
     }
-    
+
     public void setAut_cuenta(AutoCompletar aut_cuenta) {
         this.aut_cuenta = aut_cuenta;
     }
-    
+
     public Tabla getTab_seleccion() {
         return tab_tabla1;
     }
-    
+
     public void setTab_seleccion(Tabla tab_tabla) {
         this.tab_tabla1 = tab_tabla;
     }
-    
+
     public AutoCompletar getAut_cuenta1() {
         return aut_cuenta1;
     }
-    
+
     public void setAut_cuenta1(AutoCompletar aut_cuenta1) {
         this.aut_cuenta1 = aut_cuenta1;
     }
-    
+
     public AsientoContable getAsc_asiento() {
         return asc_asiento;
     }
-    
+
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
     }
-    
+
+    public Dialogo getDia_modifica() {
+        return dia_modifica;
+    }
+
+    public void setDia_modifica(Dialogo dia_modifica) {
+        this.dia_modifica = dia_modifica;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
+    }
+
 }

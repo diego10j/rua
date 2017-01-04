@@ -9,6 +9,7 @@
             <included-library dirs="200">file.reference.API.jar</included-library>
             <included-library dirs="200">file.reference.Cert.jar</included-library>
             <included-library dirs="200">file.reference.Log.jar</included-library>
+            <included-library dirs="200">file.reference.jasperreports-fonts-5.1.0.jar</included-library>
             <included-library dirs="200">file.reference.OCSP.jar</included-library>
             <included-library dirs="200">file.reference.Policy.jar</included-library>
             <included-library dirs="200">file.reference.TSA.jar</included-library>

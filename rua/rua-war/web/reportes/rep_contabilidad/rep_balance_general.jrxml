@@ -2,11 +2,13 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03a399d4-09ad-48d2-bb1f-11a555a12712">
 	<property name="ireport.zoom" value="1.8150000000000004"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="203"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
 	<parameter name="p_patrimonio" class="java.lang.String"/>
-	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["upload//logos//logo_reporte.png"]]></defaultValueExpression>
+	</parameter>
 	<parameter name="empresa" class="java.lang.String"/>
 	<parameter name="sucursal" class="java.lang.String"/>
 	<parameter name="direccion" class="java.lang.String"/>
@@ -288,7 +290,7 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
+				<text><![CDATA[ECÓNOMO INSPECTORIAL]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="37a47b95-a037-4882-8934-ab434fdbbd05" x="335" y="132" width="145" height="15"/>

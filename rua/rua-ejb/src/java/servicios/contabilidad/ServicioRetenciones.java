@@ -47,6 +47,36 @@ public class ServicioRetenciones extends ServicioBase {
                 + "ORDER BY ide_cncre desc";
     }
 
+    public String getSqlConsultaImpuestos(String autorizacion_cncre, String fechaInicio, String fechaFin, String ide_cncim) {
+        if (autorizacion_cncre == null) {
+            autorizacion_cncre = "";
+        }
+        autorizacion_cncre = autorizacion_cncre.replace("null", "").trim();
+        if (autorizacion_cncre.isEmpty() == false) {
+            autorizacion_cncre = " and autorizacion_cncre='" + autorizacion_cncre + "' ";
+        }
+
+        if (ide_cncim == null) {
+            ide_cncim = "";
+        }
+        ide_cncim = ide_cncim.replace("null", "").trim();
+        if (ide_cncim.isEmpty() == false) {
+            ide_cncim = " and ide_cncim=" + ide_cncim + " ";
+        }
+
+        return "select a.ide_cndre, fecha_emisi_cncre,numero_cncre,nom_geper,numero_cpcfa,base_cndre,porcentaje_cndre,valor_cndre from con_detall_retenc a\n"
+                + "inner join con_cabece_retenc b  on a.ide_cncre=b.ide_cncre\n"
+                + "left join cxp_cabece_factur c on b.ide_cncre=c.ide_cncre\n"
+                + "left join gen_persona d on c.ide_geper=d.ide_geper\n"
+                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
+                + "and es_venta_cncre = false\n"
+                + autorizacion_cncre
+                + ide_cncim
+                + "order by fecha_emisi_cncre";
+
+    }
+
     public String getSqlRetencionesAnuladas(String autorizacion_cncre, String fechaInicio, String fechaFin) {
         if (autorizacion_cncre == null) {
             autorizacion_cncre = "";

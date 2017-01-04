@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_retencion_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a5e0ed11-c805-4c4e-915c-9dcbe7456ec6">
 	<property name="ireport.zoom" value="1.2100000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="71"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_cncre" class="java.lang.Long"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/Inspectoria"]]></defaultValueExpression>
@@ -47,42 +47,42 @@ where cf.ide_cncre=$P{ide_cncre}  and cr.ide_cncre=$P{ide_cncre}]]>
 	<pageHeader>
 		<band height="181" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4e3c41e6-9ef6-4d7c-ad68-d0c167c47253" x="80" y="77" width="164" height="14"/>
-				<textElement>
+				<reportElement uuid="4e3c41e6-9ef6-4d7c-ad68-d0c167c47253" x="80" y="79" width="164" height="14"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4a6bff25-5451-4bdf-ab3d-0a457714e7fb" x="79" y="91" width="282" height="14"/>
+				<reportElement uuid="4a6bff25-5451-4bdf-ab3d-0a457714e7fb" x="79" y="95" width="282" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="a3325a98-67b1-4682-9cc5-4053e07917b4" x="434" y="60" width="100" height="14"/>
+				<reportElement uuid="a3325a98-67b1-4682-9cc5-4053e07917b4" x="434" y="62" width="100" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_emisi_cncre}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c363bfbb-30f6-46d1-81a5-314ecb65be63" x="470" y="77" width="100" height="14"/>
+				<reportElement uuid="c363bfbb-30f6-46d1-81a5-314ecb65be63" x="470" y="78" width="100" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_cntdo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f2372310-c8ef-4b38-a4f5-8a1812819d2a" x="470" y="92" width="100" height="14"/>
+				<reportElement uuid="f2372310-c8ef-4b38-a4f5-8a1812819d2a" x="470" y="95" width="100" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="25d90b73-99a8-440f-a69b-a36a4c80af70" x="132" y="60" width="228" height="14"/>
+				<reportElement uuid="25d90b73-99a8-440f-a69b-a36a4c80af70" x="132" y="62" width="228" height="14"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
