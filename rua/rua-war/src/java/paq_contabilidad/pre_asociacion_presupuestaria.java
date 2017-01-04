@@ -1,7 +1,8 @@
 package paq_contabilidad;
 
 import javax.ejb.EJB;
-
+import java.util.HashMap;
+import java.util.Map;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Arbol;
 import framework.componentes.Boton;
@@ -14,7 +15,8 @@ import framework.componentes.Tabla;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
-
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 public class pre_asociacion_presupuestaria extends Pantalla {
 
 	private Tabla tab_asociacion_presupuestaria =new Tabla();
@@ -23,7 +25,11 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 	private Combo com_anio =new Combo();
 	private SeleccionTabla set_clasificador=new SeleccionTabla();
 	private SeleccionTabla set_catalogo=new SeleccionTabla();
-
+	///reporte
+	private Map p_parametros = new HashMap();
+	private Reporte rep_reporte = new Reporte();
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+	private Map map_parametros = new HashMap();
 
 	@EJB
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
@@ -34,6 +40,16 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 
 	public pre_asociacion_presupuestaria (){
 		
+            
+            		///reporte
+		rep_reporte.setId("rep_reporte"); //id
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+		agregarComponente(rep_reporte);//agrega el componente a la pantalla
+		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+		self_reporte.setId("self_reporte"); //id
+		agregarComponente(self_reporte);
+                
+                
 		tab_asociacion_presupuestaria.setId("tab_asociacion_presupuestaria");
 		tab_asociacion_presupuestaria.setHeader("ASOCIACION PRESUPUESTARIA");
 		tab_asociacion_presupuestaria.setTabla("pre_asociacion_presupuestaria", "ide_prasp", 1);
@@ -147,6 +163,29 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 			tab_vigente.ejecutarSql();
 	
 		}
+//reporte
+public void abrirListaReportes() {
+	// TODO Auto-generated method stub
+	rep_reporte.dibujar();
+}
+public void aceptarReporte(){
+	if(rep_reporte.getReporteSelecionado().equals("Asociacion Presupuestaria"));{
+		if (rep_reporte.isVisible()){
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+			
+		self_reporte.dibujar();
+		
+		}
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+	}
+		
+}        
 	@Override
 	public void insertar() {
 		// TODO Auto-generated method stub
@@ -212,5 +251,21 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 	public void setSet_catalogo(SeleccionTabla set_catalogo) {
 		this.set_catalogo = set_catalogo;
 	}
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSelf_reporte() {
+        return self_reporte;
+    }
+
+    public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
+        this.self_reporte = self_reporte;
+    }
 
 }
