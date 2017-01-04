@@ -1,5 +1,6 @@
 package paq_presupuesto;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.event.NodeSelectEvent;
@@ -12,6 +13,8 @@ import framework.componentes.Arbol;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 
@@ -25,6 +28,11 @@ public class pre_funcion_programa extends Pantalla {
 	private Arbol arb_funcion_programa=new Arbol();
 	private SeleccionTabla set_sub_actividad=new SeleccionTabla();
 	public static String par_sub_activdad;
+        	///reporte
+	private Map p_parametros = new HashMap();
+	private Reporte rep_reporte = new Reporte();
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+	private Map map_parametros = new HashMap();        
 /*
 	public static String par_sec_proyecto;
 	public static String par_sec_programa;
@@ -39,7 +47,16 @@ public class pre_funcion_programa extends Pantalla {
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
 	
 	public pre_funcion_programa (){
-            
+ 
+                          		///reporte
+		rep_reporte.setId("rep_reporte"); //id
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+		agregarComponente(rep_reporte);//agrega el componente a la pantalla
+		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+		self_reporte.setId("self_reporte"); //id
+		agregarComponente(self_reporte);
+                
+                
 		par_sub_activdad=utilitario.getVariable("p_sub_actividad");
 /*
 		par_sec_proyecto=utilitario.getVariable("p_modulo_secuencialproyecto");
@@ -342,7 +359,31 @@ public void actualizaCodigo(){
 		tab_vigente.guardar();
 		guardarPantalla();
 	}
-	
+
+//reporte
+public void abrirListaReportes() {
+	// TODO Auto-generated method stub
+	rep_reporte.dibujar();
+}
+public void aceptarReporte(){
+	if(rep_reporte.getReporteSelecionado().equals("Funcion Programa"));{
+		if (rep_reporte.isVisible()){
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
+
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+			
+		self_reporte.dibujar();
+		
+		}
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+	}
+		
+}	
 	public Tabla getTab_funcion_programa() {
 		return tab_funcion_programa;
 	}
@@ -379,6 +420,22 @@ public void actualizaCodigo(){
 	public void setSet_sub_actividad(SeleccionTabla set_sub_actividad) {
 		this.set_sub_actividad = set_sub_actividad;
 	}
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSelf_reporte() {
+        return self_reporte;
+    }
+
+    public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
+        this.self_reporte = self_reporte;
+    }
 
 
 

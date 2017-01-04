@@ -1,7 +1,8 @@
 package paq_presupuesto;
 
 import javax.ejb.EJB;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.primefaces.event.NodeSelectEvent;
 
 import framework.aplicacion.TablaGenerica;
@@ -16,7 +17,8 @@ import framework.componentes.Tabla;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
-
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 public class pre_programa extends Pantalla {
 	
 	private Tabla tab_programa=new Tabla();
@@ -24,6 +26,12 @@ public class pre_programa extends Pantalla {
 	private Arbol arb_arbol=new Arbol();
 	private SeleccionTabla set_clasificador=new SeleccionTabla();
 	private Combo com_anio=new Combo();
+        
+        	///reporte
+	private Map p_parametros = new HashMap();
+	private Reporte rep_reporte = new Reporte();
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+	private Map map_parametros = new HashMap();
 
 	@EJB
 	private ServicioPresupuesto ser_presupuesto = (ServicioPresupuesto ) utilitario.instanciarEJB(ServicioPresupuesto.class);
@@ -33,6 +41,14 @@ public class pre_programa extends Pantalla {
 
 	public pre_programa(){
 		
+                		///reporte
+		rep_reporte.setId("rep_reporte"); //id
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+		agregarComponente(rep_reporte);//agrega el componente a la pantalla
+		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+		self_reporte.setId("self_reporte"); //id
+		agregarComponente(self_reporte);
+            
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
 		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
@@ -43,8 +59,10 @@ public class pre_programa extends Pantalla {
 		tab_programa.setTabla("pre_programa", "ide_prpro", 1);
 		//tab_programa.getColumna("ide_prfup").setVisible(false);
                 tab_programa.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "");
-		tab_programa.getColumna("ide_prcla").setAutoCompletar();
+		tab_programa.getColumna("ide_prfup").setAutoCompletar();
 		tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
+                tab_programa.getColumna("ide_prcla").setAutoCompletar();
+
 		tab_programa.getColumna("ide_prcla").setLectura(true);
 		tab_programa.getColumna("activo_prpro").setValorDefecto("true");
 		tab_programa.agregarRelacion(tab_vigente);
@@ -153,7 +171,30 @@ public class pre_programa extends Pantalla {
 		}
 	}
 
+//reporte
+public void abrirListaReportes() {
+	// TODO Auto-generated method stub
+	rep_reporte.dibujar();
+}
+public void aceptarReporte(){
+	if(rep_reporte.getReporteSelecionado().equals("Programas Presupuestarios"));{
+		if (rep_reporte.isVisible()){
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
 
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+			
+		self_reporte.dibujar();
+		
+		}
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+	}
+		
+}
 
 	@Override
 	public void insertar() {
@@ -230,6 +271,22 @@ public class pre_programa extends Pantalla {
 	public void setSet_clasificador(SeleccionTabla set_clasificador) {
 		this.set_clasificador = set_clasificador;
 	}
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSelf_reporte() {
+        return self_reporte;
+    }
+
+    public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
+        this.self_reporte = self_reporte;
+    }
 	
 
 }

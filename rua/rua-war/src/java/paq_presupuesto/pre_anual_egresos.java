@@ -59,6 +59,8 @@ public class pre_anual_egresos extends Pantalla {
 		tab_anual.getColumna("ide_prpoa").setCombo(ser_presupuesto.getPoaNombre("select ide_geani from gen_anio"));
 		tab_anual.getColumna("ide_prpoa").setAutoCompletar();
 		tab_anual.getColumna("ide_prpoa").setLectura(true);
+                tab_anual.getColumna("ide_prpoa").setVisible(false);
+
 		tab_anual.getColumna("valor_reformado_h_pranu").setEtiqueta();
 		tab_anual.getColumna("valor_reformado_h_pranu").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
 		tab_anual.getColumna("valor_reformado_h_pranu").setValorDefecto("0.00");
