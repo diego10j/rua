@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_conyuge" language="groovy" pageWidth="570" pageHeight="842" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="404a4760-5960-4a19-8718-2e77d89e9c3b">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+CON.IDE_GTCON,
+CON.APELLIDO_PATERNO_GTCON  ||'  '||
+CON.APELLIDO_MATERNO_GTCON  ||'  '||
+CON.PRIMER_NOMBRE_GTCON  ||'  '||
+CON.SEGUNDO_NOMBRE_GTCON AS NOMBRES_CONYUGE,
+TD.DETALLE_GTTDI AS TIPO_DOCUMENTO_IDENTIDAD,
+CON.DOCUMENTO_IDENTIDAD_GTCON AS NUMERO_IDENTIDAD,
+NAC.DETALLE_GTNAC AS NACIONALIDAD,
+con.LUGAR_TRABAJO_GTCON AS LUGAR_TRABAJO,
+CAR.DETALLE_GTCAR AS CARGO
+FROM GTH_CONYUGE CON
+LEFT JOIN GTH_TIPO_DOCUMENTO_IDENTIDAD TD ON TD.IDE_GTTDI=CON.IDE_GTTDI
+LEFT JOIN GTH_NACIONALIDAD NAC ON NAC.IDE_GTNAC=CON.IDE_GTNAC
+LEFT JOIN GTH_CARGO CAR ON CAR.IDE_GTCAR=CON.IDE_GTCAR
+
+WHERE  CON.IDE_GTEMP=$P{IDE_GTEMP} AND CON.ACTIVO_GTCON=1]]>
+	</queryString>
+	<field name="IDE_GTCON" class="java.lang.Long"/>
+	<field name="NOMBRES_CONYUGE" class="java.lang.String"/>
+	<field name="TIPO_DOCUMENTO_IDENTIDAD" class="java.lang.String"/>
+	<field name="NUMERO_IDENTIDAD" class="java.lang.String"/>
+	<field name="NACIONALIDAD" class="java.lang.String"/>
+	<field name="LUGAR_TRABAJO" class="java.lang.String"/>
+	<field name="CARGO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="d68951ce-d52f-454f-93fd-d6a4f081bd33" positionType="Float" x="505" y="0" width="65" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TELEFONOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab141f4f-5004-4882-a1f7-56a635bb1ca8" positionType="Float" x="140" y="0" width="60" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ T. DOCUMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="346dca0c-4c27-442d-ad1b-6a6a3ee0813f" positionType="Float" x="0" y="0" width="140" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE COMPLETO CONYUGE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="19ac31fd-4321-4e05-88d4-81c3e9faf857" positionType="Float" x="200" y="0" width="55" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NO.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d74e1908-19d7-48a6-a3af-ca71175fc76e" positionType="Float" x="440" y="0" width="65" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO CONYUGE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2fe0bdf7-ca36-4536-8bb5-8f6bfe5daa4d" positionType="Float" x="320" y="0" width="120" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LUGAR DE TRABAJO (CONYUGUE)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c162fb55-98b8-45cf-bba8-d99455622918" positionType="Float" x="255" y="0" width="65" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NACIONALIDAD]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="aaf65922-0cb9-4c7a-bffe-622a16a014ea" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="140" height="15" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRES_CONYUGE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b3161b7f-3ab7-45dd-bba4-120ed666a022" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="140" y="0" width="60" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO_DOCUMENTO_IDENTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5508fd7c-831a-4c98-be90-0ec810cd8b72" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="200" y="0" width="55" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NUMERO_IDENTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="586663c3-92bd-4033-84d3-1ec0db789441" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="255" y="0" width="65" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NACIONALIDAD}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b7b5c174-947e-4e30-85c0-56bfad237ecf" positionType="Float" stretchType="RelativeToBandHeight" x="320" y="0" width="120" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUGAR_TRABAJO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1dff274a-5701-4991-869a-9425ab0572ba" positionType="Float" stretchType="RelativeToBandHeight" x="440" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="1149d358-cdd0-4505-8550-b8a50728fb2b" stretchType="RelativeToBandHeight" x="505" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="IDE_GTCON">
+					<subreportParameterExpression><![CDATA[$F{IDE_GTCON}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_gestion/rep_ficha_empleado/sub_rep_telefono_conyuge.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

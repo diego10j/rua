@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_conyuges" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9982bbb-e5c6-4527-92e5-572e33e2674b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+IDE_GTCON,
+CON.APELLIDO_PATERNO_GTCON  ||'  '||
+CON.APELLIDO_MATERNO_GTCON  ||'  '||
+CON.PRIMER_NOMBRE_GTCON  ||'  '||
+CON.SEGUNDO_NOMBRE_GTCON AS NOMBRES_CONYUGE,
+TD.DETALLE_GTTDI AS TIPO_DOCUMENTO_IDENTIDAD,
+CON.DOCUMENTO_IDENTIDAD_GTCON AS NUMERO_IDENTIDAD,
+NAC.DETALLE_GTNAC AS NACIONALIDAD,
+con.LUGAR_TRABAJO_GTCON AS LUGAR_TRABAJO,
+CAR.DETALLE_GTCAR AS CARGO
+FROM GTH_CONYUGE CON
+LEFT JOIN GTH_TIPO_DOCUMENTO_IDENTIDAD TD ON TD.IDE_GTTDI=CON.IDE_GTTDI
+LEFT JOIN GTH_NACIONALIDAD NAC ON NAC.IDE_GTNAC=CON.IDE_GTNAC
+LEFT JOIN GTH_CARGO CAR ON CAR.IDE_GTCAR=CON.IDE_GTCAR
+WHERE  CON.IDE_GTEMP=$P{IDE_GTEMP} AND CON.ACTIVO_GTCON=1]]>
+	</queryString>
+	<field name="IDE_GTCON" class="java.lang.Long"/>
+	<field name="NOMBRES_CONYUGE" class="java.lang.String"/>
+	<field name="TIPO_DOCUMENTO_IDENTIDAD" class="java.lang.String"/>
+	<field name="NUMERO_IDENTIDAD" class="java.lang.String"/>
+	<field name="NACIONALIDAD" class="java.lang.String"/>
+	<field name="LUGAR_TRABAJO" class="java.lang.String"/>
+	<field name="CARGO" class="java.lang.String"/>
+	<group name="IDE_GETCON">
+		<groupExpression><![CDATA[$F{IDE_GTCON}]]></groupExpression>
+		<groupHeader>
+			<band height="50"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="830e3546-acd0-4b37-ab20-e4a19d9d4d9e" x="1" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[NOMBRES_CONYUGE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34d330f8-04f0-480d-bce1-a54695de6c1c" x="100" y="0" width="69" height="20"/>
+				<textElement/>
+				<text><![CDATA[TIPO_DOCUMENTO_IDENTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dd90b970-ffa3-4b7c-9e87-b6139c521d68" x="168" y="0" width="69" height="20"/>
+				<textElement/>
+				<text><![CDATA[NUMERO_IDENTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cae21c8d-1bea-4e17-b1a8-90c0a7356c47" x="236" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[NACIONALIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bbe195a2-5cfd-4263-b705-44cd1c48f857" x="336" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[LUGAR_TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="866b775b-06ed-43be-b0ea-ee2b4288ab44" x="438" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="73" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ad9a3ef9-ff47-4805-b69c-13f3e97c38ad" x="2" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NOMBRES_CONYUGE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2fbff21a-3c7a-420d-8048-b399411a1c49" x="101" y="9" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TIPO_DOCUMENTO_IDENTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6420430a-847f-48d6-b6e6-aacbce280acf" x="169" y="11" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NUMERO_IDENTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4cb29716-d9d8-4996-ad52-f50f4068284f" x="237" y="13" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NACIONALIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7aca9d01-e8a2-4c62-8b79-36be683d10a3" x="337" y="16" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LUGAR_TRABAJO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7b9da8ef-9d30-4c54-af00-4aff65f4d32c" x="439" y="21" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

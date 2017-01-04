@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_negocio_propio" language="groovy" pageWidth="570" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0b0433d4-dc6e-4ba8-a390-b6d1b3c47dcf">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="204"/>
+	<property name="ireport.y" value="6"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+GNE.IDE_GTEMP AS IDE_GTEMP,
+GNE.IDE_GTNEE AS IDE_GTNEE,
+GNE.PROPIO_GTNEE AS NEGOCIO_PROPIO,
+GDI.DETALLE_GTDIR AS DIRECCION,
+gtdp1.detalle_gedip as Ciudad,
+GNE.NOMBRE_COMERCIAL_GTNEE AS NOMBRE_COMERCIAL,
+GTA.DETALLE_GTTAE AS ACTIVIDAD,
+GNE.RUC_GTNEE AS NUMERO_RUC,
+GNE.FECHA_VIGENCIA_RUC_GTNEE AS VIGENTE_HASTA,
+GRU.DETALLE_GTACR AS ACTIVIDAD_RUC,
+GNE.TOTAL_VENTA_GTNEE AS Ventas,
+gne.TOTAL_GASTO_GTNEE AS GASTO,
+GNE.TOTAL_UTILIDAD_GTNEE AS UTILIDAD,
+GNE.SOCIO_GTNEE AS SOCIO
+from GTH_NEGOCIO_EMPLEADO GNE
+LEFT JOIN  GTH_EMPLEADO Gem ON Gem.IDE_GTemp=GNE.IDE_GTEMP
+LEFT JOIN GTH_DIRECCION GDI ON GDI.IDE_GTNEE=GNE.IDE_GTNEE
+LEFT JOIN GEN_DIVISION_POLITICA GDP ON GDP.IDE_GEDIP=GDI.IDE_GEDIP
+left join GEN_TIPO_DIVISION_POLITICA gtdp on gtdp.ide_getdp=gdp.ide_getdp and
+gtdp.nivel_getdp IN(5)
+left join GEN_DIVISION_POLITICA gtdp1 on gtdp1.ide_gedip=gdp.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp2 on gtdp2.ide_gedip=gtdp1.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp3 on gtdp3.ide_gedip=gtdp2.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp4 on gtdp4.ide_gedip=gtdp3.gen_ide_gedip
+LEFT JOIN  GTH_TIPO_ACTIVIDAD_ECONOMICA GTA ON GTA.IDE_GTTAE=GNE.IDE_GTTAE
+LEFT JOIN  GTH_ACTIVIDAD_RUC GRU ON GRU.IDE_GTACR=GNE.IDE_GTACR
+where GNE.IDE_GTEMP=$P{IDE_GTEMP} and GNE.ACTIVO_GTNEE=true]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtnee" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gtnee]]></fieldDescription>
+	</field>
+	<field name="negocio_propio" class="java.lang.Integer"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<field name="nombre_comercial" class="java.lang.String"/>
+	<field name="actividad" class="java.lang.String"/>
+	<field name="numero_ruc" class="java.lang.String"/>
+	<field name="vigente_hasta" class="java.sql.Date"/>
+	<field name="actividad_ruc" class="java.lang.String"/>
+	<field name="ventas" class="java.math.BigDecimal"/>
+	<field name="gasto" class="java.math.BigDecimal"/>
+	<field name="utilidad" class="java.math.BigDecimal"/>
+	<field name="socio" class="java.lang.Integer"/>
+	<detail>
+		<band height="200" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f0ae484a-75eb-4208-9cba-d992d015d0d1" stretchType="RelativeToBandHeight" x="0" y="20" width="140" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{negocio_propio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8a7f7e5a-2eca-498c-95d1-e458c79457a8" x="0" y="0" width="140" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Negocio Propio]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="54a5c5f5-2339-4d94-a807-b557aaa3b8e9" stretchType="RelativeToBandHeight" x="140" y="20" width="180" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f8ceaee0-2087-4a5c-b4ee-a93c7f3f1601" x="140" y="0" width="180" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1435198e-7a07-4753-a967-39e0955b9704" stretchType="RelativeToBandHeight" x="320" y="20" width="180" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6f1870b5-54f5-461c-83d2-6264f5113a3b" x="320" y="0" width="180" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ciudad]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e1b7aa5f-ca89-458b-8698-f76c6bba68b1" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="55" width="285" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_comercial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b96a2edc-a1ff-4bcf-9967-f567c99e2cdc" positionType="Float" x="0" y="35" width="285" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Comercial]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="78992e10-73fe-42f9-bdd2-f02de8ff406e" positionType="Float" stretchType="RelativeToBandHeight" x="285" y="55" width="285" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actividad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="94ab4f53-7719-4f19-8fcd-d17c84eacd27" positionType="Float" x="285" y="35" width="285" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Actividad]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a9da379d-436f-4eb8-9922-f3ca7a1105b9" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="90" width="160" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_ruc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e28334a8-1c49-4dcc-b368-78ad00b43e69" positionType="Float" x="0" y="70" width="160" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC. No.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="7c474d2b-c64f-46f6-8150-814cc47f1119" positionType="Float" stretchType="RelativeToBandHeight" x="160" y="90" width="160" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vigente_hasta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="772c1786-ee87-4cdf-9ff2-ed69efc77b0c" positionType="Float" x="160" y="70" width="160" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vigencia hasta]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e76be32a-acc7-41fa-975c-f410635b0ee9" positionType="Float" stretchType="RelativeToBandHeight" x="320" y="90" width="250" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actividad_ruc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a94dde60-dc1b-4a18-b7e1-1c7136fa7af9" positionType="Float" x="320" y="70" width="250" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Actividad Establecida en el RUC]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7e18f17a-5133-42ea-b56e-b365e5af417c" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="125" width="140" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ventas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d18426e9-c85a-462e-a7f9-f0a1ded24c0b" positionType="Float" x="0" y="105" width="140" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ventas]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="74f78e2e-e3f6-43f5-b365-0d7d1f94cd8c" positionType="Float" stretchType="RelativeToBandHeight" x="140" y="125" width="145" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gasto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3a2f8054-91a0-4b1e-9760-b80592c7b9e3" positionType="Float" x="140" y="105" width="145" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gasto]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="00645f03-8928-4ea5-91c7-3c2503cfebe8" positionType="Float" stretchType="RelativeToBandHeight" x="285" y="125" width="140" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{utilidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7ad6b9b5-4dec-4991-a5f9-db28c4ce314d" positionType="Float" x="285" y="105" width="140" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Utilidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa88c1b3-352b-4143-9a7f-8eb763e0e354" positionType="Float" stretchType="RelativeToBandHeight" x="425" y="105" width="50" height="35" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOCIO ==>]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4c8e374e-6f88-4245-b11c-56949645f202" positionType="Float" stretchType="RelativeToBandHeight" x="475" y="105" width="25" height="35" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Si]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="33968029-2917-4ba9-bdd3-d2da72a0b89c" positionType="Float" stretchType="RelativeToBandHeight" x="524" y="105" width="22" height="35" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<image vAlign="Middle">
+				<reportElement uuid="9678cc3b-d448-449e-83ad-ad9368374b98" positionType="Float" stretchType="RelativeToBandHeight" x="545" y="105" width="25" height="35" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{socio}==0)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<imageExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\rep_ficha_empleado\\visto.gif"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement uuid="84b3da65-389b-45c6-bca8-07dc52111b04" positionType="Float" stretchType="RelativeToBandHeight" x="499" y="105" width="25" height="35" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{socio}==1)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<imageExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\rep_ficha_empleado\\visto.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="6b3ce6d4-17ed-497d-a002-e102fd7d013c" x="500" y="0" width="70" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefonos]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="67b3e941-9d78-4966-a82f-0d58bc58664e" positionType="Float" stretchType="RelativeToBandHeight" x="500" y="20" width="70" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="IDE_GTEMP">
+					<subreportParameterExpression><![CDATA[$F{ide_gtemp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GTNEE">
+					<subreportParameterExpression><![CDATA[$F{ide_gtnee}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_gestion/rep_ficha_empleado/sub_rep_telefono_negocio.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="74583ebf-1adf-49bd-8e11-f6e7db62efc2" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="140" width="570" height="60" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

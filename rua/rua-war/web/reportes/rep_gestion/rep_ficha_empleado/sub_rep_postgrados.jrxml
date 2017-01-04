@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_postgrados" language="groovy" pageWidth="570" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="eaed071d-81c8-4d0c-8e02-1b8f847f5938">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+TED.DETALLE_GTTED,
+INS.DETALLE_GEINS AS INSTITUCION_EDUCATIVA,
+GES.DETALLE_GTTES AS ESPECIALIZACION,
+GTP.DETALLE_GTTTP AS TITULO,
+EDU.ANIO_GRADO_GTEDE AS ULTIMO_AÑO,
+EDU.ANIO_GTEDE AS AÑO_GRADO,
+GTDP3.DETALLE_GEDIP as PAIS,
+GTDP1.DETALLE_GEDIP as CIUDAD
+
+
+FROM GTH_EDUCACION_EMPLEADO EDU
+LEFT JOIN GTH_TIPO_EDUCACION TED ON TED.IDE_GTTED=EDU.IDE_GTTED
+LEFT JOIN GEN_INSTITUCION INS ON INS.IDE_GEINS=EDU.IDE_GEINS
+LEFT JOIN GTH_TIPO_ESPECIALIDAD GES ON GES.IDE_GTTES=EDU.IDE_GTTES
+LEFT JOIN GTH_TIPO_TITULO_PROFESIONAL GTP ON GTP.IDE_GTTTP=EDU.IDE_GTTTP
+LEFT JOIN GEN_DIVISION_POLITICA GDP ON GDP.IDE_GEDIP=EDU.IDE_GEDIP
+left join GEN_TIPO_DIVISION_POLITICA gtdp on gtdp.ide_getdp=gdp.ide_getdp and
+gtdp.nivel_getdp IN(5)
+left join GEN_DIVISION_POLITICA gtdp1 on gtdp1.ide_gedip=gdp.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp2 on gtdp2.ide_gedip=gtdp1.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp3 on gtdp3.ide_gedip=gtdp2.gen_ide_gedip
+left join GEN_DIVISION_POLITICA gtdp4 on gtdp4.ide_gedip=gtdp3.gen_ide_gedip
+where EDU.IDE_GTEMP =$P{IDE_GTEMP} and TED.IDE_GTTED in(3)
+AND EDU.ACTIVO_GTEDE=true
+ORDER BY TED.IDE_GTTED ASC]]>
+	</queryString>
+	<field name="detalle_gtted" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gtted]]></fieldDescription>
+	</field>
+	<field name="institucion_educativa" class="java.lang.String"/>
+	<field name="especializacion" class="java.lang.String"/>
+	<field name="titulo" class="java.lang.String"/>
+	<field name="ultimo_aÑo" class="java.lang.Integer"/>
+	<field name="aÑo_grado" class="java.lang.Integer"/>
+	<field name="pais" class="java.lang.String"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="529fd522-985a-414a-8524-892fbda8ab89" x="0" y="20" width="120" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INSTITUCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="379831ed-2218-4c9c-81d6-bca922926e7e" x="120" y="20" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESPECIALIZACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc68c36b-fd22-4b89-b6fe-342cb8fe008a" x="220" y="20" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TITULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82dbc675-2634-4cc4-999e-3182135180aa" x="320" y="20" width="64" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ULTIMO AÑO APROBADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09b62831-aa8b-43d8-91a6-1270366f4540" x="384" y="20" width="46" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO GRADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="231cf0b4-619d-4392-ae59-996b915adea7" x="505" y="20" width="65" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43d34030-c0a7-418d-8d12-37379ef4490f" x="430" y="20" width="75" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CIUDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6663a979-acfe-4279-a526-cf0336e8d275" x="0" y="0" width="570" height="20"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[POSTGRADOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c08d8041-d79c-4640-9cf9-1ab42aef8c1c" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{institucion_educativa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="29e4ad76-b86f-466c-aa08-e43e7cc197ca" stretchType="RelativeToBandHeight" x="120" y="0" width="100" height="15"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{especializacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1581fa6e-a8fe-4207-b8af-7f16b70d19b9" stretchType="RelativeToBandHeight" x="220" y="0" width="100" height="15"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="40091a3b-ccc7-4dda-b292-94ed8f3bd799" stretchType="RelativeToBandHeight" x="320" y="0" width="64" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ultimo_aÑo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ceb1e60d-9e4f-4524-bcca-c0ec913e377f" stretchType="RelativeToBandHeight" x="384" y="0" width="46" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aÑo_grado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="75c2b9b2-1448-4406-abfd-8cd852ef3b6f" stretchType="RelativeToBandHeight" x="505" y="0" width="65" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pais}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50c6870a-a2d2-47e2-80bd-b42e61ef8ffb" stretchType="RelativeToBandHeight" x="430" y="0" width="75" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

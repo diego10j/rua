@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_acciones_personal_x_fecha" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a95d17a3-0f60-4090-8439-25d7fc7a9fc6">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\biess\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="IDE_SUC" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GEARE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select EMP.FECHA_INGRESO_GTEMP,
+EMP.IDE_GTEMP,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+SUCU.IDE_SUCU,
+SUCU.NOM_SUCU,
+DEP.IDE_GEDEP,
+DEP.DETALLE_GEDEP,
+ARE.IDE_GEARE,
+ARE.DETALLE_GEARE,
+CON.IDE_GTTCO,CON.DETALLE_GTTCO,
+EDP.FECHA_FINCTR_GEEDP
+
+from GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP
+left join GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EDP.IDE_GTEMP
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+LEFT JOIN  GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=EDP.IDE_GEDEP
+LEFT JOIN GEN_AREA ARE ON ARE.IDE_GEARE=EDP.IDE_GEARE
+LEFT JOIN GTH_TIPO_CONTRATO CON ON CON.IDE_GTTCO=EDP.IDE_GTTCO
+where
+
+emp.ide_gtemp=107
+ORDER BY EMP.ide_gtemp asc,
+EMP.IDE_GTEMP ASC,
+NOMBRES ASC]]>
+	</queryString>
+	<field name="fecha_ingreso_gtemp" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ingreso_gtemp]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de documento de identidad que posee el empleado.]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="ide_sucu" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_sucu]]></fieldDescription>
+	</field>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="ide_gedep" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gedep]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_geare" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_area, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_gttco" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gth_tipo_contrato.]]></fieldDescription>
+	</field>
+	<field name="detalle_gttco" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gttco]]></fieldDescription>
+	</field>
+	<field name="fecha_finctr_geedp" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_finctr_geedp]]></fieldDescription>
+	</field>
+	<group name="EMPLEADO">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="43" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="8bbed4a0-7a3e-499e-8cdc-51bee7d494d5" x="0" y="-1" width="555" height="25"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="2fc3402f-b23b-42f4-8387-ce0043a91048" positionType="Float" x="223" y="24" width="54" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_INICIO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="5881e21c-e519-473d-87d8-98ee4badbeb6" positionType="Float" x="307" y="24" width="72" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_FIN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0064cc19-5c84-480e-96fa-e67934d09799" positionType="Float" x="161" y="24" width="62" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DESDE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1b630bfa-a58b-4299-b73c-9c058ed61654" positionType="Float" x="276" y="24" width="32" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="b9ae2c70-1ee7-44c2-b97f-91d11c8026f1" isPrintRepeatedValues="false" x="0" y="0" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_INICIO">
+					<subreportParameterExpression><![CDATA[$P{FECHA_INICIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_SUC">
+					<subreportParameterExpression><![CDATA[$P{IDE_SUC}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEARE">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEARE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_FIN">
+					<subreportParameterExpression><![CDATA[$P{FECHA_FIN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+			</subreport>
+		</band>
+		<band height="25">
+			<subreport runToBottom="false">
+				<reportElement uuid="e3975c77-129b-4213-b78d-d254590e6c54" positionType="Float" isPrintRepeatedValues="false" x="0" y="0" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_INICIO">
+					<subreportParameterExpression><![CDATA[$P{FECHA_INICIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_SUC">
+					<subreportParameterExpression><![CDATA[$P{IDE_SUC}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEARE">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEARE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_FIN">
+					<subreportParameterExpression><![CDATA[$P{FECHA_FIN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+			</subreport>
+		</band>
+		<band height="25">
+			<subreport>
+				<reportElement uuid="dd9562ed-cc59-45dc-aaee-a6bdd5e60bb3" isPrintRepeatedValues="false" x="0" y="0" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_INICIO">
+					<subreportParameterExpression><![CDATA[$P{FECHA_INICIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_SUC">
+					<subreportParameterExpression><![CDATA[$P{IDE_SUC}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEARE">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEARE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_FIN">
+					<subreportParameterExpression><![CDATA[$P{FECHA_FIN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="10">
+			<textField>
+				<reportElement uuid="47416f1b-3b58-4f34-bf37-2471171a8f7c" x="435" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="77f64ebb-1366-4774-9f7f-0e2ca8283874" x="515" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

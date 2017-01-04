@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_accion_personal_salida" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="287056be-39d6-4a60-8c1c-ce75b5313410">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_SUC" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GEARE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\biess\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select EDP.FECHA_FINCTR_GEEDP,
+EMP.IDE_GTEMP,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+SUCU.IDE_SUCU,
+SUCU.NOM_SUCU,
+DEP.IDE_GEDEP,
+DEP.DETALLE_GEDEP,
+ARE.IDE_GEARE,
+ARE.DETALLE_GEARE,
+CON.IDE_GTTCO,CON.DETALLE_GTTCO ,
+edp.LIQUIDACION_GEEDP,
+EDP.FECHA_LIQUIDACION_GEEDP ,
+AED.IDE_GEAED,
+AED.DETALLE_GEAED,
+AED.FINIQUITO_CONTRATO_GEAED,
+med.ide_gemed,
+med.detalle_gemed
+
+from GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP
+left join GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EDP.IDE_GTEMP
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+LEFT JOIN  GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=EDP.IDE_GEDEP
+LEFT JOIN GEN_AREA ARE ON ARE.IDE_GEARE=EDP.IDE_GEARE
+LEFT JOIN GTH_TIPO_CONTRATO CON ON CON.IDE_GTTCO=EDP.IDE_GTTCO
+left join GEN_DETALLE_EMPLEADO_DEPARTAME DED ON DED.IDE_GTEMP=EMP.IDE_GTEMP
+ left join GEN_ACCION_MOTIVO_EMPLEADO AME ON AME.IDE_GEAME=DED.IDE_GEAME
+left join GEN_ACCION_EMPLEADO_DEPA AED ON AED.IDE_GEAED=AME.IDE_GEAED
+LEFT JOIN GEN_MOTIVO_EMPLEADO_DEPA MED ON MED.IDE_GEMED=AME.IDE_GEMED
+
+
+where AME.IDE_GEAED=3  and sucu.ide_sucu in($P!{IDE_SUC})
+and EDP.IDE_geare IN ($P!{IDE_GEARE})
+AND TO_CHAR(EDP.FECHA_FINCTR_GEEDP,'YYYY-MM-DD') BETWEEN $P{FECHA_INICIO} and  $P{FECHA_FIN}
+AND AED.FINIQUITO_CONTRATO_GEAED=1
+--and EDP.LIQUIDACION_GEEDP=0
+group by
+EDP.FECHA_FINCTR_GEEDP,
+EMP.IDE_GTEMP,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP,
+EMP.APELLIDO_MATERNO_GTEMP,
+EMP.PRIMER_NOMBRE_GTEMP,
+EMP.SEGUNDO_NOMBRE_GTEMP ,
+SUCU.IDE_SUCU,
+SUCU.NOM_SUCU,
+DEP.IDE_GEDEP,
+DEP.DETALLE_GEDEP,
+ARE.IDE_GEARE,
+ARE.DETALLE_GEARE,
+CON.IDE_GTTCO,CON.DETALLE_GTTCO ,
+edp.LIQUIDACION_GEEDP,
+EDP.FECHA_LIQUIDACION_GEEDP ,
+AED.IDE_GEAED,
+AED.DETALLE_GEAED,
+AED.FINIQUITO_CONTRATO_GEAED,
+med.ide_gemed,
+med.detalle_gemed
+
+ORDER BY EMP.IDE_GTEMP ASC
+--NOMBRES ASC]]>
+	</queryString>
+	<field name="FECHA_FINCTR_GEEDP" class="java.sql.Timestamp"/>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="DOCUMENTO_IDENTIDAD_GTEMP" class="java.lang.String"/>
+	<field name="NOMBRES" class="java.lang.String"/>
+	<field name="IDE_SUCU" class="java.math.BigDecimal"/>
+	<field name="NOM_SUCU" class="java.lang.String"/>
+	<field name="IDE_GEDEP" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEDEP" class="java.lang.String"/>
+	<field name="IDE_GEARE" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEARE" class="java.lang.String"/>
+	<field name="IDE_GTTCO" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GTTCO" class="java.lang.String"/>
+	<field name="LIQUIDACION_GEEDP" class="java.math.BigDecimal"/>
+	<field name="FECHA_LIQUIDACION_GEEDP" class="java.sql.Timestamp"/>
+	<field name="IDE_GEAED" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEAED" class="java.lang.String"/>
+	<field name="FINIQUITO_CONTRATO_GEAED" class="java.math.BigDecimal"/>
+	<field name="IDE_GEMED" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEMED" class="java.lang.String"/>
+	<variable name="CONTADOR" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{IDE_GTEMP}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<group name="cabeceraempleado">
+		<groupExpression><![CDATA[$F{IDE_GTEMP}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="4077dc24-de35-4c3c-b63f-595738ee85c7" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="10" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DOCUMENTO_IDENTIDAD_GTEMP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="4c32ff6a-9314-4b85-b63f-54dbbdb9719e" stretchType="RelativeToBandHeight" x="65" y="0" width="150" height="10" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMBRES}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="f7d2cd65-3231-4c50-98fc-7df1d66aef4a" stretchType="RelativeToBandHeight" x="215" y="0" width="115" height="10" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEDEP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="cefe4971-bdf1-4523-8c61-35407508c817" stretchType="RelativeToBandHeight" x="330" y="0" width="90" height="10" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GTTCO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="08bd434e-e2ad-47d6-ba98-76822f13bce8" stretchType="RelativeToBandHeight" x="420" y="0" width="53" height="10" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="1">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEAED}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="18a48021-ad9a-4e29-bcd0-b28272be7675" stretchType="RelativeToBandHeight" x="473" y="0" width="42" height="10" isPrintWhenDetailOverflows="true"/>
+					<box rightPadding="1">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEMED}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="037ef6b3-a1a0-4731-bdd3-5d91e07150e8" stretchType="RelativeToBandHeight" x="515" y="0" width="40" height="10" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FECHA_FINCTR_GEEDP}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="22">
+			<staticText>
+				<reportElement uuid="c2048238-86c0-4f71-9c6a-1539b9daa4cc" x="0" y="12" width="65" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DOC.IDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dfd0b772-414a-4c83-9fbf-23e864ff7646" x="420" y="12" width="95" height="10" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCION-MOTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="824d0093-1f58-4bb6-949d-4601b66c283e" x="330" y="12" width="90" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[TIPO CONTRATO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2bf14438-eb99-4ae1-bc17-a5ea86666ac9" x="215" y="12" width="115" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e77a8d2c-df76-4390-989b-b2c939201d95" x="65" y="12" width="150" height="10" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d6339e4c-152e-4d36-a870-621af3c831d8" x="0" y="0" width="555" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SALIDA DE PERSONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1679b78c-dbfa-471c-8666-4d627efbceeb" x="515" y="12" width="40" height="10" isRemoveLineWhenBlank="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FEC.FIN]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+</jasperReport>

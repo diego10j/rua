@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_listado_cumpleanios" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43a00a12-ea1e-4ffd-9810-bb4fea8b0357">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicial" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_final" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geare" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gedep" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu_t" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT a.ide_gtemp,c.ide_geare,c.area,d.ide_gedep,d.departamento,a.mes,a.empleado,a.dia,
+to_date(a.anio||'-'||a.mes||'-'||a.dia,'yyyy-mm-dd') as fecha_cumple
+FROM(
+SELECT a.ide_gtemp,a.apellido_paterno_gtemp ||' '|| a.apellido_materno_gtemp ||' '||
+a.primer_nombre_gtemp ||' '|| a.segundo_nombre_gtemp as empleado,TO_CHAR(a.fecha_nacimiento_gtemp,'mm') as mes,
+TO_CHAR(a.fecha_nacimiento_gtemp,'dd') as dia,a.activo_gtemp,
+extract (year from now()) as anio,fecha_nacimiento_gtemp
+FROM gth_empleado a)a
+left join (
+SELECT ide_gtemp,ide_geare,ide_gedep,ide_geedp,ide_sucu,activo_geedp FROM gen_empleados_departamento_par
+)b on b.ide_gtemp=a.ide_gtemp
+left join(
+SELECT ide_geare,detalle_geare as area FROM gen_area
+)c on c.ide_geare=b.ide_geare
+left join(
+SELECT ide_gedep,detalle_gedep as departamento FROM gen_departamento
+)d on d.ide_gedep=b.ide_gedep
+where
+extract (month from fecha_nacimiento_gtemp) between extract (month from cast ($P{fecha_inicial} as date))  and   extract (month from cast($P{fecha_final} as date))
+and extract (day from fecha_nacimiento_gtemp) between extract (day from cast ($P{fecha_inicial} as date))  and   extract (day from cast($P{fecha_final} as date))
+and a.activo_gtemp=true
+and c.ide_geare in ($P!{ide_geare})
+and d.ide_gedep in ($P!{ide_gedep})
+and b.ide_sucu in ($P!{ide_sucu_t})
+and b.activo_geedp=true
+order by c.area,d.departamento,a.mes,a.dia,a.empleado]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_geare" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_area, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="area" class="java.lang.String"/>
+	<field name="ide_gedep" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gedep]]></fieldDescription>
+	</field>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="dia" class="java.lang.String"/>
+	<field name="fecha_cumple" class="java.sql.Date"/>
+	<variable name="IDE_GTEMP_1" class="java.lang.Integer" resetType="Group" resetGroup="MES" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_2" class="java.lang.Integer" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_3" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_4" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_5" class="java.lang.Integer" resetType="Group" resetGroup="AREA" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_6" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="IDE_GTEMP_7" class="java.lang.Integer" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+	</variable>
+	<group name="AREA">
+		<groupExpression><![CDATA[$F{ide_geare}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="c06267b8-90a8-4bd5-90e7-c8f9817ec908" stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{area}.equals(null)?"AREA SIN NOMBRE":$F{area}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="a2c962c4-218d-48c5-bf8e-3bfee7f76be9" x="0" y="0" width="416" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{area}.equals(null)?
+
+$V{IDE_GTEMP_5}.equals(null)?"TOTAL:":" TOTAL: "+$V{IDE_GTEMP_5}
+:$V{IDE_GTEMP_5}.equals(null)?"TOTAL "+$F{area}+":"
+:"TOTAL "+$F{area}+": "+$V{IDE_GTEMP_5}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="DEPARTAMENTO">
+		<groupExpression><![CDATA[$F{ide_gedep}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="c8158ba7-db99-4072-8a3e-8bbbb08624ea" stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="30"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{departamento}.equals(null)?" DEPARTAMENTO SIN NOMBRE":$F{departamento}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="e7a7f19c-39e8-416d-b748-bfe0fa37409d" x="0" y="0" width="416" height="12"/>
+					<box leftPadding="30"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{departamento}.equals(null)?
+$V{IDE_GTEMP_2}.equals(null)?"TOTAL:":" TOTAL: "+$V{IDE_GTEMP_2}
+:$V{IDE_GTEMP_2}.equals(null)?"TOTAL "+$F{departamento}+":"
+:"TOTAL "+$F{departamento}+": "+$V{IDE_GTEMP_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="MES">
+		<groupExpression><![CDATA[$F{mes}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="db676e89-4a02-4e64-9bee-8c21fd840515" stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{mes}.equals("01")?"ENERO":$F{mes}.equals("02")?"FEBRERO":
+$F{mes}.equals("03")?"MARZO":$F{mes}.equals("04")?"ABRIL":
+$F{mes}.equals("05")?"MAYO":$F{mes}.equals("06")?"JUNIO":
+$F{mes}.equals("07")?"JULIO":$F{mes}.equals("08")?"AGOSTO":
+$F{mes}.equals("09")?"SEPTIEMBRE":$F{mes}.equals("10")?"OCTUBRE":
+$F{mes}.equals("11")?"NOVIEMBRE":$F{mes}.equals("12")?"DICIEMBRE":""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="bd738c01-5644-4edb-a856-c64c085597ef" x="100" y="0" width="100" height="12"/>
+					<box leftPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{IDE_GTEMP_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="b00f780e-22d2-411c-b6cd-1d396c60223f" stretchType="RelativeToBandHeight" x="0" y="0" width="100" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box rightPadding="0"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{mes}.equals("01")?"TOTAL ENERO:":$F{mes}.equals("02")?"TOTAL FEBRERO:":
+$F{mes}.equals("03")?"TOTAL MARZO:":$F{mes}.equals("04")?"TOTAL ABRIL:":
+$F{mes}.equals("05")?"TOTAL MAYO:":$F{mes}.equals("06")?"TOTAL JUNIO:":
+$F{mes}.equals("07")?"TOTAL JULIO:":$F{mes}.equals("08")?"TOTAL AGOSTO:":
+$F{mes}.equals("09")?"TOTAL SEPTIEMBRE:":$F{mes}.equals("10")?"TOTAL OCTUBRE:":
+$F{mes}.equals("11")?"TOTAL NOVIEMBRE:":$F{mes}.equals("12")?"TOTAL DICIEMBRE:":""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="14" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="1628ed75-f019-48cc-a086-13544372a22c" x="0" y="0" width="555" height="14"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="6ef92e8f-690e-4bb4-baed-da3d799fc085" x="46" y="0" width="54" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd8c8af6-7213-480c-9e41-b776bbcedfd6" x="100" y="0" width="316" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EMPLEADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e686f910-ce79-4f0c-a6a7-beba6b73f9ff" x="416" y="0" width="139" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE CUMPLEAÑOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bf277bd6-220c-40f2-9af4-7386f42ddd57" x="0" y="0" width="46" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="41c3b033-8840-4b3a-96ea-42b7bacc8354" positionType="Float" x="46" y="0" width="54" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d4ecdf33-cd16-4c70-8384-30f4a833a0d4" positionType="Float" x="100" y="0" width="316" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empleado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="1572b0d5-233c-4ea5-b3ca-fb425ffe569e" x="416" y="0" width="139" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_cumple}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cf53c622-ab24-4749-a494-a597bd063fb3" x="0" y="0" width="46" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="74c161a1-7ba9-49e0-8758-4ee18bc83bee" x="434" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página  "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a834fc7-a562-4e03-afe0-a646003d65e7" x="514" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="60bf7737-7a13-4256-967b-87838ffbdfcb" x="0" y="0" width="414" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{IDE_GTEMP_6}.equals(null)?"":"TOTAL EMPLEADOS: "+$V{IDE_GTEMP_6}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

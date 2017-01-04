@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep1_situacion_economica" language="groovy" pageWidth="570" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="49d9a62c-9688-439e-a0d5-2c5fabc30754">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="187"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+PNE.APELLIDO_PATERNO_GTPNE || '   ' ||
+PNE.APELLIDO_MATERNO_GTPNE || '   ' ||
+PNE.PRIMER_NOMBRE_GTPNE || '   ' ||
+PNE.SEGUNDO_NOMBRE_GTPNE AS NOMBRES_Y_APELLIDOS,
+pne.PORCENTAJE_PARTICIPA_GTPNE as Porcentaje,
+PNE.DOCUMENTO_IDENTIDAD_GTPNE as identificacion,
+nac.detalle_gtnac as nacionalidad,
+PNE.INGERENCIA_ADMINISTRA_GTPNE as ingerencia
+
+from  GTH_PARTICIPA_NEGOCIO_EMPLEA pne
+left join GTH_NEGOCIO_EMPLEADO nem on NEM.IDE_GTNEE=PNE.IDE_GTNEE
+left join GTH_EMPLEADO emp on emp.ide_gtemp=nem.ide_gtemp
+left join GTH_NACIONALIDAD nac on nac.ide_gtnac=pne.ide_gtnac
+where NEM.IDE_GTEMP=$P{IDE_GTEMP} and PNE.ACTIVO_GTPNE=true
+ORDER BY PNE.IDE_GTPNE]]>
+	</queryString>
+	<field name="nombres_y_apellidos" class="java.lang.String"/>
+	<field name="porcentaje" class="java.math.BigDecimal"/>
+	<field name="identificacion" class="java.lang.String"/>
+	<field name="nacionalidad" class="java.lang.String"/>
+	<field name="ingerencia" class="java.lang.Integer"/>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="6e50c494-de5b-45e9-84ce-67be641a1ee3" x="0" y="0" width="200" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombresy Apellidos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f99f7293-c745-461a-b0e4-855de21e2f3d" x="200" y="0" width="50" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Participación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="54f48bca-6325-4e9d-8b12-db1076da40d4" x="250" y="0" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[# Identificación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="052fe468-c826-460c-bba9-c3901aec99fe" x="350" y="0" width="100" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nacionalidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b65763f-2827-47e1-b057-af3b700cf938" x="450" y="0" width="120" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiene ingerencia en la administración :]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="946fc0ff-598c-4377-b081-040cac9dae2f" x="0" y="0" width="200" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_y_apellidos}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="563d5faa-76ae-4406-9080-b5e7188cd17b" x="200" y="0" width="50" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{porcentaje}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="29b36bb7-5311-4d7b-9b05-b19d4603cdbd" x="250" y="0" width="100" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificacion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="520c17e0-7402-43d0-805f-c274e7615bd3" x="350" y="0" width="100" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nacionalidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4d9ccb8d-11e5-4832-b9a5-7566f320fb21" x="450" y="0" width="30" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Si]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e3be6ad3-8232-4b7c-955c-5063b9ac9c27" x="480" y="0" width="30" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3dca9ced-c2dc-4615-ae30-985de3b0b939" x="510" y="0" width="30" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="995a8997-351b-4e31-9867-b126a6343ba7" x="540" y="0" width="30" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="d55678d6-c38f-4989-bd33-8c8767922a3d" x="480" y="1" width="30" height="14">
+					<printWhenExpression><![CDATA[$F{ingerencia}==1]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\rep_ficha_empleado\\visto.gif"]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="5aead74b-f8b1-43bd-b56b-8e10af6776cf" x="540" y="1" width="30" height="14">
+					<printWhenExpression><![CDATA[$F{ingerencia}==0]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\rep_ficha_empleado\\visto.gif"]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

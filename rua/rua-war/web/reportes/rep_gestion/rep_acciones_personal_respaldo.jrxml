@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_acciones_personal" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2330dbf2-51bf-49a0-98ca-23981c23fd5e">
+	<property name="ireport.zoom" value="5.0"/>
+	<property name="ireport.x" value="2228"/>
+	<property name="ireport.y" value="3909"/>
+	<parameter name="ide_geded" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\upload\\logos\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_detalle_accion" class="java.lang.String"/>
+	<parameter name="p_tipo_vinculacion" class="java.lang.String"/>
+	<parameter name="p_gerencia_general" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_gerencia_administrativa" class="java.lang.String"/>
+	<parameter name="p_cargo_gerencia_general" class="java.lang.String"/>
+	<parameter name="p_cargo_gerencia_administrativa" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+a.ide_geded,a.fecha_ingreso_geded,a.secuencial_geded,a.gen_ide_geded,
+a.detalle_gemed,a.detalle_reporte_gemed,a.nombre_empleado,a.documento,
+(case when b.area_actual is null then null else a.area end) as area,
+(case when b.departamento_actual is null then null else a.departamento end) as departamento,
+(case when b.gocupacional_actual is null then null else a.gocupacional end) as gocupacional,
+(case when b.cargo_actual is null then null else a.cargo end) as cargo,
+(case when b.rmu_actual is null then null else a.rmu_geedp end) as rmu_geedp,
+(case when b.partida_actual is null then null else a.partida end) as partida,
+(case when b.sucursal_actual is null then null else a.nom_sucu end) as nom_sucu,
+
+(case when b.area_actual is null then a.area else area_actual end) as area_actual,
+(case when b.departamento_actual is null then a.departamento else departamento_actual end) as departamento_actual,
+(case when b.gocupacional_actual is null then a.gocupacional else gocupacional_actual end) as gocupacional_actual,
+(case when b.cargo_actual is null then a.cargo else cargo_actual end) as cargo_actual,
+(case when b.rmu_actual is null then a.rmu_geedp else rmu_actual end) as rmu_actual,
+(case when b.partida_actual is null then a.partida else partida_actual end) as partida_actual,
+(case when b.sucursal_actual is null then a.nom_sucu else sucursal_actual end) as sucursal_actual,finiquito_contrato_geaed
+from (
+SELECT
+a.ide_geded,a.fecha_ingreso_geded,a.secuencial_geded,gen_ide_geded,finiquito_contrato_geaed,
+f.detalle_gemed,f.detalle_reporte_gemed,c.nombre_empleado,c.documento,g.area,h.departamento,i.gocupacional,j.cargo,rmu_geedp,l.partida,m.nom_sucu
+FROM gen_detalle_empleado_departame a
+LEFT JOIN (
+SELECT ide_geedp,ide_geded,ide_gtemp,ide_gepgc,ide_gegro,ide_gecaf,ide_sucu,ide_gedep,ide_geare,rmu_geedp FROM gen_empleados_departamento_par
+)b ON a.ide_geded=b.ide_geded
+LEFT JOIN(
+SELECT ide_gtemp,apellido_paterno_gtemp || ' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||
+segundo_nombre_gtemp as nombre_empleado,documento_identidad_gtemp as documento FROM gth_empleado
+)c ON c.ide_gtemp=b.ide_gtemp
+LEFT JOIN(
+SELECT ide_geame,ide_geaed,ide_gemed FROM gen_accion_motivo_empleado
+)d ON d.ide_geame=a.ide_geame
+LEFT JOIN(
+SELECT ide_geaed,detalle_geaed,finiquito_contrato_geaed FROM gen_accion_empleado_depa
+)e ON e.ide_geaed=d.ide_geaed
+LEFT JOIN(
+SELECT ide_gemed,detalle_gemed,detalle_reporte_gemed FROM gen_motivo_empleado_depa
+)f ON f.ide_gemed=d.ide_gemed
+LEFT JOIN (
+SELECT ide_geare,detalle_geare as area FROM gen_area
+)g ON g.ide_geare=b.ide_geare
+LEFT JOIN (
+SELECT ide_gedep,detalle_gedep as departamento FROM gen_departamento
+)h ON h.ide_gedep=b.ide_gedep
+LEFT JOIN(
+SELECT ide_gegro,detalle_gegro as gocupacional FROM gen_grupo_ocupacional
+)i ON i.ide_gegro=b.ide_gegro
+LEFT JOIN(
+SELECT ide_gecaf,detalle_gecaf as cargo FROM gen_cargo_funcional
+)j ON j.ide_gecaf=b.ide_gecaf
+LEFT JOIN(
+SELECT ide_gepgc,ide_gepap FROM gen_partida_grupo_cargo
+)k ON k.ide_gepgc=b.ide_gepgc
+LEFT JOIN(
+SELECT ide_gepap,codigo_partida_gepap as partida FROM gen_partida_presupuestaria
+)l ON l.ide_gepap=k.ide_gepap
+lEFT JOIN (
+SELECT ide_sucu,nom_sucu FROM sis_sucursal
+)m ON m.ide_sucu=b.ide_sucu
+WHERE a.ide_geded=$P{ide_geded}
+)a
+left join (
+SELECT
+a.ide_geded,a.fecha_ingreso_geded,a.secuencial_geded,
+f.detalle_gemed,f.detalle_reporte_gemed,c.nombre_empleado,c.documento,g.area_actual,h.departamento_actual,i.gocupacional_actual,j.cargo_actual,b.rmu_actual,l.partida_actual,m.sucursal_actual
+FROM gen_detalle_empleado_departame a
+LEFT JOIN (
+SELECT ide_geedp,ide_geded,ide_gtemp,ide_gepgc,ide_gegro,ide_gecaf,ide_sucu,ide_gedep,ide_geare,rmu_geedp as rmu_actual FROM gen_empleados_departamento_par
+)b ON a.ide_geded=b.ide_geded
+LEFT JOIN(
+SELECT ide_gtemp,apellido_paterno_gtemp || ' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||
+segundo_nombre_gtemp as nombre_empleado,documento_identidad_gtemp as documento FROM gth_empleado
+)c ON c.ide_gtemp=b.ide_gtemp
+LEFT JOIN(
+SELECT ide_geame,ide_geaed,ide_gemed FROM gen_accion_motivo_empleado
+)d ON d.ide_geame=a.ide_geame
+LEFT JOIN(
+SELECT ide_geaed,detalle_geaed FROM gen_accion_empleado_depa
+)e ON e.ide_geaed=d.ide_geaed
+LEFT JOIN(
+SELECT ide_gemed,detalle_gemed,detalle_reporte_gemed FROM gen_motivo_empleado_depa
+)f ON f.ide_gemed=d.ide_gemed
+LEFT JOIN (
+SELECT ide_geare,detalle_geare as area_actual FROM gen_area
+)g ON g.ide_geare=b.ide_geare
+LEFT JOIN (
+SELECT ide_gedep,detalle_gedep as departamento_actual FROM gen_departamento
+)h ON h.ide_gedep=b.ide_gedep
+LEFT JOIN(
+SELECT ide_gegro,detalle_gegro as gocupacional_actual FROM gen_grupo_ocupacional
+)i ON i.ide_gegro=b.ide_gegro
+LEFT JOIN(
+SELECT ide_gecaf,detalle_gecaf as cargo_actual FROM gen_cargo_funcional
+)j ON j.ide_gecaf=b.ide_gecaf
+LEFT JOIN(
+SELECT ide_gepgc,ide_gepap FROM gen_partida_grupo_cargo
+)k ON k.ide_gepgc=b.ide_gepgc
+LEFT JOIN(
+SELECT ide_gepap,codigo_partida_gepap as partida_actual FROM gen_partida_presupuestaria
+)l ON l.ide_gepap=k.ide_gepap
+lEFT JOIN (
+SELECT ide_sucu,nom_sucu as sucursal_actual FROM sis_sucursal
+)m ON m.ide_sucu=b.ide_sucu
+)  b on a.gen_ide_geded = b.ide_geded]]>
+	</queryString>
+	<field name="IDE_GEDED" class="java.math.BigDecimal"/>
+	<field name="FECHA_INGRESO_GEDED" class="java.sql.Timestamp"/>
+	<field name="SECUENCIAL_GEDED" class="java.math.BigDecimal"/>
+	<field name="GEN_IDE_GEDED" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEMED" class="java.lang.String"/>
+	<field name="DETALLE_REPORTE_GEMED" class="java.lang.String"/>
+	<field name="NOMBRE_EMPLEADO" class="java.lang.String"/>
+	<field name="DOCUMENTO" class="java.lang.String"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="GOCUPACIONAL" class="java.lang.String"/>
+	<field name="CARGO" class="java.lang.String"/>
+	<field name="RMU_GEEDP" class="java.math.BigDecimal"/>
+	<field name="PARTIDA" class="java.lang.String"/>
+	<field name="NOM_SUCU" class="java.lang.String"/>
+	<field name="AREA_ACTUAL" class="java.lang.String"/>
+	<field name="DEPARTAMENTO_ACTUAL" class="java.lang.String"/>
+	<field name="GOCUPACIONAL_ACTUAL" class="java.lang.String"/>
+	<field name="CARGO_ACTUAL" class="java.lang.String"/>
+	<field name="RMU_ACTUAL" class="java.math.BigDecimal"/>
+	<field name="PARTIDA_ACTUAL" class="java.lang.String"/>
+	<field name="SUCURSAL_ACTUAL" class="java.lang.String"/>
+	<field name="FINIQUITO_CONTRATO_GEAED" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="106" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ae9ae029-0cc1-4a94-bbfe-bea194caf1ad" x="101" y="0" width="293" height="16"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GERENCIA ADMINISTRATIVA FINANCIERA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83f07ad2-aad8-45f5-9eac-961188ea4e0b" x="101" y="29" width="293" height="16"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN DE PERSONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6be912f8-62f1-427c-aef0-bffa0d7adec8" x="394" y="0" width="161" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN No.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="542822ef-8fa3-4ec4-9643-5d077ec41683" x="394" y="20" width="161" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SECUENCIAL_GEDED}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3350f69f-c490-497e-9c32-8007fabf59fb" x="394" y="40" width="66" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CONTRATO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="72302210-b01b-4a5d-888b-ba8994fbac8d" x="460" y="40" width="95" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRAMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7cbe8a7-d147-4b65-a75f-ee2232631c1a" x="0" y="80" width="101" height="13"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="68686b59-0181-4c66-a150-f792862f4bb3" x="101" y="80" width="293" height="13"/>
+				<box leftPadding="3">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e68f4191-8852-4911-946b-43fd341cfae0" x="438" y="80" width="117" height="13"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f7e219dc-c20a-4b2b-bf6e-88329e0810d5" x="393" y="80" width="46" height="13"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[C. C. No.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd &apos;de&apos; MMMMM &apos;del&apos; yyyy" isBlankWhenNull="true">
+				<reportElement uuid="30cf11a0-e16a-4fd6-b9b1-c68e0246c96a" x="101" y="59" width="293" height="22"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_INGRESO_GEDED}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5bffb556-f62d-4d87-9593-3ed61fa3960e" x="101" y="44" width="293" height="16"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[RIGE A PARTIR DE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed0d4c21-599a-4f24-9b39-c5a9b64868b0" x="101" y="15" width="293" height="15"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO DE TALENTO HUMANO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="784e20af-ea56-4e1e-b410-c5d76fdaacef" x="393" y="60" width="67" height="20"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_tipo_vinculacion}.equals("0")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2f15395d-a602-445d-8130-5b5aec1b5714" x="460" y="61" width="95" height="20"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_tipo_vinculacion}.equals("1")?"X":""]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="9e19ec71-eaa4-478a-8cb5-62dc3c9ce50a" x="-1" y="0" width="556" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="e14ddbb1-b409-4f74-9011-46ab525196f4" x="-1" y="0" width="1" height="106"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement uuid="e82c4288-d04e-4878-b88c-5bd15cdd1208" x="0" y="1" width="101" height="79"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0ce02fcc-8ec8-4a99-8f4a-664e9d66ed8a" x="127" y="93" width="428" height="13"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_GEMED}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5d6bb906-f712-4927-ad09-873307ec785b" x="0" y="93" width="127" height="13"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN SOLICITADA:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="696" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="60ccff12-d6b7-4ea2-aad4-dd4a724b8dec" stretchType="RelativeToBandHeight" x="0" y="189" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Coordinación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e4401297-82f6-44ea-858a-9b14d5750b16" stretchType="RelativeToBandHeight" x="0" y="200" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Departamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b4e203f-71f3-4e23-ad4d-e9e566662002" stretchType="RelativeToBandHeight" x="0" y="211" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grupo Ocupacional:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bb985bb1-7624-45b9-ae07-eaeaa8e99926" stretchType="RelativeToBandHeight" x="375" y="189" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{AREA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b2d6361d-8cc8-4640-9bf9-387b0b57000d" stretchType="RelativeToBandHeight" x="375" y="200" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{DEPARTAMENTO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2c226eab-5190-4ba8-b3d2-310fdeec41e6" stretchType="RelativeToBandHeight" x="375" y="211" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{GOCUPACIONAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c059113c-b6dc-41f7-92cb-a19524cdbf53" x="278" y="174" width="277" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SITUACIÓN PROPUESTA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="976752c5-d36d-4321-8136-6cdf02ba9b01" stretchType="RelativeToBandHeight" x="375" y="222" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a76ae86b-7149-49b6-b9ac-bc2a324e446b" stretchType="RelativeToBandHeight" x="375" y="233" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{NOM_SUCU}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="241fa21f-031f-4ec9-a179-ffedaa236ffc" stretchType="RelativeToBandHeight" x="375" y="244" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{RMU_GEEDP}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="58821ff7-6725-4345-8742-5575025b5029" stretchType="RelativeToBandHeight" x="375" y="255" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FINIQUITO_CONTRATO_GEAED}==1?null:$F{PARTIDA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a5d5e368-65d3-4e42-af5c-282fac1f9489" x="0" y="378" width="555" height="14"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GERENCIA ADMINISTRATIVA]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="78643ebb-3b66-49b7-81d3-7e1b1e01b02e" x="196" y="471" width="182" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="a692646b-a4e3-4e0c-ae30-26559192b060" x="0" y="506" width="278" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO DE TALENTO HUMANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="150ba5ab-6766-4904-9564-5519d4186049" x="278" y="506" width="276" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[COLABORADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3656edc7-3861-40fe-a135-8feaa07d7b44" x="278" y="520" width="39" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="965c8def-525e-441c-8df5-90ef99a3a0ff" x="36" y="573" width="216" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="d3fedbbd-9290-4db3-83e6-0b8ede47a6ca" x="0" y="574" width="278" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO DE TALENTO HUMANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46631383-9832-4abd-8910-d033e711ecf5" x="0" y="590" width="555" height="15"/>
+				<box leftPadding="3">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE ACCIONES DE PERSONAL QUE INCLUYE ESTE TRÁMITE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e3079c05-5d46-479f-b1bf-d0c53ebe0d7b" x="0" y="605" width="129" height="12"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CREACION DEL PUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2506e837-c8d8-4205-af5b-ef8a7e902e30" x="0" y="616" width="129" height="12"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[NOMBRAMIENTO PROVISIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="293c40a3-02ec-47de-8164-e78bbcbc643c" x="0" y="627" width="129" height="12"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[NOMBRAMIENTO DEFINITIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd6887b7-83b2-49b1-a3c0-37b249491580" x="0" y="638" width="129" height="14"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CAMBIO ADMINISTRATIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="efbf1599-90b6-4b78-9cc6-739e248e4f67" x="0" y="651" width="129" height="14"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[TRANSLADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="357585c7-61fe-41f0-97af-11c8652a4b11" x="0" y="664" width="129" height="14"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[COMISIÓN DE SERVICIOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ef4e3ace-b31b-4b60-a8e9-f8a405292831" x="129" y="605" width="123" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[RECLACIFICACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4c725597-48e2-4086-9248-0360210a5b79" x="129" y="616" width="123" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[RENUNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5c5d81eb-416e-4c5e-a6d2-68f83559bf77" x="129" y="627" width="123" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ENCARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="815db128-432b-4a15-af2f-8e3f4a2bd806" x="129" y="638" width="123" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SUBROGACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0eab8a9d-f381-4fe2-9d38-c4bcb4d077b2" x="129" y="651" width="123" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SOBRETIEMPOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df6493c0-a6da-4e76-92a0-0df3c24561e5" x="129" y="664" width="123" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[RECONOCIMIENTO LOGRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1ad9e157-cf58-4710-ada6-bdf3e6901cb0" x="251" y="605" width="126" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[LICENCIA CON SUELDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a6de2e64-923a-4a4c-b902-1fd3be7f44c4" x="251" y="616" width="126" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[LICENCIA SIN SUELDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a7ff25c-2a65-4a8d-a986-fa7cba4c0df1" x="251" y="627" width="126" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PERMISOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34e033dd-0a71-472e-9c33-829ac913d5b7" x="251" y="638" width="126" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[VACACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="701c0804-f491-489c-b5b1-ae0752e55533" x="251" y="651" width="126" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[HORARIO DE TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd163947-2651-4963-b6ba-8ae2d81482d7" x="251" y="664" width="126" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AMOSTECIÓN PECUNARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b21b845-f6ad-40f7-8ccc-880cc0e5681d" x="376" y="605" width="179" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AMONESTACIÓN ESCRITA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ac539b43-6a27-499f-84e5-aa73fdbbbb03" x="376" y="616" width="179" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AMONESTACIÓN VERBAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8f89bc9d-19b9-4d30-bd2a-84e5a1c69b9c" x="376" y="627" width="179" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SUPRESION DEL PUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0212f419-54ac-48af-8100-8b10d6400ecc" x="376" y="638" width="179" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DESTITUCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e0c3f19d-ff04-471b-a447-ff13c0e235da" x="376" y="651" width="179" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[JUBILACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="495da10c-4c5a-4ed5-8fa7-6bf04cf3285d" x="376" y="664" width="179" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[OTRA (Explique)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="526cbc5c-006a-4964-b300-6a70960c6dcf" x="270" y="-536" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[NOM_SUCU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd81649a-91bc-486b-8047-f7b7e9c77be3" x="270" y="-556" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="52e85f84-6dd0-40b6-ae6a-c7810b7d18a9" x="272" y="-516" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[RMU_GEEDP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e1dd1162-6e67-4e14-b44d-d6ca771775a5" x="270" y="-496" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73c16853-fb03-4315-9a99-79830bb2045f" x="0" y="521" width="73" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[REGISTRADO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78f3f8b3-1920-46f7-9480-148f9c18bf4d" x="0" y="535" width="73" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nro.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3d26f74e-e75d-4fad-b8e7-bc8f14a8e071" x="0" y="549" width="73" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a172971-394c-418a-842e-10534d7c1e1d" stretchType="RelativeToBandHeight" x="0" y="233" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar de Tabajo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="814e6fbe-9168-44af-bfac-c964147e956f" stretchType="RelativeToBandHeight" x="0" y="244" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Salario Mensual:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aebb0e69-c15a-4498-ae2a-06792bce6f23" stretchType="RelativeToBandHeight" x="0" y="255" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Partida Presupuestaria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="70239afa-5d2d-47ed-ac4f-69b6c5302e17" x="0" y="681" width="270" height="15"/>
+				<box leftPadding="3">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7567c4e8-c4d2-4b2d-af09-21cef2535ba2" x="269" y="681" width="185" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[REVISADO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34b57e5e-d7fb-4279-be9e-8bb5a1ae4080" x="0" y="174" width="278" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SITUACIÓN ACTUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c33af8b-8eb6-48af-8aba-274b416d288f" stretchType="RelativeToBandHeight" x="0" y="222" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Denominación de Puesto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a0967259-3274-42b4-a137-be29b86d9d90" stretchType="RelativeToBandHeight" x="278" y="189" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Coordinación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a332c89-f427-4739-a720-204dcecd7ba0" stretchType="RelativeToBandHeight" x="278" y="200" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Departamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="00743737-9c78-4efb-b0ff-14bf06f8194b" stretchType="RelativeToBandHeight" x="278" y="211" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grupo Ocupacional:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e469e9e0-0652-4e67-b8da-143370d36cd5" stretchType="RelativeToBandHeight" x="278" y="222" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Denominación de Puesto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ee7c5036-e25b-4f26-a204-19bf0a482493" stretchType="RelativeToBandHeight" x="278" y="233" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar de Trabajo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e312c6e9-e09b-4bfe-b7be-01d7861d0b23" stretchType="RelativeToBandHeight" x="278" y="244" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Salario Mensual Unificado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06daaa11-7919-46e8-8b5c-0e117ef39b75" stretchType="RelativeToBandHeight" x="278" y="255" width="98" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Partida Presupuestaria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="489f7608-3ead-47ef-ad65-b7cdde1f7a44" x="0" y="278" width="555" height="14"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GERENCIA GENERAL ]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="97a643bf-71b9-4620-b17b-be97686bae12" x="196" y="347" width="182" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="0f6a92b4-1a22-4a1e-8a3b-0883a1992c2c" x="278" y="574" width="276" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recibido]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="74f86980-4825-4044-9eeb-ec71965836da" x="-1" y="0" width="1" height="695"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="dee8c371-4618-4e4a-bd30-9df48dedadb4" x="554" y="0" width="1" height="696"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="edde4fad-df83-4f47-831c-3d48a51454a6" x="0" y="695" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="f52e630b-ffa4-40c6-b510-9640afb1e4c8" x="278" y="506" width="1" height="84"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="aba8b4ed-809a-41e4-8f47-9cf073a6f6e8" x="0" y="0" width="554" height="174"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_detalle_accion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a917d053-87ef-437d-acaa-3a83e7154067" stretchType="RelativeToBandHeight" x="97" y="189" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AREA_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ed83baa9-32af-41eb-8e0c-c06157c4d22c" stretchType="RelativeToBandHeight" x="97" y="200" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPARTAMENTO_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="90defa2a-f181-42c4-9d49-fac896a20a87" stretchType="RelativeToBandHeight" x="97" y="211" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GOCUPACIONAL_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ab6a3743-d8f2-4103-a100-3364fa42f152" stretchType="RelativeToBandHeight" x="97" y="222" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARGO_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="782fd234-09ae-4c75-8de9-575c95efe380" stretchType="RelativeToBandHeight" x="97" y="233" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUCURSAL_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3af652ec-1e0b-486f-9a50-e65e4792f094" stretchType="RelativeToBandHeight" x="97" y="244" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RMU_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f7544237-b15e-449c-907c-2b06d6cfe990" stretchType="RelativeToBandHeight" x="97" y="255" width="181" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PARTIDA_ACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b6fb8baa-e6ce-4d59-beba-19306fdd3cef" x="0" y="352" width="554" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_gerencia_general}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="fc172c40-6ba1-44ad-acfa-6419b52559e8" x="0" y="479" width="554" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{p_gerencia_administrativa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="27040a92-38fc-4b35-9f04-c79f1d4d1ded" x="0" y="491" width="554" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{p_cargo_gerencia_administrativa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9485489f-e9e8-4903-b8b6-cd2e422ce09d" x="-1" y="364" width="555" height="13"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{p_cargo_gerencia_general}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd HH:mm:ss ">
+				<reportElement uuid="4e4ce232-7739-41e0-87e0-16b2c5bc8fd0" x="454" y="681" width="100" height="15"/>
+				<box rightPadding="3">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+</jasperReport>

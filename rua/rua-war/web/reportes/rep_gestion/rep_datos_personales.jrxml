@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_datos_personales" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="31ddf22f-7102-495d-8bcd-5313c5f9e932">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ACTIVO_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+EMP.ACTIVO_GTEMP,
+EMP.IDE_GTEMP,
+DOCUMENTO_IDENTIDAD_GTEMP,
+APELLIDO_PATERNO_GTEMP ||' '||
+APELLIDO_MATERNO_GTEMP||' '||
+PRIMER_NOMBRE_GTEMP ||' '||
+SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+GEN.ide_gtgen,
+GEN.DETALLE_GTGEN,
+tdi.ide_gttdi,
+TDI.DETALLE_GTTDI,
+esc.ide_gtesc,
+ESC.DETALLE_GTESC,
+DIP.ide_gedip,
+DIP.DETALLE_GEDIP,
+tis.ide_gttis,
+TIS.DETALLE_GTTIS,
+nac.ide_gtnac,
+NAC.DETALLE_GTNAC,
+
+FECHA_NACIMIENTO_GTEMP,
+CARGO_PUBLICO_GTEMP
+from GTH_EMPLEADO EMP
+left join GTH_GENERO GEN on GEN.IDE_GTGEN=EMP.IDE_GTGEN
+left join GTH_TIPO_DOCUMENTO_IDENTIDAD TDI on TDI.IDE_GTTDI=EMP.IDE_GTTDI
+left join GTH_ESTADO_CIVIL ESC on ESC.IDE_GTESC=EMP.IDE_GTESC
+left join GEN_DIVISION_POLITICA DIP on DIP.IDE_GEDIP=EMP.IDE_GEDIP
+left join GTH_TIPO_SANGRE TIS on TIS.IDE_GTTIS=EMP.IDE_GTTIS
+left join GTH_NACIONALIDAD NAC on NAC.IDE_GTNAC=EMP.IDE_GTNAC
+where  EMP.IDE_GTEMP in($P!{IDE_GTEMP}) and EMP.ACTIVO_GTEMP IN($P!{ACTIVO_GTEMP})
+ORDER BY EMP.ACTIVO_GTEMP ASC,NOMBRES ASC]]>
+	</queryString>
+	<field name="activo_gtemp" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de documento de identidad que posee el empleado.]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="ide_gtgen" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gth_genero.]]></fieldDescription>
+	</field>
+	<field name="detalle_gtgen" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gtgen]]></fieldDescription>
+	</field>
+	<field name="ide_gttdi" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo proviene de la tabla tipo gth_tipo_documento_identidad y define el tipo de documento del titular beneficiario.]]></fieldDescription>
+	</field>
+	<field name="detalle_gttdi" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gttdi]]></fieldDescription>
+	</field>
+	<field name="ide_gtesc" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gth_estado_civil.]]></fieldDescription>
+	</field>
+	<field name="detalle_gtesc" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gtesc]]></fieldDescription>
+	</field>
+	<field name="ide_gedip" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gedip]]></fieldDescription>
+	</field>
+	<field name="detalle_gedip" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la division politica, ejemplo, ecuador, pichincha, quito, etc]]></fieldDescription>
+	</field>
+	<field name="ide_gttis" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gth_tipo_sangre.]]></fieldDescription>
+	</field>
+	<field name="detalle_gttis" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gttis]]></fieldDescription>
+	</field>
+	<field name="ide_gtnac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gtnac]]></fieldDescription>
+	</field>
+	<field name="detalle_gtnac" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gtnac]]></fieldDescription>
+	</field>
+	<field name="fecha_nacimiento_gtemp" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de nacimiento del empleado.]]></fieldDescription>
+	</field>
+	<field name="cargo_publico_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define si empleado desempena un cargo publico o privado. 1 pulbico, 0 privado]]></fieldDescription>
+	</field>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<group name="ACTIVO">
+		<groupExpression><![CDATA[$F{activo_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band height="27">
+				<textField>
+					<reportElement uuid="086a2059-aa07-4e7b-aa82-3ec05c3d7acf" x="0" y="0" width="802" height="15"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" pdfFontName="Times-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{activo_gtemp}==1?"EMPLEADOS ACTIVOS":"EMPLEADOS INACTIVOS"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="cc2257c8-5a27-4edf-abdf-62a71f477584" x="269" y="15" width="45" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[GENERO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="30b2cb7e-0269-4668-a508-5c80f1e40672" x="314" y="15" width="43" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[T. DOC]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="24d419df-b14b-4cf3-855e-34af9e848b18" x="357" y="15" width="60" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DOCUMENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a74f3c6a-6665-4d4c-ae48-9658576c4105" x="417" y="15" width="60" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[ESTADO CIVIL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="95e8b20c-88bc-4bca-b279-079ebfd56029" x="477" y="15" width="41" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[T.SANGRE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b5d71142-de89-421f-8deb-338e87d500c2" x="593" y="15" width="69" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[NACIONALIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="aedd2f4a-67b4-444c-8779-da627aab3a85" x="518" y="15" width="75" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[LUGAR NACIMIENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="77cff31a-9870-41a8-a2ef-087bcc3a1aca" x="30" y="15" width="239" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[NOMBRES EMPLEADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="21b4d7d2-3ec6-42a3-a77e-e0c022166a69" x="662" y="15" width="58" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[F.NACIMIENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9fcf79d1-a4eb-49bb-8d10-03772a2b78f2" x="720" y="15" width="58" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CARGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a7c3ca39-50bf-4768-8dbe-6f1cd36adbd2" x="0" y="15" width="30" height="12"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ab385065-c68a-4cc5-ad9e-84516b6b9c05" x="778" y="15" width="24" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[ACT.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="EMPLEADO">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="cc595d48-b1d3-4733-a12f-a39e6da2471c" x="0" y="-18" width="802" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="39a8df6c-7cfb-4f18-b195-b356f058765e" positionType="Float" stretchType="RelativeToBandHeight" x="269" y="0" width="45" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gtgen}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5f999b6d-6a5f-424c-847d-84250ec74c8e" positionType="Float" stretchType="RelativeToBandHeight" x="314" y="0" width="43" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gttdi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0bf83cc6-10f7-4051-8dc8-bdfd6467c067" positionType="Float" stretchType="RelativeToBandHeight" x="357" y="0" width="60" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1aa0d251-16a9-4550-ad0d-1a96aee13260" positionType="Float" stretchType="RelativeToBandHeight" x="417" y="0" width="60" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gtesc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e593e681-c27e-4c4b-b746-7ed316c29a72" positionType="Float" stretchType="RelativeToBandHeight" x="477" y="0" width="41" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gttis}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="41862237-75e0-47e1-be9b-ff1de62b970d" positionType="Float" stretchType="RelativeToBandHeight" x="593" y="0" width="69" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gtnac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2bfa261d-c42d-484c-b0f6-3fc60ab86c34" positionType="Float" stretchType="RelativeToBandHeight" x="518" y="0" width="75" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gedip}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ee66a5ee-7262-424a-a7a5-0644ed707341" positionType="Float" stretchType="RelativeToBandHeight" x="30" y="0" width="239" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="6" isBold="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="62719648-c582-4637-83f6-502ac375d2a9" stretchType="RelativeToBandHeight" x="662" y="0" width="58" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_nacimiento_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2b7f754c-6080-4fc2-a8c0-417d52e7f269" stretchType="RelativeToBandHeight" x="720" y="0" width="58" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo_publico_gtemp}==1?"PUBLICO":
+$F{cargo_publico_gtemp}==null?"PRIVADO":"PRIVADO"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c9ea69a4-d0f8-4d9a-a679-90e39e374919" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="44ebe2d4-4233-4fe8-b83e-db0e99d3c2a7" positionType="Float" stretchType="RelativeToBandHeight" x="778" y="0" width="24" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{activo_gtemp}==1?"SI":"NO"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="50">
+			<textField>
+				<reportElement uuid="ba9766e9-2328-433c-be87-948cf59858b4" x="682" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="b4d18de0-cca6-40c1-938f-07408119c1f6" x="762" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

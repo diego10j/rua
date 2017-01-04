@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_telefono_empleado" language="groovy" pageWidth="80" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="80" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="aad48f04-f2f0-4804-8bfd-c67ace5939da">
+	<property name="ireport.zoom" value="7.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT TEL.NUMERO_TELEFONO_GTTEL FROM GTH_EMPLEADO EMP
+LEFT JOIN GTH_TELEFONO TEL ON TEL.IDE_GTEMP=EMP.IDE_GTEMP
+WHERE EMP.IDE_GTEMP=$P{IDE_GTEMP}]]>
+	</queryString>
+	<field name="numero_telefono_gttel" class="java.lang.String">
+		<fieldDescription><![CDATA[numero_telefono_gttel]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6f2c4e1e-83f1-4fc0-9862-bdbeba04b98f" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_telefono_gttel}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

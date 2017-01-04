@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_lugar_donde_vive" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b1c99388-e004-42f2-8dbc-8e2ef5dc1c27">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT EMP.IDE_GTEMP,
+DP5.DETALLE_GEDIP AS PROVINCIA_VIVE,
+DP4.DETALLE_GEDIP AS CANTON_VIVE,
+DP2.DETALLE_GEDIP AS PARROQUIA_VIVE
+FROM GTH_EMPLEADO EMP
+LEFT JOIN GTH_DIRECCION DIR ON DIR.IDE_GTEMP=EMP.IDE_GTEMP
+LEFT JOIN GEN_DIVISION_POLITICA DP2 ON DIR.IDE_GEDIP=DP2.IDE_GEDIP
+LEFT JOIN GEN_TIPO_DIVISION_POLITICA TDP1 ON TDP1.IDE_GETDP=DP2.IDE_GETDP AND TDP1.NIVEL_GETDP IN(5)
+LEFT JOIN GEN_DIVISION_POLITICA DP3 ON DP3.IDE_GEDIP=DP2.GEN_IDE_GEDIP
+LEFT JOIN GEN_DIVISION_POLITICA DP4 ON DP4.IDE_GEDIP=DP3.GEN_IDE_GEDIP
+LEFT JOIN GEN_DIVISION_POLITICA DP5 ON DP5.IDE_GEDIP=DP4.GEN_IDE_GEDIP
+WHERE EMP.IDE_GTEMP=$P{IDE_GTEMP} AND EMP.ACTIVO_GTEMP=1]]>
+	</queryString>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="PROVINCIA_VIVE" class="java.lang.String"/>
+	<field name="CANTON_VIVE" class="java.lang.String"/>
+	<field name="PARROQUIA_VIVE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="291d4325-58b3-40f5-b73e-1386414e967c" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCIA_VIVE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b8c037d8-f4f2-4fac-a6b7-c3543c24dab4" positionType="Float" stretchType="RelativeToBandHeight" x="65" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTON_VIVE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a5c363a6-71f5-4d46-ae97-36d864d3b7db" positionType="Float" stretchType="RelativeToBandHeight" x="130" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PARROQUIA_VIVE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

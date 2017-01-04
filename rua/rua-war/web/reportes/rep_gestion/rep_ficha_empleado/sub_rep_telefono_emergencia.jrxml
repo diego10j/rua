@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_telefono_emergencia" language="groovy" pageWidth="50" pageHeight="842" columnWidth="50" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4702cf76-2d73-4690-b44a-70d236956ffb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTPEE" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT TEL.NUMERO_TELEFONO_GTTEL FROM GTH_PERSONA_EMERGENCIA PEE
+LEFT JOIN GTH_TELEFONO TEL ON TEL.IDE_GTPEE=PEE.IDE_GTPEE
+WHERE PEE.IDE_GTPEE=$P{IDE_GTPEE} AND PEE.ACTIVO_GTPEE=1
+
+
+]]>
+	</queryString>
+	<field name="NUMERO_TELEFONO_GTTEL" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b3a3a13f-7154-4893-a660-2db926f9ff35" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NUMERO_TELEFONO_GTTEL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

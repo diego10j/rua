@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_reporte_union_libre" language="groovy" pageWidth="570" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="626cdbd1-364d-4a38-b613-e6dc5db7761e">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="477"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT a.AUTORIDAD_NOTARIA_GTUNL,a.LUGAR_FECHA_GTUNL FROM GTH_UNION_LIBRE a
+left join gth_conyuge b on b.ide_gtcon=a.ide_gtcon
+WHERE b.ide_gtemp=$P{IDE_GTEMP}  AND ACTIVO_GTUNL=true]]>
+	</queryString>
+	<field name="autoridad_notaria_gtunl" class="java.lang.String">
+		<fieldDescription><![CDATA[autoridad_notaria_gtunl]]></fieldDescription>
+	</field>
+	<field name="lugar_fecha_gtunl" class="java.lang.String">
+		<fieldDescription><![CDATA[lugar_fecha_gtunl]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0ba3f1c9-2086-4ab1-bbe5-3f63c3e64c5e" x="0" y="20" width="320" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Autoridad Competente (Juez/Notaria)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="26a922b5-7cef-47fc-81e8-472b1a9c376c" x="320" y="20" width="250" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Fecha de Celebración (Ciudad, día, mes y  año)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6db625cb-e946-4173-b049-cab6e92aa80d" x="0" y="0" width="570" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ En el caso del Estado Civil sea Unión Libre Detallar la información que consta en la parte de abajo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8425cc97-6066-417b-9246-50ba4b217284" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="320" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{autoridad_notaria_gtunl}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cb9477e7-e05a-4c05-85cf-275c383a1029" positionType="Float" stretchType="RelativeToBandHeight" x="320" y="0" width="250" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lugar_fecha_gtunl}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
