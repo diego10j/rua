@@ -61,8 +61,8 @@ public class pre_programa extends Pantalla {
                 tab_programa.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "");
 		tab_programa.getColumna("ide_prfup").setAutoCompletar();
 		tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
-                tab_programa.getColumna("ide_prcla").setAutoCompletar();
-
+                //tab_programa.getColumna("ide_prcla").setAutoCompletar();
+                tab_programa.getColumna("ide_prcla").setLongitud(-1);
 		tab_programa.getColumna("ide_prcla").setLectura(true);
 		tab_programa.getColumna("activo_prpro").setValorDefecto("true");
 		tab_programa.agregarRelacion(tab_vigente);

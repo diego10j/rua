@@ -167,6 +167,15 @@ public class pre_anual_egresos extends Pantalla {
 		set_programa.setId("set_programa");
 		set_programa.setSeleccionTabla(ser_presupuesto.getPrograma("true,false"),"IDE_PRPRO");
 		set_programa.getTab_seleccion().getColumna("cod_programa_prpro").setFiltroContenido();
+		set_programa.getTab_seleccion().getColumna("codigo_prfup").setFiltroContenido();
+		set_programa.getTab_seleccion().getColumna("detalle_prfup").setFiltroContenido();
+		set_programa.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltroContenido();
+                
+		set_programa.getTab_seleccion().getColumna("cod_programa_prpro").setNombreVisual("COD. PROGRAMA");
+		set_programa.getTab_seleccion().getColumna("codigo_prfup").setNombreVisual("COD. PROYECTO");
+		set_programa.getTab_seleccion().getColumna("detalle_prfup").setNombreVisual("DET. PROYECTO");
+		set_programa.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setNombreVisual("CUENTA PRESUPUESTARIA");
+                
 		set_programa.getBot_aceptar().setMetodo("aceptarPrograma");
 		set_programa.getTab_seleccion().ejecutarSql();
 		set_programa.setRadio();
