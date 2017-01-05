@@ -46,7 +46,7 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setVisible(true);
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.setCondicionSucursal(true);
-        tab_tabla1.setRecuperarLectura(true);
+        //tab_tabla1.setRecuperarLectura(true);
         tab_tabla1.setRows(10);
         tab_tabla1.setCondicion("ide_geper=-1");
         tab_tabla1.setCampoOrden("fecha_trans_ccctr desc");
