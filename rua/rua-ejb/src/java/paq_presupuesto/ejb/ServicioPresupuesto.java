@@ -227,8 +227,10 @@ public String getSaldoPoa(String ide_prpoa){
 }
 
 public String getPrograma (String activo){
-	String tab_programa=("select  ide_prpro,cod_programa_prpro from pre_programa" +
-			" where activo_prpro in ("+activo+") order by cod_programa_prpro");
+	String tab_programa=("select  ide_prpro,cod_programa_prpro,codigo_prfup,detalle_prfup,codigo_clasificador_prcla,descripcion_clasificador_prcla " +
+                            " from pre_programa a, pre_funcion_programa b,pre_clasificador c" +
+                            " where a.ide_prfup = b.ide_prfup and a.ide_prcla = c.ide_prcla" +
+                            " and activo_prpro in ("+activo+") order by cod_programa_prpro");
 	return tab_programa;
 	
 }
