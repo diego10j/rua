@@ -418,4 +418,20 @@ public class ServicioCuentasCxP extends ServicioBase {
         return "update cxp_cabece_factur set pagado_cpcfa=true where ide_cpcfa=" + ide_cpcfa;
     }
 
+    /**
+     * Retorna Todas lOS SALDOS CXP de los proveedores
+     *
+     * @return
+     */
+    public String getSqlTransaccionesCxP() {
+        return "SELECT d.ide_geper,identificac_geper AS IDENTIFICACION,nom_geper as PROVEEDOR,sum (valor_cpdtr*signo_cpttr) as SALDO\n"
+                + "FROM cxp_detall_transa a \n"
+                + "INNER JOIN cxp_tipo_transacc b on a.IDE_CPTTR =b.IDE_CPTTR \n"
+                + "INNER JOIN cxp_cabece_transa d on a.ide_cpctr=d.ide_cpctr \n"
+                + "INNER JOIN gen_persona e on d.ide_geper= e.ide_geper\n"
+                + "WHERE d.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "GROUP BY d.ide_geper,identificac_geper,nom_geper\n"
+                + "order by nom_geper";
+    }
+
 }

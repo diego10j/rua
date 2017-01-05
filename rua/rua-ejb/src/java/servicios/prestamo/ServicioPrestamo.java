@@ -45,6 +45,7 @@ public class ServicioPrestamo extends ServicioBase {
                 + "num_prestamo_ipcpr,observacion_ipcpr as nom_geper,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
                 + "(select sum(capital_ipdpr) as capital from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select sum(interes_ipdpr) as interes from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
+                + "(select sum(capital_ipdpr) as SALDO from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=false),\n"
                 + "(select sum(cuota_ipdpr) as cuota from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select count(pagado_ipdpr) as pagos from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=true),  \n"
                 + "(select coalesce(sum(cuota_ipdpr),0) from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=true) as valor_pagado,\n"
@@ -52,6 +53,23 @@ public class ServicioPrestamo extends ServicioBase {
                 + "from  iyp_cab_prestamo a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                 + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "order by fecha_prestamo_ipcpr desc";
+    }
+
+    public String getSqlPrestamosCliente(String ide_geper) {
+
+        return "select a.ide_ipcpr,a.fecha_prestamo_ipcpr,case when es_ingreso_ipcpr = true THEN 'INGRESO' else 'EGRESO'  end as tipo,\n"
+                + "num_prestamo_ipcpr,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
+                + "(select sum(capital_ipdpr) as capital from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
+                + "(select sum(interes_ipdpr) as interes from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
+                + "(select sum(capital_ipdpr) as SALDO from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=false),\n"
+                + "(select sum(cuota_ipdpr) as cuota from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
+                + "(select count(pagado_ipdpr) as pagos from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=true),  \n"
+                + "(select coalesce(sum(cuota_ipdpr),0) from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=true) as valor_pagado,\n"
+                + "(select max(fecha_ipdpr) from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=true) as fecha_ultimo_pago\n"
+                + "from  iyp_cab_prestamo a\n"
+                + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and ide_geper=" + ide_geper + " "
                 + "order by fecha_prestamo_ipcpr desc";
     }
 

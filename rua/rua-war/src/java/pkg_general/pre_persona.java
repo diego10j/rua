@@ -19,7 +19,7 @@ import sistema.aplicacion.Pantalla;
 public class pre_persona extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
-    private Division div_division = new Division();
+
     private AutoCompletar aut_filtro_persona = new AutoCompletar();
     private String persona = "-1";
 
@@ -29,6 +29,7 @@ public class pre_persona extends Pantalla {
         aut_filtro_persona.setAutoCompletar("select ide_geper,identificac_geper,nom_geper from gen_persona where nivel_geper='HIJO' "
                 + "and ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_filtro_persona.setMetodoChange("filtrar_persona");
+        aut_filtro_persona.setAutocompletarContenido();
         bar_botones.agregarComponente(new Etiqueta("Persona: "));
         bar_botones.agregarComponente(aut_filtro_persona);
 
@@ -103,7 +104,7 @@ public class pre_persona extends Pantalla {
         pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
         bar_botones.getBot_insertar().setRendered(false);
         bar_botones.getBot_eliminar().setRendered(false);
-
+        Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
 

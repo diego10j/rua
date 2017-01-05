@@ -37,7 +37,7 @@ public class ServicioTesoreria {
     public String getSqlComboCuentasBancarias() {
         return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
                 + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
-                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + " "
+                + "where b.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and ide_tetcb !=" + utilitario.getVariable("p_tes_tipo_cuenta_banco_virtual") + " "
                 + "order by nombre_teban,nombre_tecba";
     }
@@ -50,7 +50,13 @@ public class ServicioTesoreria {
     public String getSqlComboCuentas() {
         return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
                 + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
-                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + " "
+                + "where b.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "order by nombre_teban,nombre_tecba";
+    }
+    
+        public String getSqlComboCuentasTodas() {
+        return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
+                + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "                
                 + "order by nombre_teban,nombre_tecba";
     }
 
@@ -63,7 +69,7 @@ public class ServicioTesoreria {
     public String getSqlComboCajas() {
         return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
                 + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
-                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + " "
+                + "where b.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and ide_tetcb =" + utilitario.getVariable("p_tes_tipo_cuenta_banco_virtual") + " "
                 + "order by nombre_teban,nombre_tecba";
     }

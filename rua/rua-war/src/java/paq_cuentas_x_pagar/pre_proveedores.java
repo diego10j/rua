@@ -28,6 +28,7 @@ import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
+import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
 import sistema.aplicacion.Pantalla;
 
@@ -58,6 +59,9 @@ public class pre_proveedores extends Pantalla {
 
     @EJB
     private final ServicioComprobanteContabilidad ser_comp_conta = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
+
+    @EJB
+    private final ServicioCuentasCxP ser_cuentaCXP = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
 
     /*INFOMRES*/
     private GraficoCartesiano gca_grafico;
@@ -96,6 +100,7 @@ public class pre_proveedores extends Pantalla {
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Gráfico de Compras", "dibujarGrafico", "ui-icon-bookmark");
+        mep_menu.agregarItem("Reporte Cuentas por Pagar", "dibujarReporteCxP", "ui-icon-bookmark");
         mep_menu.agregarItem("Productos Comprados", "dibujarProductosComprados", "ui-icon-cart");
 
         agregarComponente(mep_menu);
@@ -142,12 +147,33 @@ public class pre_proveedores extends Pantalla {
                 case 10:
                     dibujarIngresarTransacciones();
                     break;
+                case 11:
+                    dibujarReporteCxP();
+                    break;
                 default:
                     dibujarProveedor();
             }
         } else {
             limpiar();
         }
+    }
+
+    public void dibujarReporteCxP() {
+//12
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_cuentaCXP.getSqlTransaccionesCxP());
+        tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.setLectura(true);
+        tab_tabla.setColumnaSuma("SALDO");
+        tab_tabla.setRows(20);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        mep_menu.dibujar(12, "REPORTE  CUENTAS POR PAGAR", pat_panel);
+
     }
 
     /**

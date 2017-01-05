@@ -512,4 +512,20 @@ public class ServicioFacturaCxC extends ServicioBase {
         }
     }
 
+    /**
+     * Retorna Todas lOS SALDOS CXc de los clientes
+     *
+     * @return
+     */
+    public String getSqlTransaccionesCxC() {
+        return "SELECT d.ide_geper,identificac_geper AS IDENTIFICACION,nom_geper as CLIENTE,sum (valor_ccdtr*signo_ccttr) as SALDO\n"
+                + "FROM cxc_detall_transa a \n"
+                + "INNER JOIN cxc_tipo_transacc b on a.IDE_CCTTR =b.IDE_CCTTR \n"
+                + "INNER JOIN cxc_cabece_transa d on a.ide_ccctr=d.ide_ccctr \n"
+                + "INNER JOIN gen_persona e on d.ide_geper= e.ide_geper\n"
+                + "WHERE d.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
+                + "GROUP BY d.ide_geper,identificac_geper,nom_geper\n"
+                + "order by nom_geper";
+    }
+
 }

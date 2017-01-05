@@ -95,6 +95,7 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_retencion.getSqlConsultaImpuestos(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_impuesto.getValue())));
         tab_tabla.setCampoPrimaria("ide_cndre");
+        tab_tabla.getColumna("nombre_cncim").setFiltro(true);
         tab_tabla.setColumnaSuma("valor_cndre,base_cndre");
         tab_tabla.setLectura(true);
         tab_tabla.setRows(25);
@@ -122,6 +123,7 @@ public class pre_retenciones extends Pantalla {
     public void actualizarConsultar() {
         tab_tabla.setSql(ser_retencion.getSqlConsultaImpuestos(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_impuesto.getValue())));
         tab_tabla.ejecutarSql();
+
     }
 
     public void dibujarListadoVentas() {
@@ -172,6 +174,8 @@ public class pre_retenciones extends Pantalla {
         } else if (mep_menu.getOpcion() == 2) {
             tab_tabla.setSql(ser_retencion.getSqlRetencionesAnuladas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla.ejecutarSql();
+        } else if (mep_menu.getOpcion() == 4) {
+            actualizarConsultar();
         }
     }
 

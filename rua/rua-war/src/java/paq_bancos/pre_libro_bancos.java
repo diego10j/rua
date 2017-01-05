@@ -263,7 +263,7 @@ public class pre_libro_bancos extends Pantalla {
         pt.getMenuTabla().setRendered(false);
         dia_modifica.getGri_cuerpo().getChildren().clear();
         dia_modifica.setDialogo(tab_tabla2);
- 
+
         mep_menu.dibujar(2, "CONSULTA DE MOVIMIENTOS", pat_panel);
     }
 
@@ -716,7 +716,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta1 = new AutoCompletar();
         aut_cuenta1.setId("aut_cuenta1");
         //aut_cuenta1.setMetodoChange("cambioCuenta");
-        aut_cuenta1.setAutoCompletar(aut_cuentas.getLista());
+        aut_cuenta1.setAutoCompletar(ser_tesoreria.getSqlComboCuentasTodas());
         aut_cuenta1.setDropdown(true);
         aut_cuenta1.setAutocompletarContenido();
         aut_cuenta1.setSize(66);

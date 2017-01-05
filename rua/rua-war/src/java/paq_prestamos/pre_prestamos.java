@@ -242,9 +242,7 @@ public class pre_prestamos extends Pantalla {
     }
 
     public void seleccionaBeneficiario(SelectEvent evt) {
-        System.out.println("xxxxx");
-        tab_tabla1.seleccionarFila(evt);
-        tab_tabla1.setValor("observacion_ipcpr", aut_prestamos.getValorArreglo(1));
+        tab_tabla1.setValor("observacion_ipcpr", tab_tabla1.getValorArreglo("ide_geper", 1));
         utilitario.addUpdateTabla(tab_tabla1, "observacion_ipcpr", "");
     }
 
@@ -307,10 +305,13 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
         tab_tabla1.getColumna("fecha_prestamo_ipcpr").setNombreVisual("FECHA");
         tab_tabla1.getColumna("num_prestamo_ipcpr").setNombreVisual("NUM. PRESTAMO");
+        tab_tabla1.getColumna("num_prestamo_ipcpr").setFiltroContenido();
         tab_tabla1.getColumna("monto_ipcpr").setNombreVisual("MONTO");
         tab_tabla1.getColumna("monto_ipcpr").alinearDerecha();
         tab_tabla1.getColumna("interes_ipcpr").setNombreVisual("% INTERES");
         tab_tabla1.getColumna("interes_ipcpr").alinearDerecha();
+        tab_tabla1.getColumna("saldo").alinearDerecha();
+        tab_tabla1.setColumnaSuma("saldo,capital,interes");
         tab_tabla1.getColumna("num_pagos_ipcpr").setNombreVisual("NUM. PAGOS");
         tab_tabla1.getColumna("num_pagos_ipcpr").alinearDerecha();
         tab_tabla1.getColumna("pagos").setNombreVisual("PAGADOS");

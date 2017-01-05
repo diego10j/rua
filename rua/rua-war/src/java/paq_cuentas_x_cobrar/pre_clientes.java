@@ -28,6 +28,7 @@ import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
+import servicios.prestamo.ServicioPrestamo;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -58,6 +59,8 @@ public class pre_clientes extends Pantalla {
     private AutoCompletar aut_cuentas;
 
     private AsientoContable asc_asiento = new AsientoContable();
+    @EJB
+    private final ServicioPrestamo ser_prestamo = (ServicioPrestamo) utilitario.instanciarEJB(ServicioPrestamo.class);
 
     /*INFOMRES*/
     private GraficoCartesiano gca_grafico;
@@ -88,11 +91,13 @@ public class pre_clientes extends Pantalla {
         mep_menu.agregarItem("Ingresar Transacción", "dibujarIngresarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Productos Cliente", "dibujarProductos", "ui-icon-cart");
         mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
+        mep_menu.agregarItem("Préstamos - Créditos", "dibujarPrestamos", "ui-icon-calculator");
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
         mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Gráfico de Ventas", "dibujarGrafico", "ui-icon-bookmark");
+        mep_menu.agregarItem("Reporte Cuentas por Cobrar", "dibujarReporteCxC", "ui-icon-bookmark");
         mep_menu.agregarItem("Productos Vendidos", "dibujarProductosVendidos", "ui-icon-cart");
 
         agregarComponente(mep_menu);
@@ -139,12 +144,78 @@ public class pre_clientes extends Pantalla {
                 case 10:
                     dibujarIngresarTransacciones();
                     break;
+                case 11:
+                    dibujarPrestamos();
+                    break;
+                case 12:
+                    dibujarReporteCxC();
+                    break;
                 default:
                     dibujarCliente();
             }
         } else {
             limpiar();
         }
+    }
+
+    public void dibujarReporteCxC() {
+//12
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_factura.getSqlTransaccionesCxC());
+        tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.setLectura(true);
+        tab_tabla.setColumnaSuma("SALDO");
+        tab_tabla.setRows(20);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        mep_menu.dibujar(12, "REPORTE  CUENTAS POR COBRAR", pat_panel);
+
+    }
+
+    public void dibujarPrestamos() {
+//11  
+        Grupo gru_grupo = new Grupo();
+        if (isClienteSeleccionado()) {
+
+            tab_tabla = new Tabla();
+            tab_tabla.setId("tab_tabla");
+            tab_tabla.setSql(ser_prestamo.getSqlPrestamosCliente(null));
+            tab_tabla.getColumna("ide_ipcpr").setVisible(false);
+            tab_tabla.getColumna("tipo").setLongitud(10);
+            tab_tabla.getColumna("fecha_prestamo_ipcpr").setNombreVisual("FECHA");
+            tab_tabla.getColumna("num_prestamo_ipcpr").setNombreVisual("NUM. PRESTAMO");
+            tab_tabla.getColumna("monto_ipcpr").setNombreVisual("MONTO");
+            tab_tabla.getColumna("monto_ipcpr").alinearDerecha();
+            tab_tabla.getColumna("interes_ipcpr").setNombreVisual("% INTERES");
+            tab_tabla.getColumna("interes_ipcpr").alinearDerecha();
+            tab_tabla.getColumna("num_pagos_ipcpr").setNombreVisual("NUM. PAGOS");
+            tab_tabla.getColumna("num_pagos_ipcpr").alinearDerecha();
+            tab_tabla.getColumna("pagos").setNombreVisual("PAGADOS");
+            tab_tabla.getColumna("saldo").alinearDerecha();
+            tab_tabla.getColumna("pagos").alinearDerecha();
+            tab_tabla.getColumna("valor_pagado").setNombreVisual("VALOR PAGADO");
+            tab_tabla.getColumna("valor_pagado").alinearDerecha();
+            tab_tabla.getColumna("capital").alinearDerecha();
+            tab_tabla.getColumna("interes").alinearDerecha();
+            tab_tabla.getColumna("cuota").alinearDerecha();
+            tab_tabla.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
+            tab_tabla.setColumnaSuma("saldo,capital,interes");
+            tab_tabla.setOrdenar(false);
+            tab_tabla.setNumeroTabla(-1);
+            tab_tabla.setRows(20);
+            tab_tabla.setLectura(true);
+            tab_tabla.dibujar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_tabla);
+            pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+            gru_grupo.getChildren().add(pat_panel);
+        }
+        mep_menu.dibujar(11, "PRÉSTAMOS - CRÉDITOS", gru_grupo);
+
     }
 
     /**

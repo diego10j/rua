@@ -61,14 +61,16 @@ public class ServicioRetenciones extends ServicioBase {
         }
         ide_cncim = ide_cncim.replace("null", "").trim();
         if (ide_cncim.isEmpty() == false) {
-            ide_cncim = " and ide_cncim=" + ide_cncim + " ";
+            ide_cncim = " and a.ide_cncim=" + ide_cncim + " ";
         }
 
-        return "select a.ide_cndre, fecha_emisi_cncre,numero_cncre,nom_geper,numero_cpcfa,base_cndre,porcentaje_cndre,valor_cndre from con_detall_retenc a\n"
+        return "select a.ide_cndre, fecha_emisi_cncre,nombre_cncim,numero_cncre,nom_geper,numero_cpcfa,base_cndre,porcentaje_cndre,valor_cndre from con_detall_retenc a\n"
                 + "inner join con_cabece_retenc b  on a.ide_cncre=b.ide_cncre\n"
                 + "left join cxp_cabece_factur c on b.ide_cncre=c.ide_cncre\n"
                 + "left join gen_persona d on c.ide_geper=d.ide_geper\n"
+                + "left join con_cabece_impues e on a.ide_cncim=e.ide_cncim "
                 + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and ide_cnere!=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " "
                 + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
                 + "and es_venta_cncre = false\n"
                 + autorizacion_cncre
@@ -115,7 +117,8 @@ public class ServicioRetenciones extends ServicioBase {
         List lis_cabecera_retencion = utilitario.getConexion().consultar(str_sql);
         if (lis_cabecera_retencion.size() > 0) {
             if (lis_cabecera_retencion.get(0) != null && !lis_cabecera_retencion.get(0).toString().isEmpty()) {
-                String num_max = "0" + lis_cabecera_retencion.get(0) + ""; //aumenta cero al inicio por int
+                String num_max = lis_cabecera_retencion.get(0) + "";
+                num_max = utilitario.generarCero(14 - num_max.length()) + num_max;
                 String num_max_retencion = num_max.substring(0, 6);
                 String aux_num = num_max.substring(6, num_max.length());
                 try {

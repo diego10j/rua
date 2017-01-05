@@ -50,7 +50,7 @@ public class pre_transacciones_cxp_otros extends Pantalla {
         tab_tabla1.setCondicion("ide_geper=-1");
         tab_tabla1.setCampoOrden("fecha_trans_cpctr desc");
         tab_tabla1.setTipoFormulario(false);
-        tab_tabla1.setRecuperarLectura(true);
+        //tab_tabla1.setRecuperarLectura(true);
         tab_tabla1.setRows(10);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();

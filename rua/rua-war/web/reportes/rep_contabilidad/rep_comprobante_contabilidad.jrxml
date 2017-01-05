@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
-	<property name="ireport.zoom" value="4.707642565081504"/>
-	<property name="ireport.x" value="24"/>
-	<property name="ireport.y" value="690"/>
+	<property name="ireport.zoom" value="3.215383215000002"/>
+	<property name="ireport.x" value="1078"/>
+	<property name="ireport.y" value="474"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -171,7 +171,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 	<columnHeader>
 		<band height="13" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="0" y="0" width="105" height="13"/>
+				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="0" y="0" width="86" height="13"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
@@ -213,7 +213,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[HABER]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="105" y="0" width="195" height="12"/>
+				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="86" y="0" width="214" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
@@ -257,7 +257,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="58114e6c-cec5-40bd-a5ce-822b090970dc" x="0" y="0" width="105" height="14"/>
+				<reportElement uuid="58114e6c-cec5-40bd-a5ce-822b090970dc" x="0" y="0" width="86" height="14"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -271,7 +271,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" x="105" y="0" width="195" height="14"/>
+				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" x="86" y="0" width="214" height="14"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -325,7 +325,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="172e03c6-880c-48ca-89f1-587ca5eaabf4" positionType="Float" stretchType="RelativeToBandHeight" x="105" y="0" width="1" height="14"/>
+				<reportElement uuid="172e03c6-880c-48ca-89f1-587ca5eaabf4" positionType="Float" stretchType="RelativeToBandHeight" x="85" y="0" width="1" height="14"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -361,7 +361,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="2316aa8a-345c-4700-b66f-849782c8bd19" x="105" y="-12" width="1" height="12"/>
+				<reportElement uuid="2316aa8a-345c-4700-b66f-849782c8bd19" x="85" y="-12" width="1" height="12"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -450,7 +450,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[Vto Bueno Director]]></text>
 			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="919e4047-9d25-49a3-af54-f7c26bb0eb1c" x="301" y="0" width="93" height="14"/>
+				<reportElement uuid="919e4047-9d25-49a3-af54-f7c26bb0eb1c" x="301" y="0" width="79" height="14"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -464,7 +464,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[$V{TOTAL_DEBE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="fa9c7618-56e3-4d62-877d-c21492f36df3" x="394" y="0" width="80" height="14"/>
+				<reportElement uuid="fa9c7618-56e3-4d62-877d-c21492f36df3" x="381" y="0" width="81" height="14"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -509,7 +509,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[Impresión:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ece3e23e-0ac4-48e4-8c27-dfb23a7c2dde" x="474" y="0" width="81" height="14"/>
+				<reportElement uuid="ece3e23e-0ac4-48e4-8c27-dfb23a7c2dde" x="463" y="0" width="92" height="14"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -535,13 +535,13 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="849c80be-c802-43d6-8981-4d708ac9a1c9" x="393" y="0" width="1" height="14"/>
+				<reportElement uuid="849c80be-c802-43d6-8981-4d708ac9a1c9" x="380" y="0" width="1" height="14"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="cd6d8d2b-8454-46e1-9fc6-66d13bc93628" x="473" y="0" width="1" height="14"/>
+				<reportElement uuid="cd6d8d2b-8454-46e1-9fc6-66d13bc93628" x="462" y="0" width="1" height="14"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
