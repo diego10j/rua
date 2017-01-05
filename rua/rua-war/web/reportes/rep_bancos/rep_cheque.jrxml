@@ -74,7 +74,7 @@ ORDER BY ide_cnlap desc]]>
 				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="238" y="71" width="28" height="14"/>
+				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="238" y="71" width="30" height="14"/>
 				<box rightPadding="1"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Quito, ]]></text>
@@ -85,33 +85,27 @@ ORDER BY ide_cnlap desc]]>
 				<textFieldExpression><![CDATA[$P{monto_letras}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="541b5932-f3d6-4cb6-8b60-ebd3dc7f27ad" x="268" y="71" width="14" height="14"/>
+				<reportElement uuid="541b5932-f3d6-4cb6-8b60-ebd3dc7f27ad" x="268" y="71" width="28" height="14"/>
 				<box rightPadding="1"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{dia}]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="8cf11921-eeb1-490e-89a4-aaa7a89f191f" x="283" y="71" width="14" height="14"/>
-				<box rightPadding="1"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[de]]></text>
-			</staticText>
 			<textField>
-				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="298" y="71" width="152" height="14"/>
-				<box rightPadding="1"/>
+				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="296" y="71" width="154" height="14"/>
+				<box rightPadding="0"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{mes}.equals("1")? "Enero del "+$P{anio}:
-$P{mes}.equals("2")? "Febrero del "+$P{anio}:
-$P{mes}.equals("3")? "Marzo del "+$P{anio}:
-$P{mes}.equals("4")? "Abril del "+$P{anio}:
-$P{mes}.equals("5")? "Mayo del "+$P{anio}:
-$P{mes}.equals("6")? "Junio del "+$P{anio}:
-$P{mes}.equals("7")? "Julio del  "+$P{anio}:
-$P{mes}.equals("8")? "Agosto del "+$P{anio}:
-$P{mes}.equals("9")? "Septiembre del "+$P{anio}:
-$P{mes}.equals("10")? "Octubre  del "+$P{anio}:
-$P{mes}.equals("11")? "Noviembre del "+$P{anio}:
-$P{mes}.equals("12")? "Diciembre del "+$P{anio}:""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{mes}.equals("1")? "Enero "+$P{dia}:
+$P{mes}.equals("2")? "Febrero "+$P{dia}:
+$P{mes}.equals("3")? "Marzo "+$P{dia}:
+$P{mes}.equals("4")? "Abril "+$P{dia}:
+$P{mes}.equals("5")? "Mayo "+$P{dia}:
+$P{mes}.equals("6")? "Junio "+$P{dia}:
+$P{mes}.equals("7")? "Julio "+$P{dia}:
+$P{mes}.equals("8")? "Agosto "+$P{dia}:
+$P{mes}.equals("9")? "Septiembre "+$P{dia}:
+$P{mes}.equals("10")? "Octubre "+$P{dia}:
+$P{mes}.equals("11")? "Noviembre "+$P{dia}:
+$P{mes}.equals("12")? "Diciembre "+$P{dia}:""]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement uuid="ecb3ddb2-5efa-4752-bc7c-96f942e6a423" x="-3" y="0" width="160" height="85"/>
@@ -275,6 +269,14 @@ $P{mes}.equals("12")? "Diciembre del "+$P{anio}:""]]></textFieldExpression>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement uuid="a4290f8d-20e7-403b-8614-fd81ab6f73d5" x="237" y="172" width="267" height="15"/>
+				<box leftPadding="3" rightPadding="0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COMPROBANTE: "+$F{nombre_cntcm} +" -  "+$F{numero_cnccc}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
