@@ -165,6 +165,9 @@ public class pre_proveedores extends Pantalla {
         tab_tabla.setSql(ser_cuentaCXP.getSqlTransaccionesCxP());
         tab_tabla.setCampoPrimaria("ide_geper");
         tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.getColumna("PROVEEDOR").setLongitud(190);
+        tab_tabla.getColumna("PROVEEDOR").setFiltroContenido();
+        tab_tabla.getColumna("IDENTIFICACION").setFiltroContenido();
         tab_tabla.setLectura(true);
         tab_tabla.setColumnaSuma("SALDO");
         tab_tabla.setRows(20);
