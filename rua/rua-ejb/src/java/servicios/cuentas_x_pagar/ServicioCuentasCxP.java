@@ -472,13 +472,13 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "order by nom_geper";
     }
 
-    public String getSqlAnticiposCliente(String ide_geper) {   
+    public String getSqlAnticiposCliente(String ide_geper) {
         return "select b.ide_cpctr,nom_geper,valor_cpdtr,observacion_cpdtr from cxp_detall_transa  a\n"
                 + "inner join cxp_cabece_transa b on a.ide_cpctr=b.ide_cpctr\n"
                 + "inner join gen_persona c on b.ide_geper=c.ide_geper\n"
                 + "where a.ide_cpttr=" + parametros.get("p_cxp_tipo_trans_anticipo") + "\n"
                 + "and b.ide_geper=" + ide_geper + "\n"
-                //  + "and b.ide_cpcfa is null " //sin factura --ahun no se utiliza
+                + "and b.ide_cpcfa is null " //sin factura --ahun no se utiliza
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
 }
