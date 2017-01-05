@@ -492,7 +492,7 @@ public class AsientoContable extends Dialogo {
                 if (ser_comprobante.isPeriodoValido(tab_cabe_asiento.getValor("fecha_trans_cnccc"))) {
                     if (tab_cabe_asiento.isFilaInsertada()) {
                         tab_cabe_asiento.setValor("hora_sistem_cnccc", utilitario.getHoraActual());
-                        tab_cabe_asiento.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_cabe_asiento.getValor("fecha_trans_cnccc")));
+                        tab_cabe_asiento.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_cabe_asiento.getValor("fecha_trans_cnccc"), tab_cabe_asiento.getValor("ide_cntcm")));
                     }
                     if (tab_cabe_asiento.guardar()) {
                         if (tab_deta_asiento.guardar()) {
@@ -520,6 +520,7 @@ public class AsientoContable extends Dialogo {
         if (ide_cnccc != null) {
             //SI EL ASIENTO ES TIPO CHEQUE            
             TablaGenerica tab_consulta = utilitario.consultar("select ide_cnccc,ide_tettb from tes_cab_libr_banc  where ide_cnccc=" + ide_cnccc + " and ide_tettb=" + parametros.get("p_tes_tran_cheque"));
+            tab_consulta.imprimirSql();
             if (tab_consulta.isEmpty() == false) {
                 setReporteCheque();
             } else {
@@ -600,6 +601,7 @@ public class AsientoContable extends Dialogo {
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ")");
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0");
                 utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in(" + relacion + ")) and ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in(" + relacion + ") ) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
                 //Asigna el ide_cnccc a la  facturas, documentos cxp,transaccion cxc o cxp y al libro bancos               
                 utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
@@ -607,6 +609,9 @@ public class AsientoContable extends Dialogo {
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + "))");
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + "))");
+                
+                utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
+                               
             }
         }
     }

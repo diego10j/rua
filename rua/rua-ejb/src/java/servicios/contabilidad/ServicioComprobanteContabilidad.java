@@ -17,22 +17,22 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioComprobanteContabilidad {
-    
+
     @EJB
     private ServicioContabilidadGeneral ser_contabilidad;
     private final Utilitario utilitario = new Utilitario();
-    
+
     public String getSqlTiposComprobante() {
         return "select ide_cntcm,nombre_cntcm from con_tipo_comproba where ide_empr=" + utilitario.getVariable("ide_empr");
     }
-    
+
     public String getSqlEstadosComprobante() {
         return "select ide_cneco,nombre_cneco from con_estado_compro where ide_empr=" + utilitario.getVariable("ide_empr");
     }
-    
+
     public String getSqlLugarAplica() {
         return "select ide_cnlap,nombre_cnlap from con_lugar_aplicac where ide_empr=" + utilitario.getVariable("ide_empr");
-        
+
     }
 
     /**
@@ -40,16 +40,17 @@ public class ServicioComprobanteContabilidad {
      * a pratir de una fecha
      *
      * @param fecha_trans_cnccc
+     * @param ide_cntcm Tipo de Comprobante
      * @return
      */
-    public String getSecuencial(String fecha_trans_cnccc) {
+    public String getSecuencial(String fecha_trans_cnccc, String ide_cntcm) {
         //GENERA el número secuencial de la cabecera del comprobante
         String str_numero = null;
         String str_ano = utilitario.getAnio(fecha_trans_cnccc) + "";
         String str_mes = utilitario.getMes(fecha_trans_cnccc) + "";
         String str_ide_sucu = utilitario.getVariable("ide_sucu");
         //SELECCIONA EL MAXIMO SEGUN EL MES Y EL AÑO 
-        TablaGenerica tab_max = utilitario.consultar("SELECT count(NUMERO_CNCCC) as cod,max(cast( substr(NUMERO_CNCCC,8) as NUMERIC)) AS MAXIMO FROM CON_CAB_COMP_CONT WHERE extract(year from FECHA_TRANS_CNCCC) ='" + str_ano + "' AND extract(month from FECHA_TRANS_CNCCC) ='" + str_mes + "' AND IDE_SUCU=" + str_ide_sucu);
+        TablaGenerica tab_max = utilitario.consultar("SELECT count(NUMERO_CNCCC) as cod,max(cast( substr(NUMERO_CNCCC,8) as NUMERIC)) AS MAXIMO FROM CON_CAB_COMP_CONT WHERE extract(year from FECHA_TRANS_CNCCC) ='" + str_ano + "' AND extract(month from FECHA_TRANS_CNCCC) ='" + str_mes + "' AND IDE_SUCU=" + str_ide_sucu + " and ide_cntcm=" + ide_cntcm);
         String str_maximo = "0";
         if (tab_max.getTotalFilas() > 0) {
             str_maximo = tab_max.getValor("MAXIMO");
@@ -85,7 +86,7 @@ public class ServicioComprobanteContabilidad {
             //Genera asiento de reversa
             TablaGenerica tab_cabecera = getCabeceraComprobante();
             TablaGenerica tab_detalles = getDetallesComprobante();
-            
+
             tab_cabecera.insertar();
             tab_cabecera.setValor("ide_cntcm", tab_busca_cabecera.getValor("ide_cntcm"));
             tab_cabecera.setValor("ide_cneco", utilitario.getVariable("p_con_estado_comprobante_normal"));
@@ -96,7 +97,7 @@ public class ServicioComprobanteContabilidad {
             } else {
                 tab_cabecera.setValor("observacion_cnccc", "Reversa Comprobante Num: " + tab_busca_cabecera.getValor("ide_cnccc") + "   obs. (" + observacion + " )");
             }
-            
+
             tab_cabecera.setValor("fecha_trans_cnccc", utilitario.getFechaActual());
             String lugar_aplica_debe = utilitario.getVariable("p_con_lugar_debe");
             String lugar_aplica_haber = utilitario.getVariable("p_con_lugar_haber");
@@ -124,7 +125,7 @@ public class ServicioComprobanteContabilidad {
      */
     public String generarAsientoContable(TablaGenerica tab_cabecera, TablaGenerica tab_detalle) {
         if (this.validarComprobane(tab_cabecera, tab_detalle)) {
-            
+
             tab_detalle = this.resumirComprobante(tab_detalle);
             tab_cabecera.setValor("hora_sistem_cnccc", utilitario.getHoraActual()); //hora del sistema
             tab_cabecera.setValor("fecha_siste_cnccc", utilitario.getFechaActual());//fecha del sistema
@@ -137,8 +138,8 @@ public class ServicioComprobanteContabilidad {
                 //Pone fecha actual x defecto si es null
                 tab_cabecera.setValor("fecha_trans_cnccc", utilitario.getFechaActual());
             }
-            
-            tab_cabecera.setValor("numero_cnccc", this.getSecuencial(tab_cabecera.getValor("fecha_trans_cnccc")));
+
+            tab_cabecera.setValor("numero_cnccc", this.getSecuencial(tab_cabecera.getValor("fecha_trans_cnccc"),tab_cabecera.getValor("ide_cntcm")));
             tab_cabecera.guardar();
             String ide_cnccc = tab_cabecera.getValor("ide_cnccc");
             tab_detalle.getColumna("ide_cnccc").setValorDefecto(tab_cabecera.getValor("ide_cnccc"));
@@ -189,7 +190,7 @@ public class ServicioComprobanteContabilidad {
      */
     public TablaGenerica resumirComprobante(TablaGenerica tab_detalles) {
         TablaGenerica tab_resumida = getDetallesComprobante();
-        
+
         for (int i = 0; i < tab_detalles.getTotalFilas(); i++) {
             double dou_acumula = Double.parseDouble(tab_detalles.getValor(i, "valor_cndcc"));;
             if (tab_detalles.getFila(i).isVisible()) {
@@ -291,7 +292,7 @@ public class ServicioComprobanteContabilidad {
         tab_cabecera.setCondicion("ide_cnccc=" + ide_cnccc);
         tab_cabecera.ejecutarSql();
         return tab_cabecera;
-        
+
     }
 
     /**
@@ -397,7 +398,7 @@ public class ServicioComprobanteContabilidad {
         tabla.setCampoOrden("ide_cnlap desc");
         tabla.setRows(10);
     }
-    
+
     public boolean anularComprobante(String ide_cnccc) {
         TablaGenerica tab_busca = utilitario.consultar("SELECT * FROM con_cab_comp_cont where ide_cnccc=" + ide_cnccc);
         String p_con_estado_comprobante_anulado = utilitario.getVariable("p_con_estado_comprobante_anulado");
@@ -426,5 +427,5 @@ public class ServicioComprobanteContabilidad {
                 + "left join pre_movimiento_presupuestario c on a.ide_prmop=c.ide_prmop  and activo_prmop=true\n"
                 + "where ide_cndpc=" + ide_cndpc + " and ide_cnlap =" + ide_cnlap + "";
     }
-    
+
 }
