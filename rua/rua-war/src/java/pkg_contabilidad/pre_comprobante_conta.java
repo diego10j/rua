@@ -527,7 +527,7 @@ public class pre_comprobante_conta extends Pantalla {
             if (ser_comprobante.isPeriodoValido(tab_tabla1.getValor("fecha_trans_cnccc"))) {
                 if (tab_tabla1.isFilaInsertada()) {
                     tab_tabla1.setValor("hora_sistem_cnccc", utilitario.getHoraActual());
-                    tab_tabla1.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_tabla1.getValor("fecha_trans_cnccc")));
+                    tab_tabla1.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_tabla1.getValor("fecha_trans_cnccc"), tab_tabla1.getValor("ide_cntcm")));
                 }
                 tab_tabla1.guardar();
                 tab_tabla2.guardar();

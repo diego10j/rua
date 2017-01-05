@@ -164,6 +164,9 @@ public class pre_clientes extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_factura.getSqlTransaccionesCxC());
         tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.getColumna("cliente").setLongitud(190);
+        tab_tabla.getColumna("cliente").setFiltroContenido();
+        tab_tabla.getColumna("IDENTIFICACION").setFiltroContenido();
         tab_tabla.getColumna("ide_geper").setVisible(false);
         tab_tabla.setLectura(true);
         tab_tabla.setColumnaSuma("SALDO");
