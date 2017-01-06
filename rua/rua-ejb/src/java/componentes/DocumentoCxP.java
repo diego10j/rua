@@ -1478,21 +1478,21 @@ public class DocumentoCxP extends Dialogo {
         if (true) { //!!!!!!!!******Validar Datos Producto
             if (tab_creacion_producto.guardar()) {
                 //Respalda insertadas para que no guarde
-                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
-                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
+                //List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
+                //List<String> lis_resp_deta = tab_det_documento.getInsertadas();
                 if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                     tab_det_documento.actualizarCombos();
                     tab_det_documento.insertar();
-                    lis_resp_deta.add(tab_det_documento.getFilaSeleccionada().getRowKey());
-                    tab_det_documento.setValor("ide_inarti", tab_creacion_producto.getValor("ide_inarti"));
-                    tab_det_documento.setValor("iva_inarti_cpdfa", tab_creacion_producto.getValor("IVA_INARTI"));
+                    //lis_resp_deta.add(tab_det_documento.getFilaSeleccionada().getRowKey());
+                    //tab_det_documento.setValor("ide_inarti", tab_creacion_producto.getValor("ide_inarti"));
+                    //tab_det_documento.setValor("iva_inarti_cpdfa", tab_creacion_producto.getValor("IVA_INARTI"));                    
                     utilitario.addUpdate("tab_documenoCxP:tab_det_documento");
                     tab_creacion_producto.limpiar();
                     //tab_creacion_producto.insertar();
                     dia_creacion_producto.cerrar();
                 }
-                tab_cab_documento.setInsertadas(lis_resp_cab);
-                tab_det_documento.setInsertadas(lis_resp_deta);
+                //tab_cab_documento.setInsertadas(lis_resp_cab);
+                //tab_det_documento.setInsertadas(lis_resp_deta);
             }
         }
     }
