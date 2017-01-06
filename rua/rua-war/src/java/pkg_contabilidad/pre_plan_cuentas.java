@@ -63,6 +63,7 @@ public class pre_plan_cuentas extends Pantalla {
         tab_tabla2.getColumna("ide_cntcu").setLongitud(-1);
         tab_tabla2.getColumna("nivel_cndpc").setCombo(utilitario.getListaNiveles());
         tab_tabla2.getColumna("nivel_cndpc").setLongitud(-1);
+        tab_tabla2.getColumna("nivel_cndpc").setRequerida(true);
         if (tab_tabla1.getValorSeleccionado() != null) {// si hay datos en la tabla1
             // entonces configura mascara en el campo codig_recur_cndpc  de la tabla 2
             tab_tabla2.getColumna("codig_recur_cndpc").setMascara(tab_tabla1.getValor("mascara_cncpc"));
@@ -136,8 +137,11 @@ public class pre_plan_cuentas extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla1.guardar();
-        tab_tabla2.guardar();
-        utilitario.getConexion().guardarPantalla();
+        if (tab_tabla2.guardar()) {
+            if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                arb_arbol.actualizar();
+            }
+        }
     }
 
     public void cambiarPlanActivo(AjaxBehaviorEvent evt) {

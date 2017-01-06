@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="427" pageHeight="597" whenNoDataType="AllSectionsNoDetail" columnWidth="387" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3f9c6dba-fab8-4364-b91b-399bea5a48c4">
 	<property name="ireport.zoom" value="1.5026296018031553"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="201"/>
+	<property name="ireport.y" value="141"/>
 	<parameter name="ide_cccfa" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -61,28 +61,28 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<pageHeader>
 		<band height="81" splitType="Stretch">
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="4f3b1551-f9f5-4de6-8701-dbbef4b0e4e3" x="87" y="1" width="202" height="15"/>
+				<reportElement uuid="4f3b1551-f9f5-4de6-8701-dbbef4b0e4e3" x="87" y="2" width="202" height="15"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_emisi_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="204407f8-df61-4bd3-83f3-35faa9789985" x="56" y="16" width="330" height="14"/>
+				<reportElement uuid="204407f8-df61-4bd3-83f3-35faa9789985" x="46" y="19" width="243" height="15"/>
 				<textElement>
-					<font fontName="SansSerif" size="9" isBold="false"/>
+					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="4a2ce816-4a6c-4a37-bc16-aed9ddb42cba" x="56" y="45" width="330" height="14"/>
+				<reportElement uuid="4a2ce816-4a6c-4a37-bc16-aed9ddb42cba" x="55" y="36" width="257" height="15"/>
 				<textElement>
-					<font fontName="SansSerif" size="9" isBold="false"/>
+					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="30ec6389-53b4-438e-b104-6aee06822dda" x="313" y="30" width="100" height="15"/>
+				<reportElement uuid="30ec6389-53b4-438e-b104-6aee06822dda" x="313" y="34" width="100" height="15"/>
 				<box leftPadding="8"/>
 				<textElement>
 					<font fontName="SansSerif" size="9" isBold="false"/>
@@ -90,14 +90,14 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{telefono_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="d0557c01-68a1-4552-9e7e-041e0ae43b27" x="56" y="30" width="100" height="17"/>
-				<textElement>
+				<reportElement uuid="d0557c01-68a1-4552-9e7e-041e0ae43b27" x="307" y="16" width="100" height="17"/>
+				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="54" y="1" width="35" height="15"/>
+				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="54" y="2" width="35" height="15"/>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
@@ -109,7 +109,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="57d50bc6-4742-4ece-819f-27ab02dc2927" x="67" y="0" width="186" height="15"/>
+				<reportElement uuid="57d50bc6-4742-4ece-819f-27ab02dc2927" x="46" y="0" width="207" height="15"/>
 				<box rightPadding="3"/>
 				<textElement>
 					<font fontName="SansSerif" size="9" isBold="false"/>
@@ -117,8 +117,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{observacion_ccdfa}== null? ($F{nombre_inarti}):($F{nombre_inarti}+" "+$F{observacion_ccdfa})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="33973201-da51-43aa-abd3-d6e11584c907" x="17" y="0" width="29" height="15"/>
-				<textElement textAlignment="Center">
+				<reportElement uuid="33973201-da51-43aa-abd3-d6e11584c907" x="12" y="0" width="34" height="15"/>
+				<box leftPadding="3"/>
+				<textElement textAlignment="Left">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_ccdfa}]]></textFieldExpression>
@@ -180,12 +181,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[new Double("0")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c1d3142b-13ac-4ad7-b4ae-e8da183a15d1" x="73" y="18" width="180" height="20"/>
-				<textElement/>
+				<reportElement uuid="c1d3142b-13ac-4ad7-b4ae-e8da183a15d1" x="73" y="21" width="240" height="20"/>
+				<box leftPadding="3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nombre_cndfp}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-				<reportElement uuid="c4b54531-2dd3-4244-a3f4-01ffc4b03b39" x="333" y="90" width="54" height="12"/>
+				<reportElement uuid="c4b54531-2dd3-4244-a3f4-01ffc4b03b39" x="333" y="91" width="54" height="12"/>
 				<box rightPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>

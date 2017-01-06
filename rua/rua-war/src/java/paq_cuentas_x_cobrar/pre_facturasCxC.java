@@ -11,6 +11,7 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -71,6 +72,8 @@ public class pre_facturasCxC extends Pantalla {
     private AsientoContable asc_asiento = new AsientoContable();
     private Mascara mas_secuencial;
 
+    private Confirmar con_confirma = new Confirmar();
+
     public pre_facturasCxC() {
 
         bar_botones.quitarBotonsNavegacion();
@@ -130,6 +133,12 @@ public class pre_facturasCxC extends Pantalla {
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
 
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro de Anular la Factura Seleccionada ?");
+        con_confirma.setTitle("ANULAR FACTURA");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
     }
 
     public void dibujarFacturas() {
@@ -143,7 +152,7 @@ public class pre_facturasCxC extends Pantalla {
 
         Boton bot_anular = new Boton();
         bot_anular.setValue("Anular Factura");
-        bot_anular.setMetodo("anularFactura");
+        bot_anular.setMetodo("abrirAnularFactura");
         bar_menu.agregarComponente(bot_anular);
 
         Boton bot_retención = new Boton();
@@ -183,6 +192,16 @@ public class pre_facturasCxC extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(1, "LISTADO DE FACTURAS", gru);
+    }
+
+    public void abrirAnularFactura() {
+        if (tab_tabla.getValor("ide_cccfa") != null) {
+            con_confirma.getBot_aceptar().setMetodo("anularFactura");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar una Factura", "");
+        }
+
     }
 
     public void dibujarFacturasNoContabilizadas() {
@@ -607,6 +626,7 @@ public class pre_facturasCxC extends Pantalla {
         if (tab_tabla.getValor("ide_cccfa") != null) {
             ser_factura.anularFactura(tab_tabla.getValor("ide_cccfa"));
             if (guardarPantalla().isEmpty()) {
+                con_confirma.cerrar();
                 tab_tabla.actualizar();
             }
         } else {
@@ -695,6 +715,14 @@ public class pre_facturasCxC extends Pantalla {
 
     public void setTab_seleccion(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 }

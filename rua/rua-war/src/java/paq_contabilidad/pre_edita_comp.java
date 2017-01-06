@@ -10,6 +10,7 @@ import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.MarcaAgua;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -45,12 +46,18 @@ public class pre_edita_comp extends Pantalla {
 
             tex_num_transaccion.setId("tex_num_transaccion");
             tex_num_transaccion.setSoloEnteros();
+            tex_num_transaccion.setSize(15);
             bot_buscar_transaccion.setTitle("Buscar");
             bot_buscar_transaccion.setIcon("ui-icon-search");
             bot_buscar_transaccion.setMetodo("buscarTransaccion");
             bar_botones.agregarComponente(new Etiqueta("NUM. ASIENTO: "));
             bar_botones.agregarComponente(tex_num_transaccion);
             bar_botones.agregarBoton(bot_buscar_transaccion);
+
+            MarcaAgua maa_marca = new MarcaAgua();
+            maa_marca.setValue("Num. Asiento");
+            maa_marca.setFor("tex_num_transaccion");
+            agregarComponente(maa_marca);
 
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setTabla("con_cab_comp_cont", "ide_cnccc", 1);

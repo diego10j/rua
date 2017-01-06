@@ -54,6 +54,7 @@ public class pre_inventario extends Pantalla {
 
         com_bodega.setId("com_bodega");
         com_bodega.setCombo("select ide_inbod,nombre_inbod from inv_bodega where nivel_inbod='HIJO' and ide_empr=" + utilitario.getVariable("ide_empr"));
+        com_bodega.eliminarVacio();
         com_bodega.setMetodo("actualizarMovimientos");
         bar_botones.agregarComponente(new Etiqueta("BODEGA :"));
         bar_botones.agregarComponente(com_bodega);
@@ -262,8 +263,8 @@ public class pre_inventario extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("inv_cab_comp_inve", "ide_incci", 100);
         tab_tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
-        tab_tabla.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
-        tab_tabla.getColumna("ide_usua").setLectura(true);
+        tab_tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
+        tab_tabla.getColumna("ide_usua").setVisible(false);
         tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
         tab_tabla.getColumna("ide_geper").setAutoCompletar();
         tab_tabla.getColumna("ide_geper").setRequerida(true);

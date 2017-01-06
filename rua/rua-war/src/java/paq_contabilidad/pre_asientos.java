@@ -12,6 +12,7 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.MarcaAgua;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -42,9 +43,14 @@ public class pre_asientos extends Pantalla {
 
         tex_num_transaccion.setId("tex_num_transaccion");
         tex_num_transaccion.setSoloEnteros();
-        tex_num_transaccion.setPlaceHolder("Nº COMPROBANTE");
-        tex_num_transaccion.setTitle("Nº TRANSACCIÓN");
-        tex_num_transaccion.setSize(10);
+        tex_num_transaccion.setTitle("Nº ASIENTO");
+        tex_num_transaccion.setSize(15);
+
+        MarcaAgua maa_marca = new MarcaAgua();
+        maa_marca.setValue("Num. Asiento");
+        maa_marca.setFor("tex_num_transaccion");
+        agregarComponente(maa_marca);
+
         Boton bot_buscar_transaccion = new Boton();
         bot_buscar_transaccion.setTitle("Buscar Comprobante");
         bot_buscar_transaccion.setIcon("ui-icon-search");

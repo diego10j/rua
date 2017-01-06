@@ -46,7 +46,7 @@ public class pre_ubicacion_activo extends Pantalla {
     private Tabla tab_historial_asignacion = new Tabla();
 
     public pre_ubicacion_activo() {
-
+        bar_botones.quitarBotonsNavegacion();
         pac_acordion.setId("pac_acordion");
         tab_datos_activo.setId("tab_datos_activo");
         tab_datos_activo.setIdCompleto("pac_acordion:tab_datos_activo");
@@ -124,31 +124,33 @@ public class pre_ubicacion_activo extends Pantalla {
         pan_emple.setId("pan_emple");
         pan_emple.setHeader("Listado de Activos");
 
-        Grid gri_bus = new Grid();
-        gri_bus.setColumns(3);
+        // Grid gri_bus = new Grid();
+        // gri_bus.setColumns(3);
         tex_busca.setId("tex_busca");
         tex_busca.setMetodoKeyPress("buscarActivo");
-        tex_busca.setSize(60);
+        tex_busca.setSize(50);
+        bar_botones.agregarComponente(tex_busca);
 
         MarcaAgua maa_marca = new MarcaAgua();
         maa_marca.setValue("Buscar Activo Fijo");
         maa_marca.setFor("tex_busca");
         agregarComponente(maa_marca);
 
-        gri_bus.getChildren().add(tex_busca);
+        //gri_bus.getChildren().add(tex_busca);
         Boton bot_ficha = new Boton();
         bot_ficha.setIcon("ui-icon-calculator");
         bot_ficha.setMetodo("dibujarAcordeon");
         bot_ficha.setTitle("Vista Ficha");
-        gri_bus.getChildren().add(bot_ficha);
+
+        //gri_bus.getChildren().add(bot_ficha);
+        bar_botones.agregarComponente(bot_ficha);
 
         Boton bot_grid = new Boton();
         bot_grid.setIcon("ui-icon-contact");
         bot_grid.setMetodo("dibujarGridEmpleados");
         bot_grid.setTitle("Vista Grid");
-        gri_bus.getChildren().add(bot_grid);
-
-        bar_botones.agregarComponente(gri_bus);
+        bar_botones.agregarComponente(bot_grid);
+        //gri_bus.getChildren().add(bot_grid); 
 
         pan_emple.getChildren().add(pac_acordion);
 

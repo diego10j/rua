@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="780" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
-	<property name="ireport.zoom" value="1.156629868288595"/>
+	<property name="ireport.zoom" value="1.3995221406292009"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
@@ -74,9 +74,9 @@ ORDER BY ide_cnlap desc]]>
 				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="238" y="71" width="30" height="14"/>
+				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="238" y="71" width="41" height="14"/>
 				<box rightPadding="1"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[Quito, ]]></text>
 			</staticText>
 			<textField>
@@ -85,27 +85,21 @@ ORDER BY ide_cnlap desc]]>
 				<textFieldExpression><![CDATA[$P{monto_letras}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="541b5932-f3d6-4cb6-8b60-ebd3dc7f27ad" x="268" y="71" width="28" height="14"/>
-				<box rightPadding="1"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="296" y="71" width="154" height="14"/>
+				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="279" y="71" width="171" height="14"/>
 				<box rightPadding="0"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{mes}.equals("1")? "Enero "+$P{dia}:
-$P{mes}.equals("2")? "Febrero "+$P{dia}:
-$P{mes}.equals("3")? "Marzo "+$P{dia}:
-$P{mes}.equals("4")? "Abril "+$P{dia}:
-$P{mes}.equals("5")? "Mayo "+$P{dia}:
-$P{mes}.equals("6")? "Junio "+$P{dia}:
-$P{mes}.equals("7")? "Julio "+$P{dia}:
-$P{mes}.equals("8")? "Agosto "+$P{dia}:
-$P{mes}.equals("9")? "Septiembre "+$P{dia}:
-$P{mes}.equals("10")? "Octubre "+$P{dia}:
-$P{mes}.equals("11")? "Noviembre "+$P{dia}:
-$P{mes}.equals("12")? "Diciembre "+$P{dia}:""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{mes}.equals("1")? $P{anio}+" Enero "+$P{dia}:
+$P{mes}.equals("2")? $P{anio}+" Febrero "+$P{dia}:
+$P{mes}.equals("3")? $P{anio}+" Marzo "+$P{dia}:
+$P{mes}.equals("4")? $P{anio}+" Abril "+$P{dia}:
+$P{mes}.equals("5")? $P{anio}+" Mayo "+$P{dia}:
+$P{mes}.equals("6")? $P{anio}+" Junio "+$P{dia}:
+$P{mes}.equals("7")? $P{anio}+" Julio "+$P{dia}:
+$P{mes}.equals("8")? $P{anio}+" Agosto "+$P{dia}:
+$P{mes}.equals("9")? $P{anio}+" Septiembre "+$P{dia}:
+$P{mes}.equals("10")? $P{anio}+" Octubre "+$P{dia}:
+$P{mes}.equals("11")? $P{anio}+" Noviembre "+$P{dia}:
+$P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement uuid="ecb3ddb2-5efa-4752-bc7c-96f942e6a423" x="-3" y="0" width="160" height="85"/>
