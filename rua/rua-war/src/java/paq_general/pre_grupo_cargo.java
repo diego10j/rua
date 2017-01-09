@@ -99,10 +99,6 @@ public class pre_grupo_cargo extends Pantalla {
 		tab_tabla1.getColumna("DETALLE_GEGRO").setRequerida(true);
 		tab_tabla1.getColumna("SIGLAS_GEGRO").setRequerida(true);
 		tab_tabla1.onSelect("seleccionarTabla1");
-		tab_tabla1.agregarRelacion(tab_grupo_minimo_seleccion);
-		tab_tabla1.agregarRelacion(tab_grupo_factor);
-		tab_tabla1.agregarRelacion(tab_factor_ponederacion);
-		tab_tabla1.agregarRelacion(tab_evl_grupo_factor);
 		tab_tabla1.getColumna("IDE_GTNIV").setCombo("GTH_NIVEL_VIATICO","IDE_GTNIV" , "DETALLE_GTNIV", "");
 		tab_tabla1.dibujar();
 		PanelTabla pat_panel1 = new PanelTabla();
@@ -121,7 +117,7 @@ public class pre_grupo_cargo extends Pantalla {
 		tab_tabla2.getColumna("IDE_GECAF").setCombo("GEN_CARGO_FUNCIONAL",
 				"IDE_GECAF", "DETALLE_GECAF,SIGLAS_GECAF", "");
 		tab_tabla2.setValidarInsertar(true);// Para que solo inserte de una en
-		tab_tabla2.onSelect("seleccionarTabla2");
+		//tab_tabla2.onSelect("seleccionarTabla2");
 		// una
 		filtrarGrupoCargos();
 		tab_tabla2.dibujar();
@@ -129,7 +125,7 @@ public class pre_grupo_cargo extends Pantalla {
 		pat_panel2.setMensajeWarn("GRUPO CARGO ");
 		pat_panel2.setPanelTabla(tab_tabla2);
 
-
+                      /*  
 		Tabulador tab_tabulador=new Tabulador();
 		tab_tabulador.setId("tab_tabulador");
 
@@ -207,11 +203,11 @@ public class pre_grupo_cargo extends Pantalla {
 		tab_tabulador.agregarTab("EVAL: FACTORES", pat_panel6);	
 
 		System.out.println("tab_evl_grupo_factor....  "+tab_evl_grupo_factor.getSql());
-
+                */
 		Division div_division = new Division();
 
 		div_division.setId("div_division");
-		div_division.dividir3(pat_panel1, pat_panel2,tab_tabulador, "30%","30%", "H");
+		div_division.dividir2(pat_panel1, pat_panel2,"60%", "H");
 
 		agregarComponente(div_division);
 
