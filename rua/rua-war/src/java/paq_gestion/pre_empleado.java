@@ -799,11 +799,8 @@ public class pre_empleado extends Pantalla {
 			tab_partida_cargo.limpiar();
 			tab_partida_cargo.insertar();
 			utilitario.getConexion().getSqlPantalla().clear();
-                        dia_contrata.getBot_aceptar().setRendered(false);
 			dia_contrata.dibujar();
-                        dia_contrata.getBot_aceptar().setRendered(true);
-                        dia_contrata.getBot_aceptar().setOnstart(null);
-                        dia_contrata.getBot_aceptar().setOncomplete(null);
+
                         
 
 		}
