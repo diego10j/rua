@@ -184,7 +184,7 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.setLectura(true);
         //COLOR VERDE FACTURAS NO CONTABILIZADAS
         //COLOR ROJO FACTURAS ANULADAS
-        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[2] eq '" + utilitario.getVariable("p_cxc_estado_factura_anulada") + "' ? 'text-red' : fila.campos[13] eq null  ? 'text-green' : null");
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[3] eq '" + utilitario.getVariable("p_cxc_estado_factura_anulada") + "' ? 'text-red' : fila.campos[2] eq null  ? 'text-green' : null");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
