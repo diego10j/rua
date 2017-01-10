@@ -241,19 +241,20 @@ public class cls_retenciones {
     }
 
     public String getNumeroRetencion(String autorizacion, boolean es_venta) {
-        String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
-                + "and autorizacion_cncre ='" + autorizacion + "' ";
-        if (es_venta) {
-            str_sql += "and es_venta_cncre is true ";
-        } else {
-            str_sql += "and es_venta_cncre is FALSE ";
-        }
+       String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and autorizacion_cncre ='" + autorizacion + "' "
+                + "and es_venta_cncre is FALSE ";
+        System.out.println(str_sql);
         //System.out.println("sql num retencion " + str_sql);
         List lis_cabecera_retencion = utilitario.getConexion().consultar(str_sql);
         if (lis_cabecera_retencion.size() > 0) {
             if (lis_cabecera_retencion.get(0) != null && !lis_cabecera_retencion.get(0).toString().isEmpty()) {
                 String num_max = lis_cabecera_retencion.get(0) + "";
+                System.out.println(". " + num_max);
+                num_max = utilitario.generarCero(14 - num_max.length()) + num_max;
+                System.out.println("-- " + num_max);
                 String num_max_retencion = num_max.substring(0, 6);
+                System.out.println("====== " + num_max_retencion);
                 String aux_num = num_max.substring(6, num_max.length());
                 try {
                     int num = Integer.parseInt(aux_num);

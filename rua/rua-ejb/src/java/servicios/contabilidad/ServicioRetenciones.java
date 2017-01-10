@@ -106,13 +106,14 @@ public class ServicioRetenciones extends ServicioBase {
      */
     public void anularComprobanteRetencion(String ide_cncre) {
         utilitario.getConexion().agregarSqlPantalla("UPDATE con_cabece_retenc set ide_cnere=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " where ide_cncre=" + ide_cncre);
+        utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cnere=null where ide_cncre=" + ide_cncre);
     }
 
     public String getNumeroRetencion(String autorizacion) {
         String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and autorizacion_cncre ='" + autorizacion + "' "
                 + "and es_venta_cncre is FALSE ";
-
+        System.out.println(str_sql);
         //System.out.println("sql num retencion " + str_sql);
         List lis_cabecera_retencion = utilitario.getConexion().consultar(str_sql);
         if (lis_cabecera_retencion.size() > 0) {

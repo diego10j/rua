@@ -661,6 +661,54 @@ public class AsientoContable extends Dialogo {
         }
     }
 
+    //Genera un asiento contable de Prestamos 
+    public void setAsientoPrestamo(String ide_cccfa) {
+        this.relacion = ide_cccfa;
+        this.tipo = TipoAsientoEnum.PRESTAMOS.getCodigo();
+        //Consulta las facturas
+        TablaGenerica tab_fac = utilitario.consultar("SELECT * FROM cxc_cabece_factura WHERE ide_cccfa in (" + ide_cccfa + ")");
+        if (tab_fac.isEmpty() == false) {
+            if (tab_fac.getTotalFilas() == 1) {
+                //una
+                tab_cabe_asiento.setValor("ide_geper", tab_fac.getValor("ide_geper"));
+                tab_cabe_asiento.setValor("observacion_cnccc", "V/. FACTURA N." + tab_fac.getValor("secuencial_cccfa"));
+            } else { //varias
+                String str_observa = "V/. FACTURA N.";
+                boolean boo_mismo_clie = true; //si es el mismo cliente todos los seleccionados
+                String str_ide_geper = "";
+                for (int i = 0; i < tab_fac.getTotalFilas(); i++) {
+                    if (i == 0) {
+                        str_ide_geper = tab_fac.getValor(i, "ide_geper");
+                    }
+                    if (str_ide_geper.equals(tab_fac.getValor(i, "ide_geper")) == false) {
+                        boo_mismo_clie = false;
+                    }
+                    if (str_observa.equals("V/. FACTURAS N.")) {
+                        str_observa += " ";
+                    } else {
+                        str_observa += ", ";
+                    }
+                    str_observa += "" + tab_fac.getValor(i, "secuencial_cccfa");
+                }
+                if (boo_mismo_clie) {
+                    tab_cabe_asiento.setValor("ide_geper", str_ide_geper);
+                } else {
+                    tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
+                }
+                if (tab_cabe_asiento.getValor("observacion_cnccc") == null) {
+                    tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+                }
+            }
+        } else {
+            utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe la Factura");
+        }
+        Tabla tb = new Tabla();
+        tb.setSql("SELECT * FROM iyp_deta_prestamo WHERE ide_cccfa in (" + ide_cccfa + ")");
+        tb.ejecutarSql();
+        setAsientoTipoSistema(TipoAsientoEnum.PRESTAMOS, tb);
+
+    }
+
     public void setAsientoPagoFacturasCxC(String ide_cccfa) {
         this.relacion = ide_cccfa;
         this.tipo = TipoAsientoEnum.PAGO_FACTURAS_CXC.getCodigo();
@@ -712,12 +760,14 @@ public class AsientoContable extends Dialogo {
 
     public void setAsientoTipoSistema(TipoAsientoEnum tipoAsientoEnum, Tabla... tablas) {
         TablaGenerica tab_ast = ser_configuracion.getCabeceraAsientoTipo(tipoAsientoEnum.getCodigo());
+
+        aut_asiento_tipo.setValor(tipoAsientoEnum.getCodigo());
         tab_cabe_asiento.setValor("ide_modu", tab_ast.getValor("ide_modu"));
         tab_cabe_asiento.setValor("ide_cntcm", tab_ast.getValor("ide_cntcm"));
         utilitario.addUpdate("tab_cabe_asiento");
         TablaGenerica tab_cuentas = ser_configuracion.getCuentasAsientoTipo(tipoAsientoEnum.getCodigo());
         Map<String, Double> map_campos = new HashMap();
-        //recupera columna configurada
+        //recupera columna configurada       
         for (int i = 0; i < tab_cuentas.getTotalFilas(); i++) {
             if (tab_cuentas.getValor(i, "columna_coast") != null) {
                 //si no es un valor fijo
@@ -727,10 +777,14 @@ public class AsientoContable extends Dialogo {
                 } catch (Exception e) {
                     valor = -1;
                 }
-                if (valor != -1) {
-                    map_campos.put(tab_cuentas.getValor(i, "columna_coast"), 0.00);
+                if (valor == -1) {
+                    map_campos.put(tab_cuentas.getValor(i, "columna_coast").toUpperCase(), 0.00);
                 }
             }
+        }
+
+        if (map_campos.isEmpty()) {
+            return;
         }
 
         for (Tabla tablaActual : tablas) {
@@ -738,7 +792,7 @@ public class AsientoContable extends Dialogo {
             for (int i = 0; i < tablaActual.getTotalFilas(); i++) {
                 //recorre columnas
                 for (int j = 0; j < tablaActual.getTotalColumnas(); j++) {
-                    String nom_columna = tablaActual.getColumnas()[i].getNombre();
+                    String nom_columna = tablaActual.getColumnas()[j].getNombre();
 
                     if (map_campos.get(nom_columna) != null) {
                         double valor = map_campos.get(nom_columna);
@@ -762,6 +816,7 @@ public class AsientoContable extends Dialogo {
             tab_deta_asiento.setValor("ide_cnlap", tab_cuentas.getValor(i, "ide_cnlap"));
 
             if (tab_cuentas.getValor(i, "columna_coast") != null) {
+
                 //si no es un valor fijo
                 double valor = -1;
                 try {
@@ -769,8 +824,9 @@ public class AsientoContable extends Dialogo {
                 } catch (Exception e) {
                     valor = -1;
                 }
-                if (valor != -1) {
-                    tab_deta_asiento.setValor("VALOR_cndcc", utilitario.getFormatoNumero(map_campos.get(tab_cuentas.getValor(i, "columna_coast"))));
+
+                if (valor == -1) {
+                    tab_deta_asiento.setValor("VALOR_cndcc", utilitario.getFormatoNumero(map_campos.get(tab_cuentas.getValor(i, "columna_coast").toUpperCase())));
                 } else {
                     tab_deta_asiento.setValor("VALOR_cndcc", utilitario.getFormatoNumero(valor));
                 }

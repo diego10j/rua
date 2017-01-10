@@ -16,7 +16,7 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioConfiguracion {
-
+    
     private final Utilitario utilitario = new Utilitario();
 
     /**
@@ -43,7 +43,7 @@ public class ServicioConfiguracion {
                 } else {
                     return getCuentaPersona(identificador, str_padre);
                 }
-
+                
             } else {
                 return str_cuenta;
             }
@@ -76,7 +76,7 @@ public class ServicioConfiguracion {
                 } else {
                     return getCuentaPersona(identificador, str_padre);
                 }
-
+                
             } else {
                 return str_cuenta;
             }
@@ -124,7 +124,7 @@ public class ServicioConfiguracion {
             if (transaccionActivo != null) {
                 str_sql += "and ide_acttr=" + transaccionActivo + " ";
             }
-
+            
             List lis_configura = utilitario.getConexion().consultar(str_sql);
             if (lis_configura != null && !lis_configura.isEmpty()) {
                 //  return ltab_identificador.obtener_texto(0, "ide_cndpc");
@@ -164,16 +164,16 @@ public class ServicioConfiguracion {
         }
         return null;
     }
-
+    
     public String getSqlAsientosTipo() {
-        return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a INNER JOIN sis_modulo b on a.ide_modu=b.ide_modu";//!!!!!***AGREAGAR MULTIEMPRESA
+        return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a INNER JOIN sis_modulo b on a.ide_modu=b.ide_modu and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");//!!!!!***AGREAGAR MULTIEMPRESA
     }
-
+    
     public TablaGenerica getCuentasAsientoTipo(String ide_conac) {
         //Solo cuentas especificas 
         return utilitario.consultar("SELECT * FROM cont_asiento_tipo WHERE ide_conac=" + ide_conac + " and ide_inarti is null order by ide_cnlap");
     }
-
+    
     public TablaGenerica getCabeceraAsientoTipo(String ide_conac) {
         //Solo cuentas especificas 
         return utilitario.consultar("SELECT * FROM cont_nombre_asiento_contable WHERE ide_conac=" + ide_conac);
@@ -194,8 +194,8 @@ public class ServicioConfiguracion {
             }
         } catch (Exception e) {
         }
-
+        
         return valor;
     }
-
+    
 }

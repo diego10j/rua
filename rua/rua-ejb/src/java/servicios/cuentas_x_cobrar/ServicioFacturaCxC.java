@@ -70,9 +70,9 @@ public class ServicioFacturaCxC extends ServicioBase {
      * @return
      */
     public String getSqlFacturas(String ide_ccdaf, String fechaInicio, String fechaFin) {
-        return "select a.ide_cccfa, secuencial_cccfa, a.ide_ccefa,nombre_ccefa ,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+        return "select a.ide_cccfa, secuencial_cccfa, ide_cnccc,a.ide_ccefa,nombre_ccefa ,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                 + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                + "observacion_cccfa, fecha_trans_cccfa,ide_cnccc "
+                + "observacion_cccfa, fecha_trans_cccfa "
                 + "from cxc_cabece_factura a "
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
@@ -91,9 +91,9 @@ public class ServicioFacturaCxC extends ServicioBase {
      * @return
      */
     public String getSqlFacturasAnuladas(String ide_ccdaf, String fechaInicio, String fechaFin) {
-        return "select a.ide_cccfa, secuencial_cccfa, fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
+        return "select a.ide_cccfa, secuencial_cccfa, ide_cnccc,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                 + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                + "observacion_cccfa, fecha_trans_cccfa,ide_cnccc "
+                + "observacion_cccfa, fecha_trans_cccfa "
                 + "from cxc_cabece_factura a "
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
@@ -136,9 +136,9 @@ public class ServicioFacturaCxC extends ServicioBase {
      * @return
      */
     public String getSqlFacturasPorCobrar(String ide_ccdaf, String fechaInicio, String fechaFin) {
-        return "select cf.ide_cccfa, secuencial_cccfa,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12, "
+        return "select cf.ide_cccfa, secuencial_cccfa,cf.ide_cnccc,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12, "
                 + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar, "
-                + "observacion_cccfa, fecha_trans_cccfa,cf.ide_cnccc "
+                + "observacion_cccfa, fecha_trans_cccfa "
                 + "from cxc_detall_transa dt "
                 + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr  "
                 + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "

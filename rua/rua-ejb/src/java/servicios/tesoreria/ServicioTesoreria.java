@@ -53,10 +53,10 @@ public class ServicioTesoreria {
                 + "where b.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "order by nombre_teban,nombre_tecba";
     }
-    
-        public String getSqlComboCuentasTodas() {
+
+    public String getSqlComboCuentasTodas() {
         return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
-                + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "                
+                + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
                 + "order by nombre_teban,nombre_tecba";
     }
 
@@ -631,6 +631,16 @@ public class ServicioTesoreria {
         tabla.setValor("nom_geper", nom_geper);
         tabla.guardar();
         return tabla.getValor("ide_geper");
+    }
+
+    /**
+     * Reorna la sentecnia SQL para obtener los Proveedor para que se utilice en
+     * Combos, Autocompletar
+     *
+     * @return
+     */
+    public String getSqlComboBeneficiario() {
+        return "select ide_geper,identificac_geper,nom_geper from gen_persona where identificac_geper is not null order by nom_geper ";
     }
 
 }

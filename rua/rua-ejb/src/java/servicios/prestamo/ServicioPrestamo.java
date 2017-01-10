@@ -196,4 +196,22 @@ public class ServicioPrestamo extends ServicioBase {
         utilitario.getConexion().agregarSql("DELETE FROM iyp_deta_prestamo WHERE ide_ipcpr=" + ide_ipcpr);
         utilitario.getConexion().agregarSql("DELETE FROM iyp_cab_prestamo WHERE ide_ipcpr=" + ide_ipcpr);
     }
+
+    /**
+     * Retorna las cuotas no contabilizadas que ya se generaron factura
+     *
+     * @return
+     */
+    public String getSqCuotasNoContabilizadas() {
+        return "select ide_ipdpr,a.ide_cccfa,nom_geper,secuencial_cccfa,total_cccfa,observacion_cccfa,num_prestamo_ipcpr,num_ipdpr,capital_ipdpr AS CAPITAL,interes_ipdpr AS INTERES,cuota_ipdpr AS COUTA,d.ide_geper\n"
+                + "from iyp_deta_prestamo a\n"
+                + "inner join iyp_cab_prestamo b on a.ide_ipcpr=b.ide_ipcpr\n"
+                + "inner join cxc_cabece_factura  d on a.ide_cccfa=d.ide_cccfa\n"
+                + "left join  gen_persona c on d.ide_geper=c.ide_geper\n"
+                + "where a.ide_cccfa is not NULL  \n"
+                + "and a.ide_cnccc is null \n"
+                + "and pagado_ipdpr=true\n"
+                + "order by a.ide_cccfa desc";
+    }
+
 }
