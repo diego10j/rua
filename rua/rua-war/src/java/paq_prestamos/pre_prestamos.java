@@ -5,8 +5,10 @@
  */
 package paq_prestamos;
 
+import componentes.AsientoContable;
 import componentes.FacturaCxC;
 import framework.componentes.AutoCompletar;
+import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -26,6 +28,7 @@ import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidadGeneral;
+import servicios.contabilidad.TipoAsientoEnum;
 import servicios.prestamo.ServicioPrestamo;
 import sistema.aplicacion.Pantalla;
 
@@ -51,6 +54,8 @@ public class pre_prestamos extends Pantalla {
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
 
+    private AsientoContable asc_asiento = new AsientoContable();
+
     public pre_prestamos() {
 
         bar_botones.quitarBotonsNavegacion();
@@ -74,6 +79,7 @@ public class pre_prestamos extends Pantalla {
         mep_menu.agregarItem("Información Prestamo", "dibujarPrestamo", "ui-icon-contact");
         mep_menu.agregarItem("Tabla de Amortización", "dibujarTabla", "ui-icon-calculator");
         mep_menu.agregarItem("Pagar Prestamo", "dibujarPagar", "ui-icon-check");
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarCuotasNoContabilizadas", "ui-icon-notice");//5
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Listado de Prestamos", "dibujarListaPrestamos", "ui-icon-note");
 
@@ -89,6 +95,69 @@ public class pre_prestamos extends Pantalla {
         sel_formato.setId("sel_formato");
         agregarComponente(rep_reporte);
         agregarComponente(sel_formato);
+
+        asc_asiento.setId("asc_asiento");
+        asc_asiento.getBot_aceptar().setMetodo("guardarAsiento");
+        agregarComponente(asc_asiento);
+
+    }
+
+    public void guardarAsiento() {
+        if (asc_asiento.isVisible()) {
+            asc_asiento.guardar();
+            if (asc_asiento.isVisible() == false) {
+                utilitario.getConexion().agregarSqlPantalla("update iyp_deta_prestamo set ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ipdpr=" + tab_tabla1.getValor("ide_ipdpr"));
+                utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_cnccc =" + asc_asiento.getIde_cnccc() + " where ide_cccfa=" + tab_tabla1.getValor("ide_cccfa"));
+                if (guardarPantalla().isEmpty()) {
+                    dibujarCuotasNoContabilizadas();
+                }
+            }
+        }
+    }
+
+    public void abrirGeneraAsiento() {
+        if (tab_tabla1.getValor("ide_cccfa") != null) {
+            asc_asiento.nuevoAsiento();
+            asc_asiento.dibujar();
+            asc_asiento.setAsientoPrestamo(tab_tabla1.getValor("ide_cccfa"));
+            asc_asiento.getBot_aceptar().setMetodo("guardarAsiento");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una Cuota", "");
+        }
+    }
+
+    public void dibujarCuotasNoContabilizadas() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Asiento Contable");
+        bot_asi.setMetodo("abrirGeneraAsiento");
+        bar_menu.agregarComponente(bot_asi);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_prestamo.getSqCuotasNoContabilizadas());
+        tab_tabla1.setCampoPrimaria("ide_ipdpr");
+        tab_tabla1.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla1.getColumna("ide_ipdpr").setVisible(false);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_tabla1.getColumna("secuencial_cccfa").setFiltroContenido();
+        tab_tabla1.getColumna("secuencial_cccfa").setNombreVisual("N.FACTURA");
+        tab_tabla1.getColumna("num_prestamo_ipcpr").setNombreVisual("N.PRESTAMO");
+        tab_tabla1.getColumna("num_ipdpr").setNombreVisual("N.CUOTA");
+
+        tab_tabla1.setRows(15);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(5, "CUOTAS PAGADAS NO CONTABILIZADAS", gru);
     }
 
     @Override
@@ -639,6 +708,14 @@ public class pre_prestamos extends Pantalla {
 
     public void setSel_formato(SeleccionFormatoReporte sel_formato) {
         this.sel_formato = sel_formato;
+    }
+
+    public AsientoContable getAsc_asiento() {
+        return asc_asiento;
+    }
+
+    public void setAsc_asiento(AsientoContable asc_asiento) {
+        this.asc_asiento = asc_asiento;
     }
 
 }

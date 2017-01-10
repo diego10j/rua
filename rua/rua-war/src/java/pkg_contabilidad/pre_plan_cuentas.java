@@ -139,7 +139,7 @@ public class pre_plan_cuentas extends Pantalla {
         tab_tabla1.guardar();
         if (tab_tabla2.guardar()) {
             if (utilitario.getConexion().guardarPantalla().isEmpty()) {
-                arb_arbol.actualizar();
+                arb_arbol.actualizar(); ///borrar
             }
         }
     }

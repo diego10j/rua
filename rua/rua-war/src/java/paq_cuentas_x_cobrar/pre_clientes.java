@@ -187,7 +187,7 @@ public class pre_clientes extends Pantalla {
 
             tab_tabla = new Tabla();
             tab_tabla.setId("tab_tabla");
-            tab_tabla.setSql(ser_prestamo.getSqlPrestamosCliente(null));
+            tab_tabla.setSql(ser_prestamo.getSqlPrestamosCliente(aut_clientes.getValor()));
             tab_tabla.getColumna("ide_ipcpr").setVisible(false);
             tab_tabla.getColumna("tipo").setLongitud(10);
             tab_tabla.getColumna("fecha_prestamo_ipcpr").setNombreVisual("FECHA");

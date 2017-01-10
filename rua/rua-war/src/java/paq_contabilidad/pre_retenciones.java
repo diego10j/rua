@@ -150,6 +150,8 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.setSql(ser_retencion.getSqlRetenciones(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_tabla.setCampoPrimaria("ide_cncre");
         tab_tabla.setLectura(true);
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[1] eq '1' ? 'text-red' : null");
+
         tab_tabla.setRows(25);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
@@ -161,7 +163,9 @@ public class pre_retenciones extends Pantalla {
     public void anularRetencion() {
         if (tab_tabla.getValorSeleccionado() != null) {
             ser_retencion.anularComprobanteRetencion(tab_tabla.getValorSeleccionado());
-            tab_tabla.actualizar();
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.actualizar();
+            }
         } else {
             utilitario.agregarMensajeInfo("Seleccione un Comprobante de Retención", "");
         }

@@ -33,6 +33,8 @@ public class pre_asiento_tipo extends Pantalla {
         tab_tabla1.setTabla("cont_nombre_asiento_contable", "ide_conac", 1);
         tab_tabla1.getColumna("ide_modu").setCombo("sis_modulo", "ide_modu", "nom_modu", "");
         tab_tabla1.getColumna("ide_cntcm").setCombo(ser_comprobante.getSqlTiposComprobante());
+        tab_tabla1.getColumna("detalle_conac").setControl("Texto");
+        tab_tabla1.setCondicionSucursal(true);
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();

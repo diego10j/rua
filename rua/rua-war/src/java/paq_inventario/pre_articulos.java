@@ -395,7 +395,7 @@ public class pre_articulos extends Pantalla {
                 tab_tabla = new Tabla();
                 tab_tabla.setNumeroTabla(4);
                 tab_tabla.setId("tab_tabla");
-                tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
                 tab_tabla.setLectura(true);
                 tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. COMP.");
                 tab_tabla.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
@@ -845,7 +845,7 @@ public class pre_articulos extends Pantalla {
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
     public void actualizarMovimientos() {
-        tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(),""));
         tab_tabla.ejecutarSql();
         actualizarSaldosContable();
     }

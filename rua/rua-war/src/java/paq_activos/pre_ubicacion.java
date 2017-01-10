@@ -2,7 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package pkg_activos_fijos;
+package paq_activos;
+
 import framework.componentes.Arbol;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
@@ -17,7 +18,7 @@ import sistema.aplicacion.Pantalla;
 public class pre_ubicacion extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
-    private Division div_division = new Division();
+
     private Arbol arb_arbol = new Arbol();
 
     public pre_ubicacion() {
@@ -30,7 +31,6 @@ public class pre_ubicacion extends Pantalla {
         tab_tabla1.setCampoPadre("act_ide_acuba"); //Para que se configure el arbol
         tab_tabla1.agregarArbol(arb_arbol); //Para que se configure el arbol       
 
-
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
@@ -38,11 +38,9 @@ public class pre_ubicacion extends Pantalla {
         arb_arbol.setId("arb_arbol");
         arb_arbol.dibujar();
 
-        div_division.setId("div_division");
+        Division div_division = new Division();
         div_division.dividir2(arb_arbol, pat_panel, "21%", "V");
-
         agregarComponente(div_division);
-
 
     }
 

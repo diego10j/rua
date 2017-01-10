@@ -29,6 +29,8 @@ import framework.componentes.Texto;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
+import paq_gestion.ejb.ServicioEmpleado;
+import paq_nomina.ejb.ServicioNomina;
 import sistema.aplicacion.Pantalla;
 import servicios.sistema.ServicioSeguridad;
 
@@ -56,6 +58,10 @@ public class pre_usuarios extends Pantalla {
     @EJB
     private final ServicioSeguridad ser_seguridad = (ServicioSeguridad) utilitario
             .instanciarEJB(ServicioSeguridad.class);
+
+    @EJB
+    private final ServicioNomina ser_nomina = (ServicioNomina) utilitario
+            .instanciarEJB(ServicioNomina.class);
 
     private final int int_longitud_minima_login = ser_seguridad
             .getLongitudMinimaLogin();
@@ -117,6 +123,11 @@ public class pre_usuarios extends Pantalla {
         tab_tabla1.getColumna("CAMBIA_CLAVE_USUA").setValorDefecto("true");
         tab_tabla1.getColumna("CAMBIA_CLAVE_USUA").setLectura(true);
         tab_tabla1.getColumna("CAMBIA_CLAVE_USUA").setCheck();
+
+        tab_tabla1.getColumna("ide_gtemp").setCombo(ser_nomina.servicioEmpleadosActivos("true,false"));
+        tab_tabla1.getColumna("ide_gtemp").setAutoCompletar();
+        tab_tabla1.getColumna("ide_gtemp").setMetodoChange("seleccionaEmpelado");
+
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.agregarRelacion(tab_tabla3);
         tab_tabla1.dibujar();
@@ -248,6 +259,12 @@ public class pre_usuarios extends Pantalla {
         tex_nick = ((Texto) utilitario.getComponente(tab_tabla1.getColumna("NICK_USUA").getId()));
         cambiarEstadoNick();
 
+    }
+
+    public void seleccionaEmpelado(SelectEvent evt) {
+        if (tab_tabla1.getValor("ide_gtemp") != null) {
+            tab_tabla1.setValor("nom_usua", tab_tabla1.getValorArreglo("ide_gtemp", 1) + tab_tabla1.getValorArreglo("ide_gtemp", 2) + tab_tabla1.getValorArreglo("ide_gtemp", 3) + tab_tabla1.getValorArreglo("ide_gtemp", 4));
+        }
     }
 
     public void limpiar() {
