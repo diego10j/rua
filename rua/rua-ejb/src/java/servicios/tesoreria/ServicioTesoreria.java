@@ -551,7 +551,7 @@ public class ServicioTesoreria {
                 + "from tes_cuenta_banco a\n"
                 + "inner join tes_banco b on a.ide_teban= b.ide_teban\n"
                 + "inner join tes_tip_cuen_banc c on a.ide_tetcb = c.ide_tetcb\n"
-                + "where a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
                 + "order by nombre_teban,nombre_tecba";
     }
 

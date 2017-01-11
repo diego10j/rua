@@ -522,7 +522,7 @@ public class pre_facturasCxC extends Pantalla {
     @Override
     public void aceptarReporte() {
 //Se ejecuta cuando se selecciona un reporte de la lista
-        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas A6")
+        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas Eventos")
                 || rep_reporte.getReporteSelecionado().equals("Facturas Nueva") || rep_reporte.getReporteSelecionado().equals("Facturas con Formato")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();

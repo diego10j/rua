@@ -13,6 +13,7 @@ import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
@@ -79,8 +81,9 @@ public class pre_prestamos extends Pantalla {
         mep_menu.agregarItem("Información Prestamo", "dibujarPrestamo", "ui-icon-contact");
         mep_menu.agregarItem("Tabla de Amortización", "dibujarTabla", "ui-icon-calculator");
         mep_menu.agregarItem("Pagar Prestamo", "dibujarPagar", "ui-icon-check");
-        mep_menu.agregarItem("Generar Asiento Contable", "dibujarCuotasNoContabilizadas", "ui-icon-notice");//5
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarCuotasNoContabilizadas", "ui-icon-notice");//5        
         mep_menu.agregarSubMenu("INFORMES");
+        mep_menu.agregarItem("Transacciones Realizadas", "dibujarTransacciones", "ui-icon-calculator");
         mep_menu.agregarItem("Listado de Prestamos", "dibujarListaPrestamos", "ui-icon-note");
 
         agregarComponente(mep_menu);
@@ -160,6 +163,45 @@ public class pre_prestamos extends Pantalla {
         mep_menu.dibujar(5, "CUOTAS PAGADAS NO CONTABILIZADAS", gru);
     }
 
+    public void dibujarTransacciones() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_prestamo.getSqMovimientosRealizados());
+        tab_tabla1.setCampoPrimaria("ide_ipdpr");
+        tab_tabla1.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla1.getColumna("ide_ipdpr").setVisible(false);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_tabla1.getColumna("secuencial_cccfa").setFiltroContenido();
+        tab_tabla1.getColumna("secuencial_cccfa").setNombreVisual("N.FACTURA");
+        tab_tabla1.getColumna("num_prestamo_ipcpr").setNombreVisual("N.PRESTAMO");
+        tab_tabla1.getColumna("num_ipdpr").setNombreVisual("N.CUOTA");
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla1.setRows(15);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        mep_menu.dibujar(5, "CUOTAS PAGADAS NO CONTABILIZADAS", pat_panel);
+    }
+
+    /**
+     * Abre el asiento contable seleccionado
+     *
+     * @param evt
+     */
+    public void abrirAsiento(ActionEvent evt) {
+        Link lin_ide_cnccc = (Link) evt.getComponent();
+        asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
+        tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
+        asc_asiento.dibujar();
+    }
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
@@ -168,7 +210,7 @@ public class pre_prestamos extends Pantalla {
     @Override
     public void aceptarReporte() {
         Map parametro = new HashMap();
-        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas A6")
+        if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas Eventos")
                 || rep_reporte.getReporteSelecionado().equals("Facturas Nueva") || rep_reporte.getReporteSelecionado().equals("Facturas con Formato")) {
             if (mep_menu.getOpcion() == 2) { //Valida que se seleccione una factura
                 if (rep_reporte.isVisible()) {
@@ -299,7 +341,11 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
         tab_tabla1.getColumna("hora_sistema_ipcpr").setVisible(false);
-        tab_tabla1.getColumna("ide_cnccc").setLectura(true);
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.setCondicion("ide_ipcpr=" + aut_prestamos.getValor());
         tab_tabla1.setMostrarNumeroRegistros(false);
         tab_tabla1.dibujar();
@@ -342,6 +388,11 @@ public class pre_prestamos extends Pantalla {
             tab_tabla2.setOrdenar(false);
             tab_tabla2.setRows(999);
             tab_tabla2.setScrollHeight(400);
+            tab_tabla2.getColumna("ide_cnccc").setFiltroContenido();
+            tab_tabla2.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+            tab_tabla2.getColumna("IDE_CNCCC").setLink();
+            tab_tabla2.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+            tab_tabla2.getColumna("IDE_CNCCC").alinearCentro();
             tab_tabla2.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla2);
