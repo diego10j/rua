@@ -583,24 +583,44 @@ public class pre_grupo_cargo extends Pantalla {
 
 	@Override
 	public void eliminar() {
+            String sql="";
 		if (tab_tabla1.isFocus()) {
-			if (tab_tabla1.eliminar()) {
-				// si es que si elimina actualiza la nueva fila seleccionada
-				filtrarGrupoCargos();
-				tab_tabla2.ejecutarSql();
-			}
-		} else if (tab_tabla2.isFocus()) {
-			tab_tabla2.eliminar();
-		} else if (tab_grupo_minimo_seleccion.isFocus()) {
-			tab_grupo_minimo_seleccion.eliminar();
-		} else if (tab_grupo_factor.isFocus()) {
-			tab_grupo_factor.eliminar();
-		} else if (tab_factor_ponederacion.isFocus()) {
-			tab_factor_ponederacion.eliminar();
-		} else if (tab_evl_grupo_factor.isFocus()) {
-			tab_evl_grupo_factor.eliminar();
-		}
+			
+                    sql="select * from gen_grupo_cargo  where ide_gegro ="+tab_tabla1.getValorSeleccionado();
+                   // System.out.println(" sql1 "+sql);
+                    TablaGenerica tab_consulta_referencia=utilitario.consultar(sql);
+                    if(tab_consulta_referencia.getTotalFilas()>0){
+                        utilitario.agregarMensajeError("No se puede Borra", "Revice los cargos, proceda a borrar primero los Cargos");
+                        return;
+                    }
+                    else
+                    {				// si es que si elimina actualiza la nueva fila seleccionada
+			sql="delete from GEN_GRUPO_OCUPACIONAL  where ide_gegro ="+tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_gegro");
+                        
+                        utilitario.getConexion().ejecutarSql(sql);
+                       // System.out.println(" sql2 "+sql);
 
+                                filtrarGrupoCargos();
+				tab_tabla2.ejecutarSql();
+                    }            
+			
+		} else if (tab_tabla2.isFocus()) {
+                    /*
+                                            System.out.println(" xxx "+tab_tabla2.getClaveCompuesta());
+                        System.out.println(" yy "+tab_tabla2.getValor(1, "ide_gecaf"));
+                        System.out.println(" zz "+tab_tabla2.getFilaActual());
+                        System.out.println(" cc "+tab_tabla2.getFilaSeleccionada().getIndice());
+                        System.out.println(" aa "+tab_tabla2.getFilaSeleccionada().getRowKey());
+                        System.out.println(" bb "+tab_tabla2.getFilaSeleccionada());
+                        System.out.println(" dd "+tab_tabla2.getNumeroFila("ide_gecaf"));
+                        System.out.println(" dd "+tab_tabla2.getRowIndex());
+
+                       */ 
+                        sql="delete from gen_grupo_cargo  where ide_gegro  ="+tab_tabla2.getValor(tab_tabla2.getFilaActual(), "ide_gegro")+" and ide_gecaf ="+tab_tabla2.getValor(tab_tabla2.getFilaSeleccionada().getIndice(), "ide_gecaf");
+			utilitario.getConexion().ejecutarSql(sql);
+                      //  System.out.println(" sql2 "+sql);
+
+		} 
 	}
 	public void seleccionarTabla2(SelectEvent evt){
 		tab_tabla2.seleccionarFila(evt);
