@@ -22,7 +22,7 @@ public class pre_transacciones_cxc_otros extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    private Division div_division = new Division();
+
     private AutoCompletar aut_filtro_persona = new AutoCompletar();
 
     public pre_transacciones_cxc_otros() {
@@ -31,6 +31,9 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         aut_filtro_persona.setAutoCompletar("select ide_geper,identificac_geper,nom_geper from gen_persona where nivel_geper='HIJO' "
                 + "AND es_cliente_geper IS TRUE AND ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_filtro_persona.setMetodoChange("filtrar_proveedor");
+        aut_filtro_persona.setAutocompletarContenido();
+        aut_filtro_persona.setGlobal(true);
+        aut_filtro_persona.setSize(75);
         bar_botones.agregarComponente(new Etiqueta("Cliente: "));
         bar_botones.agregarComponente(aut_filtro_persona);
 
@@ -66,6 +69,7 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
 
+        Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir2(pat_panel1, pat_panel2, "50%", "H");
 
@@ -74,7 +78,7 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         //      llenar();
     }
 
-    public void limpiar(){
+    public void limpiar() {
         tab_tabla1.setCondicion("ide_geper=-1");
         tab_tabla1.ejecutarSql();
         tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
@@ -96,7 +100,7 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         }
 
     }
-    
+
     public void llenar() {
         TablaGenerica tab_valor = utilitario.consultar("select sum(dcc.valor_cndcc*sc.signo_cnscu) as valor,dpc.ide_cndpc,dpc.nombre_cndpc "
                 + "from  con_cab_comp_cont ccc "
@@ -183,5 +187,5 @@ public class pre_transacciones_cxc_otros extends Pantalla {
     public void setAut_filtro_persona(AutoCompletar aut_filtro_persona) {
         this.aut_filtro_persona = aut_filtro_persona;
     }
-    
+
 }

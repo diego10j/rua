@@ -229,7 +229,7 @@ public class pre_factura_cxc extends Pantalla {
             tab_tabla1.getColumna("ide_geubi").setVisible(false);
             tab_tabla1.getColumna("ide_usua").setVisible(false);
             tab_tabla1.setTipoFormulario(true);
-            tab_tabla1.setRecuperarLectura(true);
+            //tab_tabla1.setRecuperarLectura(true);
             tab_tabla1.getGrid().setColumns(6);
             tab_tabla1.agregarRelacion(tab_tabla2);
             tab_tabla1.agregarRelacion(tab_tabla3);
@@ -251,7 +251,7 @@ public class pre_factura_cxc extends Pantalla {
             tab_tabla2.getColumna("total_ccdfa").setEtiqueta();
             tab_tabla2.getColumna("total_ccdfa").setEstilo("font-size:13px;font-weight: bold;");
             tab_tabla2.getColumna("precio_promedio_ccdfa").setLectura(true);
-            tab_tabla2.setRecuperarLectura(true);
+            //tab_tabla2.setRecuperarLectura(true);
             tab_tabla2.dibujar();
             PanelTabla pat_panel2 = new PanelTabla();
             pat_panel2.setPanelTabla(tab_tabla2);

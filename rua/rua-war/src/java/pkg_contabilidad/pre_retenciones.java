@@ -57,7 +57,7 @@ public class pre_retenciones extends Pantalla {
         tab_tabla1.getColumna("fecha_emisi_cncre").setNombreVisual("FECHA DE EMISION");
         tab_tabla1.getColumna("observacion_cncre").setNombreVisual("OBSERVACION");
         tab_tabla1.getGrid().setColumns(4);
-        tab_tabla1.setLectura(true);
+        //tab_tabla1.setLectura(true);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -65,15 +65,13 @@ public class pre_retenciones extends Pantalla {
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("con_detall_retenc", "ide_cndre", 2);
         tab_tabla2.setCampoForanea("ide_cncre");
-        tab_tabla2.setLectura(true);
+        // tab_tabla2.setLectura(true);
         tab_tabla2.getColumna("ide_cncim").setCombo("con_cabece_impues", "ide_cncim", "nombre_cncim,casillero_cncim", "");
         tab_tabla2.getColumna("ide_cncim").setAutoCompletar();
-
 
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
-
 
         bot_ver_retencion.setValue("Ver Retención");
         bot_ver_retencion.setMetodo("verComprobante");
@@ -85,7 +83,6 @@ public class pre_retenciones extends Pantalla {
 
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         sef_formato.setId("sef_formato");
-
 
         aut_factura_cxp.setId("aut_factura_cxp");
         aut_factura_cxp.setAutoCompletar("SELECT cf.ide_cnccc,cf.ide_cnccc,cf.numero_cpcfa,gp.nom_geper FROM cxp_cabece_factur cf "
@@ -166,7 +163,6 @@ public class pre_retenciones extends Pantalla {
                 } else {
                     utilitario.agregarMensajeInfo("No se puede generar el reporte", "La fila seleccionada no tiene compraqbante de contabilidad");
                 }
-
 
             }
         }

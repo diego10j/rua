@@ -22,7 +22,7 @@ public class pre_transacciones_cxp_otros extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    private Division div_division = new Division();
+    
     private AutoCompletar aut_filtro_persona = new AutoCompletar();
 
     public pre_transacciones_cxp_otros() {
@@ -32,6 +32,9 @@ public class pre_transacciones_cxp_otros extends Pantalla {
         aut_filtro_persona.setAutoCompletar("select ide_geper,identificac_geper,nom_geper from gen_persona where nivel_geper='HIJO' "
                 + "AND es_proveedo_geper IS TRUE AND ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_filtro_persona.setMetodoChange("filtrar_proveedor");
+        aut_filtro_persona.setAutocompletarContenido();
+        aut_filtro_persona.setGlobal(true);
+        aut_filtro_persona.setSize(75);
         bar_botones.agregarComponente(new Etiqueta("Proveedor: "));
         bar_botones.agregarComponente(aut_filtro_persona);
 
@@ -69,6 +72,7 @@ public class pre_transacciones_cxp_otros extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
 
+        Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir2(pat_panel1, pat_panel2, "50%", "H");
 

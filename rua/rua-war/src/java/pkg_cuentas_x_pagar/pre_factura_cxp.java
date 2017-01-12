@@ -255,7 +255,7 @@ public class pre_factura_cxp extends Pantalla {
             tab_tabla1.agregarRelacion(tab_tabla2);
             tab_tabla1.agregarRelacion(tab_tabla3);
             tab_tabla1.agregarRelacion(tab_datos_comprobante_rembolso);
-            tab_tabla1.setRecuperarLectura(true);
+            //tab_tabla1.setRecuperarLectura(true);
             utilitario.buscarNombresVisuales(tab_tabla1);
             tab_tabla1.setCondicionSucursal(true);
             tab_tabla1.setCondicion("fecha_emisi_cpcfa between '" + sec_calendario.getFecha1String() + "' and '" + sec_calendario.getFecha2String() + "'");
@@ -291,7 +291,7 @@ public class pre_factura_cxp extends Pantalla {
             lista.add(fila3);
             tab_tabla2.getColumna("iva_inarti_cpdfa").setRadio(lista, "");
             tab_tabla2.getColumna("iva_inarti_cpdfa").setMetodoChange("calcula_iva2");
-            tab_tabla2.setRecuperarLectura(true);
+            //tab_tabla2.setRecuperarLectura(true);
             utilitario.buscarNombresVisuales(tab_tabla2);
             tab_tabla2.dibujar();
 
