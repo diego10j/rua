@@ -150,20 +150,20 @@ public class pre_anual_egresos extends Pantalla {
 		Division div_division =new Division ();
 		div_division.dividir2(pat_panel1, tab_tabulador, "50%", "h");
 		agregarComponente(div_division);
-                /*
+                
 		Boton bot_importarpoa = new Boton();
 		bot_importarpoa.setValue("Importar POA");
 		bot_importarpoa.setIcon("ui-icon-person");
 		bot_importarpoa.setMetodo("importarPoa");
 		bar_botones.agregarBoton(bot_importarpoa);
-		*/
+		/*
 		Boton bot_material = new Boton();
 		bot_material.setValue("Agregar Programa");
 		bot_material.setTitle("Solicitud Programa");
 		bot_material.setIcon("ui-icon-person");
 		bot_material.setMetodo("importarPrograma");
 		bar_botones.agregarBoton(bot_material);
-		
+		*/
 		set_programa.setId("set_programa");
 		set_programa.setSeleccionTabla(ser_presupuesto.getPrograma("true,false"),"IDE_PRPRO");
 		set_programa.getTab_seleccion().getColumna("cod_programa_prpro").setFiltroContenido();

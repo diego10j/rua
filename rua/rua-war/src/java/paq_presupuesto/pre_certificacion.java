@@ -336,7 +336,7 @@ public void aceptarReporte(){
 			tab_certificacion.setValor("ide_gtemp",ide_gtempxx );
 			tab_certificacion.setValor("ide_geedp",ide_gtempxx );
 			tab_certificacion.setValor("ide_geani",com_anio.getValue()+"");
-			tab_certificacion.setValor("nro_certificacion_prcer",ser_contabilidad.numeroSecuencial(par_sec_certificacion));
+			//tab_certificacion.setValor("nro_certificacion_prcer",ser_contabilidad.numeroSecuencial(par_sec_certificacion));
 			tab_certificacion.setValor("fecha_prcer", utilitario.getFechaActual());
 			utilitario.addUpdate("tab_certificacion");
 
