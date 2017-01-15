@@ -69,6 +69,60 @@ public class ServicioInventario {
         tab_det_comp_inv.guardar();
     }
 
+    public void generarModificarComprobnateTransaccionVenta(Tabla tab_factura_cxc, Tabla tab_detalle) {
+        String ide_incci = utilitario.consultar("select ide_incci,ide_cccfa from inv_det_comp_inve where ide_cccfa=" + tab_factura_cxc.getValor("ide_cccfa") + " limit 1").getValor("ide_incci");
+        if (ide_incci == null || ide_incci.isEmpty()) {
+            ide_incci = "-1";
+        }
+
+        String p_estado_normal_inv = utilitario.getVariable("p_inv_estado_normal");
+        String p_tipo_transaccion_inv_venta = utilitario.getVariable("p_inv_tipo_transaccion_venta");
+        TablaGenerica tab_cab_comp_inv = new TablaGenerica();
+        tab_cab_comp_inv.setTabla("inv_cab_comp_inve", "ide_incci", 0);
+        tab_cab_comp_inv.setCondicion("ide_incci=" + ide_incci);
+        tab_cab_comp_inv.ejecutarSql();
+        //Detalles
+        TablaGenerica tab_det_comp_inv = new TablaGenerica();
+        tab_det_comp_inv.setTabla("inv_det_comp_inve", "ide_indci", 0);
+        tab_det_comp_inv.setCondicion("ide_incci=" + ide_incci);
+        tab_det_comp_inv.ejecutarSql();
+        if (tab_cab_comp_inv.isEmpty()) {
+            tab_cab_comp_inv.insertar();
+        } else {
+            utilitario.getConexion().agregarSqlPantalla("delete from inv_det_comp_inve where ide_indci in (" + tab_det_comp_inv.getStringColumna("ide_indci") + ")");
+            tab_cab_comp_inv.modificar(tab_cab_comp_inv.getFilaActual());
+        }
+        //elimina detalles existentes
+
+        tab_cab_comp_inv.setValor("ide_geper", tab_factura_cxc.getValor("ide_geper"));
+        tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inv);  /////variable estado normal de inventario
+        tab_cab_comp_inv.setValor("ide_intti", p_tipo_transaccion_inv_venta);   ////variable titpo transaccion compra 
+        tab_cab_comp_inv.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+
+        //Busca
+        tab_cab_comp_inv.setValor("ide_inbod", getBodegaSucursal());
+        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario(tab_cab_comp_inv.getValor("ide_inbod")));  /// calcular numero de comprobante de inventario
+        tab_cab_comp_inv.setValor("fecha_trans_incci", tab_factura_cxc.getValor("fecha_emisi_cccfa"));
+        tab_cab_comp_inv.setValor("observacion_incci", tab_factura_cxc.getValor("observacion_cccfa"));
+        tab_cab_comp_inv.setValor("fecha_siste_incci", utilitario.getFechaActual());
+        tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
+//        tab_cab_comp_inv.setValor("ide_cnccc", ide_cnccc);
+        tab_cab_comp_inv.guardar();
+
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            tab_det_comp_inv.insertar();
+            tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
+            tab_det_comp_inv.setValor("ide_cccfa", tab_factura_cxc.getValor("ide_cccfa"));
+            tab_det_comp_inv.setValor("ide_incci", tab_cab_comp_inv.getValor("ide_incci"));
+            tab_det_comp_inv.setValor("cantidad_indci", tab_detalle.getValor(i, "cantidad_ccdfa"));
+            tab_det_comp_inv.setValor("precio_indci", tab_detalle.getValor(i, "precio_ccdfa"));
+            tab_det_comp_inv.setValor("valor_indci", tab_detalle.getValor(i, "total_ccdfa"));
+            tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_ccdfa"));
+
+        }
+        tab_det_comp_inv.guardar();
+    }
+
     /**
      * Retorna la bodega asociada a la sucursal
      *

@@ -626,8 +626,7 @@ public class pre_libro_bancos extends Pantalla {
         grid1.getChildren().add(tex_beneficiario);
 
         aut_persona = new AutoCompletar();
-        aut_persona.setId("aut_persona");
-        aut_persona.setMetodoChange("cargarCuentasporPagar");
+        aut_persona.setId("aut_persona");        
         aut_persona.setAutocompletarContenido();
         aut_persona.setAutoCompletar(ser_tesoreria.getSqlComboBeneficiario());
         aut_persona.setSize(70);

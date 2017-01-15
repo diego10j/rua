@@ -419,7 +419,7 @@ public class DocumentoCxP extends Dialogo {
         Grid gri_pto = new Grid();
         gri_pto.setId("gri_pto");
         gri_pto.setColumns(11);
-        gri_pto.getChildren().add(new Etiqueta("<strong>TIPO DE DOCUMENTO :</strong>"));
+        gri_pto.getChildren().add(new Etiqueta("<strong>TIPO DE DOCUMENTO :</strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri_pto.getChildren().add(com_tipo_documento);
 
         if (opcion == 1) {
