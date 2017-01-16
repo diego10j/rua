@@ -9,9 +9,13 @@ import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import java.util.HashMap;
+import java.util.Map;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
@@ -25,13 +29,25 @@ public class pre_anual_egresos extends Pantalla {
 	private SeleccionTabla set_programa = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
 
-
+        	///reporte
+	private Map p_parametros = new HashMap();
+	private Reporte rep_reporte = new Reporte();
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
 	@EJB
 	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
 	@EJB
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
 	
 	public pre_anual_egresos(){
+                //bar_botones.getBot_insertar().setRendered(false);
+            
+                            		///reporte
+		rep_reporte.setId("rep_reporte"); //id
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+		agregarComponente(rep_reporte);//agrega el componente a la pantalla
+		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+		self_reporte.setId("self_reporte"); //id
+		agregarComponente(self_reporte);
 		
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
@@ -116,14 +132,25 @@ public class pre_anual_egresos extends Pantalla {
 		tab_mensual.setHeader("DETALLE DE EJECUCION PRESUPUESTARIA");
 		tab_mensual.setIdCompleto("tab_tabulador:tab_mensual");
 		tab_mensual.setTabla("pre_mensual", "ide_prmen", 2);
-		tab_mensual.getColumna("ide_prtra").setLectura(true);
+		tab_mensual.getColumna("ide_prtra").setVisible(false);
 		tab_mensual.getColumna("ide_comov").setLectura(true);
 		//tab_mensual.setCondicion("ide_prpro!=null");
+		tab_mensual.getColumna("valor_anticipo_prmen").setVisible(false);
+		tab_mensual.getColumna("ide_tecpo").setVisible(false);
+		tab_mensual.getColumna("ide_prfuf").setVisible(false);
+		tab_mensual.getColumna("ide_prcer").setVisible(false);
+		tab_mensual.getColumna("ide_cndcc").setVisible(false);
+		tab_mensual.getColumna("certificado_prmen").setVisible(false);
+		tab_mensual.getColumna("cobrado_prmen").setVisible(false);
+		tab_mensual.getColumna("cobradoc_prmen").setVisible(false);
+		tab_mensual.getColumna("pagado_prmen").setVisible(false);
+
+                
 		tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
 		tab_mensual.getColumna("ide_codem").setLectura(true);
 		//tab_anual.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "detalle_prfup,", "");
-		tab_mensual.setTipoFormulario(true);
-		tab_mensual.getGrid().setColumns(6);
+		//tab_mensual.setTipoFormulario(true);
+		//tab_mensual.getGrid().setColumns(6);
 		tab_mensual.dibujar();
 		PanelTabla pat_panel2=new PanelTabla();
 		pat_panel2.setPanelTabla(tab_mensual);
@@ -350,6 +377,31 @@ public class pre_anual_egresos extends Pantalla {
 			utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
 		}
 	}
+        //reporte
+public void abrirListaReportes() {
+	// TODO Auto-generated method stub
+	rep_reporte.dibujar();
+}
+public void aceptarReporte(){
+	if(rep_reporte.getReporteSelecionado().equals("Presupuesto Anual Gastos"));{
+		if (rep_reporte.isVisible()){
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
+			p_parametros.put("pide_anio",Integer.parseInt(com_anio.getValue().toString()));
+
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+			
+		self_reporte.dibujar();
+		
+		}
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+	}
+		
+}
 	@Override
 	public void insertar() {
 		// TODO Auto-generated method stub
@@ -439,5 +491,21 @@ public class pre_anual_egresos extends Pantalla {
 	public void setSet_poa(SeleccionTabla set_poa) {
 		this.set_poa = set_poa;
 	}
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSelf_reporte() {
+        return self_reporte;
+    }
+
+    public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
+        this.self_reporte = self_reporte;
+    }
 
 }
