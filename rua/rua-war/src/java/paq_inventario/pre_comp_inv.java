@@ -118,10 +118,12 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
         tab_tabla2.setRows(10);
-        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
-        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
-        tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
-        tab_tabla2.getColumna("ide_cccfa").setLectura(true);
+        //tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
+        //tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
+        //tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
+        //tab_tabla2.getColumna("ide_cccfa").setLectura(true);
+        tab_tabla2.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla2.getColumna("precio_promedio_indci").setVisible(false);
 
         // tab_tabla2.getColumna("ide_cpdfa").setVisible(false);
