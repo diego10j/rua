@@ -47,7 +47,8 @@ public class pre_anual_egresos extends Pantalla {
 		tab_anual.setTabla("pre_anual", "ide_pranu", 1);
 		tab_anual.getColumna("ide_prcla").setCombo("select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_clasificador order by codigo_clasificador_prcla");
 		tab_anual.getColumna("ide_prcla").setVisible(false);
-		tab_anual.getColumna("ide_prfuf").setVisible(false);
+		//tab_anual.getColumna("ide_prfuf").setVisible(false);
+		tab_anual.getColumna("ide_prfuf").setCombo("select ide_prfuf,detalle_prfuf from pre_fuente_financiamiento order by detalle_prfuf");
 
 		tab_anual.setCondicion("not ide_prpro is null");
 		tab_anual.getColumna("ide_prpro").setCombo(ser_presupuesto.getPrograma("true,false"));
@@ -151,19 +152,21 @@ public class pre_anual_egresos extends Pantalla {
 		div_division.dividir2(pat_panel1, tab_tabulador, "50%", "h");
 		agregarComponente(div_division);
                 
+                /*
 		Boton bot_importarpoa = new Boton();
 		bot_importarpoa.setValue("Importar POA");
 		bot_importarpoa.setIcon("ui-icon-person");
 		bot_importarpoa.setMetodo("importarPoa");
 		bar_botones.agregarBoton(bot_importarpoa);
-		/*
+                */
+		
 		Boton bot_material = new Boton();
 		bot_material.setValue("Agregar Programa");
 		bot_material.setTitle("Solicitud Programa");
 		bot_material.setIcon("ui-icon-person");
 		bot_material.setMetodo("importarPrograma");
 		bar_botones.agregarBoton(bot_material);
-		*/
+		
 		set_programa.setId("set_programa");
 		set_programa.setSeleccionTabla(ser_presupuesto.getPrograma("true,false"),"IDE_PRPRO");
 		set_programa.getTab_seleccion().getColumna("cod_programa_prpro").setFiltroContenido();
@@ -261,6 +264,9 @@ public class pre_anual_egresos extends Pantalla {
 			tab_anual.setCondicion("not ide_prpro is null and ide_geani="+com_anio.getValue());
 			tab_anual.ejecutarSql();
 			//tab_mes.ejecutarValorForanea(tab_poa.getValorSeleccionado());
+                        tab_mensual.ejecutarValorForanea(tab_anual.getValorSeleccionado());
+                       tab_reforma.ejecutarValorForanea(tab_anual.getValorSeleccionado());
+
 
 		}
 		else{
@@ -329,13 +335,15 @@ public class pre_anual_egresos extends Pantalla {
 		if(str_seleccionado!=null){
 			//Inserto los empleados seleccionados en la tabla de participantes 
 			TablaGenerica tab_programa=ser_presupuesto.getTablaGenericaPrograma(str_seleccionado);
-			System.out.println(" tabla generica"+tab_programa.getSql());
+			//System.out.println(" tabla generica"+tab_programa.getSql());
 			for(int i=0;i<tab_programa.getTotalFilas();i++){
 				tab_anual.insertar();
 				tab_anual.setValor("ide_prpro", tab_programa.getValor(i, "ide_prpro"));
+                                tab_anual.setValor("ide_geani", com_anio.getValue().toString());
 				
 			}
 			set_programa.cerrar();
+                       
 			utilitario.addUpdate("tab_anual");			
 		}
 		else{
