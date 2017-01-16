@@ -334,15 +334,17 @@ public class pre_inventario extends Pantalla {
             tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
             tab_tabla2.getColumna("ide_cccfa").setVisible(false);
         } else {
-            tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
-            tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
-            tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
-            tab_tabla2.getColumna("ide_cccfa").setLectura(true);
+            tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+            tab_tabla2.getColumna("ide_cccfa").setVisible(false);
+//            tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
+//            tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
+//            tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
+//            tab_tabla2.getColumna("ide_cccfa").setLectura(true);
         }
         tab_tabla2.dibujar();
         if (ide_incci_busca == null) {
-            tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
-            tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=" + tab_tabla2.getValor("ide_cccfa"));
+//            tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
+//            tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=" + tab_tabla2.getValor("ide_cccfa"));
         }
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);

@@ -36,9 +36,9 @@ public class pre_retenciones extends Pantalla {
     private Boton bot_clean = new Boton();
 
     public pre_retenciones() {
-        bar_botones.quitarBotonEliminar();
-        bar_botones.quitarBotonGuardar();
-        bar_botones.quitarBotonInsertar();
+       // bar_botones.quitarBotonEliminar();
+        //bar_botones.quitarBotonGuardar();
+        //bar_botones.quitarBotonInsertar();
         bar_botones.agregarReporte();
         bar_botones.agregarBoton(bot_ver_retencion);
 
