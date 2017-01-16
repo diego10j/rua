@@ -10,9 +10,11 @@ import componentes.FacturaCxC;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
+import framework.componentes.Confirmar;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.ItemMenu;
 import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
@@ -30,7 +32,6 @@ import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioContabilidadGeneral;
-import servicios.contabilidad.TipoAsientoEnum;
 import servicios.prestamo.ServicioPrestamo;
 import sistema.aplicacion.Pantalla;
 
@@ -57,6 +58,8 @@ public class pre_prestamos extends Pantalla {
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
 
     private AsientoContable asc_asiento = new AsientoContable();
+
+    private Confirmar con_confirma = new Confirmar();
 
     public pre_prestamos() {
 
@@ -103,6 +106,12 @@ public class pre_prestamos extends Pantalla {
         asc_asiento.getBot_aceptar().setMetodo("guardarAsiento");
         agregarComponente(asc_asiento);
 
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro de Anular el Pago Seleccionado?");
+        con_confirma.setTitle("ANULAR PAGO CUOTA");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
     }
 
     public void guardarAsiento() {
@@ -396,6 +405,11 @@ public class pre_prestamos extends Pantalla {
             tab_tabla2.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla2);
+            ItemMenu itm_anula_pago = new ItemMenu();
+            itm_anula_pago.setValue("Anular Pago");
+            itm_anula_pago.setIcon("ui-icon-cancel");
+            itm_anula_pago.setMetodo("abrirAnularPago");
+            pat_panel.getMenuTabla().getChildren().add(itm_anula_pago);
             PanelGrid pgrid = new PanelGrid();
             pgrid.setColumns(8);
             pgrid.setStyle("width:100%;");
@@ -413,6 +427,22 @@ public class pre_prestamos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
         mep_menu.dibujar(2, "TABLA DE AMORTIZACION", gru_grupo);
+    }
+
+    public void abrirAnularPago() {
+        if (tab_tabla2.getValor("ide_ipdpr") != null) {
+            con_confirma.getBot_aceptar().setMetodo("anularPago");
+            con_confirma.dibujar();
+        }
+    }
+
+    public void anularPago() {
+        if (tab_tabla2.getValor("ide_ipdpr") != null) {
+            ser_prestamo.anularCuotaPrestamo(tab_tabla2.getValor("ide_ipdpr"), tab_tabla2.getValor("ide_ipcpr"));
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla2.actualizar();
+            }
+        }
     }
 
     public void dibujarListaPrestamos() {
@@ -767,6 +797,14 @@ public class pre_prestamos extends Pantalla {
 
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 }
