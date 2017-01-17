@@ -4,7 +4,6 @@
  */
 package pkg_sri;
 
-
 import framework.aplicacion.TablaGenerica;
 import java.text.SimpleDateFormat;
 import org.w3c.dom.*;
@@ -47,7 +46,6 @@ public class cls_anexo_transaccional {
                         + " where fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                         + " GROUP BY substr(df.serie_ccdaf, 1, 3)");
 
-
                 Element raiz = doc_anexo.createElement("iva");
                 raiz.appendChild(crearElemento("TipoIDInformante", null, "R")); //  Ruc
                 raiz.appendChild(crearElemento("IdInformante", null, tab_empresa.getValor("identificacion_empr")));
@@ -57,7 +55,6 @@ public class cls_anexo_transaccional {
                 raiz.appendChild(crearElemento("numEstabRuc", null, "00" + tab_estab.getTotalFilas()));
                 raiz.appendChild(crearElemento("totalVentas", null, getTotalVentas()));
                 raiz.appendChild(crearElemento("codigoOperativo", null, "IVA"));
-
 
                 doc_anexo.appendChild(raiz);
 
@@ -99,6 +96,10 @@ public class cls_anexo_transaccional {
                         detalleCompras.appendChild(crearElemento("montoIce", null, tab_compras.getValor(i, "valor_ice_cpcfa")));
                         detalleCompras.appendChild(crearElemento("montoIva", null, tab_compras.getValor(i, "valor_iva_cpcfa")));
 
+                        ////
+                        detalleCompras.appendChild(crearElemento("valRetBien10", null, "0.00"));
+                        detalleCompras.appendChild(crearElemento("valRetServ20", null, "0.00"));
+
                         String ide_retencion = tab_compras.getValor(i, "ide_cncre");
                         if (ide_retencion == null) {
                             ide_retencion = "-1";
@@ -114,6 +115,9 @@ public class cls_anexo_transaccional {
                             detalleCompras.appendChild(crearElemento("valorRetBienes", null, "0.00"));
                         }
 
+                        ///
+                        detalleCompras.appendChild(crearElemento("valRetServ50", null, "0.00"));
+
                         TablaGenerica tab_rete_iva_servicios = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                                 + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                                 + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva70") + " and cabece.ide_cncre=" + ide_retencion);
@@ -127,12 +131,14 @@ public class cls_anexo_transaccional {
                                 + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                                 + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva100") + " and cabece.ide_cncre=" + ide_retencion);
 
-
                         if (tab_rete_iva_servicios100.getTotalFilas() > 0) {
                             detalleCompras.appendChild(crearElemento("valRetServ100", null, tab_rete_iva_servicios100.getValor("valor_cndre")));
                         } else {
                             detalleCompras.appendChild(crearElemento("valRetServ100", null, "0.00"));
                         }
+
+                        ///
+                        detalleCompras.appendChild(crearElemento("totbasesImpReemb", null, "0.00"));
 
                         Element pagoExterior = doc_anexo.createElement("pagoExterior");
                         detalleCompras.appendChild(pagoExterior);
@@ -140,7 +146,6 @@ public class cls_anexo_transaccional {
                         pagoExterior.appendChild(crearElemento("paisEfecPago", null, "NA"));
                         pagoExterior.appendChild(crearElemento("aplicConvDobTrib", null, "NA"));
                         pagoExterior.appendChild(crearElemento("pagExtSujRetNorLeg", null, "NA"));
-
 
                         double dou_total_factura = Double.parseDouble(tab_compras.getValor(i, "total_cpcfa"));
                         if (dou_total_factura >= 1000) {
@@ -183,7 +188,6 @@ public class cls_anexo_transaccional {
                         }
 
                         ///////////
-
                         Element air = doc_anexo.createElement("air");
                         detalleCompras.appendChild(air);
 
@@ -227,7 +231,7 @@ public class cls_anexo_transaccional {
                                     detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
                                     //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
                                     //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-                                    
+
                                     detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
                                 }
 //                                else {
@@ -305,10 +309,6 @@ public class cls_anexo_transaccional {
                     }
 
                     //ventasEstablecimiento
-
-
-
-
                     Element ventasEstablecimiento = doc_anexo.createElement("ventasEstablecimiento");
                     raiz.appendChild(ventasEstablecimiento);
 
