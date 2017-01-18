@@ -438,8 +438,9 @@ public class pre_prestamos extends Pantalla {
 
     public void anularPago() {
         if (tab_tabla2.getValor("ide_ipdpr") != null) {
-            ser_prestamo.anularCuotaPrestamo(tab_tabla2.getValor("ide_ipdpr"), tab_tabla2.getValor("ide_ipcpr"));
+            ser_prestamo.anularCuotaPrestamo(tab_tabla2.getValor("ide_ipdpr"));
             if (guardarPantalla().isEmpty()) {
+                con_confirma.cerrar();
                 tab_tabla2.actualizar();
             }
         }
