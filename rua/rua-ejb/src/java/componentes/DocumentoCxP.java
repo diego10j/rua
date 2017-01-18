@@ -54,6 +54,7 @@ public class DocumentoCxP extends Dialogo {
     private final Texto tex_valor_descuento = new Texto();
     private final Texto tex_porc_descuento = new Texto();
     private final Texto tex_otros_valores = new Texto();
+    private boolean haceKardex = false;
 
     private int tabActiva = 0;
     private int opcion = 0;
@@ -149,6 +150,7 @@ public class DocumentoCxP extends Dialogo {
 
     public void nuevoDocumento() {
         opcion = 1;  // GENERA FACTURA
+        haceKardex = false;
         ocultarTabs(); //Ocilta todas las tabas
         setActivarDocumento(true); //activa solo tab de Fcatura de venta
         seleccionarTab(0);
@@ -1035,6 +1037,11 @@ public class DocumentoCxP extends Dialogo {
                     String ide_cccfa = tab_cab_documento.getValor("ide_cpcfa");
                     for (int i = 0; i < tab_det_documento.getTotalFilas(); i++) {
                         tab_det_documento.setValor(i, "ide_cpcfa", ide_cccfa);
+                        if (haceKardex == false) {
+                            if (ser_inventario.isHaceKardex(tab_det_documento.getValor(i, "ide_inarti"))) {
+                                haceKardex = true;
+                            }
+                        }
                     }
                     if (tab_det_documento.guardar()) {
                         if (tab_com_reembolso.isRendered()) {
@@ -1051,7 +1058,9 @@ public class DocumentoCxP extends Dialogo {
                             }
 
                             //Transaccion de Inventario
-                            ser_inventario.generarComprobanteTransaccionCompra(tab_cab_documento, tab_det_documento);
+                            if (haceKardex) {
+                                ser_inventario.generarComprobanteTransaccionCompra(tab_cab_documento, tab_det_documento);
+                            }
                             if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                                 this.cerrar();
                             }

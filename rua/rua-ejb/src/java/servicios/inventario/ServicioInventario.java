@@ -369,4 +369,19 @@ public class ServicioInventario {
                 + "GROUP BY ARTICULO.ide_inarti,BODEGA.nombre_inbod,UNIDAD.ide_inuni,nombre_invmar\n"
                 + "ORDER BY BODEGA.nombre_inbod, ARTICULO.nombre_inarti";
     }
+
+    /**
+     * Retorna si un producto hace kardex
+     *
+     * @param ide_inarti
+     * @return
+     */
+    public boolean isHaceKardex(String ide_inarti) {
+        boolean hace = true;
+        TablaGenerica tb = utilitario.consultar("SELECT ide_inarti,hace_kardex_inarti from inv_articulo where ide_inarti=" + ide_inarti + " and hace_kardex_inarti=true");
+        if (tb.isEmpty()) {
+            hace = false;
+        }
+        return hace;
+    }
 }

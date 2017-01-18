@@ -63,6 +63,7 @@ public class FacturaCxC extends Dialogo {
     private final Texto tex_total = new Texto();
     private Combo com_pto_emision = new Combo();
     private double tarifaIVA = 0;
+    private boolean haceKardex = false;
 
     //FORMA DE PAGO
     private Tabla tab_deta_pago;
@@ -144,7 +145,7 @@ public class FacturaCxC extends Dialogo {
         tab_factura.getTab(1).getChildren().clear();
         tab_factura.getTab(2).getChildren().clear();
         tab_factura.getTab(3).getChildren().clear();
-
+        haceKardex = false;
         tab_factura.getTab(0).getChildren().add(dibujarFactura());
         utilitario.getConexion().getSqlPantalla().clear();//LIMPIA SQL EXISTENTES
         ocultarTabs(); //Ocilta todas las tabas
@@ -950,12 +951,19 @@ public class FacturaCxC extends Dialogo {
             String ide_cccfa = tab_cab_factura.getValor("ide_cccfa");
             for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
                 tab_deta_factura.setValor(i, "ide_cccfa", ide_cccfa);
+                if (haceKardex == false) {
+                    if (ser_inventario.isHaceKardex(tab_deta_factura.getValor(i, "ide_inarti"))) {
+                        haceKardex = true;
+                    }
+                }
             }
             if (tab_deta_factura.guardar()) {
                 //Guarda la cuenta por cobrar
                 ser_factura.generarTransaccionFactura(tab_cab_factura);
-                //Transaccion de Inventario
-                ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
+                //Transaccion de Inventario                
+                if (haceKardex) {
+                    ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
+                }
                 String ide_srcom = null; //IDE COMPROBANTE ELECTRONICO
                 //SI ESTA ACTIVA FACTURACION ELECTRONICA
                 if (utilitario.getVariable("p_sri_activa_comp_elect") != null && utilitario.getVariable("p_sri_activa_comp_elect").equalsIgnoreCase("true")) {

@@ -203,7 +203,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="57d50bc6-4742-4ece-819f-27ab02dc2927" x="34" y="0" width="221" height="18"/>
 				<box leftPadding="3" rightPadding="3"/>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion_ccdfa}== null? ($F{nombre_inarti}):($F{nombre_inarti}+" "+$F{observacion_ccdfa})]]></textFieldExpression>
@@ -211,7 +211,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="33973201-da51-43aa-abd3-d6e11584c907" x="0" y="0" width="34" height="18"/>
 				<box leftPadding="3" rightPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_ccdfa}]]></textFieldExpression>
@@ -219,7 +219,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="010697a7-d236-469d-a92e-06438150c711" x="255" y="0" width="76" height="18"/>
 				<box rightPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{precio_ccdfa}]]></textFieldExpression>
@@ -227,7 +227,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 				<reportElement uuid="963c04e5-b179-47e9-8222-77e9bba3be4a" x="331" y="0" width="71" height="18"/>
 				<box rightPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_ccdfa}]]></textFieldExpression>
@@ -306,13 +306,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="c1d3142b-13ac-4ad7-b4ae-e8da183a15d1" x="85" y="0" width="170" height="15"/>
-				<box leftPadding="3">
+				<box leftPadding="3" bottomPadding="1">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Bottom">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_cndfp}]]></textFieldExpression>
