@@ -54,6 +54,7 @@ public class pre_modifica_factura extends Pantalla {
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
     @EJB
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
+    private boolean haceKardex = false;
 
     public pre_modifica_factura() {
 
@@ -235,6 +236,7 @@ public class pre_modifica_factura extends Pantalla {
             tab_cab_factura.ejecutarSql();
             setObservacion(tab_cab_factura.getValor("OBSERVACION_CCCFA"));
             tab_deta_factura.ejecutarValorForanea(tab_cab_factura.getValorSeleccionado());
+            haceKardex = false;
             if (tab_cab_factura.isEmpty()) {
                 tab_cab_factura.insertar();
                 tab_cab_factura.getFilaSeleccionada().setLectura(true);
@@ -277,7 +279,16 @@ public class pre_modifica_factura extends Pantalla {
                     //Guarda la cuenta por cobrar
                     ser_factura.generarModificarTransaccionFactura(tab_cab_factura);
                     //Transaccion de Inventario
-                    ser_inventario.generarModificarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
+                    for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
+                        if (haceKardex == false) {
+                            if (ser_inventario.isHaceKardex(tab_deta_factura.getValor(i, "ide_inarti"))) {
+                                haceKardex = true;
+                            }
+                        }
+                    }
+                    if (haceKardex) {
+                        ser_inventario.generarModificarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
+                    }
                     utilitario.getConexion().guardarPantalla();
                 }
             }
