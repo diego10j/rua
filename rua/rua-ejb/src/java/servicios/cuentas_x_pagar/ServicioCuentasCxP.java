@@ -7,6 +7,7 @@ package servicios.cuentas_x_pagar;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -20,10 +21,10 @@ import servicios.contabilidad.ServicioContabilidadGeneral;
  */
 @Stateless
 public class ServicioCuentasCxP extends ServicioBase {
-    
+
     @EJB
     private ServicioContabilidadGeneral ser_conta_general;
-    
+
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar
@@ -76,7 +77,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
             }
-            
+
             tab_det_tran_cxp.setValor("fecha_trans_cpdtr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cpcfa")));
             tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
@@ -100,7 +101,7 @@ public class ServicioCuentasCxP extends ServicioBase {
     public String generarModificaTransaccionCompra(Tabla tab_cab_factura) {
         String ide_cpctr = "-1";
         if (tab_cab_factura != null) {
-            
+
             TablaGenerica tab_cab_tran_cxp = new TablaGenerica();
             tab_cab_tran_cxp.setTabla("cxp_cabece_transa", "ide_cpctr");
             tab_cab_tran_cxp.getColumna("ide_cpctr").setExterna(false);
@@ -134,7 +135,7 @@ public class ServicioCuentasCxP extends ServicioBase {
             } else {
                 tab_det_tran_cxp.modificar(tab_det_tran_cxp.getFilaActual());
             }
-            
+
             tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", tab_cab_tran_cxp.getValor("ide_cpctr"));
             tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
@@ -148,7 +149,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
             }
-            
+
             tab_det_tran_cxp.setValor("fecha_trans_cpdtr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cpcfa")));
             tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
@@ -162,17 +163,17 @@ public class ServicioCuentasCxP extends ServicioBase {
         }
         return ide_cpctr;
     }
-    
+
     public String generarTransaccionCompraAnticipo(Tabla tab_cab_factura, String ide_cpctr) {
-        
+
         if (tab_cab_factura != null) {
-            
+
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
             tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
             tab_det_tran_cxp.setCondicion("ide_cpdtr=-1");
             tab_det_tran_cxp.ejecutarSql();
-            
+
             tab_det_tran_cxp.insertar();
             tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", ide_cpctr);
@@ -187,7 +188,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
             }
-            
+
             tab_det_tran_cxp.setValor("fecha_trans_cpdtr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cpcfa")));
             tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
@@ -200,7 +201,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         }
         return ide_cpctr;
     }
-    
+
     public String generarTransaccionAnticipo(String ide_geper, TablaGenerica tab_libro_banco) {
         String ide_cpctr = "-1";
         if (tab_libro_banco != null) {
@@ -299,10 +300,10 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setCondicion("ide_cpctr=" + tab_cab_tran_cxp.getValor("ide_cpctr") + " and ide_cpttr=" + parametros.get("p_cxp_tipo_trans_retencion"));
             tab_det_tran_cxp.ejecutarSql();
             if (tab_det_tran_cxp.isEmpty()) {
-                tab_det_tran_cxp.insertar();                
+                tab_det_tran_cxp.insertar();
             } else {
                 tab_det_tran_cxp.modificar(tab_det_tran_cxp.getFilaActual());
-            }            
+            }
             tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", tab_cab_tran_cxp.getValor("ide_cpctr"));
             tab_det_tran_cxp.setValor("ide_cpcfa", ide_cpcfa);
@@ -319,7 +320,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         }
         return ide_cpctr;
     }
-    
+
     public String generarTransaccionPago(TablaGenerica tab_cab_factura, String ide_cpctr, String ide_teclb, double valor, String observacion, String num_documento) {
         TablaGenerica tab_det_tran_cxp = new TablaGenerica();
         tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
@@ -345,7 +346,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         tab_det_tran_cxp.guardar();
         return tab_det_tran_cxp.getValor("ide_cpdtr");
     }
-    
+
     public String getSqlTipoDocumentosCxP() {
         return "select ide_cntdo,nombre_cntdo from con_tipo_document where ide_cntdo in ("
                 + utilitario.getVariable("p_con_tipo_documento_factura") + ","
@@ -502,7 +503,7 @@ public class ServicioCuentasCxP extends ServicioBase {
      * @return
      */
     public String getSqlTotalComprasMensuales(String anio) {
-        
+
         return "select nombre_gemes,\n"
                 + "(select count(ide_cpcfa) as num_documentos from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ") and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
                 + "(select sum(base_grabada_cpcfa) as compras12 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in(" + anio + ")  and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal") + " and ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null),\n"
@@ -551,11 +552,11 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "and ide_cpcfa=" + ide_cpcfa + "\n"
                 + "order by fecha_trans_cpdtr";
     }
-    
+
     public String getSqlCabeceraDocumento(String ide_cpcfa) {
         return "SELECT * from cxp_cabece_factur where ide_cpcfa=" + ide_cpcfa;
     }
-    
+
     public String getNumeroPagoDocumento(String ide_cpctr) {
         //RETORNA EL PAGO MAXIMO         
         List lis_sql = utilitario.getConexion().consultar("select max(numero_pago_cpdtr) from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
@@ -565,7 +566,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         }
         return (num + 1) + "";
     }
-    
+
     public String getSqlActualizaPagoDocumento(String ide_cpcfa) {
         return "update cxp_cabece_factur set pagado_cpcfa=true where ide_cpcfa=" + ide_cpcfa;
     }
@@ -585,7 +586,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "GROUP BY d.ide_geper,identificac_geper,nom_geper\n"
                 + "order by nom_geper";
     }
-    
+
     public String getSqlAnticiposCliente(String ide_geper) {
         return "select b.ide_cpctr,nom_geper,valor_cpdtr,observacion_cpdtr from cxp_detall_transa  a\n"
                 + "inner join cxp_cabece_transa b on a.ide_cpctr=b.ide_cpctr\n"
@@ -595,4 +596,22 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "and b.ide_cpcfa is null " //sin factura --ahun no se utiliza
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
+
+    public String getSqlDocumentosCliente(String ide_geper) {
+
+        String fechaFin = utilitario.getFechaActual();
+        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -45));
+
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa,nombre_cntdo, numero_cpcfa,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,numero_cncre,a.ide_cncre \n"
+                + " from cxp_cabece_factur a \n"
+                + " inner join gen_persona b on a.ide_geper=b.ide_geper \n"
+                + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
+                + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
+                + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
+                + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + " and a.ide_geper=" + ide_geper + " "
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
+                + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
+    }
+
 }

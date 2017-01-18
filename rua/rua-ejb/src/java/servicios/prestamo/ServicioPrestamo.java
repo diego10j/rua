@@ -229,10 +229,9 @@ public class ServicioPrestamo extends ServicioBase {
      * Cambia de estado a pagado=false
      *
      * @param ide_ipdpr
-     * @param ide_ipcpr
      */
-    public void anularCuotaPrestamo(String ide_ipdpr, String ide_ipcpr) {
-        utilitario.getConexion().agregarSql("Update from iyp_deta_prestamo set pagado_ipdpr=false where ide_ipdpr=" + ide_ipdpr + " and ide_ipcpr=" + ide_ipcpr);
+    public void anularCuotaPrestamo(String ide_ipdpr) {
+        utilitario.getConexion().agregarSql("update iyp_deta_prestamo set pagado_ipdpr=false where ide_ipdpr=" + ide_ipdpr);
     }
 
 }

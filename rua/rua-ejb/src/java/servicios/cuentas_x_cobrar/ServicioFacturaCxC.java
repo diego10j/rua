@@ -477,7 +477,7 @@ public class ServicioFacturaCxC extends ServicioBase {
      */
     public void anularFactura(String ide_cccfa) {
         //Anula Fctura
-        utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_anulada") + " where ide_cccfa=" + ide_cccfa);
+        utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_anulada") + ",ide_cnccc=null where ide_cccfa=" + ide_cccfa);
         //Transaccion CXC Generar reverso de la transaccion FACTURA
         TablaGenerica tab_cab = utilitario.consultar("SELECT a.ide_cccfa,ide_ccctr,secuencial_cccfa from cxc_cabece_transa a inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa where a.ide_cccfa=" + ide_cccfa + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal"));
         if (tab_cab.getTotalFilas() > 0) {
