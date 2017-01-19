@@ -5,6 +5,7 @@
  */
 package servicios.contabilidad;
 
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
@@ -45,6 +46,22 @@ public class ServicioRetenciones extends ServicioBase {
                 + "and es_venta_cncre = false\n"
                 + autorizacion_cncre
                 + "ORDER BY ide_cncre desc";
+    }
+
+    public String getSqlRetencionesProveedor(String ide_geper) {
+        String fechaFin = utilitario.getFechaActual();
+        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -45));
+
+        return "SELECT a.ide_cncre,fecha_emisi_cncre AS FECHA,numero_cncre AS NUMERO,autorizacion_cncre AS NUM_AUTORIZACION,observacion_cncre AS OBSERVACION,numero_cpcfa as NUM_FACTURA,ide_cpcfa\n"
+                + "FROM con_cabece_retenc a\n"
+                + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
+                + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
+                + "and b.ide_geper=" + ide_geper + " "
+                + "and es_venta_cncre = false\n"
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and ide_cnere!=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " "
+                + "ORDER BY numero_cncre desc";
     }
 
     public String getSqlConsultaImpuestos(String autorizacion_cncre, String fechaInicio, String fechaFin, String ide_cncim) {
@@ -106,7 +123,7 @@ public class ServicioRetenciones extends ServicioBase {
      */
     public void anularComprobanteRetencion(String ide_cncre) {
         utilitario.getConexion().agregarSqlPantalla("UPDATE con_cabece_retenc set ide_cnere=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " where ide_cncre=" + ide_cncre);
-        utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cnere=null where ide_cncre=" + ide_cncre);
+        utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cncre=null where ide_cncre=" + ide_cncre);
     }
 
     public String getNumeroRetencion(String autorizacion) {

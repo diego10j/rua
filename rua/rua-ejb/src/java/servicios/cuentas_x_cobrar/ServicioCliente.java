@@ -376,4 +376,21 @@ public class ServicioCliente extends ServicioBase {
         return true;
     }
 
+    public String getSqlComboFacturasPorCobrar(String ide_geper) {
+        return "select dt.ide_ccctr,\n"
+                + "coalesce(nombre_cntdo,'Cuenta por Cobrar'),coalesce(cf.secuencial_cccfa,''),\n"
+                + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_cobrar\n"
+                + "from cxc_detall_transa dt \n"
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr \n"
+                + "left join cxc_cabece_factura  cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr \n"
+                + "left join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo \n"
+                + "where ct.ide_geper=" + ide_geper + " "
+                + "and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa,nombre_cntdo, \n"
+                + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa \n"
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 \n"
+                + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
+    }
+
 }

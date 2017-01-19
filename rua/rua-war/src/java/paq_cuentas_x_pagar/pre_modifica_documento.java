@@ -88,7 +88,7 @@ public class pre_modifica_documento extends Pantalla {
         aut_proveedor.setAutocompletarContenido();
         aut_proveedor.setMetodoChange("abrirDocumentos");
         aut_proveedor.setSize(70);
-
+        bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PROVEEDOR"));
         bar_botones.agregarComponente(aut_proveedor);
         Boton bot_clean = new Boton();
@@ -108,9 +108,9 @@ public class pre_modifica_documento extends Pantalla {
         sel_factura.setWidth("65%");
         sel_factura.setRadio();
         sel_factura.setSeleccionTabla(ser_cuentas_cxp.getSqlDocumentosCliente("-1"), "ide_cpcfa");
+        sel_factura.getTab_seleccion().getColumna("numero_cpcfa").setFiltroContenido();
         sel_factura.getBot_aceptar().setMetodo("aceptarDocumento");
         agregarComponente(sel_factura);
-
     }
 
     public void limpiar() {
@@ -172,8 +172,8 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.setTabla("cxp_cabece_factur", "ide_cpcfa", 1);
         tab_cab_documento.getColumna("ide_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("ide_cntdo").setNombreVisual("TIPO DE DOCUMENTO");
-        tab_cab_documento.getColumna("ide_cntdo").setPermitirNullCombo(false);
         tab_cab_documento.getColumna("ide_cntdo").setOrden(21);
+        tab_cab_documento.getColumna("ide_cntdo").setVisible(false);
         tab_cab_documento.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
         tab_cab_documento.getColumna("ide_cpefa").setVisible(false);
         tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "");
@@ -268,6 +268,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_det_documento.setId("tab_det_documento");
         tab_det_documento.setTabla("cxp_detall_factur", "ide_cpdfa", 2);
         tab_det_documento.setCampoForanea("ide_cpdfa");
+        tab_det_documento.setCondicionForanea("ide_cpcfa=" + ide_cpcfa);
         tab_det_documento.getColumna("ide_cpdfa").setVisible(false);
         tab_det_documento.getColumna("ide_cpcfa").setVisible(false);
         tab_det_documento.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
