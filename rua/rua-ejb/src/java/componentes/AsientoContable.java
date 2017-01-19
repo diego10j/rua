@@ -245,7 +245,7 @@ public class AsientoContable extends Dialogo {
             tab_presupuesto.setScrollHeight(60);
             tab_presupuesto.setCondicion("ide_cndcc=-1");
             tab_presupuesto.dibujar();
-            tab_presupuesto.insertar();
+           // tab_presupuesto.insertar();
             PanelTabla pat_panel3 = new PanelTabla();
             pat_panel3.setPanelTabla(tab_presupuesto);
             pat_panel3.getMenuTabla().getItem_buscar().setRendered(false);
