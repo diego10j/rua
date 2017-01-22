@@ -8,6 +8,7 @@ package paq_cuentas_x_pagar;
 import componentes.AsientoContable;
 import componentes.DocumentoCxP;
 import componentes.Retencion;
+import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -28,7 +29,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
+import org.primefaces.event.SelectEvent;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
+import servicios.cuentas_x_pagar.ServicioProveedor;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -44,6 +47,8 @@ public class pre_documentosCxP extends Pantalla {
     private DocumentoCxP dcp_documento = new DocumentoCxP();
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
+    @EJB
+    private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
 
     private Tabla tab_tabla1 = new Tabla();
     private Combo com_periodo;
@@ -58,6 +63,8 @@ public class pre_documentosCxP extends Pantalla {
     private AsientoContable asc_asiento = new AsientoContable();
 
     private Confirmar con_confirmar = new Confirmar();
+    private AutoCompletar aut_proveedor;
+    private Tabla tab_tabla2;
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -99,6 +106,8 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Grafico de Compras", "dibujarGraficoCompras", "ui-icon-clock");
         // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");        
+        mep_menu.agregarSubMenu("PRESUPUESTO");
+        mep_menu.agregarItem("Compromiso Documentos CxP", "dibujarCompromiso", "ui-icon-calculator");
         mep_menu.agregarSubMenu("FACTURAS ELECTRONICAS");
         mep_menu.agregarItem("Seleccionar Factura XML", "dibujarFacturaElectronica", "ui-icon-signal-diag");
         agregarComponente(mep_menu);
@@ -125,6 +134,96 @@ public class pre_documentosCxP extends Pantalla {
         con_confirmar.getBot_aceptar().setMetodo("abrirRetencion");
         con_confirmar.getBot_cancelar().setOnclick("con_confirmar.hide();");
         agregarComponente(con_confirmar);
+    }
+
+    public void dibujarCompromiso() {
+        Grid gri = new Grid();
+        Grid g1 = new Grid();
+        g1.setColumns(2);
+        g1.getChildren().add(new Etiqueta("<strong>PROVEEDOR : </strong>"));
+        aut_proveedor = new AutoCompletar();
+        aut_proveedor.setId("aut_proveedor");
+        aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
+        aut_proveedor.setAutocompletarContenido();
+        aut_proveedor.setMetodoChange("cargarDocumetosProveedor");
+        aut_proveedor.setSize(70);
+        g1.getChildren().add(aut_proveedor);
+        gri.getChildren().add(g1);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentosProveedor(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), "-1"));
+        tab_tabla1.setCampoPrimaria("ide_cpcfa");
+        tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("ide_cpefa").setVisible(false);
+        tab_tabla1.getColumna("ide_cncre").setVisible(false);
+        tab_tabla1.getColumna("nombre_cpefa").setVisible(false);
+        tab_tabla1.getColumna("numero_cpcfa").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla1.getColumna("ventas0").alinearDerecha();
+        tab_tabla1.getColumna("ventas12").alinearDerecha();
+        tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
+        tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
+        tab_tabla1.getColumna("total_cpcfa").setEstilo("font-size: 12px;font-weight: bold;");
+        tab_tabla1.setScrollable(true);
+        tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 350);
+        tab_tabla1.setLectura(true);
+        //COLOR VERDE FACTURAS NO CONTABILIZADAS
+        //COLOR ROJO FACTURAS ANULADAS
+        tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[5] eq '" + utilitario.getVariable("p_cxp_estado_factura_anulada") + "' ? 'text-red' : fila.campos[2] eq null  ? 'text-green' : null");
+        tab_tabla1.onSelect("seleccionarDocumento");
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+
+        gri.getChildren().add(pat_panel);
+
+        //tabla asociación
+        tab_tabla2 = new Tabla();
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("pre_compromiso_factura", "ide_prcof", 7);
+        tab_tabla2.setCondicion("ide_cpcfa=-1");
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        //tab_tabla2.getColumna("ide_prpot").setCombo("", "", "", "");
+        tab_tabla2.setScrollable(true);
+        tab_tabla2.setScrollHeight(utilitario.getAltoPantalla() - 450);
+        tab_tabla2.dibujar();
+
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_tabla2);
+
+        pat_panel2.getMenuTabla().getItem_insertar().setMetodo("insertar7");
+        pat_panel2.getMenuTabla().getItem_guardar().setMetodo("guardar7");
+        pat_panel2.getMenuTabla().getItem_guardar().setRendered(true);
+        pat_panel2.getMenuTabla().getItem_eliminar().setMetodo("eliminar7");
+        pat_panel2.getMenuTabla().getItem_eliminar().setRendered(true);
+
+        gri.getChildren().add(pat_panel2);
+        mep_menu.dibujar(7, "COMPROMISO PRESUPUESTARIO DOCUMENTOS CXP", gri);
+    }
+
+    public void seleccionarDocumento(SelectEvent evt) {
+        tab_tabla1.seleccionarFila(evt);
+        tab_tabla2.setCondicion("ide_cpcfa=" + tab_tabla1.getValorSeleccionado());
+        tab_tabla2.ejecutarSql();
+
+    }
+
+    public void cargarDocumetosProveedor(SelectEvent evt) {
+        aut_proveedor.onSelect(evt);
+        if (aut_proveedor.getValor() != null) {
+            tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentosProveedor(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), aut_proveedor.getValor()));
+            tab_tabla1.ejecutarSql();
+            tab_tabla2.setCondicion("ide_cpcfa=" + tab_tabla1.getValorSeleccionado());
+            tab_tabla2.ejecutarSql();
+        } else {
+            tab_tabla1.limpiar();
+            tab_tabla2.limpiar();
+        }
     }
 
     @Override
@@ -188,7 +287,7 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
         tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
         tab_tabla1.getColumna("total_cpcfa").setEstilo("font-size: 12px;font-weight: bold;");
-        tab_tabla1.setRows(20);
+        tab_tabla1.setRows(15);
         tab_tabla1.setLectura(true);
         //COLOR VERDE FACTURAS NO CONTABILIZADAS
         //COLOR ROJO FACTURAS ANULADAS
@@ -468,8 +567,35 @@ public class pre_documentosCxP extends Pantalla {
 
     @Override
     public void insertar() {
+
         dcp_documento.nuevoDocumento();
         dcp_documento.dibujar();
+    }
+
+    public void eliminar7() {
+        if (mep_menu.getOpcion() == 7) {
+            tab_tabla2.eliminar();
+        }
+    }
+
+    public void insertar7() {
+        if (mep_menu.getOpcion() == 7) {
+            if (tab_tabla2.isFocus()) {
+                if (tab_tabla1.isEmpty() == false) {
+                    tab_tabla2.insertar();
+                    tab_tabla2.setValor("ide_cpcfa", tab_tabla1.getValorSeleccionado());
+                } else {
+                    utilitario.agregarMensajeInfo("Seleccione un Documento por pagar", "");
+                }
+            }
+        }
+    }
+
+    public void guardar7() {
+        if (mep_menu.getOpcion() == 7) {
+            tab_tabla2.guardar();
+            guardarPantalla();
+        }
     }
 
     @Override
@@ -590,6 +716,22 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setCon_confirmar(Confirmar con_confirmar) {
         this.con_confirmar = con_confirmar;
+    }
+
+    public AutoCompletar getAut_proveedor() {
+        return aut_proveedor;
+    }
+
+    public void setAut_proveedor(AutoCompletar aut_proveedor) {
+        this.aut_proveedor = aut_proveedor;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
     }
 
 }

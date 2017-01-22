@@ -381,6 +381,18 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
 
+    public String getSqlDocumentosProveedor(String fechaInicio, String fechaFin, String ide_geper) {
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa,a.ide_cnccc,nombre_cntdo, numero_cpcfa, a.ide_cpefa,nombre_cpefa,base_grabada_cpcfa as ventas12,base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, observacion_cpcfa, fecha_trans_cpcfa,numero_cncre,a.ide_cncre \n"
+                + " from cxp_cabece_factur a \n"
+                + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
+                + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
+                + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
+                + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
+                + " and a.ide_geper=" + ide_geper + " "
+                + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
+    }
+
     /**
      * Retorna los documentos cxp que no tienen comprobante de contabilidad de
      * una sucursal en un rango de fechas
