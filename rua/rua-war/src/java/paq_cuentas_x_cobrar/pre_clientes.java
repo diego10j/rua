@@ -6,6 +6,7 @@
 package paq_cuentas_x_cobrar;
 
 import componentes.AsientoContable;
+import framework.aplicacion.Columna;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Arbol;
 import framework.componentes.AutoCompletar;
@@ -94,6 +95,7 @@ public class pre_clientes extends Pantalla {
         mep_menu.setMenuPanel("OPCIONES CLIENTE", "20%");
         mep_menu.agregarItem("Información Cliente", "dibujarCliente", "ui-icon-person");
         mep_menu.agregarItem("Clasificación Clientes", "dibujarEstructura", "ui-icon-arrow-4-diag");
+        mep_menu.agregarItem("Grupos de Clientes", "dibujarGrupoCliente", "ui-icon-person");
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Transacciones Cliente", "dibujarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Ingresar Transacción", "dibujarIngresarTransacciones", "ui-icon-contact");
@@ -158,12 +160,54 @@ public class pre_clientes extends Pantalla {
                 case 12:
                     dibujarReporteCxC();
                     break;
+                case 13:
+                    dibujarGrupoCliente();
+                    break;
                 default:
                     dibujarCliente();
             }
         } else {
             limpiar();
         }
+    }
+
+    public void dibujarGrupoCliente() {
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        ser_cliente.configurarTablaCliente(tab_tabla);
+        tab_tabla.setTabla("gen_persona", "ide_geper", 13);
+        tab_tabla.setCondicion("ide_geper=-1");
+        tab_tabla.setMostrarNumeroRegistros(false);
+        //Oculta todas las columnas
+        for (Columna columna : tab_tabla.getColumnas()) {
+            columna.setVisible(false);
+            columna.setRequerida(false);
+        }
+        // activa el nombre del cliente y el grupo al que corresponde
+        tab_tabla.getColumna("nivel_geper").setValorDefecto("PADRE");
+        tab_tabla.getColumna("nivel_geper").setVisible(true);
+        tab_tabla.getColumna("nivel_geper").setLectura(true);
+
+        tab_tabla.getColumna("ide_cntco").setRequerida(false);
+        tab_tabla.getColumna("identificac_geper").setRequerida(false);
+        tab_tabla.getColumna("ide_getid").setRequerida(false);
+
+        tab_tabla.getColumna("nom_geper").setVisible(true);
+        tab_tabla.getColumna("nom_geper").setRequerida(true);
+        tab_tabla.getColumna("nom_geper").setNombreVisual("NOMBRE DEL GRUPO");
+        tab_tabla.getColumna("GEN_IDE_GEPER").setVisible(true);
+        tab_tabla.getColumna("GEN_IDE_GEPER").setNombreVisual("GRUPO PADRE");
+        tab_tabla.getColumna("es_cliente_geper").setValorDefecto("true");
+        tab_tabla.getGrid().setColumns(2);
+        tab_tabla.dibujar();
+        tab_tabla.insertar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+        mep_menu.dibujar(13, "GRUPO DE CLIENTES", pat_panel);
     }
 
     public void dibujarReporteCxC() {
@@ -940,6 +984,12 @@ public class pre_clientes extends Pantalla {
             tab_tabla.guardar();
             if (guardarPantalla().isEmpty()) {
                 dibujarTransacciones();
+            }
+        } else if (mep_menu.getOpcion() == 13) {
+            tab_tabla.guardar();
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.insertar();
+                tab_tabla.actualizarCombos();
             }
         }
     }
