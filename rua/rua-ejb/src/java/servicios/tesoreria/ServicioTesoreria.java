@@ -226,11 +226,11 @@ public class ServicioTesoreria {
 
     }
 
-    public String generarLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero) {
-        return generarTablaLibroBanco(beneficiario, fecha, ide_tettb, ide_tecba, valor, observacion, numero).getValor("ide_teclb");
+    public String generarLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero, String ide_cnccc) {
+        return generarTablaLibroBanco(beneficiario, fecha, ide_tettb, ide_tecba, valor, observacion, numero, ide_cnccc).getValor("ide_teclb");
     }
 
-    public TablaGenerica generarTablaLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero) {
+    public TablaGenerica generarTablaLibroBanco(String beneficiario, String fecha, String ide_tettb, String ide_tecba, double valor, String observacion, String numero, String ide_cnccc) {
         TablaGenerica tab_cab_libro_banco = new TablaGenerica();
         tab_cab_libro_banco.setTabla("tes_cab_libr_banc", "ide_teclb", -1);
         tab_cab_libro_banco.setCondicion("ide_teclb=-1");
@@ -247,6 +247,7 @@ public class ServicioTesoreria {
         tab_cab_libro_banco.setValor("beneficiari_teclb", beneficiario);
         tab_cab_libro_banco.setValor("ide_tecba", ide_tecba);//Cuenta bancaria
         tab_cab_libro_banco.setValor("ide_tettb", ide_tettb);
+        tab_cab_libro_banco.setValor("ide_cnccc", ide_cnccc);
         tab_cab_libro_banco.setValor("observacion_teclb", observacion);
         tab_cab_libro_banco.setValor("conciliado_teclb", "false");
         tab_cab_libro_banco.guardar();
