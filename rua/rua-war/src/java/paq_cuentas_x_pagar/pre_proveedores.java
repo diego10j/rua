@@ -922,26 +922,27 @@ public class pre_proveedores extends Pantalla {
                 tab_tabla.setValor("ide_cpcfa", ide_cpcfa);
             }
 
+            tab_tabla.setValor("fecha_venci_cpdtr", tab_tabla.getValor("fecha_trans_cpdtr"));
+            tab_tabla.setValor("ide_cpctr", ide_cpctr);
+            tab_tabla.setValor("ide_cnccc", ide_cnccc);
+
+            tab_tabla.guardar();
             if (ide_cnccc != null) {
                 //Asigna num de asiento a documento cxp y a transaccion cxp
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa=" + ide_cpcfa);
                 if (ide_cpcfa != null) {
-                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa set ide_cnccc=" + ide_cnccc + " WHERE ide_cpctr=" + ide_cpctr + " and ide_cnccc is null");
+                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa=" + ide_cpcfa + " and ide_cnccc is null");
                 }
             }
 
-            tab_tabla.setValor("fecha_venci_cpdtr", tab_tabla.getValor("fecha_trans_cpdtr"));
-            tab_tabla.setValor("ide_cpctr", ide_cpctr);
-            tab_tabla.guardar();
             if (guardarPantalla().isEmpty()) {
                 dibujarTransacciones();
             }
         } else if (mep_menu.getOpcion() == 13) {
             tab_tabla.guardar();
-            if(guardarPantalla().isEmpty()){
-               tab_tabla.insertar(); 
-               tab_tabla.actualizarCombos();
-            }            
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.insertar();
+                tab_tabla.actualizarCombos();
+            }
         }
     }
 

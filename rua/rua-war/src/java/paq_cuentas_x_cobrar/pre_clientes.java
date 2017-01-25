@@ -971,11 +971,13 @@ public class pre_clientes extends Pantalla {
                 tab_tabla.setValor("numero_pago_ccdtr", "1");
                 tab_tabla.setValor("ide_cccfa", ide_cccfa);
             }
+            tab_tabla.setValor("ide_ccctr", ide_ccctr);
+            tab_tabla.setValor("ide_cnccc", ide_cnccc);
             if (ide_cnccc != null) {
                 //Asigna num de asiento a documento cxc y a transaccion cxc
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa);
+
                 if (ide_cccfa != null) {
-                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa set ide_cnccc=" + ide_cnccc + " WHERE ide_ccctr=" + ide_ccctr + " and ide_cnccc is null");
+                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa + " and ide_cnccc is null");
                 }
             }
 

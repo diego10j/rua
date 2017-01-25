@@ -8,6 +8,7 @@ package paq_cuentas_x_pagar;
 import componentes.AsientoContable;
 import componentes.DocumentoCxP;
 import componentes.Retencion;
+import framework.aplicacion.Fila;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
@@ -65,6 +66,7 @@ public class pre_documentosCxP extends Pantalla {
     private Confirmar con_confirmar = new Confirmar();
     private AutoCompletar aut_proveedor;
     private Tabla tab_tabla2;
+    private Etiqueta eti1 = new Etiqueta();
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -314,6 +316,10 @@ public class pre_documentosCxP extends Pantalla {
         bot_ver.setValue("Ver Factura");
         bot_ver.setMetodo("abrirVerFactura");
         bar_menu.agregarComponente(bot_ver);
+        eti1.setId("eti1");
+        eti1.setValue("NUM. SELECCIONADOS : 0  -  VALOR : 0.00");
+        eti1.setEstiloCabecera("");
+        bar_menu.agregarComponente(eti1);
 
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
@@ -328,6 +334,8 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("ventas0").alinearDerecha();
         tab_tabla1.getColumna("ventas12").alinearDerecha();
         tab_tabla1.getColumna("valor_iva_cpcfa").alinearDerecha();
+        tab_tabla1.onSelectCheck("sumarSeleccionNoConta");
+        tab_tabla1.onUnselectCheck("sumarSeleccionNoConta");
         tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
         tab_tabla1.getColumna("total_cpcfa").setEstilo("font-size: 12px;font-weight: bold;");
         tab_tabla1.setRows(20);
@@ -342,6 +350,20 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
 
         mep_menu.dibujar(2, "DOCUMENTOS POR PAGAR SIN COMPROBANTE CONTABLE", gru);
+    }
+
+    public void sumarSeleccionNoConta() {
+        double dou_suma = 0;
+        for (Fila actual : tab_tabla1.getSeleccionados()) {
+            double valor = 0;
+            try {
+                valor = Double.parseDouble(String.valueOf(actual.getCampos()[tab_tabla1.getNumeroColumna("total_cpcfa")]));
+            } catch (Exception e) {
+            }
+            dou_suma += valor;
+        }
+        eti1.setValue("NUM. SELECCIONADOS : " + tab_tabla1.getSeleccionados().length + "  -  VALOR : " + utilitario.getFormatoNumero(dou_suma));
+        utilitario.addUpdate("eti1");
     }
 
     public void abrirGeneraAsiento() {

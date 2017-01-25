@@ -1133,7 +1133,7 @@ public class pre_libro_bancos extends Pantalla {
 
             String ide_teclb = ser_tesoreria.generarLibroBanco(tex_beneficiario.getValue().toString(), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), String.valueOf(tex_num_asiento.getValue()));
-            if (rad_hace_asiento.getValue().toString().equals("true")) {
+            if (rad_hace_asiento.getValue().toString().equalsIgnoreCase("true")) {
                 generarAsiento(ide_teclb);
             } else {
                 guardarPantalla();
