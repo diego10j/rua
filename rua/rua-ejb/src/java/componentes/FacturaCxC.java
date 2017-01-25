@@ -512,6 +512,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.setIdCompleto("tab_factura:tab_deta_factura");
         tab_deta_factura.setRuta("pre_index.clase." + getId());
         tab_deta_factura.setTabla("cxc_deta_factura", "ide_ccdfa", 999);
+        tab_deta_factura.setCondicion("ide_ccdfa=-1");
         tab_deta_factura.getColumna("ide_ccdfa").setVisible(false);
         tab_deta_factura.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
         tab_deta_factura.getColumna("ide_inarti").setAutoCompletar();
