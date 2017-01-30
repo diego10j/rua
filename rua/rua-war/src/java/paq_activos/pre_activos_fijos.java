@@ -8,6 +8,7 @@ package paq_activos;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -18,6 +19,7 @@ import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -33,6 +35,9 @@ import sistema.aplicacion.Pantalla;
 public class pre_activos_fijos extends Pantalla {
 
     private final MenuPanel mep_menu = new MenuPanel();
+
+    private VisualizarPDF vipdf_acta = new VisualizarPDF();
+    private final Calendario cal_fecha = new Calendario();
 
     @EJB
     private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
@@ -54,6 +59,7 @@ public class pre_activos_fijos extends Pantalla {
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
         mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1
         mep_menu.agregarItem("Asignar Activos", "dibujarAsignarActivos", "ui-icon-cart");//5
+        mep_menu.agregarItem("Acta Entrega Recepción", "dibujarActa", "ui-icon-note");//9
         mep_menu.agregarItem("Depreciar Activos", "dibujarDepreciar", "ui-icon-clock");//6
         mep_menu.agregarItem("Dar de Baja Activos", "dibujarDardeBaja", "ui-icon-cancel");//7
         mep_menu.agregarSubMenu("INFORMES");
@@ -79,6 +85,53 @@ public class pre_activos_fijos extends Pantalla {
         sel_arb.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sel_arb);
 
+        vipdf_acta.setId("vipdf_acta");
+        vipdf_acta.setTitle("ACTA ENTREGA - RECEPCIÓN");
+        agregarComponente(vipdf_acta);
+    }
+
+    public void dibujarActa() {
+        Grid gru = new Grid();
+        Grid gr = new Grid();
+        gr.setColumns(2);
+        gr.getChildren().add(new Etiqueta("<strong>CUSTODIO :</strong>"));
+        aut_custodio = new AutoCompletar();
+        aut_custodio.setId("aut_custodio");
+        aut_custodio.setAutoCompletar("select ide_geper, nom_geper,identificac_geper from gen_persona where es_empleado_geper=true and ide_empr=" + utilitario.getVariable("ide_empr"));
+        aut_custodio.setAutocompletarContenido();
+        aut_custodio.setSize(70);
+
+        gr.getChildren().add(aut_custodio);
+        cal_fecha.setFechaActual();
+        gr.getChildren().add(new Etiqueta("<strong>FECHA DEL ACTA :</strong>"));
+        gr.getChildren().add(cal_fecha);
+        gru.getChildren().add(gr);
+
+        Boton bot_generar = new Boton();
+        bot_generar.setValue("Generar Acta");
+        bot_generar.setIcon("ui-icon-edit");
+        bot_generar.setMetodo("generarActa");
+        gru.setFooter(bot_generar);
+        mep_menu.dibujar(9, "ACTA DE ENTREGA - RECEPCIÓN", gru);
+    }
+
+    public void generarActa() {
+        if (cal_fecha.getValue() == null) {
+            utilitario.agregarMensajeInfo("Seleccione una fecha para generar el Acta", "");
+            return;
+        }
+        if (aut_custodio.getValor() != null) {
+            Map parametros_rep = new HashMap();
+            parametros_rep.put("ide_geper", Integer.parseInt(aut_custodio.getValor()));
+            parametros_rep.put("ide_usua", Integer.parseInt(utilitario.getVariable("ide_usua")));
+            parametros_rep.put("dia", String.valueOf(utilitario.getDia(cal_fecha.getFecha())));
+            parametros_rep.put("mes", utilitario.getNombreMes(utilitario.getMes(cal_fecha.getFecha())));
+            parametros_rep.put("ano", String.valueOf(utilitario.getAnio(cal_fecha.getFecha())));
+            vipdf_acta.setVisualizarPDF("rep_activos/rep_acta-entrega.jasper", parametros_rep);
+            vipdf_acta.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un custodio para generar el Acta", "");
+        }
     }
 
     @Override
@@ -620,6 +673,14 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
         this.sec_rango_reporte = sec_rango_reporte;
+    }
+
+    public VisualizarPDF getVipdf_acta() {
+        return vipdf_acta;
+    }
+
+    public void setVipdf_acta(VisualizarPDF vipdf_acta) {
+        this.vipdf_acta = vipdf_acta;
     }
 
 }
