@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="421" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="381" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="023cce1b-9825-4619-a93d-2fb407e48864">
+	<property name="ireport.zoom" value="1.3286707500000012"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_ipcer" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_cnccc" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT CCC.numero_cnccc,certi.ide_ipcer,CERTI.num_certificado_ipcer,CUENTA1.nombre_cndpc,CERTI.capital_ipcer,
+EMPRESA.constitucion_empr,CERTI.plazo_ipcer,CERTI.tasa_ipcer,CERTI.fecha_emision_ipcer,CERTI.fecha_vence_ipcer,EMPRESA.nom_empr,
+MONEDA.nombre_cnmod,EMPRESA.identificacion_empr, CLASEIN.nombre_ipcin,
+PERSONA.nom_geper,PERSONA.direccion_geper
+FROM iyp_certificado AS CERTI
+LEFT JOIN con_det_plan_cuen AS CUENTA1 ON CERTI.ide_cndpc=CUENTA1.ide_cndpc
+LEFT JOIN con_det_plan_cuen AS CUENTA2 ON CERTI.con_ide_cndpc=CUENTA2.ide_cndpc
+LEFT JOIN sis_empresa AS EMPRESA ON CERTI.ide_empr=EMPRESA.ide_empr
+LEFT JOIN con_moneda AS MONEDA ON CERTI.ide_cnmod=MONEDA.ide_cnmod
+LEFT JOIN iyp_clase_inversion AS CLASEIN ON CERTI.ide_ipcin=CLASEIN.ide_ipcin
+LEFT JOIN con_cab_comp_cont AS CCC ON CERTI.ide_cnccc=CCC.ide_cnccc
+LEFT JOIN gen_persona PERSONA ON CERTI.ide_geper=PERSONA.ide_geper
+WHERE CERTI.ide_ipcer=$P{ide_ipcer}  AND CERTI.ide_empr=$P{ide_empr} and CERTI.ide_sucu=$P{ide_sucu}]]>
+	</queryString>
+	<field name="numero_cnccc" class="java.lang.String"/>
+	<field name="ide_ipcer" class="java.lang.Long"/>
+	<field name="num_certificado_ipcer" class="java.lang.String"/>
+	<field name="nombre_cndpc" class="java.lang.String"/>
+	<field name="capital_ipcer" class="java.math.BigDecimal"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
+	<field name="plazo_ipcer" class="java.lang.Integer"/>
+	<field name="tasa_ipcer" class="java.math.BigDecimal"/>
+	<field name="fecha_emision_ipcer" class="java.sql.Date"/>
+	<field name="fecha_vence_ipcer" class="java.sql.Date"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="nombre_cnmod" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="nombre_ipcin" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
+	<field name="direccion_geper" class="java.lang.String"/>
+	<background>
+		<band height="500" splitType="Stretch">
+			<image>
+				<reportElement uuid="ad88af81-7e40-4f38-917d-bc5e2d07cf96" x="2" y="46" width="379" height="401"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/imagenes/casa.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="84" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f5e8c7eb-033d-4a5f-adaf-1148f04f615d" positionType="Float" x="1" y="45" width="380" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true" isItalic="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FONDO DE PROVIONES MIGUEL RUA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6f8c2605-61b5-4a9f-8131-a0e727210a74" positionType="Float" x="0" y="3" width="284" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="false" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Sociedad Salesiana en el Ecuador]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="f4836899-e4fb-436d-901c-2afc9e5d375a" x="294" y="2" width="1" height="41"/>
+			</line>
+			<image>
+				<reportElement uuid="fb3d8855-f976-4a3c-90f8-d8686a068bf6" x="305" y="0" width="62" height="43"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/imagenes/don_bosco.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="412" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1394590d-d5eb-4e97-bc25-9d249539163d" x="219" y="20" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nro de Título:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2213a608-3d0b-4a84-9c03-09ddb2b942c9" x="320" y="20" width="61" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" pdfFontName="Courier" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_certificado_ipcer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d521d01d-cbe4-4182-b24d-1c9ba52db2de" x="0" y="49" width="89" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[A LA ORDEN DE:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="27c81e6e-5f28-4c46-86cf-853f37498ca4" x="59" y="75" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" pdfFontName="Courier"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{capital_ipcer}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ad3451df-9ccc-44ee-9819-5a0d7b1f5c54" x="172" y="75" width="209" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cnmod}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4fd3dbba-12ed-4fe3-a49e-11a4a93bc872" x="1" y="167" width="90" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[CONSTITUCIÓN:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c71ea6f7-a549-47e9-b1e6-fd0507db3c06" x="89" y="167" width="292" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{constitucion_empr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="927653be-545f-4598-a81f-b2ff076aa386" x="0" y="196" width="144" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[GARANTIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b35d1ed-b22f-4195-918e-d4a901b537d6" x="144" y="196" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[General]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e3561958-cb70-4a62-8839-b71b0a0d9023" x="0" y="220" width="140" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[TASA DE INTERÉS:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8a7b01e8-ea53-4d29-81e9-8fb6f7dac769" x="144" y="220" width="28" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tasa_ipcer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ad67d5dd-d944-4681-a8f0-dc0671b07e7e" x="0" y="248" width="145" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[FECHA DE EMISIÓN:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="8616ab29-e599-4028-a2b2-aaa35117c05a" x="144" y="248" width="114" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" pdfFontName="Courier"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_emision_ipcer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="56a34cfc-2a40-40ec-a43c-df4561005e02" x="144" y="275" width="237" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" pdfFontName="Courier"/>
+				</textElement>
+				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae61a483-ae00-49e4-8762-7152dab00248" x="1" y="275" width="143" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[AGENTE PAGADOR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4c54269a-2156-4338-82d8-e19201b1c820" x="1" y="380" width="380" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier"/>
+				</textElement>
+				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50a3b7ef-182b-4e41-ab78-0cb08cfd5d7b" x="1" y="367" width="380" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier"/>
+				</textElement>
+				<text><![CDATA[REPRESENTANTE LEGAL ]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="24b48e3c-d80b-4936-a391-fe293e033254" x="77" y="363" width="217" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="1ba42ecb-ae02-4772-b076-082256c578fb" x="171" y="220" width="26" height="20"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="98cb9179-5ac1-44c4-b344-86a52d60ae22" x="144" y="106" width="237" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="9" pdfFontName="Courier"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c55b42dd-4afa-4ead-905f-1c8e2b0e9a98" x="1" y="20" width="204" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ide_cnccc}.equals("-1")?
+"":"  Nro de Operación: "+$P{ide_cnccc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="beaa165c-dcaa-49bd-b24b-fba597ce547e" x="0" y="106" width="145" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN PRINCIPAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5770c9df-17ab-4fe0-b68c-3241dc6fc779" x="0" y="76" width="57" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[VALOR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="df4f8870-1958-45ed-a9a9-78ff6d26c3d5" x="91" y="49" width="290" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0c852c05-b672-418f-8a1e-8745647c82de" x="1" y="138" width="257" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<text><![CDATA[RESOLUCIÓN CONSEJO INSPECTORIAL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="59">
+			<staticText>
+				<reportElement uuid="7b314cf1-00e9-4841-b32a-97c7a8c012b0" x="1" y="33" width="380" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="7" pdfFontName="Courier"/>
+				</textElement>
+				<text><![CDATA[Madrid E12-68 y Andalucía / Telf. 2221506 - 2566484 / Fax. 2541436 Ap. 17.01.2303]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9897d526-6b48-46d6-b5d9-37bbd424340d" x="1" y="44" width="380" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="7" pdfFontName="Courier"/>
+				</textElement>
+				<text><![CDATA[www.salesianos.org.ec / economatoec@andinanet.net / secretinspec@upsq.edu.ec / inspecto@ecnet.ec]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="46d3f1a2-a2eb-4b3d-b5af-aae33fd76020" x="2" y="31" width="379" height="2"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>
