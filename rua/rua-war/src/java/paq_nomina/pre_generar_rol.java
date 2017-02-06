@@ -69,7 +69,7 @@ public class pre_generar_rol extends Pantalla{
 
 		com_periodo.setMetodo("seleccionaPeriodo");
 
-		bar_botones.agregarComponente(new Etiqueta("P�riodo Rol:"));
+		bar_botones.agregarComponente(new Etiqueta("Periodo Rol:"));
 		bar_botones.agregarComponente(com_periodo);
 
 		Boton bot_calcular_rubros=new Boton();

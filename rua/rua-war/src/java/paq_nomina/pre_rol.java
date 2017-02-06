@@ -146,7 +146,7 @@ public class pre_rol extends Pantalla{
 
 		com_periodo.setCombo(ser_nomina.getSqlComboPeriodoRol());
 		com_periodo.setMetodo("cambioPeriodo");		 
-		bar_botones.agregarComponente(new Etiqueta("Per�odo Rol:"));
+		bar_botones.agregarComponente(new Etiqueta("Periodo Rol:"));
 		bar_botones.agregarComponente(com_periodo);
 		bar_botones.agregarReporte();
 

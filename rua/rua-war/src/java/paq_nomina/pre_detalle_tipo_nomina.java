@@ -478,7 +478,6 @@ public class pre_detalle_tipo_nomina extends Pantalla {
 					System.out.println("RepPara telefono...  "+tab_emp.getValor("TELEFONO_EMPR"));
 					
 					p_parametros.put("dir_logo", tab_emp.getValor("LOGO_EMPR"));
-					System.out.println("RepPara dir_logo...  "+tab_emp.getValor("LOGO_EMPR"));
 
 					
 					ReporteDataSource rep = new ReporteDataSource(getTablaRubroTipoNomina( set_det_tip_nom.getValorSeleccionado()));
