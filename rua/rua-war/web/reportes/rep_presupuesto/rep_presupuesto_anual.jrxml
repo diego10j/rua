@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b884a89-d067-4769-8f9b-d0eed3343e6f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="pide_anio" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select a.ide_pranu,a.ide_prpro,a.ide_geani,nom_geani,valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf,
+cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,detalle_prfuf
+from pre_anual a, (
+select a.ide_prpro,cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad
+from pre_programa a, (
+select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto,
+			proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad,
+			 detalle_prnfp as subactividad from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =5) a ,
+			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_actividad,detalle_prfup as detalle_actividad,detalle_prnfp as actividad
+			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =4) b,
+			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_producto,detalle_prfup as detalle_producto,detalle_prnfp as producto
+			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =3 ) c,
+			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_proyecto,detalle_prfup as detalle_proyecto,detalle_prnfp as proyecto
+			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =2) d,
+			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_programa,detalle_prfup as detalle_programa,detalle_prnfp as programa
+			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =1) e where a.pre_ide_prfup = b.ide_prfup
+			 and b.pre_ide_prfup = c.ide_prfup and c.pre_ide_prfup = d.ide_prfup and d.pre_ide_prfup = e.ide_prfup
+) b
+where a.ide_prfup = b.ide_prfup
+) b, pre_fuente_financiamiento c,gen_anio d
+where a.ide_prpro = b.ide_prpro
+and a.ide_prfuf = c.ide_prfuf
+and a.ide_geani =d.ide_geani
+and a.ide_geani =$P{pide_anio}
+order by cod_programa_prpro]]>
+	</queryString>
+	<field name="ide_pranu" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla pre_anual.]]></fieldDescription>
+	</field>
+	<field name="ide_prpro" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
+	</field>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="nom_geani" class="java.lang.String"/>
+	<field name="valor_reformado_pranu" class="java.math.BigDecimal"/>
+	<field name="valor_inicial_pranu" class="java.math.BigDecimal"/>
+	<field name="valor_codificado_pranu" class="java.math.BigDecimal"/>
+	<field name="valor_devengado_pranu" class="java.math.BigDecimal"/>
+	<field name="valor_eje_comprometido_pranu" class="java.math.BigDecimal"/>
+	<field name="ide_prfuf" class="java.lang.Integer"/>
+	<field name="cod_programa_prpro" class="java.lang.String">
+		<fieldDescription><![CDATA[cod_programa_prpro]]></fieldDescription>
+	</field>
+	<field name="detalle_programa" class="java.lang.String"/>
+	<field name="detalle_proyecto" class="java.lang.String"/>
+	<field name="detalle_producto" class="java.lang.String"/>
+	<field name="detalle_actividad" class="java.lang.String"/>
+	<field name="detalle_subactividad" class="java.lang.String"/>
+	<field name="detalle_prfuf" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_prfuf]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="46" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="0474cd78-63d1-4a1a-9284-a3cf1b0c5a92" x="700" y="22" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="343bbce9-1bf1-41f3-acf4-b20c4a224a28" x="657" y="22" width="57" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Impreso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c51a4ca8-061b-4b09-a668-68749f227b1d" x="21" y="0" width="342" height="43"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRESUPUESTO ANUAL DE GASTOS]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="a697ae8c-9e4e-4e2b-96b0-ef0030efb28e" x="0" y="41" width="802" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="44df9a83-ac27-4198-ae53-9147c7271e79" x="0" y="45" width="802" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e22bed38-b666-4617-b870-fef09cc80e72" x="376" y="12" width="177" height="29"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_geani}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<detail>
+		<band height="62">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4b9d6f39-1d96-427f-bd2a-be4c95aa5ffb" x="110" y="2" width="77" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_programa_prpro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bcfec4da-114e-407d-b2e4-a58238c6aded" x="246" y="2" width="247" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_programa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1639e661-7e63-41c5-961d-0dff0fe0ff35" x="74" y="13" width="419" height="12"/>
+				<textElement>
+					<font size="7" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_proyecto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="eb9f39cc-6b6e-476e-a956-f42af9a60494" x="0" y="2" width="110" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COD. PRESUPUESTARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="10049631-3786-4d8b-a958-ac6d7653ebbd" x="187" y="2" width="56" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROGRAMA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="85086bda-19d9-4e16-9332-39ab49ab07e5" x="0" y="13" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROYECTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3776a1bd-ce31-4980-a220-25be8c80773e" x="0" y="25" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRODUCTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5a39e7c-ee05-486c-9d61-a83dbc9ab3bd" x="1" y="37" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="670fdffa-8b74-49a3-9306-11d61b4cc5a3" x="1" y="49" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUB-ACTIVIDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="854ec46a-31e4-42eb-b97b-d1f444ea5944" x="496" y="13" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASIG. INICIAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97998eaf-708c-4f9c-8a54-17543651df94" x="671" y="12" width="73" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VAL. REFORMA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e06fdf7-4b06-4187-b6f4-e2773a9946b2" x="496" y="25" width="88" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VAL. CODIFICADO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5fbf2e36-f8a1-4dcf-bd0f-e2fc4b9d7a11" x="496" y="37" width="88" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VAL. COMPROMISO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45594557-9dd6-465c-a1c8-489475d16d0b" x="496" y="49" width="88" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VAL. DEVENGADO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ce6110f8-3ac7-4a4b-ad32-d6efb0abdf22" x="496" y="2" width="111" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FUENTE FINANCIAMIENTO:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="d847a10c-c91d-46cd-97b3-a2ecda99ed80" x="1" y="61" width="802" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="982078ed-72f0-4a18-80fb-95dd562273fb" x="607" y="2" width="181" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_prfuf}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="80e6b578-c330-46a3-8215-7a6c4e626e43" x="74" y="25" width="419" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_producto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5ca30513-9a1c-4717-96ed-507bd607229d" x="586" y="13" width="82" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_inicial_pranu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d7d540e1-5a65-4aa2-9175-9e2b4515b33f" x="73" y="37" width="419" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_actividad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1dce00e2-cb2e-4d47-b020-1f300f2208a3" x="74" y="49" width="419" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_subactividad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="65712b7a-a7e5-40cc-a868-21df501e4047" x="741" y="13" width="60" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_reformado_pranu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="72a54fc4-089d-4782-8e5f-d4b9feaed854" x="586" y="25" width="88" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_codificado_pranu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="09a8a51a-f1c2-4b46-9576-7c7bee7d5727" x="586" y="37" width="88" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_eje_comprometido_pranu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4e9dc17c-ef55-418d-ae21-ac1ec14af9e0" x="586" y="49" width="88" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_devengado_pranu}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
