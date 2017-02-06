@@ -366,6 +366,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("11", "p_producto", "Indica el producto", "3", "pre_nivel_funcion_programa", "ide_prnfp", "detalle_prnfp"));
         lis_parametros.add(new Parametro("11", "p_fase", "Indica el la fase", "4", "pre_nivel_funcion_programa", "ide_prnfp", "detalle_prnfp"));
         lis_parametros.add(new Parametro("11", "p_modulo_secuencialcertificacion", "Indica el modulo para generar el secuencial de las certificaciones", "21", "gen_modulo", "ide_gemod", "detalle_gemod"));
+        lis_parametros.add(new Parametro("11", "p_nombre_coordinador_fin", "Indica el nombre del Coordinador Financiero", "Ing. Juan Flores"));
+        lis_parametros.add(new Parametro("11", "p_nombre_jefe_presupuesto", "Indica el nombre del Jefe de Presupuesto", "Ing. Salasar Mishell"));
 ///*
         /*
          * MODULO GENERAL 12
