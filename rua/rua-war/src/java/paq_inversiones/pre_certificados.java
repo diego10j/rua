@@ -636,9 +636,9 @@ public class pre_certificados extends Pantalla {
             asc_asiento.guardar();
             if (asc_asiento.isVisible() == false) {
                 if (mep_menu.getOpcion() == 2) {
-                    utilitario.getConexion().ejecutarSql("UPDATE iyp_certificado SET ide_cncc=" + asc_asiento.getIde_cnccc() + " where ide_ipcer=" + tab_tabla1.getValor("ide_ipcer"));
+                    utilitario.getConexion().ejecutarSql("UPDATE iyp_certificado SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ipcer=" + tab_tabla1.getValor("ide_ipcer"));
                 } else if (mep_menu.getOpcion() == 3) {
-                    utilitario.getConexion().ejecutarSql("UPDATE iyp_certificado SET ide_cncc_interes=" + asc_asiento.getIde_cnccc() + " where ide_ipcer=" + tab_tabla1.getValor("ide_ipcer"));
+                    utilitario.getConexion().ejecutarSql("UPDATE iyp_certificado SET ide_cnccc_interes=" + asc_asiento.getIde_cnccc() + " where ide_ipcer=" + tab_tabla1.getValor("ide_ipcer"));
                 } else if (mep_menu.getOpcion() == 6) {
                     utilitario.getConexion().ejecutarSql("UPDATE iyp_certificado SET ide_cnccc_terminacion=" + asc_asiento.getIde_cnccc() + " where ide_ipcer=" + tab_tabla1.getValor("ide_ipcer"));
                 }
