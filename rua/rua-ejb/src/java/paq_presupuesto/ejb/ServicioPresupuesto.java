@@ -108,7 +108,7 @@ public String getPoa (String ide_geani,String activo,String presupuesto){
 			" (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_programa,detalle_prfup as detalle_programa,detalle_prnfp as programa" +
 			" from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =1) e where a.pre_ide_prfup = b.ide_prfup" +
 			" and b.pre_ide_prfup = c.ide_prfup and c.pre_ide_prfup = d.ide_prfup and d.pre_ide_prfup = e.ide_prfup ) f on a.ide_prfup = f.ide_prfup" +
-			" left join gen_area g on a.ide_geare=g.ide_geare where a.ide_geani= "+ide_geani+" and activo_prpoa in ("+activo+") and ejecutado_presupuesto_prpoa in ("+presupuesto+") order by codigo_subactividad,a.ide_prpoa");
+			" left join gen_area g on a.ide_geare=g.ide_geare where a.ide_geani in ("+ide_geani+") and activo_prpoa in ("+activo+") and ejecutado_presupuesto_prpoa in ("+presupuesto+") order by codigo_subactividad,a.ide_prpoa");
 		return tab_poa;
 }  
 public String cetificacion(String anio){
@@ -357,6 +357,51 @@ public String saldoFuenteFinanciamiento(String ide_geani){
 							+" order by detalle_prfuf";
 			return tab_certificacion;
 }
+/**
+ * Metodo que devuelve la cedula de gastos presupuestaria Anual
+ * @param tipo recibe el tipo de sql requerido para 1 para seltabla, 2 para un combo
+ * @param anio recibe el Año para filtar la cedula presupuestaria
+ * @return String SQL Valor cedula de gastos presupuestaria Anual
+ */
+public String sqlTablaPresupuestoAnual(String tipo,String anio){
+    String sql="";
+    if(tipo.equals("2")){
+        sql +="select ide_pranu,cod_programa_prpro,detalle_subactividad,detalle_prfuf,detalle_actividad from ( ";
+    }
+    sql +="select a.ide_pranu,a.ide_prpro,a.ide_geani,nom_geani,valor_codificado_pranu-valor_eje_comprometido_pranu as saldo_compromiso, valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf, " +
+            "cod_programa_prpro,detalle_subactividad,detalle_prfuf,detalle_actividad,detalle_programa,detalle_proyecto,detalle_producto,codigo_clasificador_prcla,descripcion_clasificador_prcla " +
+            "from pre_anual a, ( " +
+            "select a.ide_prpro,cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,codigo_clasificador_prcla,descripcion_clasificador_prcla " +
+            "from pre_programa a, ( " +
+            "select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto, " +
+            "			proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad, " +
+            "			 detalle_prnfp as subactividad from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =5) a , " +
+            "			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_actividad,detalle_prfup as detalle_actividad,detalle_prnfp as actividad " +
+            "			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =4) b, " +
+            "			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_producto,detalle_prfup as detalle_producto,detalle_prnfp as producto " +
+            "			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =3 ) c, " +
+            "			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_proyecto,detalle_prfup as detalle_proyecto,detalle_prnfp as proyecto " +
+            "			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =2) d, " +
+            "			 (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_programa,detalle_prfup as detalle_programa,detalle_prnfp as programa " +
+            "			 from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =1) e where a.pre_ide_prfup = b.ide_prfup " +
+            "			 and b.pre_ide_prfup = c.ide_prfup and c.pre_ide_prfup = d.ide_prfup and d.pre_ide_prfup = e.ide_prfup " +
+            ") b,pre_clasificador c " +
+            " where a.ide_prfup = b.ide_prfup " +
+            "and a.ide_prcla = c.ide_prcla " +
+            ") b, pre_fuente_financiamiento c,gen_anio d" +
+            " where a.ide_prpro = b.ide_prpro " +
+            " and a.ide_prfuf = c.ide_prfuf " +
+            " and a.ide_geani =d.ide_geani " ;
+            if(tipo.equals("1")){
+            sql +=" and a.ide_geani =" +anio;
+            }
+            sql +=" order by cod_programa_prpro ";
+    //System.out.println("sqlll "+sql);
+    if(tipo.equals("2")){
+        sql +=" ) a ";
+    }
+    return sql;
+}
 public void apruebaPoa(String ide_poa,String codigo){
 	String sql="insert into pre_programa(ide_prpro,ide_prfup,ide_prcla,cod_programa_prpro,activo_prpro)"
 			+" select "+codigo+" as codigo,"
@@ -463,9 +508,39 @@ public void trigCompromisoPreMensual(String ide_prtra){
 			 +" select row_number()over(order by a.ide_prtra)   +(select (case when max(ide_prmen) is null then 0 else max(ide_prmen) end) as codigo from pre_mensual)  as codigo,"
 			 +" b.ide_pranu,a.ide_prtra,null,null,fecha_tramite_prtra,numero_oficio_prtra,0,0,0,0,comprometido_prpot,0,true,0,a.ide_prfuf,null"
 			 +" from   pre_poa_tramite a,pre_anual b,pre_tramite c"
-			 +" where a.ide_prpoa =b.ide_prpoa"
+			 +" where a.ide_pranu =b.ide_pranu"
 			 +" and a.ide_prtra =c.ide_prtra"
 			 +" and a.ide_prtra ="+ide_prtra+";";
+        // System.out.println(" inerta compromiso "+sql);
+	utilitario.getConexion().ejecutarSql(sql);
+
+}
+public void trigActualizaSaldosAnual(String tipo,String ide_pranu,String ide_geani){
+	 sql="update pre_anual" +
+                " set valor_devengado_pranu = devengado," +
+                " valor_precomprometido_pranu = certificado," +
+                " valor_eje_comprometido_pranu= comprometido," +
+                " valor_recaudado_pranu = cobrado," +
+                " valor_recaudado_efectivo_pranu = cobradoc," +
+                " pagado_pranu = pagado" +
+                " from (" +
+                " select ide_pranu,ide_geani,sum(devengado) as devengado,sum(cobrado) as cobrado,sum(cobradoc) as cobradoc," +
+                " sum(pagado) as pagado, sum(comprometido) as comprometido, sum (certificado) as certificado" +
+                " from (" +
+                " select a.ide_pranu,ide_geani ,(case when devengado_prmen is null then 0 else devengado_prmen end) as devengado," +
+                " (case when cobrado_prmen is null then 0 else cobrado_prmen end) as cobrado,(case when cobradoc_prmen is null then 0 else cobradoc_prmen end) as cobradoc," +
+                " (case when pagado_prmen is null then 0 else pagado_prmen end) as pagado," +
+                " (case when comprometido_prmen is null then 0 else comprometido_prmen end) as comprometido," +
+                " (case when certificado_prmen is null then 0 else certificado_prmen end) as certificado" +
+                " from pre_anual a left join pre_mensual b" +
+                " on a.ide_pranu = b.ide_pranu ";
+                 if(tipo.equals("1")){
+                     sql+=" where not ide_prpro is null "; 
+                 }
+                sql+= " )a group by ide_pranu,ide_geani having ide_geani="+ide_geani+
+                " ) a" +
+                " where a.ide_pranu = pre_anual.ide_pranu";
+         System.out.println(" ctauliza pre_anual "+sql);
 	utilitario.getConexion().ejecutarSql(sql);
 
 }
