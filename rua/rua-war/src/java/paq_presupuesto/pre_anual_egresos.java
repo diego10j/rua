@@ -132,7 +132,7 @@ public class pre_anual_egresos extends Pantalla {
 		tab_mensual.setHeader("DETALLE DE EJECUCION PRESUPUESTARIA");
 		tab_mensual.setIdCompleto("tab_tabulador:tab_mensual");
 		tab_mensual.setTabla("pre_mensual", "ide_prmen", 2);
-		tab_mensual.getColumna("ide_prtra").setVisible(false);
+		//tab_mensual.getColumna("ide_prtra").setVisible(false);
 		tab_mensual.getColumna("ide_comov").setLectura(true);
 		//tab_mensual.setCondicion("ide_prpro!=null");
 		tab_mensual.getColumna("valor_anticipo_prmen").setVisible(false);
@@ -146,7 +146,9 @@ public class pre_anual_egresos extends Pantalla {
 		tab_mensual.getColumna("pagado_prmen").setVisible(false);
 
                 
-		tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
+		//tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
+                tab_mensual.getColumna("ide_gemes").setVisible(false);
+
 		tab_mensual.getColumna("ide_codem").setLectura(true);
 		//tab_anual.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "detalle_prfup,", "");
 		//tab_mensual.setTipoFormulario(true);
