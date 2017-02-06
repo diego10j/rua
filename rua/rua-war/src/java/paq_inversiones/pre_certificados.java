@@ -32,34 +32,34 @@ import sistema.aplicacion.Pantalla;
  * @author djacomee
  */
 public class pre_certificados extends Pantalla {
-
+    
     @EJB
     private final ServicioInversiones ser_inversion = (ServicioInversiones) utilitario.instanciarEJB(ServicioInversiones.class);
     @EJB
     private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
-
+    
     private final MenuPanel mep_menu = new MenuPanel();
     private final Combo com_tipo_inversion = new Combo();
-
+    
     private Tabla tab_tabla1;
-
+    
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
     private String num_certificado_ipcer_busca = null;
     private AsientoContable asc_asiento = new AsientoContable();
     private String ide_incci_busca = null;
-
+    
     public pre_certificados() {
-
+        
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
-
+        
         bar_botones.agregarComponente(new Etiqueta("TIPO DE INVERSIÓN :"));
         com_tipo_inversion.setId("com_tipo_inversion");
         com_tipo_inversion.setCombo(ser_inversion.getSqlTipoInversionesCombo());
         com_tipo_inversion.setMetodo("seleccionarTipoInversion");
         bar_botones.agregarComponente(com_tipo_inversion);
-
+        
         mep_menu.setMenuPanel("OPCIONES IVERSIONES", "20%");
         mep_menu.agregarItem("Certificado de Inversión", "dibujarCertificado", "ui-icon-contact");
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarAsiento", "ui-icon-notice");
@@ -68,22 +68,22 @@ public class pre_certificados extends Pantalla {
         mep_menu.agregarItem("Listado de Inversiones", "dibujarListado", "ui-icon-note");
         mep_menu.agregarSubMenu("VENCIDAS");
         mep_menu.agregarItem("Inversiones Vencidas", "dibujarVencidas", "ui-icon-calculator");
-
+        
         agregarComponente(mep_menu);
-
+        
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         sel_formato.setId("sel_formato");
         agregarComponente(rep_reporte);
         agregarComponente(sel_formato);
-
+        
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
-
+        
         dibujarListado();
     }
-
+    
     public void seleccionarTipoInversion() {
         if (mep_menu.getOpcion() == 2) {
             tab_tabla1.setSql(ser_inversion.getSqlCertificadosSinAsiento(String.valueOf(com_tipo_inversion.getValue())));
@@ -101,29 +101,30 @@ public class pre_certificados extends Pantalla {
             tab_tabla1.setSql(ser_inversion.getSqlCertificadosSinAsientoTerminacion(String.valueOf(com_tipo_inversion.getValue())));
             tab_tabla1.ejecutarSql();
         }
-
+        
     }
-
+    
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
     Map parametro = new HashMap();
-
+    
     @Override
     public void aceptarReporte() {
-        if (rep_reporte.getReporteSelecionado().equals("Certificados de Inversiones")) {
+        
+        if (rep_reporte.getReporteSelecionado().equals("Certificados de Inversiones") || rep_reporte.getReporteSelecionado().equals("Certificados de Inversiones Fondo")) {
             if (rep_reporte.isVisible()) {
                 if (tab_tabla1.getValor("ide_iptin") != null && !tab_tabla1.getValor("ide_iptin").isEmpty()) {
                     parametro = new HashMap();
                     rep_reporte.cerrar();
-
+                    
                     if (tab_tabla1.getValor("ide_cnccc") != null && !tab_tabla1.getValor("ide_cnccc").isEmpty()) {
                         parametro.put("ide_cnccc", tab_tabla1.getValor("ide_cnccc") + "");
                     } else {
                         parametro.put("ide_cnccc", "-1");
                     }
-
+                    
                     parametro.put("ide_ipcer", Long.parseLong(tab_tabla1.getValor("ide_ipcer")));
                     sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_formato.dibujar();
@@ -179,7 +180,7 @@ public class pre_certificados extends Pantalla {
             }
         }
     }
-
+    
     public void dibujarCertificado() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -215,7 +216,7 @@ public class pre_certificados extends Pantalla {
         } else {
             tab_tabla1.setCondicion("num_certificado_ipcer='" + num_certificado_ipcer_busca + "'");
         }
-
+        
         tab_tabla1.getColumna("ide_cnccc").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc_interes").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc_terminacion").setLectura(true);
@@ -241,7 +242,7 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("ide_teclb").setVisible(false);
         tab_tabla1.getColumna("ide_cpdtr").setVisible(false);
         tab_tabla1.getColumna("ide_tecba").setCombo("select tes_cuenta_banco.ide_tecba,tes_banco.nombre_teban,tes_cuenta_banco.nombre_tecba from  tes_banco,tes_cuenta_banco,sis_empresa where tes_banco.ide_teban=tes_cuenta_banco.ide_teban and sis_empresa.ide_empr=" + utilitario.getVariable("ide_empr") + " and tes_cuenta_banco.ide_sucu=" + utilitario.getVariable("ide_sucu"));
-
+        
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         //tab_tabla1.setRecuperarLectura(true);
@@ -249,13 +250,13 @@ public class pre_certificados extends Pantalla {
         if (tab_tabla1.isEmpty()) {
             tab_tabla1.insertar();
         }
-
+        
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(1, "CERTIFICADO DE INVERSIÓN", pat_panel);
     }
-
+    
     public void dibujarAsiento() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -264,7 +265,7 @@ public class pre_certificados extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlCertificadosSinAsiento(String.valueOf(com_tipo_inversion.getValue())));
@@ -291,28 +292,28 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("capital_ipcer").setNombreVisual("CAPITAL");
         tab_tabla1.getColumna("interes_ipcer").setNombreVisual("INTERES");
         tab_tabla1.getColumna("valor_a_pagar_ipcer").setNombreVisual("VALOR A PAGAR");
-
+        
         tab_tabla1.getColumna("plazo_ipcer").alinearDerecha();
         tab_tabla1.getColumna("capital_ipcer").alinearDerecha();
         tab_tabla1.getColumna("interes_ipcer").alinearDerecha();
         tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
-
+        
         tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
         tab_tabla1.getColumna("cod_captacion_ipcer").setNombreVisual("COD. CAPTACIÓN");
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE", gru);
-
+        
     }
-
+    
     public void dibujarAsientoInteres() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -321,7 +322,7 @@ public class pre_certificados extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable del Interes");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlCertificadosSinAsientoInteres(String.valueOf(com_tipo_inversion.getValue())));
@@ -348,28 +349,28 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("capital_ipcer").setNombreVisual("CAPITAL");
         tab_tabla1.getColumna("interes_ipcer").setNombreVisual("INTERES");
         tab_tabla1.getColumna("valor_a_pagar_ipcer").setNombreVisual("VALOR A PAGAR");
-
+        
         tab_tabla1.getColumna("plazo_ipcer").alinearDerecha();
         tab_tabla1.getColumna("capital_ipcer").alinearDerecha();
         tab_tabla1.getColumna("interes_ipcer").alinearDerecha();
         tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
-
+        
         tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
         tab_tabla1.getColumna("cod_captacion_ipcer").setNombreVisual("COD. CAPTACIÓN");
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE DEL INTERES", gru);
-
+        
     }
-
+    
     public void dibujarAsientoTermina() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -378,7 +379,7 @@ public class pre_certificados extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable de Termincación");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlCertificadosSinAsientoTerminacion(String.valueOf(com_tipo_inversion.getValue())));
@@ -405,28 +406,28 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("capital_ipcer").setNombreVisual("CAPITAL");
         tab_tabla1.getColumna("interes_ipcer").setNombreVisual("INTERES");
         tab_tabla1.getColumna("valor_a_pagar_ipcer").setNombreVisual("VALOR A PAGAR");
-
+        
         tab_tabla1.getColumna("plazo_ipcer").alinearDerecha();
         tab_tabla1.getColumna("capital_ipcer").alinearDerecha();
         tab_tabla1.getColumna("interes_ipcer").alinearDerecha();
         tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
-
+        
         tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
         tab_tabla1.getColumna("cod_captacion_ipcer").setNombreVisual("COD. CAPTACIÓN");
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN", gru);
-
+        
     }
-
+    
     public void dibujarListado() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -453,39 +454,39 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("capital_ipcer").setNombreVisual("CAPITAL");
         tab_tabla1.getColumna("interes_ipcer").setNombreVisual("INTERES");
         tab_tabla1.getColumna("valor_a_pagar_ipcer").setNombreVisual("VALOR A PAGAR");
-
+        
         tab_tabla1.getColumna("plazo_ipcer").alinearDerecha();
         tab_tabla1.getColumna("capital_ipcer").alinearDerecha();
         tab_tabla1.getColumna("interes_ipcer").alinearDerecha();
         tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
-
+        
         tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
         tab_tabla1.getColumna("cod_captacion_ipcer").setNombreVisual("COD. CAPTACIÓN");
-
+        
         tab_tabla1.getColumna("ide_cnccc_terminacion").setNombreVisual("ASIENTO TERM.");
         tab_tabla1.getColumna("ide_cnccc_terminacion").setLink();
         tab_tabla1.getColumna("ide_cnccc_terminacion").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_terminacion").alinearCentro();
-
+        
         tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
-
+        
         tab_tabla1.getColumna("ide_cnccc_interes").setNombreVisual("ASIENTO INTE.");
         tab_tabla1.getColumna("ide_cnccc_interes").setLink();
         tab_tabla1.getColumna("ide_cnccc_interes").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_interes").alinearCentro();
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(4, "LISTADO DE INVERSIONES", pat_panel);
-
+        
     }
-
+    
     public void dibujarVencidas() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -518,22 +519,22 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
         tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
         tab_tabla1.getColumna("cod_captacion_ipcer").setNombreVisual("COD. CAPTACIÓN");
-
+        
         tab_tabla1.getColumna("ide_cnccc_terminacion").setNombreVisual("ASIENTO TERM.");
         tab_tabla1.getColumna("ide_cnccc_terminacion").setLink();
         tab_tabla1.getColumna("ide_cnccc_terminacion").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_terminacion").alinearCentro();
-
+        
         tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
-
+        
         tab_tabla1.getColumna("ide_cnccc_interes").setNombreVisual("ASIENTO INTE.");
         tab_tabla1.getColumna("ide_cnccc_interes").setLink();
         tab_tabla1.getColumna("ide_cnccc_interes").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_interes").alinearCentro();
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
@@ -541,13 +542,13 @@ public class pre_certificados extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(5, "INVERSIONES VENCIDAS AL " + utilitario.getFechaLarga(utilitario.getFechaActual()).toUpperCase(), pat_panel);
     }
-
+    
     public void cargarCertificado(ActionEvent evt) {
         Link lin_ide_cnccc = (Link) evt.getComponent();
         num_certificado_ipcer_busca = lin_ide_cnccc.getValue().toString();
         dibujarCertificado();
     }
-
+    
     public void calcularInteres(AjaxBehaviorEvent evt) {
         tab_tabla1.modificar(evt);
         calculainteres();
@@ -564,7 +565,7 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-
+    
     public void calculainteres() {
         double capital = 0;
         double tasa = 0;
@@ -581,7 +582,7 @@ public class pre_certificados extends Pantalla {
         if (tab_tabla1.getValor("tasa_ipcer") != null && !tab_tabla1.getValor("tasa_ipcer").isEmpty()) {
             try {
                 tasa = Double.parseDouble(tab_tabla1.getValor("tasa_ipcer"));
-
+                
             } catch (Exception e) {
                 tasa = 0;
             }
@@ -599,7 +600,7 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.setValor("valor_a_pagar_ipcer", utilitario.getFormatoNumero(valortotal));
         utilitario.addUpdateTabla(tab_tabla1, "interes_ipcer,valor_a_pagar_ipcer", "");
     }
-
+    
     public boolean obtenetFechaVencimiento() {
         if (tab_tabla1.getValor("plazo_ipcer") != null && !tab_tabla1.getValor("plazo_ipcer").isEmpty()) {
             System.out.println("SI ENTRA..." + utilitario.sumarDiasFecha(utilitario.getFecha(tab_tabla1.getValor("fecha_emision_ipcer")), Integer.parseInt(tab_tabla1.getValor("plazo_ipcer"))));
@@ -613,23 +614,23 @@ public class pre_certificados extends Pantalla {
             return false;
         }
     }
-
+    
     public void obtenetFechaVencimiento(DateSelectEvent evt) {
 //        tab_renovacion_inversion.modificar(evt);
         if (obtenetFechaVencimiento()) {
             calculainteres();
         }
     }
-
+    
     @Override
     public void insertar() {
         //FORMULARIO INVERSION
         num_certificado_ipcer_busca = null;
         dibujarCertificado();
-
+        
         tab_tabla1.setValor("ide_iptin", String.valueOf(com_tipo_inversion.getValue()));
     }
-
+    
     @Override
     public void guardar() {
         if (asc_asiento.isVisible()) {
@@ -660,10 +661,10 @@ public class pre_certificados extends Pantalla {
                     guardarPantalla();
                 }
             }
-
+            
         }
     }
-
+    
     public boolean validarCertificado() {
         if (tab_tabla1.getValor("capital_ipcer") == null || tab_tabla1.getValor("capital_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar el capital");
@@ -673,12 +674,12 @@ public class pre_certificados extends Pantalla {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar el plazo");
             return false;
         }
-
+        
         if (tab_tabla1.getValor("tasa_ipcer") == null || tab_tabla1.getValor("tasa_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar la tasa de interes");
             return false;
         }
-
+        
         if (tab_tabla1.getValor("fecha_emision_ipcer") == null || tab_tabla1.getValor("fecha_emision_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar la fecha de emisión");
             return false;
@@ -707,22 +708,22 @@ public class pre_certificados extends Pantalla {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe seleccionar la Clase de Inversión");
             return false;
         }
-
+        
         return true;
     }
-
+    
     @Override
     public void eliminar() {
         if (mep_menu.getOpcion() == 1) {
             if (tab_tabla1.isFocus()) {
                 tab_tabla1.eliminar();
             }
-
+            
         } else {
             utilitario.agregarNotificacionInfo("Seleccione el certificado en vista Formulario", "");
         }
     }
-
+    
     public void abrirGeneraAsiento() {
         if (tab_tabla1.getValorSeleccionado() != null) {
             asc_asiento.nuevoAsiento();
@@ -733,37 +734,37 @@ public class pre_certificados extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar almenos una Factura", "");
         }
     }
-
+    
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
-
+    
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
-
+    
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
-
+    
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
     }
-
+    
     public SeleccionFormatoReporte getSel_formato() {
         return sel_formato;
     }
-
+    
     public void setSel_formato(SeleccionFormatoReporte sel_formato) {
         this.sel_formato = sel_formato;
     }
-
+    
     public AsientoContable getAsc_asiento() {
         return asc_asiento;
     }
-
+    
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
     }
-
+    
 }
