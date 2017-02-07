@@ -132,6 +132,7 @@ public class pre_prestamos extends Pantalla {
             asc_asiento.nuevoAsiento();
             asc_asiento.dibujar();
             asc_asiento.setAsientoPrestamo(tab_tabla1.getValor("ide_cccfa"));
+            asc_asiento.calcularTotal();
             asc_asiento.getBot_aceptar().setMetodo("guardarAsiento");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una Cuota", "");

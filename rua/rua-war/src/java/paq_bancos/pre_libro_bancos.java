@@ -14,6 +14,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -109,12 +110,14 @@ public class pre_libro_bancos extends Pantalla {
     private Texto tex_separa;
     private Combo com_colDocumento;
     private Combo com_colValor;
+    private Confirmar con_confirma = new Confirmar();
 
     public pre_libro_bancos() {
 
         mep_menu.setMenuPanel("CONSULTAS", "20%");
         mep_menu.agregarItem("Posición Consolidada", "dibujarPosicion", "ui-icon-note");//1
         mep_menu.agregarItem("Consulta de Movimientos", "dibujarMovimienots", "ui-icon-note");//2
+        mep_menu.agregarItem("Movimientos Anulados", "dibujarAnulados", "ui-icon-cancel");//11
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
         mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
@@ -123,7 +126,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Transferencias entre Cuentas", "dibujarTransferencias", "ui-icon-contact");//6
         mep_menu.agregarSubMenu("HERRAMIENTAS");
         mep_menu.agregarItem("Conciliación Manual", "dibujarConciliarM", "ui-icon-pencil"); //7
-        mep_menu.agregarItem("Conciliación Automática", "dibujarConciliarA", "ui-icon-calculator");//8
+        mep_menu.agregarItem("Conciliación Automática", "dibujarConciliarA", "ui-icon-calculator");//10
 
         agregarComponente(mep_menu);
 
@@ -167,7 +170,62 @@ public class pre_libro_bancos extends Pantalla {
         dia_modifica.setTitle("MODIFICAR MOVIMIENTO");
         dia_modifica.getBot_aceptar().setMetodo("aceptarModificar");
         agregarComponente(dia_modifica);
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro de Anular el Movimiento Seleccionado ?");
+        con_confirma.setTitle("ANULAR MOVIMIENTO");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
+    }
 
+    public void abrirAnular() {
+        if (tab_tabla1.getValor("ide_teclb") != null) {
+            con_confirma.getBot_aceptar().setMetodo("anularMovimiento");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Movimiento", "");
+        }
+    }
+
+    public void anularMovimiento() {
+        if (tab_tabla1.getValor("ide_teclb") != null) {
+            ser_tesoreria.anularMovimiento(tab_tabla1.getValor("ide_teclb"));
+            if (guardarPantalla().isEmpty()) {
+                con_confirma.cerrar();
+                tab_tabla1.actualizar();
+                actualizarSaldos();
+            }
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Movimiento", "");
+        }
+    }
+
+    public void dibujarAnulados() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_tesoreria.getSqlTransaccionesAnuladasCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla1.setRows(15);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setOrdenar(false);
+        tab_tabla1.getColumna("ide_teclb").setVisible(false);
+        tab_tabla1.setCampoPrimaria("ide_teclb");
+        tab_tabla1.getColumna("VALOR").setLongitud(25);
+        tab_tabla1.getColumna("VALOR").alinearDerecha();
+        tab_tabla1.getColumna("VALOR").setEstilo("font-weight: bold;");
+        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla1.getColumna("numero_teclb").setFiltroContenido();
+        tab_tabla1.getColumna("beneficiari_teclb").setFiltroContenido();
+        tab_tabla1.getColumna("nombre_tettb").setFiltroContenido();
+        tab_tabla1.setColumnaSuma("VALOR");
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+
+        mep_menu.dibujar(11, "MOVIMIENTOS ANULADOS ", pat_panel);
     }
 
     public void dibujarConciliarA() {
@@ -178,9 +236,9 @@ public class pre_libro_bancos extends Pantalla {
         gri_archivo.setColumns(3);
         upl_importa = new Upload();
         Grid gri_matriz = new Grid();
-        gri_matriz.setMensajeInfo("Seleccione un archivo con extensión <strong>.csv<strong>");
+        gri_matriz.setHeader(new Etiqueta("Seleccione un archivo con extensión <strong>.csv<strong> <img src='/imagenes/im_csv.png'/>"));
         gri_matriz.setStyle("width:100%;");
-        gri_matriz.setColumns(4);
+        gri_matriz.setColumns(2);
 
         gri_archivo.getChildren().add(gri_matriz);
 
@@ -204,15 +262,19 @@ public class pre_libro_bancos extends Pantalla {
         upl_importa.setUpdate("gri_valida");
         upl_importa.setAllowTypes("/(\\.|\\/)(csv)$/");
         upl_importa.setMetodo("seleccionarArchivo");
-        upl_importa.setProcess("@all");
+        //upl_importa.setProcess("@all");
         upl_importa.setUploadLabel("Validar Archivo .csv");
         upl_importa.setAuto(false);
 
-        gri_matriz.getChildren().add(new Etiqueta("<strong>Separador Columnas: </strong>"));
+        Grid g2 = new Grid();
+
+        g2.getChildren().add(new Etiqueta("<strong>SEPARADOR DE COLUMNAS: </strong><span style='color:red;font-weight: bold;'>*</span>"));
         tex_separa = new Texto();
         tex_separa.setSize(5);
         tex_separa.setValue(",");
-        gri_matriz.getChildren().add(tex_separa);
+        g2.getChildren().add(tex_separa);
+
+        gri_matriz.getChildren().add(g2);
         gri_matriz.getChildren().add(upl_importa);
         grid.getChildren().add(gri_archivo);
 
@@ -227,25 +289,74 @@ public class pre_libro_bancos extends Pantalla {
         grid.getChildren().add(pat_panel);
 
         Grid g1 = new Grid();
-        g1.setColumns(3);
-        g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong>"));
-        g1.getChildren().add(new Etiqueta("<strong>COLUMNA VALOR :</strong>"));
-        g1.getChildren().add(new Etiqueta(""));
+        g1.setColumns(2);
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong><span style='color:red;font-weight: bold;'>*</span>"));
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA VALOR :</strong><span style='color:red;font-weight: bold;'>*</span>"));
 
         com_colDocumento = new Combo();
+        com_colDocumento.setStyle("width:99%");
         com_colValor = new Combo();
+        com_colValor.setStyle("width:99%");
         g1.getChildren().add(com_colDocumento);
         g1.getChildren().add(com_colValor);
+
+        Grid g3 = new Grid();
+        g3.getChildren().add(new Etiqueta("<strong>CUENTA BANCARIA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        g3.getChildren().add(new Etiqueta(""));
+
+        aut_cuenta = new AutoCompletar();
+        aut_cuenta.setId("aut_cuenta");
+        aut_cuenta.setMetodoChange("cambioCuenta");
+        aut_cuenta.setAutoCompletar(ser_tesoreria.getSqlComboCuentasBancarias());
+        aut_cuenta.setDropdown(true);
+        aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setSize(66);
+        aut_cuenta.setMaxResults(25);
+
+        g3.getChildren().add(aut_cuenta);
+
         Boton bot_procesar = new Boton();
         bot_procesar.setValue("Conciliar");
-        g1.getChildren().add(bot_procesar);
+        bot_procesar.setMetodo("conciliacionAutmaitica");
+
+        g3.setFooter(bot_procesar);
 
         grid.getChildren().add(g1);
-        mep_menu.dibujar(1, "POSICIÓN CONSOLIDADA", grid);
+        grid.getChildren().add(g3);
+        mep_menu.dibujar(10, "CONCILIACIÓN AUTOMÁTICA", grid);
 
     }
 
+    public void conciliacionAutmaitica() {
+        if (com_colDocumento.getValue() == null) {
+            utilitario.agregarMensajeError("Seleccione la COLUMNA NUM. DOCUMENTO", "");
+            return;
+        }
+        if (com_colValor.getValue() == null) {
+            utilitario.agregarMensajeError("Seleccione la COLUMNA VALOR", "");
+            return;
+        }
+        if (tab_tabla1.getTotalFilas() <= 0) {
+            utilitario.agregarMensajeError("No hay movimientos para Conciliar", "");
+            return;
+        }
+        if (aut_cuenta.getValor() != null) {
+            utilitario.agregarMensajeError("Debe seleccionar la CUENTA BANCARIA", "");
+            return;
+        }
+        //reccore la tabla 
+        for (int i = 0; i <= tab_tabla1.getTotalFilas(); i++) {
+            String num_documento = tab_tabla1.getValor(i, String.valueOf(com_colDocumento.getValue()));
+            String valor = tab_tabla1.getValor(i, String.valueOf(com_colValor.getValue()));
+            tab_tabla1.setValor(1, "ENCONTRO", String.valueOf(ser_tesoreria.isConciliado(str_ide_geper, num_documento, valor)));
+        }
+    }
+
     public void seleccionarArchivo(FileUploadEvent event) {
+        if (tex_separa.getValue() == null || tex_separa.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeError("Ingrese el separador de columnas del archivo", "");
+            return;
+        }
         try {
             final File tempFile = File.createTempFile("archivoConcilia", "csv");
             tempFile.deleteOnExit();
@@ -257,24 +368,32 @@ public class pre_libro_bancos extends Pantalla {
             int intFila = 0;
             //Columnas            
             String strColumnas = "";
+            List listaColumnas = new ArrayList();
             if (lines.isEmpty() == false) {
-                String[] array = lines.get(0).split(",\"");
+                String[] array = lines.get(0).split("" + tex_separa.getValue() + "\"");
                 for (String array1 : array) {
                     if (strColumnas.isEmpty() == false) {
                         strColumnas += ",";
                     }
                     if (array1.replace("\"", "").equalsIgnoreCase("FECHA")) {
                         strColumnas += "'' FECHA_MOVIMIENTO";
+                        Object fila[] = {"FECHA_MOVIMIENTO", "FECHA_MOVIMIENTO"};
+                        listaColumnas.add(fila);
                     } else {
                         strColumnas += "'' " + array1.replace("\"", "");
+                        Object fila[] = {array1.replace("\"", ""), array1.replace("\"", "")};
+                        listaColumnas.add(fila);
                     }
+
                 }
             }
+            com_colDocumento.setCombo(listaColumnas);
+            com_colValor.setCombo(listaColumnas);
             UIComponent padre = tab_tabla1.getParent();
             padre.getChildren().remove(tab_tabla1);
             tab_tabla1 = new Tabla();
             tab_tabla1.setId("tab_tabla1");
-            tab_tabla1.setSql("SELECT " + strColumnas + " from sis_empresa WHERE IDE_EMPR=1");
+            tab_tabla1.setSql("SELECT 0 as ENCONTRO', " + strColumnas + " from sis_empresa WHERE IDE_EMPR=1");
             tab_tabla1.setLectura(true);
             tab_tabla1.setRows(5);
             for (Columna col : tab_tabla1.getColumnas()) {
@@ -282,6 +401,9 @@ public class pre_libro_bancos extends Pantalla {
                 col.setLongitud(30);
                 col.setAncho(30);
             }
+            tab_tabla1.getColumna("ENCONTRO").setVisible(false);
+            tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[0] eq 'false' ? 'text-red' : fila.campos[1] eq 'true'  ? 'text-green' : null");
+
             tab_tabla1.dibujar();
             tab_tabla1.setLectura(false);
             padre.getChildren().add(tab_tabla1);
@@ -300,7 +422,8 @@ public class pre_libro_bancos extends Pantalla {
                 }
                 intFila++;
             }
-            utilitario.addUpdate("grid");
+            upl_importa.setNombreReal(event.getFile().getFileName());
+            utilitario.addUpdate("gri_valida,grid");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -392,6 +515,12 @@ public class pre_libro_bancos extends Pantalla {
         itemedita.setMetodo("abrirModificar");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
 
+        ItemMenu itemanula = new ItemMenu();
+        itemanula.setValue("Anular");
+        itemanula.setIcon("ui-icon-cancel");
+        itemanula.setMetodo("abrirAnular");
+        pat_panel.getMenuTabla().getChildren().add(itemanula);
+
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("tes_cab_libr_banc", "ide_teclb", 10);
@@ -469,6 +598,8 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setDropdown(true);
         aut_cuenta.setAutocompletarContenido();
         aut_cuenta.setSize(66);
+        aut_cuenta.setMaxResults(25);
+
         gri1.getChildren().add(aut_cuenta);
 
         com_tip_tran = new Combo();
@@ -586,6 +717,8 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setDropdown(true);
         aut_cuenta.setSize(66);
         aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setMaxResults(25);
+
         gri1.getChildren().add(aut_cuenta);
         com_tip_tran = new Combo();
         com_tip_tran.setMetodo("cambioTipoTransBanco");
@@ -695,6 +828,8 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setDropdown(true);
         aut_cuenta.setSize(66);
         aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setMaxResults(25);
+
         gri1.getChildren().add(aut_cuenta);
         com_tip_tran = new Combo();
         com_tip_tran.setMetodo("cambioTipoTransBanco");
@@ -807,6 +942,8 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setDropdown(true);
         aut_cuenta.setAutocompletarContenido();
         aut_cuenta.setSize(66);
+        aut_cuenta.setMaxResults(25);
+
         grid1.getChildren().add(aut_cuenta);
 
         com_tip_tran = new Combo();
@@ -945,6 +1082,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta.setDropdown(true);
         aut_cuenta.setAutocompletarContenido();
         aut_cuenta.setSize(66);
+        aut_cuenta.setMaxResults(25);
         gri1.getChildren().add(aut_cuenta);
         gri1.getChildren().add(new Etiqueta("<strong>A LA CUENTA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         aut_cuenta1 = new AutoCompletar();
@@ -954,6 +1092,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuenta1.setDropdown(true);
         aut_cuenta1.setAutocompletarContenido();
         aut_cuenta1.setSize(66);
+        aut_cuenta1.setMaxResults(25);
         gri1.getChildren().add(aut_cuenta1);
 
         cal_fecha_pago = new Calendario();
@@ -1172,6 +1311,14 @@ public class pre_libro_bancos extends Pantalla {
                 utilitario.agregarMensajeInfo("Seleccione una Cuenta", "Debe seleccionar una 'CUENTA'");
             }
             actualizarSaldos();
+        } else if (mep_menu.getOpcion() == 11) {
+            if (aut_cuentas.getValor() != null) {
+                tab_tabla1.setSql(ser_tesoreria.getSqlTransaccionesAnuladasCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_tabla1.ejecutarSql();
+            } else {
+                tab_tabla1.limpiar();
+                utilitario.agregarMensajeInfo("Seleccione una Cuenta", "Debe seleccionar una 'CUENTA'");
+            }
         } else {
             dibujarMovimienots();
         }
@@ -1945,6 +2092,14 @@ public class pre_libro_bancos extends Pantalla {
 
     public void setUpl_importa(Upload upl_importa) {
         this.upl_importa = upl_importa;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 }

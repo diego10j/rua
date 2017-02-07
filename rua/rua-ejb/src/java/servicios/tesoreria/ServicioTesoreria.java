@@ -95,15 +95,21 @@ public class ServicioTesoreria {
                 + "order by fecha_trans_teclb,ide_teclb";
     }
 
-    public String getSqlConciliar(String ide_tecba, String numero, String valor) {
-        return "select fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,"
-                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_teclb,conciliado_teclb as conciliado "
-                + "from tes_cab_libr_banc a "
+    public boolean isConciliado(String ide_tecba, String numero, String valor) {
+        boolean existe = false;
+        List lis = utilitario.getConexion().consultar("select ide_teclb from tes_cab_libr_banc  "
                 + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
                 + "where ide_tecba=" + ide_tecba + " "
                 + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
-                + "and ide_teclb=-1 "
-                + "order by fecha_trans_teclb,ide_teclb";
+                + "and numero_teclb = '" + numero + "' "
+                + "and valor_teclb =" + utilitario.getFormatoNumero(valor) + " "
+                + "and conciliado_teclb=false ");
+        if (lis != null) {
+            if (lis.get(0) != null) {
+                existe = true;
+            }
+        }
+        return existe;
     }
 
     public String getSqlTransaccionesCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
@@ -113,6 +119,17 @@ public class ServicioTesoreria {
                 + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
                 + "where ide_tecba=" + ide_tecba + " "
                 + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "and fecha_trans_teclb BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "order by fecha_trans_teclb,ide_teclb";
+    }
+
+    public String getSqlTransaccionesAnuladasCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
+        return "select fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,"
+                + "valor_teclb as VALOR,observacion_teclb,ide_teclb,conciliado_teclb as conciliado "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and ide_teelb !=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
                 + "and fecha_trans_teclb BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + "order by fecha_trans_teclb,ide_teclb";
     }
@@ -653,6 +670,11 @@ public class ServicioTesoreria {
      */
     public String getSqlComboBeneficiario() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where identificac_geper is not null order by nom_geper ";
+    }
+
+    public void anularMovimiento(String ide_teclb) {
+        //Anula Movimiento
+        utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", ide_cnccc=null where ide_teclb=" + ide_teclb);
     }
 
 }
