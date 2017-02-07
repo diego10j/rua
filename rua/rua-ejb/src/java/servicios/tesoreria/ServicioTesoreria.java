@@ -95,6 +95,17 @@ public class ServicioTesoreria {
                 + "order by fecha_trans_teclb,ide_teclb";
     }
 
+    public String getSqlConciliar(String ide_tecba, String numero, String valor) {
+        return "select fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,"
+                + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_teclb,conciliado_teclb as conciliado "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "and ide_teclb=-1 "
+                + "order by fecha_trans_teclb,ide_teclb";
+    }
+
     public String getSqlTransaccionesCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
         return "select fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,"
                 + "case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS, '' SALDO,observacion_teclb,ide_teclb,conciliado_teclb as conciliado "

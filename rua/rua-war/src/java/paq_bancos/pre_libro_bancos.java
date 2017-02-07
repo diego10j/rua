@@ -17,6 +17,7 @@ import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Imagen;
 import framework.componentes.ItemMenu;
 import framework.componentes.Link;
 import framework.componentes.MenuPanel;
@@ -24,12 +25,20 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.Upload;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.separator.Separator;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
@@ -96,6 +105,11 @@ public class pre_libro_bancos extends Pantalla {
     private Texto tex_num_asiento;
     private Etiqueta eti_num_asiento;
 
+    private Upload upl_importa;
+    private Texto tex_separa;
+    private Combo com_colDocumento;
+    private Combo com_colValor;
+
     public pre_libro_bancos() {
 
         mep_menu.setMenuPanel("CONSULTAS", "20%");
@@ -121,7 +135,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuentas.setGlobal(true);
         aut_cuentas.setValue(null);
         aut_cuentas.setGlobal(true);
-        aut_cuentas.setMaxResults(15);
+        aut_cuentas.setMaxResults(25);
 
         bar_botones.limpiar();
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
@@ -153,6 +167,143 @@ public class pre_libro_bancos extends Pantalla {
         dia_modifica.setTitle("MODIFICAR MOVIMIENTO");
         dia_modifica.getBot_aceptar().setMetodo("aceptarModificar");
         agregarComponente(dia_modifica);
+
+    }
+
+    public void dibujarConciliarA() {
+        Grid grid = new Grid();
+        grid.setId("grid");
+        Grid gri_archivo = new Grid();
+        gri_archivo.setWidth("95%");
+        gri_archivo.setColumns(3);
+        upl_importa = new Upload();
+        Grid gri_matriz = new Grid();
+        gri_matriz.setMensajeInfo("Seleccione un archivo con extensión <strong>.csv<strong>");
+        gri_matriz.setStyle("width:100%;");
+        gri_matriz.setColumns(4);
+
+        gri_archivo.getChildren().add(gri_matriz);
+
+        Grid gri_valida = new Grid();
+        gri_valida.setId("gri_valida");
+        gri_valida.setColumns(3);
+        Etiqueta eti_valida = new Etiqueta();
+        eti_valida.setValueExpression("value", "pre_index.clase.upl_importa.nombreReal");
+        eti_valida.setValueExpression("rendered", "pre_index.clase.upl_importa.nombreReal != null");
+        gri_valida.getChildren().add(eti_valida);
+
+        Imagen ima_valida = new Imagen();
+        ima_valida.setWidth("22");
+        ima_valida.setHeight("22");
+        ima_valida.setValue("/imagenes/im_csv.png");
+        ima_valida.setValueExpression("rendered", "pre_index.clase.upl_importa.nombreReal != null");
+        gri_valida.getChildren().add(ima_valida);
+        gri_archivo.setFooter(gri_valida);
+
+        upl_importa.setId("upl_importa");
+        upl_importa.setUpdate("gri_valida");
+        upl_importa.setAllowTypes("/(\\.|\\/)(csv)$/");
+        upl_importa.setMetodo("seleccionarArchivo");
+        upl_importa.setProcess("@all");
+        upl_importa.setUploadLabel("Validar Archivo .csv");
+        upl_importa.setAuto(false);
+
+        gri_matriz.getChildren().add(new Etiqueta("<strong>Separador Columnas: </strong>"));
+        tex_separa = new Texto();
+        tex_separa.setSize(5);
+        tex_separa.setValue(",");
+        gri_matriz.getChildren().add(tex_separa);
+        gri_matriz.getChildren().add(upl_importa);
+        grid.getChildren().add(gri_archivo);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql("SELECT '' COLUMNA1,'' COLUMNA2,'' COLUMNA3 from sis_empresa WHERE IDE_EMPR=1");
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setRows(10);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        grid.getChildren().add(pat_panel);
+
+        Grid g1 = new Grid();
+        g1.setColumns(3);
+        g1.getChildren().add(new Etiqueta("COLUMNA NUM. DOCUMENTO :"));
+        g1.getChildren().add(new Etiqueta("COLUMNA VALOR :"));
+        g1.getChildren().add(new Etiqueta(""));
+
+        com_colDocumento = new Combo();
+        com_colValor = new Combo();
+        g1.getChildren().add(com_colDocumento);
+        g1.getChildren().add(com_colValor);
+        Boton bot_procesar = new Boton();
+        bot_procesar.setValue("Conciliar");
+        g1.getChildren().add(bot_procesar);
+
+        grid.getChildren().add(g1);
+        mep_menu.dibujar(1, "POSICIÓN CONSOLIDADA", grid);
+
+    }
+
+    public void seleccionarArchivo(FileUploadEvent event) {
+        try {
+            final File tempFile = File.createTempFile("archivoConcilia", "csv");
+            tempFile.deleteOnExit();
+            try (FileOutputStream out = new FileOutputStream(tempFile)) {
+                IOUtils.copy(event.getFile().getInputstream(), out);
+            }
+            List<String> lines = Files.readAllLines(tempFile.toPath(),
+                    StandardCharsets.UTF_8);
+            int intFila = 0;
+            //Columnas            
+            String strColumnas = "";
+            if (lines.isEmpty() == false) {
+                String[] array = lines.get(0).split(",\"");
+                for (String array1 : array) {
+                    if (strColumnas.isEmpty() == false) {
+                        strColumnas += ",";
+                    }
+                    if (array1.replace("\"", "").equalsIgnoreCase("FECHA")) {
+                        strColumnas += "'' FECHA_MOVIMIENTO";
+                    } else {
+                        strColumnas += "'' " + array1.replace("\"", "");
+                    }
+                }
+            }
+            UIComponent padre = tab_tabla1.getParent();
+            padre.getChildren().remove(tab_tabla1);
+            tab_tabla1 = new Tabla();
+            tab_tabla1.setId("tab_tabla1");
+            tab_tabla1.setSql("SELECT " + strColumnas + " from sis_empresa WHERE IDE_EMPR=1");
+            tab_tabla1.setLectura(true);
+            tab_tabla1.setRows(5);
+            for (Columna col : tab_tabla1.getColumnas()) {
+                col.setFiltroContenido();
+                col.setLongitud(30);
+                col.setAncho(30);
+            }
+            tab_tabla1.dibujar();
+            tab_tabla1.setLectura(false);
+            padre.getChildren().add(tab_tabla1);
+            //Filas
+            for (String line : lines) {
+                if (intFila == 0) {
+                    intFila++;
+                    continue;
+                }
+                tab_tabla1.insertar();
+                String[] array = line.split(",\"");
+                int intColumna = 0;
+                for (String array1 : array) {
+                    tab_tabla1.setValor(tab_tabla1.getColumnas()[intColumna].getNombre(), array1.replace("\"", ""));
+                    intColumna++;
+                }
+                intFila++;
+            }
+            utilitario.addUpdate("grid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1786,6 +1937,14 @@ public class pre_libro_bancos extends Pantalla {
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
+    }
+
+    public Upload getUpl_importa() {
+        return upl_importa;
+    }
+
+    public void setUpl_importa(Upload upl_importa) {
+        this.upl_importa = upl_importa;
     }
 
 }
