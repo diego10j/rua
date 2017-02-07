@@ -228,8 +228,8 @@ public class pre_libro_bancos extends Pantalla {
 
         Grid g1 = new Grid();
         g1.setColumns(3);
-        g1.getChildren().add(new Etiqueta("COLUMNA NUM. DOCUMENTO :"));
-        g1.getChildren().add(new Etiqueta("COLUMNA VALOR :"));
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong>"));
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA VALOR :</strong>"));
         g1.getChildren().add(new Etiqueta(""));
 
         com_colDocumento = new Combo();
