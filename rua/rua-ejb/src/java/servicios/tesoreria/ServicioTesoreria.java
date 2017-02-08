@@ -583,7 +583,7 @@ public class ServicioTesoreria {
      *
      * @return
      */
-    public String getSqlPosicionConsolidada() {
+    public String getSqlPosicionConsolidada() { 
         return "select a.ide_tecba,nombre_teban,nombre_tecba,nombre_tetcb,ide_cndpc, \n"
                 + "(Select sum(dcc.valor_cndcc*sc.signo_cnscu) as valor \n"
                 + "from con_cab_comp_cont ccc \n"

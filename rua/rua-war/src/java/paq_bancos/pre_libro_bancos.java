@@ -251,18 +251,17 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void dibujarConciliarA() {
-        Grid grid = new Grid();
-        grid.setId("grid");
-        Grid gri_archivo = new Grid();
-        gri_archivo.setWidth("95%");
-        gri_archivo.setColumns(3);
+
+//        Grid gri_archivo = new Grid();
+//        gri_archivo.setWidth("95%");
+//        gri_archivo.setColumns(3);
         upl_importa = new Upload();
         Grid gri_matriz = new Grid();
-
+        gri_matriz.setId("grid");
         gri_matriz.setStyle("width:100%;");
         gri_matriz.setColumns(2);
 
-        gri_archivo.getChildren().add(gri_matriz);
+        //gri_archivo.getChildren().add(gri_matriz);
         Panel pn = new Panel();
         pn.setTitle("SELECCIONAR ARCHIVO CON EXTENSIÓN .CSV ");
         Grid gri_valida = new Grid();
@@ -279,7 +278,6 @@ public class pre_libro_bancos extends Pantalla {
         ima_valida.setValue("/imagenes/im_csv.png");
         ima_valida.setValueExpression("rendered", "pre_index.clase.upl_importa.nombreReal != null");
         gri_valida.getChildren().add(ima_valida);
-        gri_archivo.setFooter(gri_valida);
 
         upl_importa.setId("upl_importa");
         upl_importa.setUpdate("gri_valida");
@@ -290,64 +288,57 @@ public class pre_libro_bancos extends Pantalla {
         upl_importa.setAuto(false);
 
         Grid g2 = new Grid();
-        g2.setColumns(2);
         g2.getChildren().add(new Etiqueta("<strong>SEPARADOR DE COLUMNAS: </strong><span style='color:red;font-weight: bold;'>*</span>"));
         tex_separa = new Texto();
         tex_separa.setSize(5);
         tex_separa.setValue(",");
         g2.getChildren().add(tex_separa);
+        g2.setFooter(gri_valida);
 
         gri_matriz.getChildren().add(g2);
         gri_matriz.getChildren().add(upl_importa);
-
-        pn.getChildren().add(gri_archivo);
-        grid.getChildren().add(pn);
 
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql("SELECT '' COLUMNA1,'' COLUMNA2,'' COLUMNA3 from sis_empresa WHERE IDE_EMPR=1");
         tab_tabla1.setLectura(true);
-        tab_tabla1.setRows(10);
+        tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
-        grid.getChildren().add(pat_panel);
-
-        Grid g1 = new Grid();
-        g1.setColumns(2);
-        g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong><span style='color:red;font-weight: bold;'>*</span>"));
-        g1.getChildren().add(new Etiqueta("<strong>COLUMNA VALOR :</strong><span style='color:red;font-weight: bold;'>*</span>"));
-
+        //grid.getChildren().add(pat_panel);
         com_colDocumento = new Combo();
-        com_colDocumento.setStyle("width:99%");
+        com_colDocumento.setStyle("width: 200px;");
         com_colValor = new Combo();
-        com_colValor.setStyle("width:99%");
+        com_colValor.setStyle("width: 200px;");
+        Grid g1 = new Grid();
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong><span style='color:red;font-weight: bold;'>*</span>"));
         g1.getChildren().add(com_colDocumento);
+        g1.getChildren().add(new Etiqueta("<strong>COLUMNA VALOR :</strong><span style='color:red;font-weight: bold;'>*</span>"));
         g1.getChildren().add(com_colValor);
-
-        Grid g3 = new Grid();
-        g3.getChildren().add(new Etiqueta("<strong>CUENTA BANCARIA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
-        g3.getChildren().add(new Etiqueta(""));
+        g1.getChildren().add(new Etiqueta("<strong>CUENTA BANCARIA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
 
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setAutoCompletar(ser_tesoreria.getSqlComboCuentasBancarias());
         aut_cuenta.setDropdown(true);
         aut_cuenta.setAutocompletarContenido();
-        aut_cuenta.setSize(66);
+        aut_cuenta.setSize(30);
         aut_cuenta.setMaxResults(25);
 
-        g3.getChildren().add(aut_cuenta);
+        g1.getChildren().add(aut_cuenta);
 
         Boton bot_procesar = new Boton();
         bot_procesar.setValue("Conciliar");
         bot_procesar.setMetodo("conciliacionAutmaitica");
 
-        g3.setFooter(bot_procesar);
+        g1.getChildren().add(bot_procesar);
 
-        grid.getChildren().add(g1);
-        grid.getChildren().add(g3);
-        mep_menu.dibujar(10, "CONCILIACIÓN AUTOMÁTICA", grid);
+        gri_matriz.getChildren().add(g1);
+        gri_matriz.getChildren().add(pat_panel);
+
+        pn.getChildren().add(gri_matriz);
+        mep_menu.dibujar(10, "CONCILIACIÓN AUTOMÁTICA", pn);
 
     }
 
@@ -492,7 +483,7 @@ public class pre_libro_bancos extends Pantalla {
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setSql("SELECT 0 as ENCONTRO, " + strColumnas + " from sis_empresa WHERE IDE_EMPR=1");
             tab_tabla1.setLectura(true);
-            tab_tabla1.setRows(5);
+            tab_tabla1.setRows(10);
             for (Columna col : tab_tabla1.getColumnas()) {
                 col.setFiltroContenido();
                 col.setLongitud(30);
