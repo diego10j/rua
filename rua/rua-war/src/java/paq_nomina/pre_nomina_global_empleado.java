@@ -140,10 +140,12 @@ public class pre_nomina_global_empleado extends Pantalla {
         dia_formula.setDialogo(gru_cuerpo);
         agregarComponente(dia_formula);
 
-        cargarTablaVacia();
         div_division.setId("div_division");
-
+        div_division.dividir1(gri);
         agregarComponente(div_division);
+        
+        cargarTablaVacia();
+        
 
         com_periodo_rol.setId("com_periodo_rol");
         com_periodo_rol.setCombo(ser_nomina.getSqlComboPeriodoRol());
@@ -489,9 +491,9 @@ public class pre_nomina_global_empleado extends Pantalla {
         gri.getChildren().add(tabla);
         gri.setHeader(gri_cabecera);
 
-        div_division.getChildren().clear();
+        //div_division.getChildren().clear(); dfj
 
-        div_division.dividir1(gri);
+        //div_division.dividir1(gri); dfj
 
     }
 
