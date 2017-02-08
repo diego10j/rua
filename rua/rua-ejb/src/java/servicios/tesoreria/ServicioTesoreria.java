@@ -95,21 +95,43 @@ public class ServicioTesoreria {
                 + "order by fecha_trans_teclb,ide_teclb";
     }
 
-    public boolean isConciliado(String ide_tecba, String numero, String valor) {
+    public boolean isMovimientoConciliado(String ide_tecba, String numero, String valor) {
         boolean existe = false;
+        valor = valor.replace(",", "");
         List lis = utilitario.getConexion().consultar("select ide_teclb from tes_cab_libr_banc  "
-                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
                 + "where ide_tecba=" + ide_tecba + " "
                 + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
                 + "and numero_teclb = '" + numero + "' "
                 + "and valor_teclb =" + utilitario.getFormatoNumero(valor) + " "
                 + "and conciliado_teclb=false ");
         if (lis != null) {
-            if (lis.get(0) != null) {
-                existe = true;
+            if (lis.isEmpty() == false) {
+                if (lis.get(0) != null) {
+                    existe = true;
+                }
             }
+
         }
         return existe;
+    }
+
+    public String getSqlTransaccionesConciliarCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
+        return "select fecha_trans_teclb,numero_teclb,ide_cnccc,beneficiari_teclb,"
+                + "valor_teclb,observacion_teclb,ide_teclb,conciliado_teclb as conciliado "
+                + "from tes_cab_libr_banc a "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "and fecha_trans_teclb BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and conciliado_teclb=false  "
+                + "order by fecha_trans_teclb,ide_teclb";
+    }
+
+    public String getSqlTransaccionesEncontradasConciliarCuenta(String ide_teclb) {
+        return "select fecha_trans_teclb,numero_teclb,valor_teclb,beneficiari_teclb,"
+                + "observacion_teclb,ide_teclb "
+                + "from tes_cab_libr_banc a "
+                + "where ide_teclb in(" + ide_teclb + ")"
+                + "order by fecha_trans_teclb,ide_teclb";
     }
 
     public String getSqlTransaccionesCuenta(String ide_tecba, String fechaInicio, String fechaFin) {
