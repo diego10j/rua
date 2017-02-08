@@ -1506,7 +1506,7 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void aceptarOtros() {
-        if (validarOtros()) {
+        if (validarOtros()) {            
             if (aut_persona.isRendered() == false) {
                 if (str_ide_geper == null) {
                     //Crea el beneficiario
