@@ -695,8 +695,8 @@ public class ServicioTesoreria {
     }
 
     public void anularMovimiento(String ide_teclb) {
-        //Anula Movimiento
-        utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + ", ide_cnccc=null where ide_teclb=" + ide_teclb);
+        //Anula Movimiento 
+        utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set ide_teelb =1, ide_cnccc=null where ide_teclb=" + ide_teclb);
     }
 
 }
