@@ -185,7 +185,8 @@ public class pre_libro_bancos extends Pantalla {
         sel_conciliados.setSeleccionTabla(ser_tesoreria.getSqlTransaccionesEncontradasConciliarCuenta("-1"), "ide_teclb");
         sel_conciliados.setTitle("MOVIMIENTOS ENCONTRADOS");
         sel_conciliados.getBot_aceptar().setMetodo("aceptarSeleccionadosConciliar");
-        sel_conciliados.setWidth("60%");
+        sel_conciliados.setWidth("65%");
+        sel_conciliados.setHeight("65");
         agregarComponente(sel_conciliados);
 
     }
