@@ -83,6 +83,7 @@ public class cls_anexo_transaccional {
                         detalleCompras.appendChild(crearElemento("tpIdProv", null, tab_compras.getValor(i, "alterno1_getid")));
                         detalleCompras.appendChild(crearElemento("idProv", null, tab_compras.getValor(i, "identificac_geper")));
                         detalleCompras.appendChild(crearElemento("tipoComprobante", null, tab_compras.getValor(i, "alter_tribu_cntdo")));
+                        detalleCompras.appendChild(crearElemento("parteRel", null, "NO"));                        
                         detalleCompras.appendChild(crearElemento("fechaRegistro", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
                         String numero = tab_compras.getValor(i, "numero_cpcfa");
                         detalleCompras.appendChild(crearElemento("establecimiento", null, numero.substring(0, 3)));
@@ -181,6 +182,7 @@ public class cls_anexo_transaccional {
                                 reembolso.appendChild(crearElemento("autorizacionReemb", null, tab_reembolso.getValor(r, "autorizacion_cpdcr")));
                                 reembolso.appendChild(crearElemento("baseImponibleReemb", null, utilitario.getFormatoNumero(tab_reembolso.getValor(r, "base_tarifa0_cpdcr"))));
                                 reembolso.appendChild(crearElemento("baseImpGravReemb", null, utilitario.getFormatoNumero(tab_reembolso.getValor(r, "base_imponible_cpdcr"))));
+                                reembolso.appendChild(crearElemento("baseImpExe", null, utilitario.getFormatoNumero("0"))); /////!!!!!!!
                                 reembolso.appendChild(crearElemento("baseNoGraIvaReemb", null, utilitario.getFormatoNumero(tab_reembolso.getValor(r, "base_no_objeto_cpdcr"))));
                                 reembolso.appendChild(crearElemento("montoIceRemb", null, utilitario.getFormatoNumero(tab_reembolso.getValor(r, "valor_ice_cpdcr"))));
                                 reembolso.appendChild(crearElemento("montoIvaRemb", null, utilitario.getFormatoNumero(tab_reembolso.getValor(r, "valor_iva_cpdcr"))));
