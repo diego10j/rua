@@ -166,6 +166,7 @@ public class pre_libro_bancos extends Pantalla {
 
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
+        asc_asiento.getBot_cancelar().setMetodo("cerrarAsiento");
         agregarComponente(asc_asiento);
 
         dia_modifica.setId("dia_modifica");
@@ -198,6 +199,12 @@ public class pre_libro_bancos extends Pantalla {
         } else {
             utilitario.agregarMensajeError("Seleccione los movimientos para ser conciliados", "");
         }
+    }
+
+    public void cerrarAsiento() {
+        //limpia sql guardados
+        utilitario.getConexion().getSqlPantalla().clear();
+        asc_asiento.cerrar();
     }
 
     public void abrirAnular() {
@@ -1510,7 +1517,7 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void aceptarOtros() {
-        if (validarOtros()) {
+        if (validarOtros()) {            
             if (aut_persona.isRendered() == false) {
                 if (str_ide_geper == null) {
                     //Crea el beneficiario
@@ -1631,7 +1638,7 @@ public class pre_libro_bancos extends Pantalla {
         }
 
         if (tex_beneficiario.isRendered()) {
-            if (tex_identificacion.getValue() == null) {
+            if (tex_identificacion.getValue() == null || tex_identificacion.getValue().toString().isEmpty()) {
                 utilitario.agregarMensajeInfo("Debe ingresar la 'IDENTIFICACIÓN' ", "");
                 return false;
             }
@@ -1641,7 +1648,7 @@ public class pre_libro_bancos extends Pantalla {
                 return false;
             }
 
-            if (tex_beneficiario.getValue() == null) {
+            if (tex_beneficiario.getValue() == null || tex_beneficiario.getValue().toString().isEmpty()) {
                 utilitario.agregarMensajeInfo("Debe ingresar un 'BENEFICIARIO' ", "");
                 return false;
             }
@@ -1652,7 +1659,7 @@ public class pre_libro_bancos extends Pantalla {
             }
         }
 
-        if (ate_observacion.getValue() == null) {
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
@@ -1707,7 +1714,7 @@ public class pre_libro_bancos extends Pantalla {
             return false;
         }
 
-        if (ate_observacion.getValue() == null) {
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
@@ -1739,7 +1746,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
             return false;
         }
-        if (ate_observacion.getValue() == null) {
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
@@ -1809,7 +1816,7 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
             return false;
         }
-        if (ate_observacion.getValue() == null) {
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
             return false;
         }
