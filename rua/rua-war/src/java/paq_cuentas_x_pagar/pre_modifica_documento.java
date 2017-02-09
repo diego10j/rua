@@ -153,8 +153,8 @@ public class pre_modifica_documento extends Pantalla {
         }
         com_tipo_documento = new Combo();
         com_tipo_documento.setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
-        com_tipo_documento.setMetodoRuta("cambiarTipoDocumento");
-        com_tipo_documento.setDisabled(true);
+        //com_tipo_documento.setMetodoRuta("cambiarTipoDocumento");
+        //com_tipo_documento.setDisabled(true);
         com_tipo_documento.setValue(tab.getValor("ide_cntdo"));
 
         Grid gri_pto = new Grid();

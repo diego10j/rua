@@ -265,7 +265,7 @@ public class pre_modifica_factura extends Pantalla {
     }
 
     @Override
-    public void guardar() {
+    public void guardar() {        
         //Asigna punto de emision seleccionado y si solo guarda la factura
         tab_cab_factura.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
         tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));

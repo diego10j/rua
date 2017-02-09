@@ -308,9 +308,9 @@ public class pre_libro_bancos extends Pantalla {
         pat_panel.setPanelTabla(tab_tabla1);
         //grid.getChildren().add(pat_panel);
         com_colDocumento = new Combo();
-        com_colDocumento.setStyle("width: 200px;");
+        com_colDocumento.setStyle("width: 210px;");
         com_colValor = new Combo();
-        com_colValor.setStyle("width: 200px;");
+        com_colValor.setStyle("width: 210px;");
         Grid g1 = new Grid();
         g1.getChildren().add(new Etiqueta("<strong>COLUMNA NUM. DOCUMENTO :</strong><span style='color:red;font-weight: bold;'>*</span>"));
         g1.getChildren().add(com_colDocumento);
@@ -620,6 +620,10 @@ public class pre_libro_bancos extends Pantalla {
         for (Columna columna : tab_tabla2.getColumnas()) {
             columna.setVisible(false);
         }
+        tab_tabla2.getColumna("ide_tecba").setVisible(true);
+        tab_tabla2.getColumna("ide_tecba").setNombreVisual("CUENTA");
+        tab_tabla2.getColumna("ide_tecba").setCombo(aut_cuentas.getLista());
+
         tab_tabla2.getColumna("beneficiari_teclb").setVisible(true);
         tab_tabla2.getColumna("beneficiari_teclb").setNombreVisual("BENEFICIARIO");
         tab_tabla2.getColumna("fecha_trans_teclb").setVisible(true);
@@ -1506,7 +1510,7 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void aceptarOtros() {
-        if (validarOtros()) {            
+        if (validarOtros()) {
             if (aut_persona.isRendered() == false) {
                 if (str_ide_geper == null) {
                     //Crea el beneficiario

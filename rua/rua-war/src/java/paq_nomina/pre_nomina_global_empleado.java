@@ -105,7 +105,7 @@ public class pre_nomina_global_empleado extends Pantalla {
         bot_cambiar_filtro.setValue("FILTRO RUBROS");
         bar_botones.agregarBoton(bot_cambiar_filtro);
 
-		//Dialogo para ver la Formula
+        //Dialogo para ver la Formula
         Boton bot_ver_formula = new Boton();
 
         bot_ver_formula.setValue("Ver Formula");
@@ -143,10 +143,8 @@ public class pre_nomina_global_empleado extends Pantalla {
         div_division.setId("div_division");
         div_division.dividir1(gri);
         agregarComponente(div_division);
-        
-        cargarTablaVacia();
-        
 
+        cargarTablaVacia();
         com_periodo_rol.setId("com_periodo_rol");
         com_periodo_rol.setCombo(ser_nomina.getSqlComboPeriodoRol());
 
@@ -312,8 +310,10 @@ public class pre_nomina_global_empleado extends Pantalla {
         tabla.setResizableColumns(true);
         tabla.setStyle("font-size:13px");
         tabla.setVar("suc");
+        tabla.setRowIndexVar("rowIndex");
         tabla.setValueExpression("value", crearValueExpression("pre_index.clase.lis_datos_rol"));
-
+        tabla.setValueExpression("rowKey", crearValueExpression("suc[0]"));
+        tabla.setRowIndex(0);
         ColumnGroup columnGroup = new ColumnGroup();
         columnGroup.setType("header");
         tabla.getChildren().add(columnGroup);
@@ -492,9 +492,7 @@ public class pre_nomina_global_empleado extends Pantalla {
         gri.setHeader(gri_cabecera);
 
         //div_division.getChildren().clear(); dfj
-
         //div_division.dividir1(gri); dfj
-
     }
 
     public void exportarNominaExcel() {
@@ -570,7 +568,7 @@ public class pre_nomina_global_empleado extends Pantalla {
             for (int i = 0; i < lis_datos_rol.size(); i++) {
                 Object[] fila = (Object[]) lis_datos_rol.get(i);
                 if (i == 0) {
-					// NOMBRES DE COLUMNAS
+                    // NOMBRES DE COLUMNAS
                     // DEPARTAMENTO
                     jxl.write.Label lab1 = new jxl.write.Label(0, 3, "DEPARTAMENTO", formato_celda);
                     hoja_xls.addCell(lab1);
@@ -649,7 +647,7 @@ public class pre_nomina_global_empleado extends Pantalla {
 
                 }
 
-				// vector con los totales por sucursal 
+                // vector con los totales por sucursal 
                 jxl.write.Label lab_tot = new jxl.write.Label(4, i + int_fila + 1, "TOTAL " + fila[0] + ": ", formato_celda_totales);
                 hoja_xls.addCell(lab_tot);
 
@@ -657,7 +655,7 @@ public class pre_nomina_global_empleado extends Pantalla {
                     jxl.write.Number num = new jxl.write.Number(j + 5, i + int_fila + 1, Double.parseDouble(String.valueOf(fila[j + 2])), formato_celda_totales);
                     hoja_xls.addCell(num);
 
-					//					lab_tot = new jxl.write.Label(j+5, i+int_fila+1, fila[j+2]+"", formato_celda_totales);
+                    //					lab_tot = new jxl.write.Label(j+5, i+int_fila+1, fila[j+2]+"", formato_celda_totales);
                     //					hoja_xls.addCell(lab_tot); 
                 }
 
@@ -841,7 +839,7 @@ public class pre_nomina_global_empleado extends Pantalla {
         return -1;
     }
 
-	//	public List llenarTabla(String IDE_NRDTN,String IDE_GEPRO,String IDE_NRRUB){
+    //	public List llenarTabla(String IDE_NRDTN,String IDE_GEPRO,String IDE_NRRUB){
     //		if (IDE_NRDTN!=null && !IDE_NRDTN.isEmpty() 
     //				&& IDE_GEPRO!=null && !IDE_GEPRO.isEmpty()
     //				&& IDE_NRRUB!=null && !IDE_NRRUB.isEmpty()){
