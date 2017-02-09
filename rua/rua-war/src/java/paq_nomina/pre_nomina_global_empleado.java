@@ -310,10 +310,10 @@ public class pre_nomina_global_empleado extends Pantalla {
         tabla.setResizableColumns(true);
         tabla.setStyle("font-size:13px");
         tabla.setVar("suc");
-        tabla.setRowIndexVar("rowIndex");
+        tabla.setRowIndexVar("rowIndex"); ///nueva 
         tabla.setValueExpression("value", crearValueExpression("pre_index.clase.lis_datos_rol"));
-        tabla.setValueExpression("rowKey", crearValueExpression("suc[0]"));
-        tabla.setRowIndex(0);
+        tabla.setValueExpression("rowKey", crearValueExpression("suc[0]")); //nueva
+        tabla.setRowIndex(0); //nueva
         ColumnGroup columnGroup = new ColumnGroup();
         columnGroup.setType("header");
         tabla.getChildren().add(columnGroup);
