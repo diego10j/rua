@@ -121,7 +121,6 @@ public class ServicioCuentasCxP extends ServicioBase {
             } else {
                 tab_cab_tran_cxp.modificar(tab_cab_tran_cxp.getFilaActual());
             }
-            tab_cab_tran_cxp.insertar();
             tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
             tab_cab_tran_cxp.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
             tab_cab_tran_cxp.setValor("fecha_trans_cpctr", tab_cab_factura.getValor("fecha_trans_cpcfa"));

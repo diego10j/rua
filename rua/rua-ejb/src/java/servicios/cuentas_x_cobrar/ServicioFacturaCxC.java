@@ -221,29 +221,29 @@ public class ServicioFacturaCxC extends ServicioBase {
 
     public String generarModificarTransaccionFactura(Tabla tab_cab_factura) {
         String ide_ccctr = "-1";
-        TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
-        TablaGenerica tab_det_tran_cxc = new TablaGenerica();
-        tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr", -1);
-        tab_cab_tran_cxc.getColumna("ide_ccctr").setExterna(false);
-        tab_cab_tran_cxc.setCondicion("ide_cccfa=" + tab_cab_factura.getValor("ide_cccfa"));
-        tab_cab_tran_cxc.ejecutarSql();
-        ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
-        if (ide_ccctr == null || ide_ccctr.isEmpty()) {
-            ide_ccctr = "-1";
-        }
-        String str_p_cxc_tipo_trans_factura = parametros.get("p_cxc_tipo_trans_factura");//Tipo transaccion Factura     
-        tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
-        tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
-        tab_det_tran_cxc.setCondicion("ide_ccctr=" + ide_ccctr + " and ide_ccttr=" + str_p_cxc_tipo_trans_factura);
-        tab_det_tran_cxc.ejecutarSql();
-
-        if (tab_cab_tran_cxc.isEmpty()) {
-            tab_cab_tran_cxc.insertar();
-        } else {
-            tab_cab_tran_cxc.modificar(tab_cab_tran_cxc.getFilaActual());
-        }
-
         if (tab_cab_factura != null) {
+            TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
+            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+            tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr", -1);
+            tab_cab_tran_cxc.getColumna("ide_ccctr").setExterna(false);
+            tab_cab_tran_cxc.setCondicion("ide_cccfa=" + tab_cab_factura.getValor("ide_cccfa"));
+            tab_cab_tran_cxc.ejecutarSql();
+            ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
+            if (ide_ccctr == null || ide_ccctr.isEmpty()) {
+                ide_ccctr = "-1";
+            }
+            String str_p_cxc_tipo_trans_factura = parametros.get("p_cxc_tipo_trans_factura");//Tipo transaccion Factura     
+            tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+            tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxc.setCondicion("ide_ccctr=" + ide_ccctr + " and ide_ccttr=" + str_p_cxc_tipo_trans_factura);
+            tab_det_tran_cxc.ejecutarSql();
+
+            if (tab_cab_tran_cxc.isEmpty()) {
+                tab_cab_tran_cxc.insertar();
+            } else {
+                tab_cab_tran_cxc.modificar(tab_cab_tran_cxc.getFilaActual());
+            }
+
             tab_cab_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
             tab_cab_tran_cxc.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
             tab_cab_tran_cxc.setValor("fecha_trans_ccctr", tab_cab_factura.getValor("fecha_emisi_cccfa"));
