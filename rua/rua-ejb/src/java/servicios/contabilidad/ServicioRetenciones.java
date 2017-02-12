@@ -5,6 +5,7 @@
  */
 package servicios.contabilidad;
 
+import framework.aplicacion.TablaGenerica;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -156,5 +157,10 @@ public class ServicioRetenciones extends ServicioBase {
         } else {
             return null;
         }
+    }
+
+    public boolean isImpuestoRenta(String ide_cncim) {
+        TablaGenerica tb = utilitario.consultar("select ide_cncim,ide_cnimp,* from con_cabece_impues where ide_cnimp =1 and ide_cncim=" + ide_cncim);
+        return !tb.isEmpty();
     }
 }
