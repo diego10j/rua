@@ -1066,5 +1066,17 @@ public class Utilitario extends Framework {
             }
         }
         return 1000;
-    }    
+    }
+
+    @Override
+    public String getFormatoNumero(Object numero) {
+        double dou_num = 0;
+        try {
+            dou_num = Double.parseDouble(String.valueOf(numero));
+            dou_num = Math.rint(dou_num * 100) / 100;
+        } catch (Exception e) {
+        }
+        return super.getFormatoNumero(dou_num); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
