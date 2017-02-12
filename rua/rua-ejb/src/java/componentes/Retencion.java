@@ -18,6 +18,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.separator.Separator;
+import servicios.contabilidad.ServicioRetenciones;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import sistema.aplicacion.Utilitario;
 
@@ -35,9 +36,13 @@ public class Retencion extends Dialogo {
     private String ide_cpcfa;
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
+    @EJB
+    private final ServicioRetenciones ser_retencion = (ServicioRetenciones) utilitario.instanciarEJB(ServicioRetenciones.class);
 
     private final AreaTexto ate_observacion = new AreaTexto();
     private final Texto tex_total = new Texto();
+    double douBaseImponibleRentaTotal = 0;
+    double douBaseImponibleIvaTotal = 0;
 
     public Retencion() {
         this.setWidth("95%");
@@ -57,6 +62,28 @@ public class Retencion extends Dialogo {
     private Grupo dibujarRetencionCompra() {
         TablaGenerica tab_cab_documento = utilitario.consultar("SELECT * FROM cxp_cabece_factur WHERE ide_cpcfa=" + ide_cpcfa);
         TablaGenerica tab_deta_documento = utilitario.consultar("SELECT * FROM cxp_detall_factur WHERE ide_cpcfa=" + ide_cpcfa);
+        douBaseImponibleRentaTotal = 0;
+        douBaseImponibleIvaTotal = 0;
+        double douBaseImponible = 0;
+        double douBaseTarifa0 = 0;
+        double douBaseNoObjeto = 0;
+        try {
+            douBaseImponible = Double.parseDouble(tab_cab_documento.getValor("base_grabada_cpcfa"));
+        } catch (Exception e) {
+        }
+        try {
+            douBaseTarifa0 = Double.parseDouble(tab_cab_documento.getValor("base_tarifa0_cpcfa"));
+        } catch (Exception e) {
+        }
+        try {
+            douBaseNoObjeto = Double.parseDouble(tab_cab_documento.getValor("base_no_objeto_iva_cpcfa"));
+        } catch (Exception e) {
+        }
+        try {
+            douBaseImponibleIvaTotal = Double.parseDouble(tab_cab_documento.getValor("valor_iva_cpcfa"));
+        } catch (Exception e) {
+        }
+        douBaseImponibleRentaTotal = douBaseImponible + douBaseTarifa0 + douBaseNoObjeto;
 
         Grupo grupo = new Grupo();
         tab_dto_proveedor = new Tabla();
@@ -366,7 +393,8 @@ public class Retencion extends Dialogo {
             utilitario.agregarMensajeError("Error al guardar el Comprobante", "El número de retención no es válido");
             return false;
         }
-
+        double douSumaBaseRenta = 0;
+        double douSumaBaseIva = 0;
         if (tab_dt_retencion.getTotalFilas() == 0) {
             utilitario.agregarMensajeError("No se puede guardar el Comprobante", "Debe ingresar Detalles al comprobante de retención");
             return false;
@@ -384,9 +412,21 @@ public class Retencion extends Dialogo {
                     utilitario.agregarMensajeError("No se puede guardar el Comprobante", "Debe ingresar la Base Imponible en los Detalles de la retención ");
                     return false;
                 }
+                if (ser_retencion.isImpuestoRenta(tab_dt_retencion.getValor(i, "ide_cncim"))) {
+                    douSumaBaseRenta += Double.parseDouble(tab_dt_retencion.getValor(i, "base_cndre"));
+                } else {
+                    douSumaBaseIva += Double.parseDouble(tab_dt_retencion.getValor(i, "base_cndre"));
+                }
             }
         }
-
+        if (douSumaBaseRenta != douBaseImponibleRentaTotal) {
+            utilitario.agregarMensajeError("La suma de la base imponible de impuesto a la RENTA debe ser igual a " + douBaseImponibleRentaTotal, "");
+            return false;
+        }
+        if (douSumaBaseIva != douBaseImponibleIvaTotal) {
+            utilitario.agregarMensajeError("La suma de la base imponible de impuesto IVA debe ser igual a " + douBaseImponibleIvaTotal, "");
+            return false;
+        }
         return true;
     }
 
