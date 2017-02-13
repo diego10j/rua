@@ -753,7 +753,7 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.setRendered(false);
         tab_com_reembolso.setHeader("DATOS COMPROBANTE DE REEMBOLSO");
         tab_com_reembolso.setId("tab_com_reembolso");
-        tab_com_reembolso.setTabla("cxp_cabece_factur", "ide_cpcfa", 999);
+        tab_com_reembolso.setTabla("cxp_cabece_factur", "ide_cpcfa", 997);
         tab_com_reembolso.setIdCompleto("tab_documenoCxP:tab_com_reembolso");
         //oculta todos las columnas
         for (int i = 0; i < tab_com_reembolso.getTotalColumnas(); i++) {
