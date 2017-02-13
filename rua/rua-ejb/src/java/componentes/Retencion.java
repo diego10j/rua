@@ -423,9 +423,11 @@ public class Retencion extends Dialogo {
             utilitario.agregarMensajeError("La suma de la base imponible de impuesto a la RENTA debe ser igual a " + douBaseImponibleRentaTotal, "");
             return false;
         }
-        if (douSumaBaseIva != douBaseImponibleIvaTotal) {
-            utilitario.agregarMensajeError("La suma de la base imponible de impuesto IVA debe ser igual a " + douBaseImponibleIvaTotal, "");
-            return false;
+        if (douSumaBaseIva > 0) {
+            if (douSumaBaseIva != douBaseImponibleIvaTotal) {
+                utilitario.agregarMensajeError("La suma de la base imponible de impuesto IVA debe ser igual a " + douBaseImponibleIvaTotal, "");
+                return false;
+            }
         }
         return true;
     }
