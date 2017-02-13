@@ -27,9 +27,6 @@ import jxl.write.WritableWorkbook;
 import org.primefaces.component.column.Column;
 import org.primefaces.component.columngroup.ColumnGroup;
 import org.primefaces.component.datatable.DataTable;
-import org.primefaces.component.dialog.Dialog;
-import org.primefaces.component.export.DataExporter;
-import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.row.Row;
 import org.primefaces.component.subtable.SubTable;
 import org.primefaces.event.SelectEvent;
@@ -47,10 +44,7 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
-import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
-import framework.componentes.Tabla;
-import framework.componentes.Texto;
 
 public class pre_nomina_global_empleado extends Pantalla {
 
@@ -81,6 +75,7 @@ public class pre_nomina_global_empleado extends Pantalla {
 
         Boton bot_ver_nomina_global = new Boton();
         bot_ver_nomina_global.setMetodo("pedirParametros");
+        bot_ver_nomina_global.setProcess("@all");
         bot_ver_nomina_global.setValue("VER ROL GLOBAL");
 
         bar_botones.agregarComponente(new Etiqueta("Periodo Rol: "));
@@ -147,7 +142,6 @@ public class pre_nomina_global_empleado extends Pantalla {
         cargarTablaVacia();
         com_periodo_rol.setId("com_periodo_rol");
         com_periodo_rol.setCombo(ser_nomina.getSqlComboPeriodoRol());
-
         com_periodo_rol.setMetodo("cambiaPeriodoRol");
 
         set_det_tip_nomina.setId("set_det_tip_nomina");
@@ -270,20 +264,21 @@ public class pre_nomina_global_empleado extends Pantalla {
 
     public void cambiaPeriodoRol() {
         if (com_periodo_rol.getValue() != null) {
+
             lis_datos_rol.clear();
             lis_nom_columnas.clear();
             lis_totales_consolidado.clear();
-
+            llenarTabla(null, null, null);
             llenarTabla(IDE_NRDTN, com_periodo_rol.getValue() + "", IDE_NRRUB);
 
             dibujarTabla();
-            utilitario.addUpdate("div_division");
+            utilitario.addUpdate("div_division,gri");
 
         } else {
             cargarTablaVacia();
-            utilitario.addUpdate("div_division");
+            utilitario.addUpdate("div_division,gri");
         }
-
+        utilitario.addUpdate("@form");
     }
 
     public void pedirParametros() {
@@ -296,7 +291,7 @@ public class pre_nomina_global_empleado extends Pantalla {
                     + "inner join NRH_TIPO_ROL e on e.ide_nrtit=a.ide_nrtit "
                     + "where a.ide_nrdtn in (select IDE_NRDTN from NRH_ROL where IDE_GEPRO=" + com_periodo_rol.getValue() + ") ");
             set_det_tip_nomina.getTab_seleccion().ejecutarSql();
-            set_det_tip_nomina.getTab_seleccion().setSeleccionados(null);
+            set_det_tip_nomina.seleccionarNinguna();
             set_det_tip_nomina.dibujar();
         } else {
             utilitario.agregarMensajeInfo("No se puede visualizar el Rol", "Debe seleccionar un periodo de rol");
@@ -313,7 +308,7 @@ public class pre_nomina_global_empleado extends Pantalla {
         tabla.setRowIndexVar("rowIndex"); ///nueva 
         tabla.setValueExpression("value", crearValueExpression("pre_index.clase.lis_datos_rol"));
         tabla.setValueExpression("rowKey", crearValueExpression("suc[0]")); //nueva
-        tabla.setRowIndex(0); //nueva
+        tabla.setRowIndex(0); //nueva 
         ColumnGroup columnGroup = new ColumnGroup();
         columnGroup.setType("header");
         tabla.getChildren().add(columnGroup);
@@ -361,7 +356,6 @@ public class pre_nomina_global_empleado extends Pantalla {
 
         Row r3 = new Row();
         columnGroup.getChildren().add(r3);
-
         for (int i = 0; i < lis_nom_columnas.size(); i++) {
             Column c7 = new Column();
             c7.setStyle("font-weight:bold");
@@ -373,9 +367,13 @@ public class pre_nomina_global_empleado extends Pantalla {
         }
 
         SubTable subtable = new SubTable();
+        subtable.setId("subtable");
+        subtable.setRowIndex(0);
         subtable.setVar("emp");
         subtable.setValueExpression("value", crearValueExpression("suc[1]"));
-        tabla.getChildren().add(subtable);
+        if (lis_nom_columnas.size() > 0) {
+            tabla.getChildren().add(subtable);
+        }
 
         Etiqueta eti_sucursal = new Etiqueta();
         eti_sucursal.setValueExpression("value", "suc[0]");
