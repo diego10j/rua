@@ -419,13 +419,13 @@ public class Retencion extends Dialogo {
                 }
             }
         }
-        if (douSumaBaseRenta != douBaseImponibleRentaTotal) {
-            utilitario.agregarMensajeError("La suma de la base imponible de impuesto a la RENTA debe ser igual a " + douBaseImponibleRentaTotal, "");
+        if (!utilitario.getFormatoNumero(douSumaBaseRenta).equals(utilitario.getFormatoNumero(douBaseImponibleRentaTotal))) {
+            utilitario.agregarMensajeError("La suma de la base imponible de impuesto a la RENTA debe ser igual a " + utilitario.getFormatoNumero(douBaseImponibleRentaTotal), "");
             return false;
         }
         if (douSumaBaseIva > 0) {
-            if (douSumaBaseIva != douBaseImponibleIvaTotal) {
-                utilitario.agregarMensajeError("La suma de la base imponible de impuesto IVA debe ser igual a " + douBaseImponibleIvaTotal, "");
+            if (!utilitario.getFormatoNumero(douSumaBaseIva).equals(utilitario.getFormatoNumero(douBaseImponibleIvaTotal))) {
+                utilitario.agregarMensajeError("La suma de la base imponible de impuesto IVA debe ser igual a " + utilitario.getFormatoNumero(douBaseImponibleIvaTotal), "");
                 return false;
             }
         }
