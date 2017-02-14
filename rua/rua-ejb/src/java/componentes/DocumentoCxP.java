@@ -564,8 +564,8 @@ public class DocumentoCxP extends Dialogo {
         
         tab_cab_documento = new Tabla();
         tab_det_documento = new Tabla();
-        tab_cab_documento.setRuta("pre_index.clase." + getId());
         tab_cab_documento.setId("tab_cab_documento");
+        tab_cab_documento.setRuta("pre_index.clase." + getId());       
         tab_cab_documento.setIdCompleto("tab_documenoCxP:tab_cab_documento");
         tab_cab_documento.setMostrarNumeroRegistros(false);
         tab_cab_documento.setTabla("cxp_cabece_factur", "ide_cpcfa", 999);
@@ -689,10 +689,10 @@ public class DocumentoCxP extends Dialogo {
         pat_panel1.getMenuTabla().setRendered(false);
         grupo.getChildren().add(pat_panel1);
         
-        tab_det_documento.setRuta("pre_index.clase." + getId());
         tab_det_documento.setId("tab_det_documento");
+        tab_det_documento.setRuta("pre_index.clase." + getId());        
         tab_det_documento.setIdCompleto("tab_documenoCxP:tab_det_documento");
-        tab_det_documento.setTabla("cxp_detall_factur", "ide_cpdfa", 999);
+        tab_det_documento.setTabla("cxp_detall_factur", "ide_cpdfa", 998);
         tab_det_documento.setCondicion("ide_cpcfa=-1");
         tab_det_documento.getColumna("ide_cpdfa").setVisible(false);
         tab_det_documento.getColumna("ide_cpcfa").setVisible(false);
@@ -770,16 +770,16 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("IDENTIFICACIÓN");
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarIdentificacionReembolso");
+        ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
+        /////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
         
         tab_com_reembolso.getColumna("ide_cntdo").setLongitud(-1);
         tab_com_reembolso.getColumna("numero_cpcfa").setVisible(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
         tab_com_reembolso.getColumna("numero_cpcfa").setOrden(2);
-        tab_com_reembolso.getColumna("numero_cpcfa").setComentario("ESTABLECIMIENTO-PUNTO.EMISION - SECUENCIAL");
-        tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
+        //////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("ESTABLECIMIENTO-PUNTO.EMISION - SECUENCIAL");
+        /////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
         tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-99999999");
         tab_com_reembolso.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setRequerida(true);        
