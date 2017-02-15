@@ -15,7 +15,9 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import servicios.contabilidad.ServicioComprobanteContabilidad;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -36,6 +38,10 @@ public class pre_edita_comp extends Pantalla {
     cls_contabilidad con = new cls_contabilidad();
     private Texto tex_num_transaccion = new Texto();
     private Boton bot_buscar_transaccion = new Boton();
+    private String str_aux_fecha = null;
+    private String str_tipo_comp = null;
+    @EJB
+    private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
 
     public pre_edita_comp() {
         //Recuperar el plan de cuentas activo
@@ -136,11 +142,14 @@ public class pre_edita_comp extends Pantalla {
     }
 
     public void buscarTransaccion() {
+        str_aux_fecha = null;
+        str_tipo_comp = null;
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
-
             tab_tabla1.setCondicion("ide_cnccc=" + tex_num_transaccion.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            str_aux_fecha = tab_tabla1.getValor("fecha_trans_cnccc");
+            str_tipo_comp = tab_tabla1.getValor("ide_cntcm");
             if (tab_tabla1.getTotalFilas() > 0) {
                 calcularTotal();
             } else {
@@ -162,6 +171,23 @@ public class pre_edita_comp extends Pantalla {
         if (validar()) {
             TablaGenerica tab_persona = utilitario.consultar("select * from gen_persona where ide_geper=" + tab_tabla1.getValor("ide_geper"));
             utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set beneficiari_teclb='" + tab_persona.getValor("nom_geper") + "' where ide_cnccc=" + tab_tabla1.getValor("ide_cnccc"));
+            if (str_aux_fecha != null) {
+                //valida si cambio mes del asiento
+                String str_fecha = tab_tabla1.getValor("fecha_trans_cnccc");
+                //valida mismo mes
+                if (utilitario.getMes(str_fecha) != utilitario.getMes(str_aux_fecha)) {
+                    tab_tabla1.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_tabla1.getValor("fecha_trans_cnccc"), tab_tabla1.getValor("ide_cntcm")));
+                    tab_tabla1.modificar(tab_tabla1.getFilaActual());
+                }
+            }
+            //valida si cambia tipo de comprobante
+            if (str_tipo_comp != null) {
+                String str_tipo = tab_tabla1.getValor("ide_cntcm");               
+                if (!str_tipo.equals(str_tipo_comp)) {
+                    tab_tabla1.setValor("numero_cnccc", ser_comprobante.getSecuencial(tab_tabla1.getValor("fecha_trans_cnccc"), tab_tabla1.getValor("ide_cntcm")));
+                    tab_tabla1.modificar(tab_tabla1.getFilaActual());
+                }
+            }
             tab_tabla1.guardar();
             tab_tabla2.guardar();
             utilitario.getConexion().guardarPantalla();
