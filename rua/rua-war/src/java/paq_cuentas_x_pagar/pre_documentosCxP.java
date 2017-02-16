@@ -9,6 +9,7 @@ import componentes.AsientoContable;
 import componentes.DocumentoCxP;
 import componentes.Retencion;
 import framework.aplicacion.Fila;
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
@@ -23,16 +24,20 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
+import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -50,6 +55,8 @@ public class pre_documentosCxP extends Pantalla {
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
     @EJB
     private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
+    @EJB
+    private final ServicioPresupuesto ser_presupuesto = (ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
 
     private Tabla tab_tabla1 = new Tabla();
     private Combo com_periodo;
@@ -65,7 +72,10 @@ public class pre_documentosCxP extends Pantalla {
 
     private Confirmar con_confirmar = new Confirmar();
     private AutoCompletar aut_proveedor;
+    private Texto txt_nro_certificacion = new Texto();
     private Tabla tab_tabla2;
+    private SeleccionTabla sel_certificacion = new SeleccionTabla();
+            
     private Etiqueta eti1 = new Etiqueta();
 
     public pre_documentosCxP() {
@@ -136,12 +146,20 @@ public class pre_documentosCxP extends Pantalla {
         con_confirmar.getBot_aceptar().setMetodo("abrirRetencion");
         con_confirmar.getBot_cancelar().setOnclick("con_confirmar.hide();");
         agregarComponente(con_confirmar);
+        
+        sel_certificacion.setId("sel_certificacion");
+	sel_certificacion.setTitle("SELECCIONE UNA CERTIFICACION");
+        sel_certificacion.setSeleccionTabla(ser_presupuesto.getCompromisoRua("-1","1"),"ide_prpot");
+        sel_certificacion.getTab_seleccion().getColumna("cod_programa_prpro").setFiltro(true);
+        sel_certificacion.getTab_seleccion().getColumna("detalle_subactividad").setFiltro(true);
+	sel_certificacion.getBot_aceptar().setMetodo("aceptarBusqueda");
+        agregarComponente(sel_certificacion);
     }
 
     public void dibujarCompromiso() {
         Grid gri = new Grid();
         Grid g1 = new Grid();
-        g1.setColumns(2);
+        g1.setColumns(5);
         g1.getChildren().add(new Etiqueta("<strong>PROVEEDOR : </strong>"));
         aut_proveedor = new AutoCompletar();
         aut_proveedor.setId("aut_proveedor");
@@ -150,6 +168,22 @@ public class pre_documentosCxP extends Pantalla {
         aut_proveedor.setMetodoChange("cargarDocumetosProveedor");
         aut_proveedor.setSize(70);
         g1.getChildren().add(aut_proveedor);
+        g1.getChildren().add(new Etiqueta("<strong>Nro. Certificación: </strong>"));
+        txt_nro_certificacion.setId("txt_nro_certificacion");
+        txt_nro_certificacion.setSize(20);
+        g1.getChildren().add(txt_nro_certificacion);
+        
+        Boton bot_buscar_certi = new Boton();
+        bot_buscar_certi.setValue("Buscar Certificación");
+        bot_buscar_certi.setMetodo("buscaCertificacion");
+        g1.getChildren().add(bot_buscar_certi);
+        
+        // boton guardar facturas presupuestos
+        Boton bot_guardar_certi = new Boton();
+        bot_guardar_certi.setValue("Guardar Certificación");
+        bot_guardar_certi.setMetodo("GuardaCertificacion");
+        g1.getChildren().add(bot_guardar_certi);              
+        
         gri.getChildren().add(g1);
 
         tab_tabla1 = new Tabla();
@@ -190,7 +224,12 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla2.setTabla("pre_compromiso_factura", "ide_prcof", 7);
         tab_tabla2.setCondicion("ide_cpcfa=-1");
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
-        //tab_tabla2.getColumna("ide_prpot").setCombo("", "", "", "");
+        tab_tabla2.getColumna("ide_prpot").setCombo(ser_presupuesto.getCompromisoRua("-1", "3"));
+        tab_tabla2.getColumna("ide_prpot").setAutoCompletar();
+	tab_tabla2.getColumna("valor_devengar_prcof").setMetodoChange("CalcularSuma");
+        tab_tabla2.getColumna("saldo_devengar_prcof").setEtiqueta();
+	tab_tabla2.getColumna("saldo_devengar_prcof").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
+        tab_tabla2.setColumnaSuma("valor_devengar_prcof");
         tab_tabla2.setScrollable(true);
         tab_tabla2.setScrollHeight(utilitario.getAltoPantalla() - 450);
         tab_tabla2.dibujar();
@@ -207,7 +246,82 @@ public class pre_documentosCxP extends Pantalla {
         gri.getChildren().add(pat_panel2);
         mep_menu.dibujar(7, "COMPROMISO PRESUPUESTARIO DOCUMENTOS CXP", gri);
     }
+    public void GuardaCertificacion(){
+        tab_tabla2.guardar();
+        guardarPantalla();
+        utilitario.addUpdateTabla(tab_tabla2, "","");
+    }
+    public void CalcularSuma(AjaxBehaviorEvent evt){
+		tab_tabla2.modificar(evt); //Siempre es la primera linea
+		double valor_comprometido=0;
+		double valor_saldo=0;
+		
+		valor_comprometido= Double.parseDouble(tab_tabla2.getValor("valor_devengar_prcof"));
+		valor_saldo=Double.parseDouble(tab_tabla2.getValor("saldo_devengar_prcof"));
+		if(valor_comprometido<=0){
+			utilitario.agregarMensajeError("Ingrese un valor positivo o mayor a cero", "Ingrese un valor positivo o mayor a cero");
+		    tab_tabla2.setValor("valor_devengar_prcof", "0");
+		    utilitario.addUpdateTabla(tab_tabla2, "valor_devengar_prcof","");
+		    return;
+		}
+		if(valor_saldo<valor_comprometido){
+			utilitario.agregarMensajeError("No puede Exceder valor asignado", "Ingrese un valor menor igual al disponible en saldo: "+valor_saldo);
+		    tab_tabla2.setValor("valor_devengar_prcof", "0");
+		    utilitario.addUpdateTabla(tab_tabla2, "valor_devengar_prcof","");
+		    return;
+		}
+		
+		//tab_tramite.setValor("total_compromiso_prtra",tab_poa_tramite.getSumaColumna("comprometido_prpot")+"");
+		//tab_tramite.modificar(tab_tramite.getFilaActual());
+		//utilitario.addUpdateTabla(tab_tramite, "total_compromiso_prtra","");	
 
+	}
+    public void buscaCertificacion(){
+        if(tab_tabla1.getTotalFilas()>0){
+            //System.out.println("valor del texto "+txt_nro_certificacion.getValue());
+            if(!txt_nro_certificacion.getValue().equals("")){
+            
+         //System.out.println("valor texto "+txt_nro_certificacion.getValue().toString());
+           sel_certificacion.getTab_seleccion().setSql(ser_presupuesto.getCompromisoRua(txt_nro_certificacion.getValue().toString(),"1"));
+            sel_certificacion.getTab_seleccion().ejecutarSql();
+            sel_certificacion.dibujar();
+                 
+            }
+            else {
+                utilitario.agregarMensajeError("Ingrese Certificación", "Por favor ingrese el nro. de certificación ");
+                return;
+            }
+        }
+        else {
+                utilitario.agregarMensajeError("No existe facturas", "Por favor para agregar una partida presupuestaria debe existir generada una factura");
+                return;
+        }
+        
+        }
+    public void aceptarBusqueda(){
+        if(sel_certificacion.isVisible()){
+            String str_seleccionados=sel_certificacion.getSeleccionados();
+            if(str_seleccionados!=""){
+                //System.out.println("entre seleccionado ");
+                TablaGenerica tab_insertar = utilitario.consultar(ser_presupuesto.getCompromisoRua(sel_certificacion.getSeleccionados(),"2"));
+                //tab_insertar.getSql();
+                //System.out.println("codigo factura "+tab_tabla1.getFilaSeleccionada().getRowKey());
+                for(int i=0;i< tab_insertar.getTotalFilas();i++){
+                    
+                    tab_tabla2.insertar();
+                    tab_tabla2.setValor("ide_prpot", tab_insertar.getValor(i, "ide_prpot"));
+                    tab_tabla2.setValor("valor_devengar_prcof", tab_insertar.getValor(i, "saldoxdevengado"));
+                    tab_tabla2.setValor("saldo_devengar_prcof", tab_insertar.getValor(i, "saldoxdevengado"));
+                    tab_tabla2.setValor("ide_cpcfa", tab_tabla1.getFilaSeleccionada().getRowKey());
+                }
+                sel_certificacion.cerrar();
+            }
+            else{
+                utilitario.agregarMensajeError("Seleccione un Registro", "Debe seleccionar un registro para contnuar");
+                return;
+            }
+        }
+    }
     public void seleccionarDocumento(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
         tab_tabla2.setCondicion("ide_cpcfa=" + tab_tabla1.getValorSeleccionado());
@@ -754,6 +868,14 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
+    }
+
+    public SeleccionTabla getSel_certificacion() {
+        return sel_certificacion;
+    }
+
+    public void setSel_certificacion(SeleccionTabla sel_certificacion) {
+        this.sel_certificacion = sel_certificacion;
     }
 
 }
