@@ -32,7 +32,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "inner join iyp_tipo_inversion b on a.ide_iptin=b.ide_iptin\n"
                 + "left join  iyp_clase_inversion c on a.ide_ipcin=c.ide_ipcin\n"
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
-                + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
+                + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nuevo=false \n "
                 + condicion
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
@@ -51,7 +51,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
                 + "and fecha_vence_ipcer<='" + utilitario.getFechaActual() + "' \n "
                 + "AND es_renovacion_ipcer=false  "
-                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  "
+                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "   and nuevo=false  "
                 + condicion
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
@@ -69,7 +69,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
                 + "and ide_cnccc is null \n "
-                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  "
+                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  and nuevo=false  "
                 + condicion
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
@@ -87,7 +87,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
                 + "and ide_cnccc_interes is null \n "
-                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  "
+                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  and nuevo=false  "
                 + condicion
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
@@ -105,7 +105,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
                 + "and ide_cnccc_terminacion is null \n "
-                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "  "
+                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "   and nuevo=false  "
                 + condicion
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
@@ -119,7 +119,7 @@ public class ServicioInversiones extends ServicioBase {
      */
     public String getSecuenciaCertificado(String ide_iptin) {
         int max = 0;
-        TablaGenerica tab_secuencia = utilitario.consultar("select ide_iptin,max(CAST(coalesce(num_certificado_ipcer, '0') AS Integer)) as num_max FROM iyp_certificado WHERE ide_iptin=" + ide_iptin + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " GROUP BY ide_iptin");
+        TablaGenerica tab_secuencia = utilitario.consultar("select ide_iptin,max(CAST(coalesce(num_certificado_ipcer, '0') AS Integer)) as num_max FROM iyp_certificado WHERE ide_iptin=" + ide_iptin + "  and nuevo=false and ide_sucu=" + utilitario.getVariable("ide_sucu") + " GROUP BY ide_iptin");
         if (tab_secuencia.isEmpty() == false) {
             try {
                 max = Integer.parseInt(tab_secuencia.getValor("num_max"));
@@ -137,4 +137,16 @@ public class ServicioInversiones extends ServicioBase {
         return "SELECT ide_iptin,nombre_iptin FROM iyp_tipo_inversion ORDER BY ide_iptin";
     }
 
+    /////////////NEW VERSIÓN
+    public String getSqlListaInversionesBancarias() {
+        return "SELECT ide_ipcer,nombre_teban as BANCO,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
+                + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO\n"
+                + "FROM iyp_certificado  a\n"
+                + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
+                + "left join tes_cuenta_banco b on a.ide_tecba=b.ide_tecba\n"
+                + "left join tes_banco c on b.ide_teban=c.ide_teban\n"
+                + "where nuevo=true	\n"
+                + "and ide_iptin=0\n"
+                + "order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer";
+    }
 }
