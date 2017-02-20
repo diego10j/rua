@@ -60,7 +60,7 @@ public class pre_certificados extends Pantalla {
         com_tipo_inversion.setMetodo("seleccionarTipoInversion");
         bar_botones.agregarComponente(com_tipo_inversion);
         
-        mep_menu.setMenuPanel("OPCIONES IVERSIONES", "20%");
+        mep_menu.setMenuPanel("OPCIONES INVERSIONES", "20%");
         mep_menu.agregarItem("Certificado de Inversión", "dibujarCertificado", "ui-icon-contact");
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarAsiento", "ui-icon-notice");
         mep_menu.agregarItem("Generar Asiento de Iteres", "dibujarAsientoInteres", "ui-icon-notice");
@@ -242,7 +242,8 @@ public class pre_certificados extends Pantalla {
         tab_tabla1.getColumna("ide_teclb").setVisible(false);
         tab_tabla1.getColumna("ide_cpdtr").setVisible(false);
         tab_tabla1.getColumna("ide_tecba").setCombo("select tes_cuenta_banco.ide_tecba,tes_banco.nombre_teban,tes_cuenta_banco.nombre_tecba from  tes_banco,tes_cuenta_banco,sis_empresa where tes_banco.ide_teban=tes_cuenta_banco.ide_teban and sis_empresa.ide_empr=" + utilitario.getVariable("ide_empr") + " and tes_cuenta_banco.ide_sucu=" + utilitario.getVariable("ide_sucu"));
-        
+        tab_tabla1.getColumna("nuevo").setValorDefecto("false");
+        tab_tabla1.getColumna("nuevo").setVisible(false);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         //tab_tabla1.setRecuperarLectura(true);
