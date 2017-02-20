@@ -21,6 +21,7 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
@@ -66,12 +67,11 @@ public class pre_contabilidad extends Pantalla {
     private final String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
-    private SeleccionTabla sel_tab = new SeleccionTabla();
+    private SeleccionArbol sel_tab = new SeleccionArbol();
     private SeleccionTabla sel_tab_nivel = new SeleccionTabla();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private cls_contabilidad con = new cls_contabilidad();
-    private List lis_ide_cndpc_deseleccionados = new ArrayList();
-    private int int_count_deseleccion = 0;
+
     private Map parametro = new HashMap();
     private String fecha_fin;
     private String fecha_inicio;
@@ -99,12 +99,13 @@ public class pre_contabilidad extends Pantalla {
         //Reportes
         //seleccion de las cuentas para reporte libro mayor
         sel_tab.setId("sel_tab");
-        sel_tab.setSeleccionTabla(ser_contabilidad.getSqlCuentasHijas(), "ide_cndpc");
-        sel_tab.getTab_seleccion().getColumna("nombre_cndpc").setFiltro(true);
-        sel_tab.getTab_seleccion().getColumna("codig_recur_cndpc").setFiltro(true);
-        sel_tab.getTab_seleccion().onSelectCheck("seleccionaCuentaContable");
-        sel_tab.getTab_seleccion().onUnselectCheck("deseleccionaCuentaContable");
-        sel_tab.setDynamic(false);
+        sel_tab.getArb_seleccion().setOptimiza(true);
+        sel_tab.setTitle("SELECCIONAR CUENTAS CONTABLES");
+        sel_tab.setWidth("60%");
+        sel_tab.getArb_seleccion().setTitulo("PLAN DE CUENTAS");
+        sel_tab.setHeight("80%");
+        sel_tab.setSeleccionArbol("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc||' '||nombre_cndpc as nombre_cndpc", "con_ide_cndpc");
+        sel_tab.getArb_seleccion().setCampoOrden("codig_recur_cndpc");
         agregarComponente(sel_tab);
 
         rep_reporte.setId("rep_reporte");
@@ -189,7 +190,7 @@ public class pre_contabilidad extends Pantalla {
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setAutoCompletar(ser_contabilidad.getSqlCuentasHijas());
-        aut_cuenta.setSize(75);        
+        aut_cuenta.setSize(75);
         aut_cuenta.setAutocompletarContenido(); // no startWith para la busqueda
         aut_cuenta.setMetodoChange("seleccionarCuenta");
         aut_cuenta.setGlobal(true);
@@ -202,7 +203,7 @@ public class pre_contabilidad extends Pantalla {
 
         gp.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong>"));
         aut_persona = new AutoCompletar();
-        aut_persona.setId("aut_persona");        
+        aut_persona.setId("aut_persona");
         aut_persona.setSize(75);
         aut_persona.setAutocompletarContenido(); // no startWith para la busqueda
         aut_persona.setMetodoChange("seleccionarPersona");
@@ -1018,11 +1019,8 @@ public class pre_contabilidad extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                lis_ide_cndpc_sel.clear();
-                lis_ide_cndpc_deseleccionados.clear();
-                int_count_deseleccion = 0;
-                int_count_seleccion = 0;
-                sel_tab.getTab_seleccion().setSeleccionados(null);
+                sel_tab.getArb_seleccion().setSeleccionados(null);
+//                sel_tab.getArb_seleccion().ejecutarSql();
 //                utilitario.ejecutarJavaScript(sel_tab.getTab_seleccion().getId() + ".clearFilters();");
                 sel_tab.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_tab");
@@ -1125,46 +1123,6 @@ public class pre_contabilidad extends Pantalla {
 
         }
     }
-    private List lis_ide_cndpc_sel = new ArrayList();
-    private int int_count_seleccion = 0;
-
-    public void seleccionaCuentaContable(SelectEvent evt) {
-        sel_tab.getTab_seleccion().seleccionarFila(evt);
-        for (Fila actual : sel_tab.getTab_seleccion().getSeleccionados()) {
-            int band = 0;
-            for (int i = 0; i < lis_ide_cndpc_sel.size(); i++) {
-                if (actual.getRowKey().equals(lis_ide_cndpc_sel.get(i))) {
-                    band = 1;
-                    break;
-                }
-            }
-            if (band == 0) {
-                lis_ide_cndpc_sel.add(actual.getRowKey());
-            }
-        }
-        if (int_count_seleccion == 0) {
-            lis_ide_cndpc_deseleccionados = lis_ide_cndpc_sel;
-        }
-        int_count_seleccion += 1;
-
-    }
-
-    public void deseleccionaCuentaContable(UnselectEvent evt) {
-        //tab_tabla2.modificar(evt);
-        for (Fila actual : sel_tab.getTab_seleccion().getSeleccionados()) {
-            int band = 0;
-            for (int i = 0; i < lis_ide_cndpc_deseleccionados.size(); i++) {
-                if (actual.getRowKey().equals(lis_ide_cndpc_deseleccionados.get(i))) {
-                    band = 1;
-                    break;
-                }
-            }
-            if (band == 0) {
-                lis_ide_cndpc_deseleccionados.add(actual.getRowKey());
-            }
-        }
-        int_count_deseleccion += 1;
-    }
 
     /**
      * Abre el asiento contable seleccionado
@@ -1227,11 +1185,11 @@ public class pre_contabilidad extends Pantalla {
         this.sel_rep = sel_rep;
     }
 
-    public SeleccionTabla getSel_tab() {
+    public SeleccionArbol getSel_tab() {
         return sel_tab;
     }
 
-    public void setSel_tab(SeleccionTabla sel_tab) {
+    public void setSel_tab(SeleccionArbol sel_tab) {
         this.sel_tab = sel_tab;
     }
 
