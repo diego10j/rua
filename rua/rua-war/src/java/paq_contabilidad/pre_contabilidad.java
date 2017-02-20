@@ -102,7 +102,6 @@ public class pre_contabilidad extends Pantalla {
         sel_tab.getArb_seleccion().setOptimiza(true);
         sel_tab.setTitle("SELECCIONAR CUENTAS CONTABLES");
         sel_tab.setWidth("60%");
-        sel_tab.getArb_seleccion().setTitulo("PLAN DE CUENTAS");
         sel_tab.setHeight("80%");
         sel_tab.setSeleccionArbol("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc||' '||nombre_cndpc as nombre_cndpc", "con_ide_cndpc");
         sel_tab.getArb_seleccion().setCampoOrden("codig_recur_cndpc");
@@ -1020,7 +1019,7 @@ public class pre_contabilidad extends Pantalla {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
                 sel_tab.getArb_seleccion().setSeleccionados(null);
-//                sel_tab.getArb_seleccion().ejecutarSql();
+                sel_tab.getArb_seleccion().ejecutarSql();
 //                utilitario.ejecutarJavaScript(sel_tab.getTab_seleccion().getId() + ".clearFilters();");
                 sel_tab.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_tab");
