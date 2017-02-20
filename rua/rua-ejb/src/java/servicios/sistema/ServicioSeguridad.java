@@ -776,29 +776,30 @@ public class ServicioSeguridad {
     public boolean isUsuarioLogeado(String ide_usua) {
         // Busca si el usuario no tiene una session activa en otra ip
         boolean boo_logeado = false;
-        // Busco en auditoria acceso los ingresos q se encuentran activos por
-        // fecha,ip,usuario y estado fin de session = false
-        TablaGenerica tab_logeo = utilitario
-                .consultar("SELECT * FROM SIS_AUDITORIA_ACCESO WHERE IDE_USUA="
-                        + ide_usua
-                        + " AND FECHA_AUAC="
-                        + utilitario.getFormatoFechaSQL(utilitario
-                                .getFechaActual())
-                        + " AND FIN_AUAC=false AND IDE_ACAU="
-                        + P_SIS_INGRESO_USUARIO);
-
-        if (!tab_logeo.isEmpty()) {
-            // Comparo si la ip del cliente con las de la tabla
-            String str_ip = utilitario.getIp();
-            for (int i = 0; i < tab_logeo.getTotalFilas(); i++) {
-                if (!tab_logeo.getValor(i, "IP_AUAC").equalsIgnoreCase(str_ip)) {
-                    // ya tiene una session en otra ip
-                    boo_logeado = true;
-                    break;
-                }
-            }
-        }
+//        // Busco en auditoria acceso los ingresos q se encuentran activos por
+//        // fecha,ip,usuario y estado fin de session = false
+//        TablaGenerica tab_logeo = utilitario
+//                .consultar("SELECT * FROM SIS_AUDITORIA_ACCESO WHERE IDE_USUA="
+//                        + ide_usua
+//                        + " AND FECHA_AUAC="
+//                        + utilitario.getFormatoFechaSQL(utilitario
+//                                .getFechaActual())
+//                        + " AND FIN_AUAC=false AND IDE_ACAU="
+//                        + P_SIS_INGRESO_USUARIO);
+//
+//        if (!tab_logeo.isEmpty()) {
+//            // Comparo si la ip del cliente con las de la tabla
+//            String str_ip = utilitario.getIp();
+//            for (int i = 0; i < tab_logeo.getTotalFilas(); i++) {
+//                if (!tab_logeo.getValor(i, "IP_AUAC").equalsIgnoreCase(str_ip)) {
+//                    // ya tiene una session en otra ip
+//                    boo_logeado = true;
+//                    break;
+//                }
+//            }
+//        }
         return boo_logeado;
+
     }
 
     /**
@@ -842,11 +843,11 @@ public class ServicioSeguridad {
 
     }
 
-       public String getSqlUsuarios() {
+    public String getSqlUsuarios() {
         return "SELECT IDE_USUA,NOM_USUA,nick_usua from SIS_USUARIO order by NOM_USUA";
 
     }
-    
+
     public TablaGenerica getUltimoAccesoUsuario(String ide_usua) {
         return utilitario.consultar("select * from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " \n"
                 + "and ide_auac = (select max(ide_auac) from sis_auditoria_acceso where ide_usua=" + ide_usua + " and ide_acau=" + P_SIS_INGRESO_USUARIO + " and fin_auac=true)");
