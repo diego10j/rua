@@ -507,7 +507,8 @@ public class pre_nomina_global_empleado extends Pantalla {
         try {
             ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
             String nom = nombre;
-            File result = new File(extContext.getRealPath("/" + nom));
+            String realPath = (String) extContext.getRealPath("/");
+            File result = new File(realPath + "/" + nom);
             WritableWorkbook archivo_xls = Workbook.createWorkbook(result);
             WritableSheet hoja_xls = archivo_xls.createSheet("Tabla", 0);
             WritableFont fuente = new WritableFont(WritableFont.TAHOMA, 10);
@@ -674,6 +675,7 @@ public class pre_nomina_global_empleado extends Pantalla {
             archivo_xls.close();
             FacesContext.getCurrentInstance().getExternalContext().redirect(extContext.getRequestContextPath() + "/" + nom);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error no se genero el XLS :" + e.getMessage());
         }
     }
