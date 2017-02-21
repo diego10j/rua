@@ -1418,7 +1418,7 @@ public class pre_rol extends Pantalla{
 	public void enviarCorreo(){		
 		//abre el dialogo de leccion de tipo de nomina
 		if(com_periodo.getValue()!=null){
-			sel_tab_tipo_nomina.setHeader("Tipos de N�mina");
+			sel_tab_tipo_nomina.setHeader("Tipos de Nomina");
 			sel_tab_tipo_nomina.getTab_seleccion().setSql("select " +
 					"ROL.IDE_NRROL,TIN.DETALLE_NRTIN, " +
 					"TEM.DETALLE_GTTEM," +
@@ -1439,11 +1439,11 @@ public class pre_rol extends Pantalla{
 				p_parametros.put("IDE_GEPRO", Integer.parseInt(com_periodo.getValue().toString()));	
 			}
 			else{
-				utilitario.agregarMensajeInfo("No tiene n�minas cerradas en el per�odo seleccionado", "Solo se pueden enviar n�minas con estado cerradas");
+				utilitario.agregarMensajeInfo("No tiene n�minas cerradas en el periodo seleccionado", "Solo se pueden enviar n�minas con estado cerradas");
 			}								
 		}
 		else{
-			utilitario.agregarMensajeInfo("Debe seleccionar un per�odo", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un periodo", "");
 		}
 	}
 
@@ -2839,7 +2839,9 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                  exporter.exportReport();                        
                  return fil_reporte;     
                  } catch (Exception ex) {         
-                         System.out.println("error" + ex.getMessage());        
+                         System.out.println("error" + ex.getMessage());   
+                          System.out.println("errorxxxxx  " + ex);        
+
                          ex.printStackTrace();     
                          }    
          return null;    
@@ -2922,10 +2924,10 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
 
 String miCorreo;
 String miContraseña;
-//String servidorSMTP = "smtp.gmail.com";
+String servidorSMTP = "smtp.office365.com";
 //String puertoEnvio = "465";
-String servidorSMTP = "mail.emgirs.gob.ec";
-String puertoEnvio = "25";
+//String servidorSMTP = "mail.emgirs.gob.ec";
+String puertoEnvio = "587";
 String mailReceptor;
 String asunto;
 String cuerpo;
