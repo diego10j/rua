@@ -120,6 +120,7 @@ public class pre_prestamos extends Pantalla {
             if (asc_asiento.isVisible() == false) {
                 utilitario.getConexion().agregarSqlPantalla("update iyp_deta_prestamo set ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ipdpr=" + tab_tabla1.getValor("ide_ipdpr"));
                 utilitario.getConexion().agregarSqlPantalla("update cxc_cabece_factura set ide_cnccc =" + asc_asiento.getIde_cnccc() + " where ide_cccfa=" + tab_tabla1.getValor("ide_cccfa"));
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " WHERE ide_cccfa=" + tab_tabla1.getValor("ide_cccfa"));
                 if (guardarPantalla().isEmpty()) {
                     dibujarCuotasNoContabilizadas();
                 }
@@ -675,7 +676,9 @@ public class pre_prestamos extends Pantalla {
                     if (pagados.isEmpty() == false) {
                         String ide_cccfa = fcc_factura.getTab_cab_factura().getValor("ide_cccfa");
                         if (ide_cccfa != null) {
-                            utilitario.getConexion().ejecutarSql(ser_prestamo.getSqlPagarDividendos(pagados, ide_cccfa));
+                            utilitario.getConexion().agregarSqlPantalla(ser_prestamo.getSqlPagarDividendos(pagados, ide_cccfa));
+                            ser_prestamo.generarTransaccionCapitalPrestamo(ide_cccfa, Double.parseDouble(tab_tabla1.getValor("capital_ipdpr")), "Capital cuota " + tab_tabla1.getValor("num_ipdpr"));
+                            utilitario.getConexion().ejecutarListaSql();
                         }
                     }
                     if (seleccionado.isEmpty() == false) {

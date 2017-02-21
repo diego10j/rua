@@ -149,7 +149,7 @@ public class pre_documentosCxP extends Pantalla {
         
         sel_certificacion.setId("sel_certificacion");
 	sel_certificacion.setTitle("SELECCIONE UNA CERTIFICACION");
-        sel_certificacion.setSeleccionTabla(ser_presupuesto.getCompromisoRua("-1","1"),"ide_prpot");
+        ///sel_certificacion.setSeleccionTabla(ser_presupuesto.getCompromisoRua("-1","1"),"ide_prpot");
         sel_certificacion.getTab_seleccion().getColumna("cod_programa_prpro").setFiltro(true);
         sel_certificacion.getTab_seleccion().getColumna("detalle_subactividad").setFiltro(true);
 	sel_certificacion.getBot_aceptar().setMetodo("aceptarBusqueda");
@@ -224,7 +224,7 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla2.setTabla("pre_compromiso_factura", "ide_prcof", 7);
         tab_tabla2.setCondicion("ide_cpcfa=-1");
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
-        tab_tabla2.getColumna("ide_prpot").setCombo(ser_presupuesto.getCompromisoRua("-1", "3"));
+        ///tab_tabla2.getColumna("ide_prpot").setCombo(ser_presupuesto.getCompromisoRua("-1", "3"));
         tab_tabla2.getColumna("ide_prpot").setAutoCompletar();
 	tab_tabla2.getColumna("valor_devengar_prcof").setMetodoChange("CalcularSuma");
         tab_tabla2.getColumna("saldo_devengar_prcof").setEtiqueta();
@@ -282,7 +282,7 @@ public class pre_documentosCxP extends Pantalla {
             if(!txt_nro_certificacion.getValue().equals("")){
             
          //System.out.println("valor texto "+txt_nro_certificacion.getValue().toString());
-           sel_certificacion.getTab_seleccion().setSql(ser_presupuesto.getCompromisoRua(txt_nro_certificacion.getValue().toString(),"1"));
+           ////sel_certificacion.getTab_seleccion().setSql(ser_presupuesto.getCompromisoRua(txt_nro_certificacion.getValue().toString(),"1"));
             sel_certificacion.getTab_seleccion().ejecutarSql();
             sel_certificacion.dibujar();
                  
@@ -303,7 +303,8 @@ public class pre_documentosCxP extends Pantalla {
             String str_seleccionados=sel_certificacion.getSeleccionados();
             if(str_seleccionados!=""){
                 //System.out.println("entre seleccionado ");
-                TablaGenerica tab_insertar = utilitario.consultar(ser_presupuesto.getCompromisoRua(sel_certificacion.getSeleccionados(),"2"));
+                TablaGenerica tab_insertar = utilitario.consultar("");
+                //TablaGenerica tab_insertar = utilitario.consultar(ser_presupuesto.getCompromisoRua(sel_certificacion.getSeleccionados(),"2"));
                 //tab_insertar.getSql();
                 //System.out.println("codigo factura "+tab_tabla1.getFilaSeleccionada().getRowKey());
                 for(int i=0;i< tab_insertar.getTotalFilas();i++){
