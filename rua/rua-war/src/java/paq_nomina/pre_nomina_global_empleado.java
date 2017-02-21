@@ -90,6 +90,7 @@ public class pre_nomina_global_empleado extends Pantalla {
 
         Boton bot_excel = new Boton();
         bot_excel.setValue("EXCEL");
+        bot_excel.setProcess("@all");
         bot_excel.setAjax(false);
         bot_excel.setMetodo("exportarNominaExcel");
 
@@ -1327,5 +1328,4 @@ public class pre_nomina_global_empleado extends Pantalla {
     public void setAut_rubros_tip_formula(AutoCompletar aut_rubros_tip_formula) {
         this.aut_rubros_tip_formula = aut_rubros_tip_formula;
     }
-
 }
