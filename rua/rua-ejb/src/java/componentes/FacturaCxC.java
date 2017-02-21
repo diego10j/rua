@@ -64,6 +64,7 @@ public class FacturaCxC extends Dialogo {
     private Combo com_pto_emision = new Combo();
     private double tarifaIVA = 0;
     private boolean haceKardex = false;
+    private String ide_ccctr;
 
     //FORMA DE PAGO
     private Tabla tab_deta_pago;
@@ -960,7 +961,7 @@ public class FacturaCxC extends Dialogo {
             }
             if (tab_deta_factura.guardar()) {
                 //Guarda la cuenta por cobrar
-                ser_factura.generarTransaccionFactura(tab_cab_factura);
+                ide_ccctr = ser_factura.generarTransaccionFactura(tab_cab_factura);
                 //Transaccion de Inventario                
                 if (haceKardex) {
                     ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
@@ -1326,6 +1327,14 @@ public class FacturaCxC extends Dialogo {
 
     public void setTab_creacion_producto(Tabla tab_creacion_producto) {
         this.tab_creacion_producto = tab_creacion_producto;
+    }
+
+    public String getIde_ccctr() {
+        return ide_ccctr;
+    }
+
+    public void setIde_ccctr(String ide_ccctr) {
+        this.ide_ccctr = ide_ccctr;
     }
 
 }
