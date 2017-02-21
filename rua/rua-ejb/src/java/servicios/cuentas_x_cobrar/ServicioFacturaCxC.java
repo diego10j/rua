@@ -201,6 +201,7 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_cab_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
             tab_cab_tran_cxc.setValor("observacion_ccctr", "V/. Factura " + tab_cab_factura.getValor("secuencial_cccfa") + " ");
             tab_cab_tran_cxc.guardar();
+            ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
             tab_det_tran_cxc.insertar();
             tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxc.setValor("ide_ccctr", tab_cab_tran_cxc.getValor("ide_ccctr"));
@@ -213,6 +214,8 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cccfa")), ser_conta_general.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
             tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
             tab_det_tran_cxc.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
+            tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+            
             tab_det_tran_cxc.guardar();
             ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
         }

@@ -234,4 +234,49 @@ public class ServicioPrestamo extends ServicioBase {
         utilitario.getConexion().agregarSql("update iyp_deta_prestamo set pagado_ipdpr=false where ide_ipdpr=" + ide_ipdpr);
     }
 
+    /**
+     * Genera transacción de capital de una cuota de un prestamo
+     *
+     * @param ide_cccfa
+     * @param valor
+     * @param observacion
+     */
+    public void generarTransaccionCapitalPrestamo(String ide_cccfa, double valor, String observacion) {
+        TablaGenerica tab_cab_factura = utilitario.consultar("SELECT * FROM cxc_cabece_factura WHERE ide_cccfa=" + ide_cccfa);
+        String ide_ccctr = "-1";
+        String str_p_cxc_tipo_trans_capital = "22";
+        TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
+        tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr", -1);
+        tab_cab_tran_cxc.getColumna("ide_ccctr").setExterna(false);
+        tab_cab_tran_cxc.setCondicion("ide_ccctr=-1");
+        tab_cab_tran_cxc.ejecutarSql();
+        TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+        tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+        tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+        tab_det_tran_cxc.setCondicion("ide_ccdtr=-1");
+        tab_det_tran_cxc.ejecutarSql();
+
+        if (tab_cab_factura != null) {
+            tab_cab_tran_cxc.insertar();
+            tab_cab_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_capital);
+            tab_cab_tran_cxc.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
+            tab_cab_tran_cxc.setValor("fecha_trans_ccctr", utilitario.getFechaActual());
+            tab_cab_tran_cxc.setValor("observacion_ccctr", observacion);
+            tab_cab_tran_cxc.guardar();
+            ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
+            tab_det_tran_cxc.insertar();
+            tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
+            tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_capital);
+            tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+            tab_det_tran_cxc.setValor("fecha_trans_ccdtr", utilitario.getFechaActual());
+            tab_det_tran_cxc.setValor("valor_ccdtr", utilitario.getFormatoNumero(valor));
+            tab_det_tran_cxc.setValor("observacion_ccdtr", observacion);
+            tab_det_tran_cxc.setValor("numero_pago_ccdtr", "0");
+            tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFechaActual());
+            tab_det_tran_cxc.setValor("docum_relac_ccdtr", "");
+            tab_det_tran_cxc.guardar();
+        }
+
+    }
+
 }
