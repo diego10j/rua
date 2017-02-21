@@ -1095,7 +1095,8 @@ public class ServicioNomina {
 
 	public double getSumatoriaRubro1(String IDE_GEEDP,String IDE_NRRUB,String fecha_ini,String fecha_fin){
 		double dou_sumatoria=0;
-		if (fecha_ini!=null && !fecha_ini.isEmpty()
+		//System.out.println("entre a la sumatoria de rubro "+fecha_ini+" fecha_fin "+fecha_fin+" IDE_NRRUB "+IDE_NRRUB);
+                if (fecha_ini!=null && !fecha_ini.isEmpty()
 				&& fecha_fin!=null && !fecha_fin.isEmpty()
 				&& IDE_GEEDP!=null && !IDE_GEEDP.isEmpty()
 				&& IDE_NRRUB!=null && !IDE_NRRUB.isEmpty()){
@@ -1104,6 +1105,7 @@ public class ServicioNomina {
 
 
 			String ide_gepro=getPeriodosRol(fecha_ini, fecha_fin);
+		//System.out.println("ide_geproide_geproide_gepro "+ide_gepro);
 
 			if (ide_gepro!=null){
 				try{
@@ -1119,7 +1121,7 @@ public class ServicioNomina {
 							"AND RUB.IDE_NRRUB in ("+IDE_NRRUB+") " +
 							"and PRO.IDE_GEPRO IN ("+ide_gepro+") " +
 							"group by ide_geedp";
-
+                                                     //   System.out.println(" bbbbbb "+str_sql);
 					TablaGenerica tab_det_rub2=utilitario.consultar(str_sql);
 					if (tab_det_rub2.getTotalFilas()>0){
 						if (tab_det_rub2.getValor("sumatoria_rubro")!=null && !tab_det_rub2.getValor("sumatoria_rubro").isEmpty()){
@@ -1781,7 +1783,6 @@ public class ServicioNomina {
 
 
 	public void calcularRentaEmpleados(String IDE_NRROL){
-
 		if (IDE_NRROL==null || IDE_NRROL.isEmpty()){
 			return;
 		}
@@ -1835,7 +1836,7 @@ public class ServicioNomina {
 		
 		TablaGenerica tab_aportaciones_empleados=utilitario.consultar(sql_emp_renta);
 
-		System.out.println("tab emp a retener "+tab_aportaciones_empleados.getSql());
+		//System.out.println("tab emp a retener "+tab_aportaciones_empleados.getSql());
 
 		String ide_geedp="";
 		String discapacitado_gtemp="";
@@ -1850,14 +1851,13 @@ public class ServicioNomina {
 		// recorremos la tabla de los empleados con sus aportaciones y total a recibir del mes del periodo de rol
 		// para calcular la renta mensual de empleado en empleado
 		for (int i = 0; i < tab_aportaciones_empleados.getTotalFilas(); i++) {
+                      //              System.out.println(" voye ntrando al for para ver lso empleados  "+tab_aportaciones_empleados.getValor(i, "IDE_GEEDP"));
+
 			ide_geedp=tab_aportaciones_empleados.getValor(i, "IDE_GEEDP");
 			double dou_tot_recibir=0;
 			double dou_tot_egresos=0;
 			double dou_irm=0;
-			if (ide_geedp.equalsIgnoreCase("93")){
-				System.out.println("edad "+tab_aportaciones_empleados.getValor(i,"EDAD"));
-				
-			}
+			
 			try {
 				dou_tot_recibir=Double.parseDouble(tab_aportaciones_empleados.getValor(i, "TOT_RECIBIR"));
 				dou_tot_egresos=Double.parseDouble(tab_aportaciones_empleados.getValor(i, "TOT_EGRESOS"));
@@ -1868,14 +1868,14 @@ public class ServicioNomina {
 
 			BigDecimal big_irm=new BigDecimal(dou_irm);
 			big_irm=big_irm.setScale(2, RoundingMode.HALF_UP);
-
-			if (ide_geedp.equalsIgnoreCase("93")){
+/*
+			if (ide_geedp.equalsIgnoreCase("3")){
 				System.out.println("t. rec antes "+dou_tot_recibir);
 				System.out.println("t. egr antes "+dou_tot_egresos);
 				System.out.println("imp antes "+dou_irm);
 				System.out.println("ide_geedp "+ide_geedp);
 			}
-
+*/
 			if (dou_irm<=0){
 				// ACTUALIZO EL TOTAL A RECIBIR
 				dou_tot_recibir=dou_tot_recibir+Double.parseDouble(big_irm+"");
@@ -1945,7 +1945,14 @@ public class ServicioNomina {
 
 				// FORMULA DEDUCCION IESS (aportes_acumu + aporte del mes + proyeccion de aportes)
 				dou_deduccion_iess=dou_tot_aportes_acumul+dou_aporte_personal_del_mes+dou_proyeccion_aportes;
+/*
+                                if (ide_geedp.equalsIgnoreCase("3")){
 
+									System.out.println("xxxdou_tot_aportes_acumul "+dou_tot_aportes_acumul);
+									System.out.println("xxxxdou_aporte_personal_del_mes "+dou_aporte_personal_del_mes);
+									System.out.println("xxxdou_proyeccion_aportes "+dou_proyeccion_aportes);
+						}
+                                */
 				// 3.- CALCULO DEDUCCION DE GASTOS
 				double dou_deduccion_gastos=0;
 				TablaGenerica tab_deducibles=utilitario.consultar("select '0' as ide,sum(VALOR_DEDUCIBLE_SRDEE) as total_deducibles " +
@@ -1992,24 +1999,24 @@ public class ServicioNomina {
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
-					/*
-					if (ide_geedp.equalsIgnoreCase("93")){
+/*					
+					if (ide_geedp.equalsIgnoreCase("3")){
 
 									System.out.println("ide geedp "+ide_geedp);
 									System.out.println("porcentaje discapacidad "+porcentaje_discapacidad);
 									System.out.println("edad "+edad);
 									System.out.println("minimo excedente * factor multiplicador "+dou_deduccion_gasto_discapacitado);
 						}
-					*/
+*/					
 					TablaGenerica tab_btd=utilitario.consultar("select * from SRI_BENEFICIO_TRIBUTARIO_DISC " +
 							"where "+porcentaje_discapacidad+" BETWEEN GRADO_INICIAL_SRBTD and GRADO_FINAL_SRBTD");	
-					/*
-							if (ide_geedp.equalsIgnoreCase("93")){
+/*					
+							if (ide_geedp.equalsIgnoreCase("3")){
 
 								System.out.println("sql porcentaje de discapacidad  ");
 								tab_btd.imprimirSql();
 							}
-							*/
+*/							
 
 					if (tab_btd.getTotalFilas()>0){
 						try {
@@ -2083,8 +2090,8 @@ public class ServicioNomina {
 				}
 
 
-
-				if (ide_geedp.equalsIgnoreCase("93")){
+/*
+				if (ide_geedp.equalsIgnoreCase("3")){
 					System.out.println("IDE GEEDP EMPLEADO ***** "+ide_geedp);
 					System.out.println("edad ***** "+edad);
 
@@ -2103,7 +2110,7 @@ public class ServicioNomina {
 					System.out.println("RETENIDO ACUMULADO "+dou_tot_ret_acum);
 					System.out.println("IMPUESTO RENTA MENSUAL "+dou_imp_renta_mensual);
 				}
-
+*/
 				if (dou_imp_renta_mensual<0){
 					dou_imp_renta_mensual=0;
 				}
@@ -2115,21 +2122,21 @@ public class ServicioNomina {
 
 				utilitario.getConexion().agregarSqlPantalla("update NRH_DETALLE_ROL set valor_nrdro="+big_irm1+" where IDE_NRROL="+IDE_NRROL+" and IDE_GEEDP="+ide_geedp+" " +
 						"and IDE_NRDER =  (select IDE_NRDER from NRH_DETALLE_RUBRO where IDE_NRDTN="+ide_nrdtn+" and IDE_NRRUB="+utilitario.getVariable("p_nrh_rubro_impuesto_renta_mensual")+")");
-
+/*
 				if (ide_geedp.equalsIgnoreCase("123")){
 					System.out.println("tot recibir antes "+dou_tot_recibir);
 				}
-
+*/
 				// ACTUALIZO EL TOTAL A RECIBIR
 				dou_tot_recibir=dou_tot_recibir-Double.parseDouble(big_irm1+"");
 
 				BigDecimal big_tot_recibir1=new BigDecimal(dou_tot_recibir);
 				big_tot_recibir1=big_tot_recibir1.setScale(2, RoundingMode.HALF_UP);
-
-				if (ide_geedp.equalsIgnoreCase("123")){
+/*
+				if (ide_geedp.equalsIgnoreCase("29")){
 					System.out.println("tot recibir despues "+dou_tot_recibir);
 				}
-
+*/
 				utilitario.getConexion().agregarSqlPantalla("update NRH_DETALLE_ROL set valor_nrdro="+big_tot_recibir1+" where IDE_NRROL="+IDE_NRROL+" and IDE_GEEDP="+ide_geedp+" " +
 						"and IDE_NRDER =  (select IDE_NRDER from NRH_DETALLE_RUBRO where IDE_NRDTN="+ide_nrdtn+" and IDE_NRRUB="+utilitario.getVariable("p_nrh_rubro_valor_recibir")+")");
 
@@ -2141,10 +2148,10 @@ public class ServicioNomina {
 				dou_tot_egresos=dou_tot_egresos+Double.parseDouble(big_irm1+"");
 				BigDecimal big_tot_egresos1=new BigDecimal(dou_tot_egresos);
 				big_tot_egresos1=big_tot_egresos1.setScale(2, RoundingMode.HALF_UP);
-
-				if (ide_geedp.equalsIgnoreCase("123")){
+/*
+				if (ide_geedp.equalsIgnoreCase("29")){
 					System.out.println("tot egresos despues "+dou_tot_egresos);
-				}
+				}*/
 				utilitario.getConexion().agregarSqlPantalla("update NRH_DETALLE_ROL set valor_nrdro="+big_tot_egresos1+" where IDE_NRROL="+IDE_NRROL+" and IDE_GEEDP="+ide_geedp+" " +
 						"and IDE_NRDER =  (select IDE_NRDER from NRH_DETALLE_RUBRO where IDE_NRDTN="+ide_nrdtn+" and IDE_NRRUB="+utilitario.getVariable("p_nrh_rubro_total_egresos")+")");
 			}
@@ -4891,7 +4898,7 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 				"select IDE_GTEMP from GTH_EMPLEADO  where DISCAPACITADO_GTEMP=TRUE) " +
 				")c on c.ide_gtemp=a.ide_gtemp and c.ide_gtemp=b.ide_gtemp " +
 				"order by nombres ";
-
+                System.out.println("imprimir "+sql);                
 		return sql;
 	}
 
