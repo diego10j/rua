@@ -1685,7 +1685,7 @@ public class pre_factura_cxp extends Pantalla {
         } else {
             boo_tipo_rise = false;
             for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-                tab_tabla2.setValor(i, "alter_tribu_cpdfa", "518");
+                tab_tabla2.setValor(i, "alter_tribu_cpdfa", "508");
             }
         }
         utilitario.addUpdate("tab_tabla2");

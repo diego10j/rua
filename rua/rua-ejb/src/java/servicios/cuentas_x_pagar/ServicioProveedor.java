@@ -379,4 +379,17 @@ public class ServicioProveedor {
         //      }
         return true;
     }
+
+    public String getParametroProveedor(String parametro, String ide_geper) {
+        if (ide_geper != null && !ide_geper.isEmpty()) {
+            TablaGenerica tab_persona = utilitario.consultar("select * from gen_persona where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_geper=" + ide_geper);
+            if (tab_persona.getTotalFilas() > 0) {
+                return tab_persona.getValor(parametro);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 }

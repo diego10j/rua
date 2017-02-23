@@ -384,4 +384,22 @@ public class ServicioInventario {
         }
         return hace;
     }
+
+    public String getTipoProducto(String ide_arti) {
+        // devuelve el tipo de articulo ya sea activo fijo,bien, o otro
+        String ide_art = ide_arti;
+        List inv_ide_arti = utilitario.getConexion().consultar("select inv_ide_inarti from inv_articulo where ide_inarti=" + ide_art);
+        try {
+            if (inv_ide_arti.get(0) != null) {
+                do {
+                    ide_art = inv_ide_arti.get(0).toString();
+                    inv_ide_arti = utilitario.getConexion().consultar("select inv_ide_inarti from inv_articulo where ide_inarti=" + ide_art);
+                } while (inv_ide_arti.get(0) != null);
+            }
+
+        } catch (Exception e) {
+        }
+        return ide_art;
+    }
+
 }
