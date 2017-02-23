@@ -404,7 +404,7 @@ public class cls_anexo_transaccional {
                     }
 
                 }
-                //ANULADOS
+                //FACTURAS ANULADOS
                 Element anulados = doc_anexo.createElement("anulados");
                 raiz.appendChild(anulados);
                 TablaGenerica tab_anulados = utilitario.consultar("SELECT td.alter_tribu_cntdo, cf.secuencial_cccfa, df.autorizacion_ccdaf, "
@@ -427,9 +427,30 @@ public class cls_anexo_transaccional {
                     detalleAnulados.appendChild(crearElemento("puntoEmision", null, tab_anulados.getValor(i, "puntoemision")));
                     detalleAnulados.appendChild(crearElemento("secuencialInicio", null, Integer.parseInt(tab_anulados.getValor(i, "secuencial_cccfa")) + ""));
                     detalleAnulados.appendChild(crearElemento("secuencialFin", null, Integer.parseInt(tab_anulados.getValor(i, "secuencial_cccfa")) + ""));
-                    detalleAnulados.appendChild(crearElemento("autorizacion", null, tab_anulados.getValor(i, "autorizacion_ccdaf")));
+                    detalleAnulados.appendChild(crearElemento("autorizacion", null, tab_anulados.getValor(i, "autorizacion_cncre")));
                 }
-
+                //RETENCIONES ANULADAS
+                TablaGenerica tab_anulados_rete = utilitario.consultar("select '07' as alter_tribu_cntdo,\n"
+                        + "autorizacion_cncre\n"
+                        + ",substr(numero_cncre, 1, 3) as establecimiento,\n"
+                        + "substr(numero_cncre, 4, 3) as puntoemision,\n"
+                        + "substr(numero_cncre, 7, 14) as secuencial\n"
+                        + "from con_cabece_retenc \n"
+                        + "where ide_cnere=1 "
+                        + " and fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'"
+                        + " AND numero_cncre !='00000000000000' "
+                        + " order by  numero_cncre");
+                for (int i = 0; i < tab_anulados_rete.getTotalFilas(); i++) {
+                    ////////////////////BUSCAR TODAS LAS VENTAS ANULADAS ESTO ES EN UN FOR
+                    Element detalleAnulados = doc_anexo.createElement("detalleAnulados");
+                    anulados.appendChild(detalleAnulados);
+                    detalleAnulados.appendChild(crearElemento("tipoComprobante", null, tab_anulados_rete.getValor(i, "alter_tribu_cntdo")));
+                    detalleAnulados.appendChild(crearElemento("establecimiento", null, tab_anulados_rete.getValor(i, "establecimiento")));
+                    detalleAnulados.appendChild(crearElemento("puntoEmision", null, tab_anulados_rete.getValor(i, "puntoemision")));
+                    detalleAnulados.appendChild(crearElemento("secuencialInicio", null, Integer.parseInt(tab_anulados_rete.getValor(i, "secuencial")) + ""));
+                    detalleAnulados.appendChild(crearElemento("secuencialFin", null, Integer.parseInt(tab_anulados_rete.getValor(i, "secuencial")) + ""));
+                    detalleAnulados.appendChild(crearElemento("autorizacion", null, tab_anulados_rete.getValor(i, "autorizacion_cncre")));
+                }
                 ///ESCRIBE EL DOCUMENTO                
                 Source source = new DOMSource(doc_anexo);
                 String master = System.getProperty("user.dir");
