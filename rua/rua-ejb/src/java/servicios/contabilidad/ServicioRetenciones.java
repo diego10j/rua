@@ -38,7 +38,9 @@ public class ServicioRetenciones extends ServicioBase {
         if (autorizacion_cncre.isEmpty() == false) {
             autorizacion_cncre = " and autorizacion_cncre='" + autorizacion_cncre + "' ";
         }
-        return "SELECT a.ide_cncre,ide_cnere,a.ide_cnccc,fecha_emisi_cncre,observacion_cncre,numero_cncre,autorizacion_cncre,ide_cpcfa,numero_cpcfa,nom_geper\n"
+        return "SELECT a.ide_cncre,ide_cnere,fecha_emisi_cncre,a.ide_cnccc,observacion_cncre,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
+                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
+                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS VALOR,ide_cpcfa,numero_cpcfa as NUM_FACTURA,nom_geper AS PROVEEDOR\n"
                 + "FROM con_cabece_retenc a\n"
                 + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
                 + "left join gen_persona c on b.ide_geper=c.ide_geper\n"
@@ -82,7 +84,7 @@ public class ServicioRetenciones extends ServicioBase {
             ide_cncim = " and a.ide_cncim=" + ide_cncim + " ";
         }
 
-        return "select a.ide_cndre, fecha_emisi_cncre,nombre_cncim,numero_cncre,nom_geper,numero_cpcfa,base_cndre,porcentaje_cndre,valor_cndre from con_detall_retenc a\n"
+        return "select a.ide_cndre, fecha_emisi_cncre,nombre_cncim,numero_cncre AS NUMERO,nom_geper AS PROVEEDOR,numero_cpcfa AS NUM_FACTURA,base_cndre,porcentaje_cndre AS PORCENTAJE,valor_cndre from con_detall_retenc a\n"
                 + "inner join con_cabece_retenc b  on a.ide_cncre=b.ide_cncre\n"
                 + "left join cxp_cabece_factur c on b.ide_cncre=c.ide_cncre\n"
                 + "left join gen_persona d on c.ide_geper=d.ide_geper\n"
@@ -105,7 +107,7 @@ public class ServicioRetenciones extends ServicioBase {
         if (autorizacion_cncre.isEmpty() == false) {
             autorizacion_cncre = " and autorizacion_cncre='" + autorizacion_cncre + "' ";
         }
-        return "SELECT a.ide_cncre,ide_cnere,a.ide_cnccc,fecha_emisi_cncre,observacion_cncre,numero_cncre,autorizacion_cncre,ide_cpcfa,numero_cpcfa,nom_geper\n"
+        return "SELECT a.ide_cncre,fecha_emisi_cncre,observacion_cncre AS OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,numero_cpcfa AS NUM_FACTURA,nom_geper AS PROVEEDOR\n"
                 + "FROM con_cabece_retenc a\n"
                 + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
                 + "left join gen_persona c on b.ide_geper=c.ide_geper\n"

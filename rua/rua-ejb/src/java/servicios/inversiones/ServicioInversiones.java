@@ -277,4 +277,17 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer";
     }
 
+    public String getSqlListaCertificadosVencidosNuevas() {
+        String sql = "select ide_ipcer,a.ide_iptin,nombre_iptin,fecha_vence_ipcer,num_certificado_ipcer,nombre_ipcin,observacion_ipcer,fecha_emision_ipcer,plazo_ipcer,capital_ipcer,interes_ipcer,valor_a_pagar_ipcer,cod_captacion_ipcer,nombre_ipein,ide_cnccc_terminacion,ide_cnccc,ide_cnccc_interes\n"
+                + "from iyp_certificado a\n"
+                + "inner join iyp_tipo_inversion b on a.ide_iptin=b.ide_iptin\n"
+                + "left join  iyp_clase_inversion c on a.ide_ipcin=c.ide_ipcin\n"
+                + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
+                + "where a.ide_sucu=" + utilitario.getVariable("ide_sucu") + "\n"
+                + "and fecha_vence_ipcer<='" + utilitario.getFechaActual() + "' \n "
+                + "AND es_renovacion_ipcer=false  and nuevo=true "
+                + "AND a.ide_ipein=" + utilitario.getVariable("p_iyp_estado_activo_inversion") + "   "
+                + "order by nombre_iptin,fecha_emision_ipcer desc";
+        return sql;
+    }
 }
