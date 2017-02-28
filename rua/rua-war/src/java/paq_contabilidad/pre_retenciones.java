@@ -9,6 +9,7 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -41,6 +42,7 @@ public class pre_retenciones extends Pantalla {
 
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private Confirmar con_confirma = new Confirmar();
 
     public pre_retenciones() {
         bar_botones.quitarBotonsNavegacion();
@@ -84,6 +86,13 @@ public class pre_retenciones extends Pantalla {
         sel_rep.setId("sel_rep");
         agregarComponente(rep_reporte);
         agregarComponente(sel_rep);
+
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro de Anular el Comprobante de Retención Seleccionado ?");
+        con_confirma.setTitle("ANULAR COMPROBANTE DE RETENCIÓN");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
     }
 
     public void dibujarConsulta() {
@@ -95,7 +104,14 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_retencion.getSqlConsultaImpuestos(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_impuesto.getValue())));
         tab_tabla.setCampoPrimaria("ide_cndre");
+        tab_tabla.getColumna("ide_cndre").setVisible(false);
         tab_tabla.getColumna("nombre_cncim").setFiltro(true);
+        tab_tabla.getColumna("nombre_cncim").setNombreVisual("IMPUESTO");
+        tab_tabla.getColumna("valor_cndre").setNombreVisual("VALOR");
+        tab_tabla.getColumna("valor_cndre").alinearDerecha();
+        tab_tabla.getColumna("base_cndre").setNombreVisual("BASE IMPONIBLE");
+        tab_tabla.getColumna("base_cndre").alinearDerecha();
+
         tab_tabla.setColumnaSuma("valor_cndre,base_cndre");
         tab_tabla.setLectura(true);
         tab_tabla.setRows(25);
@@ -140,7 +156,7 @@ public class pre_retenciones extends Pantalla {
 
         Boton bot_anular = new Boton();
         bot_anular.setValue("Anular Comprobante de Retención");
-        bot_anular.setMetodo("anularRetencion");
+        bot_anular.setMetodo("abrirAnularRetencion");
         bar_menu.agregarComponente(bot_anular);
 
         gru_grupo.getChildren().add(bar_menu);
@@ -149,6 +165,12 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_retencion.getSqlRetenciones(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_tabla.setCampoPrimaria("ide_cncre");
+        tab_tabla.getColumna("ide_cncre").setVisible(false);
+        tab_tabla.getColumna("ide_cnere").setVisible(false);
+        tab_tabla.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla.getColumna("BASE_IMPONIBLE").alinearDerecha();
+        tab_tabla.getColumna("VALOR").alinearDerecha();
+        tab_tabla.getColumna("numero").setLongitud(25);
         tab_tabla.setLectura(true);
         tab_tabla.setValueExpression("rowStyleClass", "fila.campos[1] eq '1' ? 'text-red' : null");
 
@@ -160,10 +182,21 @@ public class pre_retenciones extends Pantalla {
         mep_menu.dibujar(1, "COMPROBANTES DE RETENCIÓN", gru_grupo);
     }
 
+    public void abrirAnularRetencion() {
+        if (tab_tabla.getValor("ide_cncre") != null) {
+            con_confirma.getBot_aceptar().setMetodo("anularRetencion");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Comprobante de Retención", "");
+        }
+
+    }
+
     public void anularRetencion() {
-        if (tab_tabla.getValorSeleccionado() != null) {
+        if (tab_tabla.getValor("ide_cncre") != null) {
             ser_retencion.anularComprobanteRetencion(tab_tabla.getValorSeleccionado());
             if (guardarPantalla().isEmpty()) {
+                con_confirma.cerrar();
                 tab_tabla.actualizar();
             }
         } else {
@@ -213,6 +246,9 @@ public class pre_retenciones extends Pantalla {
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_retencion.getSqlRetencionesAnuladas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setCampoPrimaria("ide_cncre");
+        tab_tabla.getColumna("ide_cncre").setVisible(false);
+        tab_tabla.getColumna("numero").setLongitud(25);
         tab_tabla.setLectura(true);
         tab_tabla.setRows(25);
         tab_tabla.dibujar();
