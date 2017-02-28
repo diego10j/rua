@@ -427,7 +427,7 @@ public class cls_anexo_transaccional {
                     detalleAnulados.appendChild(crearElemento("puntoEmision", null, tab_anulados.getValor(i, "puntoemision")));
                     detalleAnulados.appendChild(crearElemento("secuencialInicio", null, Integer.parseInt(tab_anulados.getValor(i, "secuencial_cccfa")) + ""));
                     detalleAnulados.appendChild(crearElemento("secuencialFin", null, Integer.parseInt(tab_anulados.getValor(i, "secuencial_cccfa")) + ""));
-                    detalleAnulados.appendChild(crearElemento("autorizacion", null, tab_anulados.getValor(i, "autorizacion_cncre")));
+                    detalleAnulados.appendChild(crearElemento("autorizacion", null, tab_anulados.getValor(i, "autorizacion_ccdaf")));
                 }
                 //RETENCIONES ANULADAS
                 TablaGenerica tab_anulados_rete = utilitario.consultar("select '07' as alter_tribu_cntdo,\n"
