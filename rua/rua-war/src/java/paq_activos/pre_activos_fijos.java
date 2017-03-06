@@ -728,6 +728,7 @@ public class pre_activos_fijos extends Pantalla {
         gr.getChildren().add(tab_tabulador);
         mep_menu.dibujar(2, "FICHA ACTIVO FIJO", gr);
         mep_menu.getDivision2().setTransient(true);
+        mep_menu.getDivision2().getChildren().get(0).setTransient(true);
         gr.getParent().setTransient(true);
         gr.getParent().getParent().setTransient(true);
         tab_tabulador.getParent().setTransient(true);
