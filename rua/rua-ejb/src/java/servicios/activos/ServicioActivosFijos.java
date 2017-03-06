@@ -5,6 +5,7 @@
  */
 package servicios.activos;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
@@ -29,15 +30,18 @@ public class ServicioActivosFijos extends ServicioBase {
      * @return
      */
     public String getSqlListaActivosFijos() {
-        return "select ide_acafi,serie_acafi,nombre_inarti,nombre_acafi,descripcion1_acafi,color_acafi,nombre_aceaf ,nom_geper,nombre_acuba as UBICACION,fecha_compra_acafi \n"
-                + ",ano_actual_acafi ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,observacion_acafi\n"
+        return "select ide_acafi,act_ide_acafi,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
+                + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
                 + "from act_activo_fijo a \n"
                 + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
                 + "left join gen_persona c on a.ide_geper=c.ide_geper\n"
                 + "left join inv_articulo arti on arti.ide_inarti = a.ide_inarti "
                 + "left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n"
+                + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
+                + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
+                + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
                 + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " "
-                + "order by nombre_acafi";
+                + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
     /**
@@ -95,6 +99,94 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join inv_articulo arti on arti.ide_inarti = af.ide_inarti "
                 + "left join act_ubicacion_activo acubi on acubi.ide_acuba=af.ide_acuba "
                 + "where af.ide_geper =" + ide_geper + "";
+    }
+
+    public int getSecuencialActaConstatacion() {
+        int maximo = 0;
+        List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_acact)+1  from act_acta_constata where "
+                + " ide_empr=" + utilitario.getVariable("ide_empr"));
+        if (lis_max.get(0) != null) {
+            try {
+                maximo = ((Integer.parseInt(lis_max.get(0).toString())));
+            } catch (Exception e) {
+                maximo = 1;
+            }
+        } else {
+            maximo = 1;
+        }
+        return maximo;
+    }
+//    public String getSecuencial(String ide_gecas, String ide_geobr, String ide_acuba, String ide_accla, String ide_inarti) {
+//        if (ide_gecas == null || ide_gecas.isEmpty()) {
+//            return "";
+//        }
+//        if (ide_geobr == null || ide_geobr.isEmpty()) {
+//            return "";
+//        }
+//        if (ide_acuba == null || ide_acuba.isEmpty()) {
+//            return "";
+//        }
+//        if (ide_accla == null || ide_accla.isEmpty()) {
+//            return "";
+//        }
+//        if (ide_inarti == null || ide_inarti.isEmpty()) {
+//            return "";
+//        }
+//        int maximo = 0;
+//        List lis_max = utilitario.getConexion().consultar("SELECT max(CAST(coalesce(secuencial_acafi, '0') AS BIGINT))+1  from act_activo_fijo where "
+//                + " ide_gecas=" + ide_gecas
+//                + " and ide_geobr=" + ide_geobr
+//                + " and ide_accla=" + ide_accla
+//                + " and ide_inarti=" + ide_inarti
+//                + " and ide_acuba=" + ide_acuba
+//                + " and ide_empr=" + utilitario.getVariable("ide_empr"));
+//        if (lis_max.get(0) != null) {
+//            try {
+//                maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1);
+//            } catch (Exception e) {
+//            }
+//        } else {
+//            maximo = 1;
+//        }
+//        return String.format("%04d", new Object[]{maximo});
+//    }
+
+    public String getSqlActivosHijoMasivo(String ide_acafi) {
+        return "select ide_acafi,nombre_inarti as TIPO_ACTIVO,sec_masivo_acafi AS SECUENCIAL,codigo_barras_acafi AS CODIGO_BARRAS,nombre_aceaf AS ESTADO from act_activo_fijo a "
+                + "left JOIN inv_articulo b on  a.ide_inarti=b.ide_inarti\n"
+                + "left join act_estado_activo_fijo c  on a.ide_aceaf=c.ide_aceaf\n"
+                + "where act_ide_acafi=" + ide_acafi + "\n"
+                + "order by sec_masivo_acafi";
+    }
+
+    public String getSqlListaActivosFijosSinCustodio() {
+        return "select ide_acafi,act_ide_acafi,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
+                + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
+                + "from act_activo_fijo a \n"
+                + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
+                + "left join inv_articulo arti on arti.ide_inarti = a.ide_inarti "
+                + "left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n"
+                + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
+                + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
+                + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
+                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and a.ide_geper is null and cantidad_acafi=1"
+                + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+    }
+
+    public String getSqlListadoActasConstatacion() {
+        return "select a.ide_acact,codigo_acact AS CODIGO,fecha_asigna_acact AS FECHA_ASIGNA,nombre_gecas AS CASA,\n"
+                + "nombre_geobr AS OBRA, nombre_acuba AS AREA_UBICACION ,nom_geper AS CUSTODIO,\n"
+                + "observacion_acact\n"
+                + "from act_acta_constata a\n"
+                + "inner join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba\n"
+                + "inner join gen_casa e on a.ide_gecas=e.ide_gecas\n"
+                + "inner join gen_OBRA f on a.ide_geobr=f.ide_geobr\n"
+                + "inner join gen_persona g on a.ide_geper=g.ide_geper\n"
+                + "order by codigo_acact";
+    }
+
+    public boolean isExisteCodBarras(String codigo_barras_acafi) {
+        return !utilitario.consultar("select ide_acafi,codigo_barras_acafi from act_activo_fijo where codigo_barras_acafi='" + codigo_barras_acafi + "'").isEmpty();
     }
 
 }
