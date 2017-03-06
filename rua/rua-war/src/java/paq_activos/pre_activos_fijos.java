@@ -5,6 +5,7 @@
  */
 package paq_activos;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
@@ -12,19 +13,29 @@ import framework.componentes.Calendario;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Imagen;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
+import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import net.sourceforge.barbecue.BarcodeFactory;
+import net.sourceforge.barbecue.BarcodeImageHandler;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import servicios.activos.ServicioActivosFijos;
 import sistema.aplicacion.Pantalla;
 
@@ -45,6 +56,8 @@ public class pre_activos_fijos extends Pantalla {
     private Tabla tab_tabla;
     private Tabla tab_tabla2;
     private Tabla tab_tabla3;
+    private Tabla tab_tabla4;
+    private Tabla tab_tabla5;
     private AutoCompletar aut_custodio;
 
     private Reporte rep_reporte = new Reporte();
@@ -52,19 +65,27 @@ public class pre_activos_fijos extends Pantalla {
     private SeleccionArbol sel_arb = new SeleccionArbol();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
 
+    private Etiqueta eti_cod_barras = new Etiqueta();
+    private StreamedContent stcCodigoBarra;
+    private int cantidad = 1;
+    private Texto txt_cod;
+    private Tabulador tab_tabulador = new Tabulador();
+
     public pre_activos_fijos() {
-        bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
 
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
-        mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1
-        mep_menu.agregarItem("Asignar Activos", "dibujarAsignarActivos", "ui-icon-cart");//5
-        mep_menu.agregarItem("Acta Entrega Recepción", "dibujarActa", "ui-icon-note");//9
+        mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1                
         mep_menu.agregarItem("Depreciar Activos", "dibujarDepreciar", "ui-icon-clock");//6
         mep_menu.agregarItem("Dar de Baja Activos", "dibujarDardeBaja", "ui-icon-cancel");//7
+        mep_menu.agregarSubMenu("ACTAS");
+        mep_menu.agregarItem("Nueva Acta Constatación Física", "dibujarAsignarActivos", "ui-icon-document");//5
+        mep_menu.agregarItem("Listado Actas Constatación Física", "dibujarListadoActasConstata", "ui-icon-note");//10
+        mep_menu.agregarItem("Acta Entrega Recepción", "dibujarActa", "ui-icon-note");//9
         mep_menu.agregarSubMenu("INFORMES");
+        mep_menu.agregarItem("Consultar por Código de Barras", "dibujarConsultarPorCodigoB", "ui-icon-contact");//11
         mep_menu.agregarItem("Consultar Activos Asignados", "dibujarConsultarAsignados", "ui-icon-contact");//3
-        mep_menu.agregarItem("Activos Dados de Baja", "dibujarActDadosBaja", "ui-icon-note");//8
+        mep_menu.agregarItem("Activos Dados de Baja", "dibujarActDadosBaja", "ui-icon-note");//8        
         agregarComponente(mep_menu);
         dibujarListadosActivos();
 
@@ -88,6 +109,51 @@ public class pre_activos_fijos extends Pantalla {
         vipdf_acta.setId("vipdf_acta");
         vipdf_acta.setTitle("ACTA ENTREGA - RECEPCIÓN");
         agregarComponente(vipdf_acta);
+
+    }
+
+    public void dibujarConsultarPorCodigoB() {
+
+        Grid gr = new Grid();
+        gr.setColumns(2);
+        gr.getChildren().add(new Etiqueta("<strong>CÓDIGO DE BARRAS :</strong>"));
+        txt_cod = new Texto();
+        txt_cod.setStyle("font-size:18px");
+        txt_cod.setSize(50);
+        gr.getChildren().add(txt_cod);
+
+        Boton bot_generar = new Boton();
+        bot_generar.setValue("Buscar");
+        bot_generar.setIcon("ui-icon-search");
+        bot_generar.setMetodo("cargaActivoFijoPorCodigo");
+        gr.setFooter(bot_generar);
+        mep_menu.dibujar(11, "BUSCAR ACTIVO FIJO POR CÓDIGO DE BARRAS", gr);
+    }
+
+    public void cargaActivoFijoPorCodigo() {
+        if (txt_cod.getValue() == null) {
+            utilitario.agregarMensajeError("Debe Ingresar el código de barras", "");
+        }
+
+        String ide_acafi = txt_cod.getValue().toString();
+        if (ser_activos.isExisteCodBarras(ide_acafi)) {
+
+            dibujarActivoFijo();
+            tab_tabla.setCondicion("codigo_barras_acafi='" + ide_acafi + "'");
+            tab_tabla.ejecutarSql();
+            tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla2.ejecutarSql();
+            tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla3.ejecutarSql();
+            tab_tabla2.setRendered(true);
+            tab_tabla3.setRendered(true);
+            tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla5.ejecutarSql();
+            tab_tabla5.setRendered(true);
+            cargarCodigoBarras();
+        } else {
+            utilitario.agregarMensajeError("El código de barras no existe", "");
+        }
     }
 
     public void dibujarActa() {
@@ -132,6 +198,38 @@ public class pre_activos_fijos extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccione un custodio para generar el Acta", "");
         }
+    }
+
+    public void dibujarListadoActasConstata() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Imprimir Acta");
+        bot_ver.setMetodo("imprimirActaC");
+        bot_ver.setIcon("ui-icon-print");
+        bar_menu.agregarComponente(bot_ver);
+
+//        Boton bot_edit = new Boton();
+//        bot_edit.setValue("Editar Acta");
+//        bot_edit.setMetodo("imprimirActaC");
+//        bot_edit.setIcon("ui-icon-pencil");
+//        bar_menu.agregarComponente(bot_ver);
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_activos.getSqlListadoActasConstatacion());
+        tab_tabla.setCampoPrimaria("ide_acact");
+        tab_tabla.getColumna("ide_acact").setVisible(false);
+        tab_tabla.setLectura(true);
+        tab_tabla.setRows(20);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(10, "LISTADO DE ACTAS DE CONSTATCIÓN FÍSICA DE ACTIVOS FIJOS", gru);
     }
 
     @Override
@@ -247,15 +345,19 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla2.setSql(ser_activos.getSqlListaActivosFijos());
         tab_tabla2.setCampoPrimaria("ide_acafi");
         tab_tabla2.getColumna("ide_acafi").setVisible(false);
-        tab_tabla2.getColumna("serie_acafi").setFiltroContenido();
-        tab_tabla2.getColumna("nombre_acafi").setFiltroContenido();
-        tab_tabla2.getColumna("descripcion1_acafi").setFiltroContenido();
+        tab_tabla2.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla2.getColumna("nom_geper").setFiltroContenido();
         tab_tabla2.getColumna("nom_geper").setNombreVisual("CUSTODIO");
-        tab_tabla2.getColumna("nombre_aceaf").setFiltroContenido();
-        tab_tabla2.getColumna("nombre_inarti").setFiltroContenido();
+        tab_tabla2.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        tab_tabla2.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla2.getColumna("CASA").setFiltroContenido();
+        tab_tabla2.getColumna("OBRA").setFiltroContenido();
+        tab_tabla2.getColumna("CLASE").setFiltroContenido();
         tab_tabla2.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla2.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla2.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla2.getColumna("cantidad").alinearDerecha();
+        tab_tabla2.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
         tab_tabla2.getColumna("valor_compra_acafi").alinearDerecha();
         tab_tabla2.getColumna("valor_comercial_acafi").alinearDerecha();
         tab_tabla2.getColumna("valor_remate_acafi").alinearDerecha();
@@ -342,46 +444,60 @@ public class pre_activos_fijos extends Pantalla {
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("act_asignacion_activo", "ide_acaaf", -1);
-        tab_tabla.getColumna("ide_acaaf").setVisible(false);
-        tab_tabla.getColumna("ide_acafi").setVisible(false);
+        tab_tabla.setTabla("act_acta_constata", "ide_acact", 13);
+        tab_tabla.getColumna("ide_acact").setVisible(false);
         tab_tabla.getColumna("ide_usua").setVisible(false);
+        tab_tabla.getColumna("secuencial_acact").setVisible(false);
+        tab_tabla.getColumna("codigo_acact").setLectura(true);
+        tab_tabla.getColumna("codigo_acact").setEstilo("font-size: 12px;font-weight: bold;");
+        tab_tabla.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
         tab_tabla.getColumna("ide_geper").setAutoCompletar();
-        tab_tabla.getColumna("ide_geper").setNombreVisual("CUSTODIO");
         tab_tabla.getColumna("ide_geper").setRequerida(true);
-        tab_tabla.getColumna("fecha_acaaf").setValorDefecto(utilitario.getFechaActual());
-        tab_tabla.getColumna("fecha_acaaf").setRequerida(true);
-        tab_tabla.getColumna("fecha_acaaf").setNombreVisual("FECHA DE ASIGNACIÓN");
-        tab_tabla.getColumna("observacion_acaaf").setControl("Texto");
-        tab_tabla.getColumna("observacion_acaaf").setNombreVisual("OBSERVACIÓN");
-        tab_tabla.getColumna("observacion_acaaf").setRequerida(true);
-        tab_tabla.setCondicion("ide_acaaf=-1");
+        tab_tabla.getColumna("fecha_asigna_acact").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla.getColumna("fecha_asigna_acact").setRequerida(true);
+        tab_tabla.getColumna("ide_gecas").setCombo("select ide_gecas,nombre_gecas,codigo_gecas from gen_casa order by codigo_gecas");
+        tab_tabla.getColumna("ide_gecas").setRequerida(true);
+        tab_tabla.getColumna("ide_geobr").setCombo(" select ide_geobr,nombre_geobr,codigo_geobr from  gen_obra order by codigo_geobr");
+        tab_tabla.getColumna("ide_geobr").setRequerida(true);
+        tab_tabla.getColumna("ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba");
+        tab_tabla.getColumna("ide_acuba").setRequerida(true);
+        tab_tabla.getColumna("observacion_acact").setControl("Texto");
+        tab_tabla.getColumna("observacion_acact").setRequerida(true);
+        tab_tabla.setCondicion("ide_acact=-1");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.setMostrarNumeroRegistros(false);
         tab_tabla.dibujar();
         tab_tabla.insertar();
+        tab_tabla.setValor("secuencial_acact", String.valueOf(ser_activos.getSecuencialActaConstatacion()));
+        tab_tabla.setValor("codigo_acact", "ACT-" + String.valueOf(ser_activos.getSecuencialActaConstatacion()));
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
-        pat_panel.getMenuTabla().setRendered(false);
+        pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         gru.getChildren().add(pat_panel);
         gru.getChildren().add(new Separator());
 
         tab_tabla2 = new Tabla();
 
         tab_tabla2.setId("tab_seleccion");
-        tab_tabla2.setSql(ser_activos.getSqlListaActivosFijos());
+        tab_tabla2.setSql(ser_activos.getSqlListaActivosFijosSinCustodio());
         tab_tabla2.setCampoPrimaria("ide_acafi");
         tab_tabla2.getColumna("ide_acafi").setVisible(false);
-        tab_tabla2.getColumna("serie_acafi").setFiltroContenido();
-        tab_tabla2.getColumna("nombre_acafi").setFiltroContenido();
-        tab_tabla2.getColumna("descripcion1_acafi").setFiltroContenido();
-        tab_tabla2.getColumna("nom_geper").setFiltroContenido();
-        tab_tabla2.getColumna("nombre_aceaf").setFiltroContenido();
-        tab_tabla2.getColumna("nom_geper").setNombreVisual("CUSTODIO");
+        tab_tabla2.getColumna("act_ide_acafi").setVisible(false);
+        tab_tabla2.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        //tab_tabla2.getColumna("ESTADO").setFiltroContenido();
+        //tab_tabla2.getColumna("CASA").setFiltroContenido();
+        //tab_tabla2.getColumna("OBRA").setFiltroContenido();
+        //tab_tabla2.getColumna("CLASE").setFiltroContenido();
         tab_tabla2.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla2.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla2.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla2.getColumna("cantidad").alinearDerecha();
+        tab_tabla2.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
         tab_tabla2.getColumna("valor_compra_acafi").alinearDerecha();
         tab_tabla2.getColumna("valor_comercial_acafi").alinearDerecha();
         tab_tabla2.getColumna("valor_remate_acafi").alinearDerecha();
@@ -397,7 +513,7 @@ public class pre_activos_fijos extends Pantalla {
         gru.getChildren().add(grm);
         gru.getChildren().add(pat_panel2);
 
-        mep_menu.dibujar(5, "ASIGNAR ACTIVOS FIJOS", gru);
+        mep_menu.dibujar(5, "ACTA DE CONSTATACION FÍSICA DE ACTIVOS FIJOS", gru);
     }
 
     public void dibujarListadosActivos() {
@@ -415,23 +531,27 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.getColumna("ide_acafi").setVisible(false);
-        tab_tabla.getColumna("serie_acafi").setFiltroContenido();
-        tab_tabla.getColumna("nombre_acafi").setFiltroContenido();
-        tab_tabla.getColumna("descripcion1_acafi").setFiltroContenido();
+        tab_tabla.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
         tab_tabla.getColumna("nom_geper").setNombreVisual("CUSTODIO");
-        tab_tabla.getColumna("nombre_inarti").setFiltroContenido();
-        tab_tabla.getColumna("nombre_aceaf").setFiltroContenido();
+        tab_tabla.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        tab_tabla.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla.getColumna("CASA").setFiltroContenido();
+        tab_tabla.getColumna("OBRA").setFiltroContenido();
+        tab_tabla.getColumna("CLASE").setFiltroContenido();
         tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla.getColumna("cantidad").alinearDerecha();
+        tab_tabla.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
         tab_tabla.getColumna("valor_compra_acafi").alinearDerecha();
         tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
         tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
         tab_tabla.setLectura(true);
         tab_tabla.setRows(20);
 
-        //COLOR ROJO NO TIENE GRUPO 
-        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[2] eq null ? 'text-red' : null");
+        //COLOR verde cantidad diferente de  1
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[4] eq '1'  ? null : 'text-green'");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
@@ -446,27 +566,28 @@ public class pre_activos_fijos extends Pantalla {
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setHeader("DATOS DEL ACTIVO");
         tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
-        tab_tabla.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", " ide_intpr=0"); //SOLO ACTIVOS FIJOS
+        tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
+        tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("gen_ide_geper").setVisible(false);
         tab_tabla.getColumna("ide_rheor").setVisible(false);
         tab_tabla.getColumna("alterno_acafi").setVisible(false);
         tab_tabla.getColumna("fo_acafi").setVisible(false);
         tab_tabla.getColumna("ide_geubi").setCombo("gen_ubicacion", "ide_geubi", "nombre_geubi", "nivel_geubi='HIJO'");
         tab_tabla.getColumna("ide_usua").setVisible(false);
-        tab_tabla.getColumna("foto_acafi").setUpload();
-        tab_tabla.getColumna("foto_acafi").setImagen("120", "120");
         tab_tabla.getColumna("ide_aceaf").setCombo("act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf", "");
+        tab_tabla.getColumna("ide_aceaf").setRequerida(true);
         tab_tabla.getColumna("ide_inmar").setCombo("inv_marca", "ide_inmar", "nombre_invmar", "");
         // tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
         //tab_tabla.getColumna("ide_geper").setLectura(true);
         //tab_tabla.getColumna("ide_geper").setAutoCompletar();
         tab_tabla.getColumna("ide_geper").setVisible(false);
-        tab_tabla.getColumna("ide_acuba").setCombo("act_ubicacion_activo", "ide_acuba", "nombre_acuba", "");
-        tab_tabla.getColumna("ide_acuba").setAutoCompletar();
-        tab_tabla.getColumna("serie_acafi").setRequerida(true);
-        tab_tabla.getColumna("nombre_acafi").setRequerida(true);
+        tab_tabla.getColumna("ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba");
+        tab_tabla.getColumna("ide_acuba").setRequerida(true);
+        tab_tabla.getColumna("ide_acuba").setMetodoChange("generarCodigoBarras");
+        tab_tabla.getColumna("serie_acafi").setRequerida(false);///antes true
+        tab_tabla.getColumna("nombre_acafi").setRequerida(false);
+        tab_tabla.getColumna("nombre_acafi").setVisible(false);
         tab_tabla.getColumna("ide_inarti").setRequerida(true);
         tab_tabla.getColumna("vida_util_acafi").setLectura(true);
         tab_tabla.getColumna("valor_compra_acafi").setLectura(true);
@@ -475,6 +596,38 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("fecha_compra_acafi").setLectura(true);
         tab_tabla.getColumna("fecha_acafi").setLectura(true);
         tab_tabla.getColumna("fecha_acafi").setValorDefecto(utilitario.getFechaActual());
+
+        tab_tabla.getColumna("act_ide_acafi").setVisible(false);///SI ES ASIGNACION MASIVA
+
+        tab_tabla.getColumna("ide_gecas").setCombo("select ide_gecas,nombre_gecas,codigo_gecas from gen_casa order by codigo_gecas");
+        tab_tabla.getColumna("ide_gecas").setRequerida(true);
+        tab_tabla.getColumna("ide_gecas").setMetodoChange("generarCodigoBarras");
+        tab_tabla.getColumna("ide_geobr").setCombo(" select ide_geobr,nombre_geobr,codigo_geobr from  gen_obra order by codigo_geobr");
+        tab_tabla.getColumna("ide_geobr").setRequerida(true);
+        tab_tabla.getColumna("ide_geobr").setMetodoChange("generarCodigoBarras");
+        tab_tabla.getColumna("ide_accla").setCombo("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla");
+        tab_tabla.getColumna("ide_accla").setRequerida(true);
+        tab_tabla.getColumna("ide_accla").setMetodoChange("generarCodigoBarras");
+        tab_tabla.getColumna("cantidad_acafi").setValorDefecto("1");
+        tab_tabla.getColumna("cantidad_acafi").setEstilo("font-size: 12px;font-weight: bold;");
+        tab_tabla.getColumna("cantidad_acafi").setMetodoChange("cambioCantidad");
+
+        tab_tabla.getColumna("ano_actual_acafi").setVisible(false);
+        tab_tabla.getColumna("ano_actual_acafi").setValorDefecto(utilitario.getFechaActual());
+
+        tab_tabla.getColumna("codigo_barras_acafi").setVisible(false);
+        tab_tabla.getColumna("codigo_barras_acafi").setRequerida(true);
+
+        tab_tabla.getColumna("fd_acafi").setVisible(false);
+        tab_tabla.getColumna("fecha_fabrica_acafi").setVisible(false);
+        tab_tabla.getColumna("mediadas_acafi").setVisible(false);
+        tab_tabla.getColumna("custodio_tmp").setVisible(false);
+        tab_tabla.getColumna("cuenta_ant_sistema").setVisible(false);
+        tab_tabla.getColumna("descripcion1_acafi").setVisible(false);
+        tab_tabla.getColumna("color_acafi").setVisible(false);
+        tab_tabla.getColumna("codigo_recu_acafi").setVisible(false);
+        tab_tabla.getColumna("sec_masivo_acafi").setVisible(false);
+
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.setCondicion("ide_acafi=-1");
@@ -484,9 +637,51 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla);
 
+        tab_tabulador.setTransient(true);
+        tab_tabulador.setId("tab_tabulador");
+
+        Grid gri_cb = new Grid();
+        gri_cb.setId("gri_cb");
+        gri_cb.setWidth("98%");
+        gri_cb.setStyle("width: 98%;");
+        gri_cb.getChildren().add(new Etiqueta("<div align='center'>"));
+        eti_cod_barras.setStyle("font-size: 13px;font-weight: bold;");
+        eti_cod_barras.setValue(tab_tabla.getValor("codigo_barras_acafi"));
+        gri_cb.getChildren().add(eti_cod_barras);
+        Imagen ima_barra = new Imagen();
+        ima_barra.setValueExpression("value", "pre_index.clase.stcCodigoBarra");
+        gri_cb.getChildren().add(ima_barra);
+        tab_tabulador.agregarTab("CODIGO DE BARRAS", gri_cb);
+
+        Boton bot_imprimir = new Boton();
+        bot_imprimir.setValue("Imprimir");
+        bot_imprimir.setIcon("ui-icon-print");
+        bot_imprimir.setMetodo("imprimirCodigoBarra");
+        gri_cb.getChildren().add(bot_imprimir);
+
+        gri_cb.getChildren().add(new Etiqueta("</div>"));
+
+        tab_tabla4 = new Tabla();
+        tab_tabla4.setId("tab_tabla4");
+        tab_tabla4.setIdCompleto("tab_tabulador:tab_tabla4");
+        tab_tabla4.setTabla("act_foto_activo", "ide_acfac", 10);
+        tab_tabla4.setCondicion("ide_acafi=-1");
+        tab_tabla4.getColumna("ide_acafi").setVisible(false);
+        tab_tabla4.getColumna("ide_acfac").setVisible(false);
+        tab_tabla4.setTipoFormulario(true);
+        tab_tabla4.getColumna("foto_acfac").setUpload();
+        tab_tabla4.getColumna("foto_acfac").setImagen("120", "120");
+        tab_tabla4.setLectura(true);
+        tab_tabla4.dibujar();
+        PanelTabla pat_panel4 = new PanelTabla();
+        pat_panel4.setPanelTabla(tab_tabla4);
+        pat_panel4.getMenuTabla().getItem_eliminar().setRendered(true);
+
+        tab_tabulador.agregarTab("FOTOS", pat_panel4);
+
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setHeader("HISTORIAL ASIGNACIONES");
+        tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
         tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo("-1"));
         tab_tabla2.setCampoPrimaria("ide_acaaf");
         tab_tabla2.getColumna("ide_acaaf").setVisible(false);
@@ -496,10 +691,11 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla2.setRendered(false);
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
+        tab_tabulador.agregarTab("HISTORIAL ASIGNACIONES", pat_panel2);
 
         tab_tabla3 = new Tabla();
         tab_tabla3.setId("tab_tabla3");
-        tab_tabla3.setHeader("TRANSACCIONES");
+        tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
         tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo("-1"));
         tab_tabla3.setCampoPrimaria("ide_actra");
         tab_tabla3.getColumna("ide_actra").setVisible(false);
@@ -510,19 +706,52 @@ public class pre_activos_fijos extends Pantalla {
 
         PanelTabla pat_panel5 = new PanelTabla();
         pat_panel5.setPanelTabla(tab_tabla3);
+        tab_tabulador.agregarTab("TRANSACCIONES", pat_panel5);
+
+        tab_tabla5 = new Tabla();
+        tab_tabla5.setId("tab_tabla5");
+        tab_tabla5.setIdCompleto("tab_tabulador:tab_tabla5");
+        tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo("-1"));
+        tab_tabla5.setCampoPrimaria("ide_acafi");
+        tab_tabla5.getColumna("ide_acafi").setVisible(false);
+        tab_tabla5.setLectura(true);
+        tab_tabla5.setRows(10);
+        tab_tabla5.setRendered(false);
+        tab_tabla5.dibujar();
+
+        PanelTabla pat_panel6 = new PanelTabla();
+        pat_panel6.setPanelTabla(tab_tabla5);
+        tab_tabulador.agregarTab("DETALLE CANTIDAD", pat_panel6);
 
         Grupo gr = new Grupo();
+        gr.setTransient(true);
         gr.getChildren().add(pat_panel1);
-        gr.getChildren().add(new Separator());
-        gr.getChildren().add(pat_panel2);
-        gr.getChildren().add(new Separator());
-        gr.getChildren().add(pat_panel5);
-
+        gr.getChildren().add(tab_tabulador);
         mep_menu.dibujar(2, "FICHA ACTIVO FIJO", gr);
+        gr.getParent().setTransient(true);
+        gr.getParent().getParent().setTransient(true);
+        tab_tabulador.getParent().setTransient(true);
+        tab_tabulador.getParent().getParent().setTransient(true);
     }
 
-    public void reasignarActivo() {
+    public void cambioCantidad() {
+        //Valida si que sea mayor q 1
 
+        try {
+            cantidad = Integer.parseInt(tab_tabla.getValor("cantidad_acafi"));
+        } catch (Exception e) {
+            cantidad = 0;
+        }
+        if (cantidad <= 0) {
+            utilitario.agregarMensajeError("La cantidad debe ser mayor o igual que 1", "");
+            tab_tabla.setValor("cantidad_acafi", "1");
+            utilitario.addUpdateTabla(tab_tabla, "cantidad_acafi", "");
+            cantidad = 1;
+        } else if (cantidad > 1) {
+            //Si es mayor q 1 es ingreso masivo
+            utilitario.agregarMensajeInfo("Se crearán " + cantidad + " activos fijos del mismo tipo", "");
+        }
+        generarCodigoBarras();
     }
 
     public void cargarActivoFijo() {
@@ -537,61 +766,219 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla3.ejecutarSql();
             tab_tabla2.setRendered(true);
             tab_tabla3.setRendered(true);
+            tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla5.ejecutarSql();
+            tab_tabla5.setRendered(true);
+            cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
         }
     }
 
+    public void imprimirCodigoBarra() {
+        if (tab_tabla.isFilaInsertada() == false) {
+            if (cantidad == 1) {
+                cagarReporteCodigoBarras(tab_tabla.getStringColumna("ide_acafi"));
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe guardar el activo fijo", "");
+        }
+    }
+
+    private void cagarReporteCodigoBarras(String ide_acafi) {
+        if (ide_acafi != null && ide_acafi.isEmpty() == false) {
+            Map parametros_rep = new HashMap();
+            parametros_rep.put("ide_acafi", ide_acafi);
+            vipdf_acta.setTitle("CÓDIGO DE BARRAS");
+            vipdf_acta.setVisualizarPDF("rep_activos/rep_cod_barras.jasper", parametros_rep);
+            vipdf_acta.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Seleccione un activo fijo para imprimir el Código de Barras", "");
+        }
+    }
+
+    public void imprimirActaC() {
+        if (tab_tabla.getValor("ide_acact") != null) {
+            Map parametros_rep = new HashMap();
+            parametros_rep.put("ide_acact", Long.parseLong(tab_tabla.getValor("ide_acact")));
+            vipdf_acta.setTitle("ACTA DE CONSTATACIÓN FÍSICA");
+            vipdf_acta.setVisualizarPDF("rep_activos/rep_acta_constata.jasper", parametros_rep);
+            vipdf_acta.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Acta", "");
+        }
+    }
+
+    public void generarCodigoBarras() {
+        StringBuilder codigoB = new StringBuilder();
+        String codCasa = tab_tabla.getValor("ide_gecas") == null ? "00" : tab_tabla.getValorArreglo("ide_gecas", 2);
+        if (codCasa != null && codCasa.length() < 2) {
+            codCasa = String.format("%02d", new Object[]{Integer.parseInt(codCasa)}).trim();
+        }
+        String codObra = tab_tabla.getValor("ide_geobr") == null ? "000" : tab_tabla.getValorArreglo("ide_geobr", 2);
+        if (codObra != null && codObra.length() < 3) {
+            codObra = String.format("%03d", new Object[]{Integer.parseInt(codObra)}).trim();
+        }
+        String codUbiAct = tab_tabla.getValor("ide_acuba") == null ? "00" : tab_tabla.getValorArreglo("ide_acuba", 2);
+        if (codUbiAct != null && codUbiAct.length() < 2) {
+            codUbiAct = String.format("%02d", new Object[]{Integer.parseInt(codUbiAct)}).trim();
+        }
+        String codClasAct = tab_tabla.getValor("ide_accla") == null ? "00" : tab_tabla.getValorArreglo("ide_accla", 2);
+        if (codClasAct != null && codClasAct.length() < 2) {
+            codClasAct = String.format("%02d", new Object[]{Integer.parseInt(codClasAct)}).trim();
+        }
+        String codTipoAct = tab_tabla.getValor("ide_inarti") == null ? "000" : tab_tabla.getValorArreglo("ide_inarti", 2);
+        if (codTipoAct != null && codTipoAct.length() < 3) {
+            codTipoAct = String.format("%03d", new Object[]{Integer.parseInt(codTipoAct)}).trim();
+        }
+        codigoB.append(codCasa).append(" ").append(codObra).append(" ").append(codUbiAct).append(" ").append(codClasAct).append(" ").append(codTipoAct);
+        tab_tabla.setValor("codigo_barras_acafi", codigoB.toString().trim());
+
+        if (cantidad == 1) {
+            eti_cod_barras.setValue(codigoB.toString());
+            try {
+                File barcodeFile = new File("dynamicbarcode");
+                BarcodeImageHandler.saveJPEG(
+                        BarcodeFactory.createCode128(codigoB.toString()), barcodeFile);
+                stcCodigoBarra = new DefaultStreamedContent(
+                        new FileInputStream(barcodeFile), "image/jpeg");
+            } catch (Exception e) {
+            }
+        } else {
+            eti_cod_barras.setValue(null);
+            stcCodigoBarra = null;
+        }
+        utilitario.addUpdate("tab_tabulador:0:gri_cb");
+    }
+
+    public void cargarCodigoBarras() {
+
+        String codigoB = tab_tabla.getValor("codigo_barras_acafi");
+        try {
+            cantidad = Integer.parseInt(tab_tabla.getValor("cantidad_acafi"));
+        } catch (Exception e) {
+            cantidad = 0;
+        }
+        if (cantidad == 1) {
+            eti_cod_barras.setValue(codigoB);
+            try {
+                File barcodeFile = new File("dynamicbarcode");
+                BarcodeImageHandler.saveJPEG(
+                        BarcodeFactory.createCode128(codigoB), barcodeFile);
+                stcCodigoBarra = new DefaultStreamedContent(
+                        new FileInputStream(barcodeFile), "image/jpeg");
+            } catch (Exception e) {
+            }
+        } else {
+            eti_cod_barras.setValue(null);
+            stcCodigoBarra = null;
+        }
+        utilitario.addUpdate("tab_tabulador:0:gri_cb");
+    }
+
     @Override
     public void insertar() {
-        dibujarActivoFijo();
-        tab_tabla.insertar();
+        if (mep_menu.getOpcion() == 2) {
+            if (tab_tabla4 != null) {
+                if (tab_tabla4.isFocus()) {
+                    tab_tabla4.insertar();
+                    return;
+                }
+            }
+
+            tab_tabla.limpiar();
+            tab_tabla.insertar();
+            tab_tabla2.limpiar();
+            tab_tabla3.limpiar();
+            tab_tabla4.insertar();
+            eti_cod_barras.setValue(tab_tabla.getValor("codigo_barras_acafi"));
+        } else {
+            mep_menu.limpiar();
+            dibujarActivoFijo();
+            tab_tabla.insertar();
+        }
+
     }
 
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 2) {
+            TablaGenerica tab_masivo = new TablaGenerica();
             if (tab_tabla.guardar()) {
-                guardarPantalla();
+                if (cantidad > 1) {
+                    tab_masivo.setTabla("act_activo_fijo", "ide_acafi");
+                    tab_masivo.setCondicion("ide_acafi=-1");
+                    tab_masivo.ejecutarSql();
+                    for (int i = 0; i < cantidad; i++) {
+                        tab_masivo.insertar();
+                        //recorre todas las columnas de la tabla principal
+                        for (int j = 0; j < tab_tabla.getTotalColumnas(); j++) {
+                            String strColumna = tab_tabla.getColumnas()[j].getNombre();
+                            if (!strColumna.equalsIgnoreCase("ide_acafi")) {
+                                tab_masivo.setValor(strColumna, tab_tabla.getValor(strColumna));
+                            }
+                        }
+                        tab_masivo.setValor("act_ide_acafi", tab_tabla.getValor("ide_acafi"));
+                        tab_masivo.setValor("sec_masivo_acafi", String.valueOf((i + 1)));
+                        tab_masivo.setValor("cantidad_acafi", "1");
+                    }
+                    tab_masivo.guardar();
+                }
+                if (tab_tabla4 != null) {
+                    if (tab_tabla4.isFilaInsertada()) {
+                        tab_tabla4.setValor("ide_acafi", tab_tabla.getValor("ide_acafi"));
+                    }
+                }
+                if (guardarPantalla().isEmpty()) {
+                    utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                    if (cantidad > 1) {
+                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi in(" + tab_masivo.getStringColumna("ide_acafi") + ")");
+                        utilitario.agregarMensaje("Se generaron " + cantidad + " activos fijos", "");
+                        cantidad = 1;
+
+                        tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
+                        tab_tabla5.ejecutarSql();
+                        tab_tabla5.setRendered(true);
+                    }
+                    tab_tabla.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                    tab_tabla.ejecutarSql();
+                    cargarCodigoBarras();
+                }
             }
         } else if (mep_menu.getOpcion() == 5) {
             String seleccionadas = tab_tabla2.getFilasSeleccionadas();
             if (seleccionadas != null) {
-                String ide_geper = tab_tabla.getValor("ide_geper");
-                String fecha_acaaf = tab_tabla.getValor("fecha_acaaf");
-                String observacion_acaaf = tab_tabla.getValor("observacion_acaaf");
-                if (ide_geper == null) {
-                    utilitario.agregarMensajeError("Debe seleccionar un Custodio", "");
-                    return;
-                }
-                if (fecha_acaaf == null) {
-                    utilitario.agregarMensajeError("Debe seleccionar una Fecha de asignación", "");
-                    return;
-                }
-                if (observacion_acaaf == null) {
-                    utilitario.agregarMensajeError("Debe ingresar una Observación", "");
-                    return;
-                }
-                String[] act = seleccionadas.split(",");
-                tab_tabla.limpiar();
-                tab_tabla.setCampoForanea("");
-                for (int i = 0; i < act.length; i++) {
-                    String ide_acafi = act[i];
-                    tab_tabla.setValidarInsertar(false);
-                    tab_tabla.insertar();
-                    tab_tabla.setValor("ide_acafi", ide_acafi);
-                    tab_tabla.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-                    tab_tabla.setValor("ide_geper", ide_geper);
-                    tab_tabla.setValor("observacion_acaaf", observacion_acaaf);
-                }
-                utilitario.getConexion().agregarSqlPantalla("update act_activo_fijo set ide_geper=" + ide_geper + " where ide_acafi in (" + seleccionadas + ")");
+                tab_tabla.setValor("secuencial_acact", String.valueOf(ser_activos.getSecuencialActaConstatacion()));
+                tab_tabla.setValor("codigo_acact", "ACT-" + String.valueOf(ser_activos.getSecuencialActaConstatacion()));
                 if (tab_tabla.guardar()) {
-                    if (guardarPantalla().isEmpty()) {
-                        tab_tabla.limpiar();
-                        tab_tabla.insertar();
-                        tab_tabla2.actualizar();
+                    String ide_geper = tab_tabla.getValor("ide_geper");
+                    String fecha_acaaf = tab_tabla.getValor("fecha_asigna_acact");
+
+                    TablaGenerica tab_asig = new TablaGenerica();
+                    tab_asig.setTabla("act_asignacion_activo", "ide_acaaf");
+                    tab_asig.setCondicion("ide_acaaf=-1");
+                    tab_asig.ejecutarSql();
+
+                    String[] act = seleccionadas.split(",");
+
+                    for (String ide_acafi : act) {
+                        tab_asig.insertar();
+                        tab_asig.setValor("ide_acafi", ide_acafi);
+                        tab_asig.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+                        tab_asig.setValor("ide_geper", ide_geper);
+                        tab_asig.setValor("fecha_acaaf", fecha_acaaf);
+                        tab_asig.setValor("ide_acact", tab_tabla.getValor("ide_acact"));
+                    }
+                    utilitario.getConexion().agregarSqlPantalla("update act_activo_fijo set ide_geper=" + ide_geper + " where ide_acafi in (" + seleccionadas + ")");
+                    if (tab_asig.guardar()) {
+                        if (guardarPantalla().isEmpty()) {
+                            tab_tabla.limpiar();
+                            tab_tabla.insertar();
+                            tab_tabla2.actualizar();
+                        }
                     }
                 }
+
             } else {
                 utilitario.agregarMensajeError("Seleccione activos para asignar", "");
             }
@@ -600,7 +987,12 @@ public class pre_activos_fijos extends Pantalla {
 
     @Override
     public void eliminar() {
-
+        if (tab_tabla4 != null) {
+            if (tab_tabla4.isFocus()) {
+                tab_tabla4.insertar();
+                return;
+            }
+        }
     }
 
     public Tabla getTab_tabla() {
@@ -681,6 +1073,30 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setVipdf_acta(VisualizarPDF vipdf_acta) {
         this.vipdf_acta = vipdf_acta;
+    }
+
+    public StreamedContent getStcCodigoBarra() {
+        return stcCodigoBarra;
+    }
+
+    public void setStcCodigoBarra(StreamedContent stcCodigoBarra) {
+        this.stcCodigoBarra = stcCodigoBarra;
+    }
+
+    public Tabla getTab_tabla4() {
+        return tab_tabla4;
+    }
+
+    public void setTab_tabla4(Tabla tab_tabla4) {
+        this.tab_tabla4 = tab_tabla4;
+    }
+
+    public Tabla getTab_tabla5() {
+        return tab_tabla5;
+    }
+
+    public void setTab_tabla5(Tabla tab_tabla5) {
+        this.tab_tabla5 = tab_tabla5;
     }
 
 }

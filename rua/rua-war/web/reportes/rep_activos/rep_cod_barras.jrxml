@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cod_barras" language="groovy" pageWidth="175" pageHeight="82" orientation="Landscape" columnWidth="165" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" uuid="4e196fa4-b488-4c88-a253-632d9cc643a8">
+	<property name="ireport.zoom" value="1.3310000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_acafi" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select codigo_barras_acafi from act_activo_fijo where ide_acafi IN ($P!{ide_acafi}) ]]>
+	</queryString>
+	<field name="codigo_barras_acafi" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="72" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="1d6159d0-dacb-419e-b944-9a38bb04ab3d" x="27" y="11" width="114" height="50"/>
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
+					<jr:codeExpression><![CDATA[$F{codigo_barras_acafi}]]></jr:codeExpression>
+				</jr:Code128>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>
