@@ -108,8 +108,7 @@ public class pre_activos_fijos extends Pantalla {
 
         vipdf_acta.setId("vipdf_acta");
         vipdf_acta.setTitle("ACTA ENTREGA - RECEPCIÓN");
-        agregarComponente(vipdf_acta);
-
+        agregarComponente(vipdf_acta);        
     }
 
     public void dibujarConsultarPorCodigoB() {
@@ -728,6 +727,7 @@ public class pre_activos_fijos extends Pantalla {
         gr.getChildren().add(pat_panel1);
         gr.getChildren().add(tab_tabulador);
         mep_menu.dibujar(2, "FICHA ACTIVO FIJO", gr);
+        mep_menu.getDivision2().setTransient(true);
         gr.getParent().setTransient(true);
         gr.getParent().getParent().setTransient(true);
         tab_tabulador.getParent().setTransient(true);
