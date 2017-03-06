@@ -108,7 +108,7 @@ public class pre_activos_fijos extends Pantalla {
 
         vipdf_acta.setId("vipdf_acta");
         vipdf_acta.setTitle("ACTA ENTREGA - RECEPCIÓN");
-        agregarComponente(vipdf_acta);        
+        agregarComponente(vipdf_acta);
     }
 
     public void dibujarConsultarPorCodigoB() {
@@ -636,6 +636,7 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla);
 
+        tab_tabulador.getChildren().clear();
         tab_tabulador.setTransient(true);
         tab_tabulador.setId("tab_tabulador");
 
