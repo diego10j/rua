@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_acafi" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select codigo_barras_acafi from act_activo_fijo where ide_acafi IN ($P!{ide_acafi}) ]]>
+		<![CDATA[select codigo_barras_acafi from act_activo_fijo where ide_acafi IN ($P!{ide_acafi})]]>
 	</queryString>
 	<field name="codigo_barras_acafi" class="java.lang.String"/>
 	<background>
@@ -13,12 +13,33 @@
 	</background>
 	<detail>
 		<band height="72" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="388286ee-cf2d-4342-a54e-b46f011f23d9" x="0" y="0" width="165" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6f5136ff-27e4-4a03-8e27-5dd9c218d51a" x="13" y="50" width="138" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ACTIVOS FIJOS]]></text>
+			</staticText>
 			<componentElement>
-				<reportElement uuid="1d6159d0-dacb-419e-b944-9a38bb04ab3d" x="27" y="11" width="114" height="50"/>
-				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
+				<reportElement uuid="de17adb2-c380-467b-96bb-d1174c15d2ae" x="0" y="18" width="165" height="32"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128A" drawText="false" checksumRequired="false" barWidth="0">
 					<jr:codeExpression><![CDATA[$F{codigo_barras_acafi}]]></jr:codeExpression>
-				</jr:Code128>
+				</jr:barbecue>
 			</componentElement>
+			<textField>
+				<reportElement uuid="6ddce174-29f9-4b14-8f7f-46903190f9a2" x="40" y="39" width="100" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_barras_acafi}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>
