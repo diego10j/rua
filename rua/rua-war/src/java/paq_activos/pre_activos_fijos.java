@@ -570,6 +570,12 @@ public class pre_activos_fijos extends Pantalla {
 
     public void agregarActivoAsigna() {
         if (set_selecciona.getSeleccionados() != null) {
+            if (tab_tabla.isFilaInsertada() == false) {
+                strActivosAsignados = tab_tabla2.getStringColumna("ide_acafi");
+                if (strActivosAsignados == null) {
+                    strActivosAsignados = "";
+                }
+            }
             if (strActivosAsignados.isEmpty() == false) {
                 strActivosAsignados += ",";
             }
