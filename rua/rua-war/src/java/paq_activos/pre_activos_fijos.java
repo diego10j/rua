@@ -1027,9 +1027,12 @@ public class pre_activos_fijos extends Pantalla {
                     }
                 }
                 if (guardarPantalla().isEmpty()) {
-                    utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                    if (cantidad == 1) {
+                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                    }
+
                     if (cantidad > 1) {
-                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi in(" + tab_masivo.getStringColumna("ide_acafi") + ")");
+                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi in(" + tab_masivo.getStringColumna("ide_acafi") + ") and  act_ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                         utilitario.agregarMensaje("Se generaron " + cantidad + " activos fijos", "");
                         cantidad = 1;
 
