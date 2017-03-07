@@ -5499,6 +5499,22 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 				" WHERE EPAR.ACTIVO_GEEDP in ("+estado+")";
 		return sql_empleadoContrato;
 	}
+	//servicio contabilza empleados rua 
+	
+	public String contabilizaNominaRua(String periodo){
+		String sql="select ide_cndpc, ide_gelua,sum(debe) as debe,sum(haber) as haber from ( " +
+                            "select a.ide_gelua,ide_cndpc,b.ide_nrrub,b.ide_nrder,d.ide_nrrol,d.ide_gepro, " +
+                            "(case when a.ide_gelua = 0 then valor_nrdro else 0 end) as haber,(case when a.ide_gelua = 1 then valor_nrdro else 0 end) as debe " +
+                            "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d " +
+                            "where a.ide_nrrub = b.ide_nrrub " +
+                            "and b.ide_nrder = c.ide_nrder " +
+                            "and c.ide_nrrol = d.ide_nrrol " +
+                            "and c.ide_nrrol in (" +periodo+")"+
+                            ") a " +
+                            "group by ide_gelua,ide_cndpc";
+		return sql;
+	}
+        
 	//fin empleadoContrato	
 	public String servicioEmpleadoContratoCodigo(String estado,String ide_gtemp){
 		String sql_empleadoContrato="SELECT EPAR.IDE_GEEDP, EMP.DOCUMENTO_IDENTIDAD_GTEMP, " +
