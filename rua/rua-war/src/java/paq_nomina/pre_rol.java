@@ -1439,7 +1439,7 @@ public class pre_rol extends Pantalla{
 				p_parametros.put("IDE_GEPRO", Integer.parseInt(com_periodo.getValue().toString()));	
 			}
 			else{
-				utilitario.agregarMensajeInfo("No tiene n�minas cerradas en el periodo seleccionado", "Solo se pueden enviar n�minas con estado cerradas");
+				utilitario.agregarMensajeInfo("No tiene nominas cerradas en el periodo seleccionado", "Solo se pueden enviar n�minas con estado cerradas");
 			}								
 		}
 		else{
@@ -2763,7 +2763,7 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                                                  p_parametros.put("par_total_recibir",Integer.parseInt(utilitario.getVariable("p_nrh_rubro_valor_recibir")));
                                                  p_parametros.put("par_total_ingresos",Integer.parseInt(utilitario.getVariable("p_nrh_rubro_total_ingresos")));
                                                  p_parametros.put("par_total_egresos",Integer.parseInt(utilitario.getVariable("p_nrh_rubro_total_egresos")));                                                    
-                                                 
+						System.out.print("reporte parametro..."+p_parametros);
                                                  File fil_rol=generar(p_parametros, "/reportes/rep_rol_de_pagos/rep_n_rol_pagos.jasper",filaActual.getCampos()[0].toString());
                                                  List<File> lis_file = new ArrayList<File>();
                                                  lis_file.add(fil_rol);
@@ -2812,15 +2812,19 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                          try {
                          parametros.put("ide_empr", Integer.parseInt(utilitario.getVariable("ide_empr")));
                          } catch (Exception e) {
+                             System.out.println("error ide_empr" + e);
                          }
                          try {
                          parametros.put("ide_sucu", Integer.parseInt(utilitario.getVariable("ide_sucu")));
                          } catch (Exception e) {
+                             System.out.println("error ide_sucu" + e);
                          }
 
                          try {
                          parametros.put("usuario", Integer.parseInt(utilitario.getVariable("ide_usua")));
                          } catch (Exception e) {
+                                     System.out.println("error usuario" + e);
+
                          }
 
                          parametros.put("SUBREPORT_DIR", utilitario.getURL());
