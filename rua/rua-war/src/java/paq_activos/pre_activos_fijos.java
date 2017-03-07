@@ -674,7 +674,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("nombre_acafi").setRequerida(false);
         tab_tabla.getColumna("ide_inarti").setRequerida(true);
         tab_tabla.getColumna("nombre_acafi").setVisible(false);
-        tab_tabla.getColumna("vida_util_acafi").setLectura(true);
+        tab_tabla.getColumna("vida_util_acafi").setLectura(false);
         tab_tabla.getColumna("valor_compra_acafi").setLectura(false);
         tab_tabla.getColumna("recidual_acafi").setVisible(true);
         tab_tabla.getColumna("credi_tribu_acafi").setVisible(false);
