@@ -871,6 +871,11 @@ public class pre_activos_fijos extends Pantalla {
             if (cantidad == 1) {
                 cagarReporteCodigoBarras(tab_tabla.getStringColumna("ide_acafi"));
             }
+            if (cantidad > 1) {
+                if (tab_tabla5.isEmpty() == false) {
+                    cagarReporteCodigoBarras(tab_tabla5.getStringColumna("ide_acafi"));
+                }
+            }
         } else {
             utilitario.agregarMensajeInfo("Debe guardar el activo fijo", "");
         }
