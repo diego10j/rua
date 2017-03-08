@@ -164,8 +164,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla2.setRendered(true);
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
-            tab_tabla5.ejecutarSql();
-            tab_tabla5.setRendered(true);
+            tab_tabla5.ejecutarSql();            
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensajeError("El código de barras no existe", "");
@@ -808,7 +807,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla5.getColumna("ide_acafi").setVisible(false);
         tab_tabla5.setLectura(true);
         tab_tabla5.setRows(10);
-        tab_tabla5.setRendered(false);
+        
         tab_tabla5.dibujar();
 
         PanelTabla pat_panel6 = new PanelTabla();
@@ -862,7 +861,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla5.ejecutarSql();
-            tab_tabla5.setRendered(true);
+            
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
@@ -1048,8 +1047,7 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                     tab_tabla.ejecutarSql();
                     cargarCodigoBarras();
-                    tab_tabla5.setRendered(true);
-                    utilitario.addUpdate("tab_tabulador:0:tab_tabla5");
+                    cantidad=0;                    
                 }
             }
         } else if (mep_menu.getOpcion() == 5) {
