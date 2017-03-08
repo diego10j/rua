@@ -120,6 +120,7 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.getTab_seleccion().getColumna("CASA").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("OBRA").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("CLASE").setFiltroContenido();
+        set_selecciona.getTab_seleccion().getColumna("codigo_barras_acafi").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("act_ide_acafi").setVisible(false);
         set_selecciona.setWidth("80%");
         set_selecciona.setHeight("70%");
@@ -364,6 +365,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla2.getColumna("ide_acafi").setVisible(false);
         tab_tabla2.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla2.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
         tab_tabla2.getColumna("nom_geper").setNombreVisual("CUSTODIO");
         tab_tabla2.getColumna("TIPO_ACTIVO").setFiltroContenido();
         tab_tabla2.getColumna("ESTADO").setFiltroContenido();
@@ -618,6 +620,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("ide_acafi").setVisible(false);
         tab_tabla.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
         tab_tabla.getColumna("nom_geper").setNombreVisual("CUSTODIO");
         tab_tabla.getColumna("TIPO_ACTIVO").setFiltroContenido();
         tab_tabla.getColumna("ESTADO").setFiltroContenido();
@@ -1003,23 +1006,25 @@ public class pre_activos_fijos extends Pantalla {
             generarCodigoBarras();
             if (tab_tabla.guardar()) {
                 if (cantidad > 1) {
-                    tab_masivo.setTabla("act_activo_fijo", "ide_acafi");
-                    tab_masivo.setCondicion("ide_acafi=-1");
-                    tab_masivo.ejecutarSql();
-                    for (int i = 0; i < cantidad; i++) {
-                        tab_masivo.insertar();
-                        //recorre todas las columnas de la tabla principal
-                        for (int j = 0; j < tab_tabla.getTotalColumnas(); j++) {
-                            String strColumna = tab_tabla.getColumnas()[j].getNombre();
-                            if (!strColumna.equalsIgnoreCase("ide_acafi")) {
-                                tab_masivo.setValor(strColumna, tab_tabla.getValor(strColumna));
+                    if (tab_tabla.isFilaInsertada()) {
+                        tab_masivo.setTabla("act_activo_fijo", "ide_acafi");
+                        tab_masivo.setCondicion("ide_acafi=-1");
+                        tab_masivo.ejecutarSql();
+                        for (int i = 0; i < cantidad; i++) {
+                            tab_masivo.insertar();
+                            //recorre todas las columnas de la tabla principal
+                            for (int j = 0; j < tab_tabla.getTotalColumnas(); j++) {
+                                String strColumna = tab_tabla.getColumnas()[j].getNombre();
+                                if (!strColumna.equalsIgnoreCase("ide_acafi")) {
+                                    tab_masivo.setValor(strColumna, tab_tabla.getValor(strColumna));
+                                }
                             }
+                            tab_masivo.setValor("act_ide_acafi", tab_tabla.getValor("ide_acafi"));
+                            tab_masivo.setValor("sec_masivo_acafi", String.valueOf((i + 1)));
+                            tab_masivo.setValor("cantidad_acafi", "1");
                         }
-                        tab_masivo.setValor("act_ide_acafi", tab_tabla.getValor("ide_acafi"));
-                        tab_masivo.setValor("sec_masivo_acafi", String.valueOf((i + 1)));
-                        tab_masivo.setValor("cantidad_acafi", "1");
+                        tab_masivo.guardar();
                     }
-                    tab_masivo.guardar();
                 }
                 if (tab_tabla4 != null) {
                     if (tab_tabla4.isFilaInsertada()) {
@@ -1027,18 +1032,17 @@ public class pre_activos_fijos extends Pantalla {
                     }
                 }
                 if (guardarPantalla().isEmpty()) {
+                    tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
+                    tab_tabla5.ejecutarSql();
+                    tab_tabla5.setRendered(true);
                     if (cantidad == 1) {
                         utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                     }
-
                     if (cantidad > 1) {
-                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi in(" + tab_masivo.getStringColumna("ide_acafi") + ") and  act_ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi in(" + tab_tabla5.getStringColumna("ide_acafi") + ") and  act_ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                         utilitario.agregarMensaje("Se generaron " + cantidad + " activos fijos", "");
                         cantidad = 1;
 
-                        tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
-                        tab_tabla5.ejecutarSql();
-                        tab_tabla5.setRendered(true);
                     }
                     tab_tabla.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                     tab_tabla.ejecutarSql();
