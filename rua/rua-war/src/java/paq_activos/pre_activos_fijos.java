@@ -1018,11 +1018,6 @@ public class pre_activos_fijos extends Pantalla {
                         tab_masivo.guardar();
                     }
                 }
-                if (tab_tabla4 != null) {
-                    if (tab_tabla4.isFilaInsertada()) {
-                        tab_tabla4.setValor("ide_acafi", tab_tabla.getValor("ide_acafi"));
-                    }
-                }
                 if (guardarPantalla().isEmpty()) {
                     tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
                     tab_tabla5.ejecutarSql();
