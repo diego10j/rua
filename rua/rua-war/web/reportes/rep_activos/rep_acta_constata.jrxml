@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.8150000000000037"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="317"/>
 	<property name="ireport.y" value="119"/>
 	<parameter name="ide_acact" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -371,7 +371,7 @@ order by nombre_inarti,a.ide_acact]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="88" y="0" width="106" height="13"/>
 				<textElement textAlignment="Center">
 					<font size="7"/>
@@ -390,7 +390,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="192929b9-96f5-4e11-88a6-a92704775b0c" x="334" y="0" width="148" height="13"/>
 				<box leftPadding="3"/>
 				<textElement/>
@@ -422,7 +422,7 @@ order by nombre_inarti,a.ide_acact]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="eae6d700-8cb7-4ad4-bd63-d9acbeb5247c" x="1" y="0" width="87" height="13"/>
 				<textElement>
 					<font size="8"/>

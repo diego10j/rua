@@ -16,7 +16,8 @@
 		<![CDATA[SELECT CCC.numero_cnccc,certi.ide_ipcer,CERTI.num_certificado_ipcer,CUENTA1.nombre_cndpc,CERTI.capital_ipcer,
 EMPRESA.constitucion_empr,CERTI.plazo_ipcer,CERTI.tasa_ipcer,CERTI.fecha_emision_ipcer,CERTI.fecha_vence_ipcer,EMPRESA.nom_empr,
 MONEDA.nombre_cnmod,EMPRESA.identificacion_empr, CLASEIN.nombre_ipcin,
-PERSONA.nom_geper,PERSONA.direccion_geper
+PERSONA.nom_geper,PERSONA.direccion_geper,
+(select beneficiario_ipcai from iyp_cab_inversion where ide_ipcai=CERTI.ide_ipcai) as beneficiario_ipcai
 FROM iyp_certificado AS CERTI
 LEFT JOIN con_det_plan_cuen AS CUENTA1 ON CERTI.ide_cndpc=CUENTA1.ide_cndpc
 LEFT JOIN con_det_plan_cuen AS CUENTA2 ON CERTI.con_ide_cndpc=CUENTA2.ide_cndpc
@@ -41,8 +42,13 @@ WHERE CERTI.ide_ipcer=$P{ide_ipcer}  AND CERTI.ide_empr=$P{ide_empr} and CERTI.i
 	<field name="nombre_cnmod" class="java.lang.String"/>
 	<field name="identificacion_empr" class="java.lang.String"/>
 	<field name="nombre_ipcin" class="java.lang.String"/>
-	<field name="nom_geper" class="java.lang.String"/>
-	<field name="direccion_geper" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="direccion_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="beneficiario_ipcai" class="java.lang.String"/>
 	<background>
 		<band height="500" splitType="Stretch">
 			<image>
@@ -242,7 +248,7 @@ WHERE CERTI.ide_ipcer=$P{ide_ipcer}  AND CERTI.ide_empr=$P{ide_empr} and CERTI.i
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario_ipcai} == null ? $F{nom_geper} : $F{beneficiario_ipcai}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="0c852c05-b672-418f-8a1e-8745647c82de" x="1" y="138" width="257" height="20"/>
