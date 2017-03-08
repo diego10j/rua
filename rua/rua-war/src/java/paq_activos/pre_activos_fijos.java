@@ -1049,7 +1049,7 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla.ejecutarSql();
                     cargarCodigoBarras();
                     tab_tabla5.setRendered(true);
-                    utilitario.addUpdate(tab_tabla5.getIdCompleto());
+                    utilitario.addUpdate("tab_tabulador:0:tab_tabla5");
                 }
             }
         } else if (mep_menu.getOpcion() == 5) {
