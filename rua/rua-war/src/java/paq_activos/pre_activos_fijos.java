@@ -977,19 +977,12 @@ public class pre_activos_fijos extends Pantalla {
     @Override
     public void insertar() {
         if (mep_menu.getOpcion() == 2) {
-            if (tab_tabla4 != null) {
-                if (tab_tabla4.isFocus()) {
-                    tab_tabla4.insertar();
-                    return;
-                }
-            }
-
             tab_tabla.limpiar();
             tab_tabla.insertar();
             tab_tabla2.limpiar();
             tab_tabla3.limpiar();
-            tab_tabla4.insertar();
             eti_cod_barras.setValue(tab_tabla.getValor("codigo_barras_acafi"));
+            cantidad=0;  
         } else {
             mep_menu.limpiar();
             dibujarActivoFijo();
