@@ -1080,12 +1080,7 @@ public class pre_activos_fijos extends Pantalla {
 
     @Override
     public void eliminar() {
-        if (tab_tabla4 != null) {
-            if (tab_tabla4.isFocus()) {
-                tab_tabla4.insertar();
-                return;
-            }
-        }
+        
     }
 
     public Tabla getTab_tabla() {
