@@ -164,7 +164,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla2.setRendered(true);
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
-            tab_tabla5.ejecutarSql();            
+            tab_tabla5.ejecutarSql();
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensajeError("El código de barras no existe", "");
@@ -650,7 +650,7 @@ public class pre_activos_fijos extends Pantalla {
     }
 
     public void dibujarActivoFijo() {
-
+        cantidad = 1;
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
@@ -807,7 +807,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla5.getColumna("ide_acafi").setVisible(false);
         tab_tabla5.setLectura(true);
         tab_tabla5.setRows(10);
-        
+
         tab_tabla5.dibujar();
 
         PanelTabla pat_panel6 = new PanelTabla();
@@ -861,7 +861,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla5.ejecutarSql();
-            
+
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
@@ -982,7 +982,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla2.limpiar();
             tab_tabla3.limpiar();
             eti_cod_barras.setValue(tab_tabla.getValor("codigo_barras_acafi"));
-            cantidad=0;  
+            cantidad = 0;
         } else {
             mep_menu.limpiar();
             dibujarActivoFijo();
@@ -1040,7 +1040,7 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                     tab_tabla.ejecutarSql();
                     cargarCodigoBarras();
-                    cantidad=0;                    
+                    cantidad = 0;
                 }
             }
         } else if (mep_menu.getOpcion() == 5) {
