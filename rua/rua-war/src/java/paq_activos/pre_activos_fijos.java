@@ -718,6 +718,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("codigo_recu_acafi").setVisible(false);
         tab_tabla.getColumna("sec_masivo_acafi").setVisible(false);
 
+        tab_tabla.getColumna("ide_accls").setCombo("act_clasificacion", "ide_accls", "nombre_accls", "");
+
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.setCondicion("ide_acafi=-1");
@@ -1080,7 +1082,7 @@ public class pre_activos_fijos extends Pantalla {
 
     @Override
     public void eliminar() {
-        
+
     }
 
     public Tabla getTab_tabla() {
