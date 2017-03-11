@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="780" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
 	<property name="ireport.zoom" value="1.3995221406292009"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="388"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
 	<parameter name="monto" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -655,12 +655,12 @@ $P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="10"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion_cnccc}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="d038e68c-8c6d-4356-91f1-42d0683620ff" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="1" width="72" height="13"/>
+				<reportElement uuid="d038e68c-8c6d-4356-91f1-42d0683620ff" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="1" width="72" height="23"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>

@@ -111,7 +111,9 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.getColumna("valor_cndre").alinearDerecha();
         tab_tabla.getColumna("base_cndre").setNombreVisual("BASE IMPONIBLE");
         tab_tabla.getColumna("base_cndre").alinearDerecha();
-
+        tab_tabla.getColumna("NUMERO").setFiltroContenido();
+        tab_tabla.getColumna("NUMERO").setLongitud(50);
+        tab_tabla.getColumna("NUM_FACTURA").setFiltroContenido();
         tab_tabla.setColumnaSuma("valor_cndre,base_cndre");
         tab_tabla.setLectura(true);
         tab_tabla.setRows(25);
@@ -169,6 +171,12 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.getColumna("ide_cnere").setVisible(false);
         tab_tabla.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla.getColumna("BASE_IMPONIBLE").alinearDerecha();
+        tab_tabla.getColumna("NUMERO").setFiltroContenido();
+        tab_tabla.getColumna("NUMERO").setLongitud(50);
+        tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla.getColumna("NUM_FACTURA").setFiltroContenido();
+        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+
         tab_tabla.getColumna("VALOR").alinearDerecha();
         tab_tabla.getColumna("numero").setLongitud(25);
         tab_tabla.setLectura(true);

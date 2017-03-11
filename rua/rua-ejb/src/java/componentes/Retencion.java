@@ -158,6 +158,7 @@ public class Retencion extends Dialogo {
         tab_dt_retencion.getColumna("valor_cndre").alinearDerecha();
         tab_dt_retencion.getColumna("valor_cndre").setEstilo("font-size: 15px;font-weight: bold;");
         tab_dt_retencion.getColumna("porcentaje_cndre").setNombreVisual("PORCENTAJE RETENCIÓN");
+        tab_dt_retencion.getColumna("porcentaje_cndre").setLectura(true); ///BLOQUEAR PARA EVITAR ERRORES
         tab_dt_retencion.getColumna("porcentaje_cndre").setLongitud(50);
         tab_dt_retencion.getColumna("base_cndre").setNombreVisual("BASE IMPONIBLE");
         tab_dt_retencion.getColumna("base_cndre").setLongitud(50);

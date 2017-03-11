@@ -115,8 +115,7 @@ public class cls_retenciones {
                 }
             }
             band = 0;
-        }
-
+        }        
         for (int i = 0; i < l_casillero.size(); i++) {
             casillero = l_casillero.get(i).toString();
             for (int j = 0; j < tab_detalle_factura.getTotalFilas(); j++) {
@@ -241,7 +240,7 @@ public class cls_retenciones {
     }
 
     public String getNumeroRetencion(String autorizacion, boolean es_venta) {
-       String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+        String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and autorizacion_cncre ='" + autorizacion + "' "
                 + "and es_venta_cncre is FALSE ";
         System.out.println(str_sql);

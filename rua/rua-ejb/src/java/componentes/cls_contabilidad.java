@@ -69,7 +69,7 @@ public class cls_contabilidad {
 
             if (comprobante.validarComprobane()) {
                 if (ide_cnccc == -1) {
-                    ide_cnccc = utilitario.getConexion().getMaximo("con_cab_comp_cont", "ide_cnccc",1);
+                    ide_cnccc = utilitario.getConexion().getMaximo("con_cab_comp_cont", "ide_cnccc", 1);
                 } else {
                     ide_cnccc++;
                 }
@@ -87,7 +87,7 @@ public class cls_contabilidad {
                 tab_detalle.getColumna("ide_cnccc").setValorDefecto(tab_cabecera.getValor("ide_cnccc"));
                 for (int i = 0; i < comprobante.getDetalles().size(); i++) {
                     if (ide_cndcc == -1) {
-                        ide_cndcc = utilitario.getConexion().getMaximo("con_det_comp_cont", "ide_cndcc",comprobante.getDetalles().size());
+                        ide_cndcc = utilitario.getConexion().getMaximo("con_det_comp_cont", "ide_cndcc", comprobante.getDetalles().size());
                     } else {
                         ide_cndcc++;
                     }
@@ -176,7 +176,7 @@ public class cls_contabilidad {
         return saldo;
     }
 
-    public double obtenerSaldoCuenta(boolean es_consolidado,String ideCuenta, String fecha) {
+    public double obtenerSaldoCuenta(boolean es_consolidado, String ideCuenta, String fecha) {
         //Retorna el saldo inicial de una cuenta segun el periodo activo
         String ide_cntcu = getParametroPlanCuentas(ideCuenta, "ide_cntcu");
         double saldo = 0;
@@ -429,19 +429,19 @@ public class cls_contabilidad {
         String str_mes = utilitario.getMes(str_fecha) + "";
         String str_ide_sucu = utilitario.getVariable("ide_sucu");
         //SELECCIONA EL MAXIMO SEGUN EL MES Y EL AÑO 
-        TablaGenerica tab_max = utilitario.consultar("SELECT count(NUMERO_CNCCC) as cod,max(cast( substr(NUMERO_CNCCC,8) as NUMERIC)) AS MAXIMO  FROM CON_CAB_COMP_CONT WHERE extract(year from FECHA_TRANS_CNCCC) ='" + str_ano + "' AND extract(month from FECHA_TRANS_CNCCC) ='" + str_mes + "' AND IDE_SUCU=" + str_ide_sucu+"");
-       
+        TablaGenerica tab_max = utilitario.consultar("SELECT count(NUMERO_CNCCC) as cod,max(cast( substr(NUMERO_CNCCC,8) as NUMERIC)) AS MAXIMO  FROM CON_CAB_COMP_CONT WHERE extract(year from FECHA_TRANS_CNCCC) ='" + str_ano + "' AND extract(month from FECHA_TRANS_CNCCC) ='" + str_mes + "' AND IDE_SUCU=" + str_ide_sucu + "");
+
         String str_maximo = "0";
-        if (tab_max.getTotalFilas()>0) {
+        if (tab_max.getTotalFilas() > 0) {
             str_maximo = tab_max.getValor("MAXIMO");
             if (str_maximo == null || str_maximo.isEmpty()) {
                 str_maximo = "0";
             }
-            long lon_siguiente=0;
+            long lon_siguiente = 0;
             try {
-             lon_siguiente= Long.parseLong(str_maximo) + 1;   
+                lon_siguiente = Long.parseLong(str_maximo) + 1;
             } catch (Exception e) {
-            }             
+            }
             str_maximo = lon_siguiente + "";
         }
         str_maximo = utilitario.generarCero(8 - str_maximo.length()) + str_maximo;
@@ -461,18 +461,18 @@ public class cls_contabilidad {
 
     public String cerrarPeriodoContable(String ide_cnper, String fecha_inicio, String fecha_fin) {
         if (ide_cnper != null && !ide_cnper.isEmpty()
-                && fecha_inicio !=null && !fecha_inicio.isEmpty()
-                && fecha_fin !=null && !fecha_fin.isEmpty()) {
-        int signo = 0;
-        String fecha_inicio_nuevo_periodo = "";
-        String fecha_fin_nuevo_periodo = "";
-        fecha_inicio_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 1));
-        fecha_fin_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 60));
-        long ide_cnper_nuevo = utilitario.getConexion().getMaximo("con_periodo", "ide_cnper",1);
-        if (utilitario.getConexion().ejecutarSql("insert into con_periodo values (" + ide_cnper_nuevo + "," + utilitario.getVariable("ide_empr") + "," + utilitario.getVariable("ide_sucu") + ",'Periodo Creado Automaticamente ','" + fecha_inicio_nuevo_periodo + "','" + fecha_fin_nuevo_periodo + "',true,false)").isEmpty()) {
-            utilitario.getConexion().ejecutarSql("update con_periodo set estado_cnper=false where ide_cnper=" + ide_cnper);
-        }
-        return String.valueOf(ide_cnper_nuevo);
+                && fecha_inicio != null && !fecha_inicio.isEmpty()
+                && fecha_fin != null && !fecha_fin.isEmpty()) {
+            int signo = 0;
+            String fecha_inicio_nuevo_periodo = "";
+            String fecha_fin_nuevo_periodo = "";
+            fecha_inicio_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 1));
+            fecha_fin_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 60));
+            long ide_cnper_nuevo = utilitario.getConexion().getMaximo("con_periodo", "ide_cnper", 1);
+            if (utilitario.getConexion().ejecutarSql("insert into con_periodo values (" + ide_cnper_nuevo + "," + utilitario.getVariable("ide_empr") + "," + utilitario.getVariable("ide_sucu") + ",'Periodo Creado Automaticamente ','" + fecha_inicio_nuevo_periodo + "','" + fecha_fin_nuevo_periodo + "',true,false)").isEmpty()) {
+                utilitario.getConexion().ejecutarSql("update con_periodo set estado_cnper=false where ide_cnper=" + ide_cnper);
+            }
+            return String.valueOf(ide_cnper_nuevo);
         } else {
             return null;
         }
@@ -623,9 +623,9 @@ public class cls_contabilidad {
             sql += "and nivel_cndpc='PADRE' ) AS C2) "
                     + "order by codig_recur_cndpc ";
         }
-        System.out.println("sql balance general "+sql);
+        System.out.println("sql balance general " + sql);
         return sql;
-        
+
     }
 
     private String getSqlEstadoResultadosHijos(boolean es_consolidado, String fecha_inicio, String fecha_fin) {
@@ -880,7 +880,6 @@ public class cls_contabilidad {
                 + "ORDER BY CUENTA.codig_recur_cndpc desc";
         TablaGenerica tab_total = utilitario.consultar(sql);
 
-
         String sql1 = "SELECT '' as cuenta, '' as codigo,'' as debe, ''as haber,'' as deudor, ''as acreedor";
         TablaGenerica tab_balance = utilitario.consultar(sql1);
         String cuenta_anterior = "";
@@ -940,7 +939,7 @@ public class cls_contabilidad {
                     tab_balance.setValor("cuenta", tab_total.getValor(i, "nombre_cndpc"));
                     tab_balance.setValor("codigo", tab_total.getValor(i, "codig_recur_cndpc"));
                     if (tab_total.getValor(i, "ide_cnlap").equals(utilitario.getVariable("p_con_lugar_debe"))) {
-                        tab_balance.setValor("debe",utilitario.getFormatoNumero( tab_total.getValor(i, "valor")));
+                        tab_balance.setValor("debe", utilitario.getFormatoNumero(tab_total.getValor(i, "valor")));
                         tab_balance.setValor("haber", utilitario.getFormatoNumero("0"));
                         debe = Double.parseDouble(tab_total.getValor(i, "valor"));
                         haber = 0;

@@ -291,6 +291,9 @@ public class cls_formulario103 {
     }
 
     public String consultarBaseCasillero(String casillero) {
+        if (casillero.startsWith("332")) {
+            casillero = "332";
+        }
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.base_cndre) "
                 + " FROM con_cabece_retenc cr "
@@ -298,6 +301,7 @@ public class cls_formulario103 {
                 + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
                 + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
                 + " AND ci.casillero_cncim in (" + utilitario.generarComillaSimple(casillero) + ") "
+                + " AND ide_cnere=0 "//no anuladas
                 + " and es_venta_cncre=false");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
@@ -310,6 +314,9 @@ public class cls_formulario103 {
     }
 
     public String consultarValorCasillero(String casillero) {
+        if (casillero.startsWith("332")) {
+            casillero = "332";
+        }
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.porcentaje_cndre/100 * dr.base_cndre) "
                 + " FROM con_cabece_retenc cr "
@@ -317,6 +324,7 @@ public class cls_formulario103 {
                 + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
                 + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
                 + " AND ci.casillero_cncim in (" + utilitario.generarComillaSimple(casillero) + ") "
+                + " AND ide_cnere=0 "//no anuladas
                 + " and es_venta_cncre=false");
 
         if (lis_sql != null && !lis_sql.isEmpty()) {

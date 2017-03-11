@@ -863,7 +863,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla5.ejecutarSql();
-
+            tab_tabla.getColumna("cantidad_actra").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
@@ -1025,7 +1025,11 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla5.ejecutarSql();
 
                     if (cantidad == 1) {
-                        utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                        //solo si no es masivo actualiza el codigo de barras
+                        if (tab_tabla.getColumna("act_ide_acafi") == null) {
+                            utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                        }
+
                     }
                     if (cantidad > 1) {
                         utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
