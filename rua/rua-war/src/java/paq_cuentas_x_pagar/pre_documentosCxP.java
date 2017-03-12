@@ -22,6 +22,7 @@ import framework.componentes.Grupo;
 import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Radio;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
@@ -34,10 +35,14 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
 import paq_presupuesto.ejb.ServicioPresupuesto;
+import servicios.contabilidad.ServicioComprobanteContabilidad;
+import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -57,6 +62,10 @@ public class pre_documentosCxP extends Pantalla {
     private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
     @EJB
     private final ServicioPresupuesto ser_presupuesto = (ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
+    @EJB
+    private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
+    @EJB
+    private final ServicioComprobanteContabilidad ser_comp_conta = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
 
     private Tabla tab_tabla1 = new Tabla();
     private Combo com_periodo;
@@ -77,6 +86,15 @@ public class pre_documentosCxP extends Pantalla {
     private SeleccionTabla sel_certificacion = new SeleccionTabla();
 
     private Etiqueta eti1 = new Etiqueta();
+
+    private AutoCompletar aut_anticipo;
+    private Texto tex_saldo_anticipo;
+    private Texto tex_suma_facturas;
+    private Calendario cal_fecha_pago;
+    private Radio rad_hace_asiento;
+    private Texto tex_num_asiento;
+    private Etiqueta eti_num_asiento;
+    private Texto tex_observacion;
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -113,6 +131,9 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.agregarItem("Listado de Documentos CxP ", "dibujarDocumentos", "ui-icon-note");
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
         mep_menu.agregarItem("Generar Comprobante Retención", "dibujarDocumentosNoRetencion", "ui-icon-notice");
+        mep_menu.agregarSubMenu("ANTICIPOS EMPLEADOS");
+        mep_menu.agregarItem("Saldar Documentos CxP ", "dibujarSaldarAnticipo", "ui-icon-star");//8
+        mep_menu.agregarSubMenu("CONSULTAS");
         mep_menu.agregarItem("Documentos Anulados", "dibujarDocumentosAnulados", "ui-icon-cancel");
         mep_menu.agregarItem("Documentos Por Pagar", "dibujarDocumentosPorPagar", "ui-icon-calculator");
         mep_menu.agregarSubMenu("INFORMES");
@@ -137,6 +158,7 @@ public class pre_documentosCxP extends Pantalla {
 
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
+        asc_asiento.getBot_cancelar().setMetodo("cerrarAsiento");
         agregarComponente(asc_asiento);
 
         con_confirmar.setId("con_confirmar");
@@ -247,6 +269,267 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.dibujar(7, "COMPROMISO PRESUPUESTARIO DOCUMENTOS CXP", gri);
     }
 
+    public void dibujarSaldarAnticipo() {
+        Grid gri_contenido = new Grid();
+
+        Grid gri2 = new Grid();
+        gri2.setColumns(4);
+        gri2.getChildren().add(new Etiqueta("<strong>ANTICIPO EMPLEADO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        aut_anticipo = new AutoCompletar();
+        aut_anticipo.setId("aut_anticipo");
+        aut_anticipo.setAutocompletarContenido();
+        aut_anticipo.setAutoCompletar(ser_factura.getSqlAnticiposEmpleados());
+        aut_anticipo.setMetodoChange("seleccionarAnticipoEmpleado");
+        aut_anticipo.setSize(70);
+        gri2.getChildren().add(aut_anticipo);
+        gri2.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        cal_fecha_pago = new Calendario();
+        cal_fecha_pago.setFechaActual();
+        gri2.getChildren().add(cal_fecha_pago);
+        gri_contenido.getChildren().add(gri2);
+
+        Grid gri1 = new Grid();
+        gri1.setColumns(4);
+
+        Etiqueta eti_valor_cobrar = new Etiqueta();
+        eti_valor_cobrar.setValue("VALOR ANTICIPO $:");
+        eti_valor_cobrar.setStyle("font-weight: bold;");
+        tex_saldo_anticipo = new Texto();
+        tex_saldo_anticipo.setId("tex_saldo_anticipo");
+        tex_saldo_anticipo.setDisabled(true);
+
+        Etiqueta eti_diferencia = new Etiqueta();
+        eti_diferencia.setStyle("font-weight: bold");
+        eti_diferencia.setValue("SALDO SELECCIONADO $: ");
+
+        gri1.getChildren().add(eti_valor_cobrar);
+        gri1.getChildren().add(tex_saldo_anticipo);
+
+        tex_suma_facturas = new Texto();
+        tex_suma_facturas.setId("tex_suma_facturas");
+        tex_suma_facturas.setDisabled(true);
+        tex_suma_facturas.setStyle("font-weight: bold");
+
+        gri1.getChildren().add(eti_diferencia);
+        gri1.getChildren().add(tex_suma_facturas);
+
+        tex_observacion = new Texto();
+        tex_observacion.setSize(100);
+        Grid gri5 = new Grid();
+        gri5.setColumns(2);
+        gri5.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri5.getChildren().add(tex_observacion);
+        gri1.setFooter(gri5);
+
+        gri_contenido.getChildren().add(gri1);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_seleccion");
+        tab_tabla1.setSql(ser_cuentas_cxp.getSqlDocumentosPorPagar(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_tipo_documento.getValue())));
+        tab_tabla1.getColumna("saldo_x_pagar").setEstilo("font-size: 13px;font-weight: bold");
+        tab_tabla1.getColumna("saldo_x_pagar").alinearDerecha();
+        tab_tabla1.setCampoPrimaria("ide_cpctr");
+        tab_tabla1.getColumna("ide_cpctr").setVisible(false);
+        tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
+        //tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
+        //tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
+        tab_tabla1.getColumna("identificac_geper").setNombreVisual("IDENTIFICACIÓN");
+        tab_tabla1.getColumna("fecha").setVisible(true);
+        tab_tabla1.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
+        // tab_tabla1.getColumna("numero_cpcfa").setFiltroContenido();
+        tab_tabla1.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
+        tab_tabla1.getColumna("total_cpcfa").setNombreVisual("TOTAL");
+        tab_tabla1.getColumna("total_cpcfa").setEstilo("font-size: 13px;");
+        tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
+        tab_tabla1.setLectura(true);
+
+        tab_tabla1.onSelectCheck("seleccionaFacturaCxP");
+        tab_tabla1.onUnselectCheck("deseleccionaFacturaCxP");
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setRows(10);
+        tab_tabla1.dibujar();
+        gri_contenido.getChildren().add(tab_tabla1);
+        gri_contenido.getChildren().add(new Separator());
+
+        Grid gri = new Grid();
+        gri.setId("gri");
+        gri.setColumns(2);
+        gri.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR NUEVO ASIENTO CONTABLE ? </div>"));
+        rad_hace_asiento = new Radio();
+        rad_hace_asiento.setRadio(utilitario.getListaPregunta());
+        rad_hace_asiento.setValue(true);
+        rad_hace_asiento.setMetodoChange("cambiaHaceAsiento");
+        gri.getChildren().add(rad_hace_asiento);
+        gri_contenido.setFooter(gri);
+
+        tex_num_asiento = new Texto();
+        tex_num_asiento.setId("tex_num_asiento");
+        tex_num_asiento.setSoloEnteros();
+        tex_num_asiento.setRendered(false);
+
+        eti_num_asiento = new Etiqueta();
+        eti_num_asiento.setRendered(false);
+        eti_num_asiento.setId("eti_num_asiento");
+        eti_num_asiento.setValue("<strong>NÚMERO DE ASIENTO : :</strong>");
+
+        gri.getChildren().add(eti_num_asiento);
+        gri.getChildren().add(tex_num_asiento);
+
+        Boton bot_aceptar = new Boton();
+        bot_aceptar.setValue("Aceptar");
+        bot_aceptar.setMetodo("aceptarAnticipoCxp");
+        gri.setFooter(bot_aceptar);
+
+        mep_menu.dibujar(8, "SALDAR DOCUMENTOS CXP", gri_contenido);
+
+    }
+
+    public void cerrarAsiento() {
+        //limpia sql guardados
+        utilitario.getConexion().getSqlPantalla().clear();
+        asc_asiento.cerrar();
+    }
+
+    public void aceptarAnticipoCxp() {
+        if (validarAnticipoEmpleado()) {
+            String ide_cnccc = null;
+            if (tex_num_asiento.getValue() != null) {
+                if (tex_num_asiento.getValue().toString().isEmpty() == false) {
+                    TablaGenerica tab_asiento = ser_comp_conta.getCabeceraComprobante(tex_num_asiento.getValue().toString());
+                    if (tab_asiento.isEmpty()) {
+                        utilitario.agregarMensajeError("El asiento contable Num. " + tex_num_asiento.getValue() + " no existe", "");
+                        return;
+                    } else {
+                        ide_cnccc = tex_num_asiento.getValue().toString();
+                    }
+                }
+            }
+            for (Fila actual : tab_tabla1.getSeleccionados()) {
+                TablaGenerica tab_cab_factura = utilitario.consultar("SELECT ide_cpcfa,numero_cpcfa FROM cxp_cabece_factur where ide_cpcfa=" + actual.getCampos()[1]);
+                double total = Double.parseDouble(String.valueOf(actual.getCampos()[8]));
+                ser_cuentas_cxp.generarTransaccionPago(tab_cab_factura, String.valueOf(actual.getCampos()[0]), null, total, String.valueOf(tex_observacion.getValue()), null);
+            }
+            String ide_ccctr = aut_anticipo.getValor();
+            TablaGenerica tab_tabla_d = new TablaGenerica();
+            tab_tabla_d.setTabla("cxc_detall_transa", "ide_ccdtr");
+            tab_tabla_d.setCondicion("ide_ccdtr=-1");
+            tab_tabla_d.ejecutarSql();
+            tab_tabla_d.insertar();
+            tab_tabla_d.setValor("fecha_trans_ccdtr", utilitario.getFechaActual());
+            tab_tabla_d.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+            tab_tabla_d.setValor("numero_pago_ccdtr", "1");
+            tab_tabla_d.setValor("ide_ccctr", ide_ccctr);
+            tab_tabla_d.setValor("ide_cnccc", ide_cnccc);
+            tab_tabla_d.setValor("valor_ccdtr", String.valueOf(tex_suma_facturas.getValue()));
+            tab_tabla_d.setValor("observacion_ccdtr", String.valueOf(tex_observacion.getValue()));
+            tab_tabla_d.setValor("ide_ccttr", "6");//CANCELA ANTICIPO
+            tab_tabla_d.guardar();
+            if (rad_hace_asiento.getValue().equals("true")) {
+                abrirGeneraAsiento();
+                if (asc_asiento.isVisible()) {
+                    asc_asiento.getTab_cabe_asiento().setValor("fecha_trans_cnccc", cal_fecha_pago.getFecha());
+                    asc_asiento.getTab_cabe_asiento().setValor("observacion_cnccc", tex_observacion.getValue().toString());
+                }
+            } else {
+                guardarPantalla();
+            }
+        }
+    }
+
+    /**
+     * Validaciones de la Transaccion CXC de Pago
+     *
+     * @return
+     */
+    public boolean validarAnticipoEmpleado() {
+        if (aut_anticipo.getValor() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un 'ANTICIPO EMPLEADO'", "");
+            return false;
+        }
+
+        if (tab_tabla1.isEmpty()) {
+            utilitario.agregarMensajeInfo("No tiene Documentos por Pagar ", "");
+            return false;
+        }
+
+        if (tex_observacion.getValue() == null || tex_observacion.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
+            return false;
+        }
+
+        if (tab_tabla1.getListaFilasSeleccionadas().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un Documento por Pagar", "");
+            return false;
+        }
+
+        if (tex_suma_facturas.getValue() != null) {
+            try {
+                if (Double.parseDouble(tex_suma_facturas.getValue().toString()) < 0) {
+                    utilitario.agregarMensajeError("El 'SALDO SELECCIONADO' no es válido", "");
+                    return false;
+                }
+            } catch (Exception e) {
+                utilitario.agregarMensajeError("El 'SALDO SELECCIONADO' no es válido", "");
+                return false;
+            }
+        }
+
+        double total = 0;
+        for (Fila actual : tab_tabla1.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[8] + "") + total;
+        }
+        total = Double.parseDouble(utilitario.getFormatoNumero(total));
+        double valor_a_pagar = Double.parseDouble(utilitario.getFormatoNumero(Double.parseDouble(tex_saldo_anticipo.getValue() + "")));
+        valor_a_pagar = Math.abs(valor_a_pagar);
+        if (total > valor_a_pagar) {
+            utilitario.agregarMensajeError("El 'SALDO SELECCIONADO' es mayor que el 'VALOR ANTICIPO'", "");
+            return false;
+        }
+        return true;
+    }
+
+    public void cambiaHaceAsiento() {
+        if (rad_hace_asiento.getValue().equals("true")) {
+            tex_num_asiento.setRendered(false);
+            eti_num_asiento.setRendered(false);
+        } else {
+            tex_num_asiento.setRendered(true);
+            eti_num_asiento.setRendered(true);
+        }
+        utilitario.addUpdate("gri");
+    }
+
+    public void seleccionarAnticipoEmpleado(SelectEvent evt) {
+        aut_anticipo.onSelect(evt);
+        if (aut_anticipo.getValor() != null) {
+            tex_saldo_anticipo.setValue(aut_anticipo.getValorArreglo(2));
+        } else {
+            tex_saldo_anticipo.setValue(null);
+        }
+        utilitario.addUpdate("tex_saldo_anticipo");
+    }
+
+    public void deseleccionaFacturaCxP(UnselectEvent evt) {
+        double total = 0;
+        for (Fila actual : tab_tabla1.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[8] + "") + total;
+        }
+        tex_suma_facturas.setValue(utilitario.getFormatoNumero(total));
+        utilitario.addUpdate("tex_suma_facturas");
+
+    }
+
+    public void seleccionaFacturaCxP(SelectEvent evt) {
+        tab_tabla1.seleccionarFila(evt);
+        double total = 0;
+        for (Fila actual : tab_tabla1.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[8] + "") + total;
+        }
+        tex_suma_facturas.setValue(utilitario.getFormatoNumero(total));
+        utilitario.addUpdate("tex_suma_facturas");
+    }
+
     public void GuardaCertificacion() {
         tab_tabla2.guardar();
         guardarPantalla();
@@ -273,7 +556,7 @@ public class pre_documentosCxP extends Pantalla {
             return;
         }
 
-		//tab_tramite.setValor("total_compromiso_prtra",tab_poa_tramite.getSumaColumna("comprometido_prpot")+"");
+        //tab_tramite.setValor("total_compromiso_prtra",tab_poa_tramite.getSumaColumna("comprometido_prpot")+"");
         //tab_tramite.modificar(tab_tramite.getFilaActual());
         //utilitario.addUpdateTabla(tab_tramite, "total_compromiso_prtra","");	
     }
@@ -304,7 +587,7 @@ public class pre_documentosCxP extends Pantalla {
             String str_seleccionados = sel_certificacion.getSeleccionados();
             if (str_seleccionados != "") {
                 //System.out.println("entre seleccionado ");                
-                TablaGenerica tab_insertar = utilitario.consultar(ser_presupuesto.getCompromisoRua(sel_certificacion.getSeleccionados(),"2"));
+                TablaGenerica tab_insertar = utilitario.consultar(ser_presupuesto.getCompromisoRua(sel_certificacion.getSeleccionados(), "2"));
                 tab_insertar.getSql();
                 //System.out.println("codigo factura "+tab_tabla1.getFilaSeleccionada().getRowKey());
                 for (int i = 0; i < tab_insertar.getTotalFilas(); i++) {
@@ -877,6 +1160,14 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setSel_certificacion(SeleccionTabla sel_certificacion) {
         this.sel_certificacion = sel_certificacion;
+    }
+
+    public AutoCompletar getAut_anticipo() {
+        return aut_anticipo;
+    }
+
+    public void setAut_anticipo(AutoCompletar aut_anticipo) {
+        this.aut_anticipo = aut_anticipo;
     }
 
 }

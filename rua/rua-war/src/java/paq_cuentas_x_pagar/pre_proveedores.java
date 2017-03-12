@@ -245,6 +245,7 @@ public class pre_proveedores extends Pantalla {
             tab_tabla = new Tabla();
             tab_tabla.setId("tab_tabla");
             tab_tabla.setTabla("cxp_detall_transa", "ide_cpdtr", 998);
+            tab_tabla.setCondicion("ide_cpdtr=-1");//optimiza
             tab_tabla.setTipoFormulario(true);
             tab_tabla.getGrid().setColumns(2);
             tab_tabla.getColumna("ide_cpdtr").setVisible(false);

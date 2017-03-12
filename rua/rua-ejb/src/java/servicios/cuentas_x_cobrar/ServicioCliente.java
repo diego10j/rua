@@ -31,7 +31,7 @@ public class ServicioCliente extends ServicioBase {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables("p_cxc_estado_factura_normal");
+        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_anticipo");
     }
 
     /**
@@ -376,8 +376,14 @@ public class ServicioCliente extends ServicioBase {
         return true;
     }
 
+    /**
+     * Retorna facturas con saldo y anticipos con saldo
+     *
+     * @param ide_geper
+     * @return
+     */
     public String getSqlComboFacturasPorCobrar(String ide_geper) {
-        return "select dt.ide_ccctr,\n"
+        return "(select dt.ide_ccctr,\n"
                 + "coalesce(nombre_cntdo,'Cuenta por Cobrar'),coalesce(cf.secuencial_cccfa,''),\n"
                 + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_cobrar\n"
                 + "from cxc_detall_transa dt \n"
@@ -390,7 +396,19 @@ public class ServicioCliente extends ServicioBase {
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa,nombre_cntdo, \n"
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa \n"
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 \n"
-                + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
+                + ")\n"
+                + "union(\n"
+                + "select dt.ide_ccctr,\n"
+                + "'ANTICIPO','',\n"
+                + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_cobrar\n"
+                + "from cxc_detall_transa dt \n"
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr \n"
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr \n"
+                + "where ct.ide_geper=" + ide_geper + "  and ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ct.ide_ccttr=" + parametros.get("p_cxc_tipo_trans_anticipo") + "\n"
+                + "GROUP BY dt.ide_ccctr\n"
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) < 0 )\n"
+                + "ORDER BY 1 ASC";
     }
 
 }

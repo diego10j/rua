@@ -30,7 +30,8 @@ public class ServicioFacturaCxC extends ServicioBase {
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
-        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago");
+        parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura",
+                "p_cxc_tipo_trans_pago", "p_cxc_tipo_trans_anticipo");
     }
 
     /**
@@ -215,7 +216,7 @@ public class ServicioFacturaCxC extends ServicioBase {
             tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
             tab_det_tran_cxc.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
-            
+
             tab_det_tran_cxc.guardar();
             ide_ccctr = tab_cab_tran_cxc.getValor("ide_ccctr");
         }
@@ -585,4 +586,66 @@ public class ServicioFacturaCxC extends ServicioBase {
                 + "order by nom_geper";
     }
 
+    /**
+     * Genera Anticipo a Empleado Cliente
+     *
+     * @param ide_geper
+     * @param tab_libro_banco
+     * @return
+     */
+    public String generarTransaccionAnticipo(String ide_geper, TablaGenerica tab_libro_banco) {
+        String ide_ccctr = "-1";
+        if (tab_libro_banco != null) {
+            TablaGenerica tab_cab_tran_cxp = new TablaGenerica();
+            tab_cab_tran_cxp.setTabla("cxc_cabece_transa", "ide_ccctr");
+            tab_cab_tran_cxp.getColumna("ide_ccctr").setExterna(false);
+            tab_cab_tran_cxp.setCondicion("ide_ccctr=-1");
+            tab_cab_tran_cxp.ejecutarSql();
+            TablaGenerica tab_det_tran_cxp = new TablaGenerica();
+            tab_det_tran_cxp.setTabla("cxc_detall_transa", "ide_ccdtr");
+            tab_det_tran_cxp.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxp.setCondicion("ide_ccdtr=-1");
+            tab_det_tran_cxp.ejecutarSql();
+            tab_cab_tran_cxp.insertar();
+            tab_cab_tran_cxp.setValor("ide_ccttr", parametros.get("p_cxc_tipo_trans_anticipo"));//Tipo transaccion Anticipo       
+            tab_cab_tran_cxp.setValor("ide_geper", ide_geper);
+            tab_cab_tran_cxp.setValor("fecha_trans_ccctr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_cab_tran_cxp.setValor("observacion_ccctr", tab_libro_banco.getValor("observacion_teclb"));
+            tab_cab_tran_cxp.guardar();
+            tab_det_tran_cxp.insertar();
+            tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
+            tab_det_tran_cxp.setValor("ide_ccctr", tab_cab_tran_cxp.getValor("ide_ccctr"));
+            tab_det_tran_cxp.setValor("ide_ccttr", parametros.get("p_cxc_tipo_trans_anticipo"));//Tipo transaccion Anticipo     
+
+            tab_det_tran_cxp.setValor("fecha_trans_ccdtr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_det_tran_cxp.setValor("valor_ccdtr", utilitario.getFormatoNumero(tab_libro_banco.getValor("valor_teclb")));
+            tab_det_tran_cxp.setValor("observacion_ccdtr", tab_libro_banco.getValor("observacion_teclb"));
+            tab_det_tran_cxp.setValor("numero_pago_ccdtr", "0");
+            tab_det_tran_cxp.setValor("fecha_venci_ccdtr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_det_tran_cxp.setValor("docum_relac_ccdtr", tab_libro_banco.getValor("numero_teclb"));
+            tab_det_tran_cxp.setValor("ide_cnccc", tab_libro_banco.getValor("ide_cnccc"));
+            tab_det_tran_cxp.setValor("ide_teclb", tab_libro_banco.getValor("ide_teclb"));
+            tab_det_tran_cxp.guardar();
+            ide_ccctr = tab_cab_tran_cxp.getValor("ide_ccctr");
+        }
+        return ide_ccctr;
+    }
+
+    /**
+     * Retorna todos los anticipos que se an realizado en la sucursal
+     *
+     * @return
+     */
+    public String getSqlAnticiposEmpleados() {
+        return "select ct.ide_ccctr,nom_geper,sum (dt.valor_ccdtr*tt.signo_ccttr)\n"
+                + "from cxc_detall_transa dt \n"
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr \n"
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr \n"
+                + "inner join gen_persona g on g.ide_geper=ct.ide_geper "
+                + "where ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ct.ide_ccttr=" + parametros.get("p_cxc_tipo_trans_anticipo") + "\n"
+                + "GROUP BY ct.ide_ccctr,nom_geper,fecha_trans_ccctr\n"
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr)<0\n"
+                + "ORDER BY fecha_trans_ccctr desc, ide_ccctr ";
+    }
 }

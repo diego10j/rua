@@ -39,7 +39,7 @@ public class pre_beneficiario extends Pantalla {
         tab_tabla1.getColumna("nivel_geper").setCombo(utilitario.getListaNiveles());
         tab_tabla1.getColumna("nivel_geper").setValorDefecto("HIJO");
         tab_tabla1.getColumna("nivel_geper").setPermitirNullCombo(true);
-        tab_tabla1.getColumna("identificac_geper").setUnico(true);
+        tab_tabla1.getColumna("identificac_geper").setUnico(true); 
 
         tab_tabla1.getColumna("ide_vgven").setVisible(false);
         tab_tabla1.getColumna("ide_rhtro").setVisible(false);
@@ -83,7 +83,7 @@ public class pre_beneficiario extends Pantalla {
         tab_tabla1.getColumna("tipo_sangre_geper").setVisible(false);
         tab_tabla1.getColumna("jornada_fin_geper").setVisible(false);
         tab_tabla1.getColumna("jornada_inicio_geper").setVisible(false);
-        
+
         tab_tabla1.getColumna("numero_geper").setVisible(false);
         tab_tabla1.getColumna("nivel_geper").setVisible(false);
         tab_tabla1.getColumna("repre_legal_geper").setVisible(false);
@@ -94,7 +94,6 @@ public class pre_beneficiario extends Pantalla {
 
         utilitario.buscarNombresVisuales(tab_tabla1);
 
-
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
 
@@ -102,12 +101,10 @@ public class pre_beneficiario extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
 
-
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
 
         agregarComponente(div_division);
-
 
     }
 

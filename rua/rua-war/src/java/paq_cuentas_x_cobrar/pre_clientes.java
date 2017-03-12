@@ -296,6 +296,7 @@ public class pre_clientes extends Pantalla {
             tab_tabla = new Tabla();
             tab_tabla.setId("tab_tabla");
             tab_tabla.setTabla("cxc_detall_transa", "ide_ccdtr", 998);
+            tab_tabla.setCondicion("ide_ccdtr=-1"); //OPTIMIZA
             tab_tabla.setTipoFormulario(true);
             tab_tabla.getGrid().setColumns(2);
             tab_tabla.getColumna("ide_ccdtr").setVisible(false);

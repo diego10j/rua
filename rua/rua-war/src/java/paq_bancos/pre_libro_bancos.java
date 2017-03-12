@@ -126,6 +126,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
         mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
         mep_menu.agregarItem("Anticipos a Proveedores", "dibujarAnticipo", "ui-icon-contact");//9
+        mep_menu.agregarItem("Anticipos a Empleados", "dibujarAnticipoEmpleados", "ui-icon-contact");//13
         mep_menu.agregarItem("Otras Transacciones", "dibujarOtros", "ui-icon-contact");//5
         mep_menu.agregarItem("Transferencias entre Cuentas", "dibujarTransferencias", "ui-icon-contact");//6
         mep_menu.agregarSubMenu("HERRAMIENTAS");
@@ -968,6 +969,78 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.dibujar(9, "ANTICIPO A PROVEEDORES", contenido);
     }
 
+    public void dibujarAnticipoEmpleados() {
+        Grid contenido = new Grid();
+        Grid gri1 = new Grid();
+        gri1.setColumns(3);
+        gri1.getChildren().add(new Etiqueta("<strong>BENEFICIARIO / EMPLEADO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta());
+
+        aut_persona = new AutoCompletar();
+        aut_persona.setId("aut_persona");
+        aut_persona.setAutocompletarContenido();
+        aut_persona.setAutoCompletar(ser_cliente.getSqlComboClientes());
+        aut_persona.setSize(70);
+        gri1.getChildren().add(aut_persona);
+        cal_fecha_pago = new Calendario();
+        cal_fecha_pago.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago);
+        gri1.getChildren().add(new Etiqueta());
+
+        gri1.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
+
+        aut_cuenta = new AutoCompletar();
+        aut_cuenta.setId("aut_cuenta");
+        aut_cuenta.setMetodoChange("cambioCuenta");
+        aut_cuenta.setAutoCompletar(aut_cuentas.getLista());
+        aut_cuenta.setDropdown(true);
+        aut_cuenta.setSize(66);
+        aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setMaxResults(25);
+
+        gri1.getChildren().add(aut_cuenta);
+        com_tip_tran = new Combo();
+        com_tip_tran.setMetodo("cambioTipoTransBanco");
+        com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionNegativo());
+        gri1.getChildren().add(com_tip_tran);
+        tex_num = new Texto();
+        tex_num.setId("tex_num");
+        gri1.getChildren().add(tex_num);
+        contenido.getChildren().add(gri1);
+        PanelGrid gri4 = new PanelGrid();
+        gri4.setColumns(2);
+        Etiqueta eti_valor_cobrar = new Etiqueta();
+        eti_valor_cobrar.setValue("VALOR $:");
+        tex_valor_pagar = new Texto();
+        tex_valor_pagar.setId("tex_valor_pagar");
+        tex_valor_pagar.setSoloNumeros();
+        eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;");
+        tex_valor_pagar.setStyle("font-size: 14px;font-weight: bold");
+        gri4.getChildren().add(eti_valor_cobrar);
+        gri4.getChildren().add(tex_valor_pagar);
+        contenido.getChildren().add(new Separator());
+        contenido.getChildren().add(gri4);
+
+        Grid gri3 = new Grid();
+        gri3.setColumns(1);
+        ate_observacion = new AreaTexto();
+        ate_observacion.setCols(90);
+        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri3.getChildren().add(ate_observacion);
+        contenido.getChildren().add(gri3);
+
+        contenido.getChildren().add(new Separator());
+        Boton bot_aceptar = new Boton();
+        bot_aceptar.setValue("Aceptar");
+        bot_aceptar.setMetodo("aceptarAnticipoEmpleado");
+        bot_aceptar.setIcon("ui-icon-check");
+        contenido.getChildren().add(bot_aceptar);
+        mep_menu.dibujar(13, "ANTICIPO A EMPLEADOS", contenido);
+    }
+
     public void dibujarOtros() {
         str_ide_geper = null;
         Grid contenido = new Grid();
@@ -1334,7 +1407,9 @@ public class pre_libro_bancos extends Pantalla {
                     asc_asiento.getTab_cabe_asiento().setValor("ide_geper", utilitario.getVariable("p_con_beneficiario_empresa"));//sociedad salesianos                
                 }
             }
-
+            if (cal_fecha_pago != null) {
+                asc_asiento.getTab_cabe_asiento().setValor("fecha_trans_cnccc", cal_fecha_pago.getFecha());
+            }
             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_tesoreria.getCuentaContable(aut_cuenta.getValor()));
             asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
             asc_asiento.calcularTotal();
@@ -1536,6 +1611,17 @@ public class pre_libro_bancos extends Pantalla {
                 guardarPantalla();
             }
             dibujarOtros();
+        }
+    }
+
+    public void aceptarAnticipoEmpleado() {
+        if (validarAnticipoEmpleado()) {
+            TablaGenerica tab_libro = ser_tesoreria.generarTablaLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
+                    com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), null);
+            //Generar transaccion anticipo cxc 
+            ser_factura.generarTransaccionAnticipo(aut_persona.getValor(), tab_libro);
+
+            generarAsiento(tab_libro.getValor("ide_teclb"));
         }
     }
 
@@ -1842,6 +1928,44 @@ public class pre_libro_bancos extends Pantalla {
                 }
             } catch (Exception e) {
                 utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean validarAnticipoEmpleado() {
+        if (com_tip_tran.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
+            return false;
+        }
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
+            return false;
+        }
+
+        if (aut_cuenta.getValor() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
+            return false;
+        }
+
+        if (aut_persona.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un 'BENEFICIARIO' ", "");
+            return false;
+        }
+
+        if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR'", "");
+            return false;
+        } else {
+            try {
+                if (Double.parseDouble(tex_valor_pagar.getValue().toString()) <= 0) {
+                    utilitario.agregarMensajeError("El 'VALOR' no es válido", "");
+                    return false;
+                }
+            } catch (Exception e) {
+                utilitario.agregarMensajeError("El 'VALOR' no es válido", "");
                 return false;
             }
         }
