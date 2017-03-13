@@ -863,7 +863,7 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla5.ejecutarSql();
-            tab_tabla.getColumna("cantidad_actra").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
+            tab_tabla.getColumna("cantidad_acafi").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
