@@ -98,6 +98,35 @@ public class cls_formulario103 {
                         + Double.parseDouble(v341) + Double.parseDouble(v342)
                         + Double.parseDouble(v343) + Double.parseDouble(v344));
 
+                //cuadra con ats por facturas que no generan retencion 332 
+                double dou_total_ats = Double.parseDouble(consultarComprasAts());
+                double dou_total = Double.parseDouble(v349);
+                if (dou_total != dou_total_ats) {
+                    //1 si es mayor el total en el ats
+                    double d332 = Double.parseDouble(v332);
+                    if (dou_total_ats > dou_total) {
+                        double diferencia = dou_total_ats + dou_total;
+                        //sumo al 332 actual la diferencia                        
+                        d332 += diferencia;
+                    } else {
+                        double diferencia = dou_total - dou_total_ats;
+                        //resto al 332 actual la diferencia                        
+                        d332 -= diferencia;
+                    }
+                    v332 = utilitario.getFormatoNumero(d332);
+                    v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
+                            + Double.parseDouble(v303) + Double.parseDouble(v304)
+                            + Double.parseDouble(v307) + Double.parseDouble(v308)
+                            + Double.parseDouble(v309) + Double.parseDouble(v310)
+                            + Double.parseDouble(v312) + Double.parseDouble(v319)
+                            + Double.parseDouble(v320) + Double.parseDouble(v322)
+                            + Double.parseDouble(v323) + Double.parseDouble(v325)
+                            + Double.parseDouble(v327) + Double.parseDouble(v328)
+                            + Double.parseDouble(v332) + Double.parseDouble(v340)
+                            + Double.parseDouble(v341) + Double.parseDouble(v342)
+                            + Double.parseDouble(v343) + Double.parseDouble(v344));
+                }
+
                 //valor
                 v352 = consultarRenta(utilitario.getVariable("p_sri_impuesto_renta"));
                 v353 = consultarValorCasillero("303");
@@ -291,9 +320,6 @@ public class cls_formulario103 {
     }
 
     public String consultarBaseCasillero(String casillero) {
-        if (casillero.startsWith("332")) {
-            casillero = "332";
-        }
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.base_cndre) "
                 + " FROM con_cabece_retenc cr "
@@ -311,12 +337,10 @@ public class cls_formulario103 {
             }
         }
         return utilitario.getFormatoNumero(dou_valor);
+
     }
 
     public String consultarValorCasillero(String casillero) {
-        if (casillero.startsWith("332")) {
-            casillero = "332";
-        }
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.porcentaje_cndre/100 * dr.base_cndre) "
                 + " FROM con_cabece_retenc cr "
@@ -331,6 +355,21 @@ public class cls_formulario103 {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
             } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    public String consultarComprasAts() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa + base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) as tatal from cxp_cabece_factur\n"
+                + "where fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
+                + "and ide_rem_cpcfa is null");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+                dou_valor = 0;
             }
         }
         return utilitario.getFormatoNumero(dou_valor);

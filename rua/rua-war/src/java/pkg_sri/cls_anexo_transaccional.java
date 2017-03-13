@@ -83,19 +83,19 @@ public class cls_anexo_transaccional {
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
-                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ")");
+                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
 
                     TablaGenerica tab_rete_iva_servicios_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
-                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva70") + " and cabece.ide_cncre in(" + ideRetenciones + ")");
+                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva70") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
 
                     TablaGenerica tab_rete_iva_servicios100_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
-                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva100") + " and cabece.ide_cncre in(" + ideRetenciones + ")");
+                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva100") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
 
                     TablaGenerica tab_retencion_ = utilitario.consultar("SELECT impuesto.casillero_cncim,sum(base_cndre) as base_cndre,porcentaje_cndre,sum(valor_cndre) as valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
-                            + "where impuesto.ide_cnimp=" + utilitario.getVariable("p_con_impuesto_renta") + " and cabece.ide_cncre in(" + ideRetenciones + ") GROUP BY impuesto.casillero_cncim,porcentaje_cndre,cabece.ide_cncre");
+                            + "where impuesto.ide_cnimp=" + utilitario.getVariable("p_con_impuesto_renta") + " and cabece.ide_cncre in(" + ideRetenciones + ") GROUP BY impuesto.casillero_cncim,porcentaje_cndre,cabece.ide_cncre order by cabece.ide_cncre");
 
                     for (int i = 0; i < tab_compras.getTotalFilas(); i++) {
                         Element detalleCompras = doc_anexo.createElement("detalleCompras");
@@ -262,6 +262,7 @@ public class cls_anexo_transaccional {
                                 double dou_total = 0;
                                 for (int j = 0; j < tab_retencion_.getTotalFilas(); j++) {
                                     if (ide_retencion.equals(tab_retencion_.getValor(j, "ide_cncre"))) {
+
                                         Element detalleAir = doc_anexo.createElement("detalleAir");
                                         air.appendChild(detalleAir);
                                         double dou_porcen = 0;
