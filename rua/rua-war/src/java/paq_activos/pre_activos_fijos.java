@@ -1025,6 +1025,7 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla5.ejecutarSql();
 
                     if (cantidad == 1) {
+                        generarCodigoBarras();
                         //solo si no es masivo actualiza el codigo de barras
                         if (tab_tabla.getColumna("act_ide_acafi") == null) {
                             utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
