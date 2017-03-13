@@ -611,6 +611,11 @@ public class pre_activos_fijos extends Pantalla {
         bot_ver.setValue("Datos Activo Fijo");
         bot_ver.setMetodo("cargarActivoFijo");
         bar_menu.agregarComponente(bot_ver);
+        bar_menu.agregarSeparador();
+        Boton bot_elimina = new Boton();
+        bot_elimina.setValue("Eliminar Activo Fijo");
+        bot_elimina.setMetodo("eliminarActivoFijo");
+        bar_menu.agregarComponente(bot_elimina);
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
@@ -847,6 +852,19 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeInfo("Se crearán " + cantidad + " activos fijos del mismo tipo", "");
         }
         generarCodigoBarras();
+    }
+
+    public void eliminarActivoFijo() {
+        String ide_acafi = tab_tabla.getValor("ide_acafi");
+        if (ide_acafi != null) {
+            utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE ide_acafi=" + ide_acafi);
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.actualizar();
+            }
+
+        } else {
+            utilitario.agregarMensaje("Debe seleccionar un Activo", "");
+        }
     }
 
     public void cargarActivoFijo() {
