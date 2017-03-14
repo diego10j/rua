@@ -889,6 +889,7 @@ public class pre_activos_fijos extends Pantalla {
     }
 
     public void imprimirCodigoBarra() {
+        System.out.println("***-*-*");
         if (tab_tabla.isFilaInsertada() == false) {
             if (cantidad == 1) {
                 cagarReporteCodigoBarras(tab_tabla.getStringColumna("ide_acafi"));
@@ -977,7 +978,7 @@ public class pre_activos_fijos extends Pantalla {
         } catch (Exception e) {
             cantidad = 0;
         }
-        if (cantidad == 1) {
+        if (codigoB != null) {
             eti_cod_barras.setValue(codigoB);
             try {
                 File barcodeFile = new File("dynamicbarcode");
@@ -1041,13 +1042,12 @@ public class pre_activos_fijos extends Pantalla {
                 if (guardarPantalla().isEmpty()) {
                     tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
                     tab_tabla5.ejecutarSql();
-                    generarCodigoBarras();
                     if (cantidad == 1) {
                         //solo si no es masivo actualiza el codigo de barras
-                        if (tab_tabla.getColumna("act_ide_acafi") == null) {
+                        if (tab_tabla.getValor("act_ide_acafi") == null) {
                             utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||ide_acafi||' 1' where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                         } else {
-                            utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||'" + tab_tabla.getValor("act_ide_acafi") + "'||' '||sec_masivo_acafi where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                            utilitario.getConexion().ejecutarSql("UPDATE act_activo_fijo set codigo_barras_acafi='" + tab_tabla.getValor("codigo_barras_acafi") + "'||' '||act_ide_acafi||' '||sec_masivo_acafi where ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                         }
                     }
                     if (cantidad > 1) {
@@ -1059,7 +1059,7 @@ public class pre_activos_fijos extends Pantalla {
                     tab_tabla.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                     tab_tabla.ejecutarSql();
                     cargarCodigoBarras();
-                    cantidad = 0;
+                    //cantidad = 0;
                 }
             }
         } else if (mep_menu.getOpcion() == 5) {
