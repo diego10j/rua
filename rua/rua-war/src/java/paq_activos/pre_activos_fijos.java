@@ -621,7 +621,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
         tab_tabla.setCampoPrimaria("ide_acafi");
-        tab_tabla.getColumna("ide_acafi").setVisible(false);
+        tab_tabla.getColumna("ide_acafi").setVisible(true);
+        tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
         tab_tabla.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
         tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
@@ -631,6 +632,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("CASA").setFiltroContenido();
         tab_tabla.getColumna("OBRA").setFiltroContenido();
         tab_tabla.getColumna("CLASE").setFiltroContenido();
+        tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
+        tab_tabla.getColumna("SECUENCIAL").setFiltroContenido();
         tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
         tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
@@ -643,7 +646,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setRows(20);
 
         //COLOR verde cantidad diferente de  1
-        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[4] eq '1'  ? null : 'text-green'");
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
@@ -659,6 +662,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
+        tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
         tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("gen_ide_geper").setVisible(false);

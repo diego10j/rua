@@ -30,7 +30,7 @@ public class ServicioActivosFijos extends ServicioBase {
      * @return
      */
     public String getSqlListaActivosFijos() {
-        return "select ide_acafi,act_ide_acafi,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
+        return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi else act_ide_acafi end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
                 + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
                 + "from act_activo_fijo a \n"
                 + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
