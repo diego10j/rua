@@ -623,6 +623,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("ide_acafi").setFiltro(true);
         tab_tabla.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla.getColumna("nom_geper").setFiltroContenido();
         tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
@@ -633,7 +634,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("OBRA").setFiltroContenido();
         tab_tabla.getColumna("CLASE").setFiltroContenido();
         tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
-        tab_tabla.getColumna("SECUENCIAL").setFiltroContenido();
+        tab_tabla.getColumna("SECUENCIAL").setFiltro(true);
         tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
         tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
