@@ -862,6 +862,9 @@ public class pre_activos_fijos extends Pantalla {
     public void eliminarActivoFijo() {
         String ide_acafi = tab_tabla.getValor("ide_acafi");
         if (ide_acafi != null) {
+            //borra los hijos primero 
+            utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE act_ide_acafi=" + ide_acafi);   
+            //borra activo
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE ide_acafi=" + ide_acafi);
             if (guardarPantalla().isEmpty()) {
                 tab_tabla.actualizar();
