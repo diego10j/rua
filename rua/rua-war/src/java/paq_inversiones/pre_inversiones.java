@@ -490,7 +490,10 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("fecha_vence_ipcer").setLectura(true);
         tab_tabla1.getColumna("ide_iptin").setValorDefecto("2"); //FONDO
         tab_tabla1.getColumna("es_inver_banco_ipcer").setValorDefecto("false");
-        tab_tabla1.getColumna("ide_geper").setValorDefecto("1294"); //SOCIEDAD SALESIANA EN EL ECUADOR
+        tab_tabla1.getColumna("ide_geper").setVisible(true);
+        tab_tabla1.getColumna("ide_geper").setRequerida(true);
+        tab_tabla1.getColumna("ide_geper").setCombo(ser_inversion.getSqlComboClientes());
+        tab_tabla1.getColumna("ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("ide_ipein").setVisible(true);
         tab_tabla1.getColumna("ide_ipein").setCombo("iyp_estado_inversion", "ide_ipein", "nombre_ipein", "");
         tab_tabla1.getColumna("ide_ipcin").setValorDefecto("1");
@@ -734,6 +737,10 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.getColumna("ide_ipein").setVisible(true);
             tab_tabla1.getColumna("ide_ipein").setCombo("iyp_estado_inversion", "ide_ipein", "nombre_ipein", "");
             tab_tabla1.getColumna("ide_ipcin").setValorDefecto("1");
+            tab_tabla1.getColumna("ide_geper").setVisible(true);
+            tab_tabla1.getColumna("ide_geper").setRequerida(true);
+            tab_tabla1.getColumna("ide_geper").setCombo(ser_inversion.getSqlComboClientes());
+            tab_tabla1.getColumna("ide_geper").setAutoCompletar();
             tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
             tab_tabla1.getColumna("nuevo").setValorDefecto("true");
             tab_tabla1.setTipoFormulario(true);

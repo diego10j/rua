@@ -120,6 +120,7 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.getTab_seleccion().getColumna("CASA").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("OBRA").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("CLASE").setFiltroContenido();
+        set_selecciona.getTab_seleccion().getColumna("AREA_UBICACION").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("codigo_barras_acafi").setFiltroContenido();
         set_selecciona.getTab_seleccion().getColumna("act_ide_acafi").setVisible(false);
         set_selecciona.setWidth("80%");
@@ -635,6 +636,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("CLASE").setFiltroContenido();
         tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
         tab_tabla.getColumna("SECUENCIAL").setFiltro(true);
+        tab_tabla.getColumna("SECUENCIAL").setAncho(2);
+        tab_tabla.getColumna("SECUENCIAL").setLongitud(2);
         tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
         tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
         tab_tabla.getColumna("vida_util_acafi").alinearDerecha();

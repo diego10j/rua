@@ -105,7 +105,7 @@ public class cls_formulario103 {
                     //1 si es mayor el total en el ats
                     double d332 = Double.parseDouble(v332);
                     if (dou_total_ats > dou_total) {
-                        double diferencia = dou_total_ats + dou_total;
+                        double diferencia = dou_total_ats - dou_total;
                         //sumo al 332 actual la diferencia                        
                         d332 += diferencia;
                     } else {
@@ -147,7 +147,7 @@ public class cls_formulario103 {
                 v391 = consultarValorCasillero("341");
                 v392 = consultarValorCasillero("342");
                 v393 = consultarValorCasillero("343");
-                v394 = consultarBaseCasillero("344");
+                v394 = consultarValorCasillero("344");
                 v399 = utilitario.getFormatoNumero(Double.parseDouble(v352) + Double.parseDouble(v353) + Double.parseDouble(v354) + Double.parseDouble(v357) + Double.parseDouble(v358) + Double.parseDouble(v359) + Double.parseDouble(v360) + Double.parseDouble(v362) + Double.parseDouble(v369) + Double.parseDouble(v370) + Double.parseDouble(v372) + Double.parseDouble(v373) + Double.parseDouble(v375) + Double.parseDouble(v377) + Double.parseDouble(v378) + Double.parseDouble(v390) + Double.parseDouble(v391) + Double.parseDouble(v392) + Double.parseDouble(v393) + Double.parseDouble(v394));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "302"}, v302));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "303"}, v303));

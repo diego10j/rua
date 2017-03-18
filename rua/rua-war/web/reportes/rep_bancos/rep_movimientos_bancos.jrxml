@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_movimientos_bancos" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="585a094e-11dd-48a4-a0c5-ed93b5c27a7c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha_inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_tecba" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select d.nombre_teban,c.ide_tecba,c.nombre_tecba,fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,
+(case when (case when signo_tettb = 1 THEN valor_teclb end) is null then 0 else (case when signo_tettb = 1 THEN valor_teclb end) end) as INGRESOS,
+(case when (case when signo_tettb = -1 THEN valor_teclb end) is null then 0 else (case when signo_tettb = -1 THEN valor_teclb end) end )as EGRESOS, e.valor as SALDO,
+observacion_teclb,ide_teclb,conciliado_teclb as conciliado
+from tes_cab_libr_banc a
+inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb
+inner join (select ide_tecba,ide_teban,nombre_tecba from tes_cuenta_banco) as c on  a.ide_tecba=c.ide_tecba
+inner join (select ide_teban,nombre_teban from tes_banco) as d on c.ide_teban=d.ide_teban
+left join(
+select ide_tecba,sum(valor_teclb * signo_tettb) as valor
+from tes_cab_libr_banc a
+inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb
+where ide_tecba in($P!{ide_tecba})
+and fecha_trans_teclb < $P{fecha_inicio}
+and ide_teelb=0 --estadonormal
+group by ide_tecba
+)as e on e.ide_tecba= a.ide_tecba
+where c.ide_tecba in($P!{ide_tecba}) and ide_teelb =0 and fecha_trans_teclb BETWEEN $P{fecha_inicio} and $P{fecha_fin}
+order by d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]>
+	</queryString>
+	<field name="nombre_teban" class="java.lang.String"/>
+	<field name="ide_tecba" class="java.lang.Long"/>
+	<field name="nombre_tecba" class="java.lang.String"/>
+	<field name="fecha_trans_teclb" class="java.sql.Date"/>
+	<field name="numero_teclb" class="java.lang.String"/>
+	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="nombre_tettb" class="java.lang.String"/>
+	<field name="beneficiari_teclb" class="java.lang.String"/>
+	<field name="ingresos" class="java.math.BigDecimal"/>
+	<field name="egresos" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="observacion_teclb" class="java.lang.String"/>
+	<field name="ide_teclb" class="java.lang.Long"/>
+	<field name="conciliado" class="java.lang.Boolean"/>
+	<variable name="ingresos_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Bancos" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos}]]></variableExpression>
+	</variable>
+	<variable name="egresos_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Bancos" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos}]]></variableExpression>
+	</variable>
+	<variable name="ingresos_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos}]]></variableExpression>
+	</variable>
+	<variable name="egresos_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos}]]></variableExpression>
+	</variable>
+	<variable name="vingresos" class="java.math.BigDecimal" resetType="Group" resetGroup="Bancos" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="vegresos" class="java.math.BigDecimal" resetType="Group" resetGroup="Bancos" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos}]]></variableExpression>
+	</variable>
+	<variable name="vsaldo" class="java.math.BigDecimal" resetType="Group" resetGroup="Bancos">
+		<variableExpression><![CDATA[$V{vingresos}-$V{vegresos}+$F{saldo}]]></variableExpression>
+	</variable>
+	<group name="Bancos">
+		<groupExpression><![CDATA[$F{nombre_teban}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="62a7bdbe-f264-4379-8d21-1e533287ceb9" x="0" y="0" width="410" height="14"/>
+					<box leftPadding="5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_teban}+"  Nro. Cuenta: "+$F{nombre_tecba}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="682adbc7-719a-4679-ae01-0fe903a39c96" x="410" y="0" width="96" height="14"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[saldo anterior]]></text>
+				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="cfb4910d-f4b5-45f0-9e59-7bcc1c181b77" positionType="Float" stretchType="RelativeToTallestObject" x="506" y="0" width="49" height="14"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="12">
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="11e505fa-98cb-4f01-8383-f2ce50851b94" x="410" y="0" width="48" height="12"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ingresos_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="e48a015f-559d-4a3e-ad2e-04d96a1b0652" x="458" y="0" width="48" height="12"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{egresos_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="de12aeb9-db24-4cda-86a7-db53c8f0ca4d" x="243" y="0" width="167" height="12"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="161acd8c-ed2a-4a12-8f76-7ab4788b068c" x="219" y="26" width="336" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOVIMIENTOS BANCARIOS]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="e562a5fd-677f-412b-a2b4-ea953e319be3" x="0" y="0" width="200" height="85"/>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="32" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ba7dad11-efeb-4539-a910-8f4b4bd810bf" x="48" y="0" width="58" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Referencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2537803f-e251-4d73-a910-ce9089a8311c" x="106" y="0" width="51" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Nro. Asiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e5c93e2-b2bb-4112-b0c8-242637e4728e" x="157" y="0" width="86" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Transacción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="045cd077-36d4-4d40-9c78-39bac2990683" x="243" y="0" width="167" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Beneficiario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="734eee9a-167c-42fb-9724-f134c1d562d8" x="410" y="0" width="48" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Ingresos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e1fdc61-2af0-4359-948d-873fd83359a8" x="458" y="0" width="48" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Egresos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="891ec411-0a14-4c33-a4e0-68f927498aef" x="506" y="0" width="49" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6bb61b11-4ad1-4f07-b14b-e3d176b9beb9" x="0" y="0" width="48" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="777ed959-a696-411d-ae93-470f47cea341" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="48" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_trans_teclb}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="22ad1aa4-fbe6-4660-985f-19b12fb4e60d" positionType="Float" stretchType="RelativeToTallestObject" x="48" y="0" width="58" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_teclb}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1fe67635-1782-4c9a-bbd4-56d0a60593a4" positionType="Float" stretchType="RelativeToTallestObject" x="106" y="0" width="51" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="30728b0f-99bc-4c1a-9733-ac0bce05f6b6" positionType="Float" stretchType="RelativeToTallestObject" x="157" y="0" width="86" height="12"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_tettb}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b3c661d1-731c-4903-9eb7-108650630a33" positionType="Float" stretchType="RelativeToTallestObject" x="243" y="0" width="167" height="12"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beneficiari_teclb}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1e85f664-92d5-4993-93e2-8e1cfc921774" positionType="Float" stretchType="RelativeToTallestObject" x="410" y="0" width="48" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingresos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e02fdcbe-355a-430e-b56b-57837e48c3ff" positionType="Float" stretchType="RelativeToTallestObject" x="458" y="0" width="48" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egresos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="0b11e9d0-f1ce-42b0-9220-6db4bdc3704b" positionType="Float" stretchType="RelativeToTallestObject" x="506" y="0" width="49" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vsaldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="11" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fe25e194-d37f-4d8c-990e-54304d69be74" x="434" y="0" width="80" height="11"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="5d0381b5-7eaa-4dbd-a901-1ee730a6e4b8" x="514" y="0" width="41" height="11"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a0ac8188-8b23-4fee-a552-f782f891bfcb" x="393" y="0" width="48" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ingresos_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d400f781-71e6-4a68-893e-9d7540a9c403" x="441" y="0" width="48" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{egresos_2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="92ca132c-ecc4-48bc-ade8-63f71d818587" x="0" y="0" width="393" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total global]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

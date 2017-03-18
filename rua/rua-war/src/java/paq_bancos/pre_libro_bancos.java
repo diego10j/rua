@@ -25,6 +25,9 @@ import framework.componentes.MenuPanel;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -34,7 +37,9 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
@@ -114,7 +119,12 @@ public class pre_libro_bancos extends Pantalla {
     private Combo com_colValor;
     private Confirmar con_confirma = new Confirmar();
 
-    SeleccionTabla sel_conciliados = new SeleccionTabla();
+    private SeleccionTabla sel_conciliados = new SeleccionTabla();
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
+
+    private SeleccionCalendario sel_fechas = new SeleccionCalendario();
+    private SeleccionTabla set_bancos = new SeleccionTabla();
 
     public pre_libro_bancos() {
 
@@ -146,6 +156,9 @@ public class pre_libro_bancos extends Pantalla {
         aut_cuentas.setMaxResults(25);
 
         bar_botones.limpiar();
+
+        bar_botones.agregarReporte();
+
         bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
         bar_botones.agregarComponente(aut_cuentas);
         bar_botones.agregarSeparador();
@@ -191,6 +204,61 @@ public class pre_libro_bancos extends Pantalla {
         sel_conciliados.setHeight("65");
         agregarComponente(sel_conciliados);
 
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_formato.setId("sel_formato");
+        agregarComponente(rep_reporte);
+        agregarComponente(sel_formato);
+
+        asc_asiento.setId("asc_asiento");
+        asc_asiento.getBot_aceptar().setMetodo("guardar");
+        agregarComponente(asc_asiento);
+
+        sel_fechas.setId("sel_fechas");
+        sel_fechas.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_fechas);
+
+        set_bancos.setId("set_bancos");
+        set_bancos.setSeleccionTabla(ser_tesoreria.getSqlComboCuentas(), "ide_tecba");
+        set_bancos.setWidth("50%");
+        set_bancos.getBot_aceptar().setMetodo("aceptarReporte");
+        set_bancos.setHeight("65%");
+        set_bancos.setTitle("CUENTAS CAJAS - BANCOS");
+        agregarComponente(set_bancos);
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    Map parametro = new HashMap();
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Movimientos Bancarios")) {
+            if (rep_reporte.isVisible()) {
+                //abre calendario                 
+                rep_reporte.cerrar();
+                parametro = new HashMap();
+                set_bancos.dibujar();
+            } else if (set_bancos.isVisible()) {
+                if (set_bancos.getSeleccionados() == null || set_bancos.getSeleccionados().isEmpty()) {
+                    utilitario.agregarMensajeInfo("Seleccione una cuenta caja o banco", "");
+                    return;
+                }
+                parametro.put("ide_tecba", set_bancos.getSeleccionados());
+                set_bancos.cerrar();
+                sel_fechas.dibujar();
+            } else if (sel_fechas.isVisible()) {
+                if (sel_fechas.isFechasValidas() == true) {
+                    parametro.put("fecha_inicio", sel_fechas.getFecha1());
+                    parametro.put("fecha_fin", sel_fechas.getFecha2());
+                    sel_fechas.cerrar();
+                    sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_formato.dibujar();
+                }
+            }
+        }
     }
 
     public void aceptarSeleccionadosConciliar() {
@@ -717,6 +785,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         ate_observacion.setRows(2);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
@@ -833,6 +902,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         ate_observacion.setRows(2);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
@@ -957,6 +1027,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
         contenido.getChildren().add(gri3);
@@ -1028,6 +1099,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
         contenido.getChildren().add(gri3);
@@ -1131,6 +1203,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
 
@@ -1302,6 +1375,7 @@ public class pre_libro_bancos extends Pantalla {
         gri3.setColumns(1);
         ate_observacion = new AreaTexto();
         ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
         gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri3.getChildren().add(ate_observacion);
 
@@ -2331,6 +2405,38 @@ public class pre_libro_bancos extends Pantalla {
 
     public void setSel_conciliados(SeleccionTabla sel_conciliados) {
         this.sel_conciliados = sel_conciliados;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_formato() {
+        return sel_formato;
+    }
+
+    public void setSel_formato(SeleccionFormatoReporte sel_formato) {
+        this.sel_formato = sel_formato;
+    }
+
+    public SeleccionCalendario getSel_fechas() {
+        return sel_fechas;
+    }
+
+    public void setSel_fechas(SeleccionCalendario sel_fechas) {
+        this.sel_fechas = sel_fechas;
+    }
+
+    public SeleccionTabla getSet_bancos() {
+        return set_bancos;
+    }
+
+    public void setSet_bancos(SeleccionTabla set_bancos) {
+        this.set_bancos = set_bancos;
     }
 
 }

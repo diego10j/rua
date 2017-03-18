@@ -165,4 +165,9 @@ public class ServicioRetenciones extends ServicioBase {
         TablaGenerica tb = utilitario.consultar("select ide_cncim,ide_cnimp,* from con_cabece_impues where ide_cnimp =1 and ide_cncim=" + ide_cncim);
         return !tb.isEmpty();
     }
+    
+    public String getValorDefectoImpuesto(String ide_cncim){
+         TablaGenerica tb = utilitario.consultar("select ide_cncim,valor_defecto_cncim from con_cabece_impues where ide_cncim=" + ide_cncim);
+         return tb.getValor("valor_defecto_cncim");
+    }
 }

@@ -151,10 +151,11 @@ public class ServicioInversiones extends ServicioBase {
     }
 
     public String getSqlListaInversionesFondo() {
-        return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
+        return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,nom_geper AS BENEFICIARIO,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
                 + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO,ide_cnccc_terminacion\n"
                 + "FROM iyp_certificado  a\n"
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
+                + "left join gen_persona c on a.ide_geper = c.ide_geper  \n"
                 + "where nuevo=true	\n"
                 + "and ide_iptin=2\n"
                 + "order by num_certificado_ipcer";

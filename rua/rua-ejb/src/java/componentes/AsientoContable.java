@@ -158,7 +158,7 @@ public class AsientoContable extends Dialogo {
         tab_deta_asiento.setId("tab_deta_asiento");
         tab_deta_asiento.setRuta("pre_index.clase." + getId());
         ser_comprobante.configurarTablaDetalleComprobante(tab_deta_asiento);
-        tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 2);
+        tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 998);
         tab_deta_asiento.getColumna("valor_cndcc").setMetodoChangeRuta("pre_index.clase." + getId() + ".ingresaCantidad");
         tab_deta_asiento.getColumna("ide_cnlap").setMetodoChangeRuta("pre_index.clase." + getId() + ".seleccionarLugarAplica");
         tab_deta_asiento.getColumna("ide_cndpc").setNombreVisual("CUENTA CONTABLE");
@@ -181,7 +181,9 @@ public class AsientoContable extends Dialogo {
         pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
         pat_panel2.getMenuTabla().getItem_guardar().setRendered(false);
         pat_panel2.getMenuTabla().getItem_formato().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_insertar().setRendered(true);
         pat_panel2.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertar");
+        pat_panel2.getMenuTabla().getItem_eliminar().setRendered(true);
         pat_panel2.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
         pat_panel2.setStyle("width:100%;height:100%;overflow: auto;display: block;");
         contenido.getChildren().add(pat_panel2);
@@ -245,7 +247,7 @@ public class AsientoContable extends Dialogo {
             tab_presupuesto.setScrollHeight(60);
             tab_presupuesto.setCondicion("ide_cndcc=-1");
             tab_presupuesto.dibujar();
-           // tab_presupuesto.insertar();
+            // tab_presupuesto.insertar();
             PanelTabla pat_panel3 = new PanelTabla();
             pat_panel3.setPanelTabla(tab_presupuesto);
             pat_panel3.getMenuTabla().getItem_buscar().setRendered(false);
@@ -518,6 +520,7 @@ public class AsientoContable extends Dialogo {
 
     public void imprimir() {
         if (ide_cnccc != null) {
+            setReporteComprobante();
             //SI EL ASIENTO ES TIPO CHEQUE            
             TablaGenerica tab_consulta = utilitario.consultar("select ide_cnccc,ide_tettb from tes_cab_libr_banc  where ide_cnccc=" + ide_cnccc + " and ide_tettb=" + parametros.get("p_tes_tran_cheque"));
             tab_consulta.imprimirSql();
