@@ -44,6 +44,7 @@ public class pre_consulta_activos extends Pantalla {
                 colActual.setFiltro(true);
             }
         }
+        tab_consulta.setId("tab_consulta");
         tab_consulta.getColumna("ide_acact").setVisible(false);
         tab_consulta.getColumna("act_ide_acafi").setVisible(false);        
         tab_consulta.setLectura(true);
