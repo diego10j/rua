@@ -75,12 +75,13 @@ public class cls_anexo_transaccional {
                             + " left join con_cabece_retenc rete on cabece.ide_cncre=rete.ide_cncre "
                             + " left join con_deta_forma_pago dpa on cabece.ide_cndfp=dpa.ide_cndfp "
                             + " where  cabece.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'"
-                            + " and ide_rem_cpcfa is null"
+                            + " and ide_rem_cpcfa is null and ide_cpefa=0"
                             + " order by cabece.fecha_emisi_cpcfa, cabece.ide_cpcfa ");
-
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
 
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
+                    ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones  
+
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
@@ -186,7 +187,7 @@ public class cls_anexo_transaccional {
                             //reembolsos
                             TablaGenerica tab_sum_reembolso = utilitario.consultar("SELECT  ide_rem_cpcfa,sum(base_tarifa0_cpcfa + base_grabada_cpcfa +  base_no_objeto_iva_cpcfa) as valor\n"
                                     + "from cxp_cabece_factur "
-                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") + " group by ide_rem_cpcfa");
+                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") + " and ide_cpefa=0 group by ide_rem_cpcfa");
                             if (tab_sum_reembolso.getTotalFilas() > 0) {
                                 detalleCompras.appendChild(crearElemento("totbasesImpReemb", null, utilitario.getFormatoNumero(tab_sum_reembolso.getValor("valor"))));
                             } else {
@@ -219,7 +220,7 @@ public class cls_anexo_transaccional {
                                     + "valor_iva_cpcfa,valor_ice_cpcfa\n"
                                     + " from cxp_cabece_factur ree\n"
                                     + "inner join con_tipo_document tdo on ree.ide_cntdo=tdo.ide_cntdo\n"
-                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa"));
+                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") +" and ide_cpefa=0");
                             if (tab_reembolso.getTotalFilas() > 0) {
                                 Element reembolsos = doc_anexo.createElement("reembolsos");
                                 detalleCompras.appendChild(reembolsos);
@@ -346,7 +347,7 @@ public class cls_anexo_transaccional {
                     TablaGenerica tab_ventas = utilitario.consultar("select tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,count(cab.ide_geper) as numcomprobantes, "
                             + "sum(cab.base_tarifa0_cccfa)as base_tarifa0_cccfa,sum(base_grabada_cccfa)as base_grabada, "
                             + "sum(base_no_objeto_iva_cccfa) as base_no_objeto_iva_cccfa, "
-                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(dret1.valor_cndre) as retiva, sum(dret2.valor_cndre) as retrenta, tcon.alter_tribu_cntco,cli.nom_geper  "
+                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(dret1.valor_cndre) as retiva, sum(dret2.valor_cndre) as retrenta "
                             + "from cxc_cabece_factura cab "
                             + "left join gen_persona cli on cab.ide_geper=cli.ide_geper "
                             + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid "
@@ -354,9 +355,8 @@ public class cls_anexo_transaccional {
                             + "left join con_cabece_retenc rete on rete.ide_cncre=cab.ide_cncre and rete.es_venta_cncre=true "
                             + "left join con_detall_retenc dret1 on rete.ide_cncre= dret1.ide_cncre  and dret1.ide_cncim=1 "
                             + "left join con_detall_retenc dret2 on rete.ide_cncre= dret2.ide_cncre  and dret1.ide_cncim=0 "
-                            + "left join con_tipo_contribu tcon on cli.ide_cntco=tcon.ide_cntco "
                             + " where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,tcon.alter_tribu_cntco,nom_geper");
+                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
 
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
                         ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
@@ -368,9 +368,12 @@ public class cls_anexo_transaccional {
                             detalleVentas.appendChild(crearElemento("parteRelVtas", null, "NO"));
                         }
 
-                        if (tab_ventas.getValor(i, "alterno2_getid").equals("06")) {
-                            detalleVentas.appendChild(crearElemento("tipoCliente", null, tab_ventas.getValor(i, "alter_tribu_cntco") == null ? "01" : tab_ventas.getValor(i, "alter_tribu_cntco")));
-                            detalleVentas.appendChild(crearElemento("denoCli", null, tab_ventas.getValor(i, "nom_geper")));
+                        if (tab_ventas.getValor(i, "alterno2_getid").equals("06")) {//PASAPORTE
+                            TablaGenerica tab_persona = utilitario.consultar("SELECT identificac_geper,nom_geper,alter_tribu_cntco from gen_persona cli "
+                                    + "left join con_tipo_contribu tcon on cli.ide_cntco=tcon.ide_cntco "
+                                    + "where identificac_geper='" + tab_ventas.getValor(i, "identificac_geper") + "'");
+                            detalleVentas.appendChild(crearElemento("tipoCliente", null, tab_persona.getValor("alter_tribu_cntco") == null ? "01" : tab_persona.getValor("alter_tribu_cntco")));
+                            detalleVentas.appendChild(crearElemento("denoCli", null, tab_persona.getValor("nom_geper")));
                         }
 
                         detalleVentas.appendChild(crearElemento("tipoComprobante", null, "18"));//tab_ventas.getValor(i, "alter_tribu_cntdo")

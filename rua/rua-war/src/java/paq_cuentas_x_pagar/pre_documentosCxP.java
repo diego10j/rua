@@ -95,6 +95,7 @@ public class pre_documentosCxP extends Pantalla {
     private Texto tex_num_asiento;
     private Etiqueta eti_num_asiento;
     private Texto tex_observacion;
+    private Confirmar con_confirma = new Confirmar();
 
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
@@ -164,6 +165,8 @@ public class pre_documentosCxP extends Pantalla {
         con_confirmar.setId("con_confirmar");
         con_confirmar.setWidgetVar("con_confirmar");
         con_confirmar.setMessage("Desea Generar el Comprobante de Retención?");
+        con_confirmar.getBot_aceptar().setValue("Si");
+        con_confirmar.getBot_cancelar().setValue("No");
         con_confirmar.getBot_aceptar().setOncomplete("con_confirmar.hide();");
         con_confirmar.getBot_aceptar().setMetodo("abrirRetencion");
         con_confirmar.getBot_cancelar().setOnclick("con_confirmar.hide();");
@@ -176,6 +179,14 @@ public class pre_documentosCxP extends Pantalla {
         sel_certificacion.getTab_seleccion().getColumna("detalle_subactividad").setFiltro(true);
         sel_certificacion.getBot_aceptar().setMetodo("aceptarBusqueda");
         agregarComponente(sel_certificacion);
+
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro de Anular el Documento CXP Seleccionado ?");
+        con_confirma.setTitle("ANULAR DOCUMENTO CXP");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
+
     }
 
     public void dibujarCompromiso() {
@@ -659,11 +670,14 @@ public class pre_documentosCxP extends Pantalla {
         Boton bot_ver = new Boton();
         bot_ver.setValue("Ver Documento");
         bot_ver.setMetodo("verDocumento");
+        bot_ver.setIcon("ui-icon-search");
+
         bar_menu.agregarComponente(bot_ver);
 
         Boton bot_anular = new Boton();
         bot_anular.setValue("Anular Documento");
-        bot_anular.setMetodo("anularDocumento");
+        bot_anular.setIcon("ui-icon-cancel");
+        bot_anular.setMetodo("abrirAnularDocumento");
         bar_menu.agregarComponente(bot_anular);
 
         tab_tabla1 = new Tabla();
@@ -928,7 +942,26 @@ public class pre_documentosCxP extends Pantalla {
 
     }
 
+    public void abrirAnularDocumento() {
+        if (tab_tabla1.getValor("ide_cpcfa") != null) {
+            con_confirma.getBot_aceptar().setMetodo("anularDocumento");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Documento CxP", "");
+        }
+
+    }
+
     public void anularDocumento() {
+        if (tab_tabla1.getValor("ide_cpcfa") != null) {
+            ser_cuentas_cxp.anularDocumento(tab_tabla1.getValor("ide_cpcfa"));
+            if (guardarPantalla().isEmpty()) {
+                con_confirma.cerrar();
+                tab_tabla1.actualizar();
+            }
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Documento CxP", "");
+        }
 
     }
 
@@ -1168,6 +1201,14 @@ public class pre_documentosCxP extends Pantalla {
 
     public void setAut_anticipo(AutoCompletar aut_anticipo) {
         this.aut_anticipo = aut_anticipo;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 }

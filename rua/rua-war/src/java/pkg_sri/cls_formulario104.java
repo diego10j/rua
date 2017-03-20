@@ -372,7 +372,7 @@ public class cls_formulario104 {
                 + " FROM cxp_cabece_factur f "
                 + " LEFT JOIN cxp_detall_factur df ON (df.ide_cpcfa = f.ide_cpcfa) "
                 + " WHERE df.alter_tribu_cpdfa in(" + utilitario.generarComillaSimple(alterno) + ")"
-                + " AND f.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+                + " AND f.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_rem_cpcfa is null and ide_cpefa=0");  //filtra no anuladas
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");

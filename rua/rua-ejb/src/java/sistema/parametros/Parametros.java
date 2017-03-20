@@ -70,7 +70,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_pago_interes_inversion", "Indica que el tipo de transaccion pago de intereses de la inversion (Pago de intereses) ", "19", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_renova_interes_reinver", "Indica que el tipo de transaccion renovacion de intereses de inversion (Interes de Nueva Renovacion de Inversion) ", "20", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_retencion", "Indica que el tipo de transaccion Retencion ", "21", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
-
+        lis_parametros.add(new Parametro("2", "p_cxp_estado_factura_anulada", "Indica el estado de la factura (Anulada) ", "1", "cxp_estado_factur", "ide_cpefa", "nombre_cpefa"));
 
         /*
          * CUENTAS POR COBRAR MODULO =3
@@ -210,7 +210,7 @@ public class Parametros {
         /*
          * VENTAS =8
          */
- /*
+        /*
          * PRESTAMOS E INVERSIONES =9 *
          */
         lis_parametros.add(new Parametro("9", "p_iyp_activo", "Indica que se carga solo las cuentas de nivel de Activo", "0", "con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc"));

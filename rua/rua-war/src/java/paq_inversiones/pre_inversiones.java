@@ -74,7 +74,8 @@ public class pre_inversiones extends Pantalla {
         mep_menu.agregarItem("Generar Asiento de Terminación", "dibujarAsientoTerminaFondo", "ui-icon-notice");//19
         mep_menu.agregarSubMenu("INVERSIONES VENCIDAS");
         mep_menu.agregarItem("Inversiones Vencidas", "dibujarVencidas", "ui-icon-calculator");//13
-
+        mep_menu.agregarSubMenu("HISTORICO");
+        mep_menu.agregarItem("Inversiones Canceladas", "dibujarCanceladas", "ui-icon-star");//20
         agregarComponente(mep_menu);
 
         asc_asiento.setId("asc_asiento");
@@ -168,8 +169,6 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("nombre_ipein").setFiltroContenido();
         tab_tabla1.getColumna("num_certificado_ipcer").setNombreVisual("NUM. CERTIFICADO");
         tab_tabla1.getColumna("num_certificado_ipcer").setFiltroContenido();
-        tab_tabla1.getColumna("num_certificado_ipcer").setLink();
-        tab_tabla1.getColumna("num_certificado_ipcer").setMetodoChange("cargarCertificado");
         tab_tabla1.getColumna("num_certificado_ipcer").alinearCentro();
         tab_tabla1.getColumna("nombre_ipcin").setNombreVisual("CLASE");
         tab_tabla1.getColumna("nombre_ipcin").setFiltroContenido();
@@ -196,6 +195,48 @@ public class pre_inversiones extends Pantalla {
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(13, "INVERSIONES VENCIDAS AL " + utilitario.getFechaLarga(utilitario.getFechaActual()).toUpperCase(), pat_panel);
+    }
+
+    public void dibujarCanceladas() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_inversion.getSqlListaCertificadosCanceladosNuevas());
+        tab_tabla1.setNumeroTabla(20);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setCampoPrimaria("ide_ipcer");
+        tab_tabla1.getColumna("ide_ipcer").setVisible(false);
+        tab_tabla1.getColumna("ide_iptin").setVisible(false);
+        tab_tabla1.getColumna("nombre_iptin").setNombreVisual("TIPO");
+        tab_tabla1.getColumna("nombre_iptin").setFiltroContenido();
+        tab_tabla1.getColumna("nombre_ipein").setFiltroContenido();
+        tab_tabla1.getColumna("num_certificado_ipcer").setNombreVisual("NUM. CERTIFICADO");
+        tab_tabla1.getColumna("num_certificado_ipcer").setFiltroContenido();
+        tab_tabla1.getColumna("num_certificado_ipcer").alinearCentro();
+        tab_tabla1.getColumna("nombre_ipcin").setNombreVisual("CLASE");
+        tab_tabla1.getColumna("nombre_ipcin").setFiltroContenido();
+        tab_tabla1.getColumna("nombre_ipcin").setLongitud(-1);
+        tab_tabla1.getColumna("observacion_ipcer").setNombreVisual("OBSERVACIÓN");
+        tab_tabla1.getColumna("fecha_emision_ipcer").setNombreVisual("FECHA EMISIÓN");
+        tab_tabla1.getColumna("plazo_ipcer").setNombreVisual("PLAZO");
+        tab_tabla1.getColumna("capital_ipcer").setNombreVisual("CAPITAL");
+        tab_tabla1.getColumna("interes_ipcer").setNombreVisual("INTERES");
+        tab_tabla1.getColumna("valor_a_pagar_ipcer").setNombreVisual("VALOR A PAGAR");
+        tab_tabla1.getColumna("plazo_ipcer").alinearDerecha();
+        tab_tabla1.getColumna("capital_ipcer").alinearDerecha();
+        tab_tabla1.getColumna("interes_ipcer").alinearDerecha();
+        tab_tabla1.getColumna("valor_a_pagar_ipcer").alinearDerecha();
+        tab_tabla1.getColumna("fecha_vence_ipcer").setNombreVisual("FECHA VENCE");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+
+        tab_tabla1.setRows(25);
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        mep_menu.dibujar(20, "INVERSIONES CANCELADAS", pat_panel);
     }
 
     public void dibujarAsientoTerminaB() {
@@ -1178,6 +1219,9 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.ejecutarSql();
             //gri.setRendered(false);
             utilitario.addUpdate("gri");
+            tab_tabla2.setValor("valor_ippin", aut_inversion.getValorArreglo(5));
+            tab_tabla2.setValor("num_pago_ippin", String.valueOf(tab_tabla1.getTotalFilas() + 1));
+            utilitario.addUpdateTabla(tab_tabla2, "valor_ippin,num_pago_ippin", null);
         } else {
             tab_tabla1.limpiar();
             utilitario.agregarMensajeInfo("Seleccione una inversión Bancaria", "");

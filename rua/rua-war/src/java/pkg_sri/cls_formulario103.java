@@ -364,7 +364,7 @@ public class cls_formulario103 {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa + base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) as tatal from cxp_cabece_factur\n"
                 + "where fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
-                + "and ide_rem_cpcfa is null");
+                + "and ide_rem_cpcfa is null and ide_cpefa=0");  //filtra no anuladas
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");

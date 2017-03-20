@@ -776,9 +776,10 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setOrden(1);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("IDENTIFICACIÓN");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("RUC");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
         ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
-        /////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarIdentificacionReembolso");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
 
         tab_com_reembolso.getColumna("ide_cntdo").setLongitud(-1);
@@ -1544,14 +1545,9 @@ public class DocumentoCxP extends Dialogo {
         }
     }
 
-    public void validarIdentificacionReembolso() {
-        String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");
+    public void validarIdentificacionReembolso() {        
+        String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");        
         boolean correcto = false;
-        if (identificacion.length() == 10) {
-            if (utilitario.validarCedula(identificacion)) {
-                correcto = true;
-            }
-        }
         if (identificacion.length() == 13) {
             if (utilitario.validarRUC(identificacion)) {
                 correcto = true;
@@ -1559,7 +1555,7 @@ public class DocumentoCxP extends Dialogo {
         }
         if (correcto == false) {
             tab_com_reembolso.setValor("motivo_nc_cpcfa", "");
-            utilitario.agregarMensajeInfo("Identificación no válida", "Ingrese un número RUC o Cédula válida en el detalle del coomprobante de reebolso");
+            utilitario.agregarMensajeInfo("Ruc no válido", "Ingrese un número RUC  en el detalle del comprobante de reembolso");
             utilitario.addUpdateTabla(tab_com_reembolso, "motivo_nc_cpcfa", "");
         }
 
@@ -1689,7 +1685,7 @@ public class DocumentoCxP extends Dialogo {
                 }
             }
             String p_activos_fijos = parametros.get("p_inv_articulo_activo_fijo");
-        //  1, Si aplica iva
+            //  1, Si aplica iva
             // -1, No aplica iva
             //  0, No OBJETO iva
             if (boo_tipo_rise == false) {

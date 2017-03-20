@@ -387,7 +387,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
                 + " and a.ide_geper=" + ide_geper + " "
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -414,7 +414,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + "\n"
-                + " and a.ide_cnccc is null and ide_rem_cpcfa is null \n"
+                + " and a.ide_cnccc is null and ide_rem_cpcfa is null and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -439,7 +439,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
                 + " and ide_cncre is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
@@ -621,8 +621,76 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_geper=" + ide_geper + " "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
+    }
+
+    public void anularDocumento(String ide_cpcfa) {
+        //Anula Factura
+        utilitario.getConexion().agregarSqlPantalla("update cxp_cabece_factur set ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_anulada") + ",ide_cnccc=null where ide_cpcfa=" + ide_cpcfa);
+        //Transaccion CXC Generar reverso de la transaccion FACTURA
+        TablaGenerica tab_cab = utilitario.consultar("SELECT a.ide_cpcfa,ide_cpctr,numero_cpcfa,ide_cntdo,ide_cncre from cxp_cabece_transa a inner join cxp_cabece_factur b on a.ide_cpcfa=b.ide_cpcfa where a.ide_cpcfa=" + ide_cpcfa + " and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal"));
+        if (tab_cab.getTotalFilas() > 0) {
+            reversarTransaccionCxP(tab_cab.getValor("ide_cpctr"), "V./ ANULACIÓN " + getNombreTipoDocumento(tab_cab.getValor("ide_cntdo")) + " : " + tab_cab.getValor("numero_cpcfa"));
+        }
+        //Anula transaccion inventario
+        utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci in (select ide_incci from inv_det_comp_inve where ide_cpcfa=" + ide_cpcfa + " group by ide_incci)");
+        ///anula retencion
+        if (tab_cab.getValor("ide_cncre") != null) {
+            utilitario.getConexion().agregarSqlPantalla("UPDATE con_cabece_retenc set ide_cnere=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " where ide_cncre=" + tab_cab.getValor("ide_cncre"));
+        }
+
+        ////////****!!!!!!!!!!!crear variable  p_inv_estado_anulado
+    }
+
+    public void reversarTransaccionCxP(String ide_cpctr, String observacion) {
+        if (ide_cpctr != null && !ide_cpctr.isEmpty()) {
+
+            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+            tab_det_tran_cxc.setTabla("cxp_detall_transa", "ide_cpdtr");
+            tab_det_tran_cxc.getColumna("ide_cpdtr").setExterna(false);
+            tab_det_tran_cxc.setCondicion("ide_cpdtr=-1");
+            tab_det_tran_cxc.ejecutarSql();
+
+            TablaGenerica tab_det = utilitario.consultar("SELECT * from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
+            tab_det_tran_cxc.limpiar();
+            for (int i = 0; i < tab_det.getTotalFilas(); i++) {
+                tab_det_tran_cxc.insertar();
+                tab_det_tran_cxc.setValor("ide_cpctr", ide_cpctr);
+                tab_det_tran_cxc.setValor("ide_cpcfa", tab_det.getValor(i, "ide_cpcfa"));
+
+                tab_det_tran_cxc.setValor("ide_cnccc", tab_det.getValor(i, "ide_cnccc"));
+                tab_det_tran_cxc.setValor("ide_teclb", tab_det.getValor(i, "ide_teclb"));
+                tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
+                if (tab_det.getValor(i, "ide_cpttr") != null && !tab_det.getValor(i, "ide_cpttr").isEmpty()) {
+                    if (Integer.parseInt(getSignoTransaccionCxP(tab_det.getValor(i, "ide_cpttr"))) > 0) {
+                        tab_det_tran_cxc.setValor("ide_cpttr", utilitario.getVariable("p_cxp_tipo_trans_reversa_menos"));
+                    } else {
+                        tab_det_tran_cxc.setValor("ide_cpttr", utilitario.getVariable("p_cxp_tipo_trans_reversa_mas"));
+                    }
+                }
+                tab_det_tran_cxc.setValor("fecha_trans_cpdtr", utilitario.getFechaActual());
+                tab_det_tran_cxc.setValor("fecha_venci_cpdtr", utilitario.getFechaActual());
+                tab_det_tran_cxc.setValor("numero_pago_cpdtr", tab_det.getValor(i, "numero_pago_cpdtr"));
+                tab_det_tran_cxc.setValor("valor_cpdtr", tab_det.getValor(i, "valor_cpdtr"));
+                tab_det_tran_cxc.setValor("docum_relac_cpdtr", tab_det.getValor(i, "docum_relac_cpdtr"));
+                tab_det_tran_cxc.setValor("observacion_cpdtr", observacion);
+            }
+            tab_det_tran_cxc.guardar();
+        }
+    }
+
+    public String getSignoTransaccionCxP(String ide_cpttr) {
+        TablaGenerica tab_tipo_transacciones = utilitario.consultar("select * from cxp_tipo_transacc where ide_cpttr=" + ide_cpttr);
+        if (tab_tipo_transacciones.getTotalFilas() > 0) {
+            if (tab_tipo_transacciones.getValor(0, "signo_cpttr") != null && !tab_tipo_transacciones.getValor(0, "signo_cpttr").isEmpty()) {
+                return tab_tipo_transacciones.getValor(0, "signo_cpttr");
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
 }
