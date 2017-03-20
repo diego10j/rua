@@ -203,4 +203,42 @@ public class ServicioActivosFijos extends ServicioBase {
         return !utilitario.consultar("select ide_acafi,codigo_barras_acafi from act_activo_fijo where codigo_barras_acafi='" + codigo_barras_acafi + "'").isEmpty();
     }
 
+    public String getSqlConsultaActivos() {
+        return "select\n"
+                + "a.ide_acact,a.secuencial_acact,a.codigo_acact,a.fecha_asigna_acact,a.nombre_gecas,\n"
+                + "a.nombre_geobr,a.nombre_acuba,a.nom_geper,a.observacion_acact,\n"
+                + "b.observacion_acaaf,b.fecha_acaaf,\n"
+                + "c.nombre_aceaf,c.nombre_geubi,c.nombre_inarti,c.nom_geper,c.cantidad_acafi,c.fecha_acafi,\n"
+                + "c.vida_util_acafi,c.valor_compra_acafi,c.deprecia_acafi,c.recidual_acafi,c.serie_acafi,c.observacion_acafi,c.numero_factu_acafi,\n"
+                + "c.fecha_compra_acafi,c.ano_actual_acafi,c.anos_uso_acafi,c.valor_comercial_acafi,c.valor_remate_acafi,c.modelo_acafi,\n"
+                + "c.nombre_invmar,c.nombre_acuba,c.codigo_barras_acafi,c.nombre_gecas,c.nombre_geobr,c.nombre_accla,\n"
+                + "c.act_ide_acafi,c.sec_masivo_acafi,c.cod_anterior_acafi,c.nombre_actac,c.nombre_accls\n"
+                + "from (select a.ide_acact,a.secuencial_acact,a.codigo_acact,a.fecha_asigna_acact,b.nombre_gecas,c.nombre_geobr,\n"
+                + "d.nombre_acuba,e.nom_geper,a.observacion_acact from act_acta_constata as a\n"
+                + "left join gen_casa as b on b.ide_gecas=a.ide_gecas\n"
+                + "left join gen_obra as c on c.ide_geobr=a.ide_geobr\n"
+                + "left join act_ubicacion_activo as d on d.ide_acuba=a.ide_acuba\n"
+                + "left join gen_persona as e on e.ide_geper=a.ide_geper)as a\n"
+                + "left join act_asignacion_activo as b on b.ide_acact=a.ide_acact\n"
+                + "left join (select a.ide_acafi,b.nombre_aceaf,c.nombre_geubi,d.nombre_inarti,e.nom_geper,\n"
+                + "a.cantidad_acafi,a.fecha_acafi,a.vida_util_acafi,a.valor_compra_acafi,case when a.deprecia_acafi is true then 'SI' else 'NO' end as deprecia_acafi,\n"
+                + "a.recidual_acafi,a.serie_acafi,observacion_acafi,a.numero_factu_acafi,a.fecha_compra_acafi,a.ano_actual_acafi,\n"
+                + "a.anos_uso_acafi,a.valor_comercial_acafi,a.valor_remate_acafi,a.modelo_acafi,f.nombre_invmar,g.nombre_acuba,\n"
+                + "a.codigo_barras_acafi,h.nombre_gecas,i.nombre_geobr,j.nombre_accla,\n"
+                + "a.act_ide_acafi,a.sec_masivo_acafi,a.cod_anterior_acafi,k.nombre_actac,l.nombre_accls\n"
+                + "from act_activo_fijo as a\n"
+                + "left join act_estado_activo_fijo as b on b.ide_aceaf=a.ide_aceaf\n"
+                + "left join gen_ubicacion as c on c.ide_geubi=a.ide_geubi\n"
+                + "left join inv_articulo as d on d.ide_inarti=a.ide_inarti\n"
+                + "left join gen_persona as e on e.ide_geper=a.ide_geper\n"
+                + "left join inv_marca as f on f.ide_inmar=a.ide_inmar\n"
+                + "left join act_ubicacion_activo as g on g.ide_acuba=a.ide_acuba\n"
+                + "left join gen_casa as h on h.ide_gecas=a.ide_gecas\n"
+                + "left join gen_obra as i on i.ide_geobr=a.ide_geobr\n"
+                + "left join act_clase_activo as j on j.ide_accla=a.ide_accla\n"
+                + "left join act_tipo_adquisicion as k on k.ide_actac=a.ide_actac\n"
+                + "left join act_clasificacion as l on l.ide_accls=a.ide_accls)as c on c.ide_acafi=b.ide_acafi\n"
+                + "order by a.secuencial_acact,a.codigo_acact,a.fecha_asigna_acact";
+    }
+
 }
