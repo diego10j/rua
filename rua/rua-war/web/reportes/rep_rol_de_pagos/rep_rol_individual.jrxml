@@ -48,8 +48,8 @@ TIPORUBRO.SIGNO_NRTIR,
 DETA.VALOR_NRDRO AS MONTO,
 PERIODO.FECHA_INICIAL_GEPRO AS FECHA_INICIAL,
 PERIODO.FECHA_FINAL_GEPRO AS FECHA_FINAL,
-MES.DETALLE_GEMES AS MES,
-ANIO.DETALLE_GEANI AS ANIO,
+MES.NOMBRE_GEMES AS MES,
+ANIO.NOM_GEANI AS ANIO,
 SUCU.NOM_SUCU,
 a.total_recibir,
 b.total_ingresos,
@@ -88,36 +88,42 @@ AND TIPORUBRO.IDE_NRTIR IN ($P!{IDE_NRTIR})
 AND DETA.VALOR_NRDRO!=0
 ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 	</queryString>
-	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
-	<field name="AREA" class="java.lang.String"/>
-	<field name="DEPARTAMENTO" class="java.lang.String"/>
-	<field name="GRUPO_OCUPACIONAL" class="java.lang.String"/>
-	<field name="FUNCIONAL" class="java.lang.String"/>
-	<field name="EMPLEADO" class="java.lang.String"/>
-	<field name="CEDULA" class="java.lang.String"/>
-	<field name="RUBROS" class="java.lang.String"/>
-	<field name="IDE_NRTIR" class="java.math.BigDecimal"/>
-	<field name="SIGNO_NRTIR" class="java.math.BigDecimal"/>
-	<field name="MONTO" class="java.math.BigDecimal"/>
-	<field name="FECHA_INICIAL" class="java.sql.Timestamp"/>
-	<field name="FECHA_FINAL" class="java.sql.Timestamp"/>
-	<field name="MES" class="java.lang.String"/>
-	<field name="ANIO" class="java.lang.String"/>
-	<field name="NOM_SUCU" class="java.lang.String"/>
-	<field name="TOTAL_RECIBIR" class="java.math.BigDecimal"/>
-	<field name="TOTAL_INGRESOS" class="java.math.BigDecimal"/>
-	<field name="TOTAL_EGRESOS" class="java.math.BigDecimal"/>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="area" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="grupo_ocupacional" class="java.lang.String"/>
+	<field name="funcional" class="java.lang.String"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="rubros" class="java.lang.String"/>
+	<field name="ide_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla nrh_tipo_rubro. Para imprimir las liquidaciones se debe considerar que los rubros que se imprimen son los INGRESOS, EGRESOS, EGRESO INFORMATIVO, INGRESO INFORMATIVO, los informativos nunca s eimprimen, ejemplo: dias vacacion ingreso informativo.]]></fieldDescription>
+	</field>
+	<field name="signo_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el signo por el cual va a multiplar el rubro si es egreso (-1), ingreso (1)]]></fieldDescription>
+	</field>
+	<field name="monto" class="java.math.BigDecimal"/>
+	<field name="fecha_inicial" class="java.sql.Date"/>
+	<field name="fecha_final" class="java.sql.Date"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="anio" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="total_recibir" class="java.math.BigDecimal"/>
+	<field name="total_ingresos" class="java.math.BigDecimal"/>
+	<field name="total_egresos" class="java.math.BigDecimal"/>
 	<variable name="ingresos" class="java.lang.String">
-		<variableExpression><![CDATA[$F{SIGNO_NRTIR}.toString().equals("1")?$F{MONTO}.toString():null]]></variableExpression>
+		<variableExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{monto}.toString():null]]></variableExpression>
 	</variable>
 	<variable name="egresos" class="java.lang.String">
-		<variableExpression><![CDATA[$F{SIGNO_NRTIR}.toString().equals("-1")?$F{MONTO}.toString():null]]></variableExpression>
+		<variableExpression><![CDATA[$F{signo_nrtir}.toString().equals("-1")?$F{monto}.toString():null]]></variableExpression>
 	</variable>
 	<variable name="total_ingresos" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[new Double($F{SIGNO_NRTIR}.toString().equals("1")?$F{MONTO}.doubleValue():"0")]]></variableExpression>
+		<variableExpression><![CDATA[new Double($F{signo_nrtir}.toString().equals("1")?$F{monto}.doubleValue():"0")]]></variableExpression>
 	</variable>
 	<variable name="total_egresos" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[new Double($F{SIGNO_NRTIR}.toString().equals("-1")?$F{MONTO}.doubleValue():"0")]]></variableExpression>
+		<variableExpression><![CDATA[new Double($F{signo_nrtir}.toString().equals("-1")?$F{monto}.doubleValue():"0")]]></variableExpression>
 	</variable>
 	<variable name="valor_recibir" class="java.lang.Double">
 		<variableExpression><![CDATA[$V{total_ingresos}-$V{total_egresos}]]></variableExpression>
@@ -139,7 +145,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{DEPARTAMENTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{departamento}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="9f4d4917-e979-440f-b0cc-c24a196e72d0" stretchType="RelativeToBandHeight" x="289" y="136" width="86" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -153,7 +159,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{GRUPO_OCUPACIONAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{grupo_ocupacional}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="641e97e9-f1bf-43f2-9bec-0092465688c4" stretchType="RelativeToBandHeight" x="289" y="148" width="86" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -167,7 +173,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FUNCIONAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{funcional}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="36c9c131-4308-464d-81e6-49abb066afa8" stretchType="RelativeToBandHeight" x="0" y="124" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -181,7 +187,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{EMPLEADO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{empleado}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="c6a9d93c-9029-497d-b4bf-64db8b4de1c8" stretchType="RelativeToBandHeight" x="289" y="124" width="85" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -195,7 +201,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CEDULA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="11b67fff-59ec-4c58-a3ea-97ba82ea5a06" stretchType="RelativeToBandHeight" x="0" y="136" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -209,7 +215,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement uuid="3097518b-8113-4dd6-ade0-0a853cf9265d" x="0" y="1" width="555" height="21"/>
@@ -243,7 +249,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{MES}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="8e87f3f0-fdcd-498a-bd5e-bc1f48d4ed2f" x="226" y="104" width="29" height="11"/>
@@ -257,7 +263,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ANIO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="992a5d18-dce6-446a-8d42-e9a604b2f0f4" x="160" y="82" width="63" height="11"/>
@@ -271,7 +277,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHA_INICIAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_inicial}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="429b3e6e-bc19-4c69-af93-9dbf8a128b78" x="273" y="82" width="34" height="11"/>
@@ -285,7 +291,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHA_FINAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_final}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="205e7961-e8d1-4243-a8eb-178e1ae72cfb" stretchType="RelativeToBandHeight" x="0" y="112" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -299,7 +305,7 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_SUCU}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -363,8 +369,8 @@ ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO]]>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{SIGNO_NRTIR}.toString().equals("1")?$F{RUBROS}.toString():
-$F{SIGNO_NRTIR}.toString().equals("-1")?$F{RUBROS}.toString():
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{rubros}.toString():
+$F{signo_nrtir}.toString().equals("-1")?$F{rubros}.toString():
 null]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
@@ -379,7 +385,7 @@ null]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{SIGNO_NRTIR}.toString().equals("1")?$F{MONTO}:null]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{monto}:null]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="dd0686cd-4580-40c1-8ce0-3105f8ae0ad1" stretchType="RelativeToBandHeight" x="458" y="0" width="85" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
@@ -393,7 +399,7 @@ null]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{SIGNO_NRTIR}.toString().equals("-1")?$F{MONTO}:null]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("-1")?$F{monto}:null]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -411,7 +417,7 @@ null]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL_INGRESOS}==null?$V{total_ingresos}:$F{TOTAL_INGRESOS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total_ingresos}==null?$V{total_ingresos}:$F{total_ingresos}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="5216a2b2-1cca-4851-b2cc-4588fdefe74e" x="458" y="0" width="85" height="9"/>
@@ -425,7 +431,7 @@ null]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL_EGRESOS}==null?$V{total_egresos}:$F{TOTAL_EGRESOS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total_egresos}==null?$V{total_egresos}:$F{total_egresos}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="02634a84-4aaa-4758-8aad-99c0419d8af2" stretchType="RelativeToBandHeight" x="0" y="0" width="373" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
@@ -474,7 +480,7 @@ null]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL_RECIBIR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total_recibir}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

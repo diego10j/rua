@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_nrrua,a.ide_nrrub,a.ide_gelua,a.ide_cndpc,detalle_nrrub,codig_recur_cndpc,nombre_cndpc,nombre_cnlap
+from nrh_rubro_asiento a, nrh_rubro b, con_lugar_aplicac c, con_det_plan_cuen d
+where a.ide_nrrub = b.ide_nrrub
+and a.ide_gelua= c.ide_cnlap
+and a.ide_cndpc = d.ide_cndpc
+order by codig_recur_cndpc,nombre_cnlap,detalle_nrrub]]>
+	</queryString>
+	<field name="ide_nrrua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_rubro_asiento, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_nrrub" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_rubro, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gelua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_lugar_aplica valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_cndpc" class="java.lang.Integer"/>
+	<field name="detalle_nrrub" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del rubro para la generacion del respectivo rol, ejemplo DECIMO TERCER SUELDO, DECIMO CUARTO SUELDO, RETENCION A LA FUENTE, etc.]]></fieldDescription>
+	</field>
+	<field name="codig_recur_cndpc" class="java.lang.String"/>
+	<field name="nombre_cndpc" class="java.lang.String"/>
+	<field name="nombre_cnlap" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d022bb51-aa07-40d0-82e6-f7f02f380c80" x="1" y="0" width="175" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="263" y="0" width="292" height="85"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASOCIACION RUBROS CONTABILIDAD]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="22" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="0" y="2" width="555" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="1" y="2" width="62" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="248" y="2" width="120" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rubro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="84" y="2" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="483" y="2" width="70" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debe/Haber]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="379dcbdd-2f50-491a-915f-37c293d7a178" x="2" y="1" width="83" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="4867c499-e3f6-4efa-bcb5-92639bf02723" x="496" y="1" width="55" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cnlap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="2841f365-9d91-466f-a1bc-30aaa450fd6b" x="85" y="1" width="205" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="67fa8922-b26d-4506-a768-e8f251fa7a3f" x="290" y="1" width="206" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_nrrub}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
