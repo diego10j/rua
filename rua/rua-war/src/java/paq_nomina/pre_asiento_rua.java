@@ -17,6 +17,9 @@ import framework.componentes.Tabla;
 import java.util.HashMap;
 import javax.ejb.EJB;
 import paq_nomina.ejb.ServicioNomina;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
+import java.util.Map;
 
 
 public class pre_asiento_rua extends Pantalla {
@@ -25,11 +28,23 @@ public class pre_asiento_rua extends Pantalla {
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private SeleccionTabla sel_tab_tipo_nomina = new SeleccionTabla();
+    private SeleccionTabla sel_tab_consuta_descuadre = new SeleccionTabla();
+    	private Reporte rep_reporte=new Reporte();
+	private SeleccionFormatoReporte sef_reporte=new SeleccionFormatoReporte();
+        private Map p_parametros=new HashMap();
     
     	@EJB
 	private ServicioNomina ser_nomina = (ServicioNomina) utilitario.instanciarEJB(ServicioNomina.class);
 
     public pre_asiento_rua() {    
+        
+                bar_botones.agregarReporte();
+		rep_reporte.setId("rep_reporte");
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+		agregarComponente(rep_reporte);
+
+		sef_reporte.setId("sef_reporte");
+		agregarComponente(sef_reporte);
         
         com_periodo.setCombo(ser_nomina.getSqlComboPeriodoRol());
 	//com_periodo.setMetodo("cambioPeriodo");		 
@@ -54,6 +69,11 @@ public class pre_asiento_rua extends Pantalla {
 	bot_transferir_asiento.setIcon("ui-icon-mail-closed");
 	bar_botones.agregarBoton(bot_transferir_asiento);
 
+        Boton bot_consulta_descuadre=new Boton();
+	bot_consulta_descuadre.setMetodo("consultaDescuadre");
+	bot_consulta_descuadre.setValue("Consultar Rol Descuadrado");
+	bot_consulta_descuadre.setIcon("ui-icon-mail-closed");
+	bar_botones.agregarBoton(bot_consulta_descuadre);
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("NRH_CABECERA_ASIENTO", "IDE_NRCAA", 1);
@@ -108,8 +128,67 @@ public class pre_asiento_rua extends Pantalla {
 		gru_pantalla.getChildren().add(sel_tab_tipo_nomina);
 		sel_tab_tipo_nomina.getBot_aceptar().setMetodo("aceptarAsiento");
 		agregarComponente(sel_tab_tipo_nomina);
-    }
+                
+               sel_tab_consuta_descuadre.setId("sel_tab_consuta_descuadre");
+                sel_tab_consuta_descuadre.setSeleccionTabla("select a.ide_gtemp,apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,debe,haber "
+                + "from gth_empleado a,( "
+                + "select sum(debe) as debe,sum(haber) as haber, ide_geedp from ( "
+                + "select ide_gelua,ide_cndpc, sum(round(debe,2)) as debe,sum(round(haber,2)) as haber, ide_geedp from ( "
+                + "select a.ide_gelua,a.ide_cndpc,b.ide_nrrub,b.ide_nrder,d.ide_nrrol,d.ide_gepro, "
+                + "round((case when a.ide_gelua = 0 then valor_nrdro else 0 end),2) as haber, "
+                + "round((case when a.ide_gelua = 1 then valor_nrdro else 0 end),2) as debe,detalle_nrrub,codig_recur_cndpc,nombre_cndpc,ide_geedp "
+                + "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d,nrh_rubro e,con_det_plan_cuen f "
+                + "where a.ide_nrrub = b.ide_nrrub "
+                + "and b.ide_nrder = c.ide_nrder "
+                + "and c.ide_nrrol = d.ide_nrrol "
+                + "and b.ide_nrrub = e.ide_nrrub "
+                + "and a.ide_cndpc = f.ide_cndpc "
+                + "and ide_gepro =-1 "
+                + ") a "
+                + "group by ide_gelua,ide_cndpc, ide_geedp "
+                + ")a "
+                + "group by ide_geedp "
+                + ") b, gen_empleados_departamento_par c "
+                + "where a.ide_gtemp = c.ide_gtemp and b.ide_geedp = c.ide_geedp "
+                + "and debe != haber "
+                + "order by apellido_paterno_gtemp","ide_gtemp");
 
+        //sel_tab_tipo_nomina.setRadio();
+        gru_pantalla.getChildren().add(sel_tab_consuta_descuadre);
+        sel_tab_consuta_descuadre.getBot_aceptar().setRendered(false);
+        agregarComponente(sel_tab_consuta_descuadre);
+    }
+public void consultaDescuadre(){
+    if(com_periodo.getValue()!=null){
+    sel_tab_consuta_descuadre.getTab_seleccion().setSql("select a.ide_gtemp,apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,debe,haber "
+                + "from gth_empleado a,( "
+                + "select sum(debe) as debe,sum(haber) as haber, ide_geedp from ( "
+                + "select ide_gelua,ide_cndpc, sum(round(debe,2)) as debe,sum(round(haber,2)) as haber, ide_geedp from ( "
+                + "select a.ide_gelua,a.ide_cndpc,b.ide_nrrub,b.ide_nrder,d.ide_nrrol,d.ide_gepro, "
+                + "round((case when a.ide_gelua = 0 then valor_nrdro else 0 end),2) as haber, "
+                + "round((case when a.ide_gelua = 1 then valor_nrdro else 0 end),2) as debe,detalle_nrrub,codig_recur_cndpc,nombre_cndpc,ide_geedp "
+                + "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d,nrh_rubro e,con_det_plan_cuen f "
+                + "where a.ide_nrrub = b.ide_nrrub "
+                + "and b.ide_nrder = c.ide_nrder "
+                + "and c.ide_nrrol = d.ide_nrrol "
+                + "and b.ide_nrrub = e.ide_nrrub "
+                + "and a.ide_cndpc = f.ide_cndpc "
+                + "and ide_gepro = "+com_periodo.getValue().toString()
+                + ") a "
+                + "group by ide_gelua,ide_cndpc, ide_geedp "
+                + ")a "
+                + "group by ide_geedp "
+                + ") b, gen_empleados_departamento_par c "
+                + "where a.ide_gtemp = c.ide_gtemp and b.ide_geedp = c.ide_geedp "
+                + "and debe != haber "
+                + "order by apellido_paterno_gtemp");
+			sel_tab_consuta_descuadre.getTab_seleccion().ejecutarSql();
+                        sel_tab_consuta_descuadre.dibujar();
+    }else {
+                      utilitario.agregarMensajeInfo("Seleccione un periodo", "Seleccione El periodo para Continuar con la consulta");
+                      }
+                      
+}
     @Override
     public void insertar() {
          if(tab_tabla.isFocus()){
@@ -219,6 +298,36 @@ public void generarAsiento(){
 			utilitario.agregarMensajeInfo("Debe seleccionar un periodo", "");
 		}
 	}
+        @Override
+	public void abrirListaReportes() {
+		// TODO Auto-generated method stub
+		rep_reporte.dibujar();
+	}
+
+	@Override
+	public void aceptarReporte() {
+		if (rep_reporte.getReporteSelecionado().equals("Plantilla Contable")){
+			if (rep_reporte.isVisible()){
+				p_parametros=new HashMap();
+				rep_reporte.cerrar();
+				//p_parametros.put("IDE_GETIA",1);
+				p_parametros.put("titulo","PLANTILLA CONTABLE");
+				sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+				sef_reporte.dibujar();					
+                        }
+			
+		}
+                else if (rep_reporte.getReporteSelecionado().equals("Asiento Contable")) {
+                    if (rep_reporte.isVisible()){
+				p_parametros=new HashMap();
+				rep_reporte.cerrar();
+				p_parametros.put("ide_nrcaa",Integer.parseInt(tab_tabla.getValor("ide_nrcaa")));
+				p_parametros.put("titulo","PLANTILLA CONTABLE");
+				sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+				sef_reporte.dibujar();					
+                        }
+                }
+	}
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
@@ -241,6 +350,30 @@ public void generarAsiento(){
 
     public void setSel_tab_tipo_nomina(SeleccionTabla sel_tab_tipo_nomina) {
         this.sel_tab_tipo_nomina = sel_tab_tipo_nomina;
+    }
+
+    public SeleccionTabla getSel_tab_consuta_descuadre() {
+        return sel_tab_consuta_descuadre;
+    }
+
+    public void setSel_tab_consuta_descuadre(SeleccionTabla sel_tab_consuta_descuadre) {
+        this.sel_tab_consuta_descuadre = sel_tab_consuta_descuadre;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_reporte() {
+        return sef_reporte;
+    }
+
+    public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
+        this.sef_reporte = sef_reporte;
     }
     
 }
