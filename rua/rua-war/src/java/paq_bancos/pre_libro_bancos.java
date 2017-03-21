@@ -251,8 +251,9 @@ public class pre_libro_bancos extends Pantalla {
                 sel_fechas.dibujar();
             } else if (sel_fechas.isVisible()) {
                 if (sel_fechas.isFechasValidas() == true) {
-                    parametro.put("fecha_inicio", sel_fechas.getFecha1());
-                    parametro.put("fecha_fin", sel_fechas.getFecha2());
+                    parametro.put("fecha_inicio", sel_fechas.getFecha1String());
+                    parametro.put("fecha_fin", sel_fechas.getFecha2String());
+
                     sel_fechas.cerrar();
                     sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_formato.dibujar();
