@@ -178,6 +178,13 @@ public abstract class Pantalla {
         }
     }
 
+    public void exportarFiltradosXLS() {
+        Tabla tabla_foco = utilitario.getTablaisFocus();
+        if (tabla_foco != null) {
+            tabla_foco.exportarFiltradosXLS();
+        }
+    }
+
     public void terminal() {
         Tabla tabla_foco = utilitario.getTablaisFocus();
         TerminalTabla terminal = utilitario.getTerminal();
