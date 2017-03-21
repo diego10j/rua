@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_movimientos_bancos" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="585a094e-11dd-48a4-a0c5-ed93b5c27a7c">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="fecha_inicio" class="java.util.Date">
+	<property name="ireport.x" value="176"/>
+	<property name="ireport.y" value="52"/>
+	<parameter name="fecha_inicio" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="fecha_fin" class="java.util.Date">
+	<parameter name="fecha_fin" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="ide_tecba" class="java.lang.String">
@@ -31,12 +31,12 @@ select ide_tecba,sum(valor_teclb * signo_tettb) as valor
 from tes_cab_libr_banc a
 inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb
 where ide_tecba in($P!{ide_tecba})
-and fecha_trans_teclb < $P{fecha_inicio}
+and fecha_trans_teclb < cast ($P{fecha_inicio} as date)
 and ide_teelb=0 --estadonormal
 group by ide_tecba
 )as e on e.ide_tecba= a.ide_tecba
-where c.ide_tecba in($P!{ide_tecba}) and ide_teelb =0 and fecha_trans_teclb BETWEEN $P{fecha_inicio} and $P{fecha_fin}
-order by d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]>
+where c.ide_tecba in($P!{ide_tecba}) and ide_teelb =0 and fecha_trans_teclb BETWEEN (cast ($P{fecha_inicio} as date)) and (cast ($P{fecha_fin} as date))
+order by c.ide_tecba,d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]>
 	</queryString>
 	<field name="nombre_teban" class="java.lang.String"/>
 	<field name="ide_tecba" class="java.lang.Long"/>
@@ -75,7 +75,7 @@ order by d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]>
 		<variableExpression><![CDATA[$V{vingresos}-$V{vegresos}+$F{saldo}]]></variableExpression>
 	</variable>
 	<group name="Bancos">
-		<groupExpression><![CDATA[$F{nombre_teban}]]></groupExpression>
+		<groupExpression><![CDATA[$F{ide_tecba}]]></groupExpression>
 		<groupHeader>
 			<band height="14">
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -174,12 +174,35 @@ order by d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]>
 			</staticText>
 			<subreport>
 				<reportElement uuid="c1c02990-13a9-4fd3-85bf-879188789974" x="3" y="2" width="200" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_fin">
+					<subreportParameterExpression><![CDATA[$P{fecha_fin}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ide_empr">
 					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_tecba">
+					<subreportParameterExpression><![CDATA[$P{ide_tecba}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_inicio">
+					<subreportParameterExpression><![CDATA[$P{fecha_inicio}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="783e8702-192d-4330-8957-89c19be19d2f" positionType="Float" stretchType="RelativeToTallestObject" x="260" y="52" width="268" height="22"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Del   "+$P{fecha_inicio}+"   Al   "+$P{fecha_fin}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
