@@ -645,7 +645,7 @@ public class ServicioFacturaCxC extends ServicioBase {
                 + "where ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and ct.ide_ccttr=" + parametros.get("p_cxc_tipo_trans_anticipo") + "\n"
                 + "GROUP BY ct.ide_ccctr,nom_geper,fecha_trans_ccctr\n"
-                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr)<0\n"
+                + "HAVING abs(sum (dt.valor_ccdtr*tt.signo_ccttr))>0\n"
                 + "ORDER BY fecha_trans_ccctr desc, ide_ccctr ";
     }
 }
