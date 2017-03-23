@@ -276,10 +276,9 @@ public class AsientoContable extends Dialogo {
     }
 
     public void abrirPresupuesto() {
-        //AQUI PROGRAMA CLIC 
         dia_asociacionPre.dibujar();
-    }
-    
+    }    
+     
 
     public void aceptarAsociacion() {
         if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
