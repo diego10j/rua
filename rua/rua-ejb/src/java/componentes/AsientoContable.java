@@ -77,7 +77,7 @@ public class AsientoContable extends Dialogo {
                 "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso",
                 "p_con_tipo_comprobante_egreso", "p_con_beneficiario_empresa", "p_tes_tran_cheque");
         this.setWidth("95%");
-        this.setHeight("95%");
+        this.setHeight("90%");
         this.setTitle("ASIENTO CONTABLE");
         this.setResizable(false);
         this.setDynamic(false);
@@ -111,10 +111,17 @@ public class AsientoContable extends Dialogo {
         aut_asiento_tipo.setSize(getAnchoPanel() / 7);
         aut_asiento_tipo.setMetodoChangeRuta("pre_index.clase." + getId() + ".cargarCuentasAsientoTipo");
         Grid gri_as_tipo = new Grid();
-        gri_as_tipo.setColumns(2);
+        gri_as_tipo.setColumns(3);
         gri_as_tipo.getChildren().add(new Etiqueta("<strong>ASIENTO TIPO :</strong>"));
         gri_as_tipo.getChildren().add(aut_asiento_tipo);
-
+        if (isPresupuesto()) {
+            Boton botPresupuesto = new Boton();
+            botPresupuesto.setValue("Presupuesto");
+            botPresupuesto.setIcon("ui-icon-start");
+            botPresupuesto.setMetodoRuta("pre_index.clase." + getId() + ".presupuesto");
+            botPresupuesto.setStyle("padding-left:5px;");
+            gri_as_tipo.getChildren().add(botPresupuesto);
+        }
         contenido.getChildren().add(gri_as_tipo);
 
         tab_cabe_asiento = new Tabla();
@@ -264,6 +271,10 @@ public class AsientoContable extends Dialogo {
         this.setDialogo(contenido);
         this.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardar");
 
+    }
+
+    public void presupuesto() {
+        //AQUI PROGRAMA CLIC 
     }
 
     public void aceptarAsociacion() {
