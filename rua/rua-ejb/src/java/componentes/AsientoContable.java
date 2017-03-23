@@ -12,6 +12,7 @@ import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -72,6 +73,7 @@ public class AsientoContable extends Dialogo {
     private Tabla tab_sel_aso_tab_seleccion;
     private Texto tex_valor_pre;
 
+    
     public AsientoContable() {
         parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
                 "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso",
@@ -118,7 +120,7 @@ public class AsientoContable extends Dialogo {
             Boton botPresupuesto = new Boton();
             botPresupuesto.setValue("Presupuesto");
             botPresupuesto.setIcon("ui-icon-start");
-            botPresupuesto.setMetodoRuta("pre_index.clase." + getId() + ".presupuesto");
+            botPresupuesto.setMetodoRuta("pre_index.clase." + getId() + ".abrirPresupuesto");
             botPresupuesto.setStyle("padding-left:5px;");
             gri_as_tipo.getChildren().add(botPresupuesto);
         }
@@ -273,9 +275,11 @@ public class AsientoContable extends Dialogo {
 
     }
 
-    public void presupuesto() {
+    public void abrirPresupuesto() {
         //AQUI PROGRAMA CLIC 
+        dia_asociacionPre.dibujar();
     }
+    
 
     public void aceptarAsociacion() {
         if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
