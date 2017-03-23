@@ -115,7 +115,7 @@ public class cls_retenciones {
                 }
             }
             band = 0;
-        }        
+        }
         for (int i = 0; i < l_casillero.size(); i++) {
             casillero = l_casillero.get(i).toString();
             for (int j = 0; j < tab_detalle_factura.getTotalFilas(); j++) {
@@ -249,11 +249,11 @@ public class cls_retenciones {
         if (lis_cabecera_retencion.size() > 0) {
             if (lis_cabecera_retencion.get(0) != null && !lis_cabecera_retencion.get(0).toString().isEmpty()) {
                 String num_max = lis_cabecera_retencion.get(0) + "";
-                System.out.println(". " + num_max);
+                //System.out.println(". " + num_max);
                 num_max = utilitario.generarCero(14 - num_max.length()) + num_max;
-                System.out.println("-- " + num_max);
+                // System.out.println("-- " + num_max);
                 String num_max_retencion = num_max.substring(0, 6);
-                System.out.println("====== " + num_max_retencion);
+                //System.out.println("====== " + num_max_retencion); 
                 String aux_num = num_max.substring(6, num_max.length());
                 try {
                     int num = Integer.parseInt(aux_num);
