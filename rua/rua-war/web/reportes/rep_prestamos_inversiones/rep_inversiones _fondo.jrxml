@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="421" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="381" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="023cce1b-9825-4619-a93d-2fb407e48864">
 	<property name="ireport.zoom" value="1.3286707500000012"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="288"/>
+	<property name="ireport.y" value="63"/>
 	<parameter name="ide_ipcer" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -64,12 +64,12 @@ WHERE CERTI.ide_ipcer=$P{ide_ipcer}  AND CERTI.ide_empr=$P{ide_empr} and CERTI.i
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[FONDO DE PROVIONES MIGUEL RUA]]></text>
+				<text><![CDATA[FONDO DE PROVISIONES MIGUEL RUA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="6f8c2605-61b5-4a9f-8131-a0e727210a74" positionType="Float" x="0" y="3" width="284" height="28"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="false" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					<font size="14" isBold="false" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Sociedad Salesiana en el Ecuador]]></text>
 			</staticText>
