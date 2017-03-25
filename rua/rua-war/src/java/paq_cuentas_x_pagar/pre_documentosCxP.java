@@ -444,7 +444,9 @@ public class pre_documentosCxP extends Pantalla {
                     asc_asiento.getTab_cabe_asiento().setValor("observacion_cnccc", tex_observacion.getValue().toString());
                 }
             } else {
-                guardarPantalla();
+                if (guardarPantalla().isEmpty()) {
+                    dibujarSaldarAnticipo();
+                }
             }
         }
     }
@@ -1088,7 +1090,7 @@ public class pre_documentosCxP extends Pantalla {
                     String ide_ccctr = aut_anticipo.getValor();
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ccctr =" + ide_ccctr + " and ide_cnccc is null");
                 }
-                dibujarDocumentosNoContabilizadas();
+                dibujarDocumentos();
             }
         }
     }

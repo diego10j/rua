@@ -126,6 +126,8 @@ public class pre_libro_bancos extends Pantalla {
     private SeleccionCalendario sel_fechas = new SeleccionCalendario();
     private SeleccionTabla set_bancos = new SeleccionTabla();
 
+    private Combo com_anticipos_anteriores;
+
     public pre_libro_bancos() {
 
         mep_menu.setMenuPanel("CONSULTAS", "20%");
@@ -1053,6 +1055,7 @@ public class pre_libro_bancos extends Pantalla {
         aut_persona.setId("aut_persona");
         aut_persona.setAutocompletarContenido();
         aut_persona.setAutoCompletar(ser_cliente.getSqlComboClientes());
+        aut_persona.setMetodoChange("cargarAnticiposAnteriores");
         aut_persona.setSize(70);
         gri1.getChildren().add(aut_persona);
         cal_fecha_pago = new Calendario();
@@ -1081,6 +1084,15 @@ public class pre_libro_bancos extends Pantalla {
         tex_num = new Texto();
         tex_num.setId("tex_num");
         gri1.getChildren().add(tex_num);
+
+        gri1.getChildren().add(new Etiqueta("<strong>ACUMULAR ANTICIPOS ANTERIORES : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta(""));
+        gri1.getChildren().add(new Etiqueta(""));
+
+        com_anticipos_anteriores = new Combo();
+        com_anticipos_anteriores.setId("com_anticipos_anteriores");
+        gri1.getChildren().add(com_anticipos_anteriores);
+
         contenido.getChildren().add(gri1);
         PanelGrid gri4 = new PanelGrid();
         gri4.setColumns(2);
@@ -1112,6 +1124,16 @@ public class pre_libro_bancos extends Pantalla {
         bot_aceptar.setIcon("ui-icon-check");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(13, "ANTICIPO A EMPLEADOS", contenido);
+    }
+
+    public void cargarAnticiposAnteriores(SelectEvent evt) {
+        aut_persona.onSelect(evt);
+        if (aut_persona.getValor() != null) {
+            com_anticipos_anteriores.setCombo(ser_factura.getSqlAnticiposEmpleado(aut_persona.getValor()));
+        } else {
+            com_anticipos_anteriores.setCombo(ser_factura.getSqlAnticiposEmpleado("-1"));
+        }
+        utilitario.addUpdate("com_anticipos_anteriores");
     }
 
     public void dibujarOtros() {
@@ -1694,8 +1716,7 @@ public class pre_libro_bancos extends Pantalla {
             TablaGenerica tab_libro = ser_tesoreria.generarTablaLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), null);
             //Generar transaccion anticipo cxc 
-            ser_factura.generarTransaccionAnticipo(aut_persona.getValor(), tab_libro);
-
+            ser_factura.generarTransaccionAnticipo(aut_persona.getValor(), tab_libro, String.valueOf(com_anticipos_anteriores.getValue()));
             generarAsiento(tab_libro.getValor("ide_teclb"));
         }
     }

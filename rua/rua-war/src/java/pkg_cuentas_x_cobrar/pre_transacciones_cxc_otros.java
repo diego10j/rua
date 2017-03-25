@@ -65,6 +65,8 @@ public class pre_transacciones_cxc_otros extends Pantalla {
         tab_tabla2.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla2.getColumna("fecha_trans_ccdtr").setValorDefecto(utilitario.getFechaActual());
         tab_tabla2.getColumna("ide_usua").setVisible(false);
+        tab_tabla2.getColumna("ide_ccttr").setVisible(true);
+        tab_tabla2.getColumna("ide_ccttr").setLectura(false);
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -87,10 +89,8 @@ public class pre_transacciones_cxc_otros extends Pantalla {
     }
 
     public void filtrar_proveedor(SelectEvent evt) {
-        System.out.println("si entra el metodo");
         aut_filtro_persona.onSelect(evt);
         if (aut_filtro_persona.getValue() != null) {
-            System.out.println("si entra el metodo " + aut_filtro_persona.getValor());
             tab_tabla1.setCondicion("ide_geper=" + aut_filtro_persona.getValor());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());

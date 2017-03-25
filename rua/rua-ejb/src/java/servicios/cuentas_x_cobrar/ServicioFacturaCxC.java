@@ -591,27 +591,34 @@ public class ServicioFacturaCxC extends ServicioBase {
      *
      * @param ide_geper
      * @param tab_libro_banco
+     * @param ide_ccctr
      * @return
      */
-    public String generarTransaccionAnticipo(String ide_geper, TablaGenerica tab_libro_banco) {
-        String ide_ccctr = "-1";
+    public String generarTransaccionAnticipo(String ide_geper, TablaGenerica tab_libro_banco, String ide_ccctr) {
+
+        if (ide_ccctr == null || ide_ccctr.isEmpty()) {
+            ide_ccctr = "-1";
+        }
         if (tab_libro_banco != null) {
             TablaGenerica tab_cab_tran_cxp = new TablaGenerica();
             tab_cab_tran_cxp.setTabla("cxc_cabece_transa", "ide_ccctr");
             tab_cab_tran_cxp.getColumna("ide_ccctr").setExterna(false);
-            tab_cab_tran_cxp.setCondicion("ide_ccctr=-1");
+            tab_cab_tran_cxp.setCondicion("ide_ccctr=" + ide_ccctr);
             tab_cab_tran_cxp.ejecutarSql();
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxc_detall_transa", "ide_ccdtr");
             tab_det_tran_cxp.getColumna("ide_ccdtr").setExterna(false);
             tab_det_tran_cxp.setCondicion("ide_ccdtr=-1");
             tab_det_tran_cxp.ejecutarSql();
-            tab_cab_tran_cxp.insertar();
-            tab_cab_tran_cxp.setValor("ide_ccttr", parametros.get("p_cxc_tipo_trans_anticipo"));//Tipo transaccion Anticipo       
-            tab_cab_tran_cxp.setValor("ide_geper", ide_geper);
-            tab_cab_tran_cxp.setValor("fecha_trans_ccctr", tab_libro_banco.getValor("fecha_trans_teclb"));
-            tab_cab_tran_cxp.setValor("observacion_ccctr", tab_libro_banco.getValor("observacion_teclb"));
-            tab_cab_tran_cxp.guardar();
+            if (tab_cab_tran_cxp.isEmpty()) {
+                tab_cab_tran_cxp.insertar();
+                tab_cab_tran_cxp.setValor("ide_ccttr", parametros.get("p_cxc_tipo_trans_anticipo"));//Tipo transaccion Anticipo       
+                tab_cab_tran_cxp.setValor("ide_geper", ide_geper);
+                tab_cab_tran_cxp.setValor("fecha_trans_ccctr", tab_libro_banco.getValor("fecha_trans_teclb"));
+                tab_cab_tran_cxp.setValor("observacion_ccctr", tab_libro_banco.getValor("observacion_teclb"));
+                tab_cab_tran_cxp.guardar();
+            }
+
             tab_det_tran_cxp.insertar();
             tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_ccctr", tab_cab_tran_cxp.getValor("ide_ccctr"));
@@ -644,6 +651,20 @@ public class ServicioFacturaCxC extends ServicioBase {
                 + "inner join gen_persona g on g.ide_geper=ct.ide_geper "
                 + "where ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and ct.ide_ccttr=" + parametros.get("p_cxc_tipo_trans_anticipo") + "\n"
+                + "GROUP BY ct.ide_ccctr,nom_geper,fecha_trans_ccctr\n"
+                + "HAVING abs(sum (dt.valor_ccdtr*tt.signo_ccttr))>0\n"
+                + "ORDER BY fecha_trans_ccctr desc, ide_ccctr ";
+    }
+
+    public String getSqlAnticiposEmpleado(String ide_geper) {
+        return "select ct.ide_ccctr,nom_geper,sum (dt.valor_ccdtr*tt.signo_ccttr)\n"
+                + "from cxc_detall_transa dt \n"
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr \n"
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr \n"
+                + "inner join gen_persona g on g.ide_geper=ct.ide_geper "
+                + "where ct.ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
+                + "and ct.ide_ccttr=" + parametros.get("p_cxc_tipo_trans_anticipo") + "\n"
+                + "and g.ide_geper=" + ide_geper + "\n"
                 + "GROUP BY ct.ide_ccctr,nom_geper,fecha_trans_ccctr\n"
                 + "HAVING abs(sum (dt.valor_ccdtr*tt.signo_ccttr))>0\n"
                 + "ORDER BY fecha_trans_ccctr desc, ide_ccctr ";
