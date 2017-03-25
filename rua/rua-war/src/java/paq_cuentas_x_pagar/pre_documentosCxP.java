@@ -419,7 +419,8 @@ public class pre_documentosCxP extends Pantalla {
             for (Fila actual : tab_tabla1.getSeleccionados()) {
                 TablaGenerica tab_cab_factura = utilitario.consultar("SELECT ide_cpcfa,numero_cpcfa FROM cxp_cabece_factur where ide_cpcfa=" + actual.getCampos()[1]);
                 double total = Double.parseDouble(String.valueOf(actual.getCampos()[8]));
-                ser_cuentas_cxp.generarTransaccionPago(tab_cab_factura, String.valueOf(actual.getCampos()[0]), null, total, String.valueOf(tex_observacion.getValue()), null);
+                String ide_cpdtr = ser_cuentas_cxp.generarTransaccionPago(tab_cab_factura, String.valueOf(actual.getCampos()[0]), null, total, String.valueOf(tex_observacion.getValue()), null);
+                utilitario.getConexion().agregarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " where ide_cpdtr=" + ide_cpdtr);
             }
             String ide_ccctr = aut_anticipo.getValor();
             TablaGenerica tab_tabla_d = new TablaGenerica();
@@ -434,7 +435,7 @@ public class pre_documentosCxP extends Pantalla {
             tab_tabla_d.setValor("ide_cnccc", ide_cnccc);
             tab_tabla_d.setValor("valor_ccdtr", String.valueOf(tex_suma_facturas.getValue()));
             tab_tabla_d.setValor("observacion_ccdtr", String.valueOf(tex_observacion.getValue()));
-            tab_tabla_d.setValor("ide_ccttr", "6");//CANCELA ANTICIPO
+            tab_tabla_d.setValor("ide_ccttr", "20");//CANCELA ANTICIPO
             tab_tabla_d.guardar();
             if (rad_hace_asiento.getValue().equals("true")) {
                 abrirGeneraAsiento();
@@ -1072,6 +1073,21 @@ public class pre_documentosCxP extends Pantalla {
         } else if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
             if (asc_asiento.isVisible() == false) {
+
+                if (mep_menu.getOpcion() == 8) {
+                    //asocia asiento a transacciones seleccionadas
+                    String ide_cpctr = "";
+
+                    for (Fila actual : tab_tabla1.getSeleccionados()) {
+                        if (ide_cpctr.isEmpty() == false) {
+                            ide_cpctr += ",";
+                        }
+                        ide_cpctr += actual.getCampos()[tab_tabla1.getNumeroColumna("ide_cpctr")];
+                    }
+                    utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_cpctr in(" + ide_cpctr + ") and ide_cnccc is null");
+                    String ide_ccctr = aut_anticipo.getValor();
+                    utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ccctr =" + ide_ccctr + " and ide_cnccc is null");
+                }
                 dibujarDocumentosNoContabilizadas();
             }
         }
