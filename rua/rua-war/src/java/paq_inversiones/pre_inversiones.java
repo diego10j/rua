@@ -689,6 +689,7 @@ public class pre_inversiones extends Pantalla {
 
     public void cambioEstado(AjaxBehaviorEvent evt) {
         tab_tabla1.modificar(evt);
+        System.out.println("-- " + dou_capital_renova + "   " + dou_interes_renova);
         if (tab_tabla1.getValor("ide_ipein") != null) {
             switch (tab_tabla1.getValor("ide_ipein")) {
                 case "8":
@@ -984,19 +985,19 @@ public class pre_inversiones extends Pantalla {
             dou_capital_renova = 0;
             dou_interes_renova = 0;
             try {
-                dou_capital_renova = Double.parseDouble(tab_tabla2.getValor("CAPITAL"));
-            } catch (Exception e) {
+                dou_capital_renova = Double.parseDouble(tab_tabla1.getValor("CAPITAL"));
+            } catch (Exception e) {                
             }
             try {
-                dou_interes_renova = Double.parseDouble(tab_tabla2.getValor("INTERES"));
-            } catch (Exception e) {
+                dou_interes_renova = Double.parseDouble(tab_tabla1.getValor("INTERES"));
+            } catch (Exception e) {            
             }
-
+            
             dibujarCertificadoCasa();
         } else {
             ide_ipcai = "-1";
             iyp_ide_ipcer = null;
-            utilitario.agregarMensajeInfo("Seleccieno un cartificado de inversión", "");
+            utilitario.agregarMensajeInfo("Seleccione un certificado de inversión", "");
         }
 
     }
