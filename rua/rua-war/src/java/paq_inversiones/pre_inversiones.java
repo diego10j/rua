@@ -689,7 +689,6 @@ public class pre_inversiones extends Pantalla {
 
     public void cambioEstado(AjaxBehaviorEvent evt) {
         tab_tabla1.modificar(evt);
-        System.out.println("-- " + dou_capital_renova + "   " + dou_interes_renova);
         if (tab_tabla1.getValor("ide_ipein") != null) {
             switch (tab_tabla1.getValor("ide_ipein")) {
                 case "8":
@@ -704,10 +703,7 @@ public class pre_inversiones extends Pantalla {
                 case "10":
                     //renovacion x capital e interes
                     tab_tabla1.setValor("capital_ipcer", utilitario.getFormatoNumero(dou_interes_renova + dou_capital_renova));
-                    break;
-                default:
-                    tab_tabla1.setValor("capital_ipcer", "0.00");
-                    break;
+                    break;              
             }
         }
         utilitario.addUpdateTabla(tab_tabla1, "capital_ipcer", "");
@@ -986,13 +982,13 @@ public class pre_inversiones extends Pantalla {
             dou_interes_renova = 0;
             try {
                 dou_capital_renova = Double.parseDouble(tab_tabla1.getValor("CAPITAL"));
-            } catch (Exception e) {                
+            } catch (Exception e) {
             }
             try {
                 dou_interes_renova = Double.parseDouble(tab_tabla1.getValor("INTERES"));
-            } catch (Exception e) {            
+            } catch (Exception e) {
             }
-            
+
             dibujarCertificadoCasa();
         } else {
             ide_ipcai = "-1";
