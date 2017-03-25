@@ -50,6 +50,8 @@ public class pre_inversiones extends Pantalla {
     private String iyp_ide_ipcer = null;
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
+    private double dou_capital_renova;
+    private double dou_interes_renova;
 
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
@@ -643,6 +645,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("es_inver_banco_ipcer").setValorDefecto("false"); //BANCOS        
         tab_tabla1.getColumna("ide_ipein").setVisible(true);
         tab_tabla1.getColumna("ide_ipein").setCombo("iyp_estado_inversion", "ide_ipein", "nombre_ipein", "");
+        tab_tabla1.getColumna("ide_ipein").setMetodoChange("cambioEstado");
         tab_tabla1.getColumna("ide_ipcin").setVisible(true);
         tab_tabla1.getColumna("ide_ipcin").setCombo("iyp_clase_inversion", "ide_ipcin", "nombre_ipcin", "");
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
@@ -681,6 +684,32 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.setValor("es_renovacion_ipcer", "true");
             mep_menu.dibujar(6, "RENOVACIÓN INVERSION CASAS - OBRAS", grupo);
         }
+
+    }
+
+    public void cambioEstado(AjaxBehaviorEvent evt) {
+        tab_tabla1.modificar(evt);
+        if (tab_tabla1.getValor("ide_ipein") != null) {
+            switch (tab_tabla1.getValor("ide_ipein")) {
+                case "8":
+                case "6":
+                    //renovacion x capital
+                    tab_tabla1.setValor("capital_ipcer", utilitario.getFormatoNumero(dou_capital_renova));
+                    break;
+                case "7":
+                    //renovacion x interes
+                    tab_tabla1.setValor("capital_ipcer", utilitario.getFormatoNumero(dou_interes_renova));
+                    break;
+                case "10":
+                    //renovacion x capital e interes
+                    tab_tabla1.setValor("capital_ipcer", utilitario.getFormatoNumero(dou_interes_renova + dou_capital_renova));
+                    break;
+                default:
+                    tab_tabla1.setValor("capital_ipcer", "0.00");
+                    break;
+            }
+        }
+        utilitario.addUpdateTabla(tab_tabla1, "capital_ipcer", "");
 
     }
 
@@ -951,6 +980,18 @@ public class pre_inversiones extends Pantalla {
         if (tab_tabla1.getValor("ide_ipcai") != null) {
             ide_ipcai = tab_tabla1.getValor("ide_ipcai");
             iyp_ide_ipcer = tab_tabla1.getValor("ide_ipcer");
+
+            dou_capital_renova = 0;
+            dou_interes_renova = 0;
+            try {
+                dou_capital_renova = Double.parseDouble(tab_tabla2.getValor("CAPITAL"));
+            } catch (Exception e) {
+            }
+            try {
+                dou_interes_renova = Double.parseDouble(tab_tabla2.getValor("INTERES"));
+            } catch (Exception e) {
+            }
+
             dibujarCertificadoCasa();
         } else {
             ide_ipcai = "-1";

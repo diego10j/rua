@@ -621,7 +621,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_geper=" + ide_geper + " "
-                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
+                + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
 
