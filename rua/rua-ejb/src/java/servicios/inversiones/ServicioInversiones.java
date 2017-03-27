@@ -305,4 +305,14 @@ public class ServicioInversiones extends ServicioBase {
         return sql;
     }
 
+        /**
+     * Retorna todas los nombres de los bancos
+     *
+     * @return
+     */
+    public String getSqlComboBancos() {
+        return "select ide_teban,nombre_teban from tes_banco  "
+                + "order by nombre_teban";
+    }
+    
 }
