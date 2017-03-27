@@ -36,7 +36,7 @@ import sistema.aplicacion.Pantalla;
  * @author DIEGOFERNANDOJACOMEG
  */
 public class pre_inversiones extends Pantalla {
-
+    
     private final MenuPanel mep_menu = new MenuPanel();
     private Radio rad_hace_asiento;
     private Tabla tab_tabla1;
@@ -52,11 +52,11 @@ public class pre_inversiones extends Pantalla {
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
     private double dou_capital_renova;
     private double dou_interes_renova;
-
+    
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
-
+        
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
         mep_menu.setMenuPanel("INVERSIONES BANCARIAS", "20%");
@@ -79,26 +79,26 @@ public class pre_inversiones extends Pantalla {
         mep_menu.agregarSubMenu("HISTORICO");
         mep_menu.agregarItem("Inversiones Canceladas", "dibujarCanceladas", "ui-icon-star");//20
         agregarComponente(mep_menu);
-
+        
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_cancelar().setMetodo("cerrarAsiento");
         agregarComponente(asc_asiento);
-
+        
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         sel_formato.setId("sel_formato");
         agregarComponente(rep_reporte);
         agregarComponente(sel_formato);
     }
-
+    
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
-
+    
     @Override
     public void aceptarReporte() {
-
+        
         if (rep_reporte.getReporteSelecionado().equals("Certificado de Inversión") || rep_reporte.getReporteSelecionado().equals("Certificado de Inversión Fondo")) {
             if (rep_reporte.isVisible()) {
                 if (tab_tabla1.getValor("ide_ipcer") != null && !tab_tabla1.getValor("ide_ipcer").isEmpty()) {
@@ -119,13 +119,13 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void cerrarAsiento() {
         //limpia sql guardados
         utilitario.getConexion().getSqlPantalla().clear();
         asc_asiento.cerrar();
     }
-
+    
     public void abrirGeneraAsiento() {
         if (tab_tabla1.getValorSeleccionado() != null) {
             asc_asiento.nuevoAsiento();
@@ -136,7 +136,7 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar un certificado", "");
         }
     }
-
+    
     public void aceptarTerminarAsiento() {
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
@@ -155,7 +155,7 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void dibujarVencidas() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -190,7 +190,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
@@ -198,7 +198,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(13, "INVERSIONES VENCIDAS AL " + utilitario.getFechaLarga(utilitario.getFechaActual()).toUpperCase(), pat_panel);
     }
-
+    
     public void dibujarCanceladas() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -232,7 +232,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
-
+        
         tab_tabla1.setRows(25);
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
@@ -240,7 +240,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(20, "INVERSIONES CANCELADAS", pat_panel);
     }
-
+    
     public void dibujarAsientoTerminaB() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -249,7 +249,7 @@ public class pre_inversiones extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable de Termincación");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlListaInversionesBancariasSinTerminacion());
@@ -278,14 +278,14 @@ public class pre_inversiones extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(12, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES BANCARIAS", gru);
-
+        
     }
-
+    
     public void dibujarAsientoTerminaCasas() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -294,7 +294,7 @@ public class pre_inversiones extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable de Termincación");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlListaInversionesCasasSinTerminacion());
@@ -326,14 +326,14 @@ public class pre_inversiones extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(17, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES CASAS - OBRAS", gru);
-
+        
     }
-
+    
     public void dibujarAsientoTerminaFondo() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
@@ -342,7 +342,7 @@ public class pre_inversiones extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable de Termincación");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlListaInversionesFondoSinTerminacion());
@@ -372,14 +372,14 @@ public class pre_inversiones extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(19, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES FONDO DE DESVINCULACIÓN", gru);
-
+        
     }
-
+    
     public void dibujarRenovaciones() {
         Grupo grupo = new Grupo();
         ide_ipcai = "-1";
@@ -400,7 +400,7 @@ public class pre_inversiones extends Pantalla {
         bot_clean.setMetodo("limpiarRenovacion");
         gr.getChildren().add(bot_clean);
         grupo.getChildren().add(gr);
-
+        
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
@@ -409,7 +409,7 @@ public class pre_inversiones extends Pantalla {
         bot_asi.setMetodo("abrirRenovacion");
         bar_menu.agregarComponente(bot_asi);
         grupo.getChildren().add(bar_menu);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inversion.getSqlListaInversionesCasasGrupo("-1"));
@@ -437,17 +437,17 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setScrollHeight(170);
         tab_tabla1.onSelect("seleccionarCertifcadoRenova");
         tab_tabla1.dibujar();
-
+        
         PanelTabla pat_panel = new PanelTabla();
         ItemMenu itemedita = new ItemMenu();
         itemedita.setValue("Generar Renovación");
         itemedita.setIcon("ui-icon-wrench");
         itemedita.setMetodo("abrirRenovacion");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        
         pat_panel.setPanelTabla(tab_tabla1);
         grupo.getChildren().add(pat_panel);
-
+        
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setSql(ser_inversion.getSqlListaRenovaciones("-1"));
@@ -470,21 +470,21 @@ public class pre_inversiones extends Pantalla {
         tab_tabla2.setScrollable(true);
         tab_tabla2.setScrollHeight(110);
         tab_tabla2.setHeader("RENOVACIONES REALIZADAS");
-
+        
         tab_tabla2.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla2);
         grupo.getChildren().add(pat_panel1);
-
+        
         mep_menu.dibujar(7, "RENOVACIONES DE INVERSIONES CASAS - OBRAS", grupo);
     }
-
+    
     public void seleccionarCertifcadoRenova(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
         tab_tabla2.setSql(ser_inversion.getSqlListaRenovaciones(tab_tabla1.getValorSeleccionado()));
         tab_tabla2.ejecutarSql();
     }
-
+    
     public void cargarInversionesGrupo(SelectEvent evt) {
         aut_inversion.onSelect(evt);
         tab_tabla1.setSql(ser_inversion.getSqlListaInversionesCasasGrupo(aut_inversion.getValor()));
@@ -492,13 +492,13 @@ public class pre_inversiones extends Pantalla {
         tab_tabla2.setSql(ser_inversion.getSqlListaRenovaciones(tab_tabla1.getValorSeleccionado()));
         tab_tabla2.ejecutarSql();
     }
-
+    
     public void limpiarRenovacion() {
         aut_inversion.limpiar();
         tab_tabla1.limpiar();
         tab_tabla2.limpiar();
     }
-
+    
     public void dibujarCertificadoFondo() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -556,7 +556,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
         pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
         pat_panel.getMenuTabla().getItem_importar().setRendered(false);
-
+        
         Grid gri1 = new Grid();
         gri1.setColumns(2);
         gri1.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR NUEVO ASIENTO CONTABLE ? </div>"));
@@ -565,10 +565,10 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setValue(true);
         gri1.getChildren().add(rad_hace_asiento);
         pat_panel.getChildren().add(gri1);
-
+        
         mep_menu.dibujar(9, "CERTIFICADO DE INVERSIÓN FONDO DE DESVINCULACIÓN", pat_panel);
     }
-
+    
     public void dibujarCertificadoCasa() {
         Grupo grupo = new Grupo();
         tab_tabla2 = new Tabla();
@@ -609,7 +609,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla2.insertar();
         }
         grupo.getChildren().add(pat_panel1);
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("iyp_certificado", "ide_ipcer", 16);
@@ -665,7 +665,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel.getMenuTabla().getItem_importar().setRendered(false);
         pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
         grupo.getChildren().add(pat_panel);
-
+        
         gri = new Grid();
         gri.setId("gri");
         // gri.setRendered(false); //solo cuando se inseta se hace visible
@@ -684,9 +684,9 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.setValor("es_renovacion_ipcer", "true");
             mep_menu.dibujar(6, "RENOVACIÓN INVERSION CASAS - OBRAS", grupo);
         }
-
+        
     }
-
+    
     public void cambioEstado(AjaxBehaviorEvent evt) {
         tab_tabla1.modificar(evt);
         if (tab_tabla1.getValor("ide_ipein") != null) {
@@ -707,20 +707,20 @@ public class pre_inversiones extends Pantalla {
             }
         }
         utilitario.addUpdateTabla(tab_tabla1, "capital_ipcer", "");
-
+        
     }
-
+    
     public void cargarObservacionCertificado() {
         tab_tabla1.setValor("observacion_ipcer", tab_tabla2.getValor("observacion_ipcai"));
         utilitario.addUpdateTabla(tab_tabla1, "observacion_ipcer", "");
     }
-
+    
     public void selecionarCasa(SelectEvent evt) {
         tab_tabla1.setValor("ide_geper", tab_tabla2.getValor("ide_geper_ben"));
         tab_tabla2.setValor("beneficiario_ipcai", tab_tabla2.getValorArreglo("ide_geper_ben", 2));
         utilitario.addUpdateTabla(tab_tabla2, "beneficiario_ipcai", "");
     }
-
+    
     public void dibujarListadoFondo() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -742,12 +742,12 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("IDE_CNCCC").setLink();
         tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
-
+        
         tab_tabla1.getColumna("ide_cnccc_terminacion").setNombreVisual("N. ASIENTO C.");
         tab_tabla1.getColumna("ide_cnccc_terminacion").setLink();
         tab_tabla1.getColumna("ide_cnccc_terminacion").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_terminacion").alinearCentro();
-
+        
         tab_tabla1.getColumna("NUM_CERTIFICADO").setFiltroContenido();
         tab_tabla1.getColumna("ESTADO").setFiltroContenido();
         tab_tabla1.setRows(15);
@@ -758,13 +758,13 @@ public class pre_inversiones extends Pantalla {
         itemedita.setIcon("ui-icon-pencil");
         itemedita.setMetodo("abrirModificarF");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         mep_menu.dibujar(8, "LISTADO DE INVERSIONES FONDO DE DESVINCULACIÓN", pat_panel);
     }
-
+    
     public void abrirModificarF() {
         String ide_aux = tab_tabla1.getValor("ide_ipcer");
         if (ide_aux != null) {
@@ -820,14 +820,14 @@ public class pre_inversiones extends Pantalla {
             pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
             pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
             pat_panel.getMenuTabla().getItem_importar().setRendered(false);
-
+            
             mep_menu.dibujar(10, "MODIFICAR CERTIFICADO DE INVERSIÓN FONDO DE DESVINCULACIÓN", pat_panel);
         } else {
             utilitario.agregarMensajeInfo("Seleccione un certificado", "");
         }
-
+        
     }
-
+    
     public void dibujarListadoCasas() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -866,13 +866,13 @@ public class pre_inversiones extends Pantalla {
         itemedita.setIcon("ui-icon-pencil");
         itemedita.setMetodo("abrirModificarC");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         mep_menu.dibujar(5, "LISTADO DE INVERSIONES CASAS - OBRAS", pat_panel);
     }
-
+    
     public void abrirModificarC() {
         String ide_aux = tab_tabla1.getValor("ide_ipcer");
         String ide_aux1 = tab_tabla1.getValor("ide_ipcai");
@@ -913,7 +913,7 @@ public class pre_inversiones extends Pantalla {
             pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
             pat_panel1.getMenuTabla().getItem_insertar().setRendered(false);
             grupo.getChildren().add(pat_panel1);
-
+            
             tab_tabla1 = new Tabla();
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setTabla("iyp_certificado", "ide_ipcer", 16);
@@ -970,14 +970,14 @@ public class pre_inversiones extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccione un certificado", "");
         }
-
+        
     }
-
+    
     public void abrirRenovacion() {
         if (tab_tabla1.getValor("ide_ipcai") != null) {
             ide_ipcai = tab_tabla1.getValor("ide_ipcai");
             iyp_ide_ipcer = tab_tabla1.getValor("ide_ipcer");
-
+            
             dou_capital_renova = 0;
             dou_interes_renova = 0;
             try {
@@ -988,16 +988,16 @@ public class pre_inversiones extends Pantalla {
                 dou_interes_renova = Double.parseDouble(tab_tabla1.getValor("INTERES"));
             } catch (Exception e) {
             }
-
+            
             dibujarCertificadoCasa();
         } else {
             ide_ipcai = "-1";
             iyp_ide_ipcer = null;
             utilitario.agregarMensajeInfo("Seleccione un certificado de inversión", "");
         }
-
+        
     }
-
+    
     public void dibujarPagoC() {
         Grupo gru = new Grupo();
         aut_inversion = new AutoCompletar();
@@ -1016,7 +1016,7 @@ public class pre_inversiones extends Pantalla {
         bot_clean.setMetodo("limpiarPagoB");
         gr.getChildren().add(bot_clean);
         gru.getChildren().add(gr);
-
+        
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setHeader("NUEVO PAGO DE INTERESES");
@@ -1048,7 +1048,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel2.getMenuTabla().getItem_importar().setRendered(false);
         pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
         tab_tabla2.insertar();
-
+        
         gri = new Grid();
         gri.setId("gri");
         // gri.setRendered(false); //solo cuando se inseta se hace visible
@@ -1058,7 +1058,7 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setRadio(utilitario.getListaPregunta());
         rad_hace_asiento.setValue(true);
         gri.getChildren().add(rad_hace_asiento);
-
+        
         gru.getChildren().add(pat_panel2);
         Boton bt = new Boton();
         bt.setMetodo("guardar");
@@ -1066,7 +1066,7 @@ public class pre_inversiones extends Pantalla {
         gru.getChildren().add(gri);
         gru.getChildren().add(bt);
         gru.getChildren().add(new Separator());
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setHeader("DETALLE DE PAGOS INTERESES");
@@ -1088,16 +1088,16 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setCampoOrden("num_pago_ippin");
         tab_tabla1.setRows(5);
         tab_tabla1.dibujar();
-
+        
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "PAGO DE INTERESES INVERSIONES CASAS - OBRAS", gru);
-
+        
     }
-
+    
     public void dibujarPagoB() {
         Grupo gru = new Grupo();
         aut_inversion = new AutoCompletar();
@@ -1116,7 +1116,7 @@ public class pre_inversiones extends Pantalla {
         bot_clean.setMetodo("limpiarPagoB");
         gr.getChildren().add(bot_clean);
         gru.getChildren().add(gr);
-
+        
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setHeader("NUEVO PAGO DE INTERESES");
@@ -1148,7 +1148,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel2.getMenuTabla().getItem_importar().setRendered(false);
         pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
         tab_tabla2.insertar();
-
+        
         gri = new Grid();
         gri.setId("gri");
         // gri.setRendered(false); //solo cuando se inseta se hace visible
@@ -1158,7 +1158,7 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setRadio(utilitario.getListaPregunta());
         rad_hace_asiento.setValue(true);
         gri.getChildren().add(rad_hace_asiento);
-
+        
         gru.getChildren().add(pat_panel2);
         Boton bt = new Boton();
         bt.setMetodo("guardar");
@@ -1166,7 +1166,7 @@ public class pre_inversiones extends Pantalla {
         gru.getChildren().add(gri);
         gru.getChildren().add(bt);
         gru.getChildren().add(new Separator());
-
+        
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setHeader("DETALLE DE PAGOS INTERESES");
@@ -1188,16 +1188,16 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setCampoOrden("num_pago_ippin");
         tab_tabla1.setRows(5);
         tab_tabla1.dibujar();
-
+        
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "PAGO DE INTERESES INVERSIONES BANCARIAS", gru);
-
+        
     }
-
+    
     public void limpiarPagoB() {
         aut_inversion.limpiar();
         tab_tabla2.limpiar();
@@ -1206,7 +1206,7 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setValue(true);
         utilitario.addUpdate("gri");
     }
-
+    
     public void dibujarListadoB() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -1231,7 +1231,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("ide_cnccc_terminacion").setLink();
         tab_tabla1.getColumna("ide_cnccc_terminacion").setMetodoChange("abrirAsiento");
         tab_tabla1.getColumna("ide_cnccc_terminacion").alinearCentro();
-
+        
         tab_tabla1.getColumna("BANCO").setFiltroContenido();
         tab_tabla1.getColumna("NUM_CERTIFICADO").setFiltroContenido();
         tab_tabla1.getColumna("ESTADO").setFiltroContenido();
@@ -1243,13 +1243,13 @@ public class pre_inversiones extends Pantalla {
         itemedita.setIcon("ui-icon-pencil");
         itemedita.setMetodo("abrirModificarB");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(2, "LISTADO DE INVERSIONES BANCARIAS", pat_panel);
-
+        
     }
-
+    
     public void cargarPagosInteres(SelectEvent evt) {
         aut_inversion.onSelect(evt);
         if (aut_inversion.getValor() != null) {
@@ -1265,7 +1265,7 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione una inversión Bancaria", "");
         }
     }
-
+    
     public void dibujarCertificadoB() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -1282,6 +1282,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("ide_teban").setCombo(ser_inversion.getSqlComboBancos());
         tab_tabla1.getColumna("ide_teban").setNombreVisual("BANCO");
         tab_tabla1.getColumna("ide_teban").setRequerida(true);
+        tab_tabla1.getColumna("ide_teban").setVisible(true);
         tab_tabla1.getColumna("ide_tecba").setRequerida(false); //CAMBIA A BANCO         
         tab_tabla1.getColumna("fecha_emision_ipcer").setVisible(true);
         tab_tabla1.getColumna("fecha_vence_ipcer").setVisible(true);
@@ -1324,7 +1325,7 @@ public class pre_inversiones extends Pantalla {
         pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
         pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
         pat_panel.getMenuTabla().getItem_importar().setRendered(false);
-
+        
         Grid gri1 = new Grid();
         gri1.setColumns(2);
         gri1.getChildren().add(new Etiqueta("<div style='font-size:12px;font-weight: bold;'> <img src='imagenes/im_pregunta.gif' />  GENERAR NUEVO ASIENTO CONTABLE ? </div>"));
@@ -1333,10 +1334,10 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setValue(true);
         gri1.getChildren().add(rad_hace_asiento);
         pat_panel.getChildren().add(gri1);
-
+        
         mep_menu.dibujar(1, "CERTIFICADO DE INVERSIÓN BANCARIA", pat_panel);
     }
-
+    
     public void abrirModificarB() {
         String ide_aux = tab_tabla1.getValor("ide_ipcer");
         if (ide_aux != null) {
@@ -1393,14 +1394,14 @@ public class pre_inversiones extends Pantalla {
             pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
             pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
             pat_panel.getMenuTabla().getItem_importar().setRendered(false);
-
+            
             mep_menu.dibujar(3, "MODIFICAR CERTIFICADO DE INVERSIÓN BANCARIA", pat_panel);
         } else {
             utilitario.agregarMensajeInfo("Seleccione un certificado", "");
         }
-
+        
     }
-
+    
     public boolean obtenetFechaVencimiento() {
         try {
             if (mep_menu.getOpcion() == 1 || mep_menu.getOpcion() == 3 || mep_menu.getOpcion() == 6 || mep_menu.getOpcion() == 9 || mep_menu.getOpcion() == 10 || mep_menu.getOpcion() == 11) {
@@ -1418,14 +1419,14 @@ public class pre_inversiones extends Pantalla {
         }
         return false;
     }
-
+    
     public void obtenetFechaVencimiento(DateSelectEvent evt) {
 //        tab_renovacion_inversion.modificar(evt);
         if (obtenetFechaVencimiento()) {
             calculainteres();
         }
     }
-
+    
     public void calculainteres() {
         double capital = 0;
         double tasa = 0;
@@ -1442,7 +1443,7 @@ public class pre_inversiones extends Pantalla {
         if (tab_tabla1.getValor("tasa_ipcer") != null && !tab_tabla1.getValor("tasa_ipcer").isEmpty()) {
             try {
                 tasa = Double.parseDouble(tab_tabla1.getValor("tasa_ipcer"));
-
+                
             } catch (Exception e) {
                 tasa = 0;
             }
@@ -1460,17 +1461,17 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setValor("valor_a_pagar_ipcer", utilitario.getFormatoNumero(valortotal));
         utilitario.addUpdateTabla(tab_tabla1, "interes_ipcer,valor_a_pagar_ipcer", "");
     }
-
+    
     public void calcularInteres(AjaxBehaviorEvent evt) {
         tab_tabla1.modificar(evt);
         calculainteres();
     }
-
+    
     @Override
     public void insertar() {
-
+        
     }
-
+    
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
@@ -1509,7 +1510,7 @@ public class pre_inversiones extends Pantalla {
                     asc_asiento.dibujar();
                     asc_asiento.getTab_cabe_asiento().setValor("fecha_trans_cnccc", tab_tabla2.getValor("fecha_pago_ippin"));
                     asc_asiento.getTab_cabe_asiento().setValor("observacion_cnccc", tab_tabla2.getValor("observacion_ippin"));
-
+                    
                     asc_asiento.getBot_aceptar().setMetodo("aceptarPagoInteresB");
                 } else {
                     if (tab_tabla2.guardar()) {
@@ -1572,7 +1573,7 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void aceptarPagoInteresB() {
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
@@ -1586,7 +1587,7 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void aceptarCrearCertificadoFondo() {
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
@@ -1599,7 +1600,7 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void aceptarCrearCertificadoCasas() {
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
@@ -1615,9 +1616,9 @@ public class pre_inversiones extends Pantalla {
             }
         }
     }
-
+    
     public void aceptarCrearCertificadoB() {
-
+        
         if (asc_asiento.isVisible()) {
             asc_asiento.guardar();
             if (asc_asiento.isVisible() == false) {
@@ -1626,11 +1627,11 @@ public class pre_inversiones extends Pantalla {
                 tab_tabla1.guardar();
                 guardarPantalla();
                 dibujarListadoB();
-
+                
             }
         }
     }
-
+    
     public boolean validarPagoInteres() {
         if (tab_tabla2.getValor("fecha_pago_ippin") == null || tab_tabla2.getValor("fecha_pago_ippin").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe seleccionar la fecha de pago");
@@ -1648,10 +1649,10 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar una observación");
             return false;
         }
-
+        
         return true;
     }
-
+    
     public boolean validarCertificado() {
         if (tab_tabla1.getValor("capital_ipcer") == null || tab_tabla1.getValor("capital_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar el capital");
@@ -1661,12 +1662,12 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar el plazo");
             return false;
         }
-
+        
         if (tab_tabla1.getValor("tasa_ipcer") == null || tab_tabla1.getValor("tasa_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar la tasa de interes");
             return false;
         }
-
+        
         if (tab_tabla1.getValor("fecha_emision_ipcer") == null || tab_tabla1.getValor("fecha_emision_ipcer").isEmpty()) {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe ingresar la fecha de emisión");
             return false;
@@ -1695,7 +1696,7 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeError("No se pudo guardar", "Debe seleccionar la Clase de Inversión");
             return false;
         }
-
+        
         if (mep_menu.getOpcion() == 6) {
             //Valida cabecera de prestamo
             if (tab_tabla2.getValor("ide_geper") == null || tab_tabla2.getValor("ide_geper").isEmpty()) {
@@ -1711,7 +1712,7 @@ public class pre_inversiones extends Pantalla {
                 return false;
             }
         }
-
+        
         return true;
     }
 
@@ -1726,58 +1727,58 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-
+    
     @Override
     public void eliminar() {
-
+        
     }
-
+    
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
-
+    
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
-
+    
     public AsientoContable getAsc_asiento() {
         return asc_asiento;
     }
-
+    
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
     }
-
+    
     public AutoCompletar getAut_inversion() {
         return aut_inversion;
     }
-
+    
     public void setAut_inversion(AutoCompletar aut_inversion) {
         this.aut_inversion = aut_inversion;
     }
-
+    
     public Tabla getTab_tabla2() {
         return tab_tabla2;
     }
-
+    
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
     }
-
+    
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
-
+    
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
     }
-
+    
     public SeleccionFormatoReporte getSel_formato() {
         return sel_formato;
     }
-
+    
     public void setSel_formato(SeleccionFormatoReporte sel_formato) {
         this.sel_formato = sel_formato;
     }
-
+    
 }
