@@ -54,6 +54,16 @@ public class ServicioTesoreria {
                 + "order by nombre_teban,nombre_tecba";
     }
 
+    /**
+     * Retorna todas los nombres de los bancos
+     *
+     * @return
+     */
+    public String getSqlNombreBancos() {
+        return "select ide_teban,nombre_teban from tes_banco  "
+                + "order by nombre_teban";
+    }
+
     public String getSqlComboCuentasTodas() {
         return "select ide_tecba,nombre_tecba,nombre_teban from tes_banco a "
                 + "inner join tes_cuenta_banco b on a.ide_teban=b.ide_teban "
@@ -583,7 +593,7 @@ public class ServicioTesoreria {
      *
      * @return
      */
-    public String getSqlPosicionConsolidada() { 
+    public String getSqlPosicionConsolidada() {
         return "select a.ide_tecba,nombre_teban,nombre_tecba,nombre_tetcb,ide_cndpc, \n"
                 + "(Select sum(dcc.valor_cndcc*sc.signo_cnscu) as valor \n"
                 + "from con_cab_comp_cont ccc \n"
