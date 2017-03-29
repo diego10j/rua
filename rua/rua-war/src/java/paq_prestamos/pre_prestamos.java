@@ -407,6 +407,16 @@ public class pre_prestamos extends Pantalla {
             tab_tabla2.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla2);
+
+            if (tab_tabla2.isEmpty()) {
+                Boton bot_genera = new Boton();
+                bot_genera.setId("bot_genera");
+                bot_genera.setValue("Generar Tabla de Amortización");
+                bot_genera.setMetodo("generarTablaA");
+                bot_genera.setIcon("ui-icon-star");
+                pat_panel.setHeader(bot_genera);
+            }
+
             ItemMenu itm_anula_pago = new ItemMenu();
             itm_anula_pago.setValue("Anular Pago");
             itm_anula_pago.setIcon("ui-icon-cancel");
@@ -429,6 +439,24 @@ public class pre_prestamos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
         mep_menu.dibujar(2, "TABLA DE AMORTIZACION", gru_grupo);
+    }
+
+    public void generarTablaA() {
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setTabla("iyp_cab_prestamo", "ide_ipcpr", 1);
+        tab_tabla1.setCondicion("ide_ipcpr=" + aut_prestamos.getValor());
+        tab_tabla1.ejecutarSql();
+        ser_prestamo.generarTablaAmortizacion(tab_tabla1);
+        if (guardarPantalla().isEmpty()) {
+            utilitario.agregarMensaje("Se generó la Tabla de Amortización", "");
+            tab_tabla2.actualizar();
+            if (tab_tabla2.isEmpty() == false) {
+                if (utilitario.getComponente("bot_genera") != null) {
+                    utilitario.getComponente("bot_genera").setRendered(false);
+                    utilitario.addUpdate(utilitario.getComponente("bot_genera").getParent().getId());
+                }
+            }
+        }
     }
 
     public void abrirAnularPago() {

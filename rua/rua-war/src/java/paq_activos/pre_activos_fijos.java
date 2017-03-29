@@ -10,10 +10,12 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Confirmar;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
+import framework.componentes.ItemMenu;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -73,6 +75,8 @@ public class pre_activos_fijos extends Pantalla {
 
     private SeleccionTabla set_selecciona = new SeleccionTabla();
 
+    private Confirmar con_confirma = new Confirmar();
+
     public pre_activos_fijos() {
         bar_botones.agregarReporte();
 
@@ -127,6 +131,14 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.setHeight("70%");
         set_selecciona.setHeader("SELECCIONAR ACTIVO FIJO");
         agregarComponente(set_selecciona);
+
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro que desea eliminar el Activo Fijo Seleccionado ?");
+        con_confirma.setTitle("ELIMINAR ACTIVO FIJO");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);
+
     }
 
     public void dibujarConsultarPorCodigoB() {
@@ -610,12 +622,14 @@ public class pre_activos_fijos extends Pantalla {
 
         Boton bot_ver = new Boton();
         bot_ver.setValue("Datos Activo Fijo");
+        bot_ver.setIcon("ui-icon-search");
         bot_ver.setMetodo("cargarActivoFijo");
         bar_menu.agregarComponente(bot_ver);
         bar_menu.agregarSeparador();
         Boton bot_elimina = new Boton();
         bot_elimina.setValue("Eliminar Activo Fijo");
-        bot_elimina.setMetodo("eliminarActivoFijo");
+        bot_elimina.setIcon("ui-icon-cancel");
+        bot_elimina.setMetodo("abrirEliminarActivoFijo");
         bar_menu.agregarComponente(bot_elimina);
 
         tab_tabla = new Tabla();
@@ -654,6 +668,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
@@ -862,13 +877,29 @@ public class pre_activos_fijos extends Pantalla {
         generarCodigoBarras();
     }
 
+    public void abrirEliminarActivoFijo() {
+        if (tab_tabla.getValor("ide_acafi") != null) {
+            con_confirma.getBot_aceptar().setMetodo("eliminarActivoFijo");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Activo Fijo", "");
+        }
+    }
+
     public void eliminarActivoFijo() {
         String ide_acafi = tab_tabla.getValor("ide_acafi");
+        String act_ide_acafi = tab_tabla.getValor("act_ide_acafi");
         if (ide_acafi != null) {
+            con_confirma.cerrar();
             //borra los hijos primero 
-            utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE act_ide_acafi=" + ide_acafi);   
+            utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE act_ide_acafi=" + ide_acafi);
             //borra activo
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE ide_acafi=" + ide_acafi);
+
+            if (act_ide_acafi != null) {
+                //Modifica la cantidad si elimino un hijo
+                utilitario.getConexion().agregarSql("UPDATE act_activo_fijo SET cantidad_acafi= cantidad_acafi-1 WHERE ide_acafi=" + act_ide_acafi);
+            }
             if (guardarPantalla().isEmpty()) {
                 tab_tabla.actualizar();
             }
@@ -1228,6 +1259,14 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setSet_selecciona(SeleccionTabla set_selecciona) {
         this.set_selecciona = set_selecciona;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 }
