@@ -42,7 +42,7 @@ public class ServicioPrestamo extends ServicioBase {
 
     public String getSqlPrestamos() {
         return "select a.ide_ipcpr,a.fecha_prestamo_ipcpr,case when es_ingreso_ipcpr = true THEN 'INGRESO' else 'EGRESO'  end as tipo,\n"
-                + "num_prestamo_ipcpr,observacion_ipcpr as nom_geper,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
+                + "num_prestamo_ipcpr,a.IDE_CNCCC,observacion_ipcpr as nom_geper,a.monto_ipcpr, interes_ipcpr,num_pagos_ipcpr,\n"
                 + "(select sum(capital_ipdpr) as capital from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select sum(interes_ipdpr) as interes from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr),\n"
                 + "(select sum(capital_ipdpr) as SALDO from iyp_deta_prestamo where ide_ipcpr=a.ide_ipcpr and pagado_ipdpr=false),\n"

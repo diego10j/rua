@@ -352,11 +352,8 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
         tab_tabla1.getColumna("hora_sistema_ipcpr").setVisible(false);
-        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
-        tab_tabla1.getColumna("IDE_CNCCC").setLink();
-        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
-        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla1.getColumna("IDE_CNCCC").setNombreVisual("N. ASIENTO");                
+        tab_tabla1.getColumna("IDE_CNCCC").setVisible(true);
         tab_tabla1.setCondicion("ide_ipcpr=" + aut_prestamos.getValor());
         tab_tabla1.setMostrarNumeroRegistros(false);
         tab_tabla1.dibujar();
@@ -503,6 +500,11 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("interes").alinearDerecha();
         tab_tabla1.getColumna("cuota").alinearDerecha();
         tab_tabla1.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
+        tab_tabla1.getColumna("IDE_CNCCC").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").setFiltroContenido();
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla1.setOrdenar(false);
         tab_tabla1.setNumeroTabla(-1);
         tab_tabla1.setRows(20);
