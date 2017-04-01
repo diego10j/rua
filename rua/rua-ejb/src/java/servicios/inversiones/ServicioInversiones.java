@@ -144,7 +144,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "FROM iyp_certificado  a\n"
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "left join tes_cuenta_banco b on a.ide_tecba=b.ide_tecba\n"
-                + "left join tes_banco c on b.ide_teban=c.ide_teban\n"
+                + "left join tes_banco c on a.ide_teban=c.ide_teban\n"
                 + "where nuevo=true	\n"
                 + "and ide_iptin=0\n"
                 + "order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer";
@@ -305,7 +305,7 @@ public class ServicioInversiones extends ServicioBase {
         return sql;
     }
 
-        /**
+    /**
      * Retorna todas los nombres de los bancos
      *
      * @return
@@ -314,5 +314,5 @@ public class ServicioInversiones extends ServicioBase {
         return "select ide_teban,nombre_teban from tes_banco  "
                 + "order by nombre_teban";
     }
-    
+
 }

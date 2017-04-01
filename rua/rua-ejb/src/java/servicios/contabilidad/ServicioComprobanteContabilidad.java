@@ -139,7 +139,7 @@ public class ServicioComprobanteContabilidad {
                 tab_cabecera.setValor("fecha_trans_cnccc", utilitario.getFechaActual());
             }
 
-            tab_cabecera.setValor("numero_cnccc", this.getSecuencial(tab_cabecera.getValor("fecha_trans_cnccc"),tab_cabecera.getValor("ide_cntcm")));
+            tab_cabecera.setValor("numero_cnccc", this.getSecuencial(tab_cabecera.getValor("fecha_trans_cnccc"), tab_cabecera.getValor("ide_cntcm")));
             tab_cabecera.guardar();
             String ide_cnccc = tab_cabecera.getValor("ide_cnccc");
             tab_detalle.getColumna("ide_cnccc").setValorDefecto(tab_cabecera.getValor("ide_cnccc"));
@@ -419,13 +419,22 @@ public class ServicioComprobanteContabilidad {
      *
      * @param ide_cndpc
      * @param ide_cnlap
+     * @param ide_cpcfa
      * @return
      */
-    public String getSqlAsociacionPresupuestaria(String ide_cndpc, String ide_cnlap) {
-        return "select ide_prasp,a.ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla,detalle_prmop from pre_asociacion_presupuestaria a\n"
-                + "left join pre_clasificador b on a.ide_prcla=b.ide_prcla and activo_prcla= true\n"
-                + "left join pre_movimiento_presupuestario c on a.ide_prmop=c.ide_prmop  and activo_prmop=true\n"
-                + "where ide_cndpc=" + ide_cndpc + " and ide_cnlap =" + ide_cnlap + "";
+    public String getSqlAsociacionPresupuestariaCxP(String ide_cndpc, String ide_cnlap, String ide_cpcfa) {
+        return "select a.ide_prcof,false as SELECCIONADO,a.ide_prpot,valor_devengar_prcof,valor_devengar_prcof as VALOR,ide_prtra,c.ide_pranu,d.ide_prcla,e.ide_cocac,ide_prmop,ide_cnlap,detalle_prfup,cod_programa_prpro\n"
+                + "from pre_compromiso_factura a,pre_poa_tramite b,pre_anual c,pre_programa d,pre_asociacion_presupuestaria e,\n"
+                + "pre_funcion_programa f\n"
+                + "where a.ide_prpot = b.ide_prpot\n"
+                + "and b.ide_pranu = c.ide_pranu\n"
+                + "and c.ide_prpro = d.ide_prpro\n"
+                + "and d.ide_prcla = e.ide_prcla\n"
+                + "and d.ide_prfup = f.ide_prfup\n"
+                + "and a.ide_cpcfa in (" + ide_cpcfa + ") \n"
+                + "and ide_cocac=" + ide_cndpc + "\n"
+                + "and ide_prmop =5 "
+                + "and ide_cnlap =" + ide_cnlap;
     }
 
 }

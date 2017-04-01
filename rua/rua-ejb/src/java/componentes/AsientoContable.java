@@ -12,11 +12,9 @@ import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
-import framework.componentes.SeleccionTabla;
 import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,9 +69,9 @@ public class AsientoContable extends Dialogo {
 
     private Dialogo dia_asociacionPre;
     private Tabla tab_sel_aso_tab_seleccion;
-    private Texto tex_valor_pre;
+    private Etiqueta eti_cuenta_aso;
+    private Etiqueta eti_valor_aso;
 
-    
     public AsientoContable() {
         parametros = utilitario.getVariables("p_con_lugar_debe", "p_con_lugar_haber", "p_con_usa_presupuesto",
                 "p_con_tipo_comprobante_diario", "p_con_tipo_comprobante_ingreso",
@@ -180,7 +178,7 @@ public class AsientoContable extends Dialogo {
         if (!isPresupuesto()) {
             tab_deta_asiento.setScrollHeight(getAltoPanel() - 200); //175 sin presupuesto
         } else {
-            tab_deta_asiento.setScrollHeight(getAltoPanel() - 275); //300 con presupuesto                     
+            tab_deta_asiento.setScrollHeight(getAltoPanel() - 325); //300 con presupuesto                     
         }
         tab_deta_asiento.setRows(100);
         tab_deta_asiento.dibujar();
@@ -222,28 +220,42 @@ public class AsientoContable extends Dialogo {
             tab_sel_aso_tab_seleccion = new Tabla();
             tab_sel_aso_tab_seleccion.setId("tab_sel_aso_tab_seleccion");
             tab_sel_aso_tab_seleccion.setRuta("pre_index.clase." + getId());
-            tab_sel_aso_tab_seleccion.setSql(ser_comprobante.getSqlAsociacionPresupuestaria("-1", "-1"));
-            tab_sel_aso_tab_seleccion.setCampoPrimaria("ide_prasp");
+            tab_sel_aso_tab_seleccion.setSql(ser_comprobante.getSqlAsociacionPresupuestariaCxP("-1", "-1", "-1"));
+            tab_sel_aso_tab_seleccion.setCampoPrimaria("ide_prcof");
+            for (int i = 0; i < tab_sel_aso_tab_seleccion.getTotalColumnas(); i++) {
+                tab_sel_aso_tab_seleccion.getColumnas()[i].setVisible(false);
+            }
             tab_sel_aso_tab_seleccion.setRows(100);
-            tab_sel_aso_tab_seleccion.setTipoSeleccion(true);
-            tab_sel_aso_tab_seleccion.setSeleccionTabla("multiple");
             tab_sel_aso_tab_seleccion.setScrollable(true);
-            tab_sel_aso_tab_seleccion.setScrollHeight(dia_asociacionPre.getAltoPanel() - 140);
-            tab_sel_aso_tab_seleccion.getColumna("ide_prasp").setVisible(false);
-            tab_sel_aso_tab_seleccion.getColumna("ide_prcla").setVisible(false);
-            tab_sel_aso_tab_seleccion.setLectura(true);
+            tab_sel_aso_tab_seleccion.setScrollHeight(dia_asociacionPre.getAltoPanel() - 110);
+            tab_sel_aso_tab_seleccion.getColumna("valor_devengar_prcof").setVisible(true);
+            tab_sel_aso_tab_seleccion.getColumna("valor_devengar_prcof").setNombreVisual("VALOR DEVENGAR");
+
+            tab_sel_aso_tab_seleccion.getColumna("VALOR").setVisible(true);
+            tab_sel_aso_tab_seleccion.getColumna("VALOR").setLectura(true);
+            tab_sel_aso_tab_seleccion.getColumna("detalle_prfup").setVisible(true);
+            tab_sel_aso_tab_seleccion.getColumna("cod_programa_prpro").setVisible(true);
+            tab_sel_aso_tab_seleccion.getColumna("detalle_prfup").setLectura(true);
+            tab_sel_aso_tab_seleccion.getColumna("cod_programa_prpro").setLectura(true);
+            tab_sel_aso_tab_seleccion.getColumna("SELECCIONADO").setNombreVisual("");
+            tab_sel_aso_tab_seleccion.getColumna("SELECCIONADO").setVisible(true);
+            tab_sel_aso_tab_seleccion.getColumna("SELECCIONADO").setAncho(1);
+            tab_sel_aso_tab_seleccion.getColumna("SELECCIONADO").setLongitud(1);
+
             tab_sel_aso_tab_seleccion.dibujar();
             PanelTabla pat_panel4 = new PanelTabla();
             pat_panel4.setPanelTabla(tab_sel_aso_tab_seleccion);
 
             dia_asociacionPre.setDialogo(pat_panel4);
 
-            tex_valor_pre = new Texto();
-            tex_valor_pre.setSoloNumeros();
             Grid gri1 = new Grid();
             gri1.setColumns(2);
-            gri1.getChildren().add(new Etiqueta("VALOR :"));
-            gri1.getChildren().add(tex_valor_pre);
+            gri1.getChildren().add(new Etiqueta("CUENTA:"));
+            eti_cuenta_aso = new Etiqueta();
+            gri1.getChildren().add(eti_cuenta_aso);
+            gri1.getChildren().add(new Etiqueta("VALOR:"));
+            eti_valor_aso = new Etiqueta();
+            gri1.getChildren().add(eti_valor_aso);
             pat_panel4.setHeader(gri1);
 
             tab_presupuesto = new Tabla();
@@ -252,8 +264,8 @@ public class AsientoContable extends Dialogo {
             tab_presupuesto.setTabla("pre_mensual", "ide_prmen", 888);
             tab_presupuesto.setHeader("PRESUPUESTO");
             tab_presupuesto.setScrollable(true);
-            tab_presupuesto.setScrollWidth(getAnchoPanel() - 15);
-            tab_presupuesto.setScrollHeight(60);
+            tab_presupuesto.setScrollWidth(getAnchoPanel() - 65);
+            tab_presupuesto.setScrollHeight(90);
             tab_presupuesto.setCondicion("ide_cndcc=-1");
             tab_presupuesto.dibujar();
             // tab_presupuesto.insertar();
@@ -275,23 +287,89 @@ public class AsientoContable extends Dialogo {
 
     }
 
+    private int intRecorre = 0;
+
     public void abrirPresupuesto() {
-        dia_asociacionPre.dibujar();
-    }    
-     
+        intRecorre = 0;
+        buscaPresupuestoCxP();
+    }
+
+    private void buscaPresupuestoCxP() {
+        tab_deta_asiento.setFilaActual(intRecorre);
+        //System.out.println("-  " + intRecorre + " --- " + tab_deta_asiento.getValorArreglo("ide_cndpc", 2));
+        tab_sel_aso_tab_seleccion.setSql(ser_comprobante.getSqlAsociacionPresupuestariaCxP(tab_deta_asiento.getValor("ide_cndpc"), tab_deta_asiento.getValor("ide_cnlap"), relacion));
+        tab_sel_aso_tab_seleccion.ejecutarSql();
+
+        if (!tab_sel_aso_tab_seleccion.isEmpty()) {
+            dia_asociacionPre.setTitle("ASOCIACION PRESUPUESTARIA");
+            eti_cuenta_aso.setValue("<span style='font-size:12px;font-weight: bold;'>" + tab_deta_asiento.getValorArreglo("ide_cndpc", 1) + "   " + tab_deta_asiento.getValorArreglo("ide_cndpc", 2) + "</span>");
+            eti_valor_aso.setValue(("<span style='font-size:13px;font-weight: bold;'>" + utilitario.getFormatoNumero(tab_deta_asiento.getValor("valor_cndcc")) + "</span>"));
+            dia_asociacionPre.dibujar();
+        } else {
+            intRecorre++;
+            aceptarAsociacion();
+        }
+    }
 
     public void aceptarAsociacion() {
-        if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
-            utilitario.agregarMensajeError("Debe ingresar un valor", "");
+        //valida que los seleccionado sea igual al valor del asiento
+        if (dia_asociacionPre.isVisible() == true) {
+            double dou_sum_valor_debengado = 0;
+            for (int i = 0; i < tab_sel_aso_tab_seleccion.getTotalFilas(); i++) {
+                if (tab_sel_aso_tab_seleccion.getValor(i, "SELECCIONADO").equals("true")) {
+                    double valor_actual = 0;
+                    try {
+                        valor_actual = Double.parseDouble(tab_sel_aso_tab_seleccion.getValor(i, "valor_devengar_prcof"));
+                    } catch (Exception e) {
+                    }
+                    dou_sum_valor_debengado += valor_actual;
+                }
+            }
+            double dou_valor_detalle = Double.parseDouble(tab_deta_asiento.getValor("valor_cndcc"));
+            if (dou_valor_detalle == dou_sum_valor_debengado) {
+                //agrega                
+                for (int i = 0; i < tab_sel_aso_tab_seleccion.getTotalFilas(); i++) {
+                    if (tab_sel_aso_tab_seleccion.getValor(i, "SELECCIONADO").equals("true")) {
+                        tab_presupuesto.insertar();
+                        tab_presupuesto.setValor("ide_pranu", tab_sel_aso_tab_seleccion.getValor(i, "ide_pranu"));
+                        tab_presupuesto.setValor("ide_prtra", tab_sel_aso_tab_seleccion.getValor(i, "ide_prtra"));
+                        tab_presupuesto.setValor("fecha_ejecucion_prmen", tab_cabe_asiento.getValor(i, "fecha_trans_cnccc"));
+                        tab_presupuesto.setValor("ide_codem", tab_deta_asiento.getValor("ide_cndcc"));
+                        tab_presupuesto.setValor("comprobante_prmen", tab_cabe_asiento.getValor("numero_cnccc"));
+                        tab_presupuesto.setValor("devengado_prmen", tab_sel_aso_tab_seleccion.getValor(i, "valor_devengar_prcof"));
+                        tab_presupuesto.setValor("cobrado_prmen", "0");
+                        tab_presupuesto.setValor("cobradoc_prmen", "0");
+                        tab_presupuesto.setValor("pagado_prmen", "0");
+                        tab_presupuesto.setValor("comprometido_prmen", "0");
+                        tab_presupuesto.setValor("valor_anticipo_prmen", "0");
+                        tab_presupuesto.setValor("certificado_prmen", "0");
+                        tab_presupuesto.setValor("ide_comov", ide_cnccc);
+                        tab_presupuesto.setValor("activo_prmen", "true");
+                        tab_presupuesto.setValor("ide_cndcc", tab_deta_asiento.getValor("ide_cndcc"));
+                    }
+                }
+                intRecorre++;
+                dia_asociacionPre.cerrar();
+            } else {
+                utilitario.agregarMensajeError("La suma del valor devengado debe ser igual a " + dou_valor_detalle, "");
+                return;
+            }
         }
-        if (tab_sel_aso_tab_seleccion.getSeleccionados() != null) {
-            dia_asociacionPre.cerrar();
-            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pre.getValue()));
-            tab_deta_asiento.getFilaSeleccionada().setLectura(true);
-            utilitario.addUpdate("tab_deta_asiento");
-        } else {
-            utilitario.agregarMensajeError("Debe seleccionar una asociación presupuestaria", "");
+        if (intRecorre < tab_deta_asiento.getTotalFilas()) {
+            buscaPresupuestoCxP();
         }
+
+////        if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
+////            utilitario.agregarMensajeError("Debe ingresar un valor", "");
+////        }
+////        if (tab_sel_aso_tab_seleccion.getSeleccionados() != null) {
+////            dia_asociacionPre.cerrar();
+////            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pre.getValue()));
+////            tab_deta_asiento.getFilaSeleccionada().setLectura(true);
+////            utilitario.addUpdate("tab_deta_asiento");
+////        } else {
+////            utilitario.agregarMensajeError("Debe seleccionar una asociación presupuestaria", "");
+////        }   
     }
 
     public void cancelarAsociacion() {
@@ -418,17 +496,17 @@ public class AsientoContable extends Dialogo {
 
     public void seleccionarLugarAplica(AjaxBehaviorEvent evt) {
         tab_deta_asiento.modificar(evt);
-        if (isPresupuesto()) {
-            //usa presupuesto
-            if (tab_deta_asiento.getValor("ide_cnlap") != null) {
-                //busca asociasion presupuestaria
-                tab_sel_aso_tab_seleccion.setSql(ser_comprobante.getSqlAsociacionPresupuestaria(tab_deta_asiento.getValor("ide_cndpc"), tab_deta_asiento.getValor("ide_cnlap")));
-                tab_sel_aso_tab_seleccion.ejecutarSql();
-                if (tab_sel_aso_tab_seleccion.isEmpty() == false) {
-                    dia_asociacionPre.dibujar();
-                }
-            }
-        }
+//        if (isPresupuesto()) {
+////            //usa presupuesto
+////            if (tab_deta_asiento.getValor("ide_cnlap") != null) {
+////                //busca asociasion presupuestaria
+////                tab_sel_aso_tab_seleccion.setSql(ser_comprobante.getSqlAsociacionPresupuestaria(tab_deta_asiento.getValor("ide_cndpc"), tab_deta_asiento.getValor("ide_cnlap")));
+////                tab_sel_aso_tab_seleccion.ejecutarSql();
+////                if (tab_sel_aso_tab_seleccion.isEmpty() == false) {
+////                    dia_asociacionPre.dibujar();
+////                }
+////            }
+//        }
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }

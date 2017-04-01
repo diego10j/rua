@@ -542,6 +542,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("ide_ipcin").setValorDefecto("1");
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla1.getColumna("nuevo").setValorDefecto("true");
+        tab_tabla1.getColumna("cancelado").setVisible(true);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.setMostrarNumeroRegistros(false);
@@ -650,6 +651,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("ide_ipcin").setCombo("iyp_clase_inversion", "ide_ipcin", "nombre_ipcin", "");
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla1.getColumna("nuevo").setValorDefecto("true");
+        tab_tabla1.getColumna("cancelado").setVisible(true);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.setMostrarNumeroRegistros(false);
@@ -810,6 +812,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.getColumna("ide_geper").setAutoCompletar();
             tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
             tab_tabla1.getColumna("nuevo").setValorDefecto("true");
+            tab_tabla1.getColumna("cancelado").setVisible(true);
             tab_tabla1.setTipoFormulario(true);
             tab_tabla1.getGrid().setColumns(4);
             tab_tabla1.setMostrarNumeroRegistros(false);
@@ -931,6 +934,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.getColumna("interes_ipcer").setVisible(true);
             tab_tabla1.getColumna("valor_a_pagar_ipcer").setVisible(true);
             tab_tabla1.getColumna("observacion_ipcer").setVisible(true);
+            tab_tabla1.getColumna("cancelado").setVisible(true);
             tab_tabla1.getColumna("fecha_sistema_ipcer").setValorDefecto(utilitario.getFechaActual());
             tab_tabla1.getColumna("activo_ipcer").setValorDefecto("true");
             tab_tabla1.getColumna("ide_cnmod").setVisible(true);
@@ -1312,6 +1316,7 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("ide_ipcin").setValorDefecto("1");
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla1.getColumna("nuevo").setValorDefecto("true");
+        tab_tabla1.getColumna("cancelado").setVisible(true);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.setMostrarNumeroRegistros(false);
@@ -1354,6 +1359,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.getColumna("ide_tecba").setCombo("select tes_cuenta_banco.ide_tecba,tes_banco.nombre_teban,tes_cuenta_banco.nombre_tecba from  tes_banco,tes_cuenta_banco,sis_empresa where tes_banco.ide_teban=tes_cuenta_banco.ide_teban and sis_empresa.ide_empr=" + utilitario.getVariable("ide_empr") + " and es_caja_teban=false and tes_cuenta_banco.ide_sucu=" + utilitario.getVariable("ide_sucu"));
             tab_tabla1.getColumna("ide_tecba").setRequerida(true);
             tab_tabla1.getColumna("ide_teban").setVisible(true);
+            tab_tabla1.getColumna("cancelado").setVisible(true);
             tab_tabla1.getColumna("ide_teban").setCombo(ser_inversion.getSqlComboBancos());
             tab_tabla1.getColumna("ide_teban").setNombreVisual("BANCO");
             tab_tabla1.getColumna("fecha_emision_ipcer").setVisible(true);
