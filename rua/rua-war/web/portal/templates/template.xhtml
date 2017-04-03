@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"       
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:head>
+            <title>
+                <ui:insert name="tituloPagina"></ui:insert>
+            </title>
+        </h:head>
+        <link rel="stylesheet" href="css/style.css" type="text/css" media="all"/>
+    </h:head>
+    <h:body>     
+
+        <p:idleMonitor timeout="#{session.maxInactiveInterval * 500}" >            
+            <p:ajax event="idle" listener="#{pre_login.caducoSession}" onstart="diaCaduco.show();"  />  
+        </p:idleMonitor>  
+        <p:dialog header="Sessión caducada" onHide="location.href='about:blank';window.close();" resizable="false" widgetVar="diaCaduco" modal="true" closable="true" width="400" visible="false">  
+            <div align="center">
+                <h:outputText value="La sesión ha caducado, debido a la inactividad en el sistema" />                                   
+            </div>
+        </p:dialog>
+
+        <p:layout fullPage="true">
+            <p:layoutUnit id="north" position="north" size="130">
+                <div class="cabecera">
+                    <h:panelGrid columns="4" style="width: 99%" >
+                        <h:outputLink hreflang="index.jsf">
+                            <h:graphicImage value="../imagenes/logo.png" width="68" height="73"/>
+                        </h:outputLink>  
+                        <p>Sistema de Administración de Talento Humano</p>
+                        <h:panelGrid columns="2">
+                            <h:graphicImage value="../imagenes/im_usuario.png"/>
+                            <p:outputLabel value="#{pre_portal.strNick}"/>
+                            <h:graphicImage value="../imagenes/im_calendario.png"/>
+                            <p:outputLabel value="#{pre_portal.strFecha}"/>
+                        </h:panelGrid>
+                    </h:panelGrid> 
+                </div>
+                <h:form>
+                    <p:ajaxStatus style="position:fixed;right:5px;top:18px" >  
+                        <f:facet name="start">  
+                            <h:graphicImage value="../imagenes/im_cargar.gif" />  
+                        </f:facet>  
+
+                        <f:facet name="complete">  
+                            <h:outputText value="" />  
+                        </f:facet>  
+                    </p:ajaxStatus> 
+                    <p:menubar>
+                        <p:menuitem value="Datos Personales"  icon="ui-inicio" url="/portal/datosEmpleado.jsf" />  
+                        <p:menuitem value="Rol de Pagos"  icon="ui-rol"  url="/portal/rolesPago.jsf"/> 
+                        <p:menuitem value="Cambiar Clave"  icon="ui-clave" onclick="wdiaClave.show()" />  
+                        <f:facet name="options">                                        
+                            <p:commandButton value="Salir" icon="ui-salir" />  
+                        </f:facet>
+                    </p:menubar>
+                    <p:commandLink title="Cerrar Sesión" style="position:fixed;right:2px;top:1px;" action="#{pre_login.salir}">
+                        <h:graphicImage value="../imagenes/im_salir_sistema.png" width="32" height="32"/>
+                    </p:commandLink>
+
+
+
+
+                </h:form>
+            </p:layoutUnit>
+
+
+            <p:dialog id="diaClave" appendToBody="true" widgetVar="wdiaClave" header="Cambiar Clave" modal="true" visible="#{pre_portal.booCambiaClave}" width="400" height="180" resizable="false" closable="false">
+                <h:form>
+
+                    <h:panelGrid width="100%" columns="2">                    	
+                        <h:outputText value="Clave Actual :"/>
+                        <p:password value="#{pre_portal.strClaveActua}"/>
+                        <f:facet name="footer">
+                            <p:separator/>
+                        </f:facet>                    
+                    </h:panelGrid>
+                    <h:panelGrid width="100%" columns="2">                    	
+                        <h:outputText value="Clave Nueva :"/>
+                        <p:password value="#{pre_portal.strClaveNueva}" goodLabel="Buena" weakLabel="Débil" strongLabel="Segura" promptLabel="Ingrese una clave" feedback="false" redisplay="true"/>
+                        <h:outputText value="Confirmar Clave Nuevo :"/>
+                        <p:password value="#{pre_portal.strConfirmaClaveNueva}"/> 
+
+                        <f:facet name="footer">
+                            <p:toolbar>
+                                <p:toolbarGroup align="left">
+                                    <p:commandButton update="@form" style="float: right"  value="Aceptar" action="#{pre_portal.cambiarClave}"/>    
+                                </p:toolbarGroup>
+                                <p:toolbarGroup align="right">
+                                    <p:commandButton update=":diaClave" style="padding-left: 6px"  value="Cancelar" action="#{pre_portal.cancelarCambiarClave}" />    
+                                </p:toolbarGroup>                        
+                            </p:toolbar>
+                        </f:facet>
+                    </h:panelGrid>
+
+
+                </h:form>
+            </p:dialog>
+
+
+            <p:layoutUnit id="left" position="west" size="300" resizable="true" collapsible="true" header="Opciones" minSize="200">
+                <ui:insert name="opciones">
+                </ui:insert>
+            </p:layoutUnit>
+            <p:layoutUnit id="center" position="center">
+                <ui:insert name="contenido">
+                </ui:insert>
+            </p:layoutUnit>
+            <p:layoutUnit position="south" size="25">
+                Nota: Toda la información ingresada será posteriormente validada por el departamento de Talento Humano.
+            </p:layoutUnit>
+        </p:layout>
+
+    </h:body>
+</html>
+

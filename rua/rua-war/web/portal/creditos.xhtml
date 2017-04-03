@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="tituloPagina">Créditos</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Vacaciones">  
+                    <p:menuitem  value="Solicitud de Créditos" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="1"  target="#{controladorCreditos.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Listado de Solicitudes" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="2"  target="#{controladorCreditos.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Saldos Créditos" icon="ui-dinero"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="3"  target="#{controladorCreditos.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>   
+                </p:submenu>
+            </p:menu>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <h:panelGroup id="cuerpo">
+            <h:form id="formAnticipos" prependId="false" rendered="#{controladorCreditos.strOpcion == 1}">
+                <p:fieldset legend="Solicitud de Créditos">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Ingresar Información Garante : *" style="font-weight: bold"/>
+                        <p:selectBooleanButton value="#{controladorCreditos.ingresarGarante}" onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close">  
+                            <p:ajax update=":cuerpo" />  
+                        </p:selectBooleanButton>  
+                    </h:panelGrid>
+                    <h:panelGrid columns="4">
+                        <h:outputText value="Nro. Anticipo :" style="font-weight: bold"/>
+                        <p:inputText value="#{controladorCreditos.solicitudAnticipo.nroAnticipoNrant}" disabled="true" size="4"/>
+
+                        <h:outputText value="Fecha Solicitud :" style="font-weight: bold"/>
+                        <p:calendar  disabled="true" value="#{controladorCreditos.solicitudAnticipo.fechaSolicitudNrant}" pattern="dd/MM/yyyy"/>                       
+                    </h:panelGrid>     
+                    <p:separator/>
+                    <h:panelGrid columns="6">
+                        <h:outputText value="Motivo : *" style="font-weight: bold"/>
+                        <p:selectOneMenu value="#{controladorCreditos.solicitudAnticipo.ideNrmoa.ideNrmoa}" required="true" requiredMessage="Debe seleccionar un Motivo">
+                            <f:selectItem itemLabel="Seleccionar Motivo..."  />  
+                            <f:selectItems  value="#{controladorCreditos.listaMotivos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>
+                        <h:outputText value="Monto Solicitado : *" style="font-weight: bold"/>
+                        <h:panelGrid columns="2">
+                            <p:inputText value="#{controladorCreditos.solicitudAnticipo.montoSolicitadoNrant}" size="10" required="true" requiredMessage="Debe ingresar un Monto"/>
+                            <h:outputText value=" $"/>
+                        </h:panelGrid>
+                             <h:outputText value="Nro Meses Plazo: *" style="font-weight: bold"/>
+                             <p:inputText value="#{controladorCreditos.solicitudAnticipo.nroMesNrant}" size="10" required="true" requiredMessage="Debe ingresar los Meses Plazo"/>
+                         
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Observación : *" style="font-weight: bold"/>
+                        <p:inputTextarea cols="60" rows="4" value="#{controladorCreditos.solicitudAnticipo.observacionNrant}" required="true" requiredMessage="Debe ingresar una Observación"/>
+                    </h:panelGrid>
+
+                    <p:fieldset id="fieGarante" legend="Garante" rendered="#{controladorCreditos.ingresarGarante}">
+						    <h:panelGrid columns="2">
+						    <h:outputText style="font-weight: bold" value="Tipo Garante : *"/>
+                            <p:selectOneMenu value="#{controladorCreditos.garanteSolicitud.ideNrtig.ideNrtig}" required="true" requiredMessage="Debe seleccionar un Tipo de Garante">
+                                <f:selectItem itemLabel="Seleccionar Tipo Garante..."  />  
+                                <f:selectItems  value="#{controladorCreditos.listaTipoGarante}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                            </p:selectOneMenu>
+                            	</h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputText style="font-weight: bold" value="Nombres y Apellidos : *"/>
+                            <h:panelGrid columns="4" >
+                                <p:inputText size="30" value="#{controladorCreditos.garanteSolicitud.primerNombregNrgar}" required="true" requiredMessage="Debe ingresar el Primer Nombre"/>
+                                <p:inputText size="30" value="#{controladorCreditos.garanteSolicitud.segundoNombregNrgar}" />
+                                <p:inputText size="30" value="#{controladorCreditos.garanteSolicitud.apellidoPaternogNrgar}" required="true" requiredMessage="Debe ingresar el Primer Apellido"/>
+                                <p:inputText size="30" value="#{controladorCreditos.garanteSolicitud.apellidoMaternogNrgar}" />
+                                <h:outputText  value="(Primer Nombre)"/>
+                                <h:outputText  value="(Segundo Nombre)"/>
+                                <h:outputText  value="(Primer Apellido)"/>
+                                <h:outputText  value="(Segundo Apellido)"/>
+
+                            </h:panelGrid>
+                        </h:panelGrid>
+                            
+
+                            
+                        <h:panelGrid columns="2">                                 
+                            <h:outputText style="font-weight: bold" value="Asociar Garante a empleado de la Institución :"/>  
+                            <p:autoComplete value="#{controladorCreditos.objEmpleadoGarante}" size="60" var="fila" maxResults="10" completeMethod="#{controladorCreditos.autocompletar}" 
+                                            forceSelection="true" converter="ConvertidorAutoCompletar" itemLabel="#{fila[1]} #{fila[2]}" itemValue="#{fila}">
+
+                                <f:attribute name="lisOpciones" id="lisOpciones" value="#{controladorCreditos.listaEmpleadosDepartamento}"/>
+
+                                <p:ajax event="itemSelect" listener="#{controladorCreditos.seleccionarGarante}" update="formAnticipos:fieGarante" />
+
+                                <p:column>  
+                                    #{fila[1]}
+                                </p:column>
+                                <p:column>  
+                                    #{fila[2]}
+                                </p:column>
+                                <p:column>  
+                                    #{fila[3]}
+                                </p:column>
+                                <p:column>  
+                                    #{fila[4]}
+                                </p:column>
+                                <p:column>  
+                                    #{fila[5]}
+                                </p:column>
+                            </p:autoComplete>
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="6">
+                            <h:outputText style="font-weight: bold" value="Tipo Identificación : *"/>
+                            <p:selectOneMenu value="#{controladorCreditos.garanteSolicitud.ideGttdi.ideGttdi}" required="true" requiredMessage="Debe seleccionar un Tipo de Identificación">
+                                <f:selectItem itemLabel="Seleccionar Tipo Identificación..."  />  
+                                <f:selectItems  value="#{controladorCreditos.listaTipoDocumento}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                            </p:selectOneMenu>
+                            <h:outputText style="font-weight: bold" value="Identificación : *" />
+                            <p:inputText size="15" value="#{controladorCreditos.garanteSolicitud.documentoIdentidadcNrgar}" required="true" requiredMessage="Debe ingresar una Identificación"/>
+                             <h:outputText style="font-weight: bold" value="Remuneración  : *" />
+                             <p:inputText size="8" value="#{controladorCreditos.garanteSolicitud.rmuNrgar}" required="true" requiredMessage="Debe ingresar la remuneración del Garante" validatorMessage="La remuneración debe ser mayor a 0">
+                             <f:validateDoubleRange minimum="0"/>
+                             </p:inputText>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4">
+                            <h:outputText style="font-weight: bold" value="Lugar de Trabajo : "/>
+                            <p:inputText size="50" value="#{controladorCreditos.garanteSolicitud.lugarTrabajoNrgar}"/>
+                            <h:outputText style="font-weight: bold" value="Tipo Teléfono:"/>
+                            <p:selectOneMenu  value="#{controladorCreditos.garanteTelefono.ideGttit.ideGttit}" style="width: 180px;" required="true" requiredMessage="Debe seleccionar un tipo de teléfono">
+                                <f:selectItem itemLabel="Seleccionar Tipo Telefono..."  />  
+                                <f:selectItems  value="#{controladorCreditos.listaTiposTelefono}" var="vttele" itemLabel="#{vttele[1]}" itemValue="#{vttele[0]}" />
+                            </p:selectOneMenu>
+                            <h:outputText style="font-weight: bold" value="Número :"/>
+                            <p:inputText size="15" value="#{controladorCreditos.garanteTelefono.numeroTelefonoGttel}" required="true" requiredMessage="Debe ingresar un número de teléfono"/>                        
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:spacer height="25" width="0"/>
+                    <p:commandButton partialSubmit="true" process="formAnticipos" update="formAnticipos"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorCreditos.guardarSolicitud}"/>
+                </p:fieldset>
+            </h:form>    
+
+            <h:panelGrid width="100%" rendered="#{controladorCreditos.strOpcion == 2}">
+                <h:form>
+                <p:dataTable value="#{controladorCreditos.listaAnticipos}" var="tabla" rows="5"
+                             paginator="true" paginatorAlwaysVisible="false" selection="#{controladorCreditos.anticipoSeleccionado}" selectionMode="single" rowKey="#{tabla.ideNrant}">
+                    <f:facet name="header">
+                        Listado de Solicitudes de Créditos Realizadas
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="btver"/>
+                    <f:facet name="footer">
+                        <p:commandButton id="btver" value="Ver Solicitud" disabled="#{controladorCreditos.anticipoSeleccionado==null}" icon="ui-icon-search"  oncomplete="window.open('#{controladorCreditos.strPathReporte}');" action="#{controladorCreditos.visualizarSolicitud}" update="@form"/>
+                    </f:facet>
+
+                    
+                    <p:column style="width:2%">  
+                        <p:rowToggler />  
+                    </p:column>  
+
+                    <p:rowExpansion>
+                        <p:panelGrid  columns="2" style="margin-top: 5px;width: 50%;margin-left: 40px;" rendered="#{tabla.aprobadoNrant==true}">
+                            <f:facet name="header">
+                                Detalle Autorización
+                            </f:facet>
+                            <h:outputText value="Nro. MEMO : "  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.nroMemoNrant}"/>
+                            <h:outputText value="FECHA AUTORIZA :"  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.fechaAutorizaNrant}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>                           
+                            <h:outputText value="RAZON AUTORIZA : "  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.razonAutorizaNrant}"/>  
+                        </p:panelGrid>
+                        <p:panelGrid  columns="2" style="margin-top: 5px;width: 50%;margin-left: 40px;" rendered="#{tabla.aprobadoNrant==true}">
+                            <f:facet name="header">
+                                Detalle Aprobación
+                            </f:facet>
+                            <h:outputText value="FECHA RESOLUCÓN :"  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.fechaResolucionNrant}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                            <h:outputText value="RESOLUCÓN :"  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.resolucionNrant}"/>
+                            <h:outputText value="FECHA APROBACION :"  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.fechaAprobacionNrant}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                            <h:outputText value="MONTO APROBADO :"  style="font-weight: bold"/>
+                            <h:outputText value="#{tabla.montoAprobadoNrant}"/>
+                        </p:panelGrid>
+                    </p:rowExpansion> 
+                    <p:column headerText="ESTADO" width="170">
+                        <h:outputText value="APROBADO" style="color: #006633;font-size: 13px;font-weight: bold" rendered="#{tabla.aprobadoNrant==true}"/>                        
+                        <h:outputText value="RECHAZADO" style="color: #ff0000;font-size: 13px;font-weight: bold" rendered="#{tabla.aprobadoNrant==false and tabla.calificadoNrant==true}"/>
+                        <h:outputText value="PENDIENTE" style="color: #003366;font-size: 13px;font-weight: bold" rendered="#{tabla.aprobadoNrant==false and tabla.calificadoNrant==false}"/>
+                        <h:outputText value="INACTIVO" style="padding-left: 10px;color: red;font-size: 13px;font-weight: bold" rendered="#{tabla.activoNrant==false}"/>
+                    </p:column>
+                    <p:column headerText="Nro." width="40" sortBy="#{tabla.nroAnticipoNrant}">
+                        <h:outputText value="#{tabla.nroAnticipoNrant}"/>    
+                    </p:column>
+                    <p:column headerText="FECHA SOLICITUD" width="100" sortBy="#{tabla.fechaSolicitudNrant}">
+                        <h:outputText value="#{tabla.fechaSolicitudNrant}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>                    
+                    <p:column headerText="MOTIVO" width="200">
+                        <h:outputText value="#{tabla.ideNrmoa.detalleNrmoa}"/>
+                    </p:column>         
+                    <p:column headerText="MONTO $" width="110">
+                        <h:outputText value=" #{tabla.montoSolicitadoNrant}"/>
+                    </p:column>
+                    <p:column headerText="OBSERVACION" width="300">
+                        <h:outputText value=" #{tabla.observacionNrant}"/>
+                    </p:column>
+                </p:dataTable>
+                    </h:form>
+            </h:panelGrid>
+
+            <h:panelGrid width="100%" rendered="#{controladorCreditos.strOpcion == 3}">
+                <h:form id="formSlados" prependId="false">
+                    <p:dataTable value="#{controladorCreditos.listaCabCreditos}" var="tabla" rows="10" paginator="true" paginatorAlwaysVisible="false" 
+                                 selection="#{controladorCreditos.objCreditoSeleccionado}" rowKey="#{tabla[0]}">
+                        <p:ajax event="rowSelectRadio" update=":formSlados:tabDetalleCredito,saldo" listener="#{controladorCreditos.actualizarTablaAmortización}"/>
+                        <f:facet name="header">
+                            Listado de Créditos Aprobados
+                        </f:facet>
+
+                        <f:facet name="footer">
+
+
+
+                            <p:summaryRow>  
+                                <p:column colspan="4" style="text-align:right">  
+                                    Total Adeuda :  
+                                </p:column>  
+
+                                <p:column>  
+                                    <h:outputText id="saldo" value="#{controladorCreditos.str_saldo}$ " style="font-size: 13px;"  />
+                                </p:column>  
+                            </p:summaryRow>  
+                        </f:facet>
+                        <p:column selectionMode="single">
+                        </p:column>
+                        <p:column headerText="Nro." width="40" sortBy="#{tabla[1]}">
+                            <h:outputText value="#{tabla[1]}"/>    
+                        </p:column>
+                        <p:column headerText="FECHA APROBACIÓN" width="100" sortBy="#{tabla[2]}">
+                            <h:outputText value="#{tabla[2]}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                        </p:column>      
+                        <p:column headerText="FECHA VENCIMIENTO" width="100" sortBy="#{tabla[3]}">
+                            <h:outputText value="#{tabla[3]}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="MONTO $" width="110">
+                            <h:outputText value=" #{tabla[4]}"/>
+                        </p:column>
+                        <p:column headerText="OBSERVACION" width="300">
+                            <h:outputText value=" #{tabla[5]}"/>
+                        </p:column>
+                        <p:column headerText="JEFE GERENTE" width="180">
+                            <h:outputText value=" #{tabla[6]}"/>
+                        </p:column>
+                        <p:column headerText="JEFE INMEDIATO" width="180">
+                            <h:outputText value=" #{tabla[7]}"/>
+                        </p:column>
+                        <p:column headerText="JEFE TALENTO HUMANO" width="180">
+                            <h:outputText value=" #{tabla[8]}"/>
+                        </p:column>
+                    </p:dataTable>
+
+
+                    <p:dataTable id="tabDetalleCredito" value="#{controladorCreditos.listaDetaCreditos}" 
+                                 var="tabla">
+
+                        <f:facet name="header">
+                            Tabla de Amortización
+                        </f:facet>
+
+                        <p:column headerText="NRO. CUOTA" width="50">
+                            <h:outputText value=" #{tabla[5]}"/>
+                        </p:column>
+                        <p:column headerText="CAPITAL" width="100">
+                            <h:outputText value=" #{tabla[0]}"/>
+                        </p:column>
+                        <p:column headerText="INTERES" width="100">
+                            <h:outputText value=" #{tabla[1]}"/>
+                        </p:column>
+                        <p:column headerText="PRINCIPAL" width="100">
+                            <h:outputText value=" #{tabla[2]}"/>
+                        </p:column>
+                        <p:column headerText="CUOTA" width="100">
+                            <h:outputText value=" #{tabla[3]}"/>
+                        </p:column>
+                        <p:column headerText="FECHA CANCELADO" width="100">
+                            <h:outputText value="#{tabla[4]}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="DETALLE" width="190">
+                            <h:outputText value=" #{tabla[6]}"/>
+                        </p:column>
+                        <p:column headerText="FECHA VENCIMIENTO" width="120">
+                            <h:outputText value="#{tabla[7]}">
+                                <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,135 @@
+
+.ui-widget {
+    font-size: 12px;     
+}
+html,body{
+    margin: 0;
+    padding: 0;    
+} 
+
+.ui-layout-north .ui-layout-unit-content {
+    overflow:visible !important;
+}
+
+.cabecera{
+    padding-left: 20px;vertical-align:middle;
+}
+.cabecera p{
+    padding-left: 10px;font-style: italic;font-size: 18px;border: none;text-shadow: 0px 2px 3px #ccc;    
+}
+
+table, td, th
+{
+    margin: 0;
+    padding: 0;
+    border-collapse:collapse; 
+}
+td
+{
+    text-align:left;    
+    font-size: 11px;    
+    padding:5px;
+    vertical-align:middle;
+}
+
+.ui-inicio {
+    background-image: url('../../imagenes/im_inicio.png')!important;
+    padding-right: 5px;
+}
+
+.ui-salir {
+    background-image: url('../../imagenes/im_cerrar.png')!important;
+    padding-right: 5px;
+}
+.ui-clave {
+    background-image: url('../../imagenes/im_clave.png')!important;
+    padding-right: 5px;
+}
+.ui-foto {
+    background-image: url('../../imagenes/im_foto.gif')!important;
+    padding-right: 5px;
+}
+
+.ui-insertar {
+    background-image: url('../../imagenes/im_insertar.png')!important;
+    padding-right: 5px;
+}
+.ui-guardar {
+    background-image: url('../../imagenes/im_guardar.png')!important;
+    padding-right: 5px;
+}
+.ui-eliminar {
+    background-image: url('../../imagenes/im_eliminar.png')!important;
+    padding-right: 5px;
+}
+
+.ui-reporte {
+    background-image: url('../../imagenes/im_reporte.png')!important;
+    padding-right: 5px;
+}
+
+.ui-calendario {
+    background-image: url('../../imagenes/im_calendario.png')!important;
+    padding-right: 5px;
+}
+
+.ui-agregar {
+    background-image: url('../../imagenes/im_agregar.png')!important;
+    padding-right: 5px;
+    padding-left:  5px;
+}
+
+.ui-modificar {
+    background-image: url('../../imagenes/im_modificar.png')!important;
+    padding-right: 5px;
+}
+
+.ui-grupo {
+    background-image: url('../../imagenes/im_grupo.png')!important;
+    padding-right: 5px;
+}
+
+.ui-persona {
+    background-image: url('../../imagenes/im_persona.png')!important;
+    padding-right: 5px;
+}
+
+.ui-persona {
+    background-image: url('../../imagenes/im_persona.png')!important;
+    padding-right: 5px;
+}
+
+.ui-dias {
+    background-image: url('../../imagenes/im_dias.png')!important;
+    padding-right: 5px;
+}
+
+.ui-rol {
+    background-image: url('../../imagenes/im_rol.png')!important;
+    padding-right: 5px;
+}
+
+.ui-extra {
+    background-image: url('../../imagenes/im_extra.png')!important;
+    padding-right: 5px;
+}
+
+.ui-dinero {
+    background-image: url('../../imagenes/im_dinero.png')!important;
+    padding-right: 5px;
+}
+
+.ui-plan {
+    background-image: url('../../imagenes/im_plan.png')!important;
+    padding-right: 5px;
+}
+
+.ui-tabla {
+    background-image: url('../../imagenes/im_tabla.gif')!important;
+    padding-right: 5px;
+}
+
+.ui-documento {
+    background-image: url('../../imagenes/im_documento.png')!important;
+    padding-right: 5px;
+}

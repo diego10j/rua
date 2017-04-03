@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="tituloPagina">Capacitaciones</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Rol de Pagos">  
+                    <p:menuitem  value="Capacitaciones" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="1"  target="#{controladorCapacitacion.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>                   
+                </p:submenu>
+            </p:menu>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <h:panelGroup id="cuerpo">           
+
+            <h:panelGrid width="100%" rendered="#{controladorCapacitacion.strOpcion == 1}">
+                <h:form>
+
+                    <p:dataTable value="#{controladorCapacitacion.liscapacitacionesEmpleado}" var="tabla" rows="10" paginator="true" paginatorAlwaysVisible="false"
+                                 emptyMessage="No tiene capacitaciones">
+                        <f:facet name="header">
+                            Listado de capacitaciones, cursos realizados
+                        </f:facet> 
+                        <p:column headerText="INSTITUCIÓN" width="150">
+                            <h:outputText value="#{tabla[0]}"/>
+                        </p:column>
+                        <p:column headerText="LUGAR" width="110">
+                            <h:outputText value="#{tabla[1]}"/>
+                        </p:column>
+                        <p:column headerText="FECHA " width="140">
+                            <h:outputText value="#{tabla[6]}">
+                                <f:convertDateTime type="date" dateStyle="long"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="DETALLE" width="180">
+                            <h:outputText value="#{tabla[2]}"/>
+                        </p:column>
+                        <p:column headerText="PERIODO" width="80">
+                            <h:outputText value="#{tabla[3]}"/>
+                        </p:column>
+                        <p:column headerText="TIEMPO DURACIÓN " width="65">
+                            <h:outputText value="#{tabla[7]}"/>
+                        </p:column>
+                        <p:column headerText="TIPO " width="55">
+                            <h:outputText value="INTERNA" rendered="#{tabla[4] ==1}"/>
+                            <h:outputText value="EXTERNA" rendered="#{tabla[4] ==0}"/>
+                        </p:column>
+                        <p:column headerText="INSTRUCTOR " width="170">
+                            <h:outputText value="#{tabla[5]}"/>
+                        </p:column>                       
+
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

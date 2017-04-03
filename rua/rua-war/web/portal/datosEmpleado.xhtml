@@ -1,0 +1,444 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="tituloPagina">Datos Empleado</ui:define>
+    <ui:define name="opciones">
+        <h:form id="formDatos" prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Perfil">  
+                    <p:menuitem  value="Datos Contacto" icon="ui-modificar"  update=":cuerpo" action="#{controladorEmpleado.actualizarEmpleado}">
+                        <f:setPropertyActionListener value="1"  target="#{controladorEmpleado.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Datos Conyuge" update=":cuerpo" icon="ui-persona" action="#{controladorEmpleado.actualizarEmpleado}">
+                        <f:setPropertyActionListener value="2" target="#{controladorEmpleado.strOpcion}"/>                        
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Datos Cargas Familiares" icon="ui-grupo" update=":cuerpo" action="#{controladorEmpleado.actualizarEmpleado}">
+                        <f:setPropertyActionListener value="3" target="#{controladorEmpleado.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem value="Cambiar Foto" icon="ui-foto" onclick="dia_foto.show()"/>
+                </p:submenu>
+            </p:menu>
+
+            <div align="center" style="padding-top: 10px">
+                <h:panelGrid id="panel_foto">
+                    <h:graphicImage value="../imagenes/im_empleado.png" rendered="#{controladorEmpleado.empleado.pathFotoGtemp==null}"  width="128" height="128" style="border: 1px solid #ccc"/>                            
+
+                    <p:lightBox styleClass="imagebox" rendered="#{controladorEmpleado.empleado.pathFotoGtemp!=null}">  
+                        <h:outputLink value="../#{controladorEmpleado.empleado.pathFotoGtemp}" title="Foto">  
+                            <h:graphicImage value="../#{controladorEmpleado.empleado.pathFotoGtemp}" width="128" height="128" style="border: 1px solid #ccc"/>                            
+                        </h:outputLink>  
+
+
+                    </p:lightBox> 
+
+
+                </h:panelGrid>
+            </div>    
+            <div align="center">
+                <h:outputText style="font-size: 14px;font-weight: bold;" value="#{controladorEmpleado.empleado.primerNombreGtemp} #{controladorEmpleado.empleado.segundoNombreGtemp} #{controladorEmpleado.empleado.apellidoPaternoGtemp} #{controladorEmpleado.empleado.apellidoMaternoGtemp}"/>
+            </div>
+            <p:panelGrid columns="2" style="width: 99%;margin-top: 10px">
+                <h:outputText style="font-weight: bold" value="Doc. Identificación :"/>
+                <h:outputText value="#{controladorEmpleado.empleado.documentoIdentidadGtemp}" />
+                <h:outputText style="font-weight: bold" value="Nacionalidad :"/>                    
+                <h:outputText value="#{controladorEmpleado.empleado.ideGtnac.detalleGtnac}" />
+                <h:outputText style="font-weight: bold" value="Fecha Nacimiento :"/>                     
+                <h:outputText  value="#{controladorEmpleado.empleado.fechaNacimientoGtemp}">
+                    <f:convertDateTime parent="dd-MM-yyyy"/>
+                </h:outputText>
+                <h:outputText style="font-weight: bold" value="Género :"/>
+                <h:outputText value="#{controladorEmpleado.empleado.ideGtgen.detalleGtgen}" />
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <p:dialog appendToBody="true"  closable="true"  showEffect="fade" 
+                  hideEffect="fade" widgetVar="dia_foto" header="Cambiar Foto de Perfil" modal="true" dynamic="true" width="800" height="180">
+            Debe seleccionar un archvo tipo imagen, tamaño máximo del archivo <strong>500KB</strong>
+            <h:form>
+                <p:fileUpload multiple="false" style="overflow: auto;padding-top: 10px" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                              cancelLabel="Cancelar" uploadLabel="Aceptar" label="Seleccionar Imagen" showButtons="true" 
+                              invalidFileMessage="El archivo seleccionado no es una imagen válida" 
+                              invalidSizeMessage="El archivo seleccionado supera le tamaño máximo"
+                              sizeLimit="300000" fileUploadListener="#{controladorEmpleado.subirFoto}" oncomplete="dia_foto.hide()" />                    
+            </h:form>
+        </p:dialog>
+
+        <h:panelGroup id="cuerpo">
+            <p:accordionPanel id="accDatos" multiple="true" cache="true" rendered="#{controladorEmpleado.strOpcion == 1}">
+                <p:tab title="Dirección Domicilio">
+                    <h:form id="formDirec" prependId="false" >
+                        <h:panelGrid  columns="4" >
+                            <h:outputText style="font-weight: bold" value="País :"/>
+                            <h:outputText style="font-weight: bold" value="Provincia :"/>
+                            <h:outputText style="font-weight: bold" value="Ciudad :"/>   
+                            <h:outputLabel for="selParroquia" style="font-weight: bold" value="Parroquia : *"/>                        
+                            <p:selectOneMenu value="#{controladorEmpleado.strPais}">
+                                <f:selectItems  value="#{controladorEmpleado.listaPaises}" var="vpais" itemLabel="#{vpais[1]}" itemValue="#{vpais[0]}" />
+                                <p:ajax listener="#{controladorEmpleado.filtrarProvincias}" update="selProvincia,selCiudad,selParroquia"/>
+                            </p:selectOneMenu>
+
+                            <p:selectOneMenu id="selProvincia" value="#{controladorEmpleado.strProvincia}"  filter="true" filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="Seleccionar Provincia..."  />  
+                                <f:selectItems  value="#{controladorEmpleado.listaProvincias}" var="vprovi" itemLabel="#{vprovi[1]}" itemValue="#{vprovi[0]}" />
+                                <p:ajax listener="#{controladorEmpleado.filtrarCiudades}" update="selCiudad,selParroquia" />
+                            </p:selectOneMenu>
+
+                            <p:selectOneMenu id="selCiudad" value="#{controladorEmpleado.strCiudad}"  filter="true" filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="Seleccionar Ciudad..."  />  
+                                <f:selectItems  value="#{controladorEmpleado.listaCiudades}" var="vciud" itemLabel="#{vciud[1]}" itemValue="#{vciud[0]}" />
+                                <p:ajax listener="#{controladorEmpleado.filtrarParroquias}" update="selParroquia"/>
+                            </p:selectOneMenu>
+
+                            <p:selectOneMenu id="selParroquia" value="#{controladorEmpleado.strParroquia}" required="true" requiredMessage="Debe seleccionar una Parroquia" filter="true" filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="Seleccionar Parroquia..."  />  
+                                <f:selectItems  value="#{controladorEmpleado.listaParroquias}" var="vparro" itemLabel="#{vparro[1]}" itemValue="#{vparro[0]}" />
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" >
+                            <h:outputLabel for="txtDireccion" style="font-weight: bold" value="Dirección : *"/>
+                            <p:inputText  id="txtDireccion" size="100" required="true" requiredMessage="Debe ingresar una Dirección" value="#{controladorEmpleado.direccion.detalleGtdir}"/>
+                            <h:outputText style="font-weight: bold" value="Referencia :"/>
+                            <p:inputText size="100" value="#{controladorEmpleado.direccion.referenciaGtdir}"/>
+                            <f:facet name="footer">
+                                <p:commandButton partialSubmit="true" process="formDirec" update="formDirec"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorEmpleado.guardarDireccion}"/>
+                            </f:facet>
+                        </h:panelGrid>
+                    </h:form>
+                </p:tab>
+                <p:tab title="Teléfonos" >
+                    <h:form id="formTelef" prependId="false" >
+                        <h:panelGrid columns="5" >
+                            <h:outputText style="font-weight: bold" value="Tipo Teléfono:"/>
+                            <p:selectOneMenu  value="#{controladorEmpleado.telefonoNuevo.ideGttit.ideGttit}" style="width: 180px;" required="true" requiredMessage="Debe seleccionar un tipo de teléfono">
+                                <f:selectItem itemLabel="Seleccionar Tipo Telefono..."  />  
+                                <f:selectItems  value="#{controladorEmpleado.listaTiposTelefono}" var="vttele" itemLabel="#{vttele[1]}" itemValue="#{vttele[0]}" />
+                            </p:selectOneMenu>
+                            <h:outputText style="font-weight: bold" value="Número :"/>
+                            <p:inputText size="15" value="#{controladorEmpleado.telefonoNuevo.numeroTelefonoGttel}" required="true" requiredMessage="Debe ingresar un número de teléfono"/>
+                            <f:facet name="footer">
+                                <p:commandButton process="formTelef" value="Agregar Teléfono" icon="ui-agregar" actionListener="#{controladorEmpleado.agregarTelefono}" update="formTelef"/>
+                            </f:facet>
+                        </h:panelGrid>
+                        <p:dataTable id="tabTelefonos" value="#{controladorEmpleado.listaTelefonos}" var="telf" rowKey="#{telf.ideGttel}" 
+                                     editable="true" 
+                                     emptyMessage="No tiene teléfonos registrados" style="width: 50%">
+
+                            <f:facet name="header">
+                                Listado de Teléfonos
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{controladorEmpleado.modificarTelefono}"  /> 
+
+                            <p:column width="40">
+                                <p:commandLink process="tabTelefonos" update="tabTelefonos" title="Eliminar"  action="#{controladorEmpleado.eliminarTelefono}">                                                                        
+                                    <h:graphicImage value="../imagenes/im_eliminar.png"/>
+                                    <f:setPropertyActionListener value="#{telf.ideGttel}" target="#{controladorEmpleado.telefonoEliminado}"/>
+                                </p:commandLink>
+                            </p:column>  
+                            <p:column width="40">
+                                <p:rowEditor />
+                            </p:column>
+                            <p:column width="120" headerText="TIPO DE TÉLEFONO">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{telf.ideGttit.detalleGttit}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{telf.ideGttit.ideGttit}" style="width: 100%">
+                                            <f:selectItems  value="#{controladorEmpleado.listaTiposTelefono}" var="vttele" itemLabel="#{vttele[1]}" itemValue="#{vttele[0]}" />
+                                        </p:selectOneMenu>                                          
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column width="150" headerText="NÚMERO">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{telf.numeroTelefonoGttel}"/>    
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{telf.numeroTelefonoGttel}"/>    
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>   
+                        </p:dataTable>
+
+                    </h:form>
+                </p:tab>
+                <p:tab  title="Correo Electronico">
+                    <h:form id="formCorreo" prependId="false">
+                        <h:panelGrid columns="2" >
+                            <h:outputText style="font-weight: bold" value="Correo Institucional : *"/>
+                            <p:inputText required="true" requiredMessage="Ingrese Correo Institucional" value="#{controladorEmpleado.correoInstitucional.detalleGtcor}" size="100" validatorMessage="Correo Institucional no válido">
+                                <p:ajax event="change" update="@this"/>
+                                <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)" />
+                            </p:inputText>  
+                            <h:outputText style="font-weight: bold" value="Correo Personal : *"/>
+                            <p:inputText value="#{controladorEmpleado.correoPersonal.detalleGtcor}" size="100" validatorMessage="Correo Personal no válido">
+                                <p:ajax event="change" update="@this"/>
+                                <f:validateRegex  pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"  />
+                            </p:inputText>
+                            <f:facet name="footer">
+                                <p:commandButton partialSubmit="true" process="formCorreo" update="formCorreo"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorEmpleado.guardarCorreo}"/>
+                            </f:facet>
+                        </h:panelGrid>
+                    </h:form>
+                </p:tab>
+            </p:accordionPanel>
+
+
+            <h:form id="formConyugue" rendered="#{controladorEmpleado.strOpcion == 2}">
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton partialSubmit="true" process="formConyugue" update="formConyugue"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorEmpleado.guardarConyugue}" rendered="#{controladorEmpleado.empleado.ideGtesc.ideGtesc != controladorEmpleado.strUnionLibre}"/>
+                        <p:commandButton partialSubmit="true" process="formConyugue" update="formConyugue"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorEmpleado.guardarConyugueUnionLibre}" rendered="#{controladorEmpleado.empleado.ideGtesc.ideGtesc == controladorEmpleado.strUnionLibre}"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <h:panelGrid columns="2">
+                    <h:outputText  style="font-weight: bold" value="Estado Civil :"/>
+                    <p:selectOneMenu value="#{controladorEmpleado.empleado.ideGtesc.ideGtesc}" required="true" requiredMessage="Debe seleccionar un estado civil">
+                        <f:selectItem itemLabel="Seleccionar Estado Civil..."  />  
+                        <f:selectItems  value="#{controladorEmpleado.listaEstadoCivil}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        <p:ajax event="change" update="formConyugue"/>
+                    </p:selectOneMenu>  
+                </h:panelGrid> 
+                <p:separator />
+
+                <p:fieldset legend="Datos Conyuge" rendered="#{controladorEmpleado.empleado.ideGtesc.ideGtesc == controladorEmpleado.strUnionLibre or controladorEmpleado.empleado.ideGtesc.ideGtesc == controladorEmpleado.strCasado}">
+
+                    <h:panelGrid columns="2">
+                        <h:outputText style="font-weight: bold" value="Nombres y Apellidos : *"/>
+                        <h:panelGrid columns="4" >
+                            <p:inputText size="30" value="#{controladorEmpleado.conyugue.primerNombreGtcon}" required="true" requiredMessage="Debe ingresar el Primer Nombre"/>
+                            <p:inputText size="30" value="#{controladorEmpleado.conyugue.segundoNombreGtcon}" />
+                            <p:inputText size="30" value="#{controladorEmpleado.conyugue.apellidoPaternoGtcon}" required="true" requiredMessage="Debe ingresar el Primer Apellido"/>
+                            <p:inputText size="30" value="#{controladorEmpleado.conyugue.apellidoMaternoGtcon}" />
+                            <h:outputText  value="(Primer Nombre)"/>
+                            <h:outputText  value="(Segundo Nombre)"/>
+                            <h:outputText  value="(Primer Apellido)"/>
+                            <h:outputText  value="(Segundo Apellido)"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+
+                    <h:panelGrid columns="4">                    
+
+                        <h:outputText style="font-weight: bold" value="Tipo Identificación : *"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.conyugue.ideGttdi.ideGttdi}" required="true" requiredMessage="Debe seleccionar un Tipo de Identificación">
+                            <f:selectItem itemLabel="Seleccionar Tipo Identificación..."  />  
+                            <f:selectItems  value="#{controladorEmpleado.listaTipoDocumento}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>
+                        <h:outputText style="font-weight: bold" value="Identificación : *" />
+                        <p:inputText size="15" value="#{controladorEmpleado.conyugue.documentoIdentidadGtcon}" required="true" requiredMessage="Debe ingresar una Identificación"/>
+                        <h:outputText style="font-weight: bold" value="Género"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.conyugue.ideGtgen.ideGtgen}" required="true" requiredMessage="Debe seleccionar un Género">
+                            <f:selectItem itemLabel="Seleccionar Genero..."  />  
+                            <f:selectItems  value="#{controladorEmpleado.listaGenero}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>            
+                        <h:outputText style="font-weight: bold" value="Nacionalidad :"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.conyugue.ideGtnac.ideGtnac}">
+                            <f:selectItem itemLabel="Seleccionar Nacionalidad..."  />                            
+                            <f:selectItems  value="#{controladorEmpleado.listaNacionalidad}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>                    
+                        <h:outputText style="font-weight: bold" value="Cargo :"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.conyugue.ideGtcar.ideGtcar}">
+                            <f:selectItem itemLabel="Seleccionar Cargo.."  />  
+                            <f:selectItems  value="#{controladorEmpleado.listaCargos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>
+                        <h:outputText style="font-weight: bold" value="Lugar de Trabajo :"/>
+                        <p:inputText size="70" value="#{controladorEmpleado.conyugue.lugarTrabajoGtcon}"/> 
+                    </h:panelGrid>
+
+                    <p:fieldset legend="Datos Contacto">
+                        <h:panelGrid columns="4">
+                            <h:outputText style="font-weight: bold" value="Tipo de Teléfono: *"/>
+                            <p:selectOneMenu value="#{controladorEmpleado.conyugueTelefono.ideGttit.ideGttit}" required="true" requiredMessage="Debe seleccionar un Tipo de Teléfono">
+                                <f:selectItem itemLabel="Seleccionar Tipo Teléfono..."  /> 
+                                <f:selectItems  value="#{controladorEmpleado.listaTiposTelefono}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                            </p:selectOneMenu>                        
+                            <h:outputText style="font-weight: bold" value="Teléfono: *"/>
+                            <p:inputText size="30" value="#{controladorEmpleado.conyugueTelefono.numeroTelefonoGttel}" required="true" requiredMessage="Debe ingresar un Número de Teléfono"/>  
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <h:panelGrid columns="2">
+                        <h:outputText style="font-weight: bold" value="Observación :"/>
+                        <p:inputTextarea  cols="60" rows="4" value="#{controladorEmpleado.conyugue.observacionGtcon}" />
+                    </h:panelGrid>
+                    <p:fieldset legend="Datos Unión Libre" rendered="#{controladorEmpleado.empleado.ideGtesc.ideGtesc == controladorEmpleado.strUnionLibre}">
+                        <h:panelGrid  columns="4">
+                            <h:outputText style="font-weight: bold" value="Autoridad Notaria :"/>  
+                            <p:inputText size="60" value="#{controladorEmpleado.conyugueUnionLibre.autoridadNotariaGtunl}"/>
+                            <h:outputText style="font-weight: bold" value="Lugar y Fecha :"/>  
+                            <p:inputText size="45" value="#{controladorEmpleado.conyugueUnionLibre.lugarFechaGtunl}"/>
+                            <h:outputText style="font-weight: bold" value="Observación :"/>
+                            <p:inputTextarea  cols="60" rows="4" value="#{controladorEmpleado.conyugueUnionLibre.observacionGtunl}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:fieldset>
+
+
+            </h:form>
+
+
+            <h:form id="formCargas" rendered="#{controladorEmpleado.strOpcion == 3}">                
+                <p:fieldset legend="Datos Carga Familiar" toggleable="true">
+                    <h:outputText style="margin-top: 5px;" value="Formulario para registar cargas familiares, entendiéndose por éstas al cónyuge o conviviente en unión de hecho legalmente reconocida, los hijos menores de 18 años y los hijos discapacitados de cualquier edad."/>
+
+                    <h:panelGrid columns="2">
+                        <h:outputText style="font-weight: bold" value="Nombres y Apellidos : *"/>
+                        <h:panelGrid columns="4" >
+
+                            <p:inputText size="30" value="#{controladorEmpleado.cargaNueva.primerNombreGtcaf}" required="true" requiredMessage="Debe ingresar el Primer Nombre"/>
+                            <p:inputText size="30" value="#{controladorEmpleado.cargaNueva.segundoNombreGtcaf}" />
+                            <p:inputText size="30" value="#{controladorEmpleado.cargaNueva.apellidoPaternoGtcaf}" required="true" requiredMessage="Debe ingresar el Primer Apellido"/>
+                            <p:inputText size="30" value="#{controladorEmpleado.cargaNueva.apellidoMaternoGtcaf}"/>
+
+                            <h:outputText  value="(Primer Nombre)"/>
+                            <h:outputText  value="(Segundo Nombre)"/>
+                            <h:outputText  value="(Primer Apellido)"/>
+                            <h:outputText  value="(Segundo Apellido)"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <h:panelGrid  columns="4">                    
+                        <h:outputText style="font-weight: bold" value="Tipo Identificación : *"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.cargaNueva.ideGttdi.ideGttdi}" required="true" requiredMessage="Debe seleccionar un Tipo de Identificación">
+                            <f:selectItem itemLabel="Seleccionar Tipo Identificación..."  /> 
+                            <f:selectItems  value="#{controladorEmpleado.listaTipoDocumento}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>
+                        <h:outputText style="font-weight: bold" value="Identificación : *" />
+                        <p:inputText size="15" value="#{controladorEmpleado.cargaNueva.documentoIdentidadGtcaf}" required="true" requiredMessage="Debe ingresar la identificación"/>
+                        <h:outputText style="font-weight: bold" value="Tipo Parentesco : *"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.cargaNueva.ideGttpr.ideGttpr}" required="true" requiredMessage="Debe seleccionar un Tipo de Parentesco" >
+                            <f:selectItem itemLabel="Seleccionar Tipo Parentesco..."  />  
+                            <f:selectItems  value="#{controladorEmpleado.listaTipoParentesco}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>            
+                        <h:outputText style="font-weight: bold" value="Fecha de Nacimiento : *"/>
+                        <p:calendar size="15" value="#{controladorEmpleado.cargaNueva.fechaNacimientoGtcaf}" required="true" requiredMessage="Debe ingresar la Fecha de Nacimiento"  pattern="dd/MM/yyyy"/>
+                        <h:outputText style="font-weight: bold" value="Género : *"/>
+                        <p:selectOneMenu value="#{controladorEmpleado.cargaNueva.ideGtgen.ideGtgen}" required="true" requiredMessage="Debe seleccionar el Género">
+                            <f:selectItem itemLabel="Seleccionar Genero.."  />
+                            <f:selectItems  value="#{controladorEmpleado.listaGenero}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu> 
+                        <f:facet name="footer">
+                            <p:commandButton partialSubmit="true" process="formCargas" value="Agregar Carga Familiar" icon="ui-agregar"  update="formCargas"  actionListener="#{controladorEmpleado.agregarCargaFamiliar}"/>    
+                        </f:facet>                        
+                    </h:panelGrid>               
+                </p:fieldset>
+                <h:panelGrid  style="width: 100%;overflow: auto;height: 100%;display: block">
+                    <p:dataTable id="tabCargas" value="#{controladorEmpleado.listaCargasFamiliares}" var="tabla" rowKey="#{tabla.ideGtcaf}" 
+                                 editable="true"  
+                                 emptyMessage="No tiene cargas familiares registradas" >
+                        <f:facet name="header">
+                            Listado de Cargas Familiares
+                        </f:facet>
+                        <p:ajax event="rowEdit" listener="#{controladorEmpleado.modificarCarga}"  /> 
+                        <p:column width="40">
+                            <p:commandLink process="tabCargas" update="tabCargas" title="Eliminar"  action="#{controladorEmpleado.eliminarCargaFamiliar}">                                                                        
+                                <h:graphicImage value="../imagenes/im_eliminar.png"/>
+                                <f:setPropertyActionListener value="#{tabla.ideGtcaf}" target="#{controladorEmpleado.cargaEliminada}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column width="40">
+                            <p:rowEditor />
+                        </p:column>
+                        <p:column width="100" headerText="TIPO PARENTESCO">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tabla.ideGttpr.detalleGttpr}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{tabla.ideGttpr.ideGttpr}" style="width: 98%" >
+                                        <f:selectItems  value="#{controladorEmpleado.listaTipoParentesco}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column width="300" headerText="NOMBRES" sortBy="#{tabla.primerNombreGtcaf}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tabla.primerNombreGtcaf} #{tabla.segundoNombreGtcaf}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{tabla.primerNombreGtcaf}" style="width: 43%"/>
+                                    <p:inputText value="#{tabla.segundoNombreGtcaf}" style="width: 43%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column width="300" headerText="APELLIDOS" sortBy="#{tabla.apellidoPaternoGtcaf}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tabla.apellidoPaternoGtcaf} #{tabla.apellidoMaternoGtcaf}"/>
+                                </f:facet>
+                                <f:facet name="input">                               
+                                    <p:inputText value="#{tabla.apellidoPaternoGtcaf}" style="width: 43%"/>
+                                    <p:inputText value="#{tabla.apellidoMaternoGtcaf}" style="width: 43%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column width="100" headerText="TIPO IDENTI.">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tabla.ideGttdi.detalleGttdi}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{tabla.ideGttdi.ideGttdi}" style="width: 98%">
+                                        <f:selectItems  value="#{controladorEmpleado.listaTipoDocumento}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column width="120" headerText="IDENTIFICACIÓN">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{tabla.documentoIdentidadGtcaf}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{tabla.documentoIdentidadGtcaf}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column width="100" headerText="FECHA NACIM.">
+                            <p:cellEditor>
+                                <f:facet name="output"> <h:outputText value="#{tabla.fechaNacimientoGtcaf}" >
+                                        <f:convertDateTime type="date"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{tabla.fechaNacimientoGtcaf}" pattern="dd/MM/yyyy" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>  
+
+                        <p:column width="150" headerText="GÉNERO">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{tabla.ideGtgen.detalleGtgen}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{tabla.ideGtgen.ideGtgen}" style="width: 98%;">
+                                        <f:selectItems  value="#{controladorEmpleado.listaGenero}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGrid>
+            </h:form>
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition> 

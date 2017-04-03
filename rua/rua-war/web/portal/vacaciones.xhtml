@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="tituloPagina">Vacaciones</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Vacaciones">  
+                    <p:menuitem  value="Solicitud de Vacaciones" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="1"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Listado de Solicitudes" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="2"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>   
+                    <p:menuitem  value="Resumen de Vacaciones" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="3"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>  
+                </p:submenu>
+            </p:menu>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <h:panelGroup id="cuerpo">
+            <h:form id="formVacaciones" prependId="false" rendered="#{controladorVacaciones.strOpcion == 1}">
+                <p:fieldset legend="Solicitud de Vacaciones">
+                    <h:outputText value="Días Pendientes : #{controladorVacaciones.objDiasVacacionesActiva[6]}" style="font-weight: bold;font-size: 16px;"/>
+                    <p:separator/>
+                    
+                    <h:panelGrid columns="4">                
+                        <h:outputText value="Motivo : *" style="font-weight: bold"/>
+                        <p:selectOneMenu value="#{controladorVacaciones.solicitudVacaciones.ideAsmot.ideAsmot}" required="true" requiredMessage="Debe seleccionar un Motivo">
+                            <f:selectItem itemLabel="Seleccionar Motivo..."  />  
+                            <f:selectItems  value="#{controladorVacaciones.listaMotivos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu>
+                        <h:outputText value="Fecha Solicitud : *" style="font-weight: bold"/>
+                        <p:calendar  disabled="true" value="#{controladorVacaciones.solicitudVacaciones.fechaSolicitudAspvh}" pattern="dd/MM/yyyy"/>                       
+                        <h:outputText value="Fecha Desde : *" style="font-weight: bold"/>
+                        <p:calendar id="calDesde" value="#{controladorVacaciones.solicitudVacaciones.fechaDesdeAspvh}" pattern="dd/MM/yyyy" required="true" requiredMessage="Debe ingresar la Fecha Desde">
+                            <p:ajax event="dateSelect" listener="#{controladorVacaciones.calcularDias}" update="txtDias"/>
+                            <p:ajax event="change" listener="#{controladorVacaciones.calcularDias}" update="txtDias"/>
+                        </p:calendar>
+                        <h:outputText value="Fecha Hasta : *" style="font-weight: bold"/>  
+                        <h:panelGrid columns="3">
+                            <p:calendar id="calHasta" value="#{controladorVacaciones.solicitudVacaciones.fechaHastaAspvh}" pattern="dd/MM/yyyy" required="true" requiredMessage="Debe ingresar la Fecha Hasta">
+                                <p:ajax event="dateSelect" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta"/>
+                                <p:ajax event="change" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta"/>
+                            </p:calendar>
+
+                            <h:outputText value="Número de Días : *" style="font-weight: bold"/>
+                            <p:inputText id="txtDias" size="5"  disabled="true" value="#{controladorVacaciones.solicitudVacaciones.nroDiasAspvh}" required="true" requiredMessage="No se puede calcular el número de días"/>
+                        </h:panelGrid>
+                        <f:facet name="footer">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Detalle : *" style="font-weight: bold" />
+                                <p:inputTextarea  cols="60" rows="4" value="#{controladorVacaciones.solicitudVacaciones.detalleAspvh}" required="true" requiredMessage="Debe ingresar un Detalle"/>
+                                <f:facet name="footer">
+                                    <p:commandButton partialSubmit="true" process="formVacaciones" update="formVacaciones"  value="Guardar"  icon="ui-guardar" actionListener="#{controladorVacaciones.guardarSolicitud}"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </f:facet>
+
+
+                    </h:panelGrid>     
+                </p:fieldset>
+            </h:form>    
+
+            <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 2}">
+                <p:dataTable value="#{controladorVacaciones.listaSolicitudes}" var="tabla" rows="20" paginator="true" paginatorAlwaysVisible="false">
+                    <f:facet name="header">
+                        Listado de Solicitudes de Vacaciones Realizadas
+                    </f:facet>
+                    <p:column style="width:2%">  
+                        <p:rowToggler />  
+                    </p:column>  
+
+                    <p:rowExpansion>
+
+                    </p:rowExpansion> 
+
+
+                    <p:column headerText="FECHA SOLICITUD">
+                        <h:outputText value="#{tabla.fechaSolicitudAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="MOTIVO">
+                        <h:outputText value="#{tabla.ideAsmot.detalleAsmot}"/>
+                    </p:column>
+                    <p:column headerText="FECHAS DESDE - HASTA">
+                        <h:outputText value="#{tabla.fechaDesdeAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{tabla.fechaHastaAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+
+                    </p:column>
+                    <p:column headerText="Nro. DIAS">
+                        <h:outputText value=" #{tabla.nroDiasAspvh}"/>
+                    </p:column>
+                    <p:column headerText="DETALLE">
+                        <h:outputText value=" #{tabla.detalleAspvh}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+
+            <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 3}">
+
+                <p:panelGrid columns="4">
+                    <f:facet name="header">
+                        Resumen de Vacaciones
+                    </f:facet>
+
+                    <h:outputText value="Días Acumulados :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[1]}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Días Adicional :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[2]}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Días Descontados :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[3]}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Días Solicitados :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[4]}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Total Vacaciones :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[5]}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Días Pendientes :"/>
+                    <h:outputText value="#{controladorVacaciones.objDiasVacacionesActiva[6]}" style="font-weight: bold;font-size: 14px;"/>
+
+                </p:panelGrid>
+                <p:separator/>
+
+                <p:dataTable value="#{controladorVacaciones.lisResumenVacaciones}" var="tabla" >
+                    <p:column headerText="PERÍODO">
+                        <h:outputText value="#{tabla[0]}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="DÍAS ACUMULADOS">
+                        <h:outputText value=" #{tabla[1]}"/>
+                    </p:column>
+                    <p:column headerText="NRO. DÍAS ADICIONALES">
+                        <h:outputText value=" #{tabla[2]}"/>
+                    </p:column>
+                    <p:column headerText="DÍAS DESCONTADOS">
+                        <h:outputText value=" #{tabla[3]}"/>
+                    </p:column>
+                    <p:column headerText="DÍAS SOLICITADOS">
+                        <h:outputText value=" #{tabla[4]}"/>
+                    </p:column>
+                    <p:column headerText="NRO. TOTAL VACACIONES">
+                        <h:outputText value=" #{tabla[5]}"/>
+                    </p:column>
+                    <p:column headerText="DÍAS PENDIENTES">
+                        <h:outputText value=" #{tabla[6]}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

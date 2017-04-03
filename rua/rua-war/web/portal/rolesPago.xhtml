@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="tituloPagina">Roles de Pago</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Rol de Pagos">  
+                    <p:menuitem  value="Listado de Roles de Pago" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="1"  target="#{controladorRoles.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>                   
+                </p:submenu>
+            </p:menu>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <h:panelGroup id="cuerpo">           
+
+            <h:panelGrid width="100%" rendered="#{controladorRoles.strOpcion == 1}">
+                <h:form>
+
+                    <p:dataTable value="#{controladorRoles.lisRolesPago}" var="tabla" rows="10" paginator="true" paginatorAlwaysVisible="false"
+                                 selection="#{controladorRoles.rolSeleccionado}" selectionMode="single" rowKey="#{tabla[0]}">
+
+                        <p:ajax event="rowSelect" update="btver"/>
+
+                        <f:facet name="header">
+                            Listado de Roles de Pago
+                        </f:facet>                  
+
+                        <p:column headerText="ANO" width="40" filterBy="#{tabla[1]}" sortBy="#{tabla[1]}">
+                            <h:outputText value="#{tabla[1]}"/>
+                        </p:column>
+
+                        <p:column headerText="MES" width="150" filterBy="#{tabla[2]}" sortBy="#{tabla[2]}">
+                            <h:outputText value="#{tabla[2]}"/>
+                        </p:column>
+
+                        <p:column headerText="FECHA ROL" width="100">
+                            <h:outputText value="#{tabla[5]}"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:commandButton id="btver" value="Ver Rol de Pagos" disabled="#{controladorRoles.rolSeleccionado==null}" icon="ui-icon-search"  oncomplete="window.open('#{controladorRoles.strPathReporte}');" action="#{controladorRoles.visualizarRol}" update="@form"/>
+                        </f:facet>
+                     </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

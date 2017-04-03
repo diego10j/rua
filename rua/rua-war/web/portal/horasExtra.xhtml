@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="tituloPagina">Horas Extra</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Horas Extra">
+                    <p:menuitem value="Solicitud Horas Extra" icon="ui-documento"
+                                update=":cuerpo">
+                        <f:setPropertyActionListener value="1"
+                                                     target="#{controladorHorasExtra.strOpcion}" />
+                        <p:resetInput target=":cuerpo" />
+                    </p:menuitem>
+                    <p:menuitem value="Listado de Solicitudes" icon="ui-tabla"
+                                update=":cuerpo">
+                        <f:setPropertyActionListener value="2"
+                                                     target="#{controladorHorasExtra.strOpcion}" />
+                        <p:resetInput target=":cuerpo" />
+                    </p:menuitem>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <h:panelGroup id="cuerpo">
+            <h:panelGrid width="100%"
+                         rendered="#{controladorHorasExtra.strOpcion == 1}">
+                <h:form id="formulario" prependId="false">
+                    <h:panelGrid columns="6">
+                        Fecha Inicio :
+                        <p:calendar size="15"
+                                    value="#{controladorHorasExtra.datFechaInicio}"
+                                    pattern="dd/MM/yyyy" />
+                        Fecha Fin :
+                        <p:calendar size="15"
+                                    value="#{controladorHorasExtra.datFechaFin}" pattern="dd/MM/yyyy" />
+                        <p:commandButton icon="ui-icon-calendar" process="@form"
+                                         value="Actualizar" update="tabMarcaciones"
+                                         action="#{controladorHorasExtra.actualizarMarcaciones}" />
+                    </h:panelGrid>
+                    <p:dataTable id="tabMarcaciones"
+                                 value="#{controladorHorasExtra.listaMarcacionesHorasExtra}"
+                                 var="tabla" rows="10" paginator="true"
+                                 paginatorAlwaysVisible="false" rowKey="#{tabla[0]}"
+                                 selection="#{controladorHorasExtra.horasSeleccionadas}">
+                        <p:ajax event="rowSelectCheckbox" update="@this" />
+                        <p:ajax event="rowUnselectCheckbox" update="@this" />
+                        <f:facet name="header">
+                            Listado de Marcaciones válidas para Horas Extra
+                        </f:facet>
+                        <p:column selectionMode="multiple">
+                        </p:column>
+                        <p:column headerText="FECHA MARCACIÓN">
+                            <h:outputText value="#{tabla[1]}">
+                                <f:convertDateTime type="date" dateStyle="full" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="EVENTO">
+                            <h:outputText value="#{tabla[2]}" />
+                        </p:column>
+                        <p:column headerText="HORA SALIDA">
+                            <h:outputText value="#{tabla[3]}">
+                                <f:convertDateTime type="time" pattern="hh:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="NÚMERO DE HORAS">
+                            <h:outputText value="#{tabla[4]}" />
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:commandButton id="btsolicitar" value="Solicitar Horas Exta"
+                                             process="tabMarcaciones" icon="ui-icon-refresh"
+                                             action="#{controladorHorasExtra.solicitarHorasExtra}"
+                                             update=":dia" />
+                        </f:facet>
+
+                    </p:dataTable>
+                </h:form>
+
+
+                <p:dialog id="dia" dynamic="true" widgetVar="diaHE"
+                          appendToBody="true" modal="true" resizable="false"
+                          header="SOLICITUD DE HORAS EXTRA" width="800" height="500">
+                    <h:form>
+                        <p:fieldset legend="Solicitud de Horas Extra">
+                            <h:panelGrid columns="4">
+                                <h:outputText value="Fecha Solicitud : "
+                                              style="font-weight: bold" />
+                                <p:calendar
+                                    value="#{controladorHorasExtra.cabSolicitud.fechaSolicitudAspvh}"
+                                    pattern="dd/mm/yyyy" disabled="true" />
+
+                                <h:outputText value="Motivo : *" style="font-weight: bold" />
+                                <p:selectOneMenu
+                                    value="#{controladorHorasExtra.cabSolicitud.ideAsmot.ideAsmot}"
+                                    disabled="true" required="true"
+                                    requiredMessage="Debe seleccionar un Motivo">
+                                    <f:selectItem itemLabel="Seleccionar Motivo..." />
+                                    <f:selectItems value="#{controladorHorasExtra.listaMotivos}"
+                                                   var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Observaciones : " style="font-weight: bold" />
+                                <p:inputTextarea autoResize="true"
+                                                 value="#{controladorHorasExtra.cabSolicitud.detalleAspvh}"
+                                                 rows="3" cols="50" />
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <p:dataTable scrollable="true" scrollHeight="260"
+                                     value="#{controladorHorasExtra.detSolicitud}" paginator="true"
+                                     paginatorAlwaysVisible="false" var="tabla">
+                            <f:facet name="header">
+                                Detalle de Horas Extra
+                            </f:facet>
+                            <p:column headerText="FECHA" width="100">
+                                <h:outputText value="#{tabla.fechaAsdhe}">
+                                    <f:convertDateTime type="date" dateStyle="full" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="HORA INICIO" width="70">
+                                <p:calendar disabled="true" timeOnly="true" pattern="HH:mm:ss"
+                                            value="#{tabla.horaInicialAsdhe}" size="10" />
+                            </p:column>
+
+                            <p:column headerText="HORA FIN" width="70">
+                                <p:calendar size="10" disabled="true" timeOnly="true"
+                                            pattern="HH:mm:ss" value="#{tabla.horaFinalAsdhe}" />
+                            </p:column>
+
+                            <p:column headerText="TOTAL HORAS" width="50">
+                                <h:outputText value="#{tabla.nroHorasAsdhe}" />
+                            </p:column>
+                            <p:column headerText="ACTIVIDADES" width="250">
+                                <p:inputText value="#{tabla.actividadesAsdhe}" size="40" />
+                            </p:column>
+                        </p:dataTable>
+                        <p:spacer width="700" height="10" />
+                        <p:commandButton process="@form,:formulario"
+                                         update="@form,:formulario" value="Aceptar"
+                                         action="#{controladorHorasExtra.guardarSolicitud}" />
+                    </h:form>
+                </p:dialog>
+
+            </h:panelGrid>
+            <h:panelGrid width="100%"
+                         rendered="#{controladorHorasExtra.strOpcion == 2}">
+                <h:form>
+                    <p:dataTable value="#{controladorHorasExtra.lisSolicitudes}"
+                                 var="tabla" rows="5" paginator="true" rowKey="#{tabla.ideAspvh}" selection="#{controladorHorasExtra.horaSeleccionada}"
+                                 paginatorAlwaysVisible="false">
+                        <f:facet name="header">
+                            Listado de Solicitudes de Horas Extra
+                        </f:facet>
+
+                        <p:ajax event="rowSelectRadio" update="@form"  listener="#{controladorHorasExtra.seleccionarHoraExtra}"/>
+
+                        <p:column selectionMode="single">
+                        </p:column>
+
+                        <p:column headerText="FECHA SOLICITUD">
+                            <h:outputText value="#{tabla.fechaSolicitudAspvh}">
+                                <f:convertDateTime type="date" dateStyle="short" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="MOTIVO">
+                            <h:outputText value="#{tabla.ideAsmot.detalleAsmot}" />
+                        </p:column>
+                        <p:column headerText="DETALLE">
+                            <h:outputText value=" #{tabla.detalleAspvh}" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:separator/>
+
+                    <p:dataTable value="#{controladorHorasExtra.lisDetalle}" var="tabla">
+
+                        <p:column headerText="FECHA">
+                            <h:outputText value="#{tabla.fechaAsdhe}" >
+                             <f:convertDateTime type="date" dateStyle="short"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="HORA INICIO">
+                            <p:calendar value="#{tabla.horaInicialAsdhe}" disabled="true" size="10" pattern="HH:mm:ss" timeOnly="true" />
+                        </p:column>
+
+                        <p:column headerText="HORA FIN">
+                            <p:calendar value="#{tabla.horaFinalAsdhe}" disabled="true" size="10" pattern="HH:mm:ss" timeOnly="true" />
+                                                       
+                        </p:column>
+                        <p:column headerText="ACTIVIDADES">
+                            <h:outputText value="#{tabla.actividadesAsdhe}" />
+                        </p:column>
+
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+
