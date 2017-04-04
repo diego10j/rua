@@ -173,7 +173,11 @@ public class ServicioEmpleado {
         return utilitario.consultar("select * from GEN_EMPLEADOS_DEPARTAMENTO_PAR where ACTIVO_GEEDP=true and IDE_GTEMP="+IDE_GTEMP);
     }
     
-    
+    public TablaGenerica getPartidaPortal(String IDE_GTEMP, String ide_gepro, String ide_nresr){
+        return utilitario.consultar("select ide_geedp,a.ide_nrrol from nrh_detalle_rol a, nrh_rol b where a.ide_nrrol = b.ide_nrrol " +
+                                    "and ide_geedp in (select ide_geedp from gen_empleados_departamento_par where ide_gtemp ="+IDE_GTEMP+") " +
+                                    "and ide_gepro = "+ide_gepro+" and IDE_NRESR="+ide_nresr+"  group by ide_geedp,a.ide_nrrol");
+    }    
     
     public TablaGenerica getRolesEmpleado(String IDE_GEEDP) {
         // (NRESR) ESTADO DE ROL ACTIVO=1 ===Poner en parametro
@@ -192,7 +196,7 @@ public class ServicioEmpleado {
                 + "INNER JOIN GEN_PERIDO_ROL PROL ON ROL.IDE_GEPRO=PROL.IDE_GEPRO "
                 + "INNER JOIN GEN_ANIO ANIO ON PROL.IDE_GEANI=ANIO.IDE_GEANI "
                 + "INNER JOIN GEN_MES mes on prol.ide_gemes=mes.ide_gemes "
-                + "where IDE_NRROL in (select IDE_NRROL  from NRH_DETALLE_ROL where IDE_GEEDP="+IDE_GEEDP+" GROUP BY IDE_NRROL) "
+                + "where IDE_NRROL in (select IDE_NRROL  from NRH_DETALLE_ROL where ide_geedp in (select ide_geedp from gen_empleados_departamento_par where ide_gtemp ="+IDE_GEEDP+") GROUP BY IDE_NRROL) "
                 + "and IDE_NRESR=1"
                 + "ORDER BY IDE_GEPRO desc");
     }
