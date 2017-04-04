@@ -120,7 +120,7 @@ public class AsientoContable extends Dialogo {
             botPresupuesto.setIcon("ui-icon-star");
             botPresupuesto.setMetodoRuta("pre_index.clase." + getId() + ".abrirPresupuesto");
             botPresupuesto.setStyle("padding-left:5px;");
-            gri_as_tipo.getChildren().add(botPresupuesto);
+            //gri_as_tipo.getChildren().add(botPresupuesto);
         }
         contenido.getChildren().add(gri_as_tipo);
 
