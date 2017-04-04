@@ -1836,7 +1836,7 @@ public class ServicioNomina {
 		
 		TablaGenerica tab_aportaciones_empleados=utilitario.consultar(sql_emp_renta);
 
-		//System.out.println("tab emp a retener "+tab_aportaciones_empleados.getSql());
+		System.out.println("tab emp a retener "+tab_aportaciones_empleados.getSql());
 
 		String ide_geedp="";
 		String discapacitado_gtemp="";
@@ -1868,14 +1868,14 @@ public class ServicioNomina {
 
 			BigDecimal big_irm=new BigDecimal(dou_irm);
 			big_irm=big_irm.setScale(2, RoundingMode.HALF_UP);
-/*
-			if (ide_geedp.equalsIgnoreCase("3")){
+
+			if (ide_geedp.equalsIgnoreCase("57")){
 				System.out.println("t. rec antes "+dou_tot_recibir);
 				System.out.println("t. egr antes "+dou_tot_egresos);
 				System.out.println("imp antes "+dou_irm);
 				System.out.println("ide_geedp "+ide_geedp);
 			}
-*/
+
 			if (dou_irm<=0){
 				// ACTUALIZO EL TOTAL A RECIBIR
 				dou_tot_recibir=dou_tot_recibir+Double.parseDouble(big_irm+"");
@@ -1945,14 +1945,14 @@ public class ServicioNomina {
 
 				// FORMULA DEDUCCION IESS (aportes_acumu + aporte del mes + proyeccion de aportes)
 				dou_deduccion_iess=dou_tot_aportes_acumul+dou_aporte_personal_del_mes+dou_proyeccion_aportes;
-/*
-                                if (ide_geedp.equalsIgnoreCase("3")){
+
+                                if (ide_geedp.equalsIgnoreCase("57")){
 
 									System.out.println("xxxdou_tot_aportes_acumul "+dou_tot_aportes_acumul);
 									System.out.println("xxxxdou_aporte_personal_del_mes "+dou_aporte_personal_del_mes);
 									System.out.println("xxxdou_proyeccion_aportes "+dou_proyeccion_aportes);
 						}
-                                */
+                                
 				// 3.- CALCULO DEDUCCION DE GASTOS
 				double dou_deduccion_gastos=0;
 				TablaGenerica tab_deducibles=utilitario.consultar("select '0' as ide,sum(VALOR_DEDUCIBLE_SRDEE) as total_deducibles " +
@@ -1999,15 +1999,15 @@ public class ServicioNomina {
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
-/*					
-					if (ide_geedp.equalsIgnoreCase("3")){
+					
+					if (ide_geedp.equalsIgnoreCase("57")){
 
 									System.out.println("ide geedp "+ide_geedp);
 									System.out.println("porcentaje discapacidad "+porcentaje_discapacidad);
 									System.out.println("edad "+edad);
 									System.out.println("minimo excedente * factor multiplicador "+dou_deduccion_gasto_discapacitado);
 						}
-*/					
+					
 					TablaGenerica tab_btd=utilitario.consultar("select * from SRI_BENEFICIO_TRIBUTARIO_DISC " +
 							"where "+porcentaje_discapacidad+" BETWEEN GRADO_INICIAL_SRBTD and GRADO_FINAL_SRBTD");	
 /*					
@@ -2029,8 +2029,8 @@ public class ServicioNomina {
 						//			System.out.println("porcentaje beneficio aplica "+porcentaje_beneficio_aplica);
 
 					dou_deduccion_gasto_discapacitado=(dou_deduccion_gasto_discapacitado*porcentaje_beneficio_aplica)/100;
-					//System.out.println("beneficio dou_deduccion_gastos "+dou_deduccion_gastos);
-					//System.out.println("beneficio dou_deduccion_gasto_discapacitado "+dou_deduccion_gasto_discapacitado);
+					System.out.println("beneficio dou_deduccion_gastos "+dou_deduccion_gastos);
+					System.out.println("beneficio dou_deduccion_gasto_discapacitado "+dou_deduccion_gasto_discapacitado);
 
 					// sumo a la deduccion de gastos mas la deduccion de gastos de discapacitado o tercera edad segun la ley 
 					dou_deduccion_gastos=dou_deduccion_gastos+dou_deduccion_gasto_discapacitado;
@@ -2090,8 +2090,8 @@ public class ServicioNomina {
 				}
 
 
-/*
-				if (ide_geedp.equalsIgnoreCase("3")){
+
+				if (ide_geedp.equalsIgnoreCase("57")){
 					System.out.println("IDE GEEDP EMPLEADO ***** "+ide_geedp);
 					System.out.println("edad ***** "+edad);
 
@@ -2110,7 +2110,7 @@ public class ServicioNomina {
 					System.out.println("RETENIDO ACUMULADO "+dou_tot_ret_acum);
 					System.out.println("IMPUESTO RENTA MENSUAL "+dou_imp_renta_mensual);
 				}
-*/
+
 				if (dou_imp_renta_mensual<0){
 					dou_imp_renta_mensual=0;
 				}
