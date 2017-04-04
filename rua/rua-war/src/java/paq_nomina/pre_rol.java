@@ -77,6 +77,7 @@ import framework.componentes.Texto;
 import framework.componentes.Upload;
 import framework.correo.EnviarCorreo;
 import framework.reportes.GenerarReporte;
+import persistencia.Conexion;
 
 /**
  * 
@@ -2736,7 +2737,7 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                          }
                          TablaGenerica tab_correos =ser_empleado.getCorreoEmpleados(str_ide.toString());                                         
                          StringBuilder str_resultado=new StringBuilder(getFormatoInformacion("TOTAL DE EMPLEADOS PARA ENVIAR CORREO ELECTR�NICO : "+sel_tab_empleados.getTab_seleccion().getSeleccionados().length));
-                         //EnviarCorreo env_enviar = new EnviarCorreo();
+                         EnviarCorreo env_enviar = new EnviarCorreo();
                          String str_asunto="NOMINA DE PAGOS";
                          //Proceso de enviar a cada empleado                             
                          GenerarReporte ger = new GenerarReporte();                                              
@@ -2767,10 +2768,14 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
                                                  File fil_rol=generar(p_parametros, "/reportes/rep_rol_de_pagos/rep_n_rol_pagos.jasper",filaActual.getCampos()[0].toString());
                                                  List<File> lis_file = new ArrayList<File>();
                                                  lis_file.add(fil_rol);
-                                                // String str_msj= env_enviar.agregarCorreo(str_mail, str_asunto, str_mensaje.toString(), lis_file);
+                                                 String str_msj= env_enviar.agregarCorreo(str_mail, str_asunto, str_mensaje.toString(), lis_file);
                                                  TablaGenerica tab_correo = utilitario.consultar("select ide_corr,correo_corr,clave_corr from sis_correo limit 1");
-                                                 EnviaEmail(tab_correo.getValor("correo_corr"), tab_correo.getValor("clave_corr"), str_mail, str_asunto, str_mensaje,fil_rol);
-                                                
+                                                 //EnviaEmail(tab_correo.getValor("correo_corr"), tab_correo.getValor("clave_corr"), str_mail, str_asunto, str_mensaje,fil_rol);
+                                                System.out.println("mensajeee "+str_msj);
+                                                 if(str_msj.isEmpty()==false){
+								//Fallo el envio de coorreo
+								str_resultado.append(getFormatoError("No se puede enviar el correo a "+str_mail+" motivo: "+str_msj));
+							}
                                             tab_correos.getFilas().remove(j);
 
                                                  break;
@@ -2829,8 +2834,13 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
 
                          parametros.put("SUBREPORT_DIR", utilitario.getURL());
                          
-                         jasperPrint = JasperFillManager.fillReport(
-                         jasperReport, parametros, utilitario.getConexion().getConnection());
+                         Conexion  con = utilitario.getConexion();
+                         con.conectar(false);
+                         jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, utilitario.getConexion().getConnection());
+                         
+                         if(parametros.get("REPORT_CONNECTION")== null){
+                             parametros.put("REPORT_CONNECTION", con);
+                         }
                          
                          } catch (Exception e) {
                          System.out.println("error ejecutar" + e.getMessage());
@@ -2928,7 +2938,7 @@ String ide_gepro=ser_nomina.getPeriodosRol(str_fecha_ini, str_fecha_fin);
 
 String miCorreo;
 String miContraseña;
-String servidorSMTP = "smtp.office365.com";
+String servidorSMTP = "smtp.gmail.com";
 //String puertoEnvio = "465";
 //String servidorSMTP = "mail.emgirs.gob.ec";
 String puertoEnvio = "587";
@@ -2951,10 +2961,11 @@ String filename = "C:/reporte.pdf";
 		props.put("mail.smtp.port", puertoEnvio);// puesto de salida
 		props.put("mail.smtp.starttls.enableue", false);// inicializar el
 														// servidor
-		// props.put("mail.transport.protocol",smpt);
+		props.put("mail.transport.protocol","smpt");
 		props.put("mail.smtp.auth", "false");// autentificacion
-		props.put("mail.smtp.socketFactory.port", puertoEnvio);// activar el
-																// puerto
+		//props.put("mail.smtp.socketFactory.port", puertoEnvio);// activar el
+		props.put("mail.smtp.port", puertoEnvio);// activar el
+                props.put("mail.smtp.ssl.enable", "true");														// puerto
 		// props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.socketFactory.fallback", "false");
 		props.put("mail.smtp.auth", "false");
@@ -2999,7 +3010,7 @@ String filename = "C:/reporte.pdf";
 
 
 		} catch (Exception mex) {
-			System.out.println("ff" + mex);
+			System.out.println("ff  " + mex);
 		}// fin try-catch
 	}// fin metodo enviaEmail
 
