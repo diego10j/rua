@@ -256,6 +256,17 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_cab_tran_cxp.setTabla("cxp_cabece_transa", "ide_cpctr");
             tab_cab_tran_cxp.setCondicion("ide_cpcfa=" + ide_cpcfa);
             tab_cab_tran_cxp.ejecutarSql();
+            if (tab_cab_tran_cxp.isEmpty()) {
+                //Si se hace factura de un anticipo
+                TablaGenerica tab_cab_aux = utilitario.consultar("SELECT ide_cpctr,ide_cpcfa,observacion_cpdtr FROM cxp_detall_transa WHERE ide_cpcfa=" + ide_cpcfa);
+                tab_cab_tran_cxp.setCondicion("ide_cpctr=" + tab_cab_aux.getValor("ide_cpctr"));
+                tab_cab_tran_cxp.ejecutarSql();
+                tab_cab_tran_cxp.setValor("ide_cpcfa", ide_cpcfa);
+                tab_cab_tran_cxp.setValor("observacion_cpctr", tab_cab_aux.getValor("observacion_cpdtr"));
+                tab_cab_tran_cxp.modificar(tab_cab_tran_cxp.getFilaActual());
+                tab_cab_tran_cxp.guardar();
+            }
+
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
             tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
