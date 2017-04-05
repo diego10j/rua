@@ -1098,12 +1098,12 @@ public class pre_documentosCxP extends Pantalla {
                             ide_cpctr += ",";
                         }
                         ide_cpctr += actual.getCampos()[tab_tabla1.getNumeroColumna("ide_cpctr")];
+                        utilitario.getConexion().agregarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_cpcfa=" + actual.getCampos()[tab_tabla1.getNumeroColumna("ide_cpcfa")] + " and ide_cnccc is null");
                     }
                     utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_cpctr in(" + ide_cpctr + ") and ide_cnccc is null");
                     String ide_ccctr = aut_anticipo.getValor();
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_ccctr =" + ide_ccctr + " and ide_cnccc is null");
 
-                    utilitario.getConexion().agregarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + asc_asiento.getIde_cnccc() + " where ide_cpcfa=" + tab_tabla1.getValor("ide_cpcfa"));
                 }
                 dibujarDocumentos();
             }
