@@ -172,7 +172,7 @@ public class DocumentoCxP extends Dialogo {
         tab_documenoCxP.getTab(2).getChildren().clear();
         tab_documenoCxP.getTab(3).getChildren().clear();
 
-        tab_documenoCxP.getTab(0).getChildren().add(dibujarDocumento());
+        tab_documenoCxP.getTab(0).getChildren().add(dibujarDocumento());      
         utilitario.getConexion().getSqlPantalla().clear();//LIMPIA SQL EXISTENTES
         //Activa click derecho insertar y eliminar
         try {
@@ -1545,8 +1545,8 @@ public class DocumentoCxP extends Dialogo {
         }
     }
 
-    public void validarIdentificacionReembolso() {        
-        String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");        
+    public void validarIdentificacionReembolso() {
+        String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");
         boolean correcto = false;
         if (identificacion.length() == 13) {
             if (utilitario.validarRUC(identificacion)) {

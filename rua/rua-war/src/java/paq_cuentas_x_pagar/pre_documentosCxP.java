@@ -30,9 +30,11 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.separator.Separator;
@@ -1028,6 +1030,15 @@ public class pre_documentosCxP extends Pantalla {
 
         dcp_documento.nuevoDocumento();
         dcp_documento.dibujar();
+        //Limita fecha maxima
+        for (UIComponent componenteActual : dcp_documento.getTab_cab_documento().getGrid().getChildren()) {
+            if (componenteActual.getRendererType() != null && componenteActual.getRendererType().equals("org.primefaces.component.CalendarRenderer")) {
+                Calendario cal = (Calendario) componenteActual;
+                cal.setMaxdate(new Date());
+                break;
+            }
+        }
+
     }
 
     public void eliminar7() {
