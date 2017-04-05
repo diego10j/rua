@@ -402,4 +402,11 @@ public class ServicioInventario {
         return ide_art;
     }
 
+    public String getSqlComboEmpleados() {
+        return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true order by nom_geper ";
+    }
+
+     public String getSqlComboOrganigrama() {
+        return "select ide_georg,nombre_georg from gen_organigrama order by nombre_georg";
+    }
 }

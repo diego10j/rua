@@ -38,9 +38,11 @@ public class pre_comp_inv extends Pantalla {
     private SeleccionArbol sel_arbol = new SeleccionArbol();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
-    private SeleccionTabla sel_tab = new SeleccionTabla();
+    private SeleccionTabla sel_tab = new SeleccionTabla();//bodega
     private final Texto tex_num_transaccion = new Texto();
     private final Boton bot_buscar_transaccion = new Boton();
+    private SeleccionTabla sel_empleado = new SeleccionTabla();
+    private SeleccionTabla sel_departamento = new SeleccionTabla();
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -154,6 +156,16 @@ public class pre_comp_inv extends Pantalla {
         sel_tab.setSeleccionTabla("SELECT ide_inbod,nombre_inbod FROM inv_bodega WHERE nivel_inbod='HIJO' AND ide_empr=" + utilitario.getVariable("ide_empr"), "ide_inbod");
         agregarComponente(sel_tab);
         sel_tab.getBot_aceptar().setMetodo("aceptarReporte");
+
+        sel_empleado.setId("sel_empleado");
+        sel_empleado.setSeleccionTabla(ser_inventario.getSqlComboEmpleados(), "ide_geper");
+        agregarComponente(sel_empleado);
+        sel_empleado.getBot_aceptar().setMetodo("aceptarReporte");
+
+        sel_departamento.setId("sel_departamento");
+        sel_departamento.setSeleccionTabla(ser_inventario.getSqlComboOrganigrama(), "ide_georg");
+        agregarComponente(sel_departamento);
+        sel_departamento.getBot_aceptar().setMetodo("aceptarReporte");
 
     }
 
@@ -323,7 +335,6 @@ public class pre_comp_inv extends Pantalla {
                 utilitario.addUpdate("sef_formato,sec_rango_reporte");
             }
         } else if (rep_reporte.getReporteSelecionado().equals("Kardex")) {
-            System.out.println("Si entra al kardex");
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -350,6 +361,42 @@ public class pre_comp_inv extends Pantalla {
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sef_formato.dibujar();
                 utilitario.addUpdate("sef_formato,sec_rango_reporte");
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Consumos por Departamento")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                sec_rango_reporte.cerrar();
+                sel_arbol.dibujar();
+            } else if (sel_arbol.isVisible()) {
+                if (sel_arbol.getSeleccionados() == null || sel_arbol.getSeleccionados().isEmpty()) {
+                    return;
+                }
+                parametro.put("ide_inarti", sel_arbol.getSeleccionados());
+                System.out.println("seleccion..de ide_inarti..." + sel_arbol.getSeleccionados());
+                sel_arbol.cerrar();
+                sel_departamento.dibujar();
+            } else if (sel_departamento.isVisible()) {
+                if (sel_departamento.getSeleccionados() == null || sel_departamento.getSeleccionados().isEmpty()) {
+                    return;
+                }
+                parametro.put("ide_georg", sel_departamento.getSeleccionados());
+                System.out.println("seleccion..de ide_georg..." + sel_departamento.getSeleccionados());
+                sel_departamento.cerrar();
+                sel_empleado.dibujar();
+            } else if (sel_empleado.isVisible()) {
+                if (sel_empleado.getSeleccionados() == null || sel_empleado.getSeleccionados().isEmpty()) {
+                    return;
+                }
+                parametro.put("ide_geper", sel_empleado.getSeleccionados());
+                System.out.println("seleccion..de ide_geper..." + sel_empleado.getSeleccionados());
+                sel_empleado.cerrar();
+                sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sef_formato.dibujar();
             }
         }
     }
@@ -408,6 +455,22 @@ public class pre_comp_inv extends Pantalla {
 
     public void setSel_tab(SeleccionTabla sel_tab) {
         this.sel_tab = sel_tab;
+    }
+
+    public SeleccionTabla getSel_empleado() {
+        return sel_empleado;
+    }
+
+    public void setSel_empleado(SeleccionTabla sel_empleado) {
+        this.sel_empleado = sel_empleado;
+    }
+
+    public SeleccionTabla getSel_departamento() {
+        return sel_departamento;
+    }
+
+    public void setSel_departamento(SeleccionTabla sel_departamento) {
+        this.sel_departamento = sel_departamento;
     }
 
 }
