@@ -366,32 +366,34 @@ public class pre_comp_inv extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
                 sec_rango_reporte.dibujar();
             } else if (sec_rango_reporte.isVisible()) {
                 parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
                 parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
                 sec_rango_reporte.cerrar();
                 sel_arbol.dibujar();
+                utilitario.addUpdate("sel_arbol,sec_rango_reporte");
             } else if (sel_arbol.isVisible()) {
-                if (sel_arbol.getSeleccionados() == null || sel_arbol.getSeleccionados().isEmpty()) {
-                    return;
-                }
+//                if (sel_arbol.getSeleccionados() == null || sel_arbol.getSeleccionados().isEmpty()) {
+//                    return;
+//                }
                 parametro.put("ide_inarti", sel_arbol.getSeleccionados());
                 System.out.println("seleccion..de ide_inarti..." + sel_arbol.getSeleccionados());
                 sel_arbol.cerrar();
                 sel_departamento.dibujar();
             } else if (sel_departamento.isVisible()) {
-                if (sel_departamento.getSeleccionados() == null || sel_departamento.getSeleccionados().isEmpty()) {
-                    return;
-                }
+//                if (sel_departamento.getSeleccionados() == null || sel_departamento.getSeleccionados().isEmpty()) {
+//                    return;
+//                }
                 parametro.put("ide_georg", sel_departamento.getSeleccionados());
                 System.out.println("seleccion..de ide_georg..." + sel_departamento.getSeleccionados());
                 sel_departamento.cerrar();
                 sel_empleado.dibujar();
             } else if (sel_empleado.isVisible()) {
-                if (sel_empleado.getSeleccionados() == null || sel_empleado.getSeleccionados().isEmpty()) {
-                    return;
-                }
+//                if (sel_empleado.getSeleccionados() == null || sel_empleado.getSeleccionados().isEmpty()) {
+//                    return;
+//                }
                 parametro.put("ide_geper", sel_empleado.getSeleccionados());
                 System.out.println("seleccion..de ide_geper..." + sel_empleado.getSeleccionados());
                 sel_empleado.cerrar();
