@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_suministros_materiales" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="05ba5099-3289-4454-8621-62a295751fc5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="157"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="informe_para" class="java.lang.String"/>
 	<parameter name="fecha_inicio" class="java.util.Date"/>
 	<parameter name="fecha_fin" class="java.util.Date"/>
@@ -17,6 +17,11 @@
 	</parameter>
 	<parameter name="ide_usua" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select b.ide_georg,b.nombre_georg,d.ide_geper,d.nom_geper,e.nombre_inarti, sum(c.cantidad_indci)as cantidad,sum (c.valor_indci) as valor
@@ -183,6 +188,14 @@ Presente.-]]></text>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[de Suministros de Oficina en el período  comprendido entre el]]></text>
 			</staticText>
+			<subreport>
+				<reportElement uuid="4170347b-fd2a-4c40-8f80-3543b05fd438" x="3" y="2" width="200" height="85"/>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
