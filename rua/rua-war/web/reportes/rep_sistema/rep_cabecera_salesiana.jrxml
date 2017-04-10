@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="280" pageHeight="85" whenNoDataType="BlankPage" columnWidth="240" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="fedf1459-643b-41cd-bb4f-3d5a5fea7e1d">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="137"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT * FROM sis_empresa e, sis_sucursal s
+where s.ide_empr=e.ide_empr
+and s.ide_empr=$P{ide_empr}
+and s.ide_sucu=$P{ide_sucu}]]>
+	</queryString>
+	<field name="ide_empr" class="java.lang.Long"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="contacto_empr" class="java.lang.String"/>
+	<field name="representante_empr" class="java.lang.String"/>
+	<field name="identi_repre_empr" class="java.lang.String"/>
+	<field name="nom_corto_empr" class="java.lang.String"/>
+	<field name="mail_empr" class="java.lang.String"/>
+	<field name="pagina_empr" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="direccion_empr" class="java.lang.String"/>
+	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
+	<field name="logo_empr" class="java.io.InputStream"/>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
+	<title>
+		<band height="80" splitType="Stretch">
+			<textField>
+				<reportElement uuid="741c4b2f-55a2-4cca-be77-f91444d4c746" x="72" y="54" width="168" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC: "+$F{identificacion_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1bfe65a1-d08f-480d-9b25-37c60e3ce08f" x="72" y="26" width="168" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_sucu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3e00382d-6f9a-48a0-a7ab-dfd300a228fb" x="72" y="40" width="168" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{telefonos_sucu}]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank">
+				<reportElement uuid="e79d8f5b-ce53-4f4d-8c67-a01e9753b6f0" x="6" y="12" width="59" height="57"/>
+				<imageExpression><![CDATA[$F{logo_empr}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="5d5d7ff6-0a18-4cfb-a12a-fef63eb5a688" x="72" y="12" width="168" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>
