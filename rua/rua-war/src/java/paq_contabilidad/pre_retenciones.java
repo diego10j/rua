@@ -146,7 +146,43 @@ public class pre_retenciones extends Pantalla {
 
     public void dibujarListadoVentas() {
         Grupo gru_grupo = new Grupo();
-        mep_menu.dibujar(3, "COMPROBANTES DE RETENCIÓN EN VENTAS", gru_grupo);
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        Boton bot_anular = new Boton();
+        bot_anular.setValue("Anular Comprobante de Retención");
+        bot_anular.setMetodo("abrirAnularRetencion");
+        bar_menu.agregarComponente(bot_anular);
+
+        gru_grupo.getChildren().add(bar_menu);
+
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesVentas(null, cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setCampoPrimaria("ide_cncre");
+        tab_tabla.getColumna("ide_cncre").setVisible(false);
+        tab_tabla.getColumna("ide_cnere").setVisible(false);
+        tab_tabla.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla.getColumna("BASE_IMPONIBLE").alinearDerecha();
+        tab_tabla.getColumna("NUMERO").setFiltroContenido();
+        tab_tabla.getColumna("NUMERO").setLongitud(50);
+        tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
+        tab_tabla.getColumna("NUM_FACTURA").setFiltroContenido();
+        tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla.getColumna("ide_cnccc").setVisible(false);
+        tab_tabla.getColumna("VALOR").alinearDerecha();
+        tab_tabla.getColumna("numero").setLongitud(25);
+        tab_tabla.setLectura(true);
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[1] eq '1' ? 'text-red' : null");
+
+        tab_tabla.setRows(25);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        gru_grupo.getChildren().add(pat_panel);
+        mep_menu.dibujar(1, "COMPROBANTES DE RETENCIÓN EN VENTAS", gru_grupo);
     }
 
     public void dibujarListado() {

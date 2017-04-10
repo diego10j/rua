@@ -669,4 +669,53 @@ public class ServicioFacturaCxC extends ServicioBase {
                 + "HAVING abs(sum (dt.valor_ccdtr*tt.signo_ccttr))>0\n"
                 + "ORDER BY fecha_trans_ccctr desc, ide_ccctr ";
     }
+
+    /**
+     * Registra la Factura en una transaccion cxp
+     *
+     * @param ide_cccfa
+     * @param valorRetencion
+     * @return ide_cpctr Cabecera de la Transaccion CxP
+     */
+    public String generarTransaccionRetencion(String ide_cccfa, double valorRetencion) {
+        String ide_cpctr = "-1";
+        TablaGenerica tab_cab_factura = utilitario.consultar("SELECT * FROM cxc_cabece_factura WHERE ide_cccfa=" + ide_cccfa);
+        if (tab_cab_factura.isEmpty() == false) {
+            TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
+            tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr");
+            tab_cab_tran_cxc.setCondicion("ide_cccfa=" + ide_cccfa);
+            tab_cab_tran_cxc.ejecutarSql();
+            if (tab_cab_tran_cxc.isEmpty()) {
+                //Si se hace factura de un anticipo
+                TablaGenerica tab_cab_aux = utilitario.consultar("SELECT ide_ccctr,ide_cccfa,observacion_ccdtr FROM cxc_detall_transa WHERE ide_cccfa=" + ide_cccfa);
+                tab_cab_tran_cxc.setCondicion("ide_ccctr=" + tab_cab_aux.getValor("ide_ccctr"));
+                tab_cab_tran_cxc.ejecutarSql();
+                tab_cab_tran_cxc.setValor("ide_cccfa", ide_cccfa);
+                tab_cab_tran_cxc.setValor("observacion_ccctr", tab_cab_aux.getValor("observacion_ccdtr"));
+                tab_cab_tran_cxc.modificar(tab_cab_tran_cxc.getFilaActual());
+                tab_cab_tran_cxc.guardar();
+            }
+
+            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+            tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr");
+            tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxc.setCondicion("ide_ccctr=" + tab_cab_tran_cxc.getValor("ide_ccctr"));
+            tab_det_tran_cxc.ejecutarSql();
+            tab_det_tran_cxc.insertar();
+            tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
+            tab_det_tran_cxc.setValor("ide_ccctr", tab_cab_tran_cxc.getValor("ide_ccctr"));
+            tab_det_tran_cxc.setValor("ide_cccfa", ide_cccfa);
+            tab_det_tran_cxc.setValor("ide_ccttr", utilitario.getVariable("p_cxc_tipo_trans_retencion"));
+            tab_det_tran_cxc.setValor("fecha_trans_ccdtr", tab_cab_factura.getValor("fecha_trans_cccfa"));
+            tab_det_tran_cxc.setValor("valor_ccdtr", utilitario.getFormatoNumero(valorRetencion));
+            tab_det_tran_cxc.setValor("observacion_ccdtr", tab_cab_factura.getValor("observacion_cccfa"));
+            tab_det_tran_cxc.setValor("numero_pago_ccdtr", "0");
+            tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
+            tab_det_tran_cxc.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
+            tab_det_tran_cxc.guardar();
+            ide_cpctr = tab_cab_tran_cxc.getValor("ide_ccctr");
+        }
+        return ide_cpctr;
+    }
+
 }

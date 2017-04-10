@@ -82,7 +82,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("3", "p_cxc_tipo_trans_reversar_mas", "Indica que el tipo de transaccion es para reversar (+) una transaccion ", "15", "cxc_tipo_transacc", "ide_ccttr", "nombre_ccttr"));
         lis_parametros.add(new Parametro("3", "p_cxc_tipo_trans_reversar_menos", "Indica que el tipo de transaccion es para reversar (-)una transaccion ", "16", "cxc_tipo_transacc", "ide_ccttr", "nombre_ccttr"));
         lis_parametros.add(new Parametro("3", "p_cxc_estado_factura_anulada", "Indica el estado de la factura (Anulada) ", "1", "cxc_estado_factura", "ide_ccefa", "nombre_ccefa"));
-
+        lis_parametros.add(new Parametro("3", "p_cxc_tipo_trans_retencion", "Indica que el tipo de transaccion Retencion ", "8", "cxc_tipo_transacc", "ide_ccttr", "nombre_ccttr"));
 
         /*
          * ACTIVOS FIJOS MODULO =4

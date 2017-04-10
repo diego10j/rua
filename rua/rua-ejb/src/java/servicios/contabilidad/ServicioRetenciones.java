@@ -19,7 +19,7 @@ import servicios.ServicioBase;
 public class ServicioRetenciones extends ServicioBase {
 
     public String getSqlComboAutorizaciones() {
-        return "Select autorizacion_cncre,autorizacion_cncre from con_cabece_retenc   WHERE ide_empr=" + utilitario.getVariable("ide_empr") + "  group by autorizacion_cncre ORDER BY autorizacion_cncre";
+        return "Select autorizacion_cncre,autorizacion_cncre from con_cabece_retenc   WHERE ide_empr=" + utilitario.getVariable("ide_empr") + " and es_venta_cncre = false group by autorizacion_cncre ORDER BY autorizacion_cncre";
     }
 
     /**
@@ -165,9 +165,31 @@ public class ServicioRetenciones extends ServicioBase {
         TablaGenerica tb = utilitario.consultar("select ide_cncim,ide_cnimp,* from con_cabece_impues where ide_cnimp =1 and ide_cncim=" + ide_cncim);
         return !tb.isEmpty();
     }
-    
-    public String getValorDefectoImpuesto(String ide_cncim){
-         TablaGenerica tb = utilitario.consultar("select ide_cncim,valor_defecto_cncim from con_cabece_impues where ide_cncim=" + ide_cncim);
-         return tb.getValor("valor_defecto_cncim");
+
+    public String getValorDefectoImpuesto(String ide_cncim) {
+        TablaGenerica tb = utilitario.consultar("select ide_cncim,valor_defecto_cncim from con_cabece_impues where ide_cncim=" + ide_cncim);
+        return tb.getValor("valor_defecto_cncim");
     }
+
+    public String getSqlRetencionesVentas(String autorizacion_cncre, String fechaInicio, String fechaFin) {
+        if (autorizacion_cncre == null) {
+            autorizacion_cncre = "";
+        }
+        autorizacion_cncre = autorizacion_cncre.replace("null", "").trim();
+        if (autorizacion_cncre.isEmpty() == false) {
+            autorizacion_cncre = " and autorizacion_cncre='" + autorizacion_cncre + "' ";
+        }
+        return "SELECT a.ide_cncre,ide_cnere,fecha_emisi_cncre,a.ide_cnccc,observacion_cncre,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
+                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
+                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS VALOR,ide_cccfa,secuencial_cccfa as NUM_FACTURA,nom_geper AS CLIENTE\n"
+                + "FROM con_cabece_retenc a\n"
+                + "left join cxc_cabece_factura b on a.ide_cncre=b.ide_cncre\n"
+                + "left join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
+                + "and es_venta_cncre = true\n"
+                + autorizacion_cncre
+                + "ORDER BY ide_cncre desc";
+    }
+
 }
