@@ -82,16 +82,16 @@ public class pre_portal {
 
 
         if (strClaveNueva == null) {
-            utilitario.agregarMensajeInfo("Validaci�n", "Es necesario ingresar la clave actual");
+            utilitario.agregarMensajeInfo("Validacion", "Es necesario ingresar la clave actual");
             return;
         }
         if (strConfirmaClaveNueva == null) {
-            utilitario.agregarMensajeInfo("Validaci�n", "Es necesario confirmar la nueva clave");
+            utilitario.agregarMensajeInfo("Validacion", "Es necesario confirmar la nueva clave");
             return;
         }
 
         if (!strClaveNueva.equals(strConfirmaClaveNueva)) {
-            utilitario.agregarMensajeInfo("Validaci�n", "La clave nueva debe se igual a la clave de confirmaci�n");
+            utilitario.agregarMensajeInfo("Validacion", "La clave nueva debe se igual a la clave de confirmacion");
             strClaveNueva = null;
             strConfirmaClaveNueva = null;
             return;
@@ -123,7 +123,7 @@ public class pre_portal {
                 strConfirmaClaveNueva = null;
             }
         } else {
-            utilitario.agregarMensajeInfo("Validaci�n", "Es necesario ingresar la clave actual");
+            utilitario.agregarMensajeInfo("Validacion", "Es necesario ingresar la clave actual");
             strClaveNueva=null;
             strConfirmaClaveNueva=null;
         }
