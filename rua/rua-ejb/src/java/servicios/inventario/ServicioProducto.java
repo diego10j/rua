@@ -391,7 +391,7 @@ public class ServicioProducto {
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
 
         String strCondicionBodega = ide_inbod.isEmpty() ? "" : " ide_inbod in (" + ide_inbod + ") \n";
-        return "SELECT dci.ide_indci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
+        return "SELECT dci.ide_indci,cci.ide_incci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
                 + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
                 + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
                 + "case when signo_intci = 1 THEN valor_indci  end as VTOT_INGRESO,\n"
