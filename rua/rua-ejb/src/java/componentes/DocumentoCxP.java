@@ -253,16 +253,16 @@ public class DocumentoCxP extends Dialogo {
                 pat_panel.getMenuTabla().getItem_eliminar().setDisabled(true);
             } catch (Exception e) {
             }
-            tab_det_documento.setScrollHeight(getAltoPanel() - 445);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 475);
         } else {
             tab_com_reembolso.setRendered(false);
-            tab_det_documento.setScrollHeight(getAltoPanel() - 335);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 365);
         }
 
         boolean bol_esnota = false;
         if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
             bol_esnota = true;
-            tab_det_documento.setScrollHeight(getAltoPanel() - 385);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 425);
         }
         for (int i = 0; i < tab_cab_documento.getGrid().getChildren().size(); i++) {
             if (tab_cab_documento.getGrid().getChildren().get(i).getId() != null) {
@@ -1499,7 +1499,7 @@ public class DocumentoCxP extends Dialogo {
             //Activa tabla  y disminuye tamaño del detalle
             tab_com_reembolso.setRendered(true);
             tab_com_reembolso.limpiar();
-            tab_det_documento.setScrollHeight(getAltoPanel() - 465);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 475);
             try {
                 PanelTabla pat_panel = (PanelTabla) tab_com_reembolso.getParent();
                 pat_panel.getMenuTabla().getItem_insertar().setDisabled(false);
