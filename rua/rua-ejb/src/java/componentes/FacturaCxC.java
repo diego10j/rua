@@ -454,7 +454,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA EMISION");
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setRequerida(true);
         tab_cab_factura.getColumna("ide_ccdaf").setVisible(false);
-        tab_cab_factura.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_cliente_geper=TRUE AND nivel_geper='HIJO'");
+        tab_cab_factura.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_cliente_geper=TRUE AND nivel_geper='HIJO' and identificac_geper is not null");
         tab_cab_factura.getColumna("ide_geper").setAutoCompletar();
         tab_cab_factura.getColumna("ide_geper").setOrden(3);
         tab_cab_factura.getColumna("ide_geper").setRequerida(true);
@@ -758,7 +758,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_retencion.getGrid().setColumns(6);
         tab_cab_retencion.setMostrarNumeroRegistros(false);
         tab_cab_retencion.dibujar();
-        
+
         tab_det_retencion.setId("tab_det_retencion");
         tab_det_retencion.setRuta("pre_index.clase." + getId());
         tab_det_retencion.setIdCompleto("tab_documenoCxP:tab_det_retencion");
@@ -1081,8 +1081,8 @@ public class FacturaCxC extends Dialogo {
         if (ser_cliente.validarCliente(tab_creacion_cliente)) {
             if (tab_creacion_cliente.guardar()) {
                 //Respalda insertadas para que no guarde
-               // List<String> lis_resp_cab = tab_cab_factura.getInsertadas();
-               // List<String> lis_resp_deta = tab_deta_factura.getInsertadas();
+                // List<String> lis_resp_cab = tab_cab_factura.getInsertadas();
+                // List<String> lis_resp_deta = tab_deta_factura.getInsertadas();
 
                 if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                     utilitario.agregarMensaje("El Cliente se guardo correctamente", "");

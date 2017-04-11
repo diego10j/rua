@@ -103,7 +103,7 @@ public class ServicioCliente extends ServicioBase {
      * @return
      */
     public String getSqlComboClientes() {
-        return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_cliente_geper is TRUE and identificac_geper is not null order by nom_geper ";
+        return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_cliente_geper is TRUE AND nivel_geper='HIJO' order by nom_geper ";
     }
 
     /**
