@@ -168,12 +168,6 @@ public class pre_facturasCxC extends Pantalla {
         bot_anular.setIcon("ui-icon-cancel");
         bar_menu.agregarComponente(bot_anular);
         bar_menu.agregarSeparador();
-        Boton bot_guia = new Boton();
-        bot_guia.setValue("Generar Guia de Remisión");
-        bot_guia.setMetodo("dibujarGuia");
-        bot_guia.setIcon("ui-icon-contact");
-        bar_menu.agregarBoton(bot_guia);
-        bar_menu.agregarSeparador();
 
         Boton bot_retencion = new Boton();
         bot_retencion.setValue("Comprobante de Retención");
@@ -218,7 +212,7 @@ public class pre_facturasCxC extends Pantalla {
 
     public void dibujarRetencion() {
         if (tab_tabla.getValor("ide_cccfa") != null) {
-            if (tab_tabla.getValor("ide_cccfa") == null) {
+            if (tab_tabla.getValor("ide_cncre") == null) {
                 ret_retencion.nuevaRetencionVenta(tab_tabla.getValor("ide_cncre"));
                 ret_retencion.dibujar();
             } else {
