@@ -230,8 +230,8 @@ public class pre_articulos extends Pantalla {
             tab_tabla.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
             tab_tabla.getColumna("ide_indci").setVisible(true);
             tab_tabla.getColumna("ide_indci").setVisible(false);
-            tab_tabla.getColumna("ide_incci").setVisible(false);
-            tab_tabla.getColumna("ide_incci").setNombreVisual("COMP INVENTARIO");                        
+            tab_tabla.getColumna("ide_incci").setVisible(true);
+            tab_tabla.getColumna("ide_incci").setNombreVisual("COMP INVENTARIO");
             tab_tabla.getColumna("fecha_trans_incci").setNombreVisual("FECHA");
             tab_tabla.getColumna("nom_geper").setNombreVisual("CLIENTE / PROVEEDOR");
             tab_tabla.getColumna("nombre_intti").setNombreVisual("TIPO DE TRANSACCIÓN");
@@ -848,7 +848,7 @@ public class pre_articulos extends Pantalla {
      * Actualiza los movmientos contables segun las fechas selecionadas
      */
     public void actualizarMovimientos() {
-        tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(),""));
+        tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
         tab_tabla.ejecutarSql();
         actualizarSaldosContable();
     }
