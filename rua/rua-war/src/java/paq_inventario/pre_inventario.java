@@ -200,6 +200,7 @@ public class pre_inventario extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_producto.getSqlKardex("-1", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
         tab_tabla.getColumna("ide_indci").setVisible(false);
+        tab_tabla.getColumna("ide_incci").setNombreVisual("COMP INVENTARIO");
         tab_tabla.getColumna("fecha_trans_incci").setNombreVisual("FECHA");
         tab_tabla.getColumna("nom_geper").setNombreVisual("CLIENTE / PROVEEDOR");
         tab_tabla.getColumna("nombre_intti").setNombreVisual("TIPO DE TRANSACCIÓN");
