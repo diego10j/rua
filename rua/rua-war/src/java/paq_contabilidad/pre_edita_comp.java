@@ -191,7 +191,7 @@ public class pre_edita_comp extends Pantalla {
                 tab_tabla3.setId("tab_tabla3");
                 tab_tabla3.setTabla("pre_mensual", "ide_prmen", 3);
                 tab_tabla3.setHeader("PRESUPUESTO");
-                tab_tabla3.setCondicion("ide_cndcc=-1");
+                tab_tabla3.setValorForanea("-1");
                 tab_tabla3.setLectura(true);
                 //AUMENTAR COMBOS !!!!!!
                 tab_tabla3.dibujar();
