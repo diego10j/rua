@@ -93,6 +93,7 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
             tab_tabla1.getColumna("ide_geper").setAutoCompletar();
             tab_tabla1.getColumna("ide_geper").setRequerida(true);
+            tab_tabla1.getColumna("OBSERVACION_CNCCC").setControl("Texto");
             tab_tabla1.agregarRelacion(tab_tabla2);
             tab_tabla1.setCondicion("ide_cntcm=-1");
             tab_tabla1.setValidarInsertar(true);
@@ -212,7 +213,7 @@ public class pre_edita_comp extends Pantalla {
             Division div_detalle = new Division();
             div_detalle.setFooter(pat_panel2, gri_totales, "85%");
             if (isPresupuesto()) {
-                div_division.dividir3(pat_panel1, div_detalle, pat_panel3, "35%", "20%", "H");
+                div_division.dividir3(pat_panel1, div_detalle, pat_panel3, "30%", "25%", "H");
             } else {
                 div_division.dividir2(pat_panel1, div_detalle, "40%", "H");
             }
@@ -227,8 +228,13 @@ public class pre_edita_comp extends Pantalla {
     private int intRecorre = 0;
 
     public void abrirPresupuesto() {
-        intRecorre = 0;
-        buscaPresupuestoCxP();
+        if (tab_tabla1.isEmpty() == false) {
+            intRecorre = 0;
+            buscaPresupuestoCxP();
+        } else {
+            utilitario.agregarMensaje("Primero debe buscar un asiento contable", "");
+        }
+
     }
 
     private void buscaPresupuestoCxP() {
