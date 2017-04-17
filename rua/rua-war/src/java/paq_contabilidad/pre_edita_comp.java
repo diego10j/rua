@@ -309,8 +309,13 @@ public class pre_edita_comp extends Pantalla {
                         tab_pres.setValor("ide_cndcc", tab_tabla2.getValor("ide_cndcc"));
                     }
                 }
+                tab_pres.guardar();
+                utilitario.getConexion().setImprimirSqlConsola(true);
+                utilitario.getConexion().ejecutarListaSql();
+                utilitario.getConexion().setImprimirSqlConsola(false);
                 intRecorre++;
                 dia_asociacion.cerrar();
+                tab_tabla3.actualizar();
             } else {
                 utilitario.agregarMensajeError("La suma del valor devengado debe ser igual a " + dou_valor_detalle, "");
                 return;
@@ -319,9 +324,7 @@ public class pre_edita_comp extends Pantalla {
         if (intRecorre < tab_tabla2.getTotalFilas()) {
             buscaPresupuestoCxP();
         }
-        tab_pres.guardar();
-        utilitario.getConexion().guardarPantalla();
-        tab_tabla3.actualizar();
+
 ////        if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
 ////            utilitario.agregarMensajeError("Debe ingresar un valor", "");
 ////        }
