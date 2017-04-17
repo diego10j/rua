@@ -232,7 +232,7 @@ public class pre_edita_comp extends Pantalla {
             intRecorre = 0;
             buscaPresupuestoCxP();
         } else {
-            utilitario.agregarMensaje("Primero debe buscar un asiento contable", "");
+            utilitario.agregarMensajeInfo("Primero debe buscar un asiento contable", "");
         }
 
     }
