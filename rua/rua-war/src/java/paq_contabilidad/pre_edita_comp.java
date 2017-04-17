@@ -52,6 +52,8 @@ public class pre_edita_comp extends Pantalla {
     private Etiqueta eti_cuenta_aso;
     private Etiqueta eti_valor_aso;
 
+    private TablaGenerica tab_pres;
+
     public pre_edita_comp() {
         //Recuperar el plan de cuentas activo
         List lis_plan = utilitario.getConexion().consultar("select ide_CNCPC from con_cab_plan_cuen where activo_cncpc=true");
@@ -119,6 +121,10 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla2.setCampoOrden("ide_cnlap desc");
             tab_tabla2.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
             tab_tabla2.setRows(10);
+            if (isPresupuesto()) {
+                tab_tabla3 = new Tabla();
+                tab_tabla2.agregarRelacion(tab_tabla3);
+            }
             tab_tabla2.dibujar();
             PanelTabla pat_panel2 = new PanelTabla();
             pat_panel2.setPanelTabla(tab_tabla2);
@@ -182,7 +188,6 @@ public class pre_edita_comp extends Pantalla {
                 gri1.getChildren().add(eti_valor_aso);
                 pat_panel4.setHeader(gri1);
 
-                tab_tabla3 = new Tabla();
                 tab_tabla3.setId("tab_tabla3");
                 tab_tabla3.setTabla("pre_mensual", "ide_prmen", 3);
                 tab_tabla3.setHeader("PRESUPUESTO");
@@ -190,6 +195,10 @@ public class pre_edita_comp extends Pantalla {
                 tab_tabla3.setLectura(true);
                 //AUMENTAR COMBOS !!!!!!
                 tab_tabla3.dibujar();
+
+                tab_pres = new TablaGenerica();
+                tab_pres.setTabla("pre_mensual", "ide_prmen", 3);
+                tab_pres.setCondicion("ide_cndcc=-1");
 
                 pat_panel3.setPanelTabla(tab_tabla3);
             }
@@ -229,6 +238,7 @@ public class pre_edita_comp extends Pantalla {
 
     public void abrirPresupuesto() {
         if (tab_tabla1.isEmpty() == false) {
+            tab_pres.limpiar();
             intRecorre = 0;
             buscaPresupuestoCxP();
         } else {
@@ -278,26 +288,25 @@ public class pre_edita_comp extends Pantalla {
             }
             double dou_valor_detalle = Double.parseDouble(tab_tabla2.getValor("valor_cndcc"));
             if (dou_valor_detalle == dou_sum_valor_debengado) {
-                //agrega                
-                tab_tabla3.setLectura(true);
+                //agrega                            
                 for (int i = 0; i < tab_sel_aso.getTotalFilas(); i++) {
                     if (tab_sel_aso.getValor(i, "SELECCIONADO").equals("true")) {
-                        tab_tabla3.insertar();
-                        tab_tabla3.setValor("ide_pranu", tab_sel_aso.getValor(i, "ide_pranu"));
-                        tab_tabla3.setValor("ide_prtra", tab_sel_aso.getValor(i, "ide_prtra"));
-                        tab_tabla3.setValor("fecha_ejecucion_prmen", tab_tabla1.getValor(i, "fecha_trans_cnccc"));
-                        tab_tabla3.setValor("ide_codem", tab_tabla2.getValor("ide_cndcc"));
-                        tab_tabla3.setValor("comprobante_prmen", tab_tabla1.getValor("numero_cnccc"));
-                        tab_tabla3.setValor("devengado_prmen", tab_sel_aso.getValor(i, "valor_devengar_prcof"));
-                        tab_tabla3.setValor("cobrado_prmen", "0");
-                        tab_tabla3.setValor("cobradoc_prmen", "0");
-                        tab_tabla3.setValor("pagado_prmen", "0");
-                        tab_tabla3.setValor("comprometido_prmen", "0");
-                        tab_tabla3.setValor("valor_anticipo_prmen", "0");
-                        tab_tabla3.setValor("certificado_prmen", "0");
-                        tab_tabla3.setValor("ide_comov", tab_tabla1.getValor("ide_cnccc"));
-                        tab_tabla3.setValor("activo_prmen", "true");
-                        tab_tabla3.setValor("ide_cndcc", tab_tabla2.getValor("ide_cndcc"));
+                        tab_pres.insertar();
+                        tab_pres.setValor("ide_pranu", tab_sel_aso.getValor(i, "ide_pranu"));
+                        tab_pres.setValor("ide_prtra", tab_sel_aso.getValor(i, "ide_prtra"));
+                        tab_pres.setValor("fecha_ejecucion_prmen", tab_tabla1.getValor(i, "fecha_trans_cnccc"));
+                        tab_pres.setValor("ide_codem", tab_tabla2.getValor("ide_cndcc"));
+                        tab_pres.setValor("comprobante_prmen", tab_tabla1.getValor("numero_cnccc"));
+                        tab_pres.setValor("devengado_prmen", tab_sel_aso.getValor(i, "valor_devengar_prcof"));
+                        tab_pres.setValor("cobrado_prmen", "0");
+                        tab_pres.setValor("cobradoc_prmen", "0");
+                        tab_pres.setValor("pagado_prmen", "0");
+                        tab_pres.setValor("comprometido_prmen", "0");
+                        tab_pres.setValor("valor_anticipo_prmen", "0");
+                        tab_pres.setValor("certificado_prmen", "0");
+                        tab_pres.setValor("ide_comov", tab_tabla1.getValor("ide_cnccc"));
+                        tab_pres.setValor("activo_prmen", "true");
+                        tab_pres.setValor("ide_cndcc", tab_tabla2.getValor("ide_cndcc"));
                     }
                 }
                 intRecorre++;
@@ -310,7 +319,9 @@ public class pre_edita_comp extends Pantalla {
         if (intRecorre < tab_tabla2.getTotalFilas()) {
             buscaPresupuestoCxP();
         }
+        tab_pres.guardar();
         utilitario.getConexion().guardarPantalla();
+        tab_tabla3.actualizar();
 ////        if (tex_valor_pre.getValue() == null || String.valueOf(tex_valor_pre.getValue()).isEmpty()) {
 ////            utilitario.agregarMensajeError("Debe ingresar un valor", "");
 ////        }
@@ -335,6 +346,7 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.setCondicion("ide_cnccc=" + tex_num_transaccion.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            tab_tabla3.ejecutarValorForanea(tab_tabla2.getValorSeleccionado());
             str_aux_fecha = tab_tabla1.getValor("fecha_trans_cnccc");
             str_tipo_comp = tab_tabla1.getValor("ide_cntcm");
             if (tab_tabla1.getTotalFilas() > 0) {
