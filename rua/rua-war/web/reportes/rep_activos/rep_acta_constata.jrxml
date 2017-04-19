@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.8150000000000037"/>
-	<property name="ireport.x" value="317"/>
-	<property name="ireport.y" value="119"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="336"/>
 	<parameter name="ide_acact" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -15,7 +15,7 @@
 		<![CDATA[select codigo_acact,fecha_asigna_acact,codigo_gecas,nombre_gecas,
 codigo_geobr,nombre_geobr, codigo_acuba,nombre_acuba,nom_geper,
 serie_acafi,codigo_barras_acafi,cantidad_acafi,nombre_inarti,
-observacion_acafi,nombre_aceaf,cod_anterior_acafi
+observacion_acafi,nombre_aceaf,cod_anterior_acafi,observacion_acact
 from act_acta_constata a
 inner join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
 inner join act_asignacion_activo c on a.ide_acact=c.ide_acact
@@ -46,6 +46,7 @@ order by nombre_inarti,a.ide_acact]]>
 	<field name="observacion_acafi" class="java.lang.String"/>
 	<field name="nombre_aceaf" class="java.lang.String"/>
 	<field name="cod_anterior_acafi" class="java.lang.String"/>
+	<field name="observacion_acact" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -190,7 +191,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{codigo_geobr}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="d3fe739e-4958-4bc2-92da-b26793271739" x="201" y="125" width="347" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_acuba}]]></textFieldExpression>
@@ -487,6 +488,19 @@ order by nombre_inarti,a.ide_acact]]>
 				</textElement>
 				<text><![CDATA[Impresión:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="69ebebe8-8ca6-4d35-942d-fb12fe905e50" x="0" y="3" width="99" height="13"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIÓN:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="878d294c-5da4-40bd-9020-c1a5d70f769b" x="99" y="3" width="456" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_acact}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>
