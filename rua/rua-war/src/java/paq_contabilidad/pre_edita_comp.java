@@ -18,6 +18,7 @@ import framework.componentes.Texto;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import paq_presupuesto.ejb.ServicioPresupuesto;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import sistema.aplicacion.Pantalla;
 
@@ -46,6 +47,9 @@ public class pre_edita_comp extends Pantalla {
     @EJB
     private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
     ///Presupuesto
+    @EJB
+	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto)utilitario.instanciarEJB(ServicioPresupuesto.class);
+    
     private Tabla tab_tabla3;
     private Dialogo dia_asociacion;
     private Tabla tab_sel_aso;
@@ -194,6 +198,21 @@ public class pre_edita_comp extends Pantalla {
                 tab_tabla3.setValorForanea("-1");
                 tab_tabla3.setLectura(true);
                 //AUMENTAR COMBOS !!!!!!
+                tab_tabla3.getColumna("ide_pranu").setCombo(ser_presupuesto.sqlTablaPresupuestoAnual("2", "-1"));
+                //tab_tabla3.getColumna("ide_pranu").setAutoCompletar();
+                tab_tabla3.getColumna("ide_codem").setVisible(false);
+                tab_tabla3.getColumna("ide_gemes").setVisible(false);
+                tab_tabla3.getColumna("cobrado_prmen").setVisible(false);
+                tab_tabla3.getColumna("cobradoc_prmen").setVisible(false);
+                tab_tabla3.getColumna("pagado_prmen").setVisible(false);
+                tab_tabla3.getColumna("comprometido_prmen").setVisible(false);
+                tab_tabla3.getColumna("valor_anticipo_prmen").setVisible(false);
+                tab_tabla3.getColumna("certificado_prmen").setVisible(false);
+                tab_tabla3.getColumna("ide_prfuf").setVisible(false);
+                tab_tabla3.getColumna("ide_prcer").setVisible(false);
+                tab_tabla3.getColumna("ide_tecpo").setVisible(false);
+                tab_tabla3.getColumna("ide_comov").setVisible(false);
+                
                 tab_tabla3.dibujar();
 
                 tab_pres = new TablaGenerica();
@@ -250,9 +269,9 @@ public class pre_edita_comp extends Pantalla {
     private void buscaPresupuestoCxP() {
         tab_tabla2.setFilaActual(intRecorre);
         //Busca las facturas cxp que tengan el asiento seleccionado
-        TablaGenerica tab_cxp = utilitario.consultar("Select ide_cpcfa,ide_cnccc from cxp_cabece_factur where ide_cnccc=" + tab_tabla1.getValor("ide_cnccc") + " GROUP BY ide_cpcfa ");
+        TablaGenerica tab_cxp = utilitario.consultar("Select ide_cpcfa,ide_cnccc from cxp_cabece_factur where ide_cnccc=" + tab_tabla1.getValor("ide_cnccc") + " GROUP BY ide_cpcfa,ide_cnccc ");
         String relacion = tab_cxp.getStringColumna("ide_cpcfa");
-        System.out.println("Se encontraron facturs CXP ++++++ " + relacion);
+        //System.out.println("Se encontraron facturs CXP ++++++ " + relacion);
         if (relacion == null || relacion.isEmpty()) {
             //NO HAY FACTURAS CXP ASOCIADAS AL ASIENTO
             relacion = "-1";
