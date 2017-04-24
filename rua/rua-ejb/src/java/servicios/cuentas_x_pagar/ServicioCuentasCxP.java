@@ -511,7 +511,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "left join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo "
                 + "left join gen_persona b on cf.ide_geper=b.ide_geper "
                 + "where cf.ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_rem_cpcfa is null "
-                + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' and cf.ide_cnccc is null  "
                 + strCondicionTipoDoc
                 + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa,nombre_cntdo, "
                 + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa,nom_geper,identificac_geper "
