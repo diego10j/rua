@@ -40,7 +40,9 @@ public class pre_empresa extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla.guardar();
-        guardarPantalla();
+       if( guardarPantalla().isEmpty()){
+           tab_tabla.actualizar();//para que se actualice la imagen
+       }
     }
 
     @Override

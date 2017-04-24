@@ -4913,7 +4913,10 @@ public void mismaFecha(DateSelectEvent evt){
 
 						tab_discapacidad.guardar();
 						tab_archivo_empleado.guardar();
-						guardarPantalla();
+						if (guardarPantalla().isEmpty()){
+                                                    tab_empleado.actualizar();
+                                                }
+                                                
 						//						aut_empleado.setAutoCompletar("select IDE_GTEMP,DOCUMENTO_IDENTIDAD_GTEMP,APELLIDO_PATERNO_GTEMP,APELLIDO_MATERNO_GTEMP,PRIMER_NOMBRE_GTEMP,SEGUNDO_NOMBRE_GTEMP from GTH_EMPLEADO");
 						aut_empleado.setAutoCompletar("select IDE_GTEMP,DOCUMENTO_IDENTIDAD_GTEMP, APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP ||' '|| PRIMER_NOMBRE_GTEMP ||' '|| SEGUNDO_NOMBRE_GTEMP as nombres from GTH_EMPLEADO");
 
