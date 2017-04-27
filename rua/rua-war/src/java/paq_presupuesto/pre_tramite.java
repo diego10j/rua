@@ -365,6 +365,7 @@ public void aceptarAnual(){
                         tab_poa_tramite.setValor("comprometido_prpot", set_ingresa_presupuesto.getTab_seleccion().getFilaSeleccionada().getCampos()[4].toString());
                         tab_poa_tramite.setValor("saldo_comprometido_prpot", set_ingresa_presupuesto.getTab_seleccion().getFilaSeleccionada().getCampos()[4].toString());
 
+                        tab_poa_tramite.setColumnaSuma("comprometido_prpot");
 			utilitario.addUpdate("tab_poa_tramite");
 			sumarColumnas();
 		}
@@ -564,6 +565,7 @@ public void aceptarAnual(){
 		tab_tramite.setValor("total_compromiso_prtra",tab_poa_tramite.getSumaColumna("comprometido_prpot")+"");
 		tab_tramite.modificar(tab_tramite.getFilaActual());
 		utilitario.addUpdateTabla(tab_tramite, "total_compromiso_prtra","");	
+                tab_poa_tramite.setColumnaSuma("comprometido_prpot");
 
 	}
         public void sumarColumnas(){
@@ -644,6 +646,7 @@ public void aceptarAnual(){
 		// TODO Auto-generated method stub
 		utilitario.getTablaisFocus().eliminar();
                 sumarColumnas();
+                tab_poa_tramite.setColumnaSuma("comprometido_prpot");
 	}
 
 
