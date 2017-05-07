@@ -7,15 +7,10 @@ package portal.servicios;
 import framework.aplicacion.TablaGenerica;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import sistema.aplicacion.Utilitario;
 import portal.entidades.AsiDetalleHorasExtras;
 import portal.entidades.AsiGrupoIntervalo;
@@ -27,14 +22,12 @@ import portal.entidades.AsiPermisosVacacionHext;
  * @author Diego
  */
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
+
 public class ServicioHorasExtraJPA {
 
     private Utilitario utilitario = new Utilitario();
-    @PersistenceUnit(unitName="sistema")
-    private EntityManagerFactory fabrica;
-    @Resource
-    private UserTransaction utx;
+    @PersistenceContext
+    protected EntityManager manejador;
 
     public List getMarcacionesHorasExtra(String IDE_GEEDP, String fechaInicio, String fechaFin) {
         //Busca las marcaciones que son consideradas para horas Extra
@@ -47,35 +40,35 @@ public class ServicioHorasExtraJPA {
     }
 
     public AsiMotivo getMotivo(String ideAsmot) {
-        EntityManager manejador = fabrica.createEntityManager();
+       
         try {
             Query q = manejador.createNamedQuery("AsiMotivo.findByIdeAsmot");
             q.setParameter("ideAsmot", new BigDecimal(ideAsmot));
             return (AsiMotivo) q.getSingleResult();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }
 
     public AsiGrupoIntervalo getTipoHora(String ideAsgri) {
-        EntityManager manejador = fabrica.createEntityManager();
+       
         try {
             Query q = manejador.createNamedQuery("AsiGrupoIntervalo.findByIdeAsgri");
             q.setParameter("ideAsgri", new BigDecimal(ideAsgri));
             return (AsiGrupoIntervalo) q.getSingleResult();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }
 
     public String guardarHorasExtra(AsiPermisosVacacionHext solicitud, List<AsiDetalleHorasExtras> detalles) {
-        EntityManager manejador = fabrica.createEntityManager();
+       
         try {
-            utx.begin();
+           
             manejador.joinTransaction();
             long ideaspvh=new Long(utilitario.getConexion().getMaximo("ASI_PERMISOS_VACACION_HEXT", "IDE_ASPVH", 1));
             Integer conertideaspvh= (int) ideaspvh;
@@ -89,15 +82,12 @@ public class ServicioHorasExtraJPA {
                 detalleActual.setIdeAsdhe(convertideasdhe); //maximo de utilitario                
                 manejador.persist(detalleActual);
             }
-            utx.commit();
+           
         } catch (Exception e) {
-            try {
-                utx.rollback();
-            } catch (Exception e1) {
-            }
+           
             return e.getMessage();
         } finally {
-            manejador.close();
+            
         }
         return "";
     }
@@ -121,25 +111,25 @@ public class ServicioHorasExtraJPA {
     }
 
     public List<AsiPermisosVacacionHext> getSolicitudesHorasExtra(String ideGeedp) {
-        EntityManager manejador = fabrica.createEntityManager();
+       
         try {
             Query q = manejador.createQuery("SELECT a FROM AsiPermisosVacacionHext a WHERE a.ideGeedp.ideGeedp =" + ideGeedp + " and a.tipoAspvh=3 order by a.fechaSolicitudAspvh");
             return q.getResultList();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }
 
     public List<AsiDetalleHorasExtras> getDetallesHorasExtra(String ideAspvh) {
-        EntityManager manejador = fabrica.createEntityManager();
+       
         try {
             Query q = manejador.createQuery("SELECT a FROM AsiDetalleHorasExtras a WHERE a.ideAspvh.ideAspvh=" + ideAspvh + "");
             return q.getResultList();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }

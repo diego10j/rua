@@ -9,6 +9,7 @@ import componentes.AsientoContable;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -48,10 +49,12 @@ public class pre_inversiones extends Pantalla {
     private Grid gri = new Grid();
     private String ide_ipcai = "-1";
     private String iyp_ide_ipcer = null;
+    private String ide_teban = "-1";
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
     private double dou_capital_renova;
     private double dou_interes_renova;
+    private Combo com_bancos;
 
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
@@ -63,6 +66,7 @@ public class pre_inversiones extends Pantalla {
         mep_menu.agregarItem("Listado de Inversiones Bancarias", "dibujarListadoB", "ui-icon-note");//2
         mep_menu.agregarItem("Nuevo Certificado Bancario", "dibujarCertificadoB", "ui-icon-contact"); //1
         mep_menu.agregarItem("Pago de Interes", "dibujarPagoB", "ui-icon-contact"); //4
+        mep_menu.agregarItem("Renovaciones", "dibujarRenovacionesBanco", "ui-icon-calculator"); //21
         mep_menu.agregarItem("Generar Asiento de Terminación", "dibujarAsientoTerminaB", "ui-icon-notice");//12
         mep_menu.agregarSubMenu("INVERSIONES SALESIANAS");
         mep_menu.agregarItem("Listado de Inversiones Casas - Obras", "dibujarListadoCasas", "ui-icon-note");//5
@@ -479,9 +483,107 @@ public class pre_inversiones extends Pantalla {
         mep_menu.dibujar(7, "RENOVACIONES DE INVERSIONES CASAS - OBRAS", grupo);
     }
 
+    public void dibujarRenovacionesBanco() {
+        Grupo grupo = new Grupo();
+        ide_teban = "-1";
+        iyp_ide_ipcer = null;
+        com_bancos = new Combo();
+        com_bancos.setId("com_bancos");
+        com_bancos.setCombo(ser_inversion.getSqlComboBancos());
+        com_bancos.setMetodo("cargarInversionesPorBanco");
+
+        Grid gr = new Grid();
+        gr.setColumns(3);
+        gr.getChildren().add(new Etiqueta("<strong>BANCO : </strong>"));
+        gr.getChildren().add(com_bancos);
+        grupo.getChildren().add(gr);
+
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Renovación");
+        bot_asi.setMetodo("abrirRenovacionBanco");
+        bar_menu.agregarComponente(bot_asi);
+        grupo.getChildren().add(bar_menu);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setSql(ser_inversion.getSqlListaInversionesPorBanco("-1"));
+        tab_tabla1.setNumeroTabla(21);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setCampoPrimaria("ide_ipcer");
+        tab_tabla1.getColumna("ide_ipcer").setVisible(false);
+        tab_tabla1.getColumna("ide_teban").setVisible(false);
+        tab_tabla1.getColumna("CAPITAL").alinearDerecha();
+        tab_tabla1.getColumna("INTERES").alinearDerecha();
+        tab_tabla1.getColumna("CAPITAL_MAS_INTERES").alinearDerecha();
+        tab_tabla1.getColumna("CAPITAL_MAS_INTERES").setLongitud(35);
+        tab_tabla1.getColumna("FECHA_VENCIMIENTO").setLongitud(35);
+        tab_tabla1.getColumna("FECHA_VENCIMIENTO").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla1.getColumna("FECHA_VENCIMIENTO").alinearCentro();
+        tab_tabla1.getColumna("CAPITAL_MAS_INTERES").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla1.getColumna("IDE_CNCCC").setLink();
+        tab_tabla1.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla1.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla1.getColumna("NUM_CERTIFICADO").setFiltroContenido();
+        tab_tabla1.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla1.setScrollable(true);
+        tab_tabla1.setScrollHeight(170);
+        tab_tabla1.onSelect("seleccionarCertifcadoBancarioRenova");
+        tab_tabla1.dibujar();
+
+        PanelTabla pat_panel = new PanelTabla();
+        ItemMenu itemedita = new ItemMenu();
+        itemedita.setValue("Generar Renovación");
+        itemedita.setIcon("ui-icon-wrench");
+        itemedita.setMetodo("abrirRenovacion");
+        pat_panel.getMenuTabla().getChildren().add(itemedita);
+
+        pat_panel.setPanelTabla(tab_tabla1);
+        grupo.getChildren().add(pat_panel);
+
+        tab_tabla2 = new Tabla();
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setSql(ser_inversion.getSqlListaRenovacionesBanco("-1"));
+        tab_tabla2.setNumeroTabla(22);
+        tab_tabla2.setLectura(true);
+        tab_tabla2.setCampoPrimaria("ide_ipcer");
+        tab_tabla2.getColumna("ide_ipcer").setVisible(false);
+        tab_tabla2.getColumna("CAPITAL").alinearDerecha();
+        tab_tabla2.getColumna("INTERES").alinearDerecha();
+        tab_tabla2.getColumna("CAPITAL_MAS_INTERES").alinearDerecha();
+        tab_tabla2.getColumna("CAPITAL_MAS_INTERES").setLongitud(35);
+        tab_tabla2.getColumna("FECHA_VENCIMIENTO").setLongitud(35);
+        tab_tabla2.getColumna("FECHA_VENCIMIENTO").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla2.getColumna("FECHA_VENCIMIENTO").alinearCentro();
+        tab_tabla2.getColumna("CAPITAL_MAS_INTERES").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla2.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
+        tab_tabla2.getColumna("IDE_CNCCC").setLink();
+        tab_tabla2.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
+        tab_tabla2.getColumna("IDE_CNCCC").alinearCentro();
+        tab_tabla2.setScrollable(true);
+        tab_tabla2.setScrollHeight(110);
+        tab_tabla2.setHeader("RENOVACIONES REALIZADAS");
+
+        tab_tabla2.dibujar();
+        PanelTabla pat_panel1 = new PanelTabla();
+        pat_panel1.setPanelTabla(tab_tabla2);
+        grupo.getChildren().add(pat_panel1);
+
+        mep_menu.dibujar(21, "RENOVACIONES DE INVERSIONES BANCOS", grupo);
+    }
+
     public void seleccionarCertifcadoRenova(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
         tab_tabla2.setSql(ser_inversion.getSqlListaRenovaciones(tab_tabla1.getValorSeleccionado()));
+        tab_tabla2.ejecutarSql();
+    }
+
+    public void seleccionarCertifcadoBancarioRenova(SelectEvent evt) {
+        tab_tabla1.seleccionarFila(evt);
+        tab_tabla2.setSql(ser_inversion.getSqlListaRenovacionesBanco(tab_tabla1.getValorSeleccionado()));
         tab_tabla2.ejecutarSql();
     }
 
@@ -491,6 +593,19 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.ejecutarSql();
         tab_tabla2.setSql(ser_inversion.getSqlListaRenovaciones(tab_tabla1.getValorSeleccionado()));
         tab_tabla2.ejecutarSql();
+    }
+
+    public void cargarInversionesPorBanco() {
+        if (com_bancos.getValue() != null) {
+            tab_tabla1.setSql(ser_inversion.getSqlListaInversionesPorBanco(com_bancos.getValue().toString()));
+            tab_tabla1.ejecutarSql();
+            tab_tabla2.setSql(ser_inversion.getSqlListaRenovacionesBanco(tab_tabla1.getValorSeleccionado()));
+            tab_tabla2.ejecutarSql();
+        } else {
+            tab_tabla1.limpiar();
+            tab_tabla2.limpiar();
+        }
+
     }
 
     public void limpiarRenovacion() {
@@ -723,6 +838,22 @@ public class pre_inversiones extends Pantalla {
         utilitario.addUpdateTabla(tab_tabla2, "beneficiario_ipcai", "");
     }
 
+    public void cancelarInversion() {
+        if (tab_tabla1.getValor("ide_ipcer") != null) {
+            if (tab_tabla1.getValor("cancelado") != null && tab_tabla1.getValor("cancelado").equals("true")) {
+                utilitario.agregarMensajeInfo("La inversión seleccionada ya se encuentra Cancelada", "");
+                return;
+            }
+            ser_inversion.cancelarInversion(tab_tabla1.getValor("ide_ipcer"));
+            if (guardarPantalla().isEmpty()) {
+                String aux = tab_tabla1.getValorSeleccionado();
+                tab_tabla1.actualizar();
+                tab_tabla1.setFilaActual(aux);
+                tab_tabla1.calcularPaginaActual();
+            }
+        }
+    }
+
     public void dibujarListadoFondo() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -760,7 +891,11 @@ public class pre_inversiones extends Pantalla {
         itemedita.setIcon("ui-icon-pencil");
         itemedita.setMetodo("abrirModificarF");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        ItemMenu itemcancela = new ItemMenu();
+        itemcancela.setValue("Cancelar Inversión");
+        itemcancela.setIcon("ui-icon-check");
+        itemcancela.setMetodo("cancelarInversion");
+        pat_panel.getMenuTabla().getChildren().add(itemcancela);
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
@@ -870,6 +1005,12 @@ public class pre_inversiones extends Pantalla {
         itemedita.setMetodo("abrirModificarC");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
 
+        ItemMenu itemcancela = new ItemMenu();
+        itemcancela.setValue("Cancelar Inversión");
+        itemcancela.setIcon("ui-icon-check");
+        itemcancela.setMetodo("cancelarInversion");
+        pat_panel.getMenuTabla().getChildren().add(itemcancela);
+
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
@@ -975,6 +1116,29 @@ public class pre_inversiones extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione un certificado", "");
         }
 
+    }
+
+    public void abrirRenovacionBanco() {
+        if (tab_tabla1.getValor("ide_teban") != null) {
+            ide_teban = tab_tabla1.getValor("ide_teban");
+            iyp_ide_ipcer = tab_tabla1.getValor("ide_ipcer");
+            dou_capital_renova = 0;
+            dou_interes_renova = 0;
+            try {
+                dou_capital_renova = Double.parseDouble(tab_tabla1.getValor("CAPITAL"));
+            } catch (Exception e) {
+            }
+            try {
+                dou_interes_renova = Double.parseDouble(tab_tabla1.getValor("INTERES"));
+            } catch (Exception e) {
+            }
+
+            dibujarCertificadoB();
+        } else {
+            ide_teban = "-1";
+            iyp_ide_ipcer = null;
+            utilitario.agregarMensajeInfo("Seleccione un certificado de inversión", "");
+        }
     }
 
     public void abrirRenovacion() {
@@ -1181,8 +1345,8 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.setValidarInsertar(true);
         tab_tabla1.getColumna("ide_ippin").setVisible(false);
         tab_tabla1.getColumna("ide_ipcer").setVisible(false);
-        tab_tabla1.getColumna("capital_ippin").setVisible(false);
-        tab_tabla1.getColumna("interes_ippin").setVisible(false);
+        tab_tabla1.getColumna("capital_ippin").setVisible(true);
+        tab_tabla1.getColumna("interes_ippin").setVisible(true);
         tab_tabla1.getColumna("fecha_sistema_ippin").setVisible(false);
         tab_tabla1.getColumna("valor_ippin").alinearDerecha();
         tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
@@ -1247,7 +1411,11 @@ public class pre_inversiones extends Pantalla {
         itemedita.setIcon("ui-icon-pencil");
         itemedita.setMetodo("abrirModificarB");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
-
+        ItemMenu itemcancela = new ItemMenu();
+        itemcancela.setValue("Cancelar Inversión");
+        itemcancela.setIcon("ui-icon-check");
+        itemcancela.setMetodo("cancelarInversion");
+        pat_panel.getMenuTabla().getChildren().add(itemcancela);
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(2, "LISTADO DE INVERSIONES BANCARIAS", pat_panel);
@@ -1263,6 +1431,10 @@ public class pre_inversiones extends Pantalla {
             utilitario.addUpdate("gri");
             tab_tabla2.setValor("valor_ippin", aut_inversion.getValorArreglo(5));
             tab_tabla2.setValor("num_pago_ippin", String.valueOf(tab_tabla1.getTotalFilas() + 1));
+
+            tab_tabla2.setValor("capital_ippin", aut_inversion.getValorArreglo(5));
+            tab_tabla2.setValor("interes_ippin", aut_inversion.getValorArreglo(6));
+
             utilitario.addUpdateTabla(tab_tabla2, "valor_ippin,num_pago_ippin", null);
         } else {
             tab_tabla1.limpiar();
@@ -1311,12 +1483,14 @@ public class pre_inversiones extends Pantalla {
         tab_tabla1.getColumna("fecha_vence_ipcer").setLectura(true);
         tab_tabla1.getColumna("ide_iptin").setValorDefecto("0"); //BANCOS
         tab_tabla1.getColumna("es_inver_banco_ipcer").setValorDefecto("true"); //BANCOS
-        tab_tabla1.getColumna("ide_geper").setValorDefecto("1294"); //SOCIEDAD SALESIANA EN EL ECUADOR
-        tab_tabla1.getColumna("ide_ipein").setValorDefecto("0"); //NO CANCELADO
+        tab_tabla1.getColumna("ide_geper").setValorDefecto("1294"); //SOCIEDAD SALESIANA EN EL ECUADOR        
         tab_tabla1.getColumna("ide_ipcin").setValorDefecto("1");
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla1.getColumna("nuevo").setValorDefecto("true");
         tab_tabla1.getColumna("cancelado").setVisible(true);
+        tab_tabla1.getColumna("ide_ipein").setVisible(true);
+        tab_tabla1.getColumna("ide_ipein").setCombo("iyp_estado_inversion", "ide_ipein", "nombre_ipein", "");
+        tab_tabla1.getColumna("ide_ipein").setMetodoChange("cambioEstado");
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.setMostrarNumeroRegistros(false);
@@ -1339,8 +1513,15 @@ public class pre_inversiones extends Pantalla {
         rad_hace_asiento.setValue(true);
         gri1.getChildren().add(rad_hace_asiento);
         pat_panel.getChildren().add(gri1);
+        if (ide_teban.equals("-1")) {
+            mep_menu.dibujar(1, "CERTIFICADO DE INVERSIÓN BANCARIA", pat_panel);
+        } else {
+            tab_tabla1.setValor("iyp_ide_ipcer", iyp_ide_ipcer);
+            tab_tabla1.setValor("ide_teban", ide_teban);
+            tab_tabla1.setValor("es_renovacion_ipcer", "true");
+            mep_menu.dibujar(1, "RENOVACIÓN INVERSIÓN BANCARIA", pat_panel);
+        }
 
-        mep_menu.dibujar(1, "CERTIFICADO DE INVERSIÓN BANCARIA", pat_panel);
     }
 
     public void abrirModificarB() {

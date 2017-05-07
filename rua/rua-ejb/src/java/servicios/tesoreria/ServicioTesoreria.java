@@ -132,7 +132,7 @@ public class ServicioTesoreria {
                 + "where ide_tecba=" + ide_tecba + " "
                 + "and ide_teelb =" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
                 + "and fecha_trans_teclb BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
-                + "and conciliado_teclb=false  "
+                //+ "and conciliado_teclb=false  "
                 + "order by fecha_trans_teclb,ide_teclb";
     }
 

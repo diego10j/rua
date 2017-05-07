@@ -6,15 +6,10 @@ package portal.servicios;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import sistema.aplicacion.Utilitario;
 import portal.entidades.GenEmpleadosDepartamentoPar;
 import portal.entidades.GthTelefono;
@@ -23,51 +18,45 @@ import portal.entidades.NrhGarante;
 import portal.entidades.NrhMotivoAnticipo;
 import portal.entidades.NrhTipoGarante;
 
-
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
+
 public class ServicioCreditosJPA {
 
     private Utilitario utilitario = new Utilitario();
-    @PersistenceUnit(unitName="sistema")
-    private EntityManagerFactory fabrica;
-    @Resource
-    private UserTransaction utx;
+    @PersistenceContext
+    protected EntityManager manejador;
 
     public List<NrhAnticipo> getSolicitudesAnticipo(String ideGeedp) {
-        EntityManager manejador = fabrica.createEntityManager();
         try {
             Query q = manejador.createQuery("SELECT n FROM NrhAnticipo n WHERE n.ideGeedp.ideGeedp =" + ideGeedp + " and n.anticipoNrant=1 order by n.nroAnticipoNrant desc ");
             return q.getResultList();
         } catch (Exception e) {
-        } finally {
-            manejador.close();
-        }
+        } 
         return null;
     }
 
     public String guardarSolicitudAnticipo(NrhAnticipo solicitud, NrhGarante garante, GthTelefono telefono) {
-        EntityManager manejador = fabrica.createEntityManager();
+
         try {
-            utx.begin();
+
             manejador.joinTransaction();
             solicitud.setIdeNrmoa(manejador.find(NrhMotivoAnticipo.class, solicitud.getIdeNrmoa().getIdeNrmoa()));
             //Guarda o modifica solicitud
             if (solicitud.getIdeNrant() == null) {
 
-            	long idenrant=new Long(utilitario.getConexion().getMaximo("NRH_ANTICIPO", "IDE_NRANT", 1));
-            	  Integer conertidenrant= (int) idenrant;
+                long idenrant = new Long(utilitario.getConexion().getMaximo("NRH_ANTICIPO", "IDE_NRANT", 1));
+                Integer conertidenrant = (int) idenrant;
                 solicitud.setIdeNrant(conertidenrant); //maximo de utilitario
                 manejador.persist(solicitud);
                 if (garante != null && garante.getDocumentoIdentidadcNrgar() != null) {
                     garante.setIdeNrant(solicitud);
-                    long idenrgar=new Long(utilitario.getConexion().getMaximo("NRH_GARANTE", "IDE_NRGAR", 1));
-              	  Integer conertidenrgar= (int) idenrgar;
+                    long idenrgar = new Long(utilitario.getConexion().getMaximo("NRH_GARANTE", "IDE_NRGAR", 1));
+                    Integer conertidenrgar = (int) idenrgar;
                     garante.setIdeNrgar(conertidenrgar); //maximo de utilitario                    
                     manejador.persist(garante);
 //                    telefono.setIdeNrgar(garante);
-                    long idegttel=new Long(utilitario.getConexion().getMaximo("GTH_TELEFONO", "IDE_GTTEL", 1));
-                	  Integer conertidegttel= (int) idegttel;
+                    long idegttel = new Long(utilitario.getConexion().getMaximo("GTH_TELEFONO", "IDE_GTTEL", 1));
+                    Integer conertidegttel = (int) idegttel;
                     telefono.setIdeGttel(conertidegttel); //maximo de utilitario
                     manejador.persist(telefono);
                 }
@@ -76,42 +65,34 @@ public class ServicioCreditosJPA {
                 manejador.merge(garante);
                 manejador.merge(telefono);
             }
-            utx.commit();
+
         } catch (Exception e) {
-            try {
-                utx.rollback();
-            } catch (Exception e1) {
-            }
             return e.getMessage();
-        } finally {
-            manejador.close();
-        }
+        } 
         return "";
     }
 
     public NrhTipoGarante getGarante(String ideNrtig) {
-        EntityManager manejador = fabrica.createEntityManager();
+
         try {
             Query q = manejador.createNamedQuery("NrhTipoGarante.findByIdeNrtig");
             q.setParameter("ideNrtig", new BigDecimal(ideNrtig));
             return (NrhTipoGarante) q.getSingleResult();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }
 
     public GenEmpleadosDepartamentoPar getEmpleadoDepartamentoPartida(String ideGeedp) {
-        EntityManager manejador = fabrica.createEntityManager();
+
         try {
             Query q = manejador.createNamedQuery("GenEmpleadosDepartamentoPar.findByIdeGeedp");
             q.setParameter("ideGeedp", new BigDecimal(ideGeedp));
             return (GenEmpleadosDepartamentoPar) q.getSingleResult();
         } catch (Exception e) {
-        } finally {
-            manejador.close();
-        }
+        } 
         return null;
     }
 
@@ -159,7 +140,7 @@ public class ServicioCreditosJPA {
                 + "SELECT a.ide_geedp as ide_geedp_gerente, b.apellido_paterno_gtemp ||' '|| (case when  b.apellido_materno_gtemp is null then '' else  b.apellido_materno_gtemp end) ||' '|| b.primer_nombre_gtemp ||' '||(case when b.segundo_nombre_gtemp is null then '' else b.segundo_nombre_gtemp end) as jefe_gerente FROM gen_empleados_departamento_par a, gth_empleado b "
                 + "where a.ide_gtemp=b.ide_gtemp  "
                 + ")e ON e.ide_geedp_gerente=a.gen_ide_geedp "
-                + "where a.aprobado_nrant=true and a.ide_geedp="+ IDE_GEEDP+" "
+                + "where a.aprobado_nrant=true and a.ide_geedp=" + IDE_GEEDP + " "
                 + "order by nro_anticipo_nrant desc");
     }
 
@@ -170,18 +151,16 @@ public class ServicioCreditosJPA {
                 + "left join ( SELECT ide_nrrub as ide_rubro,detalle_nrrub FROM nrh_rubro )b ON b.ide_rubro=a.ide_nrrub "
                 + "where ide_nrani in ( "
                 + "select ide_nrani from  nrh_anticipo_interes where ide_nrant in (select ide_nrant from nrh_anticipo where ide_nrant=" + IDE_NRANT + ") "
-                + ") ORDER BY nro_cuota_nramo");        
+                + ") ORDER BY nro_cuota_nramo");
     }
 
     public GthTelefono getTelefonoGarate(String ideNrgar) {
-        EntityManager manejador = fabrica.createEntityManager();
+
         try {
             Query q = manejador.createQuery("SELECT g FROM GthTelefono g WHERE g.ideNrgar.ideNrgar =" + ideNrgar);
             return (GthTelefono) q.getSingleResult();
         } catch (Exception e) {
-        } finally {
-            manejador.close();
-        }
+        } 
         return null;
     }
 }

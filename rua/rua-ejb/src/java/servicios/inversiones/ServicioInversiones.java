@@ -37,7 +37,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
     }
-
+    
     public String getSqlListaCertificadosVencidos(String ide_iptin) {
         String condicion = "";
         if (ide_iptin != null && ide_iptin.isEmpty() == false && ide_iptin.equals("null") == false) {
@@ -56,7 +56,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
     }
-
+    
     public String getSqlCertificadosSinAsiento(String ide_iptin) {
         String condicion = "";
         if (ide_iptin != null && ide_iptin.isEmpty() == false && ide_iptin.equals("null") == false) {
@@ -74,7 +74,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
     }
-
+    
     public String getSqlCertificadosSinAsientoInteres(String ide_iptin) {
         String condicion = "";
         if (ide_iptin != null && ide_iptin.isEmpty() == false && ide_iptin.equals("null") == false) {
@@ -92,7 +92,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
     }
-
+    
     public String getSqlCertificadosSinAsientoTerminacion(String ide_iptin) {
         String condicion = "";
         if (ide_iptin != null && ide_iptin.isEmpty() == false && ide_iptin.equals("null") == false) {
@@ -132,7 +132,7 @@ public class ServicioInversiones extends ServicioBase {
         // str_maximo = ceros.concat(num_max);
         return num_max;
     }
-
+    
     public String getSqlTipoInversionesCombo() {
         return "SELECT ide_iptin,nombre_iptin FROM iyp_tipo_inversion ORDER BY ide_iptin";
     }
@@ -140,7 +140,7 @@ public class ServicioInversiones extends ServicioBase {
     /////////////NEW VERSIÓN
     public String getSqlListaInversionesBancarias() {
         return "SELECT ide_ipcer,nombre_teban as BANCO,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
-                + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO,ide_cnccc_terminacion\n"
+                + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,cancelado,nombre_ipein AS ESTADO,ide_cnccc_terminacion\n"
                 + "FROM iyp_certificado  a\n"
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "left join tes_cuenta_banco b on a.ide_tecba=b.ide_tecba\n"
@@ -149,10 +149,10 @@ public class ServicioInversiones extends ServicioBase {
                 + "and ide_iptin=0\n"
                 + "order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer";
     }
-
+    
     public String getSqlListaInversionesFondo() {
         return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,nom_geper AS BENEFICIARIO,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
-                + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO,ide_cnccc_terminacion\n"
+                + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,cancelado,nombre_ipein AS ESTADO,ide_cnccc_terminacion\n"
                 + "FROM iyp_certificado  a\n"
                 + "left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
                 + "left join gen_persona c on a.ide_geper = c.ide_geper  \n"
@@ -160,10 +160,10 @@ public class ServicioInversiones extends ServicioBase {
                 + "and ide_iptin=2\n"
                 + "order by num_certificado_ipcer";
     }
-
+    
     public String getSqlListaInversionesCasas() {
         return "SELECT ide_ipcer,a.ide_ipcai,c.nom_geper AS GRUPO,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,\n"
-                + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
+                + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,cancelado,\n"
                 + "nombre_ipein AS ESTADO,ide_cnccc_terminacion \n"
                 + "FROM iyp_certificado a \n"
                 + "left join iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
@@ -173,7 +173,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and b.ide_iptin=1\n"
                 + "order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer";
     }
-
+    
     public String getSqlComboListaInversionesCasas() {
         return "SELECT ide_ipcer,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,\n"
                 + "capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
@@ -185,7 +185,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and b.ide_iptin=1\n"
                 + "order by beneficiario_ipcai,fecha_emision_ipcer";
     }
-
+    
     public String getSqlListaInversionesCasasGrupo(String ide_geper) {
         return "SELECT ide_ipcer,b.ide_ipcai,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,\n"
                 + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
@@ -198,7 +198,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and b.ide_geper=" + ide_geper + "\n"
                 + "order by beneficiario_ipcai,fecha_emision_ipcer";
     }
-
+    
     public String getSqlListaRenovaciones(String iyp_ide_ipcer) {
         return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,\n"
                 + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
@@ -210,6 +210,30 @@ public class ServicioInversiones extends ServicioBase {
                 + "and b.ide_iptin=1 and iyp_ide_ipcer=" + iyp_ide_ipcer + " \n"
                 + "order by fecha_emision_ipcer";
     }
+    
+    public String getSqlListaRenovacionesBanco(String iyp_ide_ipcer) {
+        return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,\n"
+                + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
+                + "nombre_ipein AS ESTADO \n"
+                + "FROM iyp_certificado a \n"
+                + "left join iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
+                + "where nuevo=true \n"
+                + "and a.ide_iptin=0 and iyp_ide_ipcer=" + iyp_ide_ipcer + " \n"
+                + "order by fecha_emision_ipcer";
+    }
+    
+    public String getSqlListaInversionesPorBanco(String ide_teban) {
+        return "SELECT ide_ipcer,a.ide_teban,nombre_teban,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO\n"
+                + ",ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,cancelado,\n"
+                + "nombre_ipein AS ESTADO \n"
+                + "FROM iyp_certificado a \n"
+                + "left join iyp_estado_inversion d on a.ide_ipein=d.ide_ipein\n"
+                + "left join tes_banco e on a.ide_teban=e.ide_teban\n"
+                + "where nuevo=true \n"
+                + "and a.ide_iptin=0 and iyp_ide_ipcer is null                \n"
+                + "and a.ide_teban=" + ide_teban + "\n"
+                + "order by fecha_emision_ipcer desc";
+    }
 
     /**
      * Reorna la sentecnia SQL para que se utilice en Combos, Autocompletar
@@ -219,7 +243,7 @@ public class ServicioInversiones extends ServicioBase {
     public String getSqlComboClientes() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_cliente_geper is TRUE and identificac_geper is not null order by nom_geper ";
     }
-
+    
     public String getSqlComboGrupoBeneficiarios() {
         return "SELECT a.ide_geper,nom_geper \n"
                 + "FROM iyp_cab_inversion a \n"
@@ -228,7 +252,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "GROUP BY a.ide_geper,nom_geper \n"
                 + "order by nom_geper";
     }
-
+    
     public String getSecuencialNuevos(String ide_iptin) {
         int max = 0;
         TablaGenerica tab_secuencia = utilitario.consultar("select ide_iptin,max(CAST(coalesce(num_certificado_ipcer, '0') AS Integer)) as num_max FROM iyp_certificado WHERE ide_iptin=" + ide_iptin + "  and nuevo=true and ide_sucu=" + utilitario.getVariable("ide_sucu") + " GROUP BY ide_iptin");
@@ -242,7 +266,7 @@ public class ServicioInversiones extends ServicioBase {
         String num_max = String.valueOf(max);
         return num_max;
     }
-
+    
     public String getSqlListaInversionesCasasSinTerminacion() {
         return "SELECT ide_ipcer,a.ide_ipcai,c.nom_geper AS GRUPO,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,\n"
                 + "ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,\n"
@@ -255,7 +279,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and b.ide_iptin=1 and ide_cnccc_terminacion is null \n"
                 + "order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer";
     }
-
+    
     public String getSqlListaInversionesFondoSinTerminacion() {
         return "SELECT ide_ipcer,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
                 + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO,a.ide_geper\n"
@@ -265,7 +289,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and ide_iptin=2\n"
                 + "order by num_certificado_ipcer";
     }
-
+    
     public String getSqlListaInversionesBancariasSinTerminacion() {
         return "SELECT ide_ipcer,nombre_teban as BANCO,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES\n"
                 + ",fecha_vence_ipcer AS FECHA_VENCIMIENTO,nombre_ipein AS ESTADO,a.ide_geper\n"
@@ -277,7 +301,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "and ide_iptin=0\n"
                 + "order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer";
     }
-
+    
     public String getSqlListaCertificadosVencidosNuevas() {
         String sql = "select ide_ipcer,a.ide_iptin,nombre_iptin,fecha_vence_ipcer,num_certificado_ipcer,nombre_ipcin,observacion_ipcer,fecha_emision_ipcer,plazo_ipcer,capital_ipcer,interes_ipcer,valor_a_pagar_ipcer,cod_captacion_ipcer,nombre_ipein,ide_cnccc_terminacion,ide_cnccc,ide_cnccc_interes\n"
                 + "from iyp_certificado a\n"
@@ -291,7 +315,7 @@ public class ServicioInversiones extends ServicioBase {
                 + "order by nombre_iptin,fecha_emision_ipcer desc";
         return sql;
     }
-
+    
     public String getSqlListaCertificadosCanceladosNuevas() {
         String sql = "select ide_ipcer,a.ide_iptin,nombre_iptin,fecha_vence_ipcer,num_certificado_ipcer,nombre_ipcin,observacion_ipcer,fecha_emision_ipcer,plazo_ipcer,capital_ipcer,interes_ipcer,valor_a_pagar_ipcer,cod_captacion_ipcer,nombre_ipein,ide_cnccc_terminacion,ide_cnccc,ide_cnccc_interes\n"
                 + "from iyp_certificado a\n"
@@ -314,5 +338,9 @@ public class ServicioInversiones extends ServicioBase {
         return "select ide_teban,nombre_teban from tes_banco  "
                 + "order by nombre_teban";
     }
-
+    
+    public void cancelarInversion(String ide_ipcer) {
+        utilitario.getConexion().agregarSql("UPDATE iyp_certificado set cancelado=true where ide_ipcer=" + ide_ipcer);
+    }
+    
 }

@@ -5,56 +5,40 @@
 package portal.servicios;
 
 import framework.aplicacion.TablaGenerica;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import sistema.aplicacion.Utilitario;
-import portal.entidades.AsiMotivo;
 import portal.entidades.AsiPermisosVacacionHext;
-import portal.entidades.GenAnio;
-import portal.entidades.GenMes;
-import portal.entidades.GenPeriodo;
-import portal.entidades.GenPeriodoPK;
 
 /**
  *
  * @author Diego
  */
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
+
 public class ServicioVacacionesJPA {
 
     private Utilitario utilitario = new Utilitario();
-    @PersistenceUnit(unitName="sistema")
-    private EntityManagerFactory fabrica;
-    @Resource
-    private UserTransaction utx;
-
+    @PersistenceContext
+    protected EntityManager manejador;
     public List<AsiPermisosVacacionHext> getSolicitudesVacaciones(String ideGeedp) {
-        EntityManager manejador = fabrica.createEntityManager();
+      
         try {
             Query q = manejador.createQuery("SELECT a FROM AsiPermisosVacacionHext a WHERE a.ideGeedp.ideGeedp =" + ideGeedp + " and a.tipoAspvh=2 order by a.fechaSolicitudAspvh");
             return q.getResultList();
         } catch (Exception e) {
         } finally {
-            manejador.close();
+            
         }
         return null;
     }
 
     public String guardarSolicitudVacaciones(AsiPermisosVacacionHext solicitud) {
-        EntityManager manejador = fabrica.createEntityManager();
+      
         try {
-            utx.begin();
             manejador.joinTransaction();
             //solicitud.setIdeAsmot(manejador.find(AsiMotivo.class, solicitud.getIdeAsmot().getIdeAsmot()));
            // solicitud.getGenPeriodo().setGenAnio(manejador.find(GenAnio.class, solicitud.getGenPeriodo().getGenAnio().getIdeGeani()));
@@ -70,15 +54,12 @@ public class ServicioVacacionesJPA {
             } else {
                 manejador.merge(solicitud);
             }
-            utx.commit();
+           
         } catch (Exception e) {
-            try {
-                utx.rollback();
-            } catch (Exception e1) {
-            }
+           
             return e.getMessage();
         } finally {
-            manejador.close();
+            
         }
         return "";
     }

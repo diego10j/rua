@@ -475,15 +475,17 @@ public class pre_libro_bancos extends Pantalla {
                     val = val.replace(",", "");
                     dou_valor = Double.parseDouble(utilitario.getFormatoNumero(val));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     continue;
                 }
                 try {
                     String doc = tab_mov.getValor(j, "numero_teclb");
                     lon_docu = Long.parseLong(doc);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     continue;
                 }
-                //System.out.println("-- " + dou_valorC + "   ...  " + dou_valor + "   ===  " + lon_docuC + " === " + lon_docu);
+                //        System.out.println("-- " + dou_valorC + "   ...  " + dou_valor + "   ===  " + lon_docuC + " === " + lon_docu);
                 if (dou_valor == dou_valorC) {
                     if (lon_docu == lon_docuC) {
                         encontro = true;
@@ -497,7 +499,7 @@ public class pre_libro_bancos extends Pantalla {
 
             }
 
-            //System.out.println("---" + encontro);
+            System.out.println("---" + encontro);
             if (encontro) {
                 tab_tabla1.setValor(i, "ENCONTRO", "true");
             } else {
@@ -505,7 +507,7 @@ public class pre_libro_bancos extends Pantalla {
             }
 
         }
-        //System.out.println("=== " + str_econtrados);
+        //  System.out.println("=== " + str_econtrados);
         if (str_econtrados.isEmpty() == false) {
             sel_conciliados.getTab_seleccion().setSql(ser_tesoreria.getSqlTransaccionesEncontradasConciliarCuenta(str_econtrados));
             sel_conciliados.getTab_seleccion().ejecutarSql();
@@ -780,6 +782,7 @@ public class pre_libro_bancos extends Pantalla {
 
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         gri1.getChildren().add(tex_num);
 
         contenido.getChildren().add(gri1);
@@ -898,6 +901,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(com_tip_tran);
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         gri1.getChildren().add(tex_num);
         contenido.getChildren().add(gri1);
 
@@ -1010,6 +1014,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(com_tip_tran);
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         gri1.getChildren().add(tex_num);
         contenido.getChildren().add(gri1);
         PanelGrid gri4 = new PanelGrid();
@@ -1083,6 +1088,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(com_tip_tran);
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         gri1.getChildren().add(tex_num);
 
         gri1.getChildren().add(new Etiqueta("<strong>ACUMULAR ANTICIPOS ANTERIORES : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
@@ -1220,6 +1226,7 @@ public class pre_libro_bancos extends Pantalla {
 
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         grid1.getChildren().add(tex_num);
 
         Grid gri3 = new Grid();
@@ -1381,6 +1388,7 @@ public class pre_libro_bancos extends Pantalla {
 
         tex_num = new Texto();
         tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
         gri2.getChildren().add(tex_num);
 
         PanelGrid gri4 = new PanelGrid();
