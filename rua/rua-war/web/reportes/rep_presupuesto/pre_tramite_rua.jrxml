@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="80"/>
 	<parameter name="ide_prcer" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -121,7 +121,7 @@ order by codigo_clasificador_prcla]]>
 	<pageHeader>
 		<band height="100" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="1" y="22" width="70" height="20"/>
+				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="1" y="22" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -259,30 +259,18 @@ order by codigo_clasificador_prcla]]>
 	<summary>
 		<band height="119" splitType="Stretch">
 			<line>
-				<reportElement uuid="d6d39f3b-1299-4290-aa7b-ce92b42fedb1" x="380" y="83" width="162" height="1"/>
+				<reportElement uuid="d6d39f3b-1299-4290-aa7b-ce92b42fedb1" x="321" y="83" width="162" height="1"/>
 			</line>
-			<staticText>
-				<reportElement uuid="990bedf3-45d3-4b23-9eed-d7880a53dd53" x="234" y="99" width="77" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Aprobado por:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="1563884a-7440-4632-ac54-d876bd19e452" x="198" y="84" width="158" height="20"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$P{jefe_presupuesto}]]></textFieldExpression>
-			</textField>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="27" y="82" width="149" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="41" y="82" width="149" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="df3b0fb3-8b37-4cd6-b349-9b1df3ce2a68" x="365" y="84" width="180" height="20"/>
+				<reportElement uuid="df3b0fb3-8b37-4cd6-b349-9b1df3ce2a68" x="306" y="84" width="180" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b25f3eae-ba84-441a-85f0-a1c6236186c6" x="28" y="84" width="158" height="20"/>
+				<reportElement uuid="b25f3eae-ba84-441a-85f0-a1c6236186c6" x="41" y="84" width="158" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{elaborado}]]></textFieldExpression>
 			</textField>
@@ -293,11 +281,8 @@ order by codigo_clasificador_prcla]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sum_certificacion}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement uuid="aca11e9e-0374-401c-b683-fe5d7381d4f8" x="197" y="82" width="149" height="1"/>
-			</line>
 			<staticText>
-				<reportElement uuid="5207717e-b601-4ce4-afd3-7782268d4fbc" x="389" y="99" width="137" height="20"/>
+				<reportElement uuid="5207717e-b601-4ce4-afd3-7782268d4fbc" x="330" y="99" width="137" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
@@ -318,11 +303,11 @@ order by codigo_clasificador_prcla]]>
 				<text><![CDATA[     TOTAL:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="50ba4bef-c9d2-4ec7-9a7f-ca0d0ff6a5f2" x="63" y="99" width="77" height="20"/>
+				<reportElement uuid="50ba4bef-c9d2-4ec7-9a7f-ca0d0ff6a5f2" x="77" y="99" width="77" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Elaborado por:]]></text>
+				<text><![CDATA[Solicitado por:]]></text>
 			</staticText>
 		</band>
 	</summary>
