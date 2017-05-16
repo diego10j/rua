@@ -119,7 +119,7 @@ order by b.nombre_georg,fecha_trans_incci,d.nom_geper,e.nombre_inarti]]>
 	<title>
 		<band height="87" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="5fad5f79-f603-4d12-a628-2f81f55ca9a7" x="340" y="73" width="65" height="14"/>
+				<reportElement uuid="5fad5f79-f603-4d12-a628-2f81f55ca9a7" x="286" y="73" width="119" height="14"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -133,7 +133,7 @@ order by b.nombre_georg,fecha_trans_incci,d.nom_geper,e.nombre_inarti]]>
 				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="43f2f392-9fd0-4432-9da4-43c2e5fd7c68" x="425" y="73" width="77" height="14"/>
+				<reportElement uuid="43f2f392-9fd0-4432-9da4-43c2e5fd7c68" x="425" y="73" width="108" height="14"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
