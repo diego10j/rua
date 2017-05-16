@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.8150000000000037"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="336"/>
+	<property name="ireport.y" value="85"/>
 	<parameter name="ide_acact" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -56,7 +56,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<reportElement uuid="49c35220-230a-4287-824c-f28b7c79cbcd" x="398" y="3" width="158" height="48"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="e4a369ae-764e-4812-8c3b-6cbbe22e3adf" x="1" y="99" width="554" height="53"/>
+				<reportElement uuid="e4a369ae-764e-4812-8c3b-6cbbe22e3adf" x="1" y="88" width="554" height="70"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="398" y="33" width="39" height="13"/>
@@ -75,7 +75,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{fecha_asigna_acact}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="66174933-7273-472b-a4ac-188b5cbab65b" x="0" y="112" width="99" height="13"/>
+				<reportElement uuid="66174933-7273-472b-a4ac-188b5cbab65b" x="0" y="105" width="99" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -83,7 +83,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CÓDIGO OBRA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3cc49e1e-3af9-46c7-a9dd-5b0b781b8493" x="0" y="125" width="99" height="13"/>
+				<reportElement uuid="3cc49e1e-3af9-46c7-a9dd-5b0b781b8493" x="0" y="118" width="99" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -91,7 +91,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CODIGO ÁREA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="f57c9ccc-60d4-40d9-9a40-99a88d67598a" x="221" y="59" width="334" height="21"/>
+				<reportElement uuid="f57c9ccc-60d4-40d9-9a40-99a88d67598a" x="220" y="59" width="334" height="21"/>
 				<box leftPadding="6" rightPadding="0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
@@ -121,7 +121,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA["N. "+$F{codigo_acact}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="faa5d873-8282-4bf5-b3d8-6464ca0bad17" x="0" y="99" width="99" height="13"/>
+				<reportElement uuid="faa5d873-8282-4bf5-b3d8-6464ca0bad17" x="0" y="92" width="99" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -129,36 +129,36 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CÓDIGO CASA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="552a6a25-7fd9-433d-8432-10c85ee63162" x="0" y="139" width="150" height="13"/>
+				<reportElement uuid="552a6a25-7fd9-433d-8432-10c85ee63162" x="0" y="132" width="99" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CUSTODIO:]]></text>
+				<text><![CDATA[AREA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="64811b18-18fe-48f1-a630-3e7e167abdf0" x="99" y="99" width="51" height="13"/>
+				<reportElement uuid="64811b18-18fe-48f1-a630-3e7e167abdf0" x="99" y="92" width="51" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{codigo_gecas}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="116d22ef-0910-430a-9922-44c09e5b1e1e" x="99" y="112" width="51" height="13"/>
+				<reportElement uuid="116d22ef-0910-430a-9922-44c09e5b1e1e" x="99" y="105" width="51" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{codigo_geobr}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="d0a88bc5-e0f8-4ce0-8195-890749470545" x="99" y="125" width="51" height="13"/>
+				<reportElement uuid="d0a88bc5-e0f8-4ce0-8195-890749470545" x="99" y="118" width="51" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{codigo_acuba}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8488f952-60d0-4a33-88c1-77f2fb7f542f" x="150" y="139" width="398" height="13"/>
+				<reportElement uuid="8488f952-60d0-4a33-88c1-77f2fb7f542f" x="220" y="118" width="327" height="13"/>
 				<box leftPadding="3"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="78b53a13-3a67-4747-9a29-6dec26f8e3cc" x="150" y="99" width="51" height="13"/>
+				<reportElement uuid="78b53a13-3a67-4747-9a29-6dec26f8e3cc" x="150" y="92" width="51" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -166,15 +166,15 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CASA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="76d034db-be40-47c9-b10d-e4cad9280c0a" x="150" y="125" width="51" height="13"/>
+				<reportElement uuid="76d034db-be40-47c9-b10d-e4cad9280c0a" x="150" y="118" width="71" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ÁREA:]]></text>
+				<text><![CDATA[CUSTODIO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6221099c-d4a3-46c8-b99e-b48c509bdbc6" x="150" y="112" width="51" height="13"/>
+				<reportElement uuid="6221099c-d4a3-46c8-b99e-b48c509bdbc6" x="150" y="105" width="51" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -182,17 +182,17 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[OBRA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f7977aec-1dd6-4c37-8f82-06314550447e" x="201" y="99" width="347" height="13"/>
+				<reportElement uuid="f7977aec-1dd6-4c37-8f82-06314550447e" x="221" y="92" width="327" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_gecas}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="0b299b49-04aa-493a-b390-42004a849d6f" x="201" y="112" width="347" height="13"/>
+				<reportElement uuid="0b299b49-04aa-493a-b390-42004a849d6f" x="221" y="105" width="327" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{codigo_geobr}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d3fe739e-4958-4bc2-92da-b26793271739" x="201" y="125" width="347" height="13"/>
+				<reportElement uuid="d3fe739e-4958-4bc2-92da-b26793271739" x="99" y="132" width="448" height="29"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombre_acuba}]]></textFieldExpression>
 			</textField>
