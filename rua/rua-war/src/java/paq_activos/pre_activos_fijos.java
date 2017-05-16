@@ -82,6 +82,9 @@ public class pre_activos_fijos extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
         mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1                
+
+        mep_menu.agregarItem("Listado Bienes de Control", "dibujarListadosBienesC", "ui-icon-note");//1       
+
         mep_menu.agregarItem("Depreciar Activos", "dibujarDepreciar", "ui-icon-clock");//6
         mep_menu.agregarItem("Dar de Baja Activos", "dibujarDardeBaja", "ui-icon-cancel");//7
         mep_menu.agregarSubMenu("ACTAS");
@@ -613,6 +616,67 @@ public class pre_activos_fijos extends Pantalla {
         } else {
             utilitario.agregarMensajeError("Seleccione un activo fijo", "");
         }
+    }
+
+    public void dibujarListadosBienesC() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Datos Bien de Control");
+        bot_ver.setIcon("ui-icon-search");
+        bot_ver.setMetodo("cargarActivoFijo");
+        bar_menu.agregarComponente(bot_ver);
+        bar_menu.agregarSeparador();
+        Boton bot_elimina = new Boton();
+        bot_elimina.setValue("Eliminar Bien de Control");
+        bot_elimina.setIcon("ui-icon-cancel");
+        bot_elimina.setMetodo("abrirEliminarActivoFijo");
+        bar_menu.agregarComponente(bot_elimina);
+
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_activos.getSqlListaBienesControl());
+        tab_tabla.setCampoPrimaria("ide_acafi");
+        tab_tabla.getColumna("ide_acafi").setVisible(true);
+        tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("ide_acafi").setFiltro(true);
+        tab_tabla.getColumna("act_ide_acafi").setVisible(false);
+        tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
+        tab_tabla.getColumna("nom_geper").setNombreVisual("CUSTODIO");
+        tab_tabla.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        tab_tabla.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla.getColumna("CASA").setFiltroContenido();
+        tab_tabla.getColumna("OBRA").setFiltroContenido();
+        tab_tabla.getColumna("CLASE").setFiltroContenido();
+        tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
+        tab_tabla.getColumna("SECUENCIAL").setFiltro(true);
+        tab_tabla.getColumna("SECUENCIAL").setAncho(2);
+        tab_tabla.getColumna("SECUENCIAL").setLongitud(2);
+        tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
+        tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla.getColumna("cantidad").alinearDerecha();
+        tab_tabla.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
+        tab_tabla.getColumna("valor_compra_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
+        tab_tabla.setLectura(true);
+        tab_tabla.setRows(20);
+
+        //COLOR verde cantidad diferente de  1
+        tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+
+        Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(20, "LISTADO BIENES DE CONTROL", gru);
     }
 
     public void dibujarListadosActivos() {

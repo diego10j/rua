@@ -1027,8 +1027,8 @@ public class pre_contabilidad extends Pantalla {
                 if (sel_tab.isVisible()) {
 
                     if (sel_tab.getSeleccionados() != null && !sel_tab.getSeleccionados().isEmpty()) {
-                        System.out.println("nn " + sel_tab.getSeleccionados());
-                        parametro.put("ide_cndpc", sel_tab.getSeleccionados());//lista sel                     
+                        System.out.println("nn " + sel_tab.getSeleccionados().replace("null,", ""));
+                        parametro.put("ide_cndpc", sel_tab.getSeleccionados().replace("null,", ""));//lista sel                     
                         sel_tab.cerrar();
                         String estado = "" + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comp_final");
                         parametro.put("ide_cneco", estado);
@@ -1045,7 +1045,7 @@ public class pre_contabilidad extends Pantalla {
 //                    } else {
 //                        System.out.println("sel tab " + utilitario.generarComillasLista(lis_ide_cndpc_deseleccionados));
 //                        parametro.put("ide_cndpc", utilitario.generarComillasLista(lis_ide_cndpc_deseleccionados));//lista sel                     
-//                    }
+//                    } 
                 } else if (sec_rango_reporte.isVisible()) {
                     if (sec_rango_reporte.isFechasValidas()) {
                         parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
@@ -1053,6 +1053,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("ide_cnlap_haber", p_con_lugar_haber);
                         parametro.put("ide_cnlap_debe", p_con_lugar_debe);
                         sec_rango_reporte.cerrar();
+                        sel_rep.setDataSource(null);
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                         sel_rep.dibujar();
                         utilitario.addUpdate("sel_rep,sec_rango_reporte");
