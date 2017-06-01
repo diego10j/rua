@@ -98,6 +98,9 @@ public class DocumentoCxP extends Dialogo {
     private Combo com_compensacion = new Combo();
     private Texto tex_monto_comp = new Texto();
 
+    private Etiqueta eti_subtotal = new Etiqueta();
+    private Etiqueta eti_iva = new Etiqueta();
+
     public DocumentoCxP() {
         //utilitario.getConexion().setImprimirSqlConsola(true);
         //Recupera todos los parametros que se van a utilizar
@@ -137,7 +140,7 @@ public class DocumentoCxP extends Dialogo {
         this.setDialogo(tab_documenoCxP);
 
         //Recupera porcentaje iva
-        tarifaIVA = ser_configuracion.getPorcentajeIva();
+        tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         dia_creacion_cliente = new Dialogo();
         dia_creacion_cliente.setId("dia_creacion_cliente");
         dia_creacion_cliente.setTitle("CREAR PROVEEDOR");
@@ -598,6 +601,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("fecha_emisi_cpcfa").setValorDefecto(utilitario.getFechaActual());
         tab_cab_documento.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA EMISIÓN");
         tab_cab_documento.getColumna("fecha_emisi_cpcfa").setOrden(1);
+        tab_cab_documento.getColumna("fecha_emisi_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".cambioFecha");
         tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "ide_geper=-1"); //por defecto no carga los clientes
         tab_cab_documento.getColumna("ide_geper").setAutoCompletar();
         tab_cab_documento.getColumna("ide_geper").setRequerida(true);
@@ -907,8 +911,8 @@ public class DocumentoCxP extends Dialogo {
         tex_valor_descuento.setValue(utilitario.getFormatoNumero("0"));
         tex_valor_descuento.setMetodoChangeRuta(tab_det_documento.getRuta() + ".calcularTotalDocumento");
         gri_valores.getChildren().add(tex_valor_descuento);
-
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        gri_valores.getChildren().add(eti_subtotal);
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal12.setValue(utilitario.getFormatoNumero("0"));
@@ -918,7 +922,8 @@ public class DocumentoCxP extends Dialogo {
         tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal0.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal0);
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        gri_valores.getChildren().add(eti_iva);
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_iva.setValue(utilitario.getFormatoNumero("0"));
@@ -1040,6 +1045,13 @@ public class DocumentoCxP extends Dialogo {
             eti_anticipo.setRendered(false);
         }
         utilitario.addUpdate("tab_documenoCxP:0:gri_pto");
+    }
+
+    public void cambioFecha() {
+        tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        calcularTotalDocumento();
     }
 
     public void insertar() {

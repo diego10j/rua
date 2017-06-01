@@ -16,7 +16,7 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioConfiguracion {
-    
+
     private final Utilitario utilitario = new Utilitario();
 
     /**
@@ -43,7 +43,7 @@ public class ServicioConfiguracion {
                 } else {
                     return getCuentaPersona(identificador, str_padre);
                 }
-                
+
             } else {
                 return str_cuenta;
             }
@@ -76,7 +76,7 @@ public class ServicioConfiguracion {
                 } else {
                     return getCuentaPersona(identificador, str_padre);
                 }
-                
+
             } else {
                 return str_cuenta;
             }
@@ -124,7 +124,7 @@ public class ServicioConfiguracion {
             if (transaccionActivo != null) {
                 str_sql += "and ide_acttr=" + transaccionActivo + " ";
             }
-            
+
             List lis_configura = utilitario.getConexion().consultar(str_sql);
             if (lis_configura != null && !lis_configura.isEmpty()) {
                 //  return ltab_identificador.obtener_texto(0, "ide_cndpc");
@@ -164,16 +164,16 @@ public class ServicioConfiguracion {
         }
         return null;
     }
-    
+
     public String getSqlAsientosTipo() {
         return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a INNER JOIN sis_modulo b on a.ide_modu=b.ide_modu and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");//!!!!!***AGREAGAR MULTIEMPRESA
     }
-    
+
     public TablaGenerica getCuentasAsientoTipo(String ide_conac) {
         //Solo cuentas especificas 
         return utilitario.consultar("SELECT * FROM cont_asiento_tipo WHERE ide_conac=" + ide_conac + " and ide_inarti is null order by ide_cnlap");
     }
-    
+
     public TablaGenerica getCabeceraAsientoTipo(String ide_conac) {
         //Solo cuentas especificas 
         return utilitario.consultar("SELECT * FROM cont_nombre_asiento_contable WHERE ide_conac=" + ide_conac);
@@ -182,20 +182,27 @@ public class ServicioConfiguracion {
     /**
      * Retorna el porcentaje de Iva vigente
      *
+     * @param fecha
      * @return
      */
-    public double getPorcentajeIva() {
+    public double getPorcentajeIva(String fecha) {
         double valor = 0;
         try {
-            String p_con_porcentaje_imp_iva = utilitario.getVariable("p_con_porcentaje_imp_iva");
-            TablaGenerica tab_porcen = utilitario.consultar("select ide_cnpim,porcentaje_cnpim from con_porcen_impues where ide_cnpim=" + p_con_porcentaje_imp_iva);
-            if (tab_porcen.isEmpty() == false) {
-                valor = Double.parseDouble(tab_porcen.getValor("porcentaje_cnpim"));
+            TablaGenerica tab_vigecia = utilitario.consultar("select ide_cnpim,porcentaje_cnpim from con_porcen_impues where '" + fecha + "' BETWEEN fecha_desde_cnpim and fecha_fin_cnpim and activo_cnpim=true");
+            if (tab_vigecia.isEmpty() == false) {
+                valor = Double.parseDouble(tab_vigecia.getValor("porcentaje_cnpim"));
+            } else {
+                String p_con_porcentaje_imp_iva = utilitario.getVariable("p_con_porcentaje_imp_iva");
+                TablaGenerica tab_porcen = utilitario.consultar("select ide_cnpim,porcentaje_cnpim from con_porcen_impues where ide_cnpim=" + p_con_porcentaje_imp_iva);
+                if (tab_porcen.isEmpty() == false) {
+                    valor = Double.parseDouble(tab_porcen.getValor("porcentaje_cnpim"));
+                }
             }
+
         } catch (Exception e) {
         }
-        
+
         return valor;
     }
-    
+
 }

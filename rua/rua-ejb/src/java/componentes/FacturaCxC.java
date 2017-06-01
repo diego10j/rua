@@ -104,6 +104,9 @@ public class FacturaCxC extends Dialogo {
     private Tabla tab_creacion_producto;
     private Dialogo dia_creacion_producto;
 
+    private Etiqueta eti_subtotal = new Etiqueta();
+    private Etiqueta eti_iva = new Etiqueta();
+
     public FacturaCxC() {
         this.setWidth("95%");
         this.setHeight("90%");
@@ -122,7 +125,7 @@ public class FacturaCxC extends Dialogo {
         men_factura.setId("men_factura");
         utilitario.getPantalla().getChildren().add(men_factura);
         //Recupera porcentaje iva
-        tarifaIVA = ser_configuracion.getPorcentajeIva();
+        tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         dia_creacion_cliente = new Dialogo();
         dia_creacion_cliente.setId("dia_creacion_cliente");
         dia_creacion_cliente.setTitle("CREAR CLIENTE");
@@ -450,6 +453,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("fecha_trans_cccfa").setValorDefecto(utilitario.getFechaActual());
         tab_cab_factura.getColumna("fecha_trans_cccfa").setVisible(false);
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setOrden(2);
+        tab_cab_factura.getColumna("fecha_emisi_cccfa").setMetodoChangeRuta(tab_cab_factura.getRuta() + ".cambioFecha");
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setValorDefecto(utilitario.getFechaActual());
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA EMISION");
         tab_cab_factura.getColumna("fecha_emisi_cccfa").setRequerida(true);
@@ -578,12 +582,13 @@ public class FacturaCxC extends Dialogo {
         Grid gri_valores = new Grid();
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(4);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        gri_valores.getChildren().add(eti_subtotal);
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
-
-        gri_valores.getChildren().add(new Etiqueta("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>"));
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        gri_valores.getChildren().add(eti_iva);
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
@@ -602,6 +607,13 @@ public class FacturaCxC extends Dialogo {
         gri_total.getChildren().add(gri_valores);
         grupo.getChildren().add(gri_total);
         return grupo;
+    }
+
+    public void cambioFecha() {
+        tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_factura.getValor("fecha_emisi_cccfa"));
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        calcularTotalFactura();
     }
 
     private Grupo dibujarAsientoVenta() {
