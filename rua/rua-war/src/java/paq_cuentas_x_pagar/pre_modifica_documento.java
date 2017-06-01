@@ -98,7 +98,7 @@ public class pre_modifica_documento extends Pantalla {
         bar_botones.agregarBoton(bot_clean);
 
         //Recupera porcentaje iva
-        tarifaIVA = ser_configuracion.getPorcentajeIva();
+        tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         div_division.setId("div_division");
         agregarComponente(div_division);
 

@@ -58,7 +58,7 @@ public class pre_modifica_factura extends Pantalla {
 
     public pre_modifica_factura() {
 
-        tarifaIVA = ser_configuracion.getPorcentajeIva();
+        tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
