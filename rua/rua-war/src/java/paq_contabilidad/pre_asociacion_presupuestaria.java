@@ -66,6 +66,7 @@ public class pre_asociacion_presupuestaria extends Pantalla {
 
 		tab_asociacion_presupuestaria.dibujar();
 		PanelTabla pat_asociacion_presupuestaria=new PanelTabla();
+                pat_asociacion_presupuestaria.setId("pat_asociacion_presupuestaria");
 		pat_asociacion_presupuestaria.setPanelTabla(tab_asociacion_presupuestaria);
 
 		Division div_Division=new Division();
