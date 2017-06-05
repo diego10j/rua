@@ -1677,7 +1677,9 @@ public class DocumentoCxP extends Dialogo {
             base = Double.parseDouble(tab_com_reembolso.getValor("base_grabada_cpcfa"));
         } catch (Exception e) {
         }
-        double iva = base * tarifaIVA;
+        double tarifaIVAReemb = ser_configuracion.getPorcentajeIva(tab_com_reembolso.getValor("fecha_emisi_cpcfa"));
+        double iva = base * tarifaIVAReemb;
+
         tab_com_reembolso.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(iva));
         utilitario.addUpdateTabla(tab_com_reembolso, "valor_iva_cpcfa", "");
     }
