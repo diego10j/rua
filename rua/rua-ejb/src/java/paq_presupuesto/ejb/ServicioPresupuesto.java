@@ -234,6 +234,196 @@ public String getPrograma (String activo){
 	return tab_programa;
 	
 }
+
+public String getPorDevengar(String ide_prcla,String condicion,String asientos){
+	String tab_programa=("select a.ide_cndcc,ide_cnccc, observacion_cnccc,fecha_trans_cnccc,numero_cnccc,ide_cnlap,ide_cndpc,valor_cndcc, " +
+                            " valor_cndcc -  (case when devengado is null then 0 else devengado end) as saldoxdevengar,nombre_cnlap,codig_recur_cndpc,nombre_cndpc, (case when devengado is null then 0 else devengado end)  as devengado" +
+                            " from (" +
+                            " select ide_cndcc,a.ide_cnccc,observacion_cnccc,fecha_trans_cnccc,numero_cnccc,b.ide_cnlap,c.ide_cndpc,valor_cndcc, nombre_cnlap,codig_recur_cndpc,nombre_cndpc" +
+                            " from con_cab_comp_cont a, con_det_comp_cont b, con_det_plan_cuen c,con_lugar_aplicac d,pre_asociacion_presupuestaria e" +
+                            " where a.ide_cnccc = b.ide_cnccc" +
+                            " and b.ide_cndpc = c.ide_cndpc" +
+                            " and b.ide_cnlap = d.ide_cnlap" +
+                            " and b.ide_cndpc = e.ide_cocac" +
+                            " and b.ide_cnlap = e.ide_cnlap" +
+                            " and ide_prmop = 5" );
+                            if(condicion.equals("1")){
+                            tab_programa += " and e.ide_prcla = " +ide_prcla;    
+                            }
+                            if(condicion.equals("2")){
+                            tab_programa += " and e.ide_prcla = " +ide_prcla+" and ide_cndcc in ("+asientos+") " ;    
+                            }
+                            tab_programa +=" order by fecha_trans_cnccc " +
+                            " ) a " +
+                            " left join (" +
+                            " select ide_cndcc,sum(devengado_prmen) as devengado" +
+                            " from pre_mensual" +
+                            " group by ide_cndcc" +
+                            " ) b on a.ide_cndcc = b.ide_cndcc" +
+                            " where (valor_cndcc -  (case when devengado is null then 0 else devengado end)) !=0" +
+                            " order by fecha_trans_cnccc,numero_cnccc";
+	return tab_programa;
+	
+}
+public String getPorDevengarIngresos(String ide_prcla,String condicion,String asientos){
+	String tab_programa=("select a.ide_cndcc,fecha_trans_cnccc,observacion_cnccc,numero_cnccc,valor_cndcc,valor_cndcc -(case when devengado_presupuestario is null then 0 else devengado_presupuestario end) as saldo_por_devengar, " +
+                             "(case when devengado_presupuestario is null then 0 else devengado_presupuestario end) as devengado_presupuestario,codig_recur_cndpc,nombre_cndpc,nombre_cnlap,ide_prcla,a.ide_cnccc " +
+                                "from ( " +
+                                "select b.ide_cndcc,a.ide_cnccc,fecha_trans_cnccc,observacion_cnccc,numero_cnccc,valor_cndcc,codig_recur_cndpc,nombre_cndpc,nombre_cnlap,ide_prcla " +
+                                "from con_cab_comp_cont a, con_det_comp_cont b, con_det_plan_cuen c,con_lugar_aplicac d,pre_asociacion_presupuestaria e " +
+                                "where a.ide_cnccc = b.ide_cnccc " +
+                                "and b.ide_cndpc = c.ide_cndpc " +
+                                "and b.ide_cnlap = d.ide_cnlap " +
+                                "and b.ide_cndpc = ide_cocac " +
+                                "and b.ide_cnlap = e.ide_cnlap " +
+                                "and ide_prmop = 5 " );
+                                if(condicion.equals("1")){
+                                tab_programa +=" and e.ide_prcla =  "+ide_prcla;
+                                }
+                                if(condicion.equals("2")){
+                                tab_programa +=" and e.ide_prcla =  "+ide_prcla+" and b.ide_cndcc in ("+asientos+") ";
+                                 }
+                                tab_programa +=") a left join ( " +
+                                "select ide_cndcc, sum(devengado_prmen) as devengado_presupuestario from pre_mensual group by ide_cndcc ) b on a.ide_cndcc = b.ide_cndcc " +
+                                "order by  fecha_trans_cnccc,numero_cnccc";
+	return tab_programa;
+	
+}
+public String getInsertaCedulaRua (String tipo,String fecha_inicial,String fecha_final){
+	String tab_certificacion=("insert into pre_cedula_presupuestaria  (ide_prcep,ide_prcla,codigo_prcep,nombre_prcep,nivel_prcer,inicial_prcep,reforma_prcep,codificado_prcer, " +
+                "fecha_inicial_prcep,fecha_final_prcep,devengado_acumulado_prcep,comprometido_prcep,devengado_periodo_prcep,comprometido_periodo_prcep, " +
+                "saldo_devengar_prcep,saldo_comprometer_prcep,tipo_cuenta_prcer ) " +
+                "select row_number() over ( order by codigo_clasificador_prcla) as codigo,ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla,nivel_prcla, " +
+                "0,0,0,'"+fecha_inicial+"','"+fecha_final+"',0,0,0,0,0,0,tipo_prcla " +
+                "from pre_clasificador " +
+                "where tipo_prcla= " +tipo+
+                "order by codigo_clasificador_prcla");
+	return tab_certificacion;
+	
+}
+public String getEliminaCedulaRua(){
+    String sql="delete from pre_cedula_presupuestaria;";
+    return sql;
+}
+public String getInsertaInicialGastosRua(){
+        String sql="update pre_cedula_presupuestaria" +
+        "   set inicial_prcep= inicial" +
+        "   from (" +
+        "   select c.ide_prcla,sum(valor_inicial_pranu) as inicial" +
+        "   from  pre_anual b, pre_programa c" +
+        "   where b.ide_prpro = c.ide_prpro" +
+        "   group by c.ide_prcla" +
+        "   ) a" +
+        "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla";
+    return sql;
+}
+public String getInsertaInicialIngresosRua(){
+    String sql="update pre_cedula_presupuestaria " +
+        "set inicial_prcep= inicial " +
+        "from ( " +
+        "select b.ide_prcla,sum(valor_inicial_pranu) as inicial " +
+        "from  pre_anual b where not ide_prcla is null " +
+        "group by b.ide_prcla " +
+        ") a " +
+        "where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla ";
+    
+    return sql;
+}
+public String getInsertaReformaGastoRua(String fecha_inicial,String fecha_final){
+        String sql="update pre_cedula_presupuestaria" +
+        "   set reforma_prcep = (case when reformad is null then 0 else reformad end)-(case when reformah is null then 0 else reformah end)" +
+        "   from(" +
+        "   select c.ide_prcla,sum(val_reforma_d_prrem) as reformad,sum(val_reforma_h_prrem) as reformah" +
+        "   from  pre_anual b, pre_programa c,pre_reforma_mes d" +
+        "   where b.ide_prpro = c.ide_prpro" +
+        "   and b.ide_pranu = d.ide_pranu" +
+        "   and fecha_reforma_prrem  between '"+fecha_inicial+"' and '"+fecha_final+"'" +
+        "   group by c.ide_prcla" +
+        "   ) a" +
+        "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla;";
+    return sql;
+}
+public String getInsertaReformaIngresoRua(String fecha_inicial,String fecha_final){
+    String sql="update pre_cedula_presupuestaria " +
+            "set reforma_prcep = (case when reformad is null then 0 else reformad end)-(case when reformah is null then 0 else reformah end) " +
+            "from( " +
+            "select b.ide_prcla,sum(val_reforma_d_prrem) as reformad,sum(val_reforma_h_prrem) as reformah " +
+            "from  pre_anual b, pre_reforma_mes d " +
+            "where b.ide_pranu = d.ide_pranu and not ide_prcla is null " +
+            "and fecha_reforma_prrem  between '"+fecha_inicial+"' and '"+fecha_final+"' " +
+            "group by b.ide_prcla " +
+            ") a " +
+            "where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla ";
+    
+    return sql;
+}
+public String getInsertaEjecucionGastoPeriodoRua(String fecha_inicial, String fecha_final,String tipo){
+        String sql="update pre_cedula_presupuestaria";
+        if(tipo.equals("1")){
+            sql+="   set devengado_acumulado_prcep = devengado," +
+        "   comprometido_prcep = comprometido";
+        }
+        if(tipo.equals("2")){
+            sql +="   set devengado_periodo_prcep = devengado," +
+            "   comprometido_periodo_prcep = comprometido";
+        }
+             sql +="   from (" +
+        "   select c.ide_prcla,sum(devengado_prmen) as devengado,sum(comprometido_prmen) as comprometido" +
+        "   from pre_mensual a, pre_anual b, pre_programa c" +
+        "   where a.ide_pranu= b.ide_pranu  and b.ide_prpro = c.ide_prpro" +
+        "   and fecha_ejecucion_prmen between '"+fecha_inicial+"' and '"+fecha_final+"'" +
+        "   group by c.ide_prcla" +
+        "   ) a" +
+        "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla";
+       //      System.out.println("sql devengados "+sql);
+    return sql;
+}
+
+public String getInsertaEjecucionIngresoPeriodoRua(String fecha_inicial, String fecha_final,String tipo){
+        String sql="update pre_cedula_presupuestaria";
+        if(tipo.equals("1")){
+            sql+="   set devengado_acumulado_prcep = devengado " ;
+        }
+        if(tipo.equals("2")){
+            sql +="   set devengado_periodo_prcep = devengado,";
+        }
+             sql +="   from (" +
+        "   select b.ide_prcla,sum(devengado_prmen) as devengado" +
+        "   from pre_mensual a, pre_anual b" +
+        "   where a.ide_pranu= b.ide_pranu  and not b.ide_prcla is null" +
+        "   and fecha_ejecucion_prmen between '"+fecha_inicial+"' and '"+fecha_final+"'" +
+        "   group by b.ide_prcla" +
+        "   ) a" +
+        "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla";
+       //      System.out.println("sql devengados "+sql);
+    return sql;
+}
+public String getActualizaSaldoRua(int nivel){
+    String sql="update pre_cedula_presupuestaria " +
+        "set inicial_prcep = inicial, reforma_prcep=reforma ,devengado_acumulado_prcep = devengado_acum,comprometido_prcep = comprometido_acum ,devengado_periodo_prcep = devengado_periodo,comprometido_periodo_prcep = comprometido_periodo "+
+        "from( " +
+        "select pre_ide_prcla,sum(inicial_prcep) as inicial,sum(reforma_prcep) as reforma,sum(devengado_acumulado_prcep) as devengado_acum, " +
+        "sum(comprometido_prcep) as comprometido_acum, sum(devengado_periodo_prcep) as devengado_periodo,sum(comprometido_periodo_prcep) as comprometido_periodo " +
+        "from ( " +
+        "select a.ide_prcla,pre_ide_prcla,nivel_prcla,inicial_prcep,reforma_prcep,devengado_acumulado_prcep,comprometido_prcep,devengado_periodo_prcep,comprometido_periodo_prcep " +
+        "from pre_clasificador a,pre_cedula_presupuestaria b " +
+        "where a.ide_prcla = b.ide_prcla " +
+        "and nivel_prcla = " +nivel+
+        ") a group by pre_ide_prcla " +
+        ") a " +
+        "where a.pre_ide_prcla = pre_cedula_presupuestaria.ide_prcla";
+          //     System.out.println("sql actualiza saldos "+sql);
+
+    return sql;
+}
+public String getActualizaSaldosFinalesRua(){
+    String sql="update pre_cedula_presupuestaria " +
+            "set codificado_prcer =inicial_prcep+reforma_prcep, " +
+            "saldo_devengar_prcep =(inicial_prcep+reforma_prcep) - (devengado_acumulado_prcep +devengado_periodo_prcep), " +
+            "saldo_comprometer_prcep = (devengado_acumulado_prcep +devengado_periodo_prcep) - (comprometido_prcep +comprometido_periodo_prcep) ";
+    
+    return sql;
+}
 public String getTotalCertificadoPoa (String ide_prcer){
 	String tab_certificacion=("select ide_prcer,ide_prpoa,sum(valor_certificado_prpoc)  as total_certificado from pre_poa_certificacion where ide_prcer in ("+ide_prcer+") group by ide_prcer,ide_prpoa");
 	return tab_certificacion;
