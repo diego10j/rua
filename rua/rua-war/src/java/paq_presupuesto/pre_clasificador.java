@@ -41,7 +41,8 @@ public class pre_clasificador extends Pantalla {
 		tab_presupuesto.getColumna("sigefc_prcla").setNombreVisual("SIGEF");
 		tab_presupuesto.getColumna("ide_prgre").setNombreVisual("GRUPO");
 		tab_presupuesto.getColumna("pre_ide_prcla").setCombo("select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_clasificador order by codigo_clasificador_prcla");
-		tab_presupuesto.getColumna("grupo_prcla").setCombo(ser_presupuesto.getListaGrupoCuentaPresupuesto());		tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
+		tab_presupuesto.getColumna("grupo_prcla").setCombo(ser_presupuesto.getListaGrupoCuentaPresupuesto());		
+                tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
 		tab_presupuesto.agregarRelacion(tab_vigente);				
 		tab_presupuesto.setCampoPadre("pre_ide_prcla"); //necesarios para el arbol
 		tab_presupuesto.setCampoNombre("(select codigo_clasificador_prcla||' '||descripcion_clasificador_prcla as descripcion_clasificador_prcla from pre_clasificador b where b. ide_prcla=a.ide_prcla)"); //necesarios para el arbol

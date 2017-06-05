@@ -1,5 +1,6 @@
 package paq_presupuesto;
 
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -27,6 +28,7 @@ public class pre_anual extends Pantalla{
 	private Tabla tab_reforma= new Tabla();
 	private Combo com_anio=new Combo();
 	private SeleccionTabla set_clasificador=new SeleccionTabla();
+        private SeleccionTabla set_eje_devengado = new SeleccionTabla();
         private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
 	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
@@ -60,7 +62,7 @@ public class pre_anual extends Pantalla{
 		tab_anual.setCondicion("not ide_prcla is null and ide_geani=-1");
 		tab_anual.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
 		tab_anual.getColumna("ide_prcla").setLectura(true);
-		tab_anual.getColumna("ide_prcla").setAutoCompletar();
+		//tab_anual.getColumna("ide_prcla").setAutoCompletar();
 		tab_anual.getColumna("ide_prpro").setVisible(false);
 		tab_anual.getColumna("ide_geani").setCombo(ser_contabilidad.getAnio("true,false","true,false"));
 		tab_anual.getColumna("ide_geani").setVisible(false);
@@ -132,7 +134,11 @@ public class pre_anual extends Pantalla{
 		tab_mensual.getColumna("certificado_prmen").setVisible(false);
 
 		tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
-		tab_mensual.getColumna("ide_codem").setLectura(true);
+		tab_mensual.getColumna("ide_gemes").setVisible(false);
+		tab_mensual.getColumna("cobrado_prmen").setVisible(false);
+		tab_mensual.getColumna("cobradoc_prmen").setVisible(false);
+                
+                tab_mensual.getColumna("ide_codem").setLectura(true);
 		tab_mensual.getColumna("activo_prmen").setValorDefecto("true");
 		//tab_mensual.setTipoFormulario(true);
 		//tab_mensual.getGrid().setColumns(6);
@@ -176,6 +182,17 @@ public class pre_anual extends Pantalla{
 		set_clasificador.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltro(true);//pone filtro
 		set_clasificador.getBot_aceptar().setMetodo("aceptarClasificador");
 		agregarComponente(set_clasificador);
+                
+                Boton bot_devengado=new Boton();
+		bot_devengado.setValue("Devengar Asientos Contables");
+		bot_devengado.setMetodo("abrirPorDevengar");
+		bar_botones.agregarBoton(bot_devengado);
+
+		set_eje_devengado.setId("set_eje_devengado");
+		set_eje_devengado.setTitle("SELECCIONE LOS MOVIMIENTOS CONTABLES A DEVENGARSE");
+		set_eje_devengado.setSeleccionTabla(ser_presupuesto.getPorDevengarIngresos("-1", "1", "-1"), "ide_cndcc"); 
+		set_eje_devengado.getBot_aceptar().setMetodo("aceptarPorDevengar");
+		agregarComponente(set_eje_devengado); 
 	}
 		public void agregarClasificador(){
 			//si no selecciono ningun valor en el combo
@@ -207,7 +224,54 @@ public class pre_anual extends Pantalla{
 		}
 
 
+	public void abrirPorDevengar(){
+		
+		if(com_anio.getValue()==null){
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
+			return;
+		}
+		
+                //TablaGenerica tab_prcla = utilitario.consultar("select ide_prpro,ide_prcla from pre_programa  where ide_prpro = "+tab_anual.getValor("ide_prpro"));
 	
+		//Filtrar los clasificadores del Año seleccionado
+		set_eje_devengado.getTab_seleccion().setSql(ser_presupuesto.getPorDevengarIngresos(tab_anual.getValor("ide_prcla"),"1","0"));
+		set_eje_devengado.getTab_seleccion().ejecutarSql();
+		set_eje_devengado.dibujar();
+
+	}
+        
+        public void aceptarPorDevengar (){
+            String str_seleccionados= set_eje_devengado.getSeleccionados();
+
+            TablaGenerica tab_saldos_devengar = utilitario.consultar(ser_presupuesto.getPorDevengarIngresos(tab_anual.getValor("ide_prcla"),"2",str_seleccionados));
+            if(str_seleccionados!=null){
+                for(int i=0;i<tab_saldos_devengar.getTotalFilas();i++){
+				tab_mensual.insertar();
+				tab_mensual.setValor("fecha_ejecucion_prmen", tab_saldos_devengar.getValor(i, "fecha_trans_cnccc"));
+                                tab_mensual.setValor("devengado_prmen", tab_saldos_devengar.getValor(i, "saldo_por_devengar"));
+                                tab_mensual.setValor("ide_pranu", tab_anual.getValor("ide_pranu"));
+                                tab_mensual.setValor("comprobante_prmen", tab_saldos_devengar.getValor(i, "numero_cnccc"));
+                                tab_mensual.setValor("cobrado_prmen", "0");
+                                tab_mensual.setValor("cobradoc_prmen", "0");
+                                tab_mensual.setValor("pagado_prmen", "0");
+                                tab_mensual.setValor("comprometido_prmen", "0");
+                                tab_mensual.setValor("valor_anticipo_prmen","0");
+                                tab_mensual.setValor("certificado_prmen","0");
+                                tab_mensual.setValor("activo_prmen","true");
+                                tab_mensual.setValor("ide_codem", tab_saldos_devengar.getValor(i, "ide_cndcc"));
+                                tab_mensual.setValor("ide_cndcc", tab_saldos_devengar.getValor(i, "ide_cndcc"));
+                                tab_mensual.setValor("ide_comov", tab_saldos_devengar.getValor(i, "ide_cnccc"));
+				
+			}
+                calcularDevengado();
+			set_eje_devengado.cerrar();
+                       
+			utilitario.addUpdate("tab_mensual");
+            }
+            else{
+			utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+		}
+        }
 	public void seleccionaElAnio (){
 		if(com_anio.getValue()!=null){
 			tab_anual.setCondicion("not ide_prcla is null and ide_geani="+com_anio.getValue());
@@ -222,7 +286,14 @@ public class pre_anual extends Pantalla{
 
 		}
 	}
-	
+	public void calcularDevengado(){
+            tab_anual.setValor("valor_devengado_pranu",utilitario.getFormatoNumero(tab_mensual.getSumaColumna("devengado_prmen"),3));
+            tab_anual.setValor("valor_eje_comprometido_pranu",utilitario.getFormatoNumero(tab_mensual.getSumaColumna("comprometido_prmen"),3));
+		tab_anual.modificar(tab_anual.getFilaActual());//para que haga el update
+
+		utilitario.addUpdateTabla(tab_anual, "valor_eje_comprometido_pranu,valor_devengado_pranu", "tab_mensual");	
+
+        }
 	///// para subir vaslores de un tabla a otra 
 	public void  calcularValor(){
 		double dou_valor_h=0;
@@ -372,6 +443,14 @@ public void aceptarReporte(){
 
     public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
         this.self_reporte = self_reporte;
+    }
+
+    public SeleccionTabla getSet_eje_devengado() {
+        return set_eje_devengado;
+    }
+
+    public void setSet_eje_devengado(SeleccionTabla set_eje_devengado) {
+        this.set_eje_devengado = set_eje_devengado;
     }
 	
 

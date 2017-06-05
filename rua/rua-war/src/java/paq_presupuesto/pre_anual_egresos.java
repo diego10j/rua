@@ -6,6 +6,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
@@ -28,7 +29,8 @@ public class pre_anual_egresos extends Pantalla {
 	private Combo com_anio =new Combo();
 	private SeleccionTabla set_programa = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
-
+        private Dialogo dia_por_devengar = new Dialogo();
+        private SeleccionTabla set_por_devengar = new SeleccionTabla();
         	///reporte
 	private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
@@ -68,7 +70,7 @@ public class pre_anual_egresos extends Pantalla {
 
 		tab_anual.setCondicion("not ide_prpro is null");
 		tab_anual.getColumna("ide_prpro").setCombo(ser_presupuesto.getPrograma("true,false"));
-		tab_anual.getColumna("ide_prpro").setAutoCompletar();
+		//tab_anual.getColumna("ide_prpro").setAutoCompletar();
 		tab_anual.getColumna("ide_prpro").setLectura(true);
 		tab_anual.getColumna("ide_geani").setCombo(ser_contabilidad.getAnio("true,false", "false,true"));
 		tab_anual.getColumna("ide_geani").setVisible(false);
@@ -213,6 +215,24 @@ public class pre_anual_egresos extends Pantalla {
 		set_programa.setRadio();
 		agregarComponente(set_programa);
 
+                
+                //// SEL TABLA PARA DEVENGAR LOS PRESUPUESTOS
+                
+                Boton bot_por_devengar = new Boton();
+		bot_por_devengar.setValue("MOVIMIENTOS POR DEVENGAR");
+		bot_por_devengar.setTitle("MOVIMIENTOS CONTABLES POR DEVENGAR");
+		bot_por_devengar.setIcon("ui-icon-person");
+		bot_por_devengar.setMetodo("abrirPorDevengar");
+		bar_botones.agregarBoton(bot_por_devengar);
+		
+		set_por_devengar.setId("set_por_devengar");
+		set_por_devengar.setSeleccionTabla(ser_presupuesto.getPorDevengar("-1","1","0"),"ide_cndcc");
+		set_por_devengar.getTab_seleccion().ejecutarSql();
+                set_por_devengar.getBot_aceptar().setMetodo("aceptarPorDevengar");
+
+		agregarComponente(set_por_devengar);
+                
+                
 		iniciaPoa();
 
 	}
@@ -304,7 +324,14 @@ public class pre_anual_egresos extends Pantalla {
 		}
 	}
 	
+        public void calcularDevengado(){
+            tab_anual.setValor("valor_devengado_pranu",utilitario.getFormatoNumero(tab_mensual.getSumaColumna("devengado_prmen"),3));
+            tab_anual.setValor("valor_eje_comprometido_pranu",utilitario.getFormatoNumero(tab_mensual.getSumaColumna("comprometido_prmen"),3));
+		tab_anual.modificar(tab_anual.getFilaActual());//para que haga el update
 
+		utilitario.addUpdateTabla(tab_anual, "valor_eje_comprometido_pranu,valor_devengado_pranu", "tab_mensual");	
+
+        }
 	///// para subir vaslores de un tabla a otra 
 	public void  calcularValor(){
 		double dou_valor_h=0;
@@ -358,7 +385,55 @@ public class pre_anual_egresos extends Pantalla {
 		set_programa.dibujar();
 
 	}
+	public void abrirPorDevengar(){
+		
+		if(com_anio.getValue()==null){
+			utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
+			return;
+		}
+		
+                TablaGenerica tab_prcla = utilitario.consultar("select ide_prpro,ide_prcla from pre_programa  where ide_prpro = "+tab_anual.getValor("ide_prpro"));
+	
+		//Filtrar los clasificadores del Año seleccionado
+		set_por_devengar.getTab_seleccion().setSql(ser_presupuesto.getPorDevengar(tab_prcla.getValor("ide_prcla"),"1","0"));
+		set_por_devengar.getTab_seleccion().ejecutarSql();
+		set_por_devengar.dibujar();
 
+	}
+        
+        public void aceptarPorDevengar (){
+            String str_seleccionados= set_por_devengar.getSeleccionados();
+            //int total_sel = set_por_devengar.getNumeroSeleccionados();
+            TablaGenerica tab_prcla = utilitario.consultar("select ide_prpro,ide_prcla from pre_programa  where ide_prpro = "+tab_anual.getValor("ide_prpro"));
+
+            TablaGenerica tab_saldos_devengar = utilitario.consultar(ser_presupuesto.getPorDevengar(tab_prcla.getValor("ide_prcla"),"2",str_seleccionados));
+            if(str_seleccionados!=null){
+                for(int i=0;i<tab_saldos_devengar.getTotalFilas();i++){
+				tab_mensual.insertar();
+				tab_mensual.setValor("fecha_ejecucion_prmen", tab_saldos_devengar.getValor(i, "fecha_trans_cnccc"));
+                                tab_mensual.setValor("devengado_prmen", tab_saldos_devengar.getValor(i, "saldoxdevengar"));
+                                tab_mensual.setValor("ide_pranu", tab_anual.getValor("ide_pranu"));
+                                tab_mensual.setValor("comprobante_prmen", tab_saldos_devengar.getValor(i, "numero_cnccc"));
+                                tab_mensual.setValor("cobrado_prmen", "0");
+                                tab_mensual.setValor("cobradoc_prmen", "0");
+                                tab_mensual.setValor("pagado_prmen", "0");
+                                tab_mensual.setValor("comprometido_prmen", "0");
+                                tab_mensual.setValor("valor_anticipo_prmen","0");
+                                tab_mensual.setValor("certificado_prmen","0");
+                                tab_mensual.setValor("activo_prmen","true");
+                                tab_mensual.setValor("ide_codem", tab_saldos_devengar.getValor(i, "ide_cndcc"));
+                                tab_mensual.setValor("ide_cndcc", tab_saldos_devengar.getValor(i, "ide_cndcc"));
+                                tab_mensual.setValor("ide_comov", tab_saldos_devengar.getValor(i, "ide_cnccc"));
+				
+			}
+			set_por_devengar.cerrar();
+                       calcularDevengado();
+			utilitario.addUpdate("tab_mensual");
+            }
+            else{
+			utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+		}
+        }
 	public void aceptarPrograma(){
 		String str_seleccionado=set_programa.getValorSeleccionado();
 		if(str_seleccionado!=null){
@@ -508,6 +583,22 @@ public void aceptarReporte(){
 
     public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
         this.self_reporte = self_reporte;
+    }
+
+    public Dialogo getDia_por_devengar() {
+        return dia_por_devengar;
+    }
+
+    public void setDia_por_devengar(Dialogo dia_por_devengar) {
+        this.dia_por_devengar = dia_por_devengar;
+    }
+
+    public SeleccionTabla getSet_por_devengar() {
+        return set_por_devengar;
+    }
+
+    public void setSet_por_devengar(SeleccionTabla set_por_devengar) {
+        this.set_por_devengar = set_por_devengar;
     }
 
 }
