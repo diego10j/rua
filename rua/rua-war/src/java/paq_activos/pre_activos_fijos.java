@@ -15,7 +15,6 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
-import framework.componentes.ItemMenu;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -1143,6 +1142,39 @@ public class pre_activos_fijos extends Pantalla {
                             tab_masivo.setValor("cantidad_acafi", "1");
                         }
                         tab_masivo.guardar();
+                    } else if (tab_tabla.isFilaModificada()) {
+                        //Actualiza caracteriasticas en lote
+                        tab_masivo.setTabla("act_activo_fijo", "ide_acafi");
+                        tab_masivo.setCondicion("act_ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                        tab_masivo.ejecutarSql();
+                        for (int j = 0; j < tab_masivo.getTotalFilas(); j++) {
+                            tab_masivo.setValor(j, "ide_aceaf", tab_tabla.getValor("ide_aceaf"));
+                            tab_masivo.setValor(j, "ide_geubi", tab_tabla.getValor("ide_geubi"));
+                            tab_masivo.setValor(j, "ide_inarti", tab_tabla.getValor("ide_inarti"));
+                            tab_masivo.setValor(j, "nombre_acafi", tab_tabla.getValor("nombre_acafi"));
+                            tab_masivo.setValor(j, "vida_util_acafi", tab_tabla.getValor("vida_util_acafi"));
+                            tab_masivo.setValor(j, "valor_compra_acafi", tab_tabla.getValor("valor_compra_acafi"));
+                            tab_masivo.setValor(j, "deprecia_acafi", tab_tabla.getValor("deprecia_acafi"));
+                            tab_masivo.setValor(j, "recidual_acafi", tab_tabla.getValor("recidual_acafi"));
+                            tab_masivo.setValor(j, "serie_acafi", tab_tabla.getValor("serie_acafi"));
+                            tab_masivo.setValor(j, "observacion_acafi", tab_tabla.getValor("observacion_acafi"));
+                            tab_masivo.setValor(j, "numero_factu_acafi", tab_tabla.getValor("numero_factu_acafi"));
+                            tab_masivo.setValor(j, "fecha_compra_acafi", tab_tabla.getValor("fecha_compra_acafi"));
+                            tab_masivo.setValor(j, "anos_uso_acafi", tab_tabla.getValor("anos_uso_acafi"));
+                            tab_masivo.setValor(j, "valor_comercial_acafi", tab_tabla.getValor("valor_comercial_acafi"));
+                            tab_masivo.setValor(j, "valor_remate_acafi", tab_tabla.getValor("valor_remate_acafi"));
+                            tab_masivo.setValor(j, "modelo_acafi", tab_tabla.getValor("modelo_acafi"));
+                            tab_masivo.setValor(j, "ide_inmar", tab_tabla.getValor("ide_inmar"));
+                            tab_masivo.setValor(j, "ide_acuba", tab_tabla.getValor("ide_acuba"));
+                            tab_masivo.setValor(j, "color_acafi", tab_tabla.getValor("color_acafi"));
+                            tab_masivo.setValor(j, "mediadas_acafi", tab_tabla.getValor("mediadas_acafi"));
+                            tab_masivo.setValor(j, "ide_gecas", tab_tabla.getValor("ide_gecas"));
+                            tab_masivo.setValor(j, "ide_geobr", tab_tabla.getValor("ide_geobr"));
+                            tab_masivo.setValor(j, "ide_accla", tab_tabla.getValor("ide_accla"));
+                            tab_masivo.modificar(j);
+                        }
+                        tab_masivo.guardar();
+
                     }
                 }
                 if (guardarPantalla().isEmpty()) {
