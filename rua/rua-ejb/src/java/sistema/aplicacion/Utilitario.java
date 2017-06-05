@@ -1078,5 +1078,86 @@ public class Utilitario extends Framework {
         }
         return super.getFormatoNumero(dou_num); //To change body of generated methods, choose Tools | Templates.
     }
+    /**
+     * Retorna nro de dias que le corresonde a un mes
+     *
+     * @param mes nro de mes 
+     * @param year anio 
+     * @return dias nro de dias que le corresponden al mes ingresado
+     */
+    public int getNrodias(int mes,int year) {
+        Calendar cal = Calendar.getInstance();
+        int nro_dias=0;
+        mes=mes-1;
+        //System.out.println("mess "+mes);
+         if(Calendar.JANUARY==mes){
+                 cal = new GregorianCalendar(year, Calendar.JANUARY, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        //System.out.println("messaa "+mes);
 
+             }
+             else if(Calendar.FEBRUARY==mes){
+                 cal = new GregorianCalendar(year, Calendar.FEBRUARY, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+          // System.out.println("messbbb "+mes);
+
+             }
+                         else if(Calendar.MARCH==mes){
+                 cal = new GregorianCalendar(year, Calendar.MARCH, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+         //System.out.println("messccc "+mes);
+
+             }
+                          else if(Calendar.APRIL==mes){
+                 cal = new GregorianCalendar(year, Calendar.APRIL, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+              }
+                          else if(Calendar.MAY==mes){
+                 cal = new GregorianCalendar(year, Calendar.MAY, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+             }
+                          else if(Calendar.JUNE==mes){
+                 cal = new GregorianCalendar(year, Calendar.JUNE, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+              }
+                          else if(Calendar.JULY==mes){
+                 cal = new GregorianCalendar(year, Calendar.JULY, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+             }
+                          else if(Calendar.AUGUST==mes){
+                 cal = new GregorianCalendar(year, Calendar.AUGUST, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+             }
+                          else if(Calendar.SEPTEMBER==mes){
+                 cal = new GregorianCalendar(year, Calendar.SEPTEMBER, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+              }
+                          else if(Calendar.OCTOBER==mes){
+                 cal = new GregorianCalendar(year, Calendar.OCTOBER, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            }
+                          else if(Calendar.NOVEMBER==mes){
+                 cal = new GregorianCalendar(year, Calendar.NOVEMBER, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+             }
+                          else if(Calendar.DECEMBER==mes){
+                 cal = new GregorianCalendar(year, Calendar.DECEMBER, 1);
+                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+              }
+        
+        
+        return nro_dias;
+    }
 }
