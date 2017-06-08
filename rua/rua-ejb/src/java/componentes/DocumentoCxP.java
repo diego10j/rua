@@ -1462,8 +1462,16 @@ public class DocumentoCxP extends Dialogo {
                 tab_com_reembolso.setValor(i, "total_cpcfa", utilitario.getFormatoNumero(dou_baseiva + dou_base0 + dou_basenoobjeto + dou_iva));
             }
             //valida total factura con total reembolso
-            if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso");
+            if (tab_cab_documento.getSumaColumna("base_grabada_cpcfa") != tab_com_reembolso.getSumaColumna("base_grabada_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Grabada del Documento debe ser igual a la del Comprobante de Reembolso");
+                return false;
+            }
+            if (tab_cab_documento.getSumaColumna("base_tarifa0_cpcfa") != tab_com_reembolso.getSumaColumna("base_tarifa0_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Trarifa 0 del Documento debe ser igual a la del Comprobante de Reembolso");
+                return false;
+            }
+            if (tab_cab_documento.getSumaColumna("base_no_objeto_iva_cpcfa") != tab_com_reembolso.getSumaColumna("base_no_objeto_iva_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base No Objeto del Documento debe ser igual a la del Comprobante de Reembolso");
                 return false;
             }
 
