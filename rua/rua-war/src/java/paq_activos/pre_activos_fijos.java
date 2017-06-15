@@ -1235,7 +1235,8 @@ public class pre_activos_fijos extends Pantalla {
                 }
 
             } else {
-                utilitario.agregarMensajeError("Seleccione activos para asignar", "");
+                //  utilitario.agregarMensajeError("Seleccione activos para asignar", "");
+                guardarPantalla();
             }
         }
     }
