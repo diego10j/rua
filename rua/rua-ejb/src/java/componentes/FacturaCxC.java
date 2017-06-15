@@ -974,20 +974,21 @@ public class FacturaCxC extends Dialogo {
      * Inserta en los detalles de Factura y Comprobante de Venta
      */
     public void insertar() {
-        if (tab_deta_factura.isFocus()) {
-            if (tab_cab_factura.getValor("ide_geper") != null) {
-                tab_deta_factura.insertar();
-            } else {
-                utilitario.agregarMensajeInfo("Seleccione Cliente", "Debe seleccionar un cliente para realizar la factura");
-            }
-        } else if (tab_deta_conta.isFocus()) {
-            //Valida que haya valores en la factura
-            if (tab_deta_factura.isEmpty() == false) {
-                tab_deta_conta.insertar();
-            } else {
-                utilitario.agregarMensajeInfo("Crear Factura", "Debe ingresar detalles a la Factura");
-            }
+//// dfj NO insertaba
+////        if (tab_deta_factura.isFocus()) {
+        if (tab_cab_factura.getValor("ide_geper") != null) {
+            tab_deta_factura.insertar();
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione Cliente", "Debe seleccionar un cliente para realizar la factura");
         }
+////        } else if (tab_deta_conta.isFocus()) {
+////            Valida que haya valores en la factura
+////            if (tab_deta_factura.isEmpty() == false) {
+////                tab_deta_conta.insertar();
+////            } else {
+////                utilitario.agregarMensajeInfo("Crear Factura", "Debe ingresar detalles a la Factura");
+////            }
+////        }
     }
 
     /**
