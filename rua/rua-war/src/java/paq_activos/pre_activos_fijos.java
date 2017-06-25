@@ -1277,8 +1277,7 @@ public class pre_activos_fijos extends Pantalla {
                         }
                         tab_masivo.guardar();
                     }
-                }
-                utilitario.getConexion().setImprimirSqlConsola(true);
+                }                
                 if (guardarPantalla().isEmpty()) {
                     tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
                     tab_tabla5.ejecutarSql();
