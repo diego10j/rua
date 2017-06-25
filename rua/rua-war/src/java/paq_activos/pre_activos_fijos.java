@@ -11,6 +11,7 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Confirmar;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -66,15 +67,18 @@ public class pre_activos_fijos extends Pantalla {
     private SeleccionArbol sel_arb = new SeleccionArbol();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
 
-    private Etiqueta eti_cod_barras = new Etiqueta();
+    private final Etiqueta eti_cod_barras = new Etiqueta();
     private StreamedContent stcCodigoBarra;
     private int cantidad = 1;
     private Texto txt_cod;
-    private Tabulador tab_tabulador = new Tabulador();
+    private final Tabulador tab_tabulador = new Tabulador();
 
     private SeleccionTabla set_selecciona = new SeleccionTabla();
 
     private Confirmar con_confirma = new Confirmar();
+
+    private Dialogo dia_foto = new Dialogo();
+    private Tabla tab_foto = new Tabla();
 
     public pre_activos_fijos() {
         bar_botones.agregarReporte();
@@ -141,6 +145,48 @@ public class pre_activos_fijos extends Pantalla {
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
 
+        dia_foto.setId("dia_foto");
+        dia_foto.setTitle("AGREGAR FOTO");
+        dia_foto.setWidth("45%");
+        dia_foto.setHeight("50%");
+        agregarComponente(dia_foto);
+
+        tab_foto.setId("tab_foto");
+        tab_foto.setTabla("act_foto_activo", "ide_acfac", 99);
+        tab_foto.setCondicion("ide_acafi=-1");
+        tab_foto.getColumna("ide_acafi").setVisible(false);
+        tab_foto.getColumna("ide_acfac").setVisible(false);
+        tab_foto.setTipoFormulario(true);
+        tab_foto.setMostrarNumeroRegistros(false);
+        tab_foto.getColumna("foto_acfac").setUpload();
+        tab_foto.getColumna("foto_acfac").setImagen("200", "200");
+        tab_foto.getColumna("foto_acfac").setNombreVisual("FOTO");
+        tab_foto.getColumna("foto_acfac").setRequerida(true);
+        tab_foto.dibujar();
+        PanelTabla patpanel = new PanelTabla();
+        patpanel.setPanelTabla(tab_foto);
+        patpanel.getMenuTabla().setRendered(false);
+        Grid gf = new Grid();
+        gf.getChildren().add(patpanel);
+        gf.setStyle("width:" + (dia_foto.getAnchoPanel() - 5) + "px;height:" + (dia_foto.getAltoPanel() - 10) + "px;overflow: hidden;display: block;");
+        dia_foto.setDialogo(gf);
+        dia_foto.getBot_aceptar().setMetodo("aceptarGuardarFoto");
+    }
+
+    public void aceptarGuardarFoto() {
+        if (tab_foto.guardar()) {
+            if (guardarPantalla().isEmpty()) {
+                dia_foto.cerrar();
+                tab_tabla4.actualizar();
+            }
+        }
+    }
+
+    public void abrirDialogoAgregarFoto() {
+        dia_foto.dibujar();
+        tab_foto.setCondicion("ide_acafi=-1");
+        tab_foto.insertar();
+        tab_foto.setValor("ide_acafi", tab_tabla.getValor("ide_acafi"));
     }
 
     public void dibujarConsultarPorCodigoB() {
@@ -576,7 +622,11 @@ public class pre_activos_fijos extends Pantalla {
 
     public void abrirAgregarActivo() {
         set_selecciona.getBot_aceptar().setMetodo("agregarActivoAsigna");
-        set_selecciona.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijosSinCustodio());
+        boolean bienes = false;
+        if (tab_tabla.getValor("bienes_control_acact").equals("true")) {
+            bienes = true;
+        }
+        set_selecciona.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijosSinCustodio(bienes));
         set_selecciona.getTab_seleccion().ejecutarSql();
         set_selecciona.dibujar();
 
@@ -855,12 +905,29 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla4.setTipoFormulario(true);
         tab_tabla4.getColumna("foto_acfac").setUpload();
         tab_tabla4.getColumna("foto_acfac").setImagen("120", "120");
+        tab_tabla4.getColumna("foto_acfac").setNombreVisual("FOTO");
         tab_tabla4.setLectura(true);
         tab_tabla4.dibujar();
-        PanelTabla pat_panel4 = new PanelTabla();
-        pat_panel4.setPanelTabla(tab_tabla4);
-        pat_panel4.getMenuTabla().getItem_eliminar().setRendered(true);
 
+        Boton bot_agregar = new Boton();
+        bot_agregar.setMetodo("abrirDialogoAgregarFoto");
+        bot_agregar.setValue("Agregar Foto");
+        bot_agregar.setIcon("ui-icon-plus");
+
+        Boton bot_eliminar = new Boton();
+        bot_eliminar.setMetodo("eliminarFoto");
+        bot_eliminar.setValue("Eliminar Foto");
+        bot_eliminar.setIcon("ui-icon-trash");
+
+        Grid gri1 = new Grid();
+        gri1.setColumns(3);
+        gri1.getChildren().add(bot_agregar);
+        gri1.getChildren().add(bot_eliminar);
+
+        PanelTabla pat_panel4 = new PanelTabla();
+        pat_panel4.setHeader(gri1);
+        pat_panel4.setPanelTabla(tab_tabla4);
+        pat_panel4.getMenuTabla().getItem_eliminar().setRendered(false);
         tab_tabulador.agregarTab("FOTOS", pat_panel4);
 
         tab_tabla2 = new Tabla();
@@ -918,6 +985,13 @@ public class pre_activos_fijos extends Pantalla {
         gr.getParent().getParent().setTransient(true);
         tab_tabulador.getParent().setTransient(true);
         tab_tabulador.getParent().getParent().setTransient(true);
+    }
+
+    public void eliminarFoto() {
+        tab_tabla4.setLectura(false);
+        if (tab_tabla4.eliminar()) {
+            guardarPantalla();
+        }
     }
 
     public void cambioCantidad() {
@@ -987,6 +1061,10 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla5.ejecutarSql();
             tab_tabla.getColumna("cantidad_acafi").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
+
+            tab_tabla4.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+            tab_tabla4.ejecutarSql();
+
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
@@ -1171,10 +1249,9 @@ public class pre_activos_fijos extends Pantalla {
                             tab_masivo.setValor(j, "mediadas_acafi", tab_tabla.getValor("mediadas_acafi"));
                             tab_masivo.setValor(j, "ide_gecas", tab_tabla.getValor("ide_gecas"));
                             tab_masivo.setValor(j, "ide_geobr", tab_tabla.getValor("ide_geobr"));
-                            tab_masivo.setValor(j, "ide_accla", tab_tabla.getValor("ide_accla"));                            
+                            tab_masivo.setValor(j, "ide_accla", tab_tabla.getValor("ide_accla"));
                         }
                         tab_masivo.guardar();
-
                     }
                 }
                 utilitario.getConexion().setImprimirSqlConsola(true);
@@ -1365,6 +1442,22 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setCon_confirma(Confirmar con_confirma) {
         this.con_confirma = con_confirma;
+    }
+
+    public Dialogo getDia_foto() {
+        return dia_foto;
+    }
+
+    public void setDia_foto(Dialogo dia_foto) {
+        this.dia_foto = dia_foto;
+    }
+
+    public Tabla getTab_foto() {
+        return tab_foto;
+    }
+
+    public void setTab_foto(Tabla tab_foto) {
+        this.tab_foto = tab_foto;
     }
 
 }
