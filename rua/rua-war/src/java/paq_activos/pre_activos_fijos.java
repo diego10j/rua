@@ -624,7 +624,10 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.getBot_aceptar().setMetodo("agregarActivoAsigna");
         boolean bienes = false;
         if (tab_tabla.getValor("bienes_control_acact").equals("true")) {
+            set_selecciona.setHeader("SELECCIONAR BIEN DE CONTROL");
             bienes = true;
+        } else {
+            set_selecciona.setHeader("SELECCIONAR ACTIVO FIJO");
         }
         set_selecciona.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijosSinCustodio(bienes));
         set_selecciona.getTab_seleccion().ejecutarSql();
