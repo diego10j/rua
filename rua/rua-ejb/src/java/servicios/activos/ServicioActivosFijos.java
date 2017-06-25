@@ -225,6 +225,27 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
+    public String getSqlListaActivosFijosReasignar(boolean bienesControl) {
+        String cond = "";
+        if (bienesControl) {
+            cond = " and ide_accls=2 ";
+        } else {
+            cond = " and ide_accls!=2 ";
+        }
+        return "select ide_acafi,act_ide_acafi,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
+                + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
+                + "from act_activo_fijo a \n"
+                + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
+                + "left join inv_articulo arti on arti.ide_inarti = a.ide_inarti "
+                + "left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n"
+                + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
+                + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
+                + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
+                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and a.ide_geper is not null and cantidad_acafi=1"
+                + cond + " "
+                + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+    }
+
     public String getSqlListadoActasConstatacion() {
         return "select a.ide_acact,codigo_acact AS CODIGO,fecha_asigna_acact AS FECHA_ASIGNA,nombre_gecas AS CASA,\n"
                 + "nombre_geobr AS OBRA, nombre_acuba AS AREA_UBICACION ,nom_geper AS CUSTODIO,\n"
