@@ -46,43 +46,43 @@ import sistema.aplicacion.Pantalla;
  * @author DIEGOFERNANDOJACOMEG
  */
 public class pre_activos_fijos extends Pantalla {
-
+    
     private final MenuPanel mep_menu = new MenuPanel();
-
+    
     private VisualizarPDF vipdf_acta = new VisualizarPDF();
     private final Calendario cal_fecha = new Calendario();
-
+    
     @EJB
     private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
-
+    
     private Tabla tab_tabla;
     private Tabla tab_tabla2;
     private Tabla tab_tabla3;
     private Tabla tab_tabla4;
     private Tabla tab_tabla5;
     private AutoCompletar aut_custodio;
-
+    
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private SeleccionArbol sel_arb = new SeleccionArbol();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
-
+    
     private final Etiqueta eti_cod_barras = new Etiqueta();
     private StreamedContent stcCodigoBarra;
     private int cantidad = 1;
     private Texto txt_cod;
     private final Tabulador tab_tabulador = new Tabulador();
-
+    
     private SeleccionTabla set_selecciona = new SeleccionTabla();
-
+    
     private Confirmar con_confirma = new Confirmar();
-
+    
     private Dialogo dia_foto = new Dialogo();
     private Tabla tab_foto = new Tabla();
-
+    
     public pre_activos_fijos() {
         bar_botones.agregarReporte();
-
+        
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
         mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1                
 
@@ -100,16 +100,16 @@ public class pre_activos_fijos extends Pantalla {
         mep_menu.agregarItem("Activos Dados de Baja", "dibujarActDadosBaja", "ui-icon-note");//8        
         agregarComponente(mep_menu);
         dibujarListadosActivos();
-
+        
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
-
+        
         sec_rango_reporte.setId("sec_rango_reporte");
         sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         sec_rango_reporte.setMultiple(false);
         agregarComponente(sec_rango_reporte);
-
+        
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
         sel_arb.setId("sel_arb");
@@ -117,11 +117,11 @@ public class pre_activos_fijos extends Pantalla {
         sel_arb.getArb_seleccion().setCondicion("ide_inarti=" + utilitario.getVariable("p_inv_articulo_activo_fijo"));
         sel_arb.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sel_arb);
-
+        
         vipdf_acta.setId("vipdf_acta");
         vipdf_acta.setTitle("ACTA ENTREGA - RECEPCIÓN");
         agregarComponente(vipdf_acta);
-
+        
         set_selecciona.setId("set_selecciona");
         set_selecciona.setSeleccionTabla(ser_activos.getSqlListaActivosFijos("-1"), "ide_acafi");//carga vacia
         set_selecciona.getTab_seleccion().getColumna("codigo_barras_acafi").setFiltroContenido();
@@ -137,20 +137,20 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.setHeight("70%");
         set_selecciona.setHeader("SELECCIONAR ACTIVO FIJO");
         agregarComponente(set_selecciona);
-
+        
         con_confirma.setId("con_confirma");
         con_confirma.setMessage("Está seguro que desea eliminar el Activo Fijo Seleccionado ?");
         con_confirma.setTitle("ELIMINAR ACTIVO FIJO");
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
-
+        
         dia_foto.setId("dia_foto");
         dia_foto.setTitle("AGREGAR FOTO");
         dia_foto.setWidth("45%");
         dia_foto.setHeight("50%");
         agregarComponente(dia_foto);
-
+        
         tab_foto.setId("tab_foto");
         tab_foto.setTabla("act_foto_activo", "ide_acfac", 99);
         tab_foto.setCondicion("ide_acafi=-1");
@@ -165,6 +165,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_foto.dibujar();
         PanelTabla patpanel = new PanelTabla();
         patpanel.setPanelTabla(tab_foto);
+        patpanel.setStyle("overflow: hidden;");
         patpanel.getMenuTabla().setRendered(false);
         Grid gf = new Grid();
         gf.getChildren().add(patpanel);
@@ -172,7 +173,7 @@ public class pre_activos_fijos extends Pantalla {
         dia_foto.setDialogo(gf);
         dia_foto.getBot_aceptar().setMetodo("aceptarGuardarFoto");
     }
-
+    
     public void aceptarGuardarFoto() {
         if (tab_foto.guardar()) {
             if (guardarPantalla().isEmpty()) {
@@ -181,16 +182,16 @@ public class pre_activos_fijos extends Pantalla {
             }
         }
     }
-
+    
     public void abrirDialogoAgregarFoto() {
         dia_foto.dibujar();
         tab_foto.setCondicion("ide_acafi=-1");
         tab_foto.insertar();
         tab_foto.setValor("ide_acafi", tab_tabla.getValor("ide_acafi"));
     }
-
+    
     public void dibujarConsultarPorCodigoB() {
-
+        
         Grid gr = new Grid();
         gr.setColumns(2);
         gr.getChildren().add(new Etiqueta("<strong>CÓDIGO DE BARRAS :</strong>"));
@@ -198,7 +199,7 @@ public class pre_activos_fijos extends Pantalla {
         txt_cod.setStyle("font-size:18px");
         txt_cod.setSize(50);
         gr.getChildren().add(txt_cod);
-
+        
         Boton bot_generar = new Boton();
         bot_generar.setValue("Buscar");
         bot_generar.setIcon("ui-icon-search");
@@ -206,15 +207,15 @@ public class pre_activos_fijos extends Pantalla {
         gr.setFooter(bot_generar);
         mep_menu.dibujar(11, "BUSCAR ACTIVO FIJO POR CÓDIGO DE BARRAS", gr);
     }
-
+    
     public void cargaActivoFijoPorCodigo() {
         if (txt_cod.getValue() == null) {
             utilitario.agregarMensajeError("Debe Ingresar el código de barras", "");
         }
-
+        
         String ide_acafi = txt_cod.getValue().toString();
         if (ser_activos.isExisteCodBarras(ide_acafi)) {
-
+            
             dibujarActivoFijo();
             tab_tabla.setCondicion("codigo_barras_acafi='" + ide_acafi + "'");
             tab_tabla.ejecutarSql();
@@ -231,7 +232,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeError("El código de barras no existe", "");
         }
     }
-
+    
     public void dibujarActa() {
         Grid gru = new Grid();
         Grid gr = new Grid();
@@ -242,13 +243,13 @@ public class pre_activos_fijos extends Pantalla {
         aut_custodio.setAutoCompletar("select ide_geper, nom_geper,identificac_geper from gen_persona where es_empleado_geper=true and ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_custodio.setAutocompletarContenido();
         aut_custodio.setSize(70);
-
+        
         gr.getChildren().add(aut_custodio);
         cal_fecha.setFechaActual();
         gr.getChildren().add(new Etiqueta("<strong>FECHA DEL ACTA :</strong>"));
         gr.getChildren().add(cal_fecha);
         gru.getChildren().add(gr);
-
+        
         Boton bot_generar = new Boton();
         bot_generar.setValue("Generar Acta");
         bot_generar.setIcon("ui-icon-print");
@@ -256,7 +257,7 @@ public class pre_activos_fijos extends Pantalla {
         gru.setFooter(bot_generar);
         mep_menu.dibujar(9, "ACTA DE ENTREGA - RECEPCIÓN", gru);
     }
-
+    
     public void generarActa() {
         if (cal_fecha.getValue() == null) {
             utilitario.agregarMensajeInfo("Seleccione una fecha para generar el Acta", "");
@@ -275,25 +276,25 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione un custodio para generar el Acta", "");
         }
     }
-
+    
     public void dibujarListadoActasConstata() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
-
+        
         Boton bot_ver = new Boton();
         bot_ver.setValue("Imprimir Acta");
         bot_ver.setMetodo("imprimirActaC");
         bot_ver.setIcon("ui-icon-print");
         bar_menu.agregarComponente(bot_ver);
-
+        
         bar_menu.agregarSeparador();
         Boton bot_e = new Boton();
         bot_e.setValue("Editar Acta");
         bot_e.setMetodo("modificarActaConstata");
         bot_e.setIcon("ui-icon-pencil");
         bar_menu.agregarComponente(bot_e);
-
+        
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_activos.getSqlListadoActasConstatacion());
@@ -309,13 +310,13 @@ public class pre_activos_fijos extends Pantalla {
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(10, "LISTADO DE ACTAS DE CONSTATCIÓN FÍSICA DE ACTIVOS FIJOS", gru);
     }
-
+    
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
     Map parametro = new HashMap();
-
+    
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Activos Fijos")) {
@@ -332,7 +333,7 @@ public class pre_activos_fijos extends Pantalla {
                 sel_rep.dibujar();
                 utilitario.addUpdate("sel_arb,sel_rep");
             }
-
+            
         } else if (rep_reporte.getReporteSelecionado().equals("Depreciacion Activos Fijos")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
@@ -353,7 +354,7 @@ public class pre_activos_fijos extends Pantalla {
                 sel_rep.dibujar();
                 utilitario.addUpdate("sel_arb,sel_rep");
             }
-
+            
         } else if (rep_reporte.getReporteSelecionado().equals("Detalle Depreciacion Activos")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
@@ -377,16 +378,16 @@ public class pre_activos_fijos extends Pantalla {
             }
         }
     }
-
+    
     public void dibujarDepreciar() {
         Grid grm = new Grid();
         grm.setMensajeError("Verificar los grupos de Activos Fijos");
         mep_menu.dibujar(6, "DEPRECIAR ACTIVOS FIJOS", grm);
     }
-
+    
     public void dibujarDardeBaja() {
         Grupo gru = new Grupo();
-
+        
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_transaccion", "ide_actra", -1);
@@ -416,9 +417,9 @@ public class pre_activos_fijos extends Pantalla {
         pat_panel.getMenuTabla().setRendered(false);
         gru.getChildren().add(pat_panel);
         gru.getChildren().add(new Separator());
-
+        
         tab_tabla2 = new Tabla();
-
+        
         tab_tabla2.setId("tab_seleccion");
         tab_tabla2.setSql(ser_activos.getSqlListaActivosFijos());
         tab_tabla2.setCampoPrimaria("ide_acafi");
@@ -446,16 +447,16 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
-
+        
         Grid grm = new Grid();
         grm.setMensajeInfo("Seleccionar los activos que se van a dar de baja");
         gru.getChildren().add(grm);
-
+        
         gru.getChildren().add(pat_panel2);
-
+        
         mep_menu.dibujar(7, "DAR DE BAJA ACTIVOS FIJOS", gru);
     }
-
+    
     public void dibujarActDadosBaja() {
         //8
         tab_tabla = new Tabla();
@@ -471,11 +472,11 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         Grupo gru = new Grupo();
-
+        
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(8, "ACTIVOS FIJOS DADOS DE BAJA", gru);
     }
-
+    
     public void dibujarConsultarAsignados() {
         //3        
         tab_tabla = new Tabla();
@@ -491,7 +492,7 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         Grupo gru = new Grupo();
-
+        
         Grid gr = new Grid();
         gr.setColumns(2);
         gr.getChildren().add(new Etiqueta("<strong>CUSTODIO :</strong>"));
@@ -505,19 +506,19 @@ public class pre_activos_fijos extends Pantalla {
         gru.getChildren().add(new Separator());
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(3, "CONSULTAR ACTIVOS ASIGNADOS", gru);
-
+        
     }
-
+    
     public void cargarActivosAsignados(SelectEvent evt) {
         aut_custodio.onSelect(evt);
         if (aut_custodio.getValor() != null) {
             tab_tabla.setSql(ser_activos.getSqlActivosAsignados(aut_custodio.getValor()));
             tab_tabla.ejecutarSql();
-
+            
         }
-
+        
     }
-
+    
     public void dibujarAsignarActivos() {
         Grupo gru = new Grupo();
         strActivosAsignados = "";
@@ -563,7 +564,7 @@ public class pre_activos_fijos extends Pantalla {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
-
+        
         Boton bot_ver = new Boton();
         bot_ver.setValue("Agregar Activo Fijo");
         bot_ver.setMetodo("abrirAgregarActivo");
@@ -576,9 +577,15 @@ public class pre_activos_fijos extends Pantalla {
         bot_q.setMetodo("quitarActivoFijo");
         bot_q.setIcon("ui-icon-minusthick");
         bar_menu.agregarComponente(bot_q);
-
+        bar_menu.agregarSeparador();
+        Boton bot_r = new Boton();
+        bot_r.setValue("Reasignar");
+        bot_r.setMetodo("reasignarActivoFijo");
+        bot_r.setIcon("ui-icon-arrowrefresh-1-s");
+        bar_menu.agregarComponente(bot_r);
+        
         tab_tabla2 = new Tabla();
-
+        
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setSql(ser_activos.getSqlListaActivosFijos("-1"));
         tab_tabla2.setCampoPrimaria("ide_acafi");
@@ -599,10 +606,10 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
         gru.getChildren().add(pat_panel2);
-
+        
         mep_menu.dibujar(5, "ACTA DE CONSTATACION FÍSICA DE ACTIVOS FIJOS", gru);
     }
-
+    
     public void modificarActaConstata() {
         String ide_acact = tab_tabla.getValor("ide_acact");
         if (ide_acact != null) {
@@ -617,9 +624,9 @@ public class pre_activos_fijos extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccione una Acta", "");
         }
-
+        
     }
-
+    
     public void abrirAgregarActivo() {
         set_selecciona.getBot_aceptar().setMetodo("agregarActivoAsigna");
         boolean bienes = false;
@@ -632,11 +639,25 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijosSinCustodio(bienes));
         set_selecciona.getTab_seleccion().ejecutarSql();
         set_selecciona.dibujar();
-
+        
     }
-
+    
+    public void reasignarActivoFijo() {
+        set_selecciona.getBot_aceptar().setMetodo("agregarActivoAsigna");
+        boolean bienes = false;
+        if (tab_tabla.getValor("bienes_control_acact").equals("true")) {
+            set_selecciona.setHeader("SELECCIONAR BIEN DE CONTROL");
+            bienes = true;
+        } else {
+            set_selecciona.setHeader("SELECCIONAR ACTIVO FIJO");
+        }
+        set_selecciona.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijosReasignar(bienes));
+        set_selecciona.getTab_seleccion().ejecutarSql();
+        set_selecciona.dibujar();
+    }
+    
     private String strActivosAsignados = "";
-
+    
     public void agregarActivoAsigna() {
         if (set_selecciona.getSeleccionados() != null) {
             if (tab_tabla.isFilaInsertada() == false) {
@@ -656,7 +677,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeError("Seleccione un activo fijo", "");
         }
     }
-
+    
     public void quitarActivoFijo() {
         if (tab_tabla2.getFilaSeleccionada() != null) {
             if (tab_tabla.isFilaInsertada() == false) {
@@ -664,17 +685,17 @@ public class pre_activos_fijos extends Pantalla {
             }
             tab_tabla2.getFilas().remove(tab_tabla2.getFilaActual());
             utilitario.addUpdate("tab_tabla2");
-
+            
         } else {
             utilitario.agregarMensajeError("Seleccione un activo fijo", "");
         }
     }
-
+    
     public void dibujarListadosBienesC() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
-
+        
         Boton bot_ver = new Boton();
         bot_ver.setValue("Datos Bien de Control");
         bot_ver.setIcon("ui-icon-search");
@@ -686,7 +707,7 @@ public class pre_activos_fijos extends Pantalla {
         bot_elimina.setIcon("ui-icon-cancel");
         bot_elimina.setMetodo("abrirEliminarActivoFijo");
         bar_menu.agregarComponente(bot_elimina);
-
+        
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_activos.getSqlListaBienesControl());
@@ -724,18 +745,18 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(20, "LISTADO BIENES DE CONTROL", gru);
     }
-
+    
     public void dibujarListadosActivos() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
-
+        
         Boton bot_ver = new Boton();
         bot_ver.setValue("Datos Activo Fijo");
         bot_ver.setIcon("ui-icon-search");
@@ -747,7 +768,7 @@ public class pre_activos_fijos extends Pantalla {
         bot_elimina.setIcon("ui-icon-cancel");
         bot_elimina.setMetodo("abrirEliminarActivoFijo");
         bar_menu.agregarComponente(bot_elimina);
-
+        
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
@@ -785,13 +806,13 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "LISTADO DE ACTIVOS FIJOS", gru);
     }
-
+    
     public void dibujarActivoFijo() {
         cantidad = 1;
         tab_tabla = new Tabla();
@@ -827,10 +848,10 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("fecha_compra_acafi").setLectura(false);
         tab_tabla.getColumna("fecha_acafi").setLectura(true);
         tab_tabla.getColumna("fecha_acafi").setValorDefecto(utilitario.getFechaActual());
-
+        
         tab_tabla.getColumna("ide_actac").setVisible(true);
         tab_tabla.getColumna("ide_actac").setCombo("act_tipo_adquisicion", "ide_actac", "nombre_actac", "");
-
+        
         tab_tabla.getColumna("act_ide_acafi").setVisible(false);///SI ES ASIGNACION MASIVA
 
         tab_tabla.getColumna("ide_gecas").setCombo("select ide_gecas,nombre_gecas,codigo_gecas from gen_casa order by codigo_gecas");
@@ -845,13 +866,13 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("cantidad_acafi").setValorDefecto("1");
         tab_tabla.getColumna("cantidad_acafi").setEstilo("font-size: 12px;font-weight: bold;");
         tab_tabla.getColumna("cantidad_acafi").setMetodoChange("cambioCantidad");
-
+        
         tab_tabla.getColumna("ano_actual_acafi").setVisible(false);
         tab_tabla.getColumna("ano_actual_acafi").setValorDefecto(utilitario.getFechaActual());
-
+        
         tab_tabla.getColumna("codigo_barras_acafi").setVisible(false);
         tab_tabla.getColumna("codigo_barras_acafi").setRequerida(true);
-
+        
         tab_tabla.getColumna("fd_acafi").setVisible(false);
         tab_tabla.getColumna("fecha_fabrica_acafi").setVisible(false);
         tab_tabla.getColumna("mediadas_acafi").setVisible(false);
@@ -861,9 +882,9 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("color_acafi").setVisible(false);
         tab_tabla.getColumna("codigo_recu_acafi").setVisible(false);
         tab_tabla.getColumna("sec_masivo_acafi").setVisible(false);
-
+        
         tab_tabla.getColumna("ide_accls").setCombo("act_clasificacion", "ide_accls", "nombre_accls", "");
-
+        
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.setCondicion("ide_acafi=-1");
@@ -872,11 +893,11 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setValidarInsertar(false);
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla);
-
+        
         tab_tabulador.getChildren().clear();
         tab_tabulador.setTransient(true);
         tab_tabulador.setId("tab_tabulador");
-
+        
         Grid gri_cb = new Grid();
         gri_cb.setId("gri_cb");
         gri_cb.setWidth("98%");
@@ -889,15 +910,15 @@ public class pre_activos_fijos extends Pantalla {
         ima_barra.setValueExpression("value", "pre_index.clase.stcCodigoBarra");
         gri_cb.getChildren().add(ima_barra);
         tab_tabulador.agregarTab("CODIGO DE BARRAS", gri_cb);
-
+        
         Boton bot_imprimir = new Boton();
         bot_imprimir.setValue("Imprimir");
         bot_imprimir.setIcon("ui-icon-print");
         bot_imprimir.setMetodo("imprimirCodigoBarra");
         gri_cb.getChildren().add(bot_imprimir);
-
+        
         gri_cb.getChildren().add(new Etiqueta("</div>"));
-
+        
         tab_tabla4 = new Tabla();
         tab_tabla4.setId("tab_tabla4");
         tab_tabla4.setIdCompleto("tab_tabulador:tab_tabla4");
@@ -911,28 +932,28 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla4.getColumna("foto_acfac").setNombreVisual("FOTO");
         tab_tabla4.setLectura(true);
         tab_tabla4.dibujar();
-
+        
         Boton bot_agregar = new Boton();
         bot_agregar.setMetodo("abrirDialogoAgregarFoto");
         bot_agregar.setValue("Agregar Foto");
         bot_agregar.setIcon("ui-icon-plus");
-
+        
         Boton bot_eliminar = new Boton();
         bot_eliminar.setMetodo("eliminarFoto");
         bot_eliminar.setValue("Eliminar Foto");
         bot_eliminar.setIcon("ui-icon-trash");
-
+        
         Grid gri1 = new Grid();
         gri1.setColumns(3);
         gri1.getChildren().add(bot_agregar);
         gri1.getChildren().add(bot_eliminar);
-
+        
         PanelTabla pat_panel4 = new PanelTabla();
         pat_panel4.setHeader(gri1);
         pat_panel4.setPanelTabla(tab_tabla4);
         pat_panel4.getMenuTabla().getItem_eliminar().setRendered(false);
         tab_tabulador.agregarTab("FOTOS", pat_panel4);
-
+        
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
@@ -946,7 +967,7 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
         tab_tabulador.agregarTab("HISTORIAL ASIGNACIONES", pat_panel2);
-
+        
         tab_tabla3 = new Tabla();
         tab_tabla3.setId("tab_tabla3");
         tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
@@ -957,11 +978,11 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla3.setRows(10);
         tab_tabla3.setRendered(false);
         tab_tabla3.dibujar();
-
+        
         PanelTabla pat_panel5 = new PanelTabla();
         pat_panel5.setPanelTabla(tab_tabla3);
         tab_tabulador.agregarTab("TRANSACCIONES", pat_panel5);
-
+        
         tab_tabla5 = new Tabla();
         tab_tabla5.setId("tab_tabla5");
         tab_tabla5.setIdCompleto("tab_tabulador:tab_tabla5");
@@ -970,13 +991,13 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla5.getColumna("ide_acafi").setVisible(false);
         tab_tabla5.setLectura(true);
         tab_tabla5.setRows(10);
-
+        
         tab_tabla5.dibujar();
-
+        
         PanelTabla pat_panel6 = new PanelTabla();
         pat_panel6.setPanelTabla(tab_tabla5);
         tab_tabulador.agregarTab("DETALLE CANTIDAD", pat_panel6);
-
+        
         Grupo gr = new Grupo();
         gr.setTransient(true);
         gr.getChildren().add(pat_panel1);
@@ -989,14 +1010,14 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabulador.getParent().setTransient(true);
         tab_tabulador.getParent().getParent().setTransient(true);
     }
-
+    
     public void eliminarFoto() {
         tab_tabla4.setLectura(false);
         if (tab_tabla4.eliminar()) {
             guardarPantalla();
         }
     }
-
+    
     public void cambioCantidad() {
         //Valida si que sea mayor q 1
 
@@ -1016,7 +1037,7 @@ public class pre_activos_fijos extends Pantalla {
         }
         generarCodigoBarras();
     }
-
+    
     public void abrirEliminarActivoFijo() {
         if (tab_tabla.getValor("ide_acafi") != null) {
             con_confirma.getBot_aceptar().setMetodo("eliminarActivoFijo");
@@ -1025,7 +1046,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeError("Debe seleccionar un Activo Fijo", "");
         }
     }
-
+    
     public void eliminarActivoFijo() {
         String ide_acafi = tab_tabla.getValor("ide_acafi");
         String act_ide_acafi = tab_tabla.getValor("act_ide_acafi");
@@ -1035,7 +1056,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE act_ide_acafi=" + ide_acafi);
             //borra activo
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE ide_acafi=" + ide_acafi);
-
+            
             if (act_ide_acafi != null) {
                 //Modifica la cantidad si elimino un hijo
                 utilitario.getConexion().agregarSql("UPDATE act_activo_fijo SET cantidad_acafi= cantidad_acafi-1 WHERE ide_acafi=" + act_ide_acafi);
@@ -1043,12 +1064,12 @@ public class pre_activos_fijos extends Pantalla {
             if (guardarPantalla().isEmpty()) {
                 tab_tabla.actualizar();
             }
-
+            
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
         }
     }
-
+    
     public void cargarActivoFijo() {
         String ide_acafi = tab_tabla.getValor("ide_acafi");
         if (ide_acafi != null) {
@@ -1067,13 +1088,13 @@ public class pre_activos_fijos extends Pantalla {
 
             tab_tabla4.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
             tab_tabla4.ejecutarSql();
-
+            
             cargarCodigoBarras();
         } else {
             utilitario.agregarMensaje("Debe seleccionar un Activo", "");
         }
     }
-
+    
     public void imprimirCodigoBarra() {
         System.out.println("***-*-*");
         if (tab_tabla.isFilaInsertada() == false) {
@@ -1089,7 +1110,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeInfo("Debe guardar el activo fijo", "");
         }
     }
-
+    
     private void cagarReporteCodigoBarras(String ide_acafi) {
         if (ide_acafi != null && ide_acafi.isEmpty() == false) {
             Map parametros_rep = new HashMap();
@@ -1101,7 +1122,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeError("Seleccione un activo fijo para imprimir el Código de Barras", "");
         }
     }
-
+    
     public void imprimirActaC() {
         if (tab_tabla.getValor("ide_acact") != null) {
             Map parametros_rep = new HashMap();
@@ -1113,7 +1134,7 @@ public class pre_activos_fijos extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione una Acta", "");
         }
     }
-
+    
     public void generarCodigoBarras() {
         StringBuilder codigoB = new StringBuilder();
         String codCasa = tab_tabla.getValor("ide_gecas") == null ? "00" : tab_tabla.getValorArreglo("ide_gecas", 2);
@@ -1138,7 +1159,7 @@ public class pre_activos_fijos extends Pantalla {
         }
         codigoB.append(codCasa).append(" ").append(codObra).append(" ").append(codUbiAct).append(" ").append(codClasAct).append(" ").append(codTipoAct);
         tab_tabla.setValor("codigo_barras_acafi", codigoB.toString().trim());
-
+        
         if (cantidad == 1) {
             eti_cod_barras.setValue(codigoB.toString());
             try {
@@ -1155,9 +1176,9 @@ public class pre_activos_fijos extends Pantalla {
         }
         utilitario.addUpdate("tab_tabulador:0:gri_cb");
     }
-
+    
     public void cargarCodigoBarras() {
-
+        
         String codigoB = tab_tabla.getValor("codigo_barras_acafi");
         try {
             cantidad = Integer.parseInt(tab_tabla.getValor("cantidad_acafi"));
@@ -1180,7 +1201,7 @@ public class pre_activos_fijos extends Pantalla {
         }
         utilitario.addUpdate("tab_tabulador:0:gri_cb");
     }
-
+    
     @Override
     public void insertar() {
         if (mep_menu.getOpcion() == 2) {
@@ -1195,9 +1216,9 @@ public class pre_activos_fijos extends Pantalla {
             dibujarActivoFijo();
             tab_tabla.insertar();
         }
-
+        
     }
-
+    
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 2) {
@@ -1314,153 +1335,153 @@ public class pre_activos_fijos extends Pantalla {
                         }
                     }
                 }
-
+                
             } else {
                 //  utilitario.agregarMensajeError("Seleccione activos para asignar", "");
                 guardarPantalla();
             }
         }
     }
-
+    
     @Override
     public void eliminar() {
-
+        
     }
-
+    
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
-
+    
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-
+    
     public Tabla getTab_tabla2() {
         return tab_tabla2;
     }
-
+    
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
     }
-
+    
     public Tabla getTab_tabla3() {
         return tab_tabla3;
     }
-
+    
     public void setTab_tabla3(Tabla tab_tabla3) {
         this.tab_tabla3 = tab_tabla3;
     }
-
+    
     public Tabla getTab_seleccion() {
         return tab_tabla2;
     }
-
+    
     public void setTab_seleccion(Tabla tab_tabla) {
         this.tab_tabla2 = tab_tabla;
     }
-
+    
     public AutoCompletar getAut_custodio() {
         return aut_custodio;
     }
-
+    
     public void setAut_custodio(AutoCompletar aut_custodio) {
         this.aut_custodio = aut_custodio;
     }
-
+    
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
-
+    
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
     }
-
+    
     public SeleccionFormatoReporte getSel_rep() {
         return sel_rep;
     }
-
+    
     public void setSel_rep(SeleccionFormatoReporte sel_rep) {
         this.sel_rep = sel_rep;
     }
-
+    
     public SeleccionArbol getSel_arb() {
         return sel_arb;
     }
-
+    
     public void setSel_arb(SeleccionArbol sel_arb) {
         this.sel_arb = sel_arb;
     }
-
+    
     public SeleccionCalendario getSec_rango_reporte() {
         return sec_rango_reporte;
     }
-
+    
     public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
         this.sec_rango_reporte = sec_rango_reporte;
     }
-
+    
     public VisualizarPDF getVipdf_acta() {
         return vipdf_acta;
     }
-
+    
     public void setVipdf_acta(VisualizarPDF vipdf_acta) {
         this.vipdf_acta = vipdf_acta;
     }
-
+    
     public StreamedContent getStcCodigoBarra() {
         return stcCodigoBarra;
     }
-
+    
     public void setStcCodigoBarra(StreamedContent stcCodigoBarra) {
         this.stcCodigoBarra = stcCodigoBarra;
     }
-
+    
     public Tabla getTab_tabla4() {
         return tab_tabla4;
     }
-
+    
     public void setTab_tabla4(Tabla tab_tabla4) {
         this.tab_tabla4 = tab_tabla4;
     }
-
+    
     public Tabla getTab_tabla5() {
         return tab_tabla5;
     }
-
+    
     public void setTab_tabla5(Tabla tab_tabla5) {
         this.tab_tabla5 = tab_tabla5;
     }
-
+    
     public SeleccionTabla getSet_selecciona() {
         return set_selecciona;
     }
-
+    
     public void setSet_selecciona(SeleccionTabla set_selecciona) {
         this.set_selecciona = set_selecciona;
     }
-
+    
     public Confirmar getCon_confirma() {
         return con_confirma;
     }
-
+    
     public void setCon_confirma(Confirmar con_confirma) {
         this.con_confirma = con_confirma;
     }
-
+    
     public Dialogo getDia_foto() {
         return dia_foto;
     }
-
+    
     public void setDia_foto(Dialogo dia_foto) {
         this.dia_foto = dia_foto;
     }
-
+    
     public Tabla getTab_foto() {
         return tab_foto;
     }
-
+    
     public void setTab_foto(Tabla tab_foto) {
         this.tab_foto = tab_foto;
     }
-
+    
 }
