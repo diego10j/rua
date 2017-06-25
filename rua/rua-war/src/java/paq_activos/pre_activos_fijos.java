@@ -1148,6 +1148,7 @@ public class pre_activos_fijos extends Pantalla {
                         tab_masivo.setCondicion("act_ide_acafi=" + tab_tabla.getValor("ide_acafi"));
                         tab_masivo.ejecutarSql();
                         for (int j = 0; j < tab_masivo.getTotalFilas(); j++) {
+                            tab_masivo.modificar(j);
                             tab_masivo.setValor(j, "ide_aceaf", tab_tabla.getValor("ide_aceaf"));
                             tab_masivo.setValor(j, "ide_geubi", tab_tabla.getValor("ide_geubi"));
                             tab_masivo.setValor(j, "ide_inarti", tab_tabla.getValor("ide_inarti"));
@@ -1170,13 +1171,13 @@ public class pre_activos_fijos extends Pantalla {
                             tab_masivo.setValor(j, "mediadas_acafi", tab_tabla.getValor("mediadas_acafi"));
                             tab_masivo.setValor(j, "ide_gecas", tab_tabla.getValor("ide_gecas"));
                             tab_masivo.setValor(j, "ide_geobr", tab_tabla.getValor("ide_geobr"));
-                            tab_masivo.setValor(j, "ide_accla", tab_tabla.getValor("ide_accla"));
-                            tab_masivo.modificar(j);
+                            tab_masivo.setValor(j, "ide_accla", tab_tabla.getValor("ide_accla"));                            
                         }
                         tab_masivo.guardar();
 
                     }
                 }
+                utilitario.getConexion().setImprimirSqlConsola(true);
                 if (guardarPantalla().isEmpty()) {
                     tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
                     tab_tabla5.ejecutarSql();
