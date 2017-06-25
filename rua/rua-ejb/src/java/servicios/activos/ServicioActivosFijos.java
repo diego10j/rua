@@ -221,7 +221,7 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
                 + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
                 + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and a.ide_geper is null and cantidad_acafi=1"
-                + bienesControl + " "
+                + cond + " "
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
