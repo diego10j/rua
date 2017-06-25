@@ -44,7 +44,7 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
-        public String getSqlListaBienesControl() {
+    public String getSqlListaBienesControl() {
         return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
                 + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
                 + "from act_activo_fijo a \n"
@@ -58,7 +58,7 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls=2 "//BIENES DE CONTROL
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
-    
+
     public String getSqlActivoFijo(String ide_acafi) {
         return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
                 + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
@@ -204,7 +204,13 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
-    public String getSqlListaActivosFijosSinCustodio() {
+    public String getSqlListaActivosFijosSinCustodio(boolean bienesControl) {
+        String cond = "";
+        if (bienesControl) {
+            cond = " and ide_accls=2 ";
+        } else {
+            cond = " and ide_accls!=2 ";
+        }
         return "select ide_acafi,act_ide_acafi,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
                 + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
                 + "from act_activo_fijo a \n"
@@ -215,6 +221,7 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
                 + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
                 + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and a.ide_geper is null and cantidad_acafi=1"
+                + bienesControl + " "
                 + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
     }
 
