@@ -1055,7 +1055,6 @@ public class pre_factura_cxc extends Pantalla {
     public void obtener_alterno() {
         String tipo_articulo = "";
         String aplica_iva = "";
-        String ide_cntco = conta.obtenerParametroPersona("ide_cntco", tab_tabla1.getValor("ide_geper"));
 
         for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
             tipo_articulo = obtener_tipo_articulo(tab_tabla2.getValor(i, "ide_inarti"));

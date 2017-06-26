@@ -1018,6 +1018,7 @@ public class FacturaCxC extends Dialogo {
                 tab_cab_factura.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero(tarifaIVA));
                 //valida la factura
                 if (validarFactura()) {
+                    obtenerAlterno104();
                     generarFactura();
                 }
             }
@@ -1190,6 +1191,43 @@ public class FacturaCxC extends Dialogo {
     private void ocultarTabs() {
         for (int i = 0; i < tab_factura.getChildren().size(); i++) {
             tab_factura.getTab(i).setRendered(false);
+        }
+    }
+
+    public void obtenerAlterno104() {
+        String tipo_articulo = "";
+        String aplica_iva = "";
+
+        for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
+            tipo_articulo = ser_producto.getTipoProducto(tab_deta_factura.getValor(i, "ide_inarti"));
+            aplica_iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
+
+            String p_activos_fijos = utilitario.getVariable("p_inv_articulo_activo_fijo");
+            //  1, Si aplica iva
+            // -1, No aplica iva
+            //  0, No OBJETO iva
+
+            try {
+                if (!tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("1")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_local_12%_401"));
+                } else if (tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("-1") && tab_deta_factura.getValor(i, "credito_tributario_ccdfa").equals("true")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_activos_0%_dertri_406"));
+                } else if (tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("1")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_activos_12%_402"));
+                } else if (tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("-1") && tab_deta_factura.getValor(i, "credito_tributario_ccdfa").equals("false")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_activos_0%_no_dertri_404"));
+                } else if (!tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("-1") && tab_deta_factura.getValor(i, "credito_tributario_ccdfa").equals("true")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_local_0%_dertri_405"));
+                } else if (!tipo_articulo.equals(p_activos_fijos) && aplica_iva.equals("-1") && tab_deta_factura.getValor(i, "credito_tributario_ccdfa").equals("false")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_venta_local_no_dertri_0%_403"));
+                } else if (aplica_iva.equals("0")) {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", utilitario.getVariable("p_sri_trans_no_obj_iva_431"));
+                } else {
+                    tab_deta_factura.setValor(i, "alterno_ccdfa", "00");
+                }
+            } catch (Exception e) {
+                tab_deta_factura.setValor(i, "alterno_ccdfa", "00");
+            }
         }
     }
 
