@@ -1109,7 +1109,7 @@ public class ServicioNomina {
 
 			if (ide_gepro!=null){
 				try{
-					str_sql="select ide_geedp,SUM(VALOR_NRDRO) as sumatoria_rubro from NRH_DETALLE_ROL DRO " +
+					str_sql="select "+IDE_GEEDP+" as ide_geedp,sum (sumatoria_rubro) as sumatoria_rubro from (select ide_geedp,SUM(VALOR_NRDRO) as sumatoria_rubro from NRH_DETALLE_ROL DRO " +
 							"inner join NRH_ROL rol on ROL.IDE_NRROL=DRO.IDE_NRROL " +
 							"INNER JOIN GEN_PERIDO_ROL PRO ON PRO.IDE_GEPRO=ROL.IDE_GEPRO " +
 							"inner join NRH_DETALLE_RUBRO DER on DER.IDE_NRDER=DRO.IDE_NRDER " +
@@ -1120,7 +1120,7 @@ public class ServicioNomina {
 							") " +
 							"AND RUB.IDE_NRRUB in ("+IDE_NRRUB+") " +
 							"and PRO.IDE_GEPRO IN ("+ide_gepro+") " +
-							"group by ide_geedp";
+							"group by ide_geedp ) a";
                                                      //   System.out.println(" bbbbbb "+str_sql);
 					TablaGenerica tab_det_rub2=utilitario.consultar(str_sql);
 					if (tab_det_rub2.getTotalFilas()>0){
