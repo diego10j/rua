@@ -6,11 +6,13 @@ package pkg_sri;
 
 import framework.aplicacion.TablaGenerica;
 import java.util.List;
+import javax.ejb.EJB;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import servicios.contabilidad.ServicioConfiguracion;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -32,17 +34,19 @@ public class cls_formulario104 {
     private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v423, v429, v431, v480, v481, v482, v483, v484, v485, v499;
     private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563;
     private String v601, v602, v605, v607, v609, v611, v613, v615, v617, v620, v621, v699;
-    private String v721, v723, v725, v799, v859, v801;
+    private String v721, v723, v725, v799, v859, v801, v731, v729;
     private String v890, v897, v898, v899, v880;
     private String v902, v903, v904, v999, v905, v906, v907, v908, v909, v910, v911, v912, v913, v915, v916, v917, v918, v919;
+    @EJB
+    private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
 
     public String Formulario104(String anio, String mes) {
         try {
             fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
             fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
             TablaGenerica tab_empresa = utilitario.consultar("SELECT identificacion_empr,nom_empr,identi_repre_empr from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
-            List lis_iva_sql = utilitario.getConexion().consultar("select porcentaje_cnpim from con_porcen_impues where ide_cnpim=" + utilitario.getVariable("p_con_porcentaje_imp_iva"));
-            porcentaje_iva = utilitario.getFormatoNumero(lis_iva_sql.get(0).toString());
+
+            porcentaje_iva = ser_configuracion.getPorcentajeIva(fecha_fin) + "";
             if (tab_empresa.getTotalFilas() == 1) {
                 doc_formulario104 = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
                 doc_formulario104.setXmlVersion("1.0");
@@ -75,16 +79,17 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "201"}, tab_empresa.getValor("identificacion_empr")));
 
                 //Consulta las ventas por el campo alterno
-                v401 = consultarAlternoVentas("401"); //
+                v401 = getValor401(); //
                 v402 = consultarAlternoVentas("402");
-                v403 = consultarAlternoVentas("403");
+                v403 = getValor403();
                 v404 = consultarAlternoVentas("404");
                 v405 = consultarAlternoVentas("405");
                 v406 = consultarAlternoVentas("406");
                 v407 = consultarAlternoVentas("407");
                 v408 = consultarAlternoVentas("408");
-                v409 = consultarAlternoVentas("401,402,403,404,405,406,407");
-                v431 = consultarAlternoVentas("431");
+                //v409 = consultarAlternoVentas("401,402,403,404,405,406,407");
+                v409 = utilitario.getFormatoNumero(Double.parseDouble(v401) + Double.parseDouble(v403));
+                v431 = getValor431();
                 //Valor Bruto  -N/C  => valores brutos restados los descuentos y devoluciones que afecten a las ventas del período declarado
                 v411 = v401;
                 v412 = v402;
@@ -96,13 +101,13 @@ public class cls_formulario104 {
                 v418 = v408;
                 v419 = utilitario.getFormatoNumero(Double.parseDouble(v411) + Double.parseDouble(v412) + Double.parseDouble(v413) + Double.parseDouble(v414) + Double.parseDouble(v415) + Double.parseDouble(v416) + Double.parseDouble(v417) + Double.parseDouble(v418));
                 //Calculo del IVA
-                v421 = utilitario.getFormatoNumero(Double.parseDouble(v411) * Double.parseDouble(porcentaje_iva));
+                v421 = getValor421();
                 v422 = utilitario.getFormatoNumero(Double.parseDouble(v412) * Double.parseDouble(porcentaje_iva));
                 v429 = utilitario.getFormatoNumero((Double.parseDouble(v421) + Double.parseDouble(v422)));
 
                 v423 = "0.00"; //**************!!!!BUSCAR
-                v480 = consultarVentas12Contado();
-                v481 = consultarVentas12Credito();
+                v480 = v401;
+                v481 = "0.00"; //**************!!!!BUSCAR
                 v482 = v429;
                 v483 = consultarImpuestoMesAnterior();
                 v484 = utilitario.getFormatoNumero(Double.parseDouble(v480) * Double.parseDouble(porcentaje_iva));
@@ -237,11 +242,11 @@ public class cls_formulario104 {
                 v605 = "0.00";
                 v607 = "0.00";
                 v609 = "0.00";
-                v611 = "0.00";
+                v611 = getValor611();
                 v613 = "0.00";
                 v615 = "0.00";
                 v617 = "0.00";
-                v620 = utilitario.getFormatoNumero(Double.parseDouble(v601) - Double.parseDouble(v602) - Double.parseDouble(v605) - Double.parseDouble(v607) - Double.parseDouble(v609) + -Double.parseDouble(v611) + -Double.parseDouble(v613));
+                v620 = utilitario.getFormatoNumero(Double.parseDouble(v601) - Double.parseDouble(v602) - Double.parseDouble(v605) - Double.parseDouble(v607) - Double.parseDouble(v609) + Double.parseDouble(v611) + Double.parseDouble(v613));
                 if (Double.parseDouble(v620) < 0) {
                     v620 = "0.00";
                 }
@@ -272,15 +277,17 @@ public class cls_formulario104 {
                 v721 = consultarRetencionIVA("721");
                 v723 = consultarRetencionIVA("723");
                 v725 = consultarRetencionIVA("725");
-                v799 = consultarRetencionIVA("721,723,725");
+                v729 = consultarRetencionIVA("729");
+                v731 = consultarRetencionIVA("731");
+                v799 = consultarRetencionIVA("721,723,725,729,731");
                 v801 = v799;
                 v859 = utilitario.getFormatoNumero((Double.parseDouble(v699) + Double.parseDouble(v801)));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "721"}, v721));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "723"}, v723));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "725"}, v725));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "729"}, v729));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "731"}, v731));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "727"}, "0.00"));//!!!!!****** BUSCAR 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "729"}, "0.00"));//!!!!!****** BUSCAR
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "731"}, "0.00"));//!!!!!****** BUSCAR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "799"}, v799));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "800"}, "0.00"));//!!!!!****** BUSCAR
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "801"}, v801));//!!!!!****** BUSCAR
@@ -399,6 +406,76 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    private String getValor611() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(monto_com_cpcfa) from cxp_cabece_factur\n"
+                + "where ide_cpefa=0\n"
+                + "and fecha_emisi_cpcfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor401() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor421() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor403() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_tarifa0_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor431() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
     private String consultarVentas12Contado() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("SELECT  SUM(df.total_ccdfa ) as valor "
@@ -445,6 +522,7 @@ public class cls_formulario104 {
                 + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
                 + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
                 + " AND ci.casillero_cncim in(" + utilitario.generarComillaSimple(casillero) + ") "
+                + " AND ide_cnere=0 "
                 + " AND es_venta_cncre=false");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {

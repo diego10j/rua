@@ -1102,7 +1102,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla1.setMostrarNumeroRegistros(false);
             tab_tabla1.setHeader("DATOS DEL CERTIFICADO");
             tab_tabla1.dibujar();
-            tab_tabla1.setValor("num_certificado_ipcer", ser_inversion.getSecuencialNuevos("1"));
+            //tab_tabla1.setValor("num_certificado_ipcer", ser_inversion.getSecuencialNuevos("1"));
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla1);
             pat_panel.getMenuTabla().getItem_buscar().setRendered(false);

@@ -73,9 +73,11 @@ public class pre_retenciones extends Pantalla {
         bar_botones.agregarBoton(bot_consultar);
 
         mep_menu.setMenuPanel("COMPROBANTES DE RETENCIÓN", "23%");
-        mep_menu.agregarItem("Listado de Retenciones", "dibujarListado", "ui-icon-bookmark"); //1
-        mep_menu.agregarItem("Retenciones Anuladas", "dibujarAnuladas", "ui-icon-bookmark");//2
-        mep_menu.agregarItem("Consultas por Impuesto", "dibujarConsulta", "ui-icon-bookmark");//4
+        mep_menu.agregarItem("Listado de Retenciones", "dibujarListado", "ui-icon-note"); //1
+        mep_menu.agregarItem("Retenciones Anuladas", "dibujarAnuladas", "ui-icon-cancel");//2
+        mep_menu.agregarSubMenu("CONSULTAS - REPORTES");
+        mep_menu.agregarItem("Consultas por Impuesto", "dibujarConsulta", "ui-icon-search");//4
+        mep_menu.agregarItem("Reporte Consolidado", "dibujarConsolidado", "ui-icon-calculator");//6
         mep_menu.agregarSubMenu("COMPROBANTES RETENCIONES EN VENTAS");
         mep_menu.agregarItem("Listado de RetencionesVentas", "dibujarListadoVentas", "ui-icon-bookmark");//3
         agregarComponente(mep_menu);
@@ -93,6 +95,22 @@ public class pre_retenciones extends Pantalla {
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
+    }
+
+    public void dibujarConsolidado() {
+        Grupo gru_grupo = new Grupo();
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_retencion.getSqlConsolidadoImpuesto(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setLectura(true);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+
+        pat_panel.setPanelTabla(tab_tabla);
+
+        gru_grupo.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(6, "REPORTE CONSOLIDADO DE RETENCIONES GENERADAS POR IMPUESTO", gru_grupo);
     }
 
     public void dibujarConsulta() {
@@ -257,7 +275,11 @@ public class pre_retenciones extends Pantalla {
             tab_tabla.ejecutarSql();
         } else if (mep_menu.getOpcion() == 4) {
             actualizarConsultar();
+        } else if (mep_menu.getOpcion() == 6) {
+            tab_tabla.setSql(ser_retencion.getSqlConsolidadoImpuesto(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_tabla.ejecutarSql();
         }
+
     }
 
     @Override
