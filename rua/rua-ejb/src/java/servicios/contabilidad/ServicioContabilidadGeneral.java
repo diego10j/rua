@@ -486,5 +486,9 @@ public class ServicioContabilidadGeneral {
         }
         return false;
     }
-
+public String personaMayorAnalitico(String cuenta){
+    String sql="select ide_geper,nom_geper,identificac_geper from gen_persona where ide_geper in ( select ide_geper from con_det_conf_asie  WHERE ide_cndpc="+cuenta+" )";
+    
+    return sql;
+}
 }
