@@ -126,6 +126,8 @@ public class pre_libro_bancos extends Pantalla {
     private SeleccionCalendario sel_fechas = new SeleccionCalendario();
     private SeleccionTabla set_bancos = new SeleccionTabla();
 
+    private SeleccionTabla set_tipo_transaccion = new SeleccionTabla();
+
     private Combo com_anticipos_anteriores;
 
     public pre_libro_bancos() {
@@ -227,6 +229,15 @@ public class pre_libro_bancos extends Pantalla {
         set_bancos.setHeight("65%");
         set_bancos.setTitle("CUENTAS CAJAS - BANCOS");
         agregarComponente(set_bancos);
+
+        set_tipo_transaccion.setId("set_tipo_transaccion");
+        set_tipo_transaccion.setSeleccionTabla(ser_tesoreria.getSqlTipoTransaccion(), "ide_tettb");
+        set_tipo_transaccion.setWidth("50%");
+        set_tipo_transaccion.getBot_aceptar().setMetodo("aceptarReporte");
+        set_tipo_transaccion.setHeight("65%");
+        set_tipo_transaccion.setTitle("TIPOS DE TRANSACCION - BANCOS");
+        agregarComponente(set_tipo_transaccion);
+
     }
 
     @Override
@@ -261,7 +272,31 @@ public class pre_libro_bancos extends Pantalla {
                     sel_formato.dibujar();
                 }
             }
+        } else if (rep_reporte.getReporteSelecionado().equals("Movimientos Conciliados")) {
+            if (rep_reporte.isVisible()) {
+                //abre calendario                 
+                rep_reporte.cerrar();
+                parametro = new HashMap();
+                set_tipo_transaccion.dibujar();
+
+            } else if (set_tipo_transaccion.isVisible()) {
+                if (set_tipo_transaccion.getSeleccionados() != null) {
+                    parametro.put("ide_tettb", set_tipo_transaccion.getSeleccionados());
+                    set_tipo_transaccion.cerrar();
+                    sel_fechas.dibujar();
+                }
+            } else if (sel_fechas.isVisible()) {
+                if (sel_fechas.isFechasValidas() == true) {
+                    parametro.put("fecha_inicio", sel_fechas.getFecha1());
+                    parametro.put("fecha_fin", sel_fechas.getFecha2());
+                    sel_fechas.cerrar();
+                    sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_formato.dibujar();
+                }
+            }
+
         }
+
     }
 
     public void aceptarSeleccionadosConciliar() {
@@ -2467,6 +2502,14 @@ public class pre_libro_bancos extends Pantalla {
 
     public void setSet_bancos(SeleccionTabla set_bancos) {
         this.set_bancos = set_bancos;
+    }
+
+    public SeleccionTabla getSet_tipo_transaccion() {
+        return set_tipo_transaccion;
+    }
+
+    public void setSet_tipo_transaccion(SeleccionTabla set_tipo_transaccion) {
+        this.set_tipo_transaccion = set_tipo_transaccion;
     }
 
 }
