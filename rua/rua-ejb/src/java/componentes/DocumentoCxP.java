@@ -1065,6 +1065,7 @@ public class DocumentoCxP extends Dialogo {
         if (tab_com_reembolso.isFocus()) {
             if (tab_cab_documento.getValor("ide_geper") != null) {
                 tab_com_reembolso.insertar();
+                tab_com_reembolso.setValor("fecha_emisi_cpcfa", tab_cab_documento.getValor("fecha_emisi_cpcfa"));
             } else {
                 utilitario.agregarMensajeInfo("Seleccione Proveedor", "Debe seleccionar un proveedor para realizar el documento");
             }

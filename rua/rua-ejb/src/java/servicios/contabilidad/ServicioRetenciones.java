@@ -199,8 +199,99 @@ public class ServicioRetenciones extends ServicioBase {
      * @param fechaFin
      * @return
      */
-    public String getSqlConsolidadoImpuesto(String fechaInicio, String fechaFin) {
-        return "SELECT  nombre_cnimp as TIPO,nombre_cncim as IMPUESTO ,casillero_cncim AS CASILLERO,SUM(dr.valor_cndre) as total,\n"
+    public String getSqlConsolidadoRenta(String fechaInicio, String fechaFin) {
+
+        return "SELECT  casillero_cncim AS CASILLERO,nombre_cncim as IMPUESTO ,SUM(dr.base_cndre) as BASE_IMPONIBLE,SUM(dr.valor_cndre) as valor_retenido,\n"
+                + "(\n"
+                + "SELECT  SUM(base_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=0\n"
+                + ") as ECONOMATO_BASE_IMPONIBLE,\n"
+                + "(\n"
+                + "SELECT  SUM(valor_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=0\n"
+                + ") as ECONOMATO_VALOR_RETENIDO,\n"
+                + "\n"
+                + "(\n"
+                + "SELECT  SUM(base_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=1\n"
+                + ") as CASA_INSPECTORIAL_base_imponible,\n"
+                + "(\n"
+                + "SELECT  SUM(valor_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=1\n"
+                + ") as CASA_INSPECTORIAL_valor_retenido,\n"
+                + "\n"
+                + "(\n"
+                + "SELECT  SUM(base_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=3\n"
+                + ") as OPLADI_base_imponible,\n"
+                + "(\n"
+                + "SELECT  SUM(valor_cndre)\n"
+                + "FROM con_cabece_retenc a \n"
+                + "LEFT JOIN con_detall_retenc d ON d.ide_cncre = a.ide_cncre\n"
+                + "JOIN con_cabece_impues c ON c.ide_cncim = d.ide_cncim\n"
+                + "WHERE fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND casillero_cncim = ci.casillero_cncim\n"
+                + "AND ide_cnere=0 \n"
+                + "AND es_venta_cncre=false\n"
+                + "and a.ide_sucu=3\n"
+                + ") as OPLADI_valor_retenido\n"
+                + "FROM con_cabece_retenc cr \n"
+                + "LEFT JOIN con_detall_retenc dr ON (dr.ide_cncre = cr.ide_cncre) \n"
+                + "LEFT JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) \n"
+                + "\n"
+                + "WHERE cr.fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
+                + "AND ide_cnere= 0\n"
+                + "AND es_venta_cncre=false\n"
+                + "AND ide_cnimp=1 --renta\n"
+                + "GROUP BY nombre_cncim,casillero_cncim, ci.ide_cnimp\n"
+                + "ORDER BY 1";
+    }
+
+    /**
+     * Retorna consolidado de retenciones realizadas en un rango de fechas
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public String getSqlConsolidadoIva(String fechaInicio, String fechaFin) {
+
+        return "SELECT casillero_cncim AS CASILLERO, nombre_cncim as IMPUESTO ,SUM(dr.valor_cndre) as valor_retenido,\n"
                 + "(\n"
                 + "SELECT  SUM(valor_cndre)\n"
                 + "FROM con_cabece_retenc a \n"
@@ -237,13 +328,12 @@ public class ServicioRetenciones extends ServicioBase {
                 + "FROM con_cabece_retenc cr \n"
                 + "LEFT JOIN con_detall_retenc dr ON (dr.ide_cncre = cr.ide_cncre) \n"
                 + "LEFT JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) \n"
-                + "LEFT JOIN con_impuesto im on ci.ide_cnimp=im.ide_cnimp\n"
                 + "WHERE cr.fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'\n"
-                + "AND ide_cnere= 0\n"
+                + "AND ide_cnere= 0 and ide_cnimp=0\n"
                 + "AND es_venta_cncre=false\n"
-                + "GROUP BY nombre_cnimp,nombre_cncim,casillero_cncim, ci.ide_cnimp\n"
+                + "GROUP BY nombre_cncim,casillero_cncim, ci.ide_cnimp\n"
                 + "HAVING SUM(dr.valor_cndre) >0\n"
-                + "ORDER BY ci.ide_cnimp desc";
+                + "ORDER BY 1";
     }
 
 }

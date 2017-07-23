@@ -44,7 +44,7 @@ public class Retencion extends Dialogo {
     private final ServicioRetenciones ser_retencion = (ServicioRetenciones) utilitario.instanciarEJB(ServicioRetenciones.class);
     @EJB
     private final ServicioFacturaCxC ser_cuentas_cxc = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
-   @EJB
+    @EJB
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
 
     private final AreaTexto ate_observacion = new AreaTexto();
@@ -174,7 +174,6 @@ public class Retencion extends Dialogo {
         tab_dt_retencion.getColumna("valor_cndre").alinearDerecha();
         tab_dt_retencion.getColumna("valor_cndre").setEstilo("font-size: 15px;font-weight: bold;");
         tab_dt_retencion.getColumna("porcentaje_cndre").setNombreVisual("% RETENCIÓN");
-        tab_dt_retencion.getColumna("porcentaje_cndre").setLectura(false);
         tab_dt_retencion.getColumna("base_cndre").setNombreVisual("BASE IMPONIBLE");
         tab_dt_retencion.getColumna("base_cndre").setLongitud(50);
         tab_dt_retencion.getColumna("ide_cndre").setVisible(false);
@@ -446,7 +445,7 @@ public class Retencion extends Dialogo {
         tab_dt_retencion.getColumna("valor_cndre").alinearDerecha();
         tab_dt_retencion.getColumna("valor_cndre").setEstilo("font-size: 15px;font-weight: bold;");
         tab_dt_retencion.getColumna("porcentaje_cndre").setNombreVisual("% RETENCIÓN");
-        tab_dt_retencion.getColumna("porcentaje_cndre").setLectura(false);
+        tab_dt_retencion.getColumna("porcentaje_cndre").setLectura(true);
         tab_dt_retencion.getColumna("base_cndre").setNombreVisual("BASE IMPONIBLE");
         tab_dt_retencion.getColumna("base_cndre").setLongitud(50);
         tab_dt_retencion.getColumna("ide_cndre").setVisible(false);
@@ -493,7 +492,7 @@ public class Retencion extends Dialogo {
         String p_iva30 = utilitario.getVariable("p_con_impuesto_iva30");
         String p_iva70 = utilitario.getVariable("p_con_impuesto_iva70");
         String p_iva100 = utilitario.getVariable("p_con_impuesto_iva100");
-        
+
         double p_porcentaje_iva = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
 
         cls_retenciones retenciones = new cls_retenciones();
