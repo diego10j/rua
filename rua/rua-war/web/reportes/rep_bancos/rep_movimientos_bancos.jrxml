@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_movimientos_bancos" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="585a094e-11dd-48a4-a0c5-ed93b5c27a7c">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="166"/>
-	<property name="ireport.y" value="100"/>
+	<property name="ireport.y" value="21"/>
 	<parameter name="fecha_inicio" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -112,7 +112,7 @@ order by c.ide_tecba,d.nombre_teban,c.nombre_tecba,fecha_trans_teclb,ide_teclb]]
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="7" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{saldo} == null ? new BigDecimal("0"): $F{saldo} ]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{saldo} == null ? new BigDecimal("0"): $F{saldo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>

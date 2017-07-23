@@ -1030,7 +1030,7 @@ public class pre_documentosCxP extends Pantalla {
 
         dcp_documento.nuevoDocumento();
         dcp_documento.dibujar();
-        //Limita fecha maxima
+        //Limita fecha maxima 
         for (UIComponent componenteActual : dcp_documento.getTab_cab_documento().getGrid().getChildren()) {
             if (componenteActual.getRendererType() != null && componenteActual.getRendererType().equals("org.primefaces.component.CalendarRenderer")) {
                 Calendario cal = (Calendario) componenteActual;
@@ -1038,7 +1038,13 @@ public class pre_documentosCxP extends Pantalla {
                 break;
             }
         }
-
+        for (UIComponent componenteActual : dcp_documento.getTab_com_reembolso().getChildren()) {
+            if (componenteActual.getId() != null && componenteActual.getId().equalsIgnoreCase("FECHA_EMISI_CPCFA")) {
+                Calendario cal = (Calendario) componenteActual.getChildren().get(0);
+                cal.setMaxdate(new Date());
+                break;
+            }
+        }
     }
 
     public void eliminar7() {

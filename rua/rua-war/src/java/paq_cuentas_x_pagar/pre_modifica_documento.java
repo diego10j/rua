@@ -16,6 +16,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -91,11 +92,18 @@ public class pre_modifica_documento extends Pantalla {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PROVEEDOR"));
         bar_botones.agregarComponente(aut_proveedor);
+
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
+
+        Boton bot_busca = new Boton();
+        bot_busca.setIcon("ui-icon-search");
+        bot_busca.setTitle("Buscar");
+        bot_busca.setMetodo("buscarDocumentosProveedor");
+        bar_botones.agregarBoton(bot_busca);
 
         //Recupera porcentaje iva
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
@@ -132,6 +140,10 @@ public class pre_modifica_documento extends Pantalla {
 
     public void abrirDocumentos(SelectEvent evt) {
         aut_proveedor.onSelect(evt);
+        buscarDocumentosProveedor();
+    }
+
+    public void buscarDocumentosProveedor() {
         if (aut_proveedor.getValor() != null) {
             sel_factura.setSql(ser_cuentas_cxp.getSqlDocumentosCliente(aut_proveedor.getValor()));
             sel_factura.getTab_seleccion().ejecutarSql();
@@ -337,14 +349,19 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setVisible(true);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setOrden(1);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("IDENTIFICACIÓN");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("RUC");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
+        ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChange("validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
 
         tab_com_reembolso.getColumna("ide_cntdo").setLongitud(-1);
         tab_com_reembolso.getColumna("numero_cpcfa").setVisible(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
         tab_com_reembolso.getColumna("numero_cpcfa").setOrden(2);
-        tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
+        //////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("ESTABLECIMIENTO-PUNTO.EMISION - SECUENCIAL");
+        /////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
         tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-99999999");
         tab_com_reembolso.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setRequerida(true);
@@ -390,7 +407,6 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("fecha_trans_cpcfa").setValorDefecto(utilitario.getFechaActual());
         tab_com_reembolso.setScrollable(true);
         tab_com_reembolso.setScrollHeight(55);
-        tab_com_reembolso.setRecuperarLectura(true);
         tab_com_reembolso.setCondicion("ide_cpcfa=-1");
         tab_com_reembolso.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
@@ -649,7 +665,6 @@ public class pre_modifica_documento extends Pantalla {
             utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
             return false;
         }
-
         //Validaciones Nota de Crédito
         if (tab_cab_documento.getColumna("autorizacio_nc_cpcfa").isVisible()) {
             String autorizacion = tab_cab_documento.getValor("autorizacio_nc_cpcfa");
@@ -778,15 +793,39 @@ public class pre_modifica_documento extends Pantalla {
                 }
                 tab_com_reembolso.setValor(i, "total_cpcfa", utilitario.getFormatoNumero(dou_baseiva + dou_base0 + dou_basenoobjeto + dou_iva));
             }
-            //valida total factura con total reembolso
-            if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso");
+            //valida total factura con total reembolso 
+            if (tab_cab_documento.getSumaColumna("base_grabada_cpcfa") != tab_com_reembolso.getSumaColumna("base_grabada_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Grabada del Documento debe ser igual a la del Comprobante de Reembolso");
+                return false;
+            }
+            if (tab_cab_documento.getSumaColumna("base_tarifa0_cpcfa") != tab_com_reembolso.getSumaColumna("base_tarifa0_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Trarifa 0 del Documento debe ser igual a la del Comprobante de Reembolso");
+                return false;
+            }
+            if (tab_cab_documento.getSumaColumna("base_no_objeto_iva_cpcfa") != tab_com_reembolso.getSumaColumna("base_no_objeto_iva_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base No Objeto del Documento debe ser igual a la del Comprobante de Reembolso");
                 return false;
             }
 
         }
         //Fin validaciones reembolsos
         return true;
+    }
+
+    public void validarIdentificacionReembolso() {
+        String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");
+        boolean correcto = false;
+        if (identificacion.length() == 13) {
+            if (utilitario.validarRUC(identificacion)) {
+                correcto = true;
+            }
+        }
+        if (correcto == false) {
+            tab_com_reembolso.setValor("motivo_nc_cpcfa", "");
+            utilitario.agregarMensajeInfo("Ruc no válido", "Ingrese un número RUC  en el detalle del comprobante de reembolso");
+            utilitario.addUpdateTabla(tab_com_reembolso, "motivo_nc_cpcfa", "");
+        }
+
     }
 
     public void cambiarTipoDocumento(AjaxBehaviorEvent evt) {
@@ -833,8 +872,9 @@ public class pre_modifica_documento extends Pantalla {
         if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso"))) {
             //Activa tabla  y disminuye tamaño del detalle
             tab_com_reembolso.setRendered(true);
-            tab_com_reembolso.limpiar();
-            //   tab_det_documento.setScrollHeight(getAltoPanel() - 445);
+            tab_com_reembolso.setCondicion("ide_rem_cpcfa=" + tab_cab_documento.getValor("ide_cpcfa"));
+            tab_com_reembolso.ejecutarSql();
+            tab_det_documento.setScrollHeight(utilitario.getAltoPantalla() - 445);
             try {
                 PanelTabla pat_panel = (PanelTabla) tab_com_reembolso.getParent();
                 pat_panel.getMenuTabla().getItem_insertar().setDisabled(false);
@@ -926,7 +966,7 @@ public class pre_modifica_documento extends Pantalla {
                         for (int i = 0; i < tab_com_reembolso.getTotalFilas(); i++) {
                             tab_com_reembolso.setValor(i, "ide_rem_cpcfa", ide_cccfa);
                         }
-                    }
+                    }                    
                     if (tab_com_reembolso.guardar()) {
                         //Guarda la cuenta por pagar  
                         ser_cuentas_cxp.generarModificaTransaccionCompra(tab_cab_documento);

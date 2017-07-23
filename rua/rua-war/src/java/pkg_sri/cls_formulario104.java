@@ -59,7 +59,7 @@ public class cls_formulario104 {
                 //CABECERA
                 Element cabecera = doc_formulario104.createElement("cabecera");
                 raiz.appendChild(cabecera);
-                cabecera.appendChild(crearElemento("codigo_version_formulario", null, "04201604"));
+                cabecera.appendChild(crearElemento("codigo_version_formulario", null, "04201701"));
                 cabecera.appendChild(crearElemento("ruc", null, tab_empresa.getValor("identificacion_empr")));
                 cabecera.appendChild(crearElemento("codigo_moneda", null, "1"));
 
@@ -101,7 +101,8 @@ public class cls_formulario104 {
                 v418 = v408;
                 v419 = utilitario.getFormatoNumero(Double.parseDouble(v411) + Double.parseDouble(v412) + Double.parseDouble(v413) + Double.parseDouble(v414) + Double.parseDouble(v415) + Double.parseDouble(v416) + Double.parseDouble(v417) + Double.parseDouble(v418));
                 //Calculo del IVA
-                v421 = getValor421();
+                //v421 = getValor421();
+                v421 = utilitario.getFormatoNumero(Double.parseDouble(v411) * Double.parseDouble(porcentaje_iva));
                 v422 = utilitario.getFormatoNumero(Double.parseDouble(v412) * Double.parseDouble(porcentaje_iva));
                 v429 = utilitario.getFormatoNumero((Double.parseDouble(v421) + Double.parseDouble(v422)));
 

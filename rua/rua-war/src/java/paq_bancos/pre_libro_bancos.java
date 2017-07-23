@@ -277,8 +277,15 @@ public class pre_libro_bancos extends Pantalla {
                 //abre calendario                 
                 rep_reporte.cerrar();
                 parametro = new HashMap();
+                set_bancos.dibujar();
+            } else if (set_bancos.isVisible()) {
+                if (set_bancos.getSeleccionados() == null || set_bancos.getSeleccionados().isEmpty()) {
+                    utilitario.agregarMensajeInfo("Seleccione una cuenta caja o banco", "");
+                    return;
+                }
+                parametro.put("ide_tecba", set_bancos.getSeleccionados());
+                set_bancos.cerrar();
                 set_tipo_transaccion.dibujar();
-
             } else if (set_tipo_transaccion.isVisible()) {
                 if (set_tipo_transaccion.getSeleccionados() != null) {
                     parametro.put("ide_tettb", set_tipo_transaccion.getSeleccionados());
@@ -287,8 +294,8 @@ public class pre_libro_bancos extends Pantalla {
                 }
             } else if (sel_fechas.isVisible()) {
                 if (sel_fechas.isFechasValidas() == true) {
-                    parametro.put("fecha_inicio", sel_fechas.getFecha1());
-                    parametro.put("fecha_fin", sel_fechas.getFecha2());
+                    parametro.put("fecha_inicio", sel_fechas.getFecha1String());
+                    parametro.put("fecha_fin", sel_fechas.getFecha2String());
                     sel_fechas.cerrar();
                     sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_formato.dibujar();
