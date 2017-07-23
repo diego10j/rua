@@ -289,23 +289,6 @@ public class pre_index {
         ContenidoBootstrap cb_derecha = new ContenidoBootstrap("col-md-6");
         row_util.getChildren().add(cb_derecha);
 
-        PanelBootstrap pb_busca_pantalla = new PanelBootstrap();
-        cb_derecha.getChildren().add(pb_busca_pantalla);
-        pb_busca_pantalla.setPanelNaranja();
-        pb_busca_pantalla.setTitulo("BUSCAR PANTALLA");
-
-        GrupoBootstrap grb_abrir = new GrupoBootstrap();
-        grb_abrir.setAutocompletar(aut_pantalla);
-        BotonBootstrap bot_abrir = new BotonBootstrap();
-        bot_abrir.setId("bot_buscaPantalla");
-        bot_abrir.setBotonAzul();
-        bot_abrir.setBotonUpdate("dibuja,:fortitulo");
-        bot_abrir.setOnclick("dimensionesDisponibles()");
-        bot_abrir.setActionListenerRuta("pre_index.cargar");
-        bot_abrir.setValue("Abrir");
-        grb_abrir.setBotonBootstrap(bot_abrir);
-        pb_busca_pantalla.agregarComponenteContenido(grb_abrir);
-
         PanelBootstrap pb_pantallas = new PanelBootstrap();
         pb_pantallas.setPanelAzul();
         pb_pantallas.setTitulo("PANTALLAS MÁS USADAS");
