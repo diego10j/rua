@@ -792,7 +792,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
                     TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
-                        parametro.put("logo", "upload/logos/logo_reporte.png");
+                        parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
                         parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -859,7 +859,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
                     TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
-                        parametro.put("logo", "upload/logos/logo_reporte.png");
+                        parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
                         parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -922,7 +922,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
                     TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
-                        parametro.put("logo", "upload/logos/logo_reporte.png");
+                        parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
                         parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -983,7 +983,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
                     TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
-                        parametro.put("logo", "upload/logos/logo_reporte.png");
+                        parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
                         parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -1081,7 +1081,7 @@ public class pre_contabilidad extends Pantalla {
 
                             TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                             if (tab_datos.getTotalFilas() > 0) {
-                                parametro.put("logo", "upload/logos/logo_reporte.png");
+                                parametro.put("logo", "/upload/logos/logo_reporte.png");
                                 parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
                                 parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
                                 parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));

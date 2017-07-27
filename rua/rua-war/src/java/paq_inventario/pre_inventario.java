@@ -314,7 +314,7 @@ public class pre_inventario extends Pantalla {
         pat_panel1.getMenuTabla().getItem_buscar().setRendered(false);
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 200);
-        tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "");
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getSqlComboProductosKardex());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");

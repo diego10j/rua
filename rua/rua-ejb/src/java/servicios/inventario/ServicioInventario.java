@@ -406,7 +406,12 @@ public class ServicioInventario {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true order by nom_geper ";
     }
 
-     public String getSqlComboOrganigrama() {
+    public String getSqlComboOrganigrama() {
         return "select ide_georg,nombre_georg from gen_organigrama order by nombre_georg";
     }
+
+    public String getSqlComboProductosKardex() {
+        return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
+    }
+
 }

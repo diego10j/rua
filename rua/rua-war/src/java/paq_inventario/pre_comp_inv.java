@@ -105,7 +105,7 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "");
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getSqlComboProductosKardex());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
@@ -188,19 +188,18 @@ public class pre_comp_inv extends Pantalla {
 
     public void cargarPrecio(SelectEvent evt) {
         tab_tabla2.modificar(evt);
-        try{
-        List<Double> lisSaldos = ser_producto.getSaldoPromedioProductoBodega(tab_tabla2.getValor("ide_inarti"), utilitario.getFechaActual(), tab_tabla1.getValor("ide_inbod"));
-        double dou_precioi = lisSaldos.get(1);
+        try {
+            List<Double> lisSaldos = ser_producto.getSaldoPromedioProductoBodega(tab_tabla2.getValor("ide_inarti"), utilitario.getFechaActual(), tab_tabla1.getValor("ide_inbod"));
+            double dou_precioi = lisSaldos.get(1);
 
-        double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), tab_tabla1.getValor("ide_inbod"));
-        if (dou_existencia <= 0) {
-            utilitario.agregarMensajeError("No hay existencia de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " en Bodega", "");
-        }
-                tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
+            double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), tab_tabla1.getValor("ide_inbod"));
+            if (dou_existencia <= 0) {
+                utilitario.agregarMensajeError("No hay existencia de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " en Bodega", "");
+            }
+            tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
 
-        }
-        catch (Exception e){
-            System.out.println("Error al cargar precio "+e);
+        } catch (Exception e) {
+            System.out.println("Error al cargar precio " + e);
         }
         utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
     }
@@ -239,16 +238,15 @@ public class pre_comp_inv extends Pantalla {
 
     @Override
     public void guardar() {
-      /*  if (validar()) {
-            if (tab_tabla1.isFilaInsertada()) {
-                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
-            }*/
-            tab_tabla1.guardar();
-             tab_tabla2.guardar();
-                    utilitario.getConexion().guardarPantalla();
-               
-            
-       // }
+        /*  if (validar()) {
+         if (tab_tabla1.isFilaInsertada()) {
+         tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+         }*/
+        tab_tabla1.guardar();
+        tab_tabla2.guardar();
+        utilitario.getConexion().guardarPantalla();
+
+        // }
     }
 
     @Override
