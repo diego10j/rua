@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b884a89-d067-4769-8f9b-d0eed3343e6f">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="1405"/>
+	<property name="ireport.y" value="234"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<queryString>
 		<![CDATA[select a.ide_prpro,codigo_clasificador_prcla ||' '||substring(descripcion_clasificador_prcla from 1 for 100) as presupuesto,codigo_prfup||' '||detalle_prfup as programa,cod_programa_prpro,nom_geani
@@ -11,8 +11,7 @@ left join pre_clasificador b on a.ide_prcla = b.ide_prcla
 left join pre_funcion_programa c on a.ide_prfup = c.ide_prfup
 left join cont_vigente d on a.ide_prfup = d.ide_prfup
 left join gen_anio e on d.ide_geani = e.ide_geani
-order by codigo_clasificador_prcla
-]]>
+order by codigo_clasificador_prcla]]>
 	</queryString>
 	<field name="ide_prpro" class="java.lang.Long">
 		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
@@ -65,7 +64,7 @@ order by codigo_clasificador_prcla
 				<text><![CDATA[CUENTA PRESUPUESTARIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="73f0d0e5-fdba-4a5b-9892-df3382296759" x="187" y="5" width="189" height="20"/>
+				<reportElement uuid="73f0d0e5-fdba-4a5b-9892-df3382296759" x="189" y="5" width="189" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -91,35 +90,41 @@ order by codigo_clasificador_prcla
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="17">
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="9926165a-b5f8-4c4c-9c51-8cff9fb368e8" x="0" y="2" width="184" height="15"/>
-				<textElement>
-					<font size="8"/>
+		<band height="13">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9926165a-b5f8-4c4c-9c51-8cff9fb368e8" x="0" y="2" width="184" height="11"/>
+				<textElement textAlignment="Justified">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{presupuesto}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="4b9d6f39-1d96-427f-bd2a-be4c95aa5ffb" x="187" y="2" width="246" height="15"/>
+				<reportElement uuid="4b9d6f39-1d96-427f-bd2a-be4c95aa5ffb" x="189" y="2" width="236" height="11"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{programa}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="bcfec4da-114e-407d-b2e4-a58238c6aded" x="434" y="2" width="93" height="15"/>
+				<reportElement uuid="bcfec4da-114e-407d-b2e4-a58238c6aded" x="434" y="2" width="90" height="11"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cod_programa_prpro}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="1639e661-7e63-41c5-961d-0dff0fe0ff35" x="527" y="2" width="27" height="15"/>
+				<reportElement uuid="1639e661-7e63-41c5-961d-0dff0fe0ff35" x="527" y="2" width="27" height="11"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geani}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="2ed62932-50ad-42e1-871f-9ffa1d4cea48" stretchType="RelativeToBandHeight" x="430" y="-1" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement uuid="41a20080-dd6d-4d50-904d-40d0f3d2764f" stretchType="RelativeToBandHeight" x="187" y="-1" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
 		</band>
 	</detail>
 </jasperReport>
