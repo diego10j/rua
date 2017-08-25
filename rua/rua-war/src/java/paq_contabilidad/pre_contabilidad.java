@@ -26,6 +26,7 @@ import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.VisualizarPDF;
 import framework.reportes.ReporteDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,10 +72,11 @@ public class pre_contabilidad extends Pantalla {
     private SeleccionTabla sel_tab_nivel = new SeleccionTabla();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private cls_contabilidad con = new cls_contabilidad();
-
+    private SeleccionTabla sel_tab_mayor_auxiliar = new SeleccionTabla();
     private Map parametro = new HashMap();
     private String fecha_fin;
     private String fecha_inicio;
+    private VisualizarPDF vipdf_mayor = new VisualizarPDF();
 
     private AsientoContable asc_asiento = new AsientoContable();
     private Dialogo dia_cerrar_periodo = new Dialogo();
@@ -164,7 +166,15 @@ public class pre_contabilidad extends Pantalla {
         dia_cerrar_periodo.getBot_aceptar().setMetodo("aceptarCierrePeriodo");
 
         agregarComponente(dia_cerrar_periodo);
-
+        
+        sel_tab_mayor_auxiliar.setId("sel_tab_mayor_auxiliar");
+        sel_tab_mayor_auxiliar.setTitle("Seleccione los beneficiarios para imprimir el reporte");
+        sel_tab_mayor_auxiliar.setSeleccionTabla(ser_contabilidad.personaMayorAnalitico("-1"), "ide_geper");
+        sel_tab_mayor_auxiliar.getBot_aceptar().setMetodo("generarPDF"); 
+        agregarComponente(sel_tab_mayor_auxiliar);
+        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
     }
 
     /**
@@ -184,6 +194,16 @@ public class pre_contabilidad extends Pantalla {
         Fieldset fis_consulta = new Fieldset();
         Grid gp = new Grid();
         gp.setColumns(3);
+        
+        Boton bot_imprimir_cuentas = new Boton();
+        bot_imprimir_cuentas.setIcon("ui-icon-print");
+        bot_imprimir_cuentas.setTitle("Imprimir");
+        bot_imprimir_cuentas.setValue("Imprimir Mayor Auxiliar por Beneficiario.");
+        bot_imprimir_cuentas.setMetodo("imprimirMayor");
+        gp.getChildren().add(bot_imprimir_cuentas);  
+        gp.getChildren().add(new Etiqueta(""));  
+        gp.getChildren().add(new Etiqueta(""));  
+        
         gp.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
 
         aut_cuenta = new AutoCompletar();
@@ -199,6 +219,8 @@ public class pre_contabilidad extends Pantalla {
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         gp.getChildren().add(bot_clean);
+        
+      
 
         gp.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong>"));
         aut_persona = new AutoCompletar();
@@ -1122,6 +1144,28 @@ public class pre_contabilidad extends Pantalla {
             }
 
         }
+        else if (rep_reporte.getReporteSelecionado().equals("Mayor Auxiliar Beneficiario")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc="+aut_cuenta.getValor());
+               
+                parametro.put("pcuenta", tab_cuenta_contable.getValor("codigo"));
+                parametro.put("pdetalle_cuenta",tab_cuenta_contable.getValor("nombre"));
+                parametro.put("fecha_inicio",cal_fecha_inicio.getDate());
+                parametro.put("fecha_fin",cal_fecha_fin.getDate());
+                parametro.put("persona", sel_tab_mayor_auxiliar.getSeleccionados());
+
+                parametro.put("pide_cuenta",tab_cuenta_contable.getValor("ide_cndpc") );
+                System.out.println("paranetros " + parametro);
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+
+            } else {
+               	utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
+ 
+            }
+        }
     }
 
     /**
@@ -1135,7 +1179,31 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-
+public void imprimirMayor(){
+    	sel_tab_mayor_auxiliar.getTab_seleccion().setSql(ser_contabilidad.personaMayorAnalitico(aut_cuenta.getValor()));
+	sel_tab_mayor_auxiliar.getTab_seleccion().ejecutarSql();
+	sel_tab_mayor_auxiliar.dibujar();
+}
+    public void generarPDF() {
+        
+        parametro = new HashMap();
+                rep_reporte.cerrar();
+                TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc="+aut_cuenta.getValor());
+               
+                parametro.put("pcuenta", tab_cuenta_contable.getValor("codigo"));
+                parametro.put("pdetalle_cuenta",tab_cuenta_contable.getValor("nombre"));
+                parametro.put("fecha_inicio",cal_fecha_inicio.getFecha());
+                parametro.put("fecha_fin",cal_fecha_fin.getFecha());
+                parametro.put("persona", sel_tab_mayor_auxiliar.getSeleccionados());
+                parametro.put("ide_sucu", Integer.parseInt(utilitario.getVariable("IDE_SUCU")));
+                parametro.put("ide_empr", Integer.parseInt(utilitario.getVariable("IDE_EMPR")));
+                parametro.put("pide_cuenta",Integer.parseInt(tab_cuenta_contable.getValor("ide_cndpc") ));
+                System.out.println("paranetrosyy " + parametro);
+                vipdf_mayor.setVisualizarPDF("rep_contabilidad/rep_mayorauxiliar.jasper", parametro);
+                vipdf_mayor.dibujar();
+                sel_tab_mayor_auxiliar.cerrar();
+      
+    }
     public String getFormatoFecha(String fecha) {
         String mes = utilitario.getNombreMes(utilitario.getMes(fecha));
         String dia = utilitario.getDia(fecha) + "";
@@ -1231,6 +1299,22 @@ public class pre_contabilidad extends Pantalla {
 
     public void setAut_persona(AutoCompletar aut_persona) {
         this.aut_persona = aut_persona;
+    }
+
+    public SeleccionTabla getSel_tab_mayor_auxiliar() {
+        return sel_tab_mayor_auxiliar;
+    }
+
+    public void setSel_tab_mayor_auxiliar(SeleccionTabla sel_tab_mayor_auxiliar) {
+        this.sel_tab_mayor_auxiliar = sel_tab_mayor_auxiliar;
+    }
+
+    public VisualizarPDF getVipdf_mayor() {
+        return vipdf_mayor;
+    }
+
+    public void setVipdf_mayor(VisualizarPDF vipdf_mayor) {
+        this.vipdf_mayor = vipdf_mayor;
     }
 
 }
