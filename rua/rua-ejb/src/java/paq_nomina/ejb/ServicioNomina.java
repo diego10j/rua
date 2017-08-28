@@ -1362,11 +1362,14 @@ public class ServicioNomina {
 	 * @return TablaGenerica     : resultado
 	 */
 	public TablaGenerica getRol(String IDE_NRDTN,String IDE_GEPRO){
+            System.out.println("entre al getRol "+IDE_NRDTN+" IDE_GEPRO "+IDE_GEPRO);
 		if (IDE_NRDTN!=null && !IDE_NRDTN.isEmpty()
 				&& IDE_GEPRO!=null && !IDE_GEPRO.isEmpty()){
 			TablaGenerica tab_rol=utilitario.consultar("select * from NRH_ROL " +
 					"where IDE_NRDTN ="+IDE_NRDTN+" and IDE_GEPRO="+IDE_GEPRO+"");
-			return tab_rol;
+			 System.out.println("entre al tab_rol ");
+                        tab_rol.imprimirSql();
+                        return tab_rol;
 		}
 		return null;
 	}
@@ -2877,6 +2880,8 @@ public class ServicioNomina {
 
 
 	public String getIdeNrderDecimos(String ide_nrdtn,String ide_gepro){
+                 System.out.println("entre getIdeNrderDecimos ");
+
 		String str_ide_nrder_decimos="";
 		int anio_periodo=utilitario.getAnio(getPeriodoRol(ide_gepro).getValor("fecha_inicial_gepro"));
 		TablaGenerica tab_decimos=utilitario.consultar("select * from NRH_DETALLE_RUBRO " +
@@ -2893,8 +2898,7 @@ public class ServicioNomina {
 			}
 
 			String fecha_pago_rubro=""+anio_periodo+"-"+fecha_pago_nrder;
-
-
+                        System.out.println("fecha pago rubro "+fecha_pago_rubro);
 			TablaGenerica tab_per=utilitario.consultar("select * from GEN_PERIDO_ROL where IDE_GEPRO="+ide_gepro+" " +
 					"and to_date('"+fecha_pago_rubro+"','yyyy-mm-dd') BETWEEN FECHA_INICIAL_GEPRO and FECHA_FINAL_GEPRO");
 			if (tab_per.getTotalFilas()>0){
@@ -2953,7 +2957,7 @@ public class ServicioNomina {
 
 	public TablaGenerica generarDecimos(TablaGenerica tab_empleados_departamento,String ide_nrrol,Long ide_inicial,String ide_nrder_decimos,int nro_dia_comercial){	
 		long inicio = System.currentTimeMillis();
-
+                System.out.println("entre a generarDecimos ");
 		TablaGenerica tab_cab_rol=utilitario.consultar("SELECT * FROM NRH_ROL where IDE_NRROL="+ide_nrrol);					
 		String ide_nrdtn=tab_cab_rol.getValor("IDE_NRDTN");
 		String ide_gepro=tab_cab_rol.getValor("IDE_GEPRO");
@@ -2972,6 +2976,7 @@ public class ServicioNomina {
 		str_sql_emp_reg_pago+=" )a ";
 		str_sql_emp_reg_pago+="where a.ide_gereg in (select c.ide_gereg from ("+tab_rubros.getSql()+")c group by c.ide_gereg) " +
 				"order by nombres";
+                System.out.println("entre a str_sql_emp_reg_pago sql "+str_sql_emp_reg_pago);
 
 		TablaGenerica tab_empleados_region_pago=utilitario.consultar(str_sql_emp_reg_pago);
 
@@ -3607,6 +3612,7 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 			indice_detalle++;
 		}
 
+                
 		TablaGenerica tab_rub_repetido=utilitario.consultar("select * from ( " +
 				"SELECT ide_nrder,COUNT(ide_nrder) as num_rub FROM ( " +
 				"select IDE_NRDRO,IDE_NRROL,IDE_GEEDP,DRO.IDE_NRDER,VALOR_NRDRO,DER.IDE_NRRUB,RUB.IDE_NRFOC,ORDEN_NRDER,DER.FORMULA_NRDER,DER.FECHA_INICIAL_NRDER,DER.FECHA_FINAL_NRDER,DER.FECHA_PAGO_NRDER,decimo_nrrub from NRH_DETALLE_ROL DRO INNER JOIN NRH_DETALLE_RUBRO DER ON DER.IDE_NRDER=DRO.IDE_NRDER INNER JOIN NRH_RUBRO RUB ON RUB.IDE_NRRUB=DER.IDE_NRRUB INNER JOIN NRH_FORMA_CALCULO FOC ON FOC.IDE_NRFOC=RUB.IDE_NRFOC " +
@@ -4542,7 +4548,7 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 				"INNER JOIN NRH_RUBRO RUB ON RUB.IDE_NRRUB=DER.IDE_NRRUB " +
 				"WHERE DER.IDE_NRDTN="+IDE_NRDTN+" " +
 				"AND DER.ACTIVO_NRDER=true " +
-				"and der.IDE_NRRUB IN (select IDE_NRRUB from NRH_RUBRO where DECIMO_NRRUB is null or DECIMO_NRRUB !=1) " +
+				"and der.IDE_NRRUB IN (select IDE_NRRUB from NRH_RUBRO where DECIMO_NRRUB is null or DECIMO_NRRUB !=true) " +
 				"or IDE_NRDER in ("+IDE_NRDER_DECIMOS+") " +
 				"ORDER BY DER.ORDEN_NRDER DESC ");
 		System.out.println("rub deci");

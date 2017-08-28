@@ -236,7 +236,7 @@ public String getPrograma (String activo){
 }
 
 public String getPorDevengar(String ide_prcla,String condicion,String asientos){
-	String tab_programa=("select a.ide_cndcc,ide_cnccc, observacion_cnccc,fecha_trans_cnccc,numero_cnccc,ide_cnlap,ide_cndpc,valor_cndcc, " +
+	String tab_programa=("select a.ide_cndcc,ide_cnccc as nro_asiento, observacion_cnccc,fecha_trans_cnccc,numero_cnccc,ide_cnlap,ide_cndpc,valor_cndcc, " +
                             " valor_cndcc -  (case when devengado is null then 0 else devengado end) as saldoxdevengar,nombre_cnlap,codig_recur_cndpc,nombre_cndpc, (case when devengado is null then 0 else devengado end)  as devengado" +
                             " from (" +
                             " select ide_cndcc,a.ide_cnccc,observacion_cnccc,fecha_trans_cnccc,numero_cnccc,b.ide_cnlap,c.ide_cndpc,valor_cndcc, nombre_cnlap,codig_recur_cndpc,nombre_cndpc" +

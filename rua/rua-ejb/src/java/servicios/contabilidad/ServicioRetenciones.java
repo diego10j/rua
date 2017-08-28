@@ -39,7 +39,7 @@ public class ServicioRetenciones extends ServicioBase {
             autorizacion_cncre = " and autorizacion_cncre='" + autorizacion_cncre + "' ";
         }
         return "SELECT a.ide_cncre,ide_cnere,fecha_emisi_cncre,a.ide_cnccc,observacion_cncre,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
-                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
+                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre and ide_cncim in (select ide_cncim from con_cabece_impues  where ide_cnimp =1))AS BASE_IMPONIBLE,"
                 + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS VALOR,ide_cpcfa,numero_cpcfa as NUM_FACTURA,nom_geper AS PROVEEDOR\n"
                 + "FROM con_cabece_retenc a\n"
                 + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
