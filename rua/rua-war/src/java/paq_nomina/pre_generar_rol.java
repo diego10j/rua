@@ -374,8 +374,8 @@ public class pre_generar_rol extends Pantalla{
 
 					String fecha_final_gepro=ser_nomina.getPeriodoRol(com_periodo.getValue()+"").getValor("FECHA_FINAL_GEPRO");
 
-//					String sql=ser_nomina.getSqlEmpleadosTipoNomina(fila.getRowKey(),fecha_final_gepro);
-					String sql=ser_nomina.getSqlEmpleadosNomina(ser_nomina.getRol(fila.getRowKey(),com_periodo.getValue()+"").getValor("IDE_NRROL"));
+					String sql=ser_nomina.getSqlEmpleadosTipoNomina(fila.getRowKey(),fecha_final_gepro);
+//					String sql=ser_nomina.getSqlEmpleadosNomina(ser_nomina.getRol(fila.getRowKey(),com_periodo.getValue()+"").getValor("IDE_NRROL"));
 
 
 					
@@ -441,7 +441,9 @@ public class pre_generar_rol extends Pantalla{
 
 					"and ide_nrrub in (select IDE_NRRUB from NRH_RUBRO where DECIMO_NRRUB=TRUE) ");
 
-
+                        System.out.println("imprmo tab_decimos ");
+                        tab_decimos.imprimirSql();
+                        
 			for (int j = 0; j < tab_decimos.getTotalFilas(); j++) {
 				String fecha_pago_nrder=tab_decimos.getValor(j,"FECHA_PAGO_NRDER");
 				if (fecha_pago_nrder!=null && !fecha_pago_nrder.isEmpty()){
@@ -453,8 +455,10 @@ public class pre_generar_rol extends Pantalla{
 
 					String fecha_pago_rubro=""+anio_periodo+"-"+fecha_pago_nrder;
 					TablaGenerica tab_per=utilitario.consultar("select * from GEN_PERIDO_ROL where IDE_GEPRO="+ide_gepro+" " +
-							"and ('"+fecha_pago_rubro+"','yy-mm-dd') BETWEEN FECHA_INICIAL_GEPRO and FECHA_FINAL_GEPRO ");
-
+							"and cast ('"+fecha_pago_rubro+"' as date) BETWEEN FECHA_INICIAL_GEPRO and FECHA_FINAL_GEPRO ");
+                                        
+                                        System.out.println("tabla periodo ");
+                                        tab_per.imprimirSql();
 					if (tab_per.getTotalFilas()>0){
 						str_ide_nrder_decimos+=tab_decimos.getValor(j,"IDE_NRDER")+",";
 						band=1;
