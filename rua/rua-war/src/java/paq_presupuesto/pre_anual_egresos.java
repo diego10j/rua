@@ -227,7 +227,13 @@ public class pre_anual_egresos extends Pantalla {
 		
 		set_por_devengar.setId("set_por_devengar");
 		set_por_devengar.setSeleccionTabla(ser_presupuesto.getPorDevengar("-1","1","0"),"ide_cndcc");
-		set_por_devengar.getTab_seleccion().ejecutarSql();
+		set_por_devengar.getTab_seleccion().getColumna("nro_asiento").setFiltro(true);
+		set_por_devengar.getTab_seleccion().getColumna("numero_cnccc").setFiltro(true);
+		set_por_devengar.getTab_seleccion().getColumna("numero_cnccc").setNombreVisual("Nro. Comprobante");
+		set_por_devengar.getTab_seleccion().getColumna("ide_cnlap").setVisible(false);
+		set_por_devengar.getTab_seleccion().getColumna("ide_cndpc").setVisible(false);
+
+                set_por_devengar.getTab_seleccion().ejecutarSql();
                 set_por_devengar.getBot_aceptar().setMetodo("aceptarPorDevengar");
 
 		agregarComponente(set_por_devengar);
