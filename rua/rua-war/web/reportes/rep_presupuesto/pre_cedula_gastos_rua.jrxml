@@ -164,7 +164,7 @@ order by codigo_prcep]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DEVEGANDO]]></text>
+				<text><![CDATA[DEVENGADO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="ef6549b5-d16a-4551-be3f-ee7e5d01b85a" x="555" y="19" width="114" height="15"/>
