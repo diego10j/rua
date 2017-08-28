@@ -18,14 +18,18 @@ import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionFormatoReporte;
 public class pre_programa extends Pantalla {
 	
 	private Tabla tab_programa=new Tabla();
 	private Tabla tab_vigente=new Tabla();
 	private Arbol arb_arbol=new Arbol();
-	private SeleccionTabla set_clasificador=new SeleccionTabla();
+	private SeleccionArbol sel_arbol_clasificador=new SeleccionArbol();
+
+        private SeleccionTabla set_clasificador=new SeleccionTabla();
 	private Combo com_anio=new Combo();
+        private SeleccionArbol sel_arbol = new SeleccionArbol();
         
         	///reporte
 	private Map p_parametros = new HashMap();
@@ -48,6 +52,14 @@ public class pre_programa extends Pantalla {
 		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
 		self_reporte.setId("self_reporte"); //id
 		agregarComponente(self_reporte);
+                
+                
+                Boton bot_peticionario=new Boton();
+		bot_peticionario.setIcon("ui-icon-person");
+		bot_peticionario.setValue("Actualizar Empleado Solicitante");
+		bot_peticionario.setMetodo("importarPeticionario");
+		bar_botones.agregarBoton(bot_peticionario);
+
             
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
 		com_anio.setMetodo("seleccionaElAnio");
@@ -60,10 +72,12 @@ public class pre_programa extends Pantalla {
 		//tab_programa.getColumna("ide_prfup").setVisible(false);
                 tab_programa.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "");
 		tab_programa.getColumna("ide_prfup").setAutoCompletar();
-		tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
+		tab_programa.getColumna("ide_prfup").setLectura(true);
+                tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
                 //tab_programa.getColumna("ide_prcla").setAutoCompletar();
                 tab_programa.getColumna("ide_prcla").setLongitud(-1);
-		tab_programa.getColumna("ide_prcla").setLectura(true);
+		tab_programa.getColumna("ide_prcla").setAutoCompletar();
+                tab_programa.getColumna("ide_prcla").setLectura(true);
 		tab_programa.getColumna("activo_prpro").setValorDefecto("true");
 		tab_programa.agregarRelacion(tab_vigente);
                 tab_programa.setTipoFormulario(true);
@@ -98,7 +112,7 @@ public class pre_programa extends Pantalla {
 				
 				Boton bot_agregar=new Boton();
 				bot_agregar.setValue("Agregar Clasificador");
-				bot_agregar.setMetodo("agregarClasificador");
+				bot_agregar.setMetodo("abrirArbolClasificador");
 				bar_botones.agregarBoton(bot_agregar);
 
 				set_clasificador.setId("set_clasificador");
@@ -110,9 +124,56 @@ public class pre_programa extends Pantalla {
 				set_clasificador.getBot_aceptar().setMetodo("aceptarClasificador");
 				agregarComponente(set_clasificador);
 
+            Boton bot_seleccion_arbol=new Boton();
+            bot_seleccion_arbol.setValue("Agregar Programa");
+            bot_seleccion_arbol.setMetodo("abrirArbolPrograma");
+            bar_botones.agregarBoton(bot_seleccion_arbol);
+          
+                
+            sel_arbol.setId("sel_arbol");
+            sel_arbol.setSeleccionArbol("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "pre_ide_prfup");
+            sel_arbol.getArb_seleccion().setCondicion("ide_prfup=-1");
+            //sel_arbol.getArb_seleccion().setOptimiza(true);                
+            agregarComponente(sel_arbol);
+            sel_arbol.getBot_aceptar().setMetodo("aceptarArbolPrograma");     
 
+            sel_arbol_clasificador.setId("sel_arbol_clasificador");
+            sel_arbol_clasificador.setSeleccionArbol("pre_clasificador", "ide_prcla", "codigo_clasificador_prcla||' '||descripcion_clasificador_prcla", "pre_ide_prcla");
+            sel_arbol_clasificador.getArb_seleccion().setCondicion("ide_prcla=-1");
+            //sel_arbol.getArb_seleccion().setOptimiza(true);                
+            agregarComponente(sel_arbol_clasificador);
+            sel_arbol_clasificador.getBot_aceptar().setMetodo("aceptarArbolClasificador");                 
 	}
-	
+	public void abrirArbolClasificador(){
+            //System.out.println("ingrese a abrir el arbol");
+            sel_arbol_clasificador.getArb_seleccion().setCondicion("1=1");
+            sel_arbol_clasificador.getArb_seleccion().ejecutarSql();
+            sel_arbol_clasificador.dibujar();
+            utilitario.addUpdate("sel_arbol_clasificador");
+
+        }        
+	public void abrirArbolPrograma(){
+            //System.out.println("ingrese a abrir el arbol");
+            sel_arbol.getArb_seleccion().setCondicion("1=1");
+            sel_arbol.getArb_seleccion().ejecutarSql();
+            sel_arbol.dibujar();
+            utilitario.addUpdate("sel_arbol");
+            
+        }
+        public void aceptarArbolPrograma (){
+            TablaGenerica tab_consult_programa = utilitario.consultar("select ide_prfup,codigo_prfup from pre_funcion_programa where ide_prfup in("+sel_arbol.getSeleccionados()+") limit 1 ");
+            tab_programa.setValor("ide_prfup",tab_consult_programa.getValor("ide_prfup"));
+            //Actualiza 
+            utilitario.addUpdateTabla(tab_programa, "ide_prfup", "");//actualiza mediante ajax el objeto tab_poa
+            sel_arbol.cerrar();
+        }
+        public void aceptarArbolClasificador (){
+            TablaGenerica tab_consult_programa = utilitario.consultar("select ide_prcla,codigo_clasificador_prcla from pre_clasificador where ide_prcla in("+sel_arbol_clasificador.getSeleccionados()+") limit 1 ");
+            tab_programa.setValor("ide_prcla",tab_consult_programa.getValor("ide_prcla"));
+            //Actualiza 
+            utilitario.addUpdateTabla(tab_programa, "ide_prcla", "");//actualiza mediante ajax el objeto tab_poa
+            sel_arbol_clasificador.cerrar();            
+        }        
 	public void seleccionar_arbol(NodeSelectEvent evt) {
 		
 		arb_arbol.seleccionarNodo(evt);
@@ -287,6 +348,24 @@ public void aceptarReporte(){
     public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
         this.self_reporte = self_reporte;
     }
+
+    public SeleccionArbol getSel_arbol() {
+        return sel_arbol;
+    }
+
+    public void setSel_arbol(SeleccionArbol sel_arbol) {
+        this.sel_arbol = sel_arbol;
+    }
+
+    public SeleccionArbol getSel_arbol_clasificador() {
+        return sel_arbol_clasificador;
+    }
+
+    public void setSel_arbol_clasificador(SeleccionArbol sel_arbol_clasificador) {
+        this.sel_arbol_clasificador = sel_arbol_clasificador;
+    }
+
+
 	
 
 }
