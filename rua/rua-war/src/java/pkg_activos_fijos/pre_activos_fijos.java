@@ -133,7 +133,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla1.getColumna("numero_factu_acafi").setVisible(false);
         tab_tabla1.getColumna("credi_tribu_acafi").setVisible(false);
         tab_tabla1.getColumna("fo_acafi").setVisible(false);
-        tab_tabla1.getColumna("foto_acafi").setVisible(false);
+//        tab_tabla1.getColumna("foto_acafi").setVisible(false);
         tab_tabla1.getColumna("ide_usua").setVisible(false);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
@@ -159,7 +159,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla3.getColumna("alterno_acafi").setVisible(false);
         tab_tabla3.getColumna("codigo_recu_acafi").setVisible(false);
         tab_tabla3.getColumna("fecha_acafi").setVisible(false);
-        tab_tabla3.getColumna("foto_acafi").setVisible(false);
+        //tab_tabla3.getColumna("foto_acafi").setVisible(false);
         tab_tabla3.getColumna("fo_acafi").setVisible(false);
         tab_tabla3.getColumna("ide_aceaf").setVisible(false);
         tab_tabla3.getColumna("ide_inarti").setVisible(false);

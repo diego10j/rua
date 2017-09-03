@@ -60,10 +60,10 @@ public class pre_ubicacion_activo extends Pantalla {
         tab_datos_activo.getColumna("fo_acafi").setVisible(false);
         tab_datos_activo.getColumna("ide_geubi").setVisible(false);
         tab_datos_activo.getColumna("ide_usua").setVisible(false);
-        tab_datos_activo.getColumna("foto_acafi").setUpload("upload/activos");
-        tab_datos_activo.getColumna("foto_acafi").setValorDefecto("upload/activos/empleado.png");
-        tab_datos_activo.getColumna("foto_acafi").setImagen("120", "120");
-        tab_datos_activo.getColumna("ide_aceaf").setCombo("act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf", "");
+//        tab_datos_activo.getColumna("foto_acafi").setUpload("upload/activos");
+//        tab_datos_activo.getColumna("foto_acafi").setValorDefecto("upload/activos/empleado.png");
+//        tab_datos_activo.getColumna("foto_acafi").setImagen("120", "120");
+//        tab_datos_activo.getColumna("ide_aceaf").setCombo("act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf", "");
         tab_datos_activo.getColumna("ide_inmar").setCombo("inv_marca", "ide_inmar", "nombre_invmar", "");
         tab_datos_activo.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
         tab_datos_activo.getColumna("ide_geper").setLectura(true);
