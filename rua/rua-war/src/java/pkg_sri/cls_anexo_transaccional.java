@@ -66,7 +66,7 @@ public class cls_anexo_transaccional {
                     TablaGenerica tab_compras = utilitario.consultar("Select cabece.ide_cpcfa, cabece.ide_cncre,suste.alterno_srtst,iden.alterno1_getid,prove.identificac_geper,docu.alter_tribu_cntdo,  "
                             + " cabece.fecha_trans_cpcfa,cabece.numero_cpcfa,cabece.fecha_emisi_cpcfa,cabece.autorizacio_cpcfa,cabece.total_cpcfa,valor_ice_cpcfa, "
                             + " cabece.base_grabada_cpcfa,cabece.base_tarifa0_cpcfa,cabece.base_no_objeto_iva_cpcfa,cabece.valor_iva_cpcfa, "
-                            + " rete.numero_cncre,rete.autorizacion_cncre,rete.fecha_emisi_cncre,dpa.alterno_ats,cabece.ide_cntdo "
+                            + " rete.numero_cncre,rete.autorizacion_cncre,rete.fecha_emisi_cncre,dpa.alterno_ats,cabece.ide_cntdo, fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa "
                             + " from cxp_cabece_factur cabece "
                             + " left join gen_persona prove on cabece.ide_geper= prove.ide_geper "
                             + " left join sri_tipo_sustento_tributario suste on cabece.ide_srtst=suste.ide_srtst "
@@ -78,6 +78,7 @@ public class cls_anexo_transaccional {
                             + " and ide_rem_cpcfa is null and ide_cpefa=0"
                             + " order by cabece.fecha_emisi_cpcfa, cabece.ide_cpcfa ");
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
+                    String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
 
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
                     ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones  
@@ -220,7 +221,7 @@ public class cls_anexo_transaccional {
                                     + "valor_iva_cpcfa,valor_ice_cpcfa\n"
                                     + " from cxp_cabece_factur ree\n"
                                     + "inner join con_tipo_document tdo on ree.ide_cntdo=tdo.ide_cntdo\n"
-                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") +" and ide_cpefa=0");
+                                    + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") + " and ide_cpefa=0");
                             if (tab_reembolso.getTotalFilas() > 0) {
                                 Element reembolsos = doc_anexo.createElement("reembolsos");
                                 detalleCompras.appendChild(reembolsos);
@@ -316,6 +317,23 @@ public class cls_anexo_transaccional {
 //                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
 //                                }
                                 }
+
+                                //Si es nota de credito aumento estos campos     
+                                System.out.println("*** " + tab_compras.getValor(i, "ide_cntdo"));
+                                if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
+                                    //fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa
+                                    String numero_doc_modificado = tab_compras.getValor(i, "numero_nc_cpcfa");
+                                    numero_doc_modificado = numero_doc_modificado.replace("-", "");
+                                    String estabModificado = numero_doc_modificado.substring(0, 3);
+                                    String ptoEmiModificado = numero_doc_modificado.substring(3, 6);
+                                    String secModificado = numero_doc_modificado.substring(6, numero_doc_modificado.length());
+                                    detalleCompras.appendChild(crearElemento("docModificado", null, "01"));  //01= factura
+                                    detalleCompras.appendChild(crearElemento("estabModificado", null, estabModificado));
+                                    detalleCompras.appendChild(crearElemento("ptoEmiModificado", null, ptoEmiModificado));
+                                    detalleCompras.appendChild(crearElemento("secModificado", null, secModificado));
+                                    detalleCompras.appendChild(crearElemento("autModificado", null, tab_compras.getValor(i, "autorizacio_nc_cpcfa")));
+                                }
+
                             } else {
                                 //si no hay retención
                                 Element detalleAir = doc_anexo.createElement("detalleAir");
