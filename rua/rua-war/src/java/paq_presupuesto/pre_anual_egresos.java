@@ -429,7 +429,7 @@ public class pre_anual_egresos extends Pantalla {
                                 tab_mensual.setValor("activo_prmen","true");
                                 tab_mensual.setValor("ide_codem", tab_saldos_devengar.getValor(i, "ide_cndcc"));
                                 tab_mensual.setValor("ide_cndcc", tab_saldos_devengar.getValor(i, "ide_cndcc"));
-                                tab_mensual.setValor("ide_comov", tab_saldos_devengar.getValor(i, "ide_cnccc"));
+                                tab_mensual.setValor("ide_comov", tab_saldos_devengar.getValor(i, "nro_asiento"));
 				
 			}
 			set_por_devengar.cerrar();
