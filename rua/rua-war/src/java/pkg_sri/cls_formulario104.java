@@ -32,7 +32,7 @@ public class cls_formulario104 {
     private String fecha_fin = "";
     private String porcentaje_iva = "";
     private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v423, v429, v431, v480, v481, v482, v483, v484, v485, v499;
-    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563;
+    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563, v543, v564, v526, v527,v520;
     private String v601, v602, v605, v607, v609, v611, v613, v615, v617, v620, v621, v699;
     private String v721, v723, v725, v799, v859, v801, v731, v729;
     private String v890, v897, v898, v899, v880;
@@ -80,7 +80,8 @@ public class cls_formulario104 {
 
                 //Consulta las ventas por el campo alterno
                 v401 = getValor401(); //
-                v402 = consultarAlternoVentas("402");
+                ////v402 = consultarAlternoVentas("402");
+                v402 = "0.00";
                 v403 = getValor403();
                 v404 = consultarAlternoVentas("404");
                 v405 = consultarAlternoVentas("405");
@@ -192,9 +193,16 @@ public class cls_formulario104 {
                     v563 = "0.00";
                 }
 
-                //////v554 = utilitario.getFormatoNumero((Double.parseDouble(v521) + Double.parseDouble(v522) + Double.parseDouble(v524) + Double.parseDouble(v525)) * Double.parseDouble(v553));
-                v554 = "0.00";
+                v543 = utilitario.getFormatoNumero(getValor543());
+                v544 = utilitario.getFormatoNumero(getValor544());
+                v554 = utilitario.getFormatoNumero(getValor554());
 
+                //////v564 = utilitario.getFormatoNumero((Double.parseDouble(v521) + Double.parseDouble(v522) + Double.parseDouble(v524) + Double.parseDouble(v525)) * Double.parseDouble(v553));
+                //////v554 = "0.00";
+                v526 = "0.00";
+                v527 = "0.00";
+                v520 = "0.00";
+                v564 = utilitario.getFormatoNumero((Double.parseDouble(v520) + Double.parseDouble(v521) + Double.parseDouble(v523) + Double.parseDouble(v524) + Double.parseDouble(v525) + Double.parseDouble(v526) + Double.parseDouble(v527)) * Double.parseDouble(v563));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "511"}, v511));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "521"}, v521));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "501"}, v501));
@@ -224,16 +232,16 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "531"}, v531));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "532"}, v532));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "542"}, "0.00"));//!!!!!****** BUSCAR 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "543"}, "0.00"));//!!!!!****** BUSCAR 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "544"}, "0.00"));//IVA NOTAS DE CREDITO 12%
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "554"}, v554));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "543"}, v543));//!!!!!****** notas de credito 0% 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "544"}, v544));//!!!!!****** notas de credito 12% 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "554"}, v554));//!!!!!****** iva notas de credito 12% 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "555"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "545"}, "0.00"));//IVA REMBOLSOS
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "535"}, "0.00"));//REMBOLSOS
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "563"}, v563));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "564"}, "0.00"));//!!!!!****** BUSCAR 
-                //RESUMEN
-                v601 = utilitario.getFormatoNumero((Double.parseDouble(v499) - Double.parseDouble(v554)));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "564"}, v564));//!!!!!****** BUSCAR 
+                //RESUMEN 
+                v601 = utilitario.getFormatoNumero((Double.parseDouble(v499) - Double.parseDouble(v564)));
                 v602 = v601;
                 if (Double.parseDouble(v601) > 0.00) {
                     v602 = "0.00";
@@ -468,6 +476,45 @@ public class cls_formulario104 {
         List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cccfa) from cxc_cabece_factura\n"
                 + "where ide_ccefa=0\n"
                 + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor543() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
+                + "and fecha_emisi_cpcfa BETWEEN   '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor544() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
+                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor554() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
+                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' ");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");

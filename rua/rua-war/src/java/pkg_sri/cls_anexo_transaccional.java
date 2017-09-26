@@ -79,9 +79,12 @@ public class cls_anexo_transaccional {
                             + " order by cabece.fecha_emisi_cpcfa, cabece.ide_cpcfa ");
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
-
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
                     ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones  
+                    ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones                      
+                    if (ideRetenciones.equals("'null'") || ideRetenciones.equals("null") || ideRetenciones.isEmpty()) {
+                        ideRetenciones = "-1";
+                    }
 
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
@@ -318,22 +321,6 @@ public class cls_anexo_transaccional {
 //                                }
                                 }
 
-                                //Si es nota de credito aumento estos campos     
-                                System.out.println("*** " + tab_compras.getValor(i, "ide_cntdo"));
-                                if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
-                                    //fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa
-                                    String numero_doc_modificado = tab_compras.getValor(i, "numero_nc_cpcfa");
-                                    numero_doc_modificado = numero_doc_modificado.replace("-", "");
-                                    String estabModificado = numero_doc_modificado.substring(0, 3);
-                                    String ptoEmiModificado = numero_doc_modificado.substring(3, 6);
-                                    String secModificado = numero_doc_modificado.substring(6, numero_doc_modificado.length());
-                                    detalleCompras.appendChild(crearElemento("docModificado", null, "01"));  //01= factura
-                                    detalleCompras.appendChild(crearElemento("estabModificado", null, estabModificado));
-                                    detalleCompras.appendChild(crearElemento("ptoEmiModificado", null, ptoEmiModificado));
-                                    detalleCompras.appendChild(crearElemento("secModificado", null, secModificado));
-                                    detalleCompras.appendChild(crearElemento("autModificado", null, tab_compras.getValor(i, "autorizacio_nc_cpcfa")));
-                                }
-
                             } else {
                                 //si no hay retención
                                 Element detalleAir = doc_anexo.createElement("detalleAir");
@@ -355,6 +342,21 @@ public class cls_anexo_transaccional {
 //                        detalleCompras.appendChild(crearElemento("ptoEmiModificado", null, "000"));
 //                        detalleCompras.appendChild(crearElemento("secModificado", null, "0000000"));
 //                        detalleCompras.appendChild(crearElemento("autModificado", null, "0000"));
+
+                        //Si es nota de credito aumento estos campos     
+                        if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
+                            //fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa
+                            String numero_doc_modificado = tab_compras.getValor(i, "numero_nc_cpcfa");
+                            numero_doc_modificado = numero_doc_modificado.replace("-", "");
+                            String estabModificado = numero_doc_modificado.substring(0, 3);
+                            String ptoEmiModificado = numero_doc_modificado.substring(3, 6);
+                            String secModificado = numero_doc_modificado.substring(6, numero_doc_modificado.length());
+                            detalleCompras.appendChild(crearElemento("docModificado", null, "01"));  //01= factura
+                            detalleCompras.appendChild(crearElemento("estabModificado", null, estabModificado));
+                            detalleCompras.appendChild(crearElemento("ptoEmiModificado", null, ptoEmiModificado));
+                            detalleCompras.appendChild(crearElemento("secModificado", null, secModificado));
+                            detalleCompras.appendChild(crearElemento("autModificado", null, tab_compras.getValor(i, "autorizacio_nc_cpcfa")));
+                        }
                     }
                 }
 
