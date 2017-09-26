@@ -1756,6 +1756,10 @@ public class DocumentoCxP extends Dialogo {
 
     public void obteneAlterno104() {
         try {
+            //Para notas de credito no cambiamos alterno
+            if(tab_cab_documento.getValor("ide_cntco").equals(parametros.get("p_con_tipo_documento_nota_credito"))){
+                return;
+            }
             String tipo_articulo = "";
             String ide_cntco = ser_proveedor.getParametroProveedor("ide_cntco", tab_cab_documento.getValor("ide_geper"));
             boolean boo_tipo_rise = false;
