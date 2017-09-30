@@ -116,12 +116,23 @@ public class pre_inversiones extends Pantalla {
                     parametro.put("ide_ipcer", Long.parseLong(tab_tabla1.getValor("ide_ipcer")));
                     sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_formato.dibujar();
-                    utilitario.addUpdate("rep_reporte,sel_rep");
+
                 } else {
                     utilitario.agregarMensajeInfo("No se puede generar el reporte", "La fila seleccionada no tiene Certificados de Inversion");
                 }
             }
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras")) {
+            Map parametro = new HashMap();
+            rep_reporte.cerrar();
+            sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_formato.dibujar();
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Bancarias")) {
+            Map parametro = new HashMap();
+            rep_reporte.cerrar();
+            sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_formato.dibujar();
         }
+
     }
 
     public void cerrarAsiento() {
