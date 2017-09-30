@@ -6,6 +6,13 @@
 	<parameter name="ide_usua" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT ide_ipcer,a.ide_ipcai,c.nom_geper AS GRUPO,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,
 ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,
@@ -17,6 +24,7 @@ left join iyp_cab_inversion b on a.ide_ipcai=b.ide_ipcai
 left join gen_persona c on b.ide_geper = c.ide_geper
 where nuevo=true
 and b.ide_iptin=1
+and cancelado=false
 order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 	</queryString>
 	<field name="ide_ipcer" class="java.lang.Long"/>
@@ -129,7 +137,30 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="64" splitType="Stretch"/>
+		<band height="106" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ebc5fbea-6e76-447c-8357-0c87ef8b0291" x="275" y="33" width="244" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INVERSIONES CASAS - OBRAS SALESIANAS]]></text>
+			</staticText>
+			<subreport isUsingCache="false">
+				<reportElement uuid="e3a877bd-57e6-4be2-92c5-0819c6943c8c" x="10" y="10" width="173" height="85"/>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="95fcc82e-8708-4d8a-ac90-6e1aa43e421f" x="275" y="14" width="244" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
+			</staticText>
+		</band>
 	</title>
 	<pageHeader>
 		<band splitType="Stretch"/>
