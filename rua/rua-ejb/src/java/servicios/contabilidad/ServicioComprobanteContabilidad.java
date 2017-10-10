@@ -63,6 +63,8 @@ public class ServicioComprobanteContabilidad {
             } catch (Exception e) {
             }
             str_maximo = lon_siguiente + "";
+        } else {
+            str_maximo = "1";
         }
         str_maximo = utilitario.generarCero(8 - str_maximo.length()) + str_maximo;
         str_numero = str_ano + str_mes + str_ide_sucu + str_maximo;
