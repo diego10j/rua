@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="780" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
 	<property name="ireport.zoom" value="1.3995221406292009"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="388"/>
+	<property name="ireport.x" value="117"/>
+	<property name="ireport.y" value="99"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
 	<parameter name="monto" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -263,8 +263,8 @@ $P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement uuid="a4290f8d-20e7-403b-8614-fd81ab6f73d5" x="237" y="172" width="267" height="15"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a4290f8d-20e7-403b-8614-fd81ab6f73d5" x="237" y="172" width="313" height="15"/>
 				<box leftPadding="3" rightPadding="0"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
