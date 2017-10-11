@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.3636363636363629"/>
-	<property name="ireport.x" value="32"/>
-	<property name="ireport.y" value="161"/>
+	<property name="ireport.x" value="89"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -129,8 +129,8 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				</textElement>
 				<text><![CDATA[Documento: ]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="f57c9ccc-60d4-40d9-9a40-99a88d67598a" x="227" y="95" width="267" height="15"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="f57c9ccc-60d4-40d9-9a40-99a88d67598a" x="227" y="95" width="326" height="15"/>
 				<box leftPadding="3" rightPadding="0"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
