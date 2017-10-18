@@ -48,8 +48,8 @@ public class pre_edita_comp extends Pantalla {
     private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
     ///Presupuesto
     @EJB
-	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto)utilitario.instanciarEJB(ServicioPresupuesto.class);
-    
+    private ServicioPresupuesto ser_presupuesto = (ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
+
     private Tabla tab_tabla3;
     private Dialogo dia_asociacion;
     private Tabla tab_sel_aso;
@@ -212,7 +212,7 @@ public class pre_edita_comp extends Pantalla {
                 tab_tabla3.getColumna("ide_prcer").setVisible(false);
                 tab_tabla3.getColumna("ide_tecpo").setVisible(false);
                 tab_tabla3.getColumna("ide_comov").setVisible(false);
-                
+
                 tab_tabla3.dibujar();
 
                 tab_pres = new TablaGenerica();
@@ -334,7 +334,10 @@ public class pre_edita_comp extends Pantalla {
                 utilitario.getConexion().setImprimirSqlConsola(false);
                 intRecorre++;
                 dia_asociacion.cerrar();
-                tab_tabla3.actualizar();
+                if (isPresupuesto()) {
+                    tab_tabla3.actualizar();
+                }
+
             } else {
                 utilitario.agregarMensajeError("La suma del valor devengado debe ser igual a " + dou_valor_detalle, "");
                 return;
@@ -368,7 +371,9 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.setCondicion("ide_cnccc=" + tex_num_transaccion.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
-            tab_tabla3.ejecutarValorForanea(tab_tabla2.getValorSeleccionado());
+            if (isPresupuesto()) {
+                tab_tabla3.ejecutarValorForanea(tab_tabla2.getValorSeleccionado());
+            }
             str_aux_fecha = tab_tabla1.getValor("fecha_trans_cnccc");
             str_tipo_comp = tab_tabla1.getValor("ide_cntcm");
             if (tab_tabla1.getTotalFilas() > 0) {
