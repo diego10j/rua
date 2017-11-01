@@ -1803,6 +1803,24 @@ public class DocumentoCxP extends Dialogo {
         } catch (Exception e) {
         }
 
+        try {
+            for (int i = 0; i < tab_det_documento.getTotalFilas(); i++) {
+                if (tab_det_documento.getValor(i, "alter_tribu_cpdfa") == null) {
+                    tab_det_documento.setValor(i, "alter_tribu_cpdfa", "00");
+                }
+                //Si no encuentra configuracion pone por defecto 
+                if (tab_det_documento.getValor(i, "alter_tribu_cpdfa").equals("00")) {
+                    if (tab_det_documento.getValor(i, "iva_inarti_cpdfa").equals("1")) {
+                        tab_det_documento.setValor(i, "alter_tribu_cpdfa", parametros.get("p_sri_otra_adqui_pago_12%_no_dertri_503"));
+                    } else if (tab_det_documento.getValor(i, "iva_inarti_cpdfa").equals("-1")) {
+                        tab_det_documento.setValor(i, "alter_tribu_cpdfa", parametros.get("p_sri_adqui_pagos_0%_507"));
+                    } else if (tab_det_documento.getValor(i, "iva_inarti_cpdfa").equals("0")) {
+                        tab_det_documento.setValor(i, "alter_tribu_cpdfa", parametros.get("p_sri_adqui_no_obj_iva_531"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 
     /**
