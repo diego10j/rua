@@ -181,7 +181,7 @@ public class cls_contabilidad {
         String ide_cntcu = getParametroPlanCuentas(ideCuenta, "ide_cntcu");
         double saldo = 0;
         String sql_saldo_cuentas = getSqlSaldoCuentas(es_consolidado, obtenerFechaInicialPeriodoActivo(), fecha, ide_cntcu, false);
-        TablaGenerica tab_salso_cuentas = llenarTablaResultadosGenerales(sql_saldo_cuentas, obtenerUltimoNivel());
+        TablaGenerica tab_salso_cuentas = llenarTablaResultadosGenerales(sql_saldo_cuentas, obtenerUltimoNivel(), fecha);
         for (int i = 0; i < tab_salso_cuentas.getTotalFilas(); i++) {
             if (ideCuenta.equals(tab_salso_cuentas.getValor(i, "ide_cndpc"))) {
                 if (tab_salso_cuentas.getValor(i, "valor") != null && !tab_salso_cuentas.getValor(i, "valor").isEmpty()) {
@@ -467,9 +467,9 @@ public class cls_contabilidad {
             String fecha_inicio_nuevo_periodo = "";
             String fecha_fin_nuevo_periodo = "";
             fecha_inicio_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 1));
-            fecha_fin_nuevo_periodo = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(fecha_fin), 60));
+            fecha_fin_nuevo_periodo = utilitario.getAnio(fecha_inicio_nuevo_periodo) + "-12-31";
             long ide_cnper_nuevo = utilitario.getConexion().getMaximo("con_periodo", "ide_cnper", 1);
-            if (utilitario.getConexion().ejecutarSql("insert into con_periodo values (" + ide_cnper_nuevo + "," + utilitario.getVariable("ide_empr") + "," + utilitario.getVariable("ide_sucu") + ",'Periodo Creado Automaticamente ','" + fecha_inicio_nuevo_periodo + "','" + fecha_fin_nuevo_periodo + "',true,false)").isEmpty()) {
+            if (utilitario.getConexion().ejecutarSql("insert into con_periodo values (" + ide_cnper_nuevo + "," + utilitario.getVariable("ide_empr") + "," + utilitario.getVariable("ide_sucu") + ",'Periodo " + utilitario.getAnio(fecha_inicio_nuevo_periodo) + "','" + fecha_inicio_nuevo_periodo + "','" + fecha_fin_nuevo_periodo + "',true,false)").isEmpty()) {
                 utilitario.getConexion().ejecutarSql("update con_periodo set estado_cnper=false where ide_cnper=" + ide_cnper);
             }
             return String.valueOf(ide_cnper_nuevo);
@@ -588,7 +588,7 @@ public class cls_contabilidad {
                     + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                     + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                     + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                    + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicio + "' and '" + fecha_fin + "') "
+                    + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "') " //dfj busca solo del periodo
                     + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") ";
             if (!es_consolidado) {
                 sql += "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " ";
@@ -605,7 +605,7 @@ public class cls_contabilidad {
                     + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                     + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                     + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                    + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicio + "' and '" + fecha_fin + "') "
+                    + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "') "
                     + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") ";
             if (!es_consolidado) {
                 sql += "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " ";
@@ -643,15 +643,21 @@ public class cls_contabilidad {
         } else {
             sql = getSqlEstadoResultados(es_consolidado, fecha_inicio, fecha_fin);
         }
-        return llenarTablaResultadosGenerales(sql, nivel_tope);
+        return llenarTablaResultadosGenerales(sql, nivel_tope, fecha_fin);
     }
 
-    private TablaGenerica llenarTablaResultadosGenerales(String sql, int nivel_tope) {
+    private TablaGenerica llenarTablaResultadosGenerales(String sql, int nivel_tope, String fecha_fin) {
         TablaGenerica tab_saldo = utilitario.consultar(sql);
         List lis_padres = new ArrayList();
         List lis_valor_padre = new ArrayList();
         double valor_acu = 0;
         int nivel = obtenerUltimoNivel();
+        //DFJ 01-20-2017
+        //--En 2018 se cambio el plan a nivel 7
+        if (utilitario.getAnio(fecha_fin) == 2017) {
+            nivel = 5;
+        }
+        //FIN DFJ
         String padre;
         int band = 0;
         do {
@@ -756,7 +762,7 @@ public class cls_contabilidad {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicial + "' and '" + fecha_final + "') "
+                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_final) + "-01-01' and '" + fecha_final + "') "
                 + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") ";
         if (!es_consolidado) {
             sql += "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " ";
@@ -806,7 +812,7 @@ public class cls_contabilidad {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + fecha_inicial + "' and '" + fecha_final + "') ";
+                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_final) + "-01-01' and '" + fecha_final + "') ";
         if (!es_consolidado) {
             sql += "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " ";
         }
@@ -873,7 +879,7 @@ public class cls_contabilidad {
                 + "DETA.ide_cnccc=CAB.ide_cnccc and  "
                 + "LUGAR.ide_cnlap=DETA.ide_cnlap and "
                 + "TIPOCOMPRO.ide_cntcm=CAB.ide_cntcm  and "
-                + "CAB.fecha_trans_cnccc BETWEEN '" + fecha_inicial + "' and '" + fecha_final + "' and "
+                + "CAB.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_final) + "-01-01' and '" + fecha_final + "' and "
                 + "CAB.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") and "
                 + "CAB.ide_sucu=" + utilitario.getVariable("ide_sucu") + ""
                 + "GROUP BY DETA.ide_cndpc,CUENTA.nombre_cndpc,CUENTA.codig_recur_cndpc,LUGAR.nombre_cnlap,CUENTA.ide_cndpc,LUGAR.ide_cnlap "

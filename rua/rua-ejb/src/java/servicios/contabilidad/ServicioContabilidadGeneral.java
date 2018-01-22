@@ -42,6 +42,14 @@ public class ServicioContabilidadGeneral {
         return "select * from con_periodo where ide_sucu=" + utilitario.getVariable("ide_sucu") + " order by ide_cnper desc";
     }
 
+    public String getSqlPerido(String ide_cnper) {
+        return "select * from con_periodo where ide_cnper=" + ide_cnper;
+    }
+
+    public String getSqlComboPeridos() {
+        return "select ide_cnper,nombre_cnper from con_periodo where ide_sucu=" + utilitario.getVariable("ide_sucu") + " order by ide_cnper desc";
+    }
+
     /**
      * Retorna la sentencia SQL para obtener cuentas de tipo ACTIVOS de la
      * empresa
@@ -166,7 +174,8 @@ public class ServicioContabilidadGeneral {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE  ccc.fecha_trans_cnccc< '" + fecha + "' "
+                //DFJ Antes + "WHERE  ccc.fecha_trans_cnccc< '" + fecha + "' "  //DF
+                + "WHERE (ccc.fecha_trans_cnccc >= '" + utilitario.getAnio(fecha) + "-01-01' AND ccc.fecha_trans_cnccc< '" + fecha + "') " //DFJ Aumenta filtro solo comprobantes del período
                 + "and ccc.ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") "
                 + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and dpc.ide_cndpc=" + ide_cndpc + " "
@@ -321,7 +330,7 @@ public class ServicioContabilidadGeneral {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
+                + "WHERE (ccc.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "') " //DFJ Aumenta filtro solo comprobantes del período
                 + "and ccc.ide_cneco IN (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
                 + "and ccc.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " " ///solo la sucursal 
                 + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
@@ -486,9 +495,10 @@ public class ServicioContabilidadGeneral {
         }
         return false;
     }
-public String personaMayorAnalitico(String cuenta){
-    String sql="select ide_geper,nom_geper,identificac_geper from gen_persona where ide_geper in ( select ide_geper from con_det_conf_asie  WHERE ide_cndpc="+cuenta+" )";
-    
-    return sql;
-}
+
+    public String personaMayorAnalitico(String cuenta) {
+        String sql = "select ide_geper,nom_geper,identificac_geper from gen_persona where ide_geper in ( select ide_geper from con_det_conf_asie  WHERE ide_cndpc=" + cuenta + " )";
+
+        return sql;
+    }
 }

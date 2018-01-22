@@ -12,6 +12,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -38,7 +39,6 @@ import javax.faces.event.ActionEvent;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 import pkg_contabilidad.cls_contabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import sistema.aplicacion.Pantalla;
@@ -81,9 +81,19 @@ public class pre_contabilidad extends Pantalla {
     private AsientoContable asc_asiento = new AsientoContable();
     private Dialogo dia_cerrar_periodo = new Dialogo();
 
+    private Combo com_periodo;
+
     public pre_contabilidad() {
         bar_botones.limpiar();
         bar_botones.agregarReporte();
+
+        com_periodo = new Combo();
+        com_periodo.setCombo(ser_contabilidad.getSqlComboPeridos());
+        com_periodo.eliminarVacio();
+        com_periodo.setMetodo("seleccionaPeriodo");
+        bar_botones.agregarSeparador();
+        bar_botones.agregarComponente(new Etiqueta("PERÍODO CONTABLE :"));
+        bar_botones.agregarComponente(com_periodo);
 
         mep_menu.setMenuPanel("INFORMES CONTABLIDAD", "20%");
 
@@ -166,15 +176,19 @@ public class pre_contabilidad extends Pantalla {
         dia_cerrar_periodo.getBot_aceptar().setMetodo("aceptarCierrePeriodo");
 
         agregarComponente(dia_cerrar_periodo);
-        
+
         sel_tab_mayor_auxiliar.setId("sel_tab_mayor_auxiliar");
         sel_tab_mayor_auxiliar.setTitle("Seleccione los beneficiarios para imprimir el reporte");
         sel_tab_mayor_auxiliar.setSeleccionTabla(ser_contabilidad.personaMayorAnalitico("-1"), "ide_geper");
-        sel_tab_mayor_auxiliar.getBot_aceptar().setMetodo("generarPDF"); 
+        sel_tab_mayor_auxiliar.getBot_aceptar().setMetodo("generarPDF");
         agregarComponente(sel_tab_mayor_auxiliar);
-        
+
         vipdf_mayor.setId("vipdf_mayor");
         agregarComponente(vipdf_mayor);
+    }
+
+    public void dibujarGrafico() {
+
     }
 
     /**
@@ -194,18 +208,24 @@ public class pre_contabilidad extends Pantalla {
         Fieldset fis_consulta = new Fieldset();
         Grid gp = new Grid();
         gp.setColumns(3);
-        
+
         Boton bot_imprimir_cuentas = new Boton();
         bot_imprimir_cuentas.setIcon("ui-icon-print");
         bot_imprimir_cuentas.setTitle("Imprimir");
         bot_imprimir_cuentas.setValue("Imprimir Mayor Auxiliar por Beneficiario.");
         bot_imprimir_cuentas.setMetodo("imprimirMayor");
-        gp.getChildren().add(bot_imprimir_cuentas);  
-        gp.getChildren().add(new Etiqueta(""));  
-        gp.getChildren().add(new Etiqueta(""));  
-        
-        gp.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
+        gp.getChildren().add(bot_imprimir_cuentas);
+        gp.getChildren().add(new Etiqueta(""));
+        gp.getChildren().add(new Etiqueta(""));
 
+//        com_periodo = new Combo();
+//        com_periodo.setCombo(ser_contabilidad.getSqlComboPeridos());
+//        com_periodo.eliminarVacio();
+//        com_periodo.setMetodo("seleccionaPeriodo");
+//        gp.getChildren().add(new Etiqueta("<strong>PERÍODO CONTABLE : </strong>"));
+//        gp.getChildren().add(com_periodo);
+//        gp.getChildren().add(new Etiqueta(""));
+//        gp.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
         aut_cuenta.setAutoCompletar(ser_contabilidad.getSqlCuentasHijas());
@@ -219,8 +239,6 @@ public class pre_contabilidad extends Pantalla {
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         gp.getChildren().add(bot_clean);
-        
-      
 
         gp.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong>"));
         aut_persona = new AutoCompletar();
@@ -237,14 +255,16 @@ public class pre_contabilidad extends Pantalla {
         gri_fechas.setColumns(5);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
         cal_fecha_inicio = new Calendario();
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
+        cal_fecha_inicio.setId("cal_fecha_inicio");
+        //cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));        
         gri_fechas.getChildren().add(cal_fecha_inicio);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
         cal_fecha_fin = new Calendario();
+        cal_fecha_fin.setId("cal_fecha_fin");
         cal_fecha_fin.setFechaActual();
         gri_fechas.getChildren().add(cal_fecha_fin);
         fis_consulta.getChildren().add(gri_fechas);
-
+        seleccionaPeriodo();
         Boton bot_consultar = new Boton();
         bot_consultar.setValue("Consultar");
         bot_consultar.setMetodo("actualizarLibroMayor");
@@ -289,6 +309,25 @@ public class pre_contabilidad extends Pantalla {
         gru_grupo.getChildren().add(pat_panel);
         actualizarSaldosLibroMayor();
         mep_menu.dibujar(1, "LIBRO MAYOR", gru_grupo);
+    }
+
+    public void seleccionaPeriodo() {
+        TablaGenerica tag = utilitario.consultar(ser_contabilidad.getSqlPerido(String.valueOf(com_periodo.getValue())));
+        if (cal_fecha_inicio != null) {
+            cal_fecha_inicio.setValue(utilitario.getFecha(tag.getValor("fecha_inicio_cnper")));
+            cal_fecha_inicio.setMaxdate(utilitario.getFecha(tag.getValor("fecha_fin_cnper")));
+            cal_fecha_inicio.setMindate(utilitario.getFecha(tag.getValor("fecha_inicio_cnper")));
+        }
+        if (cal_fecha_fin != null) {
+            cal_fecha_fin.setValue(utilitario.getFecha(tag.getValor("fecha_fin_cnper")));
+            cal_fecha_fin.setMaxdate(utilitario.getFecha(tag.getValor("fecha_fin_cnper")));
+            cal_fecha_fin.setMindate(utilitario.getFecha(tag.getValor("fecha_inicio_cnper")));
+        }
+
+        if (tab_consulta != null) {
+            tab_consulta.limpiar();
+            utilitario.addUpdate("cal_fecha_fin,cal_fecha_inicio");
+        }
     }
 
     public void seleccionarPersona(SelectEvent evt) {
@@ -363,15 +402,29 @@ public class pre_contabilidad extends Pantalla {
         Fieldset fis_consulta = new Fieldset();
         Grid gri_fechas = new Grid();
         gri_fechas.setColumns(5);
+
+//        com_periodo = new Combo();
+//        com_periodo.setCombo(ser_contabilidad.getSqlComboPeridos());
+//        com_periodo.eliminarVacio();
+//        com_periodo.setMetodo("seleccionaPeriodo");
+//        gri_fechas.getChildren().add(new Etiqueta("<strong>PERÍODO CONTABLE : </strong>"));
+//        gri_fechas.getChildren().add(com_periodo);
+//        gri_fechas.getChildren().add(new Etiqueta());
+//        gri_fechas.getChildren().add(new Etiqueta());
+//        gri_fechas.getChildren().add(new Etiqueta());
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
         cal_fecha_inicio = new Calendario();
+        cal_fecha_inicio.setId("cal_fecha_inicio");
         cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         gri_fechas.getChildren().add(cal_fecha_inicio);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
         cal_fecha_fin = new Calendario();
+        cal_fecha_fin.setId("cal_fecha_fin");
         cal_fecha_fin.setFechaActual();
         gri_fechas.getChildren().add(cal_fecha_fin);
         fis_consulta.getChildren().add(gri_fechas);
+
+        seleccionaPeriodo();
 
         Boton bot_consultar = new Boton();
         bot_consultar.setValue("Consultar");
@@ -498,6 +551,13 @@ public class pre_contabilidad extends Pantalla {
         Fieldset fis_consulta = new Fieldset();
         Grid gr_nivel = new Grid();
         gr_nivel.setColumns(2);
+
+//        com_periodo = new Combo();
+//        com_periodo.setCombo(ser_contabilidad.getSqlComboPeridos());
+//        com_periodo.eliminarVacio();
+//        com_periodo.setMetodo("seleccionaPeriodo");
+//        gr_nivel.getChildren().add(new Etiqueta("<strong>PERÍODO CONTABLE : </strong>"));
+//        gr_nivel.getChildren().add(com_periodo);
         gr_nivel.getChildren().add(new Etiqueta("<strong>NIVEL PLAN DE CUENTAS :</strong> "));
         rad_niveles = new Radio();
         rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelesPlandeCuentas()));
@@ -509,7 +569,9 @@ public class pre_contabilidad extends Pantalla {
         gri_fechas.setColumns(3);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA :</strong>"));
         cal_fecha_fin = new Calendario();
+        cal_fecha_fin.setId("cal_fecha_fin");
         cal_fecha_fin.setFechaActual();
+        seleccionaPeriodo();
         gri_fechas.getChildren().add(cal_fecha_fin);
         fis_consulta.getChildren().add(gri_fechas);
 
@@ -576,6 +638,12 @@ public class pre_contabilidad extends Pantalla {
         List lis_valor_padre = new ArrayList();
         double valor_acu = 0;
         int nivel = ser_contabilidad.getUltimoNivelCuentas();
+        //DFJ 01-20-2017
+        //--En 2018 se cambio el plan a nivel 7
+        if (utilitario.getAnio(cal_fecha_fin.getFecha()) == 2017) {
+            nivel = 5;
+        }
+        //FIN DFJ
         String padre;
         int band = 0;
         do {
@@ -658,6 +726,13 @@ public class pre_contabilidad extends Pantalla {
 
         Grid gr_nivel = new Grid();
         gr_nivel.setColumns(2);
+//        com_periodo = new Combo();
+//        com_periodo.setCombo(ser_contabilidad.getSqlComboPeridos());
+//        com_periodo.eliminarVacio();
+//        com_periodo.setMetodo("seleccionaPeriodo");
+//        gr_nivel.getChildren().add(new Etiqueta("<strong>PERÍODO CONTABLE : </strong>"));
+//        gr_nivel.getChildren().add(com_periodo);
+
         gr_nivel.getChildren().add(new Etiqueta("<strong>NIVEL PLAN DE CUENTAS :</strong> "));
         rad_niveles = new Radio();
         rad_niveles.setRadio(utilitario.getConexion().consultar(ser_contabilidad.getSqlNivelesPlandeCuentas()));
@@ -669,7 +744,10 @@ public class pre_contabilidad extends Pantalla {
         gri_fechas.setColumns(5);
         gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA :</strong>"));
         cal_fecha_fin = new Calendario();
+        cal_fecha_fin.setId("cal_fecha_fin");
+
         cal_fecha_fin.setFechaActual();
+        seleccionaPeriodo();
         gri_fechas.getChildren().add(cal_fecha_fin);
         fis_consulta.getChildren().add(gri_fechas);
 
@@ -755,6 +833,42 @@ public class pre_contabilidad extends Pantalla {
 
     public void aceptarCierrePeriodo() {
         dia_cerrar_periodo.cerrar();
+
+        cls_contabilidad con = new cls_contabilidad();
+        String str_ide_cnper_nuevo = con.cerrarPeriodoContable(tab_consulta.getValor("ide_cnper"), tab_consulta.getValor("fecha_inicio_cnper"), tab_consulta.getValor("fecha_fin_cnper"));
+        String ide_cnccc = generarAsientoAperturaCuentas(tab_consulta.getValor("fecha_inicio_cnper"), tab_consulta.getValor("fecha_fin_cnper"));
+
+        if (ide_cnccc != null) {
+            utilitario.getConexion().agregarSqlPantalla("update con_periodo set cerrado_cnper=true where ide_cnper=" + tab_consulta.getValor("ide_cnper"));
+            utilitario.getConexion().agregarSqlPantalla("update con_periodo set fecha_fin_cnper=null where ide_cnper=" + str_ide_cnper_nuevo);
+            guardarPantalla();
+            utilitario.agregarMensaje("Atencion", "El perido se cerro correctamente y se realizo un asiento de apertura de cuentas para el nuevo periodo ");
+            tab_consulta.ejecutarSql();
+
+            asc_asiento.setAsientoContable(ide_cnccc);
+            tab_consulta.setFilaActual(ide_cnccc);
+            asc_asiento.dibujar();
+
+        } else {
+            utilitario.getConexion().getSqlPantalla().clear();
+            if (utilitario.getConexion().ejecutarSql("delete from con_periodo where ide_cnper=" + str_ide_cnper_nuevo).isEmpty()) {
+                utilitario.getConexion().ejecutarSql("update con_periodo set estado_cnper=true where ide_cnper=" + tab_consulta.getValor("ide_cnper"));
+                // utilitario.getConexion().commit(); ****
+                tab_consulta.ejecutarSql();
+
+            }
+        }
+
+    }
+
+    private String generarAsientoAperturaCuentas(String fecha_inicio, String fecha_fin) {
+        if (fecha_inicio != null && !fecha_inicio.isEmpty()
+                && fecha_fin != null && !fecha_fin.isEmpty()) {
+            cls_contabilidad con = new cls_contabilidad();
+            return con.generarAsientoAperturaCuentas(fecha_inicio, fecha_fin);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -785,26 +899,26 @@ public class pre_contabilidad extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.setMultiple(false);
                 sec_rango_reporte.dibujar();
                 utilitario.addUpdate("rep_reporte,sec_rango_reporte");
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
-                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
-                        fecha_fin = sec_rango_reporte.getFecha2String();
-                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
-                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
-                            sec_rango_reporte.cerrar();
-                            sel_tab_nivel.dibujar();
-                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
-                        } else {
-                            utilitario.agregarMensajeError("Atencion", "El rango de fechas seleccionado no se encuentra en ningun Periodo Contable");
-                        }
+//                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                    fecha_fin = sec_rango_reporte.getFecha1String();
+                    fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                    if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                        sec_rango_reporte.cerrar();
+                        sel_tab_nivel.dibujar();
+                        utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
                     } else {
-                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+                        utilitario.agregarMensajeError("Atencion", "La fecha seleccionada no se encuentra en ningun Periodo Contable");
                     }
+//                    } else {
+//                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+//                    }
                 } else {
-                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicial");
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha para el reporte");
                 }
             } else if (sel_tab_nivel.isVisible()) {
                 if (sel_tab_nivel.getValorSeleccionado() != null) {
@@ -851,27 +965,27 @@ public class pre_contabilidad extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.setMultiple(false);
                 sec_rango_reporte.dibujar();
                 utilitario.addUpdate("rep_reporte,sec_rango_reporte");
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
-                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
-                        fecha_fin = sec_rango_reporte.getFecha2String();
-                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
-                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
-                            sec_rango_reporte.cerrar();
-                            sel_tab_nivel.dibujar();
-                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
-                        } else {
-                            utilitario.agregarMensajeError("Atencion", "El rango de fechas seleccionado no se encuentra en ningun Periodo Contable");
-                        }
-
+//                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                    fecha_fin = sec_rango_reporte.getFecha1String();
+                    fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                    if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                        sec_rango_reporte.cerrar();
+                        sel_tab_nivel.dibujar();
+                        utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
                     } else {
-                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+                        utilitario.agregarMensajeError("Atencion", "La fecha seleccionada no se encuentra en ningun Periodo Contable");
                     }
+
+//                    } else {
+//                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha final");
+//                    }
                 } else {
-                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicial");
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha para el reporte");
                 }
             } else if (sel_tab_nivel.isVisible()) {
                 if (sel_tab_nivel.getValorSeleccionado() != null) {
@@ -918,25 +1032,27 @@ public class pre_contabilidad extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.setMultiple(false);
                 sec_rango_reporte.dibujar();
                 utilitario.addUpdate("rep_reporte,sec_rango_reporte");
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
-                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
-                        fecha_fin = sec_rango_reporte.getFecha2String();
-                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
-                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
-                            sec_rango_reporte.cerrar();
-                            sel_tab_nivel.dibujar();
-                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
-                        }
+//                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                    fecha_fin = sec_rango_reporte.getFecha1String();
+                    fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                    if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                        sec_rango_reporte.cerrar();
+                        sel_tab_nivel.dibujar();
+                        utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
                     } else {
-                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+                        utilitario.agregarMensajeError("Atencion", "La fecha seleccionada no se encuentra en ningun Periodo Contable");
                     }
                 } else {
-                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha para el reporte");
                 }
+//                } else {
+//                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+//                }
             } else if (sel_tab_nivel.isVisible()) {
                 if (sel_tab_nivel.getValorSeleccionado() != null) {
                     parametro.put("p_ingresos", utilitario.getVariable("p_con_tipo_cuenta_ingresos"));
@@ -979,24 +1095,26 @@ public class pre_contabilidad extends Pantalla {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.setMultiple(false);
                 sec_rango_reporte.dibujar();
                 utilitario.addUpdate("rep_reporte,sec_rango_reporte");
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.getFecha1String() != null && !sec_rango_reporte.getFecha1String().isEmpty()) {
-                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
-                        fecha_fin = sec_rango_reporte.getFecha2String();
-                        fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
-                        if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
-                            sec_rango_reporte.cerrar();
-                            sel_tab_nivel.dibujar();
-                            utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
-                        }
+//                    if (sec_rango_reporte.getFecha2String() != null && !sec_rango_reporte.getFecha2String().isEmpty()) {
+                    fecha_fin = sec_rango_reporte.getFecha1String();
+                    fecha_inicio = con.getFechaInicialPeriodo(fecha_fin);
+                    if (fecha_inicio != null && !fecha_inicio.isEmpty()) {
+                        sec_rango_reporte.cerrar();
+                        sel_tab_nivel.dibujar();
+                        utilitario.addUpdate("sec_rango_reporte,sel_tab_nivel");
                     } else {
-                        utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+                        utilitario.agregarMensajeError("Atencion", "La fecha seleccionada no se encuentra en ningun Periodo Contable");
                     }
+//                } else {
+//                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha fin");
+//                }
                 } else {
-                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha inicio");
+                    utilitario.agregarMensajeError("Atencion", "No ha seleccionado la fecha para el reporte");
                 }
             } else if (sel_tab_nivel.isVisible()) {
                 if (sel_tab_nivel.getValorSeleccionado() != null) {
@@ -1036,7 +1154,8 @@ public class pre_contabilidad extends Pantalla {
                 }
             }
 
-        } else if (rep_reporte.getReporteSelecionado().equals("Libro Mayor")) {
+        } else if (rep_reporte.getReporteSelecionado()
+                .equals("Libro Mayor")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -1084,7 +1203,8 @@ public class pre_contabilidad extends Pantalla {
                     }
                 }
             }
-        } else if (rep_reporte.getReporteSelecionado().equals("Balance de Comprobacion")) {
+        } else if (rep_reporte.getReporteSelecionado()
+                .equals("Balance de Comprobacion")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -1143,27 +1263,27 @@ public class pre_contabilidad extends Pantalla {
                 }
             }
 
-        }
-        else if (rep_reporte.getReporteSelecionado().equals("Mayor Auxiliar Beneficiario")) {
+        } else if (rep_reporte.getReporteSelecionado()
+                .equals("Mayor Auxiliar Beneficiario")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-                TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc="+aut_cuenta.getValor());
-               
+                TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc=" + aut_cuenta.getValor());
+
                 parametro.put("pcuenta", tab_cuenta_contable.getValor("codigo"));
-                parametro.put("pdetalle_cuenta",tab_cuenta_contable.getValor("nombre"));
-                parametro.put("fecha_inicio",cal_fecha_inicio.getDate());
-                parametro.put("fecha_fin",cal_fecha_fin.getDate());
+                parametro.put("pdetalle_cuenta", tab_cuenta_contable.getValor("nombre"));
+                parametro.put("fecha_inicio", cal_fecha_inicio.getDate());
+                parametro.put("fecha_fin", cal_fecha_fin.getDate());
                 parametro.put("persona", sel_tab_mayor_auxiliar.getSeleccionados());
 
-                parametro.put("pide_cuenta",tab_cuenta_contable.getValor("ide_cndpc") );
+                parametro.put("pide_cuenta", tab_cuenta_contable.getValor("ide_cndpc"));
                 System.out.println("paranetros " + parametro);
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_rep.dibujar();
 
             } else {
-               	utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
- 
+                utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
+
             }
         }
     }
@@ -1179,31 +1299,34 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setFilaActual(lin_ide_cnccc.getDir());
         asc_asiento.dibujar();
     }
-public void imprimirMayor(){
-    	sel_tab_mayor_auxiliar.getTab_seleccion().setSql(ser_contabilidad.personaMayorAnalitico(aut_cuenta.getValor()));
-	sel_tab_mayor_auxiliar.getTab_seleccion().ejecutarSql();
-	sel_tab_mayor_auxiliar.dibujar();
-}
-    public void generarPDF() {
-        
-        parametro = new HashMap();
-                rep_reporte.cerrar();
-                TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc="+aut_cuenta.getValor());
-               
-                parametro.put("pcuenta", tab_cuenta_contable.getValor("codigo"));
-                parametro.put("pdetalle_cuenta",tab_cuenta_contable.getValor("nombre"));
-                parametro.put("fecha_inicio",cal_fecha_inicio.getFecha());
-                parametro.put("fecha_fin",cal_fecha_fin.getFecha());
-                parametro.put("persona", sel_tab_mayor_auxiliar.getSeleccionados());
-                parametro.put("ide_sucu", Integer.parseInt(utilitario.getVariable("IDE_SUCU")));
-                parametro.put("ide_empr", Integer.parseInt(utilitario.getVariable("IDE_EMPR")));
-                parametro.put("pide_cuenta",Integer.parseInt(tab_cuenta_contable.getValor("ide_cndpc") ));
-                System.out.println("paranetrosyy " + parametro);
-                vipdf_mayor.setVisualizarPDF("rep_contabilidad/rep_mayorauxiliar.jasper", parametro);
-                vipdf_mayor.dibujar();
-                sel_tab_mayor_auxiliar.cerrar();
-      
+
+    public void imprimirMayor() {
+        sel_tab_mayor_auxiliar.getTab_seleccion().setSql(ser_contabilidad.personaMayorAnalitico(aut_cuenta.getValor()));
+        sel_tab_mayor_auxiliar.getTab_seleccion().ejecutarSql();
+        sel_tab_mayor_auxiliar.dibujar();
     }
+
+    public void generarPDF() {
+
+        parametro = new HashMap();
+        rep_reporte.cerrar();
+        TablaGenerica tab_cuenta_contable = utilitario.consultar("select ide_cndpc,codig_recur_cndpc as codigo,nombre_cndpc as nombre from con_det_plan_cuen where ide_cndpc=" + aut_cuenta.getValor());
+
+        parametro.put("pcuenta", tab_cuenta_contable.getValor("codigo"));
+        parametro.put("pdetalle_cuenta", tab_cuenta_contable.getValor("nombre"));
+        parametro.put("fecha_inicio", cal_fecha_inicio.getFecha());
+        parametro.put("fecha_fin", cal_fecha_fin.getFecha());
+        parametro.put("persona", sel_tab_mayor_auxiliar.getSeleccionados());
+        parametro.put("ide_sucu", Integer.parseInt(utilitario.getVariable("IDE_SUCU")));
+        parametro.put("ide_empr", Integer.parseInt(utilitario.getVariable("IDE_EMPR")));
+        parametro.put("pide_cuenta", Integer.parseInt(tab_cuenta_contable.getValor("ide_cndpc")));
+        System.out.println("paranetrosyy " + parametro);
+        vipdf_mayor.setVisualizarPDF("rep_contabilidad/rep_mayorauxiliar.jasper", parametro);
+        vipdf_mayor.dibujar();
+        sel_tab_mayor_auxiliar.cerrar();
+
+    }
+
     public String getFormatoFecha(String fecha) {
         String mes = utilitario.getNombreMes(utilitario.getMes(fecha));
         String dia = utilitario.getDia(fecha) + "";
