@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.3636363636363629"/>
-	<property name="ireport.x" value="89"/>
+	<property name="ireport.x" value="43"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -16,7 +16,10 @@
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select fecha_trans_cnccc,nom_geper,observacion_cnccc,numero_cnccc,nombre_cntcm,VALOR_CNDCC,detalle.ide_cnlap,nombre_cndpc,codig_recur_cndpc,nom_modu,cab.ide_cnccc,detalle.observacion_cndcc from con_cab_comp_cont cab
+		<![CDATA[select fecha_trans_cnccc,nom_geper,observacion_cnccc,numero_cnccc,nombre_cntcm,
+VALOR_CNDCC,detalle.ide_cnlap,(select a.nombre_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) )as nombre_cndpc,(select a.codig_recur_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) ) as codig_recur_cndpc,nom_modu,cab.ide_cnccc,
+detalle.observacion_cndcc
+from con_cab_comp_cont cab
 left join sis_modulo modulo on cab.ide_modu=modulo.ide_modu
 INNER join con_tipo_comproba tip_com on cab.ide_cntcm=tip_com.ide_cntcm
 left join gen_persona per on cab.ide_geper=per.ide_geper
@@ -28,7 +31,9 @@ where cab.IDE_CNCCC=$P{ide_cnccc}
 ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 	</queryString>
 	<field name="fecha_trans_cnccc" class="java.sql.Date"/>
-	<field name="nom_geper" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
 	<field name="observacion_cnccc" class="java.lang.String"/>
 	<field name="numero_cnccc" class="java.lang.String"/>
 	<field name="nombre_cntcm" class="java.lang.String"/>
