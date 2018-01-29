@@ -384,11 +384,13 @@ public class pre_contabilidad extends Pantalla {
         //INSERTA PRIMERA FILA SALDO INICIAL
         if (isCuentaSeleccionada()) {
             tab_consulta.setLectura(false);
-            tab_consulta.insertar();
-            tab_consulta.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
-            tab_consulta.setValor("OBSERVACION", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
-            tab_consulta.setValor("fecha_trans_cnccc", cal_fecha_inicio.getFecha());
-            tab_consulta.setLectura(true);
+            if (dou_saldo_inicial > 0) {
+                tab_consulta.insertar();
+                tab_consulta.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
+                tab_consulta.setValor("OBSERVACION", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+                tab_consulta.setValor("fecha_trans_cnccc", cal_fecha_inicio.getFecha());
+                tab_consulta.setLectura(true);
+            }
         }
         //ASIGNA SALDOS FINALES
         tab_consulta.getColumna("saldo").setTotal(dou_saldo_actual);
@@ -614,7 +616,7 @@ public class pre_contabilidad extends Pantalla {
 
     public void actualizarBalanceGeneral() {
         tab_consulta.setSql(ser_contabilidad.getSqlBalanceGeneral(cal_fecha_fin.getFecha()));
-        tab_consulta.ejecutarSql();
+        tab_consulta.ejecutarSql();        
         calcularBalance();
         System.out.println(ser_contabilidad.getTotalesBalanceGeneral(cal_fecha_fin.getFecha()));
     }
@@ -648,6 +650,7 @@ public class pre_contabilidad extends Pantalla {
         int band = 0;
         do {
             for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+
                 if (tab_consulta.getValor(i, "ide_cnncu").equals(String.valueOf(nivel))) {
                     padre = tab_consulta.getValor(i, "con_ide_cndpc");
                     for (Object lis_padre : lis_padres) {
@@ -689,11 +692,13 @@ public class pre_contabilidad extends Pantalla {
             //Asigna valor acumulado al padre
             for (int i = 0; i < lis_padres.size(); i++) {
                 padre = lis_padres.get(i).toString();
+
                 for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
                     if (tab_consulta.getValor(j, "ide_cndpc").equals(padre)) {
                         try {
                             tab_consulta.setValor(j, "valor", utilitario.getFormatoNumero(lis_valor_padre.get(i).toString()));
                         } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         break;
                     }

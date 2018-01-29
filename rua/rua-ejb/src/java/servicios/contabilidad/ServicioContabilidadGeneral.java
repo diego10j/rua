@@ -339,8 +339,9 @@ public class ServicioContabilidadGeneral {
                 + "UNION SELECT * FROM(Select ide_cndpc,codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || nombre_cndpc,ide_cnncu , '0' as valor, "
                 + "con_ide_cndpc,ide_cntcu "
                 + "from  con_det_plan_cuen where ide_cntcu in (" + p_tipo_cuentas + ") "
-                + "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont where "
-                + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") "
+                + "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont a inner join con_cab_comp_cont b on a.ide_cnccc=b.ide_cnccc   "
+                + "WHERE b.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "' "
+                + "and b.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") "
                 + "and nivel_cndpc='PADRE' ) AS C2) "
                 + "order by codig_recur_cndpc ";
     }
@@ -432,7 +433,8 @@ public class ServicioContabilidadGeneral {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
+                //+ "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
+                + "WHERE (ccc.fecha_trans_cnccc >= '" + utilitario.getAnio(fecha_fin) + "-01-01' AND ccc.fecha_trans_cnccc <= '" + fecha_fin + "') " //DFJ Aumenta filtro solo comprobantes del período
                 + "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " " ///solo la sucursal 
                 + "and ccc.ide_cneco in (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
                 + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "

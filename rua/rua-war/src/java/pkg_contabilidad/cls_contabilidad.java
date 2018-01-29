@@ -617,8 +617,12 @@ public class cls_contabilidad {
                     + "codig_recur_cndpc,con_ide_cndpc,ide_cntcu "
                     + "from  con_det_plan_cuen where ide_cntcu in (" + p_tipo_cuentas + ") ";
             if (!es_consolidado) {
-                sql += "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont where "
-                        + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") ";
+                // sql += "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont where "
+                //         + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") ";
+
+                sql += "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont a inner join con_cab_comp_cont b on a.ide_cnccc=b.ide_cnccc   "
+                        + "WHERE b.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "' "
+                        + "and b.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") ";
             }
             sql += "and nivel_cndpc='PADRE' ) AS C2) "
                     + "order by codig_recur_cndpc ";
