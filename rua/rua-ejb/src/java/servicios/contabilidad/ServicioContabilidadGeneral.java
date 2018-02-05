@@ -386,8 +386,8 @@ public class ServicioContabilidadGeneral {
      * @param fecha_final
      * @return ACTIVO, PASIVO, PATRIMONIO
      */
-    public Map<String, Double> getTotalesBalanceGeneral(String fecha_final) {
-        Map<String, Double> resultado = new HashMap();
+    public Map<String, String> getTotalesBalanceGeneral(String fecha_final) {
+        Map<String, String> resultado = new HashMap();
         String p_activo = utilitario.getVariable("p_con_tipo_cuenta_activo");
         String p_pasivo = utilitario.getVariable("p_con_tipo_cuenta_pasivo");
         String p_patrimonio = utilitario.getVariable("p_con_tipo_cuenta_patrimonio");
@@ -408,9 +408,9 @@ public class ServicioContabilidadGeneral {
                 tot_patrimonio += Double.parseDouble(tab_balance.getValor(i, "valor"));
             }
         }
-        resultado.put("ACTIVO", Double.parseDouble(utilitario.getFormatoNumero(tot_activo)));
-        resultado.put("PASIVO", Double.parseDouble(utilitario.getFormatoNumero(tot_pasivo)));
-        resultado.put("PATRIMONIO", Double.parseDouble(utilitario.getFormatoNumero(tot_patrimonio)));
+        resultado.put("ACTIVO", utilitario.getFormatoNumero(String.valueOf(tot_activo)));
+        resultado.put("PASIVO", utilitario.getFormatoNumero(String.valueOf(tot_pasivo)));
+        resultado.put("PATRIMONIO", utilitario.getFormatoNumero(String.valueOf(tot_patrimonio)));
         return resultado;
     }
 
@@ -434,7 +434,7 @@ public class ServicioContabilidadGeneral {
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
                 //+ "WHERE (ccc.fecha_trans_cnccc <='" + fecha_fin + "') "
-                + "WHERE (ccc.fecha_trans_cnccc >= '" + utilitario.getAnio(fecha_fin) + "-01-01' AND ccc.fecha_trans_cnccc <= '" + fecha_fin + "') " //DFJ Aumenta filtro solo comprobantes del período
+                + "WHERE ccc.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "' " //DFJ Aumenta filtro solo comprobantes del período
                 + "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " " ///solo la sucursal 
                 + "and ccc.ide_cneco in (" + estado_normal + "," + estado_inicial + "," + estado_final + ") "
                 + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "

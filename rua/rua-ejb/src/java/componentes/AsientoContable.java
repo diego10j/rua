@@ -699,11 +699,11 @@ public class AsientoContable extends Dialogo {
                 utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in(" + relacion + ") ) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
                 //Asigna el ide_cnccc a la  facturas, documentos cxp,transaccion cxc o cxp y al libro bancos               
-                utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
-                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
-                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ")");
-                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + "))");
-                utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + "))");
+                utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
 
                 utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
 

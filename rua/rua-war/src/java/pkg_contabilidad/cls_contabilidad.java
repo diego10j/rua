@@ -816,7 +816,7 @@ public class cls_contabilidad {
                 + "inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc "
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu "
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap "
-                + "WHERE (ccc.fecha_trans_cnccc BETWEEN '" + utilitario.getAnio(fecha_final) + "-01-01' and '" + fecha_final + "') ";
+                + "WHERE ccc.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_final) + "-01-01' and '" + fecha_final + "'  ";
         if (!es_consolidado) {
             sql += "and ccc.ide_sucu=" + utilitario.getVariable("ide_sucu") + " ";
         }
