@@ -228,7 +228,7 @@ public class pre_contabilidad extends Pantalla {
 //        gp.getChildren().add(new Etiqueta("<strong>CUENTA CONTABLE : </strong>"));
         aut_cuenta = new AutoCompletar();
         aut_cuenta.setId("aut_cuenta");
-        aut_cuenta.setAutoCompletar(ser_contabilidad.getSqlCuentasHijas());
+        aut_cuenta.setAutoCompletar(ser_contabilidad.getSqlCuentas());
         aut_cuenta.setSize(75);
         aut_cuenta.setAutocompletarContenido(); // no startWith para la busqueda
         aut_cuenta.setMetodoChange("seleccionarCuenta");
