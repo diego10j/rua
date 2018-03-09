@@ -24,12 +24,14 @@ import framework.componentes.Mascara;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
@@ -79,6 +81,7 @@ public class pre_facturasCxC extends Pantalla {
     private Etiqueta eti1 = new Etiqueta();
 
     private Retencion ret_retencion = new Retencion();
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
 
     public pre_facturasCxC() {
 
@@ -86,6 +89,11 @@ public class pre_facturasCxC extends Pantalla {
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
         bar_botones.agregarReporte();
+        
+                sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango_reporte.setMultiple(true);
+        agregarComponente(sec_rango_reporte);
 
         com_pto_emision.setId("com_pto_emision");
         com_pto_emision.setCombo(ser_factura.getSqlPuntosEmision());
@@ -594,6 +602,37 @@ public class pre_facturasCxC extends Pantalla {
                     utilitario.agregarMensajeInfo("Comprobante de Contabilidad", "La factura seleccionada no tiene Comprobante de Contabilidad");
                 }
             }
+        }else if (rep_reporte.getReporteSelecionado().equals("Iva en Ventas")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.isFechasValidas()) {
+                    parametro = new HashMap();
+                    parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                    parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                    sec_rango_reporte.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Rango de Fechas no válido", "");
+                }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Comprobante de Inventario")) {
+            if (rep_reporte.isVisible()) {
+                List sql_cab_fac_inv = utilitario.getConexion().consultar("SELECT ide_incci  FROM inv_det_comp_inve WHERE ide_cccfa=" + tab_tabla.getValor("ide_cccfa"));
+                if (sql_cab_fac_inv != null && !sql_cab_fac_inv.isEmpty()) {
+                    parametro = new HashMap();
+                    rep_reporte.cerrar();
+                    parametro.put("ide_incci", Long.parseLong(sql_cab_fac_inv.get(0).toString()));
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("rep_reporte,sel_rep");
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede generar el reporte", "El factura seleccionada no tiene comprobante de inventario");
+                }
+            }
         }
     }
 
@@ -788,5 +827,14 @@ public class pre_facturasCxC extends Pantalla {
     public void setRet_retencion(Retencion ret_retencion) {
         this.ret_retencion = ret_retencion;
     }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
+    }
+    
 
 }

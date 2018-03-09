@@ -16,6 +16,7 @@ import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class pre_retenciones extends Pantalla {
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private Confirmar con_confirma = new Confirmar();
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
 
     public pre_retenciones() {
         bar_botones.quitarBotonsNavegacion();
@@ -52,6 +54,11 @@ public class pre_retenciones extends Pantalla {
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
         bar_botones.agregarReporte();
+
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango_reporte.setMultiple(true);
+        agregarComponente(sec_rango_reporte);
 
         com_autoriza.setCombo(ser_retencion.getSqlComboAutorizaciones());
         com_autoriza.setMetodo("actualizarConsulta");
@@ -320,6 +327,40 @@ public class pre_retenciones extends Pantalla {
                 }
 
             }
+        } else if (rep_reporte.getReporteSelecionado().equals("Retenciones en Compras")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.isFechasValidas()) {
+                    parametro = new HashMap();
+                    parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                    parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                    sec_rango_reporte.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Rango de Fechas no válido", "");
+                }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Retenciones en Ventas")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.isFechasValidas()) {
+                    parametro = new HashMap();
+                    parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                    parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                    sec_rango_reporte.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Rango de Fechas no válido", "");
+                }
+            }
+
         }
     }
 
@@ -384,6 +425,14 @@ public class pre_retenciones extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
     }
 
 }

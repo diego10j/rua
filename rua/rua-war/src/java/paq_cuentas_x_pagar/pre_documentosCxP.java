@@ -24,6 +24,7 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
@@ -32,6 +33,7 @@ import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
@@ -97,6 +99,7 @@ public class pre_documentosCxP extends Pantalla {
     private Texto tex_num_asiento;
     private Etiqueta eti_num_asiento;
     private Texto tex_observacion;
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private Confirmar con_confirma = new Confirmar();
 
     public pre_documentosCxP() {
@@ -104,6 +107,11 @@ public class pre_documentosCxP extends Pantalla {
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
         bar_botones.agregarReporte();
+
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango_reporte.setMultiple(true);
+        agregarComponente(sec_rango_reporte);
 
         com_tipo_documento.setCombo(ser_cuentas_cxp.getSqlTipoDocumentosCxP());
         com_tipo_documento.setMetodo("actualizarFiltros");
@@ -665,6 +673,36 @@ public class pre_documentosCxP extends Pantalla {
                     utilitario.agregarMensajeInfo("Seleccione un Comprobante de Retención", "");
                 }
 
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Compras")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                if (sec_rango_reporte.isFechasValidas()) {
+                    parametro = new HashMap();
+                    parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+                    parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+                    sec_rango_reporte.cerrar();
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Rango de Fechas no válido", "");
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Comprobante de Inventario")) {
+            if (rep_reporte.isVisible()) {
+                List sql_cab_fac_inv = utilitario.getConexion().consultar("SELECT ide_incci  FROM inv_det_comp_inve WHERE ide_cpcfa=" + tab_tabla1.getValor("ide_cpcfa"));
+                if (sql_cab_fac_inv != null && !sql_cab_fac_inv.isEmpty()) {
+                    parametro = new HashMap();
+                    rep_reporte.cerrar();
+                    parametro.put("ide_incci", Long.parseLong(sql_cab_fac_inv.get(0).toString()));
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.dibujar();
+                    utilitario.addUpdate("rep_reporte,sel_rep");
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede generar el reporte", "El documento seleccionado no tiene comprobante de inventario");
+                }
             }
         }
     }
@@ -1255,4 +1293,13 @@ public class pre_documentosCxP extends Pantalla {
         this.con_confirma = con_confirma;
     }
 
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
+    }
+
+    
 }
