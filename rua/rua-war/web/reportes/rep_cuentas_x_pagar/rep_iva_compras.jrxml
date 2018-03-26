@@ -38,7 +38,8 @@ where fecha_emisi_cpcfa  BETWEEN $P{fecha_inicio} and $P{fecha_fin}
 and a.ide_sucu=$P{ide_sucu}
 and ide_cpefa=0
 and a.ide_cntdo=0
-ORDER BY fecha_emisi_cpcfa,nom_geper]]>
+and ide_rem_cpcfa is null
+ORDER BY nombre_cntdo,fecha_emisi_cpcfa,nom_geper]]>
 	</queryString>
 	<field name="ide_cpcfa" class="java.lang.Long"/>
 	<field name="nombre_cntdo" class="java.lang.String"/>
