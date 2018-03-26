@@ -42,7 +42,7 @@ public class cls_anexo_transaccional {
 
                 TablaGenerica tab_estab = utilitario.consultar("select  count(*),(sum(base_grabada_cccfa)+sum(base_no_objeto_iva_cccfa)+sum(base_tarifa0_cccfa)) as total_ventas, substr(df.serie_ccdaf, 1, 3) as establecimiento "
                         + " from cxc_cabece_factura cf "
-                        + " INNER JOIN cxc_datos_fac df ON (df.ide_ccdaf = cf.ide_ccdaf)"
+                        + " LEFT JOIN cxc_datos_fac df ON (df.ide_ccdaf = cf.ide_ccdaf)"
                         + " where fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                         + " GROUP BY substr(df.serie_ccdaf, 1, 3)");
 
@@ -53,7 +53,14 @@ public class cls_anexo_transaccional {
                 raiz.appendChild(crearElemento("Anio", null, anio));
                 raiz.appendChild(crearElemento("Mes", null, mes));
                 raiz.appendChild(crearElemento("numEstabRuc", null, "00" + tab_estab.getTotalFilas()));
-                raiz.appendChild(crearElemento("totalVentas", null, getTotalVentas()));
+
+                double totalNotasCredito = 0;
+                try {
+                    totalNotasCredito = Double.parseDouble(getTotalNotasCredito());
+                } catch (Exception e) {
+                }
+                double totalVentas = tab_estab.getSumaColumna("total_ventas") - totalNotasCredito;
+                raiz.appendChild(crearElemento("totalVentas", null, utilitario.getFormatoNumero(totalVentas)));
                 raiz.appendChild(crearElemento("codigoOperativo", null, "IVA"));
 
                 doc_anexo.appendChild(raiz);
@@ -367,17 +374,18 @@ public class cls_anexo_transaccional {
                     TablaGenerica tab_ventas = utilitario.consultar("select tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,count(cab.ide_geper) as numcomprobantes, "
                             + "sum(cab.base_tarifa0_cccfa)as base_tarifa0_cccfa,sum(base_grabada_cccfa)as base_grabada, "
                             + "sum(base_no_objeto_iva_cccfa) as base_no_objeto_iva_cccfa, "
-                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(dret1.valor_cndre) as retiva, sum(dret2.valor_cndre) as retrenta "
+                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(dret1.valor_cndre) as retiva, sum(dret2.valor_cndre) as retrenta,alterno_ats "
                             + "from cxc_cabece_factura cab "
                             + "left join gen_persona cli on cab.ide_geper=cli.ide_geper "
                             + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid "
                             + "left join con_tipo_document doc on cab.ide_cntdo=doc.ide_cntdo "
+                            + "left join con_deta_forma_pago  fpa on cab.ide_cndfp=fpa.ide_cndfp "
                             + "left join con_cabece_retenc rete on rete.ide_cncre=cab.ide_cncre and rete.es_venta_cncre=true "
-                            + "left join con_detall_retenc dret1 on rete.ide_cncre= dret1.ide_cncre  and dret1.ide_cncim=1 "
-                            + "left join con_detall_retenc dret2 on rete.ide_cncre= dret2.ide_cncre  and dret1.ide_cncim=0 "
+                            + "left join con_detall_retenc dret1 on rete.ide_cncre= dret1.ide_cncre  and dret1.ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 ) "
+                            + "left join con_detall_retenc dret2 on rete.ide_cncre= dret2.ide_cncre  and dret2.ide_cncim in (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 ) "
                             + " where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
-
+                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,alterno_ats");
+                    // System.out.println("VENTAS --- " + tab_ventas.getSql());
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
                         ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
                         Element detalleVentas = doc_anexo.createElement("detalleVentas");
@@ -402,8 +410,9 @@ public class cls_anexo_transaccional {
                         detalleVentas.appendChild(crearElemento("baseNoGraIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "base_no_objeto_iva_cccfa"))));
                         detalleVentas.appendChild(crearElemento("baseImponible", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "base_tarifa0_cccfa"))));
                         detalleVentas.appendChild(crearElemento("baseImpGrav", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "base_grabada"))));
-                        double montoIva = Double.parseDouble(utilitario.getFormatoNumero(tab_ventas.getValor(i, "base_grabada"))) * 0.14;///!!!!!!RECUPER TARIFA IVA                         
-                        detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
+                        //double montoIva = Double.parseDouble(utilitario.getFormatoNumero(tab_ventas.getValor(i, "base_grabada"))) * 0.12;///!!!!!!RECUPER TARIFA IVA                         
+                        //detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
+                        detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "valor_iva_cccfa"))));
                         detalleVentas.appendChild(crearElemento("montoIce", null, "0.00"));
                         if (tab_ventas.getValor(i, "retiva") == null) {
                             detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
@@ -419,6 +428,58 @@ public class cls_anexo_transaccional {
                         Element formasDePago = doc_anexo.createElement("formasDePago");
                         detalleVentas.appendChild(formasDePago);
                         formasDePago.appendChild(crearElemento("formaPago", null, "20"));
+                    }
+
+                    ////NOTAS DE CREDITO
+                    TablaGenerica tab_notaC = utilitario.consultar("select tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,count(cab.ide_geper) as numcomprobantes, \n"
+                            + "sum(cab.base_tarifa0_cpcno)as base_tarifa0_cpcno,sum(base_grabada_cpcno)as base_grabada, \n"
+                            + "sum(base_no_objeto_iva_cpcno) as base_no_objeto_iva_cpcno, \n"
+                            + "sum(valor_iva_cpcno) as valor_iva_cpcno\n"
+                            + "from cxp_cabecera_nota cab \n"
+                            + "left join gen_persona cli on cab.ide_geper=cli.ide_geper \n"
+                            + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid \n"
+                            + "left join con_tipo_document doc on cab.ide_cntdo=doc.ide_cntdo \n"
+                            + "where cab.fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno= 1\n"
+                            + " and  cab.ide_sucu= " + utilitario.getVariable("IDE_SUCU")
+                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
+                    // System.out.println("NOTAS CREDITO --- " + tab_notaC.getSql());
+                    for (int i = 0; i < tab_notaC.getTotalFilas(); i++) {
+                        ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
+                        Element detalleVentas = doc_anexo.createElement("detalleVentas");
+                        ventas.appendChild(detalleVentas);
+                        detalleVentas.appendChild(crearElemento("tpIdCliente", null, tab_notaC.getValor(i, "alterno2_getid")));
+                        detalleVentas.appendChild(crearElemento("idCliente", null, tab_notaC.getValor(i, "identificac_geper")));
+                        if (!tab_notaC.getValor(i, "alterno2_getid").equals("07")) {
+                            detalleVentas.appendChild(crearElemento("parteRelVtas", null, "NO"));
+                        }
+
+                        if (tab_notaC.getValor(i, "alterno2_getid").equals("06")) {//PASAPORTE
+                            TablaGenerica tab_persona = utilitario.consultar("SELECT identificac_geper,nom_geper,alter_tribu_cntco from gen_persona cli "
+                                    + "left join con_tipo_contribu tcon on cli.ide_cntco=tcon.ide_cntco "
+                                    + "where identificac_geper='" + tab_notaC.getValor(i, "identificac_geper") + "'");
+                            detalleVentas.appendChild(crearElemento("tipoCliente", null, tab_persona.getValor("alter_tribu_cntco") == null ? "01" : tab_persona.getValor("alter_tribu_cntco")));
+                            detalleVentas.appendChild(crearElemento("denoCli", null, tab_persona.getValor("nom_geper")));
+                        }
+
+                        detalleVentas.appendChild(crearElemento("tipoComprobante", null, "04"));
+                        detalleVentas.appendChild(crearElemento("tipoEmision", null, "F"));
+                        detalleVentas.appendChild(crearElemento("numeroComprobantes", null, tab_notaC.getValor(i, "numcomprobantes")));
+                        detalleVentas.appendChild(crearElemento("baseNoGraIva", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_no_objeto_iva_cpcno"))));
+                        detalleVentas.appendChild(crearElemento("baseImponible", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_tarifa0_cpcno"))));
+                        detalleVentas.appendChild(crearElemento("baseImpGrav", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_grabada"))));
+                        //double montoIva = Double.parseDouble(utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_grabada"))) * 0.12;///!!!!!!RECUPER TARIFA IVA                         
+                        //detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
+                        detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "valor_iva_cpcno"))));
+                        detalleVentas.appendChild(crearElemento("montoIce", null, "0.00"));
+                        detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
+                        detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
+//                        Element formasDePago = doc_anexo.createElement("formasDePago");
+//                        detalleVentas.appendChild(formasDePago);
+//                        if (tab_notaC.getValor(i, "alterno_ats") == null) {
+//                            formasDePago.appendChild(crearElemento("formaPago", null, "20"));
+//                        } else {
+//                            formasDePago.appendChild(crearElemento("formaPago", null, tab_notaC.getValor(i, "alterno_ats")));
+//                        }
 
                     }
 
@@ -430,7 +491,7 @@ public class cls_anexo_transaccional {
                         Element ventaEst = doc_anexo.createElement("ventaEst");
                         ventasEstablecimiento.appendChild(ventaEst);
                         ventaEst.appendChild(crearElemento("codEstab", null, tab_estab.getValor(i, "establecimiento")));
-                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(tab_estab.getValor(i, "total_ventas"))));
+                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(totalVentas)));
                     }
 
                 }
@@ -485,10 +546,13 @@ public class cls_anexo_transaccional {
                 Source source = new DOMSource(doc_anexo);
                 String master = System.getProperty("user.dir");
                 nombre = "AT" + mes + anio + ".xml";
-                Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;
                 Result console = new StreamResult(System.out);
+                Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
+                //Result result = new StreamResult("D:/" + nombre); //nombre del archivo
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
                 transformer.transform(source, result);
                 transformer.transform(source, console);
             } else {
@@ -503,15 +567,15 @@ public class cls_anexo_transaccional {
         return mensaje;
     }
 
-    private String getTotalVentas() {
+    private String getTotalNotasCredito() {
         String str_valor = "0.00";
 
-        TablaGenerica tab_total = utilitario.consultar("select  count(*),(sum(base_grabada_cccfa)+sum(base_no_objeto_iva_cccfa)+sum(base_tarifa0_cccfa)) as total_ventas "
-                + " from cxc_cabece_factura where fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal"));
+        TablaGenerica tab_total = utilitario.consultar(
+                "select  count(*),1*(sum(base_grabada_cpcno)+sum(base_no_objeto_iva_cpcno)+sum(base_tarifa0_cpcno)) as total_ventas \n"
+                + "from cxp_cabecera_nota where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1 and ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
+//        tab_total.imprimirSql();
+        str_valor = utilitario.getFormatoNumero(tab_total.getSumaColumna("total_ventas"));
 
-        if (tab_total.getTotalFilas() > 0) {
-            str_valor = utilitario.getFormatoNumero(tab_total.getValor("total_ventas"));
-        }
         return str_valor;
     }
 
