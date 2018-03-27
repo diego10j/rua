@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_ret_compras" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89fe452f-287d-4c3c-ade6-794101a2b484">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="908"/>
+	<property name="ireport.x" value="906"/>
 	<property name="ireport.y" value="175"/>
 	<parameter name="ide_empr" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -24,7 +24,6 @@ from cxp_cabece_factur a
 inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join con_tipo_document c on a.ide_cntdo=c.ide_cntdo
 where fecha_emisi_cpcfa  BETWEEN $P{fecha_inicio} and $P{fecha_fin}
-and a.ide_sucu=$P{ide_sucu}
 and ide_cpefa=0
 and a.ide_cntdo!=0
 UNION
@@ -35,7 +34,6 @@ from cxp_cabece_factur a
 inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join con_tipo_document c on a.ide_cntdo=c.ide_cntdo
 where fecha_emisi_cpcfa  BETWEEN $P{fecha_inicio} and $P{fecha_fin}
-and a.ide_sucu=$P{ide_sucu}
 and ide_cpefa=0
 and a.ide_cntdo=0
 and ide_rem_cpcfa is null

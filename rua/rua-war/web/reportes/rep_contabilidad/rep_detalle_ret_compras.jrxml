@@ -26,7 +26,6 @@ inner join con_cabece_impues d on a.ide_cncim=d.ide_cncim
 inner join gen_persona e on c.ide_geper=e.ide_geper
 where fecha_emisi_cncre BETWEEN $P{fecha_inicio} and $P{fecha_fin}
 and b.ide_cnere=0
-and b.ide_sucu=$P{ide_sucu}
 order by casillero_cncim,fecha_emisi_cncre]]>
 	</queryString>
 	<field name="ide_cndre" class="java.lang.Long"/>

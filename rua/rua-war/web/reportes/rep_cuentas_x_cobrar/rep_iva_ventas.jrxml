@@ -24,19 +24,16 @@ from cxc_cabece_factura a
 inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf
 where fecha_emisi_cccfa BETWEEN $P{fecha_inicio} and $P{fecha_fin}
-and a.ide_sucu=$P{ide_sucu}
 and ide_ccefa=0
 
-
 UNION
-select a.ide_cpcno,'NOTA DE CRÉDITO' as nombre_cntdo,fecha_emisi_cpcno as fecha_emisi_cpcfa,serie_ccdaf||numero_cpcno as numero_cpcfa,
-nom_geper,identificac_geper,-1*total_cpcno as total_cpcfa,-1*base_tarifa0_cpcno as base_tarifa0_cpcfa,-1* base_no_objeto_iva_cpcno as base_no_objeto_iva_cpcfa,
+select a.ide_cpcno,'NOTA DE CRÉDITO' as nombre_cntdo,fecha_emisi_cpcno as fecha_emisi_cpcfa,''||numero_cpcno as numero_cpcfa,
+nom_geper,identificac_geper,-1*0 as total_cpcfa,-1*base_tarifa0_cpcno as base_tarifa0_cpcfa,-1* base_no_objeto_iva_cpcno as base_no_objeto_iva_cpcfa,
 -1*base_grabada_cpcno as base_grabada_cpcfa,-1*valor_iva_cpcno as valor_iva_cpcfa
 from cxp_cabecera_nota a
 inner join gen_persona b on a.ide_geper=b.ide_geper
-inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf
+
 where fecha_emisi_cpcno BETWEEN $P{fecha_inicio} and $P{fecha_fin}
-and a.ide_sucu=$P{ide_sucu}
 and ide_cpeno=1
 
 ORDER BY 2,4]]>
