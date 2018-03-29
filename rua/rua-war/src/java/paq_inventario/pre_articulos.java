@@ -62,7 +62,7 @@ public class pre_articulos extends Pantalla {
 
     private Tabla tab_asiento_tipo;
     private Tabla tab_detalle_asiento;
-     private Tabla tab_costo;
+    private Tabla tab_costo;
 
     //Opcion 8,9
     @EJB
@@ -89,8 +89,8 @@ public class pre_articulos extends Pantalla {
         mep_menu.setMenuPanel("OPCIONES PRODUCTO", "20%");
         mep_menu.agregarItem("Información Producto", "dibujarProducto", "ui-icon-cart");
         mep_menu.agregarItem("Clasificación Productos", "dibujarEstructura", "ui-icon-arrow-4-diag");
-        mep_menu.agregarItem("Costo de Venta", "dibujarCosto", "ui-icon-calculator");        
-   
+        mep_menu.agregarItem("Costo de Venta", "dibujarCosto", "ui-icon-calculator");
+
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Kardex", "dibujarKardex", "ui-icon-contact");
         mep_menu.agregarItem("Facturas de Ventas", "dibujarVentas", "ui-icon-calculator");
@@ -174,23 +174,24 @@ public class pre_articulos extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(1, "DATOS DEL PRODUCTO", pat_panel);
     }
- /**
+
+    /**
      * Dibuja el formulario de datos del Producto, opcion 11
      */
     public void dibujarCosto() {
-        Tabla tab_costo = new Tabla();
+        tab_costo = new Tabla();
         tab_costo.setId("tab_costo");
         tab_costo.setTabla("bodt_costo_articulo", "ide_bocoa", 11);
         tab_costo.setCondicion("ide_inarti=" + aut_productos.getValor());
         List listax = new ArrayList();
-			       Object fila1x[] = {
-			           "1", "VALOR BASE"
-			       };
-			       Object fila2x[] = {
-			           "2", "PORCENTAJE UTILIDAD"
-			       };
-                               listax.add(fila1x);
-			       listax.add(fila2x);
+        Object fila1x[] = {
+            "1", "VALOR BASE"
+        };
+        Object fila2x[] = {
+            "2", "PORCENTAJE UTILIDAD"
+        };
+        listax.add(fila1x);
+        listax.add(fila2x);
         tab_costo.getColumna("tipo_aplica_bocoa").setCombo(listax);
         tab_costo.dibujar();
         PanelTabla pat_panel_costo = new PanelTabla();
@@ -198,6 +199,7 @@ public class pre_articulos extends Pantalla {
         pat_panel_costo.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(11, "Costo de Venta", pat_panel_costo);
     }
+
     /**
      * Arbol de Productos, opcion 7
      */
@@ -960,9 +962,9 @@ public class pre_articulos extends Pantalla {
 
     @Override
     public void insertar() {
-       System.out.println("entre a imprmre el menu "+mep_menu.getOpcion());
+        System.out.println("entre a imprmre el menu " + mep_menu.getOpcion());
         if (mep_menu.getOpcion() == 1) {
-             aut_productos.limpiar();
+            aut_productos.limpiar();
             //FORMULARIO PRODUCTO
             tab_tabla.limpiar();
             tab_tabla.insertar();
@@ -970,8 +972,7 @@ public class pre_articulos extends Pantalla {
             tab_detalle_asiento.insertar();
         } else if (mep_menu.getOpcion() == 11) {
             tab_costo.insertar();
-        }
-        else {
+        } else {
             dibujarProducto();
             tab_tabla.insertar();
         }
@@ -1000,6 +1001,10 @@ public class pre_articulos extends Pantalla {
         } else if (mep_menu.getOpcion() == 7) {
             //Classificacion de Productos
             guardarPantalla();
+        } else if (mep_menu.getOpcion() == 11) {
+            if (tab_costo.guardar()) {
+                guardarPantalla();
+            }
         }
     }
 
