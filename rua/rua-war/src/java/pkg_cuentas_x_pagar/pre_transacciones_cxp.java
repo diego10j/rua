@@ -98,7 +98,9 @@ public class pre_transacciones_cxp extends Pantalla {
         tab_tabla1.getColumna("ide_cpttr").setCombo("cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr", "");
         tab_tabla1.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
         tab_tabla1.setCondicion("ide_cpdtr=-1 and ide_sucu=" + utilitario.getVariable("ide_sucu") + " ");
-        tab_tabla1.setLectura(true);
+        tab_tabla1.getColumna("ide_plcue").setCombo("con_det_plan_cuen","ide_cndpc","codig_recur_cndpc,nombre_cndpc","");
+        tab_tabla1.getColumna("ide_plcue").setAutoCompletar();        
+ //       tab_tabla1.setLectura(true);
         tab_tabla1.setCampoOrden("ide_cpdtr desc");
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
