@@ -189,6 +189,8 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.setCampoPrimaria("ide_cccfa");
         tab_tabla.getColumna("ide_cccfa").setVisible(false);
         tab_tabla.getColumna("ide_ccefa").setVisible(false);
+        tab_tabla.getColumna("ide_cncre").setVisible(false);
+        
         //tab_tabla.getColumna("nombre_ccefa").setFiltroContenido();
         tab_tabla.getColumna("nombre_ccefa").setVisible(false);
         tab_tabla.getColumna("secuencial_cccfa").setFiltroContenido();
@@ -221,7 +223,7 @@ public class pre_facturasCxC extends Pantalla {
     public void dibujarRetencion() {
         if (tab_tabla.getValor("ide_cccfa") != null) {
             if (tab_tabla.getValor("ide_cncre") == null) {
-                ret_retencion.nuevaRetencionVenta(tab_tabla.getValor("ide_cncre"));
+                ret_retencion.nuevaRetencionVenta(tab_tabla.getValor("ide_cccfa")); 
                 ret_retencion.dibujar();
             } else {
                 utilitario.agregarMensajeInfo("La Factura seleccionada ya tiene registrado un Comprobante de Retención", "");

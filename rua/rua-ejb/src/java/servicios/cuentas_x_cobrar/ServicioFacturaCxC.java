@@ -73,7 +73,7 @@ public class ServicioFacturaCxC extends ServicioBase {
     public String getSqlFacturas(String ide_ccdaf, String fechaInicio, String fechaFin) {
         return "select a.ide_cccfa, secuencial_cccfa, ide_cnccc,a.ide_ccefa,nombre_ccefa ,fecha_emisi_cccfa,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                 + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                + "observacion_cccfa, fecha_trans_cccfa "
+                + "observacion_cccfa, fecha_trans_cccfa,ide_cncre "
                 + "from cxc_cabece_factura a "
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
