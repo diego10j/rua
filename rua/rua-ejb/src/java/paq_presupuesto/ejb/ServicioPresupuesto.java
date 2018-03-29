@@ -44,6 +44,14 @@ public class ServicioPresupuesto {
 	 return tab_presupesto;
 			 
  }
+ public String getAnio(String activo){
+	 
+	 String tab_presupesto="SELECT ide_geani,nom_geani" +
+	 		" FROM gen_anio where activo_geani in (" +activo+")"+
+				" ORDER BY nom_geani";
+	 return tab_presupesto;
+			 
+ } 
  public TablaGenerica getTablaCatalogoPresupuestario(String ideClasificador){
 	 
 	 TablaGenerica tab_presupesto=utilitario.consultar("SELECT ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla " +
