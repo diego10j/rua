@@ -136,6 +136,19 @@ public class ServicioInventario {
         return ide_inbod;
     }
 
+     /**
+     * Retorna la bodega asociada a la sucursal
+     *
+     * @return
+     */
+    public String getBodegaSucursalDatos() {
+        String ide_inbod ="SELECT ide_inbod,nombre_inbod FROM inv_bodega  WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nivel_inbod='HIJO'";
+        return ide_inbod;
+    }
+    public String getMaterialInventario(String nivel) {
+        String ide_inbod ="SELECT ide_inarti,nombre_inarti FROM inv_articulo  WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nivel_inarti in ("+nivel+")";
+        return ide_inbod;
+    }
     public void generarComprobanteTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
         String p_estado_normal_inventario = utilitario.getVariable("p_inv_estado_normal");
         String p_tipo_transaccion_inv_compra = utilitario.getVariable("p_inv_tipo_transaccion_compra");
