@@ -162,6 +162,7 @@ public class pre_programa extends Pantalla {
         }
         public void aceptarArbolPrograma (){
             TablaGenerica tab_consult_programa = utilitario.consultar("select ide_prfup,codigo_prfup from pre_funcion_programa where ide_prfup in("+sel_arbol.getSeleccionados()+") limit 1 ");
+            System.out.println(" funcion programa "+tab_consult_programa.getValor("ide_prfup"));
             tab_programa.setValor("ide_prfup",tab_consult_programa.getValor("ide_prfup"));
             //Actualiza 
             utilitario.addUpdateTabla(tab_programa, "ide_prfup", "");//actualiza mediante ajax el objeto tab_poa
