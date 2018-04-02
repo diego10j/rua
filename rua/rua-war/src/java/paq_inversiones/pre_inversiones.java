@@ -10,6 +10,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -56,6 +57,8 @@ public class pre_inversiones extends Pantalla {
     private double dou_interes_renova;
     private Combo com_bancos;
 
+    private Confirmar con_confirma_anular = new Confirmar();
+
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
@@ -93,6 +96,13 @@ public class pre_inversiones extends Pantalla {
         sel_formato.setId("sel_formato");
         agregarComponente(rep_reporte);
         agregarComponente(sel_formato);
+
+        con_confirma_anular.setId("con_confirma_anular");
+        con_confirma_anular.setMessage("Está seguro de Anular el Certificado Seleccionado ?");
+        con_confirma_anular.setTitle("ANULAR CERTIFICADO");
+        con_confirma_anular.getBot_aceptar().setValue("Si");
+        con_confirma_anular.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma_anular);
     }
 
     @Override
@@ -865,6 +875,23 @@ public class pre_inversiones extends Pantalla {
         }
     }
 
+    public void abrirAnularIversion() {
+        if (tab_tabla1.getValor("ide_ipcer") != null) {
+            con_confirma_anular.getBot_aceptar().setMetodo("anularInversion");
+            con_confirma_anular.dibujar();
+        }
+    }
+
+    public void anularInversion() {
+        if (tab_tabla1.getValor("ide_ipcer") != null) {
+            ser_inversion.anularInversion(tab_tabla1.getValor("ide_ipcer"));
+            if (guardarPantalla().isEmpty()) {
+                con_confirma_anular.cerrar();
+                tab_tabla1.actualizar();
+            }
+        }
+    }
+
     public void dibujarListadoFondo() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -907,6 +934,12 @@ public class pre_inversiones extends Pantalla {
         itemcancela.setIcon("ui-icon-check");
         itemcancela.setMetodo("cancelarInversion");
         pat_panel.getMenuTabla().getChildren().add(itemcancela);
+        
+             ItemMenu itemanula = new ItemMenu();
+        itemanula.setValue("Anular Inversión");
+        itemanula.setIcon("ui-icon-close");
+        itemanula.setMetodo("abrirAnularIversion");
+        pat_panel.getMenuTabla().getChildren().add(itemanula);
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
@@ -1022,6 +1055,12 @@ public class pre_inversiones extends Pantalla {
         itemcancela.setMetodo("cancelarInversion");
         pat_panel.getMenuTabla().getChildren().add(itemcancela);
 
+             ItemMenu itemanula = new ItemMenu();
+        itemanula.setValue("Anular Inversión");
+        itemanula.setIcon("ui-icon-close");
+        itemanula.setMetodo("abrirAnularIversion");
+        pat_panel.getMenuTabla().getChildren().add(itemanula);
+        
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
@@ -1427,6 +1466,13 @@ public class pre_inversiones extends Pantalla {
         itemcancela.setIcon("ui-icon-check");
         itemcancela.setMetodo("cancelarInversion");
         pat_panel.getMenuTabla().getChildren().add(itemcancela);
+
+        ItemMenu itemanula = new ItemMenu();
+        itemanula.setValue("Anular Inversión");
+        itemanula.setIcon("ui-icon-close");
+        itemanula.setMetodo("abrirAnularIversion");
+        pat_panel.getMenuTabla().getChildren().add(itemanula);
+
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(2, "LISTADO DE INVERSIONES BANCARIAS", pat_panel);
@@ -1980,6 +2026,14 @@ public class pre_inversiones extends Pantalla {
 
     public void setSel_formato(SeleccionFormatoReporte sel_formato) {
         this.sel_formato = sel_formato;
+    }
+
+    public Confirmar getCon_confirma_anular() {
+        return con_confirma_anular;
+    }
+
+    public void setCon_confirma_anular(Confirmar con_confirma_anular) {
+        this.con_confirma_anular = con_confirma_anular;
     }
 
 }

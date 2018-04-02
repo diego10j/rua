@@ -345,4 +345,17 @@ public class ServicioInversiones extends ServicioBase {
         utilitario.getConexion().agregarSql("UPDATE iyp_certificado set cancelado=true where ide_ipcer=" + ide_ipcer);
     }
 
+    //Anular 
+    public void anularInversion(String ide_ipcer) {
+        //anula certificado
+        utilitario.getConexion().agregarSql("UPDATE iyp_certificado set cancelado=true,ide_sucu=null,ide_empr=null,nuevo=null,ide_iptin=null where ide_ipcer=" + ide_ipcer);
+        //Anula Asiento
+        TablaGenerica tab_busca = utilitario.consultar("SELECT * FROM con_cab_comp_cont where ide_cnccc = (select ide_cnccc from iyp_certificado where ide_ipcer=" + ide_ipcer + ")");
+        String p_con_estado_comprobante_anulado = utilitario.getVariable("p_con_estado_comprobante_anulado");
+        if (tab_busca.getTotalFilas() > 0) {
+            utilitario.getConexion().agregarSqlPantalla("update con_cab_comp_cont set ide_cneco=" + p_con_estado_comprobante_anulado + " where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+            utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+        }
+    }
+
 }
