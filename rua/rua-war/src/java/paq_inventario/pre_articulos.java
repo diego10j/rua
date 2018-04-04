@@ -183,6 +183,7 @@ public class pre_articulos extends Pantalla {
         tab_costo.setId("tab_costo");
         tab_costo.setTabla("bodt_costo_articulo", "ide_bocoa", 11);
         tab_costo.setCondicion("ide_inarti=" + aut_productos.getValor());
+        tab_costo.getColumna("IDE_INARTI").setVisible(false);
         List listax = new ArrayList();
         Object fila1x[] = {
             "1", "VALOR BASE"
@@ -962,7 +963,7 @@ public class pre_articulos extends Pantalla {
 
     @Override
     public void insertar() {
-        System.out.println("entre a imprmre el menu " + mep_menu.getOpcion());
+        //System.out.println("entre a imprmre el menu " + mep_menu.getOpcion());
         if (mep_menu.getOpcion() == 1) {
             aut_productos.limpiar();
             //FORMULARIO PRODUCTO
@@ -972,6 +973,7 @@ public class pre_articulos extends Pantalla {
             tab_detalle_asiento.insertar();
         } else if (mep_menu.getOpcion() == 11) {
             tab_costo.insertar();
+            tab_costo.setValor("IDE_INARTI", aut_productos.getValor());
         } else {
             dibujarProducto();
             tab_tabla.insertar();
