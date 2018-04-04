@@ -142,11 +142,11 @@ public class ServicioInventario {
      * @return
      */
     public String getBodegaSucursalDatos() {
-        String ide_inbod ="SELECT ide_inbod,nombre_inbod FROM inv_bodega  WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nivel_inbod='HIJO'";
+        String ide_inbod ="SELECT ide_inbod,nombre_inbod FROM inv_bodega  WHERE nivel_inbod='HIJO'";
         return ide_inbod;
     }
     public String getMaterialInventario(String nivel) {
-        String ide_inbod ="SELECT ide_inarti,nombre_inarti FROM inv_articulo  WHERE ide_sucu=" + utilitario.getVariable("ide_sucu") + " and nivel_inarti in ("+nivel+")";
+        String ide_inbod ="SELECT ide_inarti,nombre_inarti FROM inv_articulo  WHERE  nivel_inarti in ("+nivel+")";
         return ide_inbod;
     }
     public void generarComprobanteTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
