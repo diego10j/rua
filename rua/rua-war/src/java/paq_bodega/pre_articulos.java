@@ -57,23 +57,23 @@ public class pre_articulos extends Pantalla {
         tab_tabla.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla.getColumna("ide_inbod").setVisible(false);
         tab_tabla.getColumna("ide_geani").setVisible(false);
-        tab_tabla.getColumna("ingreso_materia_boartl").setValorDefecto("0");
+        tab_tabla.getColumna("ingreso_material_boart").setValorDefecto("0");
         tab_tabla.getColumna("egreso_material_boart").setValorDefecto("0");
         tab_tabla.getColumna("existencia_inicial_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_inicial_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_anterior_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_actual_boart").setValorDefecto("0");
 
-        tab_tabla.getColumna("ingreso_materia_boartl").setRequerida(true);
+        tab_tabla.getColumna("ingreso_material_boart").setRequerida(true);
         tab_tabla.getColumna("egreso_material_boart").setRequerida(true);
         tab_tabla.getColumna("existencia_inicial_boart").setRequerida(true);
         tab_tabla.getColumna("costo_inicial_boart").setRequerida(true);
         tab_tabla.getColumna("costo_anterior_boart").setRequerida(true);
         tab_tabla.getColumna("costo_actual_boart").setRequerida(true);
         
-        tab_tabla.setColumnaSuma("ingreso_materia_boartl,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart");
+        tab_tabla.setColumnaSuma("ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart");
         tab_tabla.setCondicion("ide_geani=-1 and ide_inbod=-1");
-        tab_tabla.setCondicionSucursal(true);
+        //tab_tabla.setCondicionSucursal(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
