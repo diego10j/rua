@@ -1077,6 +1077,7 @@ public class pre_activos_fijos extends Pantalla {
             dibujarActivoFijo();
             tab_tabla.setCondicion("ide_acafi=" + ide_acafi);
             tab_tabla.ejecutarSql();
+            tab_tabla.modificar(tab_tabla.getFilaActual()); //dfj 
             tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla2.ejecutarSql();
             tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo(tab_tabla.getValor("ide_acafi")));
