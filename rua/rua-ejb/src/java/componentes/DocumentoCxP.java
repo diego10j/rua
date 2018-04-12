@@ -1239,8 +1239,8 @@ public class DocumentoCxP extends Dialogo {
         }
         //base_grabada = base_grabada - descuento;
         dou_montoC = ((base_grabada) - descuento) * dou_puntosC;
-        valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
-        valor_iva = valor_iva - dou_montoC;
+        valor_iva = (base_grabada ) * tarifaIVA; //0.12
+        valor_iva = valor_iva - dou_montoC - descuento;
 
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
@@ -1318,15 +1318,16 @@ public class DocumentoCxP extends Dialogo {
                 }
             }
         }
-        double dou_total = 0;
-        try {
-            dou_total = Double.parseDouble(tab_cab_documento.getValor("total_cpcfa"));
-        } catch (Exception e) {
-        }
-        if (dou_total <= 0) {
-            utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
-            return false;
-        }
+        //dfj
+////        double dou_total = 0;
+////        try {
+////            dou_total = Double.parseDouble(tab_cab_documento.getValor("total_cpcfa"));
+////        } catch (Exception e) {
+////        }
+////        if (dou_total <= 0) {
+////            utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
+////            return false;
+////        }
         //Valida que no se haya ingresado ya el documento
         List lis_numeros_fact = utilitario.getConexion().consultar("select * from cxp_cabece_factur where numero_cpcfa='" + tab_cab_documento.getValor("numero_cpcfa") + "' and ide_geper=" + tab_cab_documento.getValor("ide_geper") + " and autorizacio_cpcfa='" + tab_cab_documento.getValor("autorizacio_cpcfa") + "'");
         if (lis_numeros_fact.size() > 0) {
