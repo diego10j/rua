@@ -756,6 +756,15 @@ public void trigEjecutaCompromiso(String ide_prpoa,String ide_prfuf){
 	utilitario.getConexion().ejecutarSql(sql);
 
 }
+public String getDatosPersona(String tipo, String condicion){
+    String sql ="select ide_geper as ide_geedp,nom_geper as DOCUMENTO_IDENTIDAD_GTEMP,identificac_geper as NOMBRES_APELLIDOS from gen_persona where 1=1 ";
+    if(tipo.equals("1")){
+        sql+=condicion;
+    }
+  
+    
+    return sql;
+}
 public void trigActualizaCompromisoPoa(String ide_prpoa){
 	 sql="update pre_poa set valor_compromiso_prpoa =valor from ("
 			 +" select sum(valor_compromiso_prpfe) as valor,ide_prpoa from pre_poa_fuente_ejecucion where ide_prpoa="+ide_prpoa+" group by ide_prpoa) a where a.ide_prpoa=pre_poa.ide_prpoa";
