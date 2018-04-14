@@ -99,7 +99,7 @@ public class pre_tramite extends Pantalla   {
 		tab_tramite.setHeader("COMPROMISO PRESUPUESTARIO");
 		tab_tramite.setTabla("pre_tramite","ide_prtra", 1);
 		tab_tramite.setCampoOrden("ide_prtra desc");
-		tab_tramite.getColumna("ide_geedp").setCombo(ser_nomina.servicioEmpleadoContrato("true,false"));
+		tab_tramite.getColumna("ide_geedp").setCombo(ser_presupuesto.getDatosPersona("0", "xx"));
 		tab_tramite.getColumna("ide_geedp").setLectura(true);
 		tab_tramite.getColumna("ide_geedp").setAutoCompletar();
 		/*
@@ -228,7 +228,7 @@ public class pre_tramite extends Pantalla   {
 */
 		set_empleado.setId("set_empleado");
 		set_empleado.setTitle("SELECCIONE EL EMPLEADO");
-		set_empleado.setSeleccionTabla(ser_nomina.servicioEmpleadoContrato("true"),"ide_geedp");
+		set_empleado.setSeleccionTabla(ser_presupuesto.getDatosPersona("1", " and nivel_geper='HIJO' and identificac_geper is not null"),"ide_geedp");
 		set_empleado.getTab_seleccion().getColumna("DOCUMENTO_IDENTIDAD_GTEMP").setFiltro(true);
 		set_empleado.getTab_seleccion().getColumna("NOMBRES_APELLIDOS").setFiltro(true);
 		set_empleado.getBot_aceptar().setMetodo("aceptarTramite");
@@ -265,7 +265,7 @@ public class pre_tramite extends Pantalla   {
 
 		set_peticionario.setId("set_peticionario");
 		set_peticionario.setTitle("SELECCIONE EL PETICIONARIO");
-		set_peticionario.setSeleccionTabla(ser_nomina.servicioEmpleadoContrato("true"),"ide_geedp");
+		set_peticionario.setSeleccionTabla(ser_presupuesto.getDatosPersona("0", " and nivel_geper='HIJO' and identificac_geper is not null"),"ide_geedp");
 		set_peticionario.getTab_seleccion().getColumna("DOCUMENTO_IDENTIDAD_GTEMP").setFiltro(true);
 		set_peticionario.getTab_seleccion().getColumna("NOMBRES_APELLIDOS").setFiltro(true);
 		set_peticionario.getBot_aceptar().setMetodo("aceptarPeticionario");
@@ -350,7 +350,7 @@ public void importarAnual(){
 	}
 public void importarPeticionario(){
 		
-	set_peticionario.getTab_seleccion().setSql(ser_nomina.servicioEmpleadoContrato("true"));
+	set_peticionario.getTab_seleccion().setSql(ser_presupuesto.getDatosPersona("1", " and nivel_geper='HIJO' and identificac_geper is not null"));
 	set_peticionario.getTab_seleccion().ejecutarSql();
 	set_peticionario.dibujar();
 	
