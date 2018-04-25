@@ -25,7 +25,7 @@ import sistema.aplicacion.Pantalla;
 public class Adquisiciones extends Pantalla {
 
     private Tabla tab_adquisiones = new Tabla();
-    private Tabla tab_certificacion = new Tabla();
+    //private Tabla tab_certificacion = new Tabla();
     private Tabla tab_compra_bienes = new Tabla();
     
     private Reporte rep_reporte = new Reporte(); //Listado de Reportes, siempre se llama rep_reporte
@@ -93,7 +93,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleado());
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
-        tab_adquisiones.agregarRelacion(tab_certificacion);
+//        tab_adquisiones.agregarRelacion(tab_certificacion);
         tab_adquisiones.agregarRelacion(tab_compra_bienes);
         tab_adquisiones.setTipoFormulario(true);
         tab_adquisiones.getGrid().setColumns(6);
@@ -180,6 +180,7 @@ public class Adquisiciones extends Pantalla {
         pat_adquisiciones.setId("pat_adquisiciones");
         pat_adquisiciones.setPanelTabla(tab_adquisiones);
 
+        /*
         tab_certificacion.setId("tab_certificacion");
         tab_certificacion.setIdCompleto("tab_tabulador:tab_certificacion");
         tab_certificacion.setTabla("ADQ_CERTIFICACION", "IDE_ADCERT", 2);
@@ -198,14 +199,15 @@ public class Adquisiciones extends Pantalla {
         PanelTabla pat_panel_certificacion = new PanelTabla();
         pat_panel_certificacion.setId("pat_panel_certificacion");
         pat_panel_certificacion.setPanelTabla(tab_certificacion);
-
+*/
         tab_compra_bienes.setId("tab_compra_bienes");
         tab_compra_bienes.setIdCompleto("tab_tabulador:tab_compra_bienes");
         tab_compra_bienes.setTabla("ADQ_COMPRA_BIENES", "IDE_ADCOBI", 3);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setCombo(ser_adquisiciones.getMaterial("0","0"));
+        tab_compra_bienes.getColumna("IDE_INARTI").setCombo(ser_adquisiciones.getMaterial("0","0"));
         tab_compra_bienes.getColumna("IDE_ADCOBI").setNombreVisual("CODIGO");
-        tab_compra_bienes.getColumna("IDE_ADMATE").setNombreVisual("MATERIAL");
+        tab_compra_bienes.getColumna("IDE_INARTI").setNombreVisual("ARTICULO");
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
+        tab_compra_bienes.getColumna("ESPECIFICACIONES_ADCOBI").setNombreVisual("ESPECIFICACIONES");
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setNombreVisual("VALOR UNITARIO");
         tab_compra_bienes.getColumna("DECUENTO_ADCOBI").setNombreVisual("DESCUENTO");
         tab_compra_bienes.getColumna("PORCENTAJE_DESCUENTO_ADCOBI").setNombreVisual("PORCENTAJE DESCUENTO");
@@ -215,7 +217,7 @@ public class Adquisiciones extends Pantalla {
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
 
         tab_compra_bienes.getColumna("IDE_ADCOBI").setOrden(1);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setOrden(2);
+        tab_compra_bienes.getColumna("IDE_INARTI").setOrden(2);
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setOrden(3);        
         
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setVisible(false);
@@ -238,12 +240,12 @@ public class Adquisiciones extends Pantalla {
         pat_panel_compra_bienes.setId("pat_panel_compra_bienes");
         pat_panel_compra_bienes.setPanelTabla(tab_compra_bienes);
 
-        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
-        tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
+//        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
+  //      tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
 
         Division div_adquisiciones = new Division();
         div_adquisiciones.setId("div_adquisiciones");
-        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "70%", "H");
+        div_adquisiciones.dividir2(pat_adquisiciones, pat_panel_compra_bienes, "70%", "H");
         agregarComponente(div_adquisiciones);
         
         sel_rep.setId("sel_rep");
@@ -326,9 +328,9 @@ public class Adquisiciones extends Pantalla {
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.insertar();
-        } else if (tab_certificacion.isFocus()) {
+        } /*else if (tab_certificacion.isFocus()) {
             tab_certificacion.insertar();
-        } else if (tab_compra_bienes.isFocus()) {
+        }*/ else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.insertar();
         }
     }
@@ -337,9 +339,9 @@ public class Adquisiciones extends Pantalla {
     public void guardar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.guardar();
-        } else if (tab_certificacion.isFocus()) {
+        } /*else if (tab_certificacion.isFocus()) {
             tab_certificacion.guardar();
-        } else if (tab_compra_bienes.isFocus()) {
+        }*/ else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.guardar();
         }
         guardarPantalla();
@@ -349,9 +351,9 @@ public class Adquisiciones extends Pantalla {
     public void eliminar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.eliminar();
-        } else if (tab_certificacion.isFocus()) {
+        } /*else if (tab_certificacion.isFocus()) {
             tab_certificacion.eliminar();
-        } else if (tab_compra_bienes.isFocus()) {
+        } */else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.eliminar();
         }
     }
@@ -364,13 +366,13 @@ public class Adquisiciones extends Pantalla {
         this.tab_adquisiones = tab_adquisiones;
     }
 
-    public Tabla getTab_certificacion() {
+   /* public Tabla getTab_certificacion() {
         return tab_certificacion;
     }
 
     public void setTab_certificacion(Tabla tab_certificacion) {
         this.tab_certificacion = tab_certificacion;
-    }
+    }*/
 
     public Tabla getTab_compra_bienes() {
         return tab_compra_bienes;
