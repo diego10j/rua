@@ -16,7 +16,7 @@ import sistema.aplicacion.Pantalla;
 
 public class AreaAdministrativa extends Pantalla{
     private Tabla tab_area_administrativa = new Tabla();
-    private Tabla tab_area_partida = new Tabla();
+   // private Tabla tab_area_partida = new Tabla();
     private Arbol arb_area = new Arbol();
     
     @EJB
@@ -29,7 +29,7 @@ public class AreaAdministrativa extends Pantalla{
        tab_area_administrativa.setCampoPadre("ADQ_IDE_ADARAD"); //aqui va el nombre del campo recirsivo
        tab_area_administrativa.setCampoNombre("detalle_adarad"); // aqui va el nombre de loq ue queremos que visualice en el arbol
        tab_area_administrativa.agregarArbol(arb_area);
-       tab_area_administrativa.agregarRelacion(tab_area_partida);
+//       tab_area_administrativa.agregarRelacion(tab_area_partida);
        tab_area_administrativa.getColumna("ide_adtiar").setCombo(ser_adquisiciones.getTipoArea());
        tab_area_administrativa.getColumna("IDE_ADARAD").setNombreVisual("CODIGO");
        tab_area_administrativa.getColumna("IDE_ADTIAR").setNombreVisual("TIPO DE AREA");
@@ -41,7 +41,7 @@ public class AreaAdministrativa extends Pantalla{
       pat_area_administrativa.setId("pat_area_administrativa");
       pat_area_administrativa.setPanelTabla(tab_area_administrativa);
       
-       tab_area_partida.setId("tab_area_partida");   //identificador
+/*       tab_area_partida.setId("tab_area_partida");   //identificador
        tab_area_partida.setTabla("adq_area_partida", "ide_adarpa", 1); 
        tab_area_partida.getColumna("ide_adpapr").setCombo(ser_adquisiciones.getPartidaPresupuestaria());
        tab_area_partida.getColumna("IDE_ADARPA").setNombreVisual("CODIGO");
@@ -50,14 +50,14 @@ public class AreaAdministrativa extends Pantalla{
        tab_area_partida.dibujar();
        PanelTabla pat_area_partida = new PanelTabla();
       pat_area_partida.setId("pat_area_partida");
-      pat_area_partida.setPanelTabla(tab_area_partida);
+      pat_area_partida.setPanelTabla(tab_area_partida);*/
       
       arb_area.setId("arb_area");
       arb_area.dibujar();
       Division div_area_administrativa = new Division();
       div_area_administrativa.setId("div_area_administrativa");
       Division div_arbol= new Division();
-      div_arbol.dividir2(pat_area_administrativa,pat_area_partida,"50%","H");
+      div_arbol.dividir1(pat_area_administrativa);
       div_area_administrativa.dividir2(arb_area,div_arbol,"20%","V");
       
       // agregarComponente(div_arbol);
@@ -69,9 +69,9 @@ public class AreaAdministrativa extends Pantalla{
         if(tab_area_administrativa.isFocus()){
        tab_area_administrativa.insertar();
         }
-        else if (tab_area_partida.isFocus()){
+       /* else if (tab_area_partida.isFocus()){
             tab_area_partida.insertar();
-        }
+        }*/
     }
 
     @Override
@@ -79,9 +79,9 @@ public class AreaAdministrativa extends Pantalla{
         if(tab_area_administrativa.isFocus()){
        tab_area_administrativa.guardar();
         }
-        else if (tab_area_partida.isFocus()){
+/*        else if (tab_area_partida.isFocus()){
             tab_area_partida.guardar();
-        }
+        }*/
         guardarPantalla();
     }
 
@@ -90,9 +90,9 @@ public class AreaAdministrativa extends Pantalla{
        if(tab_area_administrativa.isFocus()){
        tab_area_administrativa.eliminar();
         }
-        else if (tab_area_partida.isFocus()){
+      /*  else if (tab_area_partida.isFocus()){
             tab_area_partida.eliminar();
-        }
+        }*/
     }
 
     public Tabla getTab_area_administrativa() {
@@ -111,12 +111,12 @@ public class AreaAdministrativa extends Pantalla{
         this.arb_area = arb_area;
     }
 
-    public Tabla getTab_area_partida() {
+    /*public Tabla getTab_area_partida() {
         return tab_area_partida;
     }
 
     public void setTab_area_partida(Tabla tab_area_partida) {
         this.tab_area_partida = tab_area_partida;
-    }
+    }*/
     
 }
