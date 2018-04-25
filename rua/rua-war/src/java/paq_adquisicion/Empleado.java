@@ -42,7 +42,7 @@ public class Empleado extends Pantalla {
         tab_empleado.setId("tab_empleado");   //identificador
         tab_empleado.setTabla("adq_empleado", "ide_ademple", 1);
         tab_empleado.getColumna("IDE_ADTIDE").setCombo(ser_adquisiciones.getTipoDenominacion());
-        tab_empleado.getColumna("IDE_USUA").setCombo(ser_adquisiciones.getUsuario("1"));
+        tab_empleado.getColumna("IDE_USUA").setCombo(ser_adquisiciones.getUsuario("TRUE"));
         tab_empleado.getColumna("IDE_USUA").setAutoCompletar();
         tab_empleado.getColumna("IDE_ADEMPLE").setNombreVisual("CODIGO");
         tab_empleado.getColumna("IDE_ADTIDE").setNombreVisual("DENOMINACION");
