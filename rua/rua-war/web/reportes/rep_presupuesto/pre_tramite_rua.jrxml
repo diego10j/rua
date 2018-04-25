@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="80"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_prcer" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -18,14 +18,20 @@
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prtra,fecha_tramite_prtra,a.ide_geedp,empleado_responsable,codigo_clasificador_prcla,detalle_actividad,detalle_subactividad,detalle_prfuf,comprometido_prpot,elaborado,observaciones_prtra
+		<![CDATA[
+select a.ide_prtra,fecha_tramite_prtra,a.ide_geedp,cod_programa_prpro,empleado_responsable,codigo_clasificador_prcla,detalle_actividad,detalle_subactividad,detalle_prfuf,comprometido_prpot,elaborado,observaciones_prtra
 from pre_tramite a
 left join
 (
-select apellido_paterno_gtemp||' '||(case when apellido_materno_gtemp is null then '' else apellido_materno_gtemp end)||' '||primer_nombre_gtemp ||' '||
-(case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as empleado_responsable,ide_geedp,apellido_paterno_gtemp||' '||primer_nombre_gtemp as elaborado
-from gth_empleado a, gen_empleados_departamento_par b where a.ide_gtemp = b.ide_gtemp
+select ide_geper as ide_geedp ,nom_geper as empleado_responsable,identificac_geper
+from gen_persona
 ) b on a.ide_geedp = b.ide_geedp
+left join
+(
+select ide_gtemp,apellido_paterno_gtemp||' '||primer_nombre_gtemp as elaborado
+from gth_empleado a
+
+) bb on a.ide_gtemp = bb.ide_gtemp
 left join pre_poa_tramite c on a.ide_prtra = c.ide_prtra
 left join (
 
@@ -64,6 +70,9 @@ order by codigo_clasificador_prcla]]>
 	</field>
 	<field name="ide_geedp" class="java.lang.Long">
 		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="cod_programa_prpro" class="java.lang.String">
+		<fieldDescription><![CDATA[cod_programa_prpro]]></fieldDescription>
 	</field>
 	<field name="empleado_responsable" class="java.lang.String"/>
 	<field name="codigo_clasificador_prcla" class="java.lang.String">
@@ -125,7 +134,7 @@ order by codigo_clasificador_prcla]]>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Responsable:]]></text>
+				<text><![CDATA[Acreedor:]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="7a2fa8ac-a62e-4804-9e69-35a29464b032" x="74" y="42" width="481" height="37"/>
@@ -164,7 +173,7 @@ order by codigo_clasificador_prcla]]>
 				<text><![CDATA[Sub-Actividad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="75" y="80" width="100" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="117" y="80" width="100" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -214,11 +223,11 @@ order by codigo_clasificador_prcla]]>
 	<detail>
 		<band height="17" splitType="Stretch">
 			<textField>
-				<reportElement uuid="379dcbdd-2f50-491a-915f-37c293d7a178" x="2" y="2" width="73" height="15"/>
+				<reportElement uuid="379dcbdd-2f50-491a-915f-37c293d7a178" x="2" y="2" width="114" height="15"/>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cod_programa_prpro}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="4867c499-e3f6-4efa-bcb5-92639bf02723" x="374" y="2" width="104" height="15"/>
@@ -228,7 +237,7 @@ order by codigo_clasificador_prcla]]>
 				<textFieldExpression><![CDATA[$F{detalle_prfuf}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="2841f365-9d91-466f-a1bc-30aaa450fd6b" x="76" y="2" width="142" height="15"/>
+				<reportElement uuid="2841f365-9d91-466f-a1bc-30aaa450fd6b" x="116" y="2" width="102" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
@@ -307,7 +316,7 @@ order by codigo_clasificador_prcla]]>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Solicitado por:]]></text>
+				<text><![CDATA[Responsable de:]]></text>
 			</staticText>
 		</band>
 	</summary>
