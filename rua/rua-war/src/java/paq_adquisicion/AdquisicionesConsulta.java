@@ -64,12 +64,12 @@ public class AdquisicionesConsulta extends Pantalla {
         tabConsulta.setLectura(true);
         tabConsulta.dibujar();
 
-        autBusca.setId("autBusca");
+       /* autBusca.setId("autBusca");
         autBusca.setAutoCompletar("SELECT c.IDE_ADCOMP,c.NUMERO_ORDEN_ADCOMP,r.PARTIDA_ADCERT,c.FECHA_INGRE\n"
                 + "FROM dbo.ADQ_COMPRA as c\n"
                 + "INNER JOIN dbo.ADQ_CERTIFICACION r ON r.IDE_ADCOMP = c.IDE_ADCOMP\n"
                 + "order by c.FECHA_INGRE desc");
-        autBusca.setSize(70);
+        autBusca.setSize(70);*/
 
         Boton bot_agregar_solicitante = new Boton();
 
@@ -98,7 +98,7 @@ public class AdquisicionesConsulta extends Pantalla {
         panOpcion1.setHeader("SOLICITUD DE ORDENES DE PAGO");
         agregarComponente(panOpcion1);
 
-        setRegistro.setId("setRegistro");
+      /*  setRegistro.setId("setRegistro");
         setRegistro.setSeleccionTabla("SELECT DISTINCT top 50 c.IDE_ADCOMP,c.NUMERO_ORDEN_ADCOMP,\n"
                 + "(select STUFF(\n"
                 + "(SELECT CAST(';' AS varchar(MAX)) + PARTIDA_ADCERT\n"
@@ -117,7 +117,7 @@ public class AdquisicionesConsulta extends Pantalla {
         setRegistro.setRadio();
         setRegistro.getTab_seleccion().setRows(10);
         setRegistro.getBot_aceptar().setMetodo("cargarRegistro");
-        agregarComponente(setRegistro);
+        agregarComponente(setRegistro);*/
 
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
@@ -254,7 +254,7 @@ public class AdquisicionesConsulta extends Pantalla {
         pat_adquisiciones.setId("pat_adquisiciones");
         pat_adquisiciones.setPanelTabla(tab_adquisiones);
 
-        tab_certificacion.setId("tab_certificacion");
+       /* tab_certificacion.setId("tab_certificacion");
         tab_certificacion.setIdCompleto("tab_tabulador:tab_certificacion");
         tab_certificacion.setTabla("ADQ_CERTIFICACION", "IDE_ADCERT", 2);
         List lista3 = new ArrayList();
@@ -272,14 +272,14 @@ public class AdquisicionesConsulta extends Pantalla {
         tab_certificacion.dibujar();
         PanelTabla pat_panel_certificacion = new PanelTabla();
         pat_panel_certificacion.setId("pat_panel_certificacion");
-        pat_panel_certificacion.setPanelTabla(tab_certificacion);
+        pat_panel_certificacion.setPanelTabla(tab_certificacion);*/
 
         tab_compra_bienes.setId("tab_compra_bienes");
         tab_compra_bienes.setIdCompleto("tab_tabulador:tab_compra_bienes");
         tab_compra_bienes.setTabla("ADQ_COMPRA_BIENES", "IDE_ADCOBI", 3);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setCombo(ser_adquisiciones.getMaterial("0", "0"));
+        tab_compra_bienes.getColumna("IDE_INARTI").setCombo(ser_adquisiciones.getMaterial("0", "0"));
         tab_compra_bienes.getColumna("IDE_ADCOBI").setNombreVisual("CODIGO");
-        tab_compra_bienes.getColumna("IDE_ADMATE").setNombreVisual("MATERIAL");
+        tab_compra_bienes.getColumna("IDE_INARTI").setNombreVisual("ARTICULO");
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setNombreVisual("VALOR UNITARIO");
         tab_compra_bienes.getColumna("DECUENTO_ADCOBI").setNombreVisual("DESCUENTO");
@@ -290,7 +290,7 @@ public class AdquisicionesConsulta extends Pantalla {
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
 
         tab_compra_bienes.getColumna("IDE_ADCOBI").setOrden(1);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setOrden(2);
+        tab_compra_bienes.getColumna("IDE_INARTI").setOrden(2);
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setOrden(3);
 
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setVisible(false);
@@ -314,12 +314,12 @@ public class AdquisicionesConsulta extends Pantalla {
         pat_panel_compra_bienes.setId("pat_panel_compra_bienes");
         pat_panel_compra_bienes.setPanelTabla(tab_compra_bienes);
 
-        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
-        tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
+        /*tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
+        tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);*/
 
         Division div_adquisiciones = new Division();
         div_adquisiciones.setId("div_adquisiciones");
-        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "70%", "H");
+        div_adquisiciones.dividir2(pat_adquisiciones, pat_panel_compra_bienes, "70%", "H");
         Grupo gru = new Grupo();
         gru.getChildren().add(div_adquisiciones);
         panOpcion1.getChildren().add(gru);
