@@ -69,12 +69,7 @@ public class ServiciosAdquisiones {
 
     public String getMaterial(String tipo, String tipo_compra) {
 
-        String sql = "select IDE_ADMATE,CODIGO_ADMATE,DETALLE_ADMATE\n"
-                + "from ADQ_MATERIAL ";
-        if (tipo.equals("1")) {
-            sql += " where tipo_bien_admate in (" + tipo_compra + ") ";
-        }
-        sql += " order by CODIGO_ADMATE";
+        String sql = "select ide_inarti, codigo_inarti, nombre_inarti from  inv_articulo order by codigo_inarti ";
         return sql;
     }
 
