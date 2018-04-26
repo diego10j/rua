@@ -19,8 +19,8 @@ public class TipoDenominacion extends Pantalla{
     public TipoDenominacion (){
        tab_tipo_denominacion.setId("tab_tipo_denominacion");   //identificador
        tab_tipo_denominacion.setTabla("adq_tipo_denominacion", "ide_adtide", 1);
-       tab_tipo_denominacion.getColumna("IDE_ADTIDE").setNombreVisual("CODIGO");
-       tab_tipo_denominacion.getColumna("DETALLE_ADTIDE").setNombreVisual("DETALLE");
+       /*tab_tipo_denominacion.getColumna("IDE_ADTIDE").setNombreVisual("CODIGO");
+       tab_tipo_denominacion.getColumna("DETALLE_ADTIDE").setNombreVisual("DETALLE");*/
        tab_tipo_denominacion.dibujar();     
        
       PanelTabla pat_tipo_denominacion = new PanelTabla();
