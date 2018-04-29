@@ -68,7 +68,7 @@ public class AdquisicionesBodega extends Pantalla {
         tabConsulta.setCampoPrimaria("IDE_USUA");
         tabConsulta.setLectura(true);
         tabConsulta.dibujar();
- if (tienePerfilSecretaria()) {          
+ //if (tienePerfilSecretaria()) {          
          
              Boton bot_aprobar = new Boton();
     
@@ -228,7 +228,7 @@ public class AdquisicionesBodega extends Pantalla {
         pat_adquisiciones.setId("pat_adquisiciones");
         pat_adquisiciones.setPanelTabla(tab_adquisiones);
 
-        tab_certificacion.setId("tab_certificacion");
+       /* tab_certificacion.setId("tab_certificacion");
         tab_certificacion.setIdCompleto("tab_tabulador:tab_certificacion");
         tab_certificacion.setTabla("ADQ_CERTIFICACION", "IDE_ADCERT", 2);
         List lista3 = new ArrayList();
@@ -246,14 +246,14 @@ public class AdquisicionesBodega extends Pantalla {
         tab_certificacion.dibujar();
         PanelTabla pat_panel_certificacion = new PanelTabla();
         pat_panel_certificacion.setId("pat_panel_certificacion");
-        pat_panel_certificacion.setPanelTabla(tab_certificacion);
+        pat_panel_certificacion.setPanelTabla(tab_certificacion);*/
 
         tab_compra_bienes.setId("tab_compra_bienes");
         tab_compra_bienes.setIdCompleto("tab_tabulador:tab_compra_bienes");
         tab_compra_bienes.setTabla("ADQ_COMPRA_BIENES", "IDE_ADCOBI", 3);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setCombo(ser_adquisiciones.getMaterial("0","0"));
+        tab_compra_bienes.getColumna("IDE_INARTI").setCombo(ser_adquisiciones.getMaterial("0","0"));
         tab_compra_bienes.getColumna("IDE_ADCOBI").setNombreVisual("CODIGO");
-        tab_compra_bienes.getColumna("IDE_ADMATE").setNombreVisual("MATERIAL");
+        tab_compra_bienes.getColumna("IDE_INARTI").setNombreVisual("MATERIAL");
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setNombreVisual("VALOR UNITARIO");
         tab_compra_bienes.getColumna("DECUENTO_ADCOBI").setNombreVisual("DESCUENTO");
@@ -269,9 +269,9 @@ public class AdquisicionesBodega extends Pantalla {
         tab_compra_bienes.getColumna("TOTAL_ADCOBI").setVisible(false);
         tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setVisible(false);
          tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setValorDefecto("0");
-        tab_compra_bienes.getColumna("IDE_ADMATE").setLongitud(250);
+        tab_compra_bienes.getColumna("IDE_INARTI").setLongitud(250);
         tab_compra_bienes.getColumna("IDE_ADCOBI").setOrden(1);
-        tab_compra_bienes.getColumna("IDE_ADMATE").setOrden(2);
+        tab_compra_bienes.getColumna("IDE_INARTI").setOrden(2);
         tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setOrden(3);           
          
         tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setValorDefecto("0");
@@ -286,12 +286,12 @@ public class AdquisicionesBodega extends Pantalla {
         pat_panel_compra_bienes.setId("pat_panel_compra_bienes");
         pat_panel_compra_bienes.setPanelTabla(tab_compra_bienes);
 
-        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
-        tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
+//        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
+  //      tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
 
         Division div_adquisiciones = new Division();
         div_adquisiciones.setId("div_adquisiciones");
-        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "60%", "H");
+        div_adquisiciones.dividir2(pat_adquisiciones, pat_panel_compra_bienes, "60%", "H");
         agregarComponente(div_adquisiciones);
         
                     con_guardar_aprobado.setId("con_guardar_aprobado");
@@ -299,10 +299,10 @@ public class AdquisicionesBodega extends Pantalla {
             
                     con_guardar_anulado.setId("con_guardar_anulado");
             agregarComponente(con_guardar_anulado);  
-            filtroDireccion();
- } else {
-            utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de Solicitudes de Compra. Consulte con el Administrador");
-        }    
+          //  filtroDireccion();
+ //} else {
+ //           utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de Solicitudes de Compra. Consulte con el Administrador");
+ //       }    
     }
      String empleado="";
      String cedula="";
@@ -338,7 +338,7 @@ public void aprobarAnulado(){
 public void guardarAnulado(){
     
     tab_adquisiones.setValor("IDE_ADAPRO", par_anulado);
-    tab_adquisiones.setValor("ADQ_IDE_ADEMDE2", ide_ademple);
+//    tab_adquisiones.setValor("ADQ_IDE_ADEMDE2", ide_ademple);
     
     tab_adquisiones.modificar(tab_adquisiones.getFilaActual());
 
@@ -367,7 +367,7 @@ public void aprobarSolicitud(){
 public void guardarAprobacion(){
     
     tab_adquisiones.setValor("ATIENDE_BODEGA_ADCOMP", "true");
-    tab_adquisiones.setValor("ADQ_IDE_ADEMDE2", ide_ademple);
+//    tab_adquisiones.setValor("ADQ_IDE_ADEMDE2", ide_ademple);
     tab_adquisiones.setValor("APLICA_ADCOMP", "true");
     
     TablaGenerica tab_materiales = utilitario.consultar(ser_adquisiciones.getMateriales(tab_adquisiones.getValor("ide_adcomp")));
@@ -408,7 +408,7 @@ public void guardarAprobacion(){
         } else {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.insertar();
-            tab_adquisiones.setValor("IDE_ADEMDE", ide_ademple);
+//            tab_adquisiones.setValor("IDE_ADEMDE", ide_ademple);
             tab_adquisiones.setValor("IDE_ADARAD",com_direccion.getValue().toString());
         } else if (tab_certificacion.isFocus()) {
             tab_certificacion.insertar();

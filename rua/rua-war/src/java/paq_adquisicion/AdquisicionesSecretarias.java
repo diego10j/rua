@@ -69,8 +69,8 @@ public class AdquisicionesSecretarias extends Pantalla {
         /*
          * Cadena de conexión base de datos
          */
-        conOracle.setUnidad_persistencia(utilitario.getPropiedad("oraclejdbc"));
-        conOracle.NOMBRE_MARCA_BASE = "oracle";
+       // conOracle.setUnidad_persistencia(utilitario.getPropiedad("oraclejdbc"));
+        //conOracle.NOMBRE_MARCA_BASE = "oracle";
 
         String fecha;
 
@@ -80,8 +80,8 @@ public class AdquisicionesSecretarias extends Pantalla {
             fecha = "0" + String.valueOf((utilitario.getMes(utilitario.getFechaActual())));
         }
 
-        sel_tabla_certificado.setId("sel_tabla_certificado");
-        sel_tabla_certificado.getTab_seleccion().setConexion(conOracle);
+       // sel_tabla_certificado.setId("sel_tabla_certificado");
+        /*sel_tabla_certificado.getTab_seleccion().setConexion(conOracle);
         sel_tabla_certificado.setSeleccionTabla("select DISTINCT CONCAT(CONCAT(CONCAT(CONCAT(cedtmc,'-'),NDOCDC),'-'),AUAD01) as id, NDOCDC as Certificado,cedtmc as partida,AUAD02,MONTDT as Valor,AUAD01 as Proyecto\n"
                 + "from USFIMRU.TIGSA_GLB01 \n"
                 + "inner join USFIMRU.PRCO01 on  CUENDT = CUENDC and AUAD02 = AUA2DC\n"
@@ -93,15 +93,15 @@ public class AdquisicionesSecretarias extends Pantalla {
                 + "AND AUAD02 is not null \n"
                 + "AND ANIODC =" + utilitario.getAnio(utilitario.getFechaActual()) + "\n"
                 + "AND TIPLMC= 'R'\n"
-                + "AND substr(FDOCDT,1,5) <= 1" + String.valueOf((utilitario.getAnio(utilitario.getFechaActual()))).substring(2, 4) + "" + fecha + "", "id");
-        sel_tabla_certificado.getTab_seleccion().getColumna("Certificado").setFiltro(true);
-        sel_tabla_certificado.getTab_seleccion().getColumna("partida").setFiltro(true);
+                + "AND substr(FDOCDT,1,5) <= 1" + String.valueOf((utilitario.getAnio(utilitario.getFechaActual()))).substring(2, 4) + "" + fecha + "", "id");*/
+      //  sel_tabla_certificado.getTab_seleccion().getColumna("Certificado").setFiltro(true);
+       // sel_tabla_certificado.getTab_seleccion().getColumna("partida").setFiltro(true);
         sel_tabla_certificado.setRadio();
-        sel_tabla_certificado.getBot_aceptar().setMetodo("filtraDatos");
+        //sel_tabla_certificado.getBot_aceptar().setMetodo("filtraDatos");
         sel_tabla_certificado.setHeader("CERTIFICACIONES Y PROYECTOS");
         agregarComponente(sel_tabla_certificado);
 
-        if (tienePerfilSecretaria()) {
+       // if (tienePerfilSecretaria()) {
             Boton bot_agregar_solicitante = new Boton();
 
             rep_reporte.setId("rep_reporte");
@@ -111,10 +111,10 @@ public class AdquisicionesSecretarias extends Pantalla {
             agregarComponente(sel_rep);
 
             com_direccion.setId("com_direccion");
-            com_direccion.setCombo(ser_adquisiciones.getAreaAdministrativa("1", ide_ademple));
+          //  com_direccion.setCombo(ser_adquisiciones.getAreaAdministrativa("1", ide_ademple));
             agregarComponente(com_direccion);
             bar_botones.agregarComponente(com_direccion);
-            com_direccion.setMetodo("filtroDireccion");
+          //  com_direccion.setMetodo("filtroDireccion");
 
             Tabulador tab_tabulador = new Tabulador();
             tab_tabulador.setId("tab_tabulador");
@@ -150,7 +150,7 @@ public class AdquisicionesSecretarias extends Pantalla {
             tab_adquisiones.getColumna("IDE_ADEMDE").setLectura(true);
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3", "1", "1", "1"));
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3", "1", "1", "1"));
-            tab_adquisiones.getColumna("PRUEBA_DIRECTOR_ADCOMP").setValorDefecto("0");
+            tab_adquisiones.getColumna("APRUEBA_DIRECTOR_ADCOMP").setValorDefecto("0");
             tab_adquisiones.getColumna("ATIENDE_BODEGA_ADCOMP").setValorDefecto("0");
             tab_adquisiones.getColumna("APRUEBA_GASTO_ADCOMP").setValorDefecto("0");
             tab_adquisiones.getColumna("REGISTRA_COMPRAS_ADCOMP").setValorDefecto("0");
@@ -240,7 +240,7 @@ public class AdquisicionesSecretarias extends Pantalla {
             tab_adquisiones.getColumna("IDE_ADEMPLE").setVisible(false);
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setVisible(false);
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setVisible(false);
-            tab_adquisiones.getColumna("PRUEBA_DIRECTOR_ADCOMP").setVisible(false);
+            tab_adquisiones.getColumna("APRUEBA_DIRECTOR_ADCOMP").setVisible(false);
             tab_adquisiones.getColumna("ATIENDE_BODEGA_ADCOMP").setVisible(false);
             tab_adquisiones.getColumna("APRUEBA_GASTO_ADCOMP").setVisible(false);
             tab_adquisiones.getColumna("REGISTRA_COMPRAS_ADCOMP").setVisible(false);
@@ -250,7 +250,7 @@ public class AdquisicionesSecretarias extends Pantalla {
             pat_adquisiciones.setId("pat_adquisiciones");
             pat_adquisiciones.setPanelTabla(tab_adquisiones);
 
-            tab_certificacion.setId("tab_certificacion");
+          /*  tab_certificacion.setId("tab_certificacion");
             tab_certificacion.setIdCompleto("tab_tabulador:tab_certificacion");
             tab_certificacion.setTabla("ADQ_CERTIFICACION", "IDE_ADCERT", 2);
             List lista3 = new ArrayList();
@@ -264,7 +264,7 @@ public class AdquisicionesSecretarias extends Pantalla {
             tab_certificacion.getColumna("TIPO_DOCUMENTO_ADCERT").setNombreVisual("TIPO DOCUMENTO");
             tab_certificacion.getColumna("NRO_CERTIFICACION_ADCERT").setNombreVisual("NUMERO CERTIFICACION");
             tab_certificacion.getColumna("PARTIDA_ADCERT").setNombreVisual("PARTIDA");
-            tab_certificacion.dibujar();
+            tab_certificacion.dibujar();*/
 
             Grid gri_certificacion = new Grid();
             gri_certificacion.setColumns(3);
@@ -288,18 +288,18 @@ public class AdquisicionesSecretarias extends Pantalla {
             gri_certificacion.getChildren().add(bot_save_certificacion);
             gri_certificacion.getChildren().add(bot_delete_certificacion);
 
-            PanelTabla pat_panel_certificacion = new PanelTabla();
+            /*PanelTabla pat_panel_certificacion = new PanelTabla();
             pat_panel_certificacion.setId("pat_panel_certificacion");
             pat_panel_certificacion.getChildren().add(gri_certificacion);
-            pat_panel_certificacion.setPanelTabla(tab_certificacion);
+            pat_panel_certificacion.setPanelTabla(tab_certificacion);*/
 
             tab_compra_bienes.setId("tab_compra_bienes");
             tab_compra_bienes.setIdCompleto("tab_tabulador:tab_compra_bienes");
             tab_compra_bienes.setTabla("ADQ_COMPRA_BIENES", "IDE_ADCOBI", 3);
-            tab_compra_bienes.getColumna("IDE_ADMATE").setCombo(ser_adquisiciones.getMaterial("0", "0"));
-            tab_compra_bienes.getColumna("IDE_ADMATE").setAutoCompletar();
+            tab_compra_bienes.getColumna("IDE_INARTI").setCombo(ser_adquisiciones.getMaterial("0", "0"));
+            tab_compra_bienes.getColumna("IDE_INARTI").setAutoCompletar();
             tab_compra_bienes.getColumna("IDE_ADCOBI").setNombreVisual("CODIGO");
-            tab_compra_bienes.getColumna("IDE_ADMATE").setNombreVisual("MATERIAL");
+            tab_compra_bienes.getColumna("IDE_INARTI").setNombreVisual("MATERIAL");
             tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setNombreVisual("CANTIDAD");
             tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setNombreVisual("VALOR UNITARIO");
             tab_compra_bienes.getColumna("DECUENTO_ADCOBI").setNombreVisual("DESCUENTO");
@@ -316,10 +316,10 @@ public class AdquisicionesSecretarias extends Pantalla {
             tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setVisible(false);
             tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setValorDefecto("0");
 
-            tab_compra_bienes.getColumna("IDE_ADMATE").setLectura(true);
+            tab_compra_bienes.getColumna("IDE_INARTI").setLectura(true);
 
             tab_compra_bienes.getColumna("IDE_ADCOBI").setOrden(1);
-            tab_compra_bienes.getColumna("IDE_ADMATE").setOrden(2);
+            tab_compra_bienes.getColumna("IDE_INARTI").setOrden(2);
             tab_compra_bienes.getColumna("CANTIDAD_ADCOBI").setOrden(3);
 
             tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setValorDefecto("0");
@@ -356,18 +356,18 @@ public class AdquisicionesSecretarias extends Pantalla {
             pat_panel_compra_bienes.getChildren().add(gri_compra_bienes);
             pat_panel_compra_bienes.setPanelTabla(tab_compra_bienes);
 
-            tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
-            tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
+          //  tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
+           // tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
 
             Division div_adquisiciones = new Division();
             div_adquisiciones.setId("div_adquisiciones");
-            div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "50%", "H");
+            div_adquisiciones.dividir2(pat_adquisiciones, pat_panel_compra_bienes, "50%", "H");
             agregarComponente(div_adquisiciones);
 
             sel_tabla_material.setId("sel_tabla_material");
             sel_tabla_material.setTitle("MATERIAL DE BODEGA");
-            sel_tabla_material.setSeleccionTabla(ser_adquisiciones.getMaterial("1", "-1"), "IDE_ADMATE");
-            sel_tabla_material.getTab_seleccion().getColumna("DETALLE_ADMATE").setFiltroContenido();
+            sel_tabla_material.setSeleccionTabla(ser_adquisiciones.getMaterial("1", "-1"), "IDE_INARTI");
+            sel_tabla_material.getTab_seleccion().getColumna("NOMBRE_INARTI").setFiltroContenido();
             sel_tabla_material.setWidth("80%");
             sel_tabla_material.setHeight("70%");
             sel_tabla_material.setRadio();
@@ -376,13 +376,13 @@ public class AdquisicionesSecretarias extends Pantalla {
 
             Boton bot_sel_material = new Boton();
             bot_sel_material.setValue("SELECCIONAR MATERIAL");
-            bot_sel_material.setMetodo("seleccionarMaterial");
+           // bot_sel_material.setMetodo("seleccionarMaterial");
             bar_botones.agregarBoton(bot_sel_material);
-            bot_sel_material.setMetodo("seleccionarMaterial");
+            //bot_sel_material.setMetodo("seleccionarMaterial");
 
-        } else {
-            utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de Solicitudes de Compra. Consulte con el Administrador");
-        }
+      //  } else {
+        //    utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de Solicitudes de Compra. Consulte con el Administrador");
+        //}
     }
     String empleado = "";
     String cedula = "";
@@ -436,7 +436,7 @@ public class AdquisicionesSecretarias extends Pantalla {
 
     public void filtroDireccion() {
 
-        tab_adquisiones.setCondicion("IDE_ADARAD=" + com_direccion.getValue().toString() + " and IDE_ADEMDE=" + ide_ademple + " and PRUEBA_DIRECTOR_ADCOMP =0 ");
+        tab_adquisiones.setCondicion("IDE_ADARAD=" + com_direccion.getValue().toString() + " and IDE_ADEMDE=" + ide_ademple + " and APRUEBA_DIRECTOR_ADCOMP =0 ");
         tab_adquisiones.ejecutarSql();
         tab_certificacion.ejecutarValorForanea(tab_adquisiones.getValorSeleccionado());
         tab_compra_bienes.ejecutarValorForanea(tab_adquisiones.getValorSeleccionado());
