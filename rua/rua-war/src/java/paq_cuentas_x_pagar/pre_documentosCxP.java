@@ -102,6 +102,8 @@ public class pre_documentosCxP extends Pantalla {
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private Confirmar con_confirma = new Confirmar();
 
+    private SeleccionTabla sel_sucursales = new SeleccionTabla();
+
     public pre_documentosCxP() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.quitarBotonGuardar();
@@ -189,6 +191,12 @@ public class pre_documentosCxP extends Pantalla {
         sel_certificacion.getTab_seleccion().getColumna("detalle_subactividad").setFiltro(true);
         sel_certificacion.getBot_aceptar().setMetodo("aceptarBusqueda");
         agregarComponente(sel_certificacion);
+
+        sel_sucursales.setId("sel_sucursales");
+        sel_sucursales.setTitle("SUCURSALES");
+        sel_sucursales.setSeleccionTabla("select ide_sucu,nom_sucu from sis_sucursal ORDER BY nom_sucu", "ide_sucu");
+        sel_sucursales.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_sucursales);
 
         con_confirma.setId("con_confirma");
         con_confirma.setMessage("Está seguro de Anular el Documento CXP Seleccionado ?");
@@ -674,13 +682,21 @@ public class pre_documentosCxP extends Pantalla {
                 }
 
             }
-        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Compras")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Compras") || rep_reporte.getReporteSelecionado().equals("Reporte de Compras")) {
             if (rep_reporte.isVisible()) {
                 rep_reporte.cerrar();
-                sec_rango_reporte.dibujar();
+                sel_sucursales.dibujar();
+            } else if (sel_sucursales.isVisible()) {
+                if (sel_sucursales.getSeleccionados() != null && sel_sucursales.getSeleccionados().isEmpty() == false) {
+                    parametro = new HashMap();
+                    parametro.put("sucursales", sel_sucursales.getSeleccionados());                    
+                    sel_sucursales.cerrar();
+                    sec_rango_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Seleccione una sucursal", "");
+                }
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.isFechasValidas()) {
-                    parametro = new HashMap();
                     parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
                     parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
                     sec_rango_reporte.cerrar();
@@ -1301,5 +1317,12 @@ public class pre_documentosCxP extends Pantalla {
         this.sec_rango_reporte = sec_rango_reporte;
     }
 
-    
+    public SeleccionTabla getSel_sucursales() {
+        return sel_sucursales;
+    }
+
+    public void setSel_sucursales(SeleccionTabla sel_sucursales) {
+        this.sel_sucursales = sel_sucursales;
+    }
+
 }

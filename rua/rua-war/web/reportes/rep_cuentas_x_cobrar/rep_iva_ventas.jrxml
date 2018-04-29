@@ -16,6 +16,7 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="sucursales" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.ide_cccfa,'FACTURA' as nombre_cntdo,fecha_emisi_cccfa as fecha_emisi_cpcfa,serie_ccdaf|| secuencial_cccfa as numero_cpcfa,
 nom_geper,identificac_geper,total_cccfa as total_cpcfa, base_tarifa0_cccfa as base_tarifa0_cpcfa,base_no_objeto_iva_cccfa as base_no_objeto_iva_cpcfa,
@@ -25,17 +26,16 @@ inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf
 where fecha_emisi_cccfa BETWEEN $P{fecha_inicio} and $P{fecha_fin}
 and ide_ccefa=0
-
+and a.ide_sucu IN ($P!{sucursales})
 UNION
 select a.ide_cpcno,'NOTA DE CRÉDITO' as nombre_cntdo,fecha_emisi_cpcno as fecha_emisi_cpcfa,''||numero_cpcno as numero_cpcfa,
 nom_geper,identificac_geper,-1*0 as total_cpcfa,-1*base_tarifa0_cpcno as base_tarifa0_cpcfa,-1* base_no_objeto_iva_cpcno as base_no_objeto_iva_cpcfa,
 -1*base_grabada_cpcno as base_grabada_cpcfa,-1*valor_iva_cpcno as valor_iva_cpcfa
 from cxp_cabecera_nota a
 inner join gen_persona b on a.ide_geper=b.ide_geper
-
 where fecha_emisi_cpcno BETWEEN $P{fecha_inicio} and $P{fecha_fin}
 and ide_cpeno=1
-
+and a.ide_sucu IN ($P!{sucursales})
 ORDER BY 2,4]]>
 	</queryString>
 	<field name="ide_cccfa" class="java.lang.Long"/>
@@ -185,12 +185,18 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[IVA EN VENTAS]]></text>
+				<text><![CDATA[REPORTE DE VENTAS]]></text>
 			</staticText>
 			<subreport>
 				<reportElement uuid="1c2e8490-f9f0-4673-83e6-cece61fad963" x="8" y="4" width="270" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ide_empr">
 					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>

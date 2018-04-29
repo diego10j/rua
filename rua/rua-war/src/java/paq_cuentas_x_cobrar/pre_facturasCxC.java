@@ -26,6 +26,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
@@ -82,6 +83,7 @@ public class pre_facturasCxC extends Pantalla {
 
     private Retencion ret_retencion = new Retencion();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
+    private SeleccionTabla sel_sucursales = new SeleccionTabla();
 
     public pre_facturasCxC() {
 
@@ -89,8 +91,8 @@ public class pre_facturasCxC extends Pantalla {
         bar_botones.quitarBotonGuardar();
         bar_botones.quitarBotonEliminar();
         bar_botones.agregarReporte();
-        
-                sec_rango_reporte.setId("sec_rango_reporte");
+
+        sec_rango_reporte.setId("sec_rango_reporte");
         sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         sec_rango_reporte.setMultiple(true);
         agregarComponente(sec_rango_reporte);
@@ -158,6 +160,12 @@ public class pre_facturasCxC extends Pantalla {
         ret_retencion.getBot_aceptar().setMetodo("guardar");
         agregarComponente(ret_retencion);
 
+        sel_sucursales.setId("sel_sucursales");
+        sel_sucursales.setTitle("SUCURSALES");
+        sel_sucursales.setSeleccionTabla("select ide_sucu,nom_sucu from sis_sucursal ORDER BY nom_sucu", "ide_sucu");
+        sel_sucursales.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_sucursales);
+
     }
 
     public void dibujarFacturas() {
@@ -190,7 +198,7 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.getColumna("ide_cccfa").setVisible(false);
         tab_tabla.getColumna("ide_ccefa").setVisible(false);
         tab_tabla.getColumna("ide_cncre").setVisible(false);
-        
+
         //tab_tabla.getColumna("nombre_ccefa").setFiltroContenido();
         tab_tabla.getColumna("nombre_ccefa").setVisible(false);
         tab_tabla.getColumna("secuencial_cccfa").setFiltroContenido();
@@ -223,7 +231,7 @@ public class pre_facturasCxC extends Pantalla {
     public void dibujarRetencion() {
         if (tab_tabla.getValor("ide_cccfa") != null) {
             if (tab_tabla.getValor("ide_cncre") == null) {
-                ret_retencion.nuevaRetencionVenta(tab_tabla.getValor("ide_cccfa")); 
+                ret_retencion.nuevaRetencionVenta(tab_tabla.getValor("ide_cccfa"));
                 ret_retencion.dibujar();
             } else {
                 utilitario.agregarMensajeInfo("La Factura seleccionada ya tiene registrado un Comprobante de Retención", "");
@@ -604,13 +612,21 @@ public class pre_facturasCxC extends Pantalla {
                     utilitario.agregarMensajeInfo("Comprobante de Contabilidad", "La factura seleccionada no tiene Comprobante de Contabilidad");
                 }
             }
-        }else if (rep_reporte.getReporteSelecionado().equals("Iva en Ventas")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Ventas")) {
             if (rep_reporte.isVisible()) {
                 rep_reporte.cerrar();
-                sec_rango_reporte.dibujar();
+                sel_sucursales.dibujar();
+            } else if (sel_sucursales.isVisible()) {
+                if (sel_sucursales.getSeleccionados() != null && sel_sucursales.getSeleccionados().isEmpty() == false) {
+                    parametro = new HashMap();
+                    parametro.put("sucursales", sel_sucursales.getSeleccionados());                    
+                    sel_sucursales.cerrar();
+                    sec_rango_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Seleccione una sucursal", "");
+                }
             } else if (sec_rango_reporte.isVisible()) {
                 if (sec_rango_reporte.isFechasValidas()) {
-                    parametro = new HashMap();
                     parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
                     parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
                     sec_rango_reporte.cerrar();
@@ -837,6 +853,13 @@ public class pre_facturasCxC extends Pantalla {
     public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
         this.sec_rango_reporte = sec_rango_reporte;
     }
-    
+
+    public SeleccionTabla getSel_sucursales() {
+        return sel_sucursales;
+    }
+
+    public void setSel_sucursales(SeleccionTabla sel_sucursales) {
+        this.sel_sucursales = sel_sucursales;
+    }
 
 }
