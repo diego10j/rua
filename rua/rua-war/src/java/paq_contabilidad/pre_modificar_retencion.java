@@ -19,7 +19,6 @@ import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioRetenciones;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
-import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
 
 /**

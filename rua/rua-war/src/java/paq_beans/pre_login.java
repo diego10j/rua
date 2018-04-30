@@ -4,21 +4,25 @@
  */
 package paq_beans;
 
+import framework.aplicacion.ConfiguraEmpresa;
 import framework.componentes.Boton;
 import framework.componentes.Clave;
 import framework.componentes.Dialogo;
 import framework.componentes.ErrorSQL;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UISelectItem;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.component.html.HtmlInputSecret;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import org.primefaces.component.blockui.BlockUI;
 import persistencia.Conexion;
@@ -36,6 +40,7 @@ public class pre_login {
     private HtmlForm formulario = new HtmlForm();
     private final HtmlInputText tex_usuario = new HtmlInputText();
     private final HtmlInputSecret pas_clave = new HtmlInputSecret();
+    private final HtmlSelectOneMenu sel_empresa = new HtmlSelectOneMenu();
     private ErrorSQL error_sql = new ErrorSQL();
     private final Utilitario utilitario = new Utilitario();
     private final Clave cla_clave_actual = new Clave();
@@ -54,10 +59,37 @@ public class pre_login {
         HtmlPanelGroup pg_usuario = new HtmlPanelGroup();
         pg_usuario.setLayout("block");
         pg_usuario.setStyleClass("form-group has-feedback");
+
+        sel_empresa.setId("sel_empresa");
+        sel_empresa.getPassThroughAttributes().put("placeholder", "Empresa");
+        sel_empresa.setStyleClass("form-control");
+        sel_empresa.setTitle("EMPRESA");
+        sel_empresa.setRequired(true);
+        sel_empresa.setRequiredMessage("Debe seleccionar una Empresa");
+
+        //Carga empresas configuradas
+        List<ConfiguraEmpresa> listaEmpresas = utilitario.getListaConfiguracionInicial();
+
+        for (ConfiguraEmpresa conf_actual : listaEmpresas) {
+            UISelectItem usi_empresa = new UISelectItem();
+            usi_empresa.setItemDescription(conf_actual.getNombreEmpresa());
+            usi_empresa.setItemValue(conf_actual.getSecuencial());
+            usi_empresa.setItemLabel(conf_actual.getNombreEmpresa());
+            sel_empresa.getChildren().add(usi_empresa);
+        }
+        if (listaEmpresas.size() > 1) {
+            UISelectItem usi_seleccione = new UISelectItem();
+            usi_seleccione.setItemDescription("Seleccione una Empresa...");
+            usi_seleccione.setItemValue(null);
+            usi_seleccione.setNoSelectionOption(true);
+            usi_seleccione.setItemLabel("Seleccione una Empresa...");
+            sel_empresa.getChildren().add(usi_seleccione);
+        }
+
         tex_usuario.setId("tex_usuario");
         tex_usuario.setRequired(true);
         tex_usuario.getPassThroughAttributes().put("placeholder", "Usuario");
-        tex_usuario.setRequiredMessage("Debe ingresar el usuario");
+        tex_usuario.setRequiredMessage("Debe ingresar el Usuario");
         tex_usuario.setAutocomplete("off");
         tex_usuario.setStyleClass("form-control");
         HtmlOutputText eti_icono_usuario = new HtmlOutputText();
@@ -71,7 +103,7 @@ public class pre_login {
 
         pas_clave.setRequired(true);
         pas_clave.setId("pas_clave");
-        pas_clave.setRequiredMessage("Debe ingresar la clave");
+        pas_clave.setRequiredMessage("Debe ingresar la Clave");
         pas_clave.getPassThroughAttributes().put("placeholder", "Clave");
         pas_clave.setStyleClass("form-control");
         HtmlOutputText eti_icono_clave = new HtmlOutputText();
@@ -99,6 +131,8 @@ public class pre_login {
         error_sql.setId("error_sql");
         error_sql.setMetodoAceptar("pre_login.cerrarSql");
         formulario.getChildren().add(error_sql);
+        formulario.getChildren().add(sel_empresa);
+        formulario.getChildren().add(new Etiqueta("<br/>"));
         formulario.getChildren().add(pg_usuario);
         formulario.getChildren().add(pg_clave);
         formulario.getChildren().add(pg_boton);
@@ -131,14 +165,15 @@ public class pre_login {
     }
 
     public void ingresar() {
-        Conexion conexion = utilitario.getConexion();
-        if (conexion == null) {
-            conexion = new Conexion();
-            String str_recursojdbc = utilitario.getPropiedad("recursojdbc");
-            conexion.setUnidad_persistencia(str_recursojdbc);
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CONEXION", conexion);
-            utilitario.crearVariable("IDE_EMPR", utilitario.getPropiedad("ide_empr"));
-        }
+        Conexion conexion = new Conexion();
+        String str_recursojdbc = utilitario.getConfiguracionInicial(sel_empresa.getValue().toString()).getRecursoJDBC();
+        conexion.setUnidad_persistencia(str_recursojdbc);
+
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CONEXION", conexion);
+        utilitario.crearVariable("IDE_EMPR", utilitario.getConfiguracionInicial(sel_empresa.getValue().toString()).getCodigoEmpresa());
+        utilitario.crearVariable("SECUENCIAL_EMPR", sel_empresa.getValue().toString());
+        //}
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CONFIGURACION", utilitario.getConfiguracionInicial(sel_empresa.getValue().toString()));
         String str_mensaje = ser_seguridad.ingresar(tex_usuario.getValue().toString(), pas_clave.getValue().toString());
         if (str_mensaje.isEmpty()) {
             //Valida si tiene que cambiar la clave
@@ -240,8 +275,8 @@ public class pre_login {
     public String getTema() {
         String tema = utilitario.getVariable("TEMA");
         if (tema == null || tema.isEmpty() || tema.equals("null")) {
-            if (utilitario.getPropiedad("temaInicial") != null) {
-                return utilitario.getPropiedad("temaInicial");
+            if (utilitario.getConfiguraEmpresa() != null) {
+                return utilitario.getConfiguraEmpresa().getTemaInicial();
             }
             return "excite-bike";
         } else {

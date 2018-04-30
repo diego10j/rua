@@ -219,7 +219,7 @@ public class ServiciosAdquisiones {
     private void conSql() {
         if (conSql == null) {
             conSql = new Conexion();
-            conSql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+            conSql.setUnidad_persistencia(utilitario.getConfiguraEmpresa().getRecursoJDBC());
         }
     }
 
@@ -233,7 +233,7 @@ public class ServiciosAdquisiones {
     private void conOraclesql() {
         if (conOracle == null) {
             conOracle = new Conexion();
-            conOracle.setUnidad_persistencia(utilitario.getPropiedad("oraclejdbc"));
+            conOracle.setUnidad_persistencia(utilitario.getConfiguraEmpresa().getRecursoJDBC());        
         }
     }
 

@@ -717,10 +717,10 @@ public class ServicioSeguridad {
      * @return
      */
     public TablaGenerica getReglas() {
-
+        String ide_empr = utilitario.getConfiguracionInicial(utilitario.getVariable("SECUENCIAL_EMPR")).getCodigoEmpresa();
         return utilitario
                 .consultar("SELECT * FROM sis_reglas_clave where ide_empr="
-                        + utilitario.getPropiedad("ide_empr"));
+                        + ide_empr);
     }
 
     /**

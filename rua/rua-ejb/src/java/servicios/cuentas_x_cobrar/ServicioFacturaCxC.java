@@ -31,7 +31,7 @@ public class ServicioFacturaCxC extends ServicioBase {
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
         parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura",
-                "p_cxc_tipo_trans_pago", "p_cxc_tipo_trans_anticipo");
+                "p_cxc_tipo_trans_pago", "p_cxc_tipo_trans_anticipo", "p_cxc_estado_factura_anulada");
     }
 
     /**

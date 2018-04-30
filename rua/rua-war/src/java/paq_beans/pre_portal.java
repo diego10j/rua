@@ -38,11 +38,11 @@ public class pre_portal {
         Conexion conexion = utilitario.getConexion();
         if (conexion == null) {
             conexion = new Conexion();
-            String str_recursojdbc = utilitario.getPropiedad("recursojdbc");
+            String str_recursojdbc = "sistema"; //*********DFJ
             conexion.setUnidad_persistencia(str_recursojdbc);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CONEXION", conexion);
         }
-        utilitario.crearVariable("IDE_EMPR", utilitario.getPropiedad("ide_empr"));
+        utilitario.crearVariable("IDE_EMPR", "0");//*********DFJ
         utilitario.crearVariable("IDE_SUCU", "0"); //para que sea biess quito
         String str_mensaje = ser_seguridad.ingresar(usuario, clave);
         if (str_mensaje.isEmpty()) {

@@ -24,7 +24,7 @@ public class ServicioProveedor {
      */
     public final static String P_PADRE_PROVEEDORES = "1";
     private final Utilitario utilitario = new Utilitario();
-
+    
     @EJB
     private ServicioConfiguracion ser_configuracion;
 
@@ -90,6 +90,10 @@ public class ServicioProveedor {
     public String getSqlComboProveedor() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_proveedo_geper is TRUE and identificac_geper is not null order by nom_geper ";
     }
+    
+    public String getSqlListaProveedores() {
+        return "select ide_geper,codigo_geper,identificac_geper,nom_geper,correo_geper,direccion_geper,telefono_geper,contacto_geper from gen_persona  where es_proveedo_geper is TRUE and identificac_geper is not null order by nom_geper";
+    }
 
     /**
      * Asigna las configuraciones de un Proveedor
@@ -97,13 +101,14 @@ public class ServicioProveedor {
      * @param tabla
      */
     public void configurarTablaProveedor(Tabla tabla) {
-
+        
         tabla.setTabla("gen_persona", "ide_geper", -1);
         tabla.setCondicion("es_proveedo_geper=true");
         tabla.getColumna("es_proveedo_geper").setValorDefecto("true");
         tabla.getColumna("es_proveedo_geper").setVisible(false);
         tabla.getColumna("ES_CLIENTE_GEPER").setVisible(false);
         tabla.getColumna("nivel_geper").setValorDefecto("HIJO");
+        tabla.getColumna("nivel_geper").setVisible(false);
         tabla.getColumna("nivel_geper").setPermitirNullCombo(true);
         tabla.getColumna("ide_rhtro").setVisible(false);
         tabla.getColumna("ide_rhcon").setVisible(false);
@@ -111,7 +116,7 @@ public class ServicioProveedor {
         tabla.getColumna("IDE_VGECL").setVisible(false);
         tabla.getColumna("ide_gegen").setVisible(false);
         tabla.getColumna("IDE_VGTCL").setVisible(false);
-
+        
         tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tabla.getColumna("identificac_geper").setUnico(true);
@@ -235,7 +240,7 @@ public class ServicioProveedor {
         }
         return saldo;
     }
-
+    
     public String getSqlCuentasPorPagar(String ide_geper) {
         String str_sql_cxp = "select dt.ide_cpctr,"
                 + "dt.ide_cpcfa,"
@@ -284,7 +289,7 @@ public class ServicioProveedor {
                 + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
     }
-
+    
     public String getSqlComboFacturasPorPagar(String ide_geper) {
         return "select dt.ide_cpctr,"
                 + "coalesce(nombre_cntdo,'Cuenta por Pagar'),coalesce(cf.numero_cpcfa,''),"
@@ -380,6 +385,99 @@ public class ServicioProveedor {
         return true;
     }
 
+    /**
+     * Busca el ide_geper de un Proveedor por identificacion
+     *
+     * @param identificac_geper
+     * @return
+     */
+    public String getIdeProveedor(String identificac_geper) {
+        TablaGenerica tag = utilitario.consultar("select  ide_geper,identificac_geper from gen_persona where identificac_geper='" + identificac_geper + "'");
+        return tag.getValor("ide_geper");
+    }
+
+    /**
+     * Retorna el codigo_geper de un Proveedor
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getCodigoProveedor(String ide_geper) {
+        return utilitario.consultar("select codigo_geper,ide_geper from gen_persona where ide_geper=" + ide_geper).getValor("codigo_geper");
+    }
+
+    /**
+     * Retorna los datos principales de los proveedores
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getSqlDatosProveedores(String ide_geper) {
+        return "select ide_geper,nom_geper as NOMBRE,nombre_getid TIPO_IDENTIFICACION,identificac_geper IDENTIFICACION,direccion_geper DIRECCION,telefono_geper TELEFONO\n"
+                + "from gen_persona a\n"
+                + "left join gen_tipo_identifi b on a.ide_getid=b.ide_getid\n"
+                + "where ide_geper in (" + ide_geper + ") order by nom_geper";
+    }
+
+    /**
+     * Retorna el ide_geper de un Cliente por Identificación
+     *
+     * @param identificac_geper Cédula/Ruc/Pasaporte
+     * @return
+     */
+    public String getIdeProveedorporIdentificacion(String identificac_geper) {
+        return utilitario.consultar("select identificac_geper,ide_geper from gen_persona where es_proveedo_geper=true  and  identificac_geper='" + identificac_geper + "'").getValor("ide_geper");
+    }
+
+    /**
+     * Retorna el total de Proveedores creados
+     *
+     * @return
+     */
+    public int getTotalProveedores() {
+        TablaGenerica tag = utilitario.consultar("select count(1) as NUMERO, 'total' as TOTAL from gen_persona where es_proveedo_geper is TRUE and identificac_geper is not null");
+        int total = 0;
+        try {
+            total = Integer.parseInt(tag.getValor("NUMERO"));
+        } catch (Exception e) {
+        }
+        return total;
+    }
+
+    /**
+     * Retorna el número de Proveedores Nuevos en el año
+     *
+     * @return
+     */
+    public int getTotalProveedoresNuevos() {
+        TablaGenerica tag = utilitario.consultar("select count(1) as NUMERO, 'total' as TOTAL from gen_persona where es_proveedo_geper is TRUE and identificac_geper is not null and  EXTRACT(YEAR FROM fecha_ingre_geper) = " + utilitario.getAnio(utilitario.getFechaActual()));
+        int total = 0;
+        try {
+            total = Integer.parseInt(tag.getValor("NUMERO"));
+        } catch (Exception e) {
+        }
+        return total;
+    }
+
+    /**
+     * RETORNA SI SE TIENE CHEQUES POSFECHADOS AL PROVEEDOR
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getSqlChequesPosfechadosProveedor(String ide_geper) {
+        return "select distinct a.ide_teclb,fec_cam_est_teclb,nombre_tettb as TRANSACCION,numero_teclb as NUMERO,beneficiari_teclb as BENEFICIARIO,\n"
+                + "valor_teclb as VALOR,fecha_trans_teclb as FECHA_TRANSACCION,num_comprobante_teclb as NUM_CUENTA_CHEQUE,(SELECT nombre_teban FROM tes_banco where a.ide_teban=ide_teban)as BANCO_CHEQUE,observacion_teclb as OBSERVACION\n"
+                + "from tes_cab_libr_banc a\n"
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb and ide_teelb =0\n"
+                + "inner join cxp_detall_transa c on a.ide_teclb=c.ide_teclb and ide_cpttr=19\n" //CH POSFECHADO
+                + "inner join cxp_cabece_transa d on c.ide_ccctr=d.ide_ccctr\n"
+                + "where a.ide_tettb=14 and (devuelto_teclb=false or devuelto_teclb is null)\n"
+                + "and conciliado_teclb=false and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU")
+                + "and ide_geper= " + ide_geper + " "
+                + "order by fec_cam_est_teclb, ide_teclb";
+    }
+    
     public String getParametroProveedor(String parametro, String ide_geper) {
         if (ide_geper != null && !ide_geper.isEmpty()) {
             TablaGenerica tab_persona = utilitario.consultar("select * from gen_persona where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_geper=" + ide_geper);

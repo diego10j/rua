@@ -211,6 +211,8 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");
         tab_cab_documento.getColumna("autorizacio_cpcfa").setMetodoChange("validarAutorizacion");
         tab_cab_documento.getColumna("observacion_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("MONTO_COM_CPCFA").setVisible(false);
+        tab_cab_documento.getColumna("IDE_CNTIC").setVisible(false);
         tab_cab_documento.getColumna("observacion_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("pagado_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("pagado_cpcfa").setValorDefecto("False");
@@ -221,7 +223,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.getColumna("numero_cpcfa").setOrden(4);
         tab_cab_documento.getColumna("numero_cpcfa").setAncho(10);
         tab_cab_documento.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
-        tab_cab_documento.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_cab_documento.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_cab_documento.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_documento.getColumna("numero_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("base_grabada_cpcfa").setVisible(false);
@@ -257,7 +259,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setNombreVisual("FECHA EMISIÓN DOC. MODI.");
         tab_cab_documento.getColumna("numero_nc_cpcfa").setOrden(10);
         tab_cab_documento.getColumna("numero_nc_cpcfa").setNombreVisual("NÚMERO DOC. MODI.");
-        tab_cab_documento.getColumna("numero_nc_cpcfa").setMascara("999-999-99999999");
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setMascara("999-999-999999999");
         tab_cab_documento.getColumna("numero_nc_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setNombreVisual("AUTORIZACIÓN DOC. MODI.");
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setOrden(11);
@@ -351,7 +353,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("RUC");
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("99999999999999");
         ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChange("validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
@@ -362,7 +364,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("numero_cpcfa").setOrden(2);
         //////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("ESTABLECIMIENTO-PUNTO.EMISION - SECUENCIAL");
         /////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
-        tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_com_reembolso.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setRequerida(true);
         tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setVisible(true);
@@ -966,7 +968,7 @@ public class pre_modifica_documento extends Pantalla {
                         for (int i = 0; i < tab_com_reembolso.getTotalFilas(); i++) {
                             tab_com_reembolso.setValor(i, "ide_rem_cpcfa", ide_cccfa);
                         }
-                    }                    
+                    }
                     if (tab_com_reembolso.guardar()) {
                         //Guarda la cuenta por pagar  
                         ser_cuentas_cxp.generarModificaTransaccionCompra(tab_cab_documento);

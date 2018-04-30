@@ -59,7 +59,7 @@ public class pre_formularios extends Pantalla {
         mep_menu.agregarItem("Formulario 103 ", "dibujarF103", "ui-icon-note"); //1
         mep_menu.agregarItem("Formulario 104", "dibujarF104", "ui-icon-note");//2
         mep_menu.agregarItem("Anexo Transaccional (ATS)", "dibujarATS", "ui-icon-note"); //3
-        mep_menu.agregarItem("Anexo Relacion de Dependencia (RDEP)", "dibujarRDEP", "ui-icon-note");//4
+        //mep_menu.agregarItem("Anexo Relacion de Dependencia (RDEP)", "dibujarRDEP", "ui-icon-note");//4
         mep_menu.agregarSubMenu("CONFIGURACIONES");
         mep_menu.agregarItem("Reporte Formulario 103", "dibujarRep103", "ui-icon-wrench");//7
         mep_menu.agregarItem("Reporte Formulario 104", "dibujarRep104", "ui-icon-wrench");//9

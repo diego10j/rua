@@ -36,43 +36,173 @@ public class ServicioCuentasCxP extends ServicioBase {
     }
 
     /**
+     * Cambia de estado a anulado la factura y la transaccion cxc
+     *
+     * @param ide_cpcfa
+     */
+    public void anularDocumento(String ide_cpcfa) {
+        //ser_cuentas_cxp.
+        //1) VALIDAR QUE NO TENGA RETENCIÓN
+        //2) ANULAR TRANSACCION CXP
+        //3) ANULAR DOCUEMNTO
+        //4) SI TIENE ASIENTO REVERSAR
+//        //Anula Fctura
+
+        utilitario.getConexion().agregarSqlPantalla("update cxp_cabece_factur set ide_cpefa=1 where ide_cpcfa=" + ide_cpcfa);
+        //Anula Asiento
+        TablaGenerica tab_busca = utilitario.consultar("SELECT * FROM con_cab_comp_cont where ide_cnccc = (select ide_cnccc from cxp_cabece_factur where ide_cpcfa=" + ide_cpcfa + ")");
+        if (tab_busca.getTotalFilas() > 0) {
+            String p_con_estado_comprobante_anulado = utilitario.getVariable("p_con_estado_comprobante_anulado");
+            utilitario.getConexion().agregarSqlPantalla("update con_cab_comp_cont set ide_cneco=" + p_con_estado_comprobante_anulado + " where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+            utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+        }
+        //eliminar transacciones cxp
+        utilitario.getConexion().agregarSqlPantalla("delete from cxp_detall_transa where ide_cpcfa=" + ide_cpcfa);
+        utilitario.getConexion().agregarSqlPantalla("delete from cxp_cabece_transa where ide_cpcfa=" + ide_cpcfa);
+
+//        //Transaccion CXC Generar reverso de la transaccion FACTURA
+//        TablaGenerica tab_cab = utilitario.consultar("SELECT a.ide_cccfa,ide_ccctr,secuencial_cccfa,ide_srcom,ide_ccdaf from cxc_cabece_transa a inner join cxc_cabece_factura b on a.ide_cccfa=b.ide_cccfa where a.ide_cccfa=" + ide_cccfa + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal"));
+//        if (tab_cab.getTotalFilas() > 0) {
+//            reversarTransaccionCxC(tab_cab.getValor("ide_ccctr"), "V/. ANULACIÓN FACTURA : " + tab_cab.getValor("secuencial_cccfa"));
+//        }
+//        //Anula transaccion inventario
+        utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci in (select ide_incci from inv_det_comp_inve where ide_cpcfa=" + ide_cpcfa + " group by ide_incci)");
+//        ////////****!!!!!!!!!!!crear variable  p_inv_estado_anulado
+    }
+
+    /**
+     * Sql que retorna las compras en un año y mes determinado
+     *
+     * @param numeroMes
+     * @param anio
+     * @return
+     */
+    public String getSqlComprasMensuales(String numeroMes, String anio) {
+        String fechaInicio = utilitario.getFormatoFecha(anio + "-" + numeroMes + "-01");
+        String fechaFin = utilitario.getUltimaFechaMes(fechaInicio);
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa, numero_cpcfa,\n"
+                + "nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,\n"
+                + "base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, \n"
+                + "observacion_cpcfa \n"
+                + "from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper \n"
+                + "where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and ide_cpefa=0 and ide_cntdo=3 \n" //estado normal y doc factura
+                + "ORDER BY fecha_emisi_cpcfa,nom_geper";
+    }
+
+    public String getSqlNotasCreditoMensuales(String numeroMes, String anio) {
+        String fechaInicio = utilitario.getFormatoFecha(anio + "-" + numeroMes + "-01");
+        String fechaFin = utilitario.getUltimaFechaMes(fechaInicio);
+        return "select a.ide_cpcfa,fecha_emisi_cpcfa, numero_cpcfa,\n"
+                + "nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,\n"
+                + "base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, \n"
+                + "observacion_cpcfa \n"
+                + "from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper \n"
+                + "where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and ide_cpefa=0 and ide_cntdo=0 \n" //estado normal y doc nota de credito
+                + "ORDER BY fecha_emisi_cpcfa,nom_geper";
+    }
+
+    /**
+     * Sql con los meses calendarios
+     *
+     * @return
+     */
+    public String getSqlMeses() {
+        return "select ide_gemes,nombre_gemes from gen_mes  where ide_empr=" + utilitario.getVariable("IDE_EMPR") + " order by ide_gemes";
+    }
+
+    /**
+     * Busca una transacción de la factura para realizarle una nota de credito
+     *
+     * @param numero
+     * @param autorizacion
+     * @return
+     */
+    public String getIdeTransaccionFacturaPorSecuencial(String numero, String autorizacion) {
+        return utilitario.consultar("select ide_cpctr,ide_cpcfa from cxp_cabece_transa where ide_cpcfa in \n"
+                + "(select ide_cpcfa from cxp_cabece_factur where numero_cpcfa='" + numero + "' and autorizacio_cpcfa='" + autorizacion + "')").getValor("ide_cpctr");
+    }
+
+    /**
      * Registra la Factura en una transaccion cxp
      *
      * @param tab_cab_factura
      * @return ide_cpctr Cabecera de la Transaccion CxP
      */
     public String generarTransaccionCompra(Tabla tab_cab_factura) {
+
         String ide_cpctr = "-1";
         if (tab_cab_factura != null) {
+            String str_p_cxp_tipo_trans_pago = utilitario.getVariable("p_cxp_tipo_trans_pago");
             TablaGenerica tab_cab_tran_cxp = new TablaGenerica();
             tab_cab_tran_cxp.setTabla("cxp_cabece_transa", "ide_cpctr");
             tab_cab_tran_cxp.getColumna("ide_cpctr").setExterna(false);
-            tab_cab_tran_cxp.setCondicion("ide_cpctr=-1");
+
+            if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                //SI ES NOTA DE CREDITO BUSCA LA FACTURA QUE SE HIZO LA NOTA DE CREDITO                
+                tab_cab_tran_cxp.setCondicion("ide_cpctr=" + getIdeTransaccionFacturaPorSecuencial(tab_cab_factura.getValor("numero_nc_cpcfa"), tab_cab_factura.getValor("autorizacio_nc_cpcfa")));
+            } else {
+                //SI EXISTE UN PAGO ADICIONAL OCUPA ES TRANSACCIÓN
+                tab_cab_tran_cxp.setCondicion("ide_cpttr=" + str_p_cxp_tipo_trans_pago + " AND ide_cpcfa is null and ide_geper=" + tab_cab_factura.getValor("ide_geper"));
+            }
+
             tab_cab_tran_cxp.ejecutarSql();
+            if (tab_cab_tran_cxp.isEmpty()) {
+                tab_cab_tran_cxp.insertar();
+                if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_factura"))) {
+                    tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
+                } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_liquidacion_compra"))) {
+                    tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion Liquidacion en compras  
+                } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_venta"))) {
+                    tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion nota de venta 
+                } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                    tab_cab_tran_cxp.setValor("ide_cpttr", "2");//!!!!!******Nota de Credito
+                } else {
+                    //por defecto
+                    tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
+                }
+                tab_cab_tran_cxp.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
+                tab_cab_tran_cxp.setValor("fecha_trans_cpctr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
+                tab_cab_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
+                if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                    tab_cab_tran_cxp.setValor("observacion_cpctr", "V/. NOTA DE CREDITO " + tab_cab_factura.getValor("numero_cpcfa") + " ");
+                } else {
+                    //por defecto
+                    tab_cab_tran_cxp.setValor("observacion_cpctr", "V/. FACTURA " + tab_cab_factura.getValor("numero_cpcfa") + " ");
+                }
+            } else if (!tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_cab_tran_cxp.modificar(tab_cab_tran_cxp.getFilaActual());
+                tab_cab_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
+            }
+
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
             tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
             tab_det_tran_cxp.setCondicion("ide_cpdtr=-1");
             tab_det_tran_cxp.ejecutarSql();
-            tab_cab_tran_cxp.insertar();
-            tab_cab_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
-            tab_cab_tran_cxp.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
-            tab_cab_tran_cxp.setValor("fecha_trans_cpctr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
-            tab_cab_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
-            if (tab_cab_factura.getValor("observacion_cpcfa") != null && !tab_cab_factura.getValor("observacion_cpcfa").isEmpty()) {
-                tab_cab_tran_cxp.setValor("observacion_cpctr", tab_cab_factura.getValor("observacion_cpcfa"));
-            }
             tab_cab_tran_cxp.guardar();
             tab_det_tran_cxp.insertar();
             tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
             tab_det_tran_cxp.setValor("ide_cpctr", tab_cab_tran_cxp.getValor("ide_cpctr"));
-            tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
+            if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_tran_cxp.getValor("ide_cpcfa"));
+            } else {
+                tab_det_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
+            }
+
             if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_factura"))) {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
             } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_liquidacion_compra"))) {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion Liquidacion en compras  
             } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_venta"))) {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion nota de venta 
+            } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_det_tran_cxp.setValor("ide_cpttr", "2");//!!!!!******Nota de Credito
             } else {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
@@ -114,7 +244,12 @@ public class ServicioCuentasCxP extends ServicioBase {
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
             tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
-            tab_det_tran_cxp.setCondicion("ide_cpctr=" + ide_cpctr + " and ide_cpttr=" + parametros.get("p_cxp_tipo_trans_factura"));
+            if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_det_tran_cxp.setCondicion("ide_cpctr=" + ide_cpctr + " and ide_cpttr=2"); //nota de credito
+            } else {
+                tab_det_tran_cxp.setCondicion("ide_cpctr=" + ide_cpctr + " and ide_cpttr=" + parametros.get("p_cxp_tipo_trans_factura"));
+            }
+
             tab_det_tran_cxp.ejecutarSql();
             if (tab_cab_tran_cxp.isEmpty()) {
                 tab_cab_tran_cxp.insertar();
@@ -144,6 +279,8 @@ public class ServicioCuentasCxP extends ServicioBase {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion Liquidacion en compras  
             } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_venta"))) {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion nota de venta 
+            } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_det_tran_cxp.setValor("ide_cpttr", "2");//!!!!!******Nota de Credito
             } else {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
@@ -183,6 +320,8 @@ public class ServicioCuentasCxP extends ServicioBase {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion Liquidacion en compras  
             } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_venta"))) {
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//!!!!!******CAMBIAR Tipo transaccion nota de venta 
+            } else if (tab_cab_factura.getValor("ide_cntdo").equals(utilitario.getVariable("p_con_tipo_documento_nota_credito"))) {
+                tab_det_tran_cxp.setValor("ide_cpttr", "2");//!!!!!******Nota de Credito
             } else {
                 //por defecto
                 tab_det_tran_cxp.setValor("ide_cpttr", parametros.get("p_cxp_tipo_trans_factura"));//Tipo transaccion Factura     
@@ -197,7 +336,6 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxp.setValor("valor_anticipo_cpdtr", "0");
             tab_det_tran_cxp.guardar();
-            utilitario.getConexion().agregarSql("UPDATE cxp_detall_transa SET ide_cpcfa=" + tab_cab_factura.getValor("ide_cpcfa") + " where ide_cpctr=" + ide_cpctr);
         }
         return ide_cpctr;
     }
@@ -256,17 +394,6 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_cab_tran_cxp.setTabla("cxp_cabece_transa", "ide_cpctr");
             tab_cab_tran_cxp.setCondicion("ide_cpcfa=" + ide_cpcfa);
             tab_cab_tran_cxp.ejecutarSql();
-            if (tab_cab_tran_cxp.isEmpty()) {
-                //Si se hace factura de un anticipo
-                TablaGenerica tab_cab_aux = utilitario.consultar("SELECT ide_cpctr,ide_cpcfa,observacion_cpdtr FROM cxp_detall_transa WHERE ide_cpcfa=" + ide_cpcfa);
-                tab_cab_tran_cxp.setCondicion("ide_cpctr=" + tab_cab_aux.getValor("ide_cpctr"));
-                tab_cab_tran_cxp.ejecutarSql();
-                tab_cab_tran_cxp.setValor("ide_cpcfa", ide_cpcfa);
-                tab_cab_tran_cxp.setValor("observacion_cpctr", tab_cab_aux.getValor("observacion_cpdtr"));
-                tab_cab_tran_cxp.modificar(tab_cab_tran_cxp.getFilaActual());
-                tab_cab_tran_cxp.guardar();
-            }
-
             TablaGenerica tab_det_tran_cxp = new TablaGenerica();
             tab_det_tran_cxp.setTabla("cxp_detall_transa", "ide_cpdtr");
             tab_det_tran_cxp.getColumna("ide_cpdtr").setExterna(false);
@@ -364,7 +491,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + ","
                 + utilitario.getVariable("p_con_tipo_documento_nota_venta") + ","
                 + utilitario.getVariable("p_con_tipo_documento_reembolso") + ","
-                + utilitario.getVariable("p_con_tipo_documento_nota_credito") + ")";
+                + utilitario.getVariable("p_con_tipo_documento_nota_credito") + ",10)"; //10 pasajes aereos
     }
 
     /**
@@ -386,7 +513,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " left join cxp_estado_factur c on a.ide_cpefa=c.ide_cpefa \n"
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " left join con_cabece_retenc f on a.ide_cncre= f.ide_cncre  \n"
-                + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
+                + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' and  a.ide_cpefa=0 "
                 + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
@@ -452,7 +579,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " inner join con_tipo_document e on a.ide_cntdo= e.ide_cntdo  \n"
                 + " where fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + " and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " and ide_rem_cpcfa is null and a.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " \n"
-                + " and ide_cncre is null \n"
+                + " and ide_cncre is null and a.ide_cntdo!=0 \n"
                 + strCondicionTipoDoc
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
@@ -511,7 +638,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "left join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo "
                 + "left join gen_persona b on cf.ide_geper=b.ide_geper "
                 + "where cf.ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_rem_cpcfa is null "
-                + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' and cf.ide_cnccc is null  "
+                + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' "
                 + strCondicionTipoDoc
                 + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa,nombre_cntdo, "
                 + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa,nom_geper,identificac_geper "
@@ -637,72 +764,20 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + " ORDER BY fecha_emisi_cpcfa desc,numero_cpcfa desc,ide_cpcfa desc";
     }
 
-    public void anularDocumento(String ide_cpcfa) {
-        //Anula Factura
-        utilitario.getConexion().agregarSqlPantalla("update cxp_cabece_factur set ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_anulada") + ",ide_cnccc=null where ide_cpcfa=" + ide_cpcfa);
-        //Transaccion CXC Generar reverso de la transaccion FACTURA
-        TablaGenerica tab_cab = utilitario.consultar("SELECT a.ide_cpcfa,ide_cpctr,numero_cpcfa,ide_cntdo,ide_cncre from cxp_cabece_transa a inner join cxp_cabece_factur b on a.ide_cpcfa=b.ide_cpcfa where a.ide_cpcfa=" + ide_cpcfa + " and ide_cpefa=" + parametros.get("p_cxp_estado_factura_normal"));
-        if (tab_cab.getTotalFilas() > 0) {
-            reversarTransaccionCxP(tab_cab.getValor("ide_cpctr"), "V./ ANULACIÓN " + getNombreTipoDocumento(tab_cab.getValor("ide_cntdo")) + " : " + tab_cab.getValor("numero_cpcfa"));
-        }
-        //Anula transaccion inventario
-        utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci in (select ide_incci from inv_det_comp_inve where ide_cpcfa=" + ide_cpcfa + " group by ide_incci)");
-        ///anula retencion
-        if (tab_cab.getValor("ide_cncre") != null) {
-            utilitario.getConexion().agregarSqlPantalla("UPDATE con_cabece_retenc set ide_cnere=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " where ide_cncre=" + tab_cab.getValor("ide_cncre"));
-        }
-
-        ////////****!!!!!!!!!!!crear variable  p_inv_estado_anulado
+    /**
+     * Verifica si existe una clave de acceso de un comprobante electronico
+     *
+     * @param autorizacio_cpcfa
+     * @return
+     */
+    public boolean isExisteDocumentoElectronico(String autorizacio_cpcfa) {
+        TablaGenerica tag = utilitario.consultar("select numero_cpcfa,autorizacio_cpcfa from cxp_cabece_factur where autorizacio_cpcfa='" + autorizacio_cpcfa + "' and ide_cpefa=0 ");
+        return !tag.isEmpty();
     }
 
-    public void reversarTransaccionCxP(String ide_cpctr, String observacion) {
-        if (ide_cpctr != null && !ide_cpctr.isEmpty()) {
-
-            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
-            tab_det_tran_cxc.setTabla("cxp_detall_transa", "ide_cpdtr");
-            tab_det_tran_cxc.getColumna("ide_cpdtr").setExterna(false);
-            tab_det_tran_cxc.setCondicion("ide_cpdtr=-1");
-            tab_det_tran_cxc.ejecutarSql();
-
-            TablaGenerica tab_det = utilitario.consultar("SELECT * from cxp_detall_transa where ide_cpctr=" + ide_cpctr);
-            tab_det_tran_cxc.limpiar();
-            for (int i = 0; i < tab_det.getTotalFilas(); i++) {
-                tab_det_tran_cxc.insertar();
-                tab_det_tran_cxc.setValor("ide_cpctr", ide_cpctr);
-                tab_det_tran_cxc.setValor("ide_cpcfa", tab_det.getValor(i, "ide_cpcfa"));
-
-                tab_det_tran_cxc.setValor("ide_cnccc", tab_det.getValor(i, "ide_cnccc"));
-                tab_det_tran_cxc.setValor("ide_teclb", tab_det.getValor(i, "ide_teclb"));
-                tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("ide_usua"));
-                if (tab_det.getValor(i, "ide_cpttr") != null && !tab_det.getValor(i, "ide_cpttr").isEmpty()) {
-                    if (Integer.parseInt(getSignoTransaccionCxP(tab_det.getValor(i, "ide_cpttr"))) > 0) {
-                        tab_det_tran_cxc.setValor("ide_cpttr", utilitario.getVariable("p_cxp_tipo_trans_reversa_menos"));
-                    } else {
-                        tab_det_tran_cxc.setValor("ide_cpttr", utilitario.getVariable("p_cxp_tipo_trans_reversa_mas"));
-                    }
-                }
-                tab_det_tran_cxc.setValor("fecha_trans_cpdtr", utilitario.getFechaActual());
-                tab_det_tran_cxc.setValor("fecha_venci_cpdtr", utilitario.getFechaActual());
-                tab_det_tran_cxc.setValor("numero_pago_cpdtr", tab_det.getValor(i, "numero_pago_cpdtr"));
-                tab_det_tran_cxc.setValor("valor_cpdtr", tab_det.getValor(i, "valor_cpdtr"));
-                tab_det_tran_cxc.setValor("docum_relac_cpdtr", tab_det.getValor(i, "docum_relac_cpdtr"));
-                tab_det_tran_cxc.setValor("observacion_cpdtr", observacion);
-            }
-            tab_det_tran_cxc.guardar();
-        }
-    }
-
-    public String getSignoTransaccionCxP(String ide_cpttr) {
-        TablaGenerica tab_tipo_transacciones = utilitario.consultar("select * from cxp_tipo_transacc where ide_cpttr=" + ide_cpttr);
-        if (tab_tipo_transacciones.getTotalFilas() > 0) {
-            if (tab_tipo_transacciones.getValor(0, "signo_cpttr") != null && !tab_tipo_transacciones.getValor(0, "signo_cpttr").isEmpty()) {
-                return tab_tipo_transacciones.getValor(0, "signo_cpttr");
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+    public String getFormaPago(String alterno_ats) {
+        TablaGenerica tg = utilitario.consultar("select ide_cndfp,alterno_ats from con_deta_forma_pago where alterno_ats='" + alterno_ats + "'");
+        return tg.getValor("ide_cndfp");
     }
 
 }

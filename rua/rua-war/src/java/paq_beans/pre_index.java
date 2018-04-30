@@ -28,7 +28,6 @@ import framework.componentes.bootstrap.Alerta;
 import framework.componentes.bootstrap.BotonBootstrap;
 import framework.componentes.bootstrap.CajaBootstrap;
 import framework.componentes.bootstrap.ContenidoBootstrap;
-import framework.componentes.bootstrap.GrupoBootstrap;
 import framework.componentes.bootstrap.ListaBootstrap;
 import framework.componentes.bootstrap.PanelBootstrap;
 import framework.componentes.bootstrap.RowBootstrap;
@@ -205,6 +204,7 @@ public class pre_index {
      */
     public void aceptarSucursal(ActionEvent evt) {
         seleccionarSucursal(((ItemMenu) evt.getComponent()).getCodigo() + "");
+        str_titulo = "Inicio" + " - " + utilitario.getVariable("NOM_SUCU");
         dia_sucu_usuario.cerrar();
     }
 
@@ -227,6 +227,7 @@ public class pre_index {
         TablaGenerica tab_perfil = ser_sistema.getPerfil();
         TablaGenerica tab_ultimo_acceso = ser_seguridad.getUltimoAccesoUsuario(utilitario.getVariable("ide_usua"));
 
+        utilitario.crearVariable("NOM_SUCU", tab_sucursal.getValor("NOM_SUCU"));
         logo = ser_sistema.getLogoEmpresa();
         dibuja.getChildren().clear();
 
@@ -324,10 +325,10 @@ public class pre_index {
         dibuja.setStyle("");
         if (evt.getComponent().getRendererType() == null) { //ItemMenu
             utilitario.crearVariable("IDE_OPCI", ((ItemMenu) evt.getComponent()).getCodigo());
-            str_titulo = ((ItemMenu) evt.getComponent()).getValue() + "";
+            str_titulo = ((ItemMenu) evt.getComponent()).getValue() + " - " + utilitario.getVariable("NOM_SUCU");
         } else {
             utilitario.crearVariable("IDE_OPCI", ((Link) evt.getComponent()).getCodigo());
-            str_titulo = ((Link) evt.getComponent()).getValue() + "";
+            str_titulo = ((Link) evt.getComponent()).getValue() + " - " + utilitario.getVariable("NOM_SUCU");
         }
         if (utilitario.getVariable("IDE_OPCI") == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar una Pantalla", "");
@@ -437,7 +438,7 @@ public class pre_index {
         utilitario.crearVariable("ALTO", alto.getValue() + "");  //Alto browser
         utilitario.crearVariable("ANCHO", ancho.getValue() + ""); //Ancho browser        
         utilitario.crearVariable("IDE_OPCI", "-1");
-        str_titulo = "Inicio";
+        str_titulo = "Inicio" + " - " + utilitario.getVariable("NOM_SUCU");
         mensajes.getChildren().clear();
         dibuja.getChildren().clear();
         clase = null;

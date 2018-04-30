@@ -191,12 +191,10 @@ public class Utilitario extends Framework {
                         } else {
                             int_valida = 10 - (int_suma % 10);
                         }
+                    } else if (int_suma % 11 == 0) {
+                        int_valida = 0;
                     } else {
-                        if (int_suma % 11 == 0) {
-                            int_valida = 0;
-                        } else {
-                            int_valida = 11 - (int_suma % 11);
-                        }
+                        int_valida = 11 - (int_suma % 11);
                     }
 
                     if (int_valida == 0) {
@@ -245,11 +243,9 @@ public class Utilitario extends Framework {
                         if (lint_ultimo_digito == lint_ultimo_real) {
                             boo_correcto = true;
                         }
-                    } else {
-                        //Para cedulas que terminan en 0
-                        if (lint_suma % 10 == 0) {
-                            boo_correcto = true;
-                        }
+                    } else //Para cedulas que terminan en 0
+                    if (lint_suma % 10 == 0) {
+                        boo_correcto = true;
                     }
 
                 } else {
@@ -493,180 +489,170 @@ public class Utilitario extends Framework {
             } else {
                 cadena = recursivoNumeroLetras(numero / 1000000) + " Millones" + recursivoNumeroLetras(numero % 1000000);
             }
-        } else {
-            // Aqui identifico si lleva Miles
-            if ((numero / 1000) > 0) {
+        } else // Aqui identifico si lleva Miles
+        if ((numero / 1000) > 0) {
 
-                if ((numero / 1000) == 1) {
-                    cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
-                } else {
-                    cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
-                }
+            if ((numero / 1000) == 1) {
+                cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
             } else {
-                // Aqui identifico si lleva cientos
-                if ((numero / 100) > 0) {
-                    if ((numero / 100) == 1) {
-                        if ((numero % 100) == 0) {
-                            cadena = " Cien";
-                        } else {
-                            cadena = " Ciento" + recursivoNumeroLetras(numero % 100);
-                        }
-                    } else {
-                        if ((numero / 100) == 5) {
-                            cadena = " Quinientos" + recursivoNumeroLetras(numero % 100);
-                        } else {
-                            if ((numero / 100) == 9) {
-                                cadena = " Novecientos" + recursivoNumeroLetras(numero % 100);
-                            } else {
-                                cadena = recursivoNumeroLetras(numero / 100) + "cientos" + recursivoNumeroLetras(numero % 100);
-                            }
-                        }
-                    }
-                } // Aqui se identifican las Decenas
-                else {
-                    if ((numero / 10) > 0) {
-                        switch (numero / 10) {
-                            case 1:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Diez";
-                                        break;
-                                    case 1:
-                                        cadena = " Once";
-                                        break;
-                                    case 2:
-                                        cadena = " Doce";
-                                        break;
-                                    case 3:
-                                        cadena = " Trece";
-                                        break;
-                                    case 4:
-                                        cadena = " Catorce";
-                                        break;
-                                    case 5:
-                                        cadena = " Quince";
-                                        break;
-                                    default:
-                                        cadena = " Diez y " + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 2:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Veinte";
-                                        break;
-                                    default:
-                                        cadena = " Veinti" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 3:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Treinta";
-                                        break;
-                                    default:
-                                        cadena = " Treinta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 4:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Cuarenta";
-                                        break;
-                                    default:
-                                        cadena = " Cuarenta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 5:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Cincuenta";
-                                        break;
-                                    default:
-                                        cadena = " Cincuenta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 6:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Sesenta";
-                                        break;
-                                    default:
-                                        cadena = " Sesenta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 7:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Setenta";
-                                        break;
-                                    default:
-                                        cadena = " Setenta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 8:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Ochenta";
-                                        break;
-                                    default:
-                                        cadena = " Ochenta y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                            case 9:
-                                switch (numero % 10) {
-                                    case 0:
-                                        cadena = " Noventa";
-                                        break;
-                                    default:
-                                        cadena = " Noventa y" + recursivoNumeroLetras(numero % 10);
-                                        break;
-                                }
-                                break;
-                        }
-                    } else {
-                        switch (numero) {
-                            case 1:
-                                cadena = " Uno";
-                                break;
-                            case 2:
-                                cadena = " Dos";
-                                break;
-                            case 3:
-                                cadena = " Tres";
-                                break;
-                            case 4:
-                                cadena = " Cuatro";
-                                break;
-                            case 5:
-                                cadena = " Cinco";
-                                break;
-                            case 6:
-                                cadena = " Seis";
-                                break;
-                            case 7:
-                                cadena = " Siete";
-                                break;
-                            case 8:
-                                cadena = " Ocho";
-                                break;
-                            case 9:
-                                cadena = " Nueve";
-                                break;
-                            case 0:
-                                //      cadena = " Cero";
-                                break;
-                        }
-                    }
+                cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
+            }
+        } else // Aqui identifico si lleva cientos
+        if ((numero / 100) > 0) {
+            if ((numero / 100) == 1) {
+                if ((numero % 100) == 0) {
+                    cadena = " Cien";
+                } else {
+                    cadena = " Ciento" + recursivoNumeroLetras(numero % 100);
                 }
+            } else if ((numero / 100) == 5) {
+                cadena = " Quinientos" + recursivoNumeroLetras(numero % 100);
+            } else if ((numero / 100) == 9) {
+                cadena = " Novecientos" + recursivoNumeroLetras(numero % 100);
+            } else {
+                cadena = recursivoNumeroLetras(numero / 100) + "cientos" + recursivoNumeroLetras(numero % 100);
+            }
+        } // Aqui se identifican las Decenas
+        else if ((numero / 10) > 0) {
+            switch (numero / 10) {
+                case 1:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Diez";
+                            break;
+                        case 1:
+                            cadena = " Once";
+                            break;
+                        case 2:
+                            cadena = " Doce";
+                            break;
+                        case 3:
+                            cadena = " Trece";
+                            break;
+                        case 4:
+                            cadena = " Catorce";
+                            break;
+                        case 5:
+                            cadena = " Quince";
+                            break;
+                        default:
+                            cadena = " Diez y " + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Veinte";
+                            break;
+                        default:
+                            cadena = " Veinti" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Treinta";
+                            break;
+                        default:
+                            cadena = " Treinta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 4:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Cuarenta";
+                            break;
+                        default:
+                            cadena = " Cuarenta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 5:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Cincuenta";
+                            break;
+                        default:
+                            cadena = " Cincuenta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 6:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Sesenta";
+                            break;
+                        default:
+                            cadena = " Sesenta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 7:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Setenta";
+                            break;
+                        default:
+                            cadena = " Setenta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 8:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Ochenta";
+                            break;
+                        default:
+                            cadena = " Ochenta y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+                case 9:
+                    switch (numero % 10) {
+                        case 0:
+                            cadena = " Noventa";
+                            break;
+                        default:
+                            cadena = " Noventa y" + recursivoNumeroLetras(numero % 10);
+                            break;
+                    }
+                    break;
+            }
+        } else {
+            switch (numero) {
+                case 1:
+                    cadena = " Uno";
+                    break;
+                case 2:
+                    cadena = " Dos";
+                    break;
+                case 3:
+                    cadena = " Tres";
+                    break;
+                case 4:
+                    cadena = " Cuatro";
+                    break;
+                case 5:
+                    cadena = " Cinco";
+                    break;
+                case 6:
+                    cadena = " Seis";
+                    break;
+                case 7:
+                    cadena = " Siete";
+                    break;
+                case 8:
+                    cadena = " Ocho";
+                    break;
+                case 9:
+                    cadena = " Nueve";
+                    break;
+                case 0:
+                    //      cadena = " Cero";
+                    break;
             }
         }
         return cadena;
@@ -996,6 +982,7 @@ public class Utilitario extends Framework {
         }
         return str_valor;
     }
+
     /*Valida el ingreso de solo numeros enteros positivos (telefono)
      * 
      */
@@ -1078,86 +1065,92 @@ public class Utilitario extends Framework {
         }
         return super.getFormatoNumero(dou_num); //To change body of generated methods, choose Tools | Templates.
     }
+
     /**
      * Retorna nro de dias que le corresonde a un mes
      *
-     * @param mes nro de mes 
-     * @param year anio 
+     * @param mes nro de mes
+     * @param year anio
      * @return dias nro de dias que le corresponden al mes ingresado
      */
-    public int getNrodias(int mes,int year) {
+    public int getNrodias(int mes, int year) {
         Calendar cal = Calendar.getInstance();
-        int nro_dias=0;
-        mes=mes-1;
+        int nro_dias = 0;
+        mes = mes - 1;
         //System.out.println("mess "+mes);
-         if(Calendar.JANUARY==mes){
-                 cal = new GregorianCalendar(year, Calendar.JANUARY, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-        //System.out.println("messaa "+mes);
+        if (Calendar.JANUARY == mes) {
+            cal = new GregorianCalendar(year, Calendar.JANUARY, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            //System.out.println("messaa "+mes);
 
-             }
-             else if(Calendar.FEBRUARY==mes){
-                 cal = new GregorianCalendar(year, Calendar.FEBRUARY, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-          // System.out.println("messbbb "+mes);
+        } else if (Calendar.FEBRUARY == mes) {
+            cal = new GregorianCalendar(year, Calendar.FEBRUARY, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            // System.out.println("messbbb "+mes);
 
-             }
-                         else if(Calendar.MARCH==mes){
-                 cal = new GregorianCalendar(year, Calendar.MARCH, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-         //System.out.println("messccc "+mes);
+        } else if (Calendar.MARCH == mes) {
+            cal = new GregorianCalendar(year, Calendar.MARCH, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            //System.out.println("messccc "+mes);
 
-             }
-                          else if(Calendar.APRIL==mes){
-                 cal = new GregorianCalendar(year, Calendar.APRIL, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-              }
-                          else if(Calendar.MAY==mes){
-                 cal = new GregorianCalendar(year, Calendar.MAY, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-             }
-                          else if(Calendar.JUNE==mes){
-                 cal = new GregorianCalendar(year, Calendar.JUNE, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-              }
-                          else if(Calendar.JULY==mes){
-                 cal = new GregorianCalendar(year, Calendar.JULY, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-             }
-                          else if(Calendar.AUGUST==mes){
-                 cal = new GregorianCalendar(year, Calendar.AUGUST, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-             }
-                          else if(Calendar.SEPTEMBER==mes){
-                 cal = new GregorianCalendar(year, Calendar.SEPTEMBER, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-              }
-                          else if(Calendar.OCTOBER==mes){
-                 cal = new GregorianCalendar(year, Calendar.OCTOBER, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            }
-                          else if(Calendar.NOVEMBER==mes){
-                 cal = new GregorianCalendar(year, Calendar.NOVEMBER, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-             }
-                          else if(Calendar.DECEMBER==mes){
-                 cal = new GregorianCalendar(year, Calendar.DECEMBER, 1);
-                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                 nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-              }
-        
-        
+        } else if (Calendar.APRIL == mes) {
+            cal = new GregorianCalendar(year, Calendar.APRIL, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.MAY == mes) {
+            cal = new GregorianCalendar(year, Calendar.MAY, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.JUNE == mes) {
+            cal = new GregorianCalendar(year, Calendar.JUNE, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.JULY == mes) {
+            cal = new GregorianCalendar(year, Calendar.JULY, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.AUGUST == mes) {
+            cal = new GregorianCalendar(year, Calendar.AUGUST, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.SEPTEMBER == mes) {
+            cal = new GregorianCalendar(year, Calendar.SEPTEMBER, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.OCTOBER == mes) {
+            cal = new GregorianCalendar(year, Calendar.OCTOBER, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.NOVEMBER == mes) {
+            cal = new GregorianCalendar(year, Calendar.NOVEMBER, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        } else if (Calendar.DECEMBER == mes) {
+            cal = new GregorianCalendar(year, Calendar.DECEMBER, 1);
+            cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            nro_dias = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        }
+
         return nro_dias;
+    }
+
+    /**
+     * Transforma a Date de una fecha en un formato especifico
+     *
+     * @param fecha
+     * @param formato
+     * @return
+     */
+    public Date toDate(String fecha, String formato) {
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat(formato);
+            Date dat_fecha = formatoFecha.parse(fecha);
+            return dat_fecha;
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

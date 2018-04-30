@@ -18,11 +18,17 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.Upload;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.component.separator.Separator;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
@@ -42,10 +48,10 @@ public class DocumentoCxP extends Dialogo {
     private final Tabulador tab_documenoCxP = new Tabulador();
     private Combo com_tipo_documento;
     private Combo com_anticipo;
-    private Etiqueta eti_anticipo = new Etiqueta();
+    private final Etiqueta eti_anticipo = new Etiqueta();
     private Tabla tab_cab_documento;
     private Tabla tab_det_documento;
-    private Map<String, String> parametros;
+    private final Map<String, String> parametros;
     private final AreaTexto ate_observacion = new AreaTexto();
     private final Texto tex_subtotal12 = new Texto();
     private final Texto tex_subtotal0 = new Texto();
@@ -68,6 +74,7 @@ public class DocumentoCxP extends Dialogo {
     private final ServicioConfiguracion ser_configuracion = (ServicioConfiguracion) utilitario.instanciarEJB(ServicioConfiguracion.class);
     @EJB
     private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
+
     private double tarifaIVA = 0;
     //CLIENTE
     private Tabla tab_creacion_cliente;
@@ -81,6 +88,7 @@ public class DocumentoCxP extends Dialogo {
     private Tabla tab_dto_prove;
     private Tabla tab_cb_rete;
     private Tabla tab_dt_rete;
+    private Tabla tab_electronica;
 
     //PAGOS
     private Tabla tab_dt_pago;
@@ -94,12 +102,14 @@ public class DocumentoCxP extends Dialogo {
 
     //REEMBOLSOS
     private Tabla tab_com_reembolso;
+    private final Etiqueta eti_subtotal = new Etiqueta();
+    private final Etiqueta eti_iva = new Etiqueta();
 
-    private Combo com_compensacion = new Combo();
-    private Texto tex_monto_comp = new Texto();
+    private Upload upl_cxp_xml;
+    private Dialogo dia_cxp_xml;
 
-    private Etiqueta eti_subtotal = new Etiqueta();
-    private Etiqueta eti_iva = new Etiqueta();
+    private final Boton bot_limpiar_cliente = new Boton();
+    private final Boton bot_limpiar_producto = new Boton();
 
     public DocumentoCxP() {
         //utilitario.getConexion().setImprimirSqlConsola(true);
@@ -151,9 +161,25 @@ public class DocumentoCxP extends Dialogo {
         dia_creacion_producto = new Dialogo();
         dia_creacion_producto.setId("dia_creacion_producto");
         dia_creacion_producto.setTitle("CREAR PRODUCTO");
-        dia_creacion_producto.setHeight("65%");
-        dia_creacion_producto.setWidth("40%");
+        dia_creacion_producto.setHeight("75%");
+        dia_creacion_producto.setWidth("50%");
         utilitario.getPantalla().getChildren().add(dia_creacion_producto);
+
+        bot_limpiar_cliente.setValue("Limpiar");
+        bot_limpiar_cliente.setIcon("ui-icon-cancel");
+        dia_creacion_cliente.getGru_botones().getChildren().add(bot_limpiar_cliente);
+
+        bot_limpiar_producto.setValue("Limpiar");
+        bot_limpiar_producto.setIcon("ui-icon-cancel");
+        dia_creacion_producto.getGru_botones().getChildren().add(bot_limpiar_producto);
+
+        dia_cxp_xml = new Dialogo();
+        dia_cxp_xml.setId("dia_cxp_xml");
+        dia_cxp_xml.setTitle("SELECCIONAR FACTURA ELECTRÓNICA XML");
+        dia_cxp_xml.setWidth("45%");
+        dia_cxp_xml.setHeight("30%");
+        utilitario.getPantalla().getChildren().add(dia_cxp_xml);
+
     }
 
     public void setDocumentoCxP(String titulo) {
@@ -189,6 +215,13 @@ public class DocumentoCxP extends Dialogo {
         }
     }
 
+    public void cambioFecha() {
+        tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
+        calcularTotalDocumento();
+    }
+
     public void verDocumento(String ide_cpcfa) {
         opcion = 2;  // GENERA FACTURA
         tab_documenoCxP.getTab(0).getChildren().clear();
@@ -215,7 +248,7 @@ public class DocumentoCxP extends Dialogo {
             tab_documenoCxP.getTab(2).getChildren().add(dibujarAsiento());
         }
         tab_documenoCxP.getTab(3).getChildren().add(dibujarDetallePago());
-
+        cambioFecha();
         tex_iva.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_iva_cpcfa")));
         //Carga totales y observacion
         double dou_subt0 = 0;
@@ -239,10 +272,6 @@ public class DocumentoCxP extends Dialogo {
         tex_otros_valores.setDisabled(true);
         tex_valor_descuento.setDisabled(true);
         com_tipo_documento.setDisabled(true);
-        com_compensacion.setDisabled(true);
-
-        tex_monto_comp.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("monto_com_cpcfa")));
-        com_compensacion.setValue(tab_cab_documento.getValor("ide_cntic"));
 
         //ver reembolso
         if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_reembolso"))) {
@@ -265,7 +294,7 @@ public class DocumentoCxP extends Dialogo {
         boolean bol_esnota = false;
         if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
             bol_esnota = true;
-            tab_det_documento.setScrollHeight(getAltoPanel() - 425);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 415);
         }
         for (int i = 0; i < tab_cab_documento.getGrid().getChildren().size(); i++) {
             if (tab_cab_documento.getGrid().getChildren().get(i).getId() != null) {
@@ -442,12 +471,39 @@ public class DocumentoCxP extends Dialogo {
         gri_pto.getChildren().add(com_tipo_documento);
 
         if (opcion == 1) {
+            //Seleccionar XML            
+            Grid gri_matriz = new Grid();
+            gri_matriz.setId("gridXmlCxp");
+            gri_matriz.setStyle("width:100%;");
+            upl_cxp_xml = new Upload();
+            upl_cxp_xml.setId("upl_cxp_xml");
+            upl_cxp_xml.setAllowTypes("/(\\.|\\/)(xml)$/");
+            upl_cxp_xml.setMetodoRuta("pre_index.clase." + getId() + ".seleccionarArchivoXML");
+            upl_cxp_xml.setUploadLabel("Validar Factura .xml");
+            upl_cxp_xml.setAuto(false);
+            gri_matriz.getChildren().add(upl_cxp_xml);
+
+            dia_cxp_xml.getGri_cuerpo().getChildren().clear();
+            dia_cxp_xml.setDialogo(gri_matriz);
+            dia_cxp_xml.getBot_aceptar().setRendered(false);
+            dia_cxp_xml.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            Boton bt_panel = new Boton();
+            bt_panel.setValue("Cargar XML");
+            bt_panel.setIcon("ui-icon-folder-open");
+            bt_panel.setTitle("Seleccionar una Factura Electrónica en formato XML");
+            bt_panel.setMetodoRuta("pre_index.clase." + getId() + ".abrirArchivoXML");
+
+            gri_pto.getChildren().add(new Espacio("10", "1"));
+            gri_pto.getChildren().add(bt_panel);
+
             dia_creacion_producto.getGri_cuerpo().getChildren().clear();
             dia_creacion_cliente.getGri_cuerpo().getChildren().clear();
             gri_pto.getChildren().add(new Espacio("10", "1"));
             Boton botCrearCliente = new Boton();
             botCrearCliente.setId("botCrearCliente");
-            botCrearCliente.setValue("Crear Proveedor");
+            botCrearCliente.setValue("Proveedor");
+            botCrearCliente.setTitle("Crear-Modificar Proveedor");
             botCrearCliente.setIcon("ui-icon-person");
             botCrearCliente.setMetodoRuta("pre_index.clase." + getId() + ".abrirProveedor");
             gri_pto.getChildren().add(botCrearCliente);
@@ -456,12 +512,16 @@ public class DocumentoCxP extends Dialogo {
             Boton botCrearProducto = new Boton();
             botCrearProducto.setId("botCrearProducto");
             botCrearProducto.setValue("Crear Producto");
+            botCrearProducto.setTitle("Crear-Modificar Producto");
             botCrearProducto.setIcon("ui-icon-cart");
             botCrearProducto.setMetodoRuta("pre_index.clase." + getId() + ".abrirProducto");
             gri_pto.getChildren().add(botCrearProducto);
 
             dia_creacion_cliente.getBot_aceptar().setMetodoRuta("pre_index.clase." + getId() + ".guardarProveedor");
             dia_creacion_cliente.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
+
+            bot_limpiar_producto.setMetodoRuta("pre_index.clase." + getId() + ".limpiarProducto");
+            bot_limpiar_cliente.setMetodoRuta("pre_index.clase." + getId() + ".limpiarCliente");
 
             tab_creacion_cliente = new Tabla();
             tab_creacion_cliente.setId("tab_creacion_cliente");
@@ -551,7 +611,7 @@ public class DocumentoCxP extends Dialogo {
             tab_creacion_producto.getColumna("ICE_INARTI").setNombreVisual("APLICA ICE ?");
             tab_creacion_producto.getColumna("ICE_INARTI").setOrden(7);
             tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setNombreVisual("HACE KARDEX ?");
-            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setOrden(8);
+            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setVisible(false);
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACIÓN");
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
             tab_creacion_producto.getGrid().setColumns(2);
@@ -596,6 +656,8 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("ide_cndfp").setOrden(0);
         tab_cab_documento.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_cab_documento.getColumna("ide_usua").setVisible(false);
+        tab_cab_documento.getColumna("MONTO_COM_CPCFA").setVisible(false);
+        tab_cab_documento.getColumna("IDE_CNTIC").setVisible(false);
         tab_cab_documento.getColumna("fecha_trans_cpcfa").setValorDefecto(utilitario.getFechaActual());
         tab_cab_documento.getColumna("fecha_trans_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("fecha_emisi_cpcfa").setValorDefecto(utilitario.getFechaActual());
@@ -624,7 +686,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("numero_cpcfa").setOrden(4);
         tab_cab_documento.getColumna("numero_cpcfa").setAncho(10);
         tab_cab_documento.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
-        tab_cab_documento.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_cab_documento.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_cab_documento.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_documento.getColumna("numero_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("base_grabada_cpcfa").setVisible(false);
@@ -659,7 +721,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setNombreVisual("FECHA EMISIÓN DOC. MODI.");
         tab_cab_documento.getColumna("numero_nc_cpcfa").setOrden(10);
         tab_cab_documento.getColumna("numero_nc_cpcfa").setNombreVisual("NÚMERO DOC. MODI.");
-        tab_cab_documento.getColumna("numero_nc_cpcfa").setMascara("999-999-99999999");
+        tab_cab_documento.getColumna("numero_nc_cpcfa").setMascara("999-999-999999999");
         tab_cab_documento.getColumna("numero_nc_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setNombreVisual("AUTORIZACIÓN DOC. MODI.");
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setOrden(11);
@@ -673,9 +735,6 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
-
-        tab_cab_documento.getColumna("ide_cntic").setVisible(false);
-        tab_cab_documento.getColumna("monto_com_cpcfa").setVisible(false);
 
         tab_cab_documento.dibujar();
         //tab_cab_documento.agregarRelacion(tab_det_documento);
@@ -752,7 +811,7 @@ public class DocumentoCxP extends Dialogo {
         tab_det_documento.setRecuperarLectura(true);
         tab_det_documento.setScrollable(true);
         tab_det_documento.setScrollWidth(getAnchoPanel() - 15);
-        tab_det_documento.setScrollHeight(getAltoPanel() - 365); //300 
+        tab_det_documento.setScrollHeight(getAltoPanel() - 365);
         tab_det_documento.setRows(100);
         tab_det_documento.dibujar();
 
@@ -766,7 +825,6 @@ public class DocumentoCxP extends Dialogo {
         pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminar");
         pat_panel.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
         pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
-        pat_panel.getMenuTabla().getItem_insertar().setRendered(true);
         pat_panel.setStyle("width:100%;height:100%;overflow: hidden;display: block;");
         grupo.getChildren().add(pat_panel);
 
@@ -801,9 +859,8 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.getColumna("numero_cpcfa").setVisible(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
         tab_com_reembolso.getColumna("numero_cpcfa").setOrden(2);
-        //////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("ESTABLECIMIENTO-PUNTO.EMISION - SECUENCIAL");
-        /////tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Debe ingresar el número de serie - establecimiento y número secuencial");
-        tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_com_reembolso.getColumna("numero_cpcfa").setComentario("Establecimiento - Punto de Emisión - Secuencial");
+        tab_com_reembolso.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_com_reembolso.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_com_reembolso.getColumna("numero_cpcfa").setRequerida(true);
         tab_com_reembolso.getColumna("fecha_emisi_cpcfa").setVisible(true);
@@ -869,66 +926,49 @@ public class DocumentoCxP extends Dialogo {
         gri_total.setStyle("width:" + (getAnchoPanel() - 10) + "px;border:1px");
         gri_total.setColumns(2);
         Grid gri_observa = new Grid();
-
+        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong> <span style='color:red;font-weight: bold;'> *</span>"));
         ate_observacion.setCols(70);
-
+        gri_observa.getChildren().add(ate_observacion);
         gri_total.getChildren().add(gri_observa);
         Grid gri_valores = new Grid();
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(6);
 
-        Grid gcom = new Grid();
-        gcom.setId("gcom");
-        gcom.setColumns(2);
-
-        gcom.getChildren().add(new Etiqueta("<strong> TIPO COMPENSACIÓN :<s/trong>"));
-        gcom.getChildren().add(new Etiqueta("<strong> MONTO COMPENSACIÓN :<s/trong>"));
-        com_compensacion.setCombo("select ide_cntic,nombre_cntic from con_compensacion");
-        com_compensacion.setMetodoRuta(tab_cab_documento.getRuta() + ".calcularCompensacion");
-        gcom.getChildren().add(com_compensacion);
-
-        tex_monto_comp.setDisabled(true);
-        tex_monto_comp.setStyle("font-size: 14px;text-align: right;width:110px");
-        tex_monto_comp.setValue(utilitario.getFormatoNumero("0"));
-        gcom.getChildren().add(tex_monto_comp);
-        gri_observa.getChildren().add(gcom);
-        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong> <span style='color:red;font-weight: bold;'> *</span>"));
-        gri_observa.getChildren().add(ate_observacion);
-
-        gri_valores.getChildren().add(new Etiqueta("<strong> OTROS VALORES :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> OTROS VALORES :</strong>"));
         tex_otros_valores.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_otros_valores.setMetodoChangeRuta(tab_det_documento.getRuta() + ".calcularTotalDocumento");
         tex_otros_valores.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_otros_valores);
-        gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :</strong>"));
         tex_porc_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_porc_descuento.setDisabled(true);
         tex_porc_descuento.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_porc_descuento);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR DESCUENTO :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR DESCUENTO :</strong>"));
         tex_valor_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_valor_descuento.setValue(utilitario.getFormatoNumero("0"));
         tex_valor_descuento.setMetodoChangeRuta(tab_det_documento.getRuta() + ".calcularTotalDocumento");
         gri_valores.getChildren().add(tex_valor_descuento);
-        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+
+        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
         gri_valores.getChildren().add(eti_subtotal);
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal12.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal12);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :</strong>"));
         tex_subtotal0.setDisabled(true);
         tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal0.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal0);
-        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
+        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
         gri_valores.getChildren().add(eti_iva);
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_iva.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_iva);
-        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :</strong>"));
         tex_total.setDisabled(true);
         tex_total.setStyle("font-size: 14px;font-weight: bold;text-align: right;width:110px");
         tex_total.setValue(utilitario.getFormatoNumero("0"));
@@ -940,8 +980,107 @@ public class DocumentoCxP extends Dialogo {
         return grupo;
     }
 
-    public void calcularCompensacion() {
-        calcularTotalDocumento();
+    /**
+     * Verifica si una identificación existe en la base de datos
+     */
+    public void buscarProveedor() {
+        if (tab_creacion_cliente.getValor("IDENTIFICAC_GEPER") != null) {
+            String ide_geper_busca = ser_proveedor.getIdeProveedorporIdentificacion(tab_creacion_cliente.getValor("IDENTIFICAC_GEPER"));
+            if (ide_geper_busca != null) {
+                tab_creacion_cliente.setCondicion("ide_geper=" + ide_geper_busca);
+                tab_creacion_cliente.ejecutarSql();
+                utilitario.addUpdate("tab_creacion_cliente");
+            }
+        }
+    }
+
+    public void limpiarProducto() {
+        tab_creacion_producto.limpiar();
+        tab_creacion_producto.insertar();
+        utilitario.addUpdate("tab_creacion_producto");
+    }
+
+    public void limpiarCliente() {
+        tab_creacion_cliente.limpiar();
+        tab_creacion_cliente.insertar();
+        utilitario.addUpdate("tab_creacion_cliente");
+    }
+
+    public void seleccionarArchivoXML(FileUploadEvent event) {
+
+        try {
+
+            File tempFile = File.createTempFile(event.getFile().getFileName(), "tmp");
+            tempFile.deleteOnExit();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            IOUtils.copy(event.getFile().getInputstream(), out);
+            out.close();
+
+            StringBuilder fileContents = new StringBuilder((int) tempFile.length());
+            Scanner scanner = new Scanner(tempFile);
+            String lineSeparator = System.getProperty("line.separator");
+            try {
+                while (scanner.hasNextLine()) {
+                    fileContents.append(scanner.nextLine()).append(lineSeparator);
+                }
+            } finally {
+                scanner.close();
+            }
+            //Validaciones
+            String codDoc = utilitario.getValorEtiqueta(fileContents.toString(), "codDoc");
+            if (codDoc == null || codDoc.equals("01") == false) {
+                utilitario.agregarMensajeError("Error archivo XML", "Tipo de comprobante no válido");
+                return;
+            }
+            String ide_geper = ser_proveedor.getIdeProveedor(utilitario.getValorEtiqueta(fileContents.toString(), "ruc"));
+            if (ide_geper == null) {
+                utilitario.agregarMensajeError("Error", "El proveedor " + utilitario.getValorEtiqueta(fileContents.toString(), "razonSocial") + " no existe en la base de datos");
+                return;
+            }
+            String autorizacio_cpcfa = utilitario.getValorEtiqueta(fileContents.toString(), "numeroAutorizacion");
+            if (ser_cuentas_cxp.isExisteDocumentoElectronico(autorizacio_cpcfa)) {
+                utilitario.agregarMensajeError("Error", "La factura electronica seleccionada ya existe");
+                return;
+            }
+
+            com_tipo_documento.setValue(parametros.get("p_con_tipo_documento_factura"));
+            cargarProveedores();
+            String numero_cpcfa = utilitario.getValorEtiqueta(fileContents.toString(), "estab") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "ptoEmi") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "secuencial");
+            tab_cab_documento.setValor("ide_geper", ide_geper);
+            tab_cab_documento.setValor("autorizacio_cpcfa", autorizacio_cpcfa);
+            System.out.println("--- " + numero_cpcfa);
+            tab_cab_documento.setValor("numero_cpcfa", numero_cpcfa);
+            tab_cab_documento.setValor("fecha_emisi_cpcfa", utilitario.getFormatoFecha(utilitario.toDate(utilitario.getFormatoFecha(utilitario.getValorEtiqueta(fileContents.toString(), "fechaEmision")), "dd/MM/yyyy")));
+            tab_cab_documento.setValor("ide_cndfp", ser_cuentas_cxp.getFormaPago(utilitario.getValorEtiqueta(fileContents.toString(), "formaPago")));
+            //Detalles
+            String cadenaDetalles = utilitario.getValorEtiqueta(fileContents.toString(), "detalles");
+            String strDetalles[] = cadenaDetalles.split("</detalle>");
+            tab_det_documento.limpiar();
+            for (String strDetalleActual : strDetalles) {
+                tab_det_documento.insertar();
+                tab_det_documento.setValor("cantidad_cpdfa", utilitario.getFormatoNumero(utilitario.getValorEtiqueta(strDetalleActual, "cantidad"), 3));
+                tab_det_documento.setValor("observacion_cpdfa", utilitario.getValorEtiqueta(strDetalleActual, "descripcion"));
+                tab_det_documento.setValor("precio_cpdfa", utilitario.getValorEtiqueta(strDetalleActual, "precioUnitario"));
+                tab_det_documento.setValor("valor_cpdfa", utilitario.getValorEtiqueta(strDetalleActual, "precioTotalSinImpuesto"));
+                String codigoPorcentaje = utilitario.getValorEtiqueta(strDetalleActual, "codigoPorcentaje");
+                if (codigoPorcentaje.equals("0")) {                    //NO IVA
+                    tab_det_documento.setValor("iva_inarti_cpdfa", "-1");
+                } else if (codigoPorcentaje.equals("6")) {
+                    tab_det_documento.setValor("iva_inarti_cpdfa", "0");
+                } else {
+                    tab_det_documento.setValor("iva_inarti_cpdfa", "1");
+                }
+            }
+            calcularTotalDocumento();
+            dia_cxp_xml.cerrar();
+            utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento,tab_documenoCxP:0:tab_det_documento,tab_documenoCxP:0:gri_pto");
+        } catch (Exception ex) {
+            utilitario.crearError("Error al Leer Factura XML", "en el método seleccionarArchivoXML()", ex);
+        }
+    }
+
+    public void abrirArchivoXML() {
+        dia_cxp_xml.dibujar();
     }
 
     private Grupo dibujarAsiento() {
@@ -1047,13 +1186,6 @@ public class DocumentoCxP extends Dialogo {
         utilitario.addUpdate("tab_documenoCxP:0:gri_pto");
     }
 
-    public void cambioFecha() {
-        tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
-        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
-        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :<s/trong>");
-        calcularTotalDocumento();
-    }
-
     public void insertar() {
         if (tab_det_documento.isFocus()) {
             if (tab_cab_documento.getValor("ide_geper") != null) {
@@ -1065,7 +1197,6 @@ public class DocumentoCxP extends Dialogo {
         if (tab_com_reembolso.isFocus()) {
             if (tab_cab_documento.getValor("ide_geper") != null) {
                 tab_com_reembolso.insertar();
-                tab_com_reembolso.setValor("fecha_emisi_cpcfa", tab_cab_documento.getValor("fecha_emisi_cpcfa"));
             } else {
                 utilitario.agregarMensajeInfo("Seleccione Proveedor", "Debe seleccionar un proveedor para realizar el documento");
             }
@@ -1089,9 +1220,6 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
             tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros_valores.getValue()));
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
-
-            tab_cab_documento.setValor("monto_com_cpcfa", utilitario.getFormatoNumero(tex_monto_comp.getValue()));
-            tab_cab_documento.setValor("ide_cntic", String.valueOf(com_compensacion.getValue()));
 
             if (validarDocumento()) {
                 obteneAlterno104();
@@ -1171,21 +1299,6 @@ public class DocumentoCxP extends Dialogo {
      * Calcula totales de la factura
      */
     public void calcularTotalDocumento() {
-
-        ///monto compensa
-        double dou_puntosC = 0;
-        double dou_montoC = 0;
-
-        if (com_compensacion.getValue() != null) {
-            //busca puntos de compensacion que se debitara del iva
-            TablaGenerica tab_punto = utilitario.consultar("select ide_cntic,puntos_iva_cntic,alterno_cntic from con_compensacion where ide_cntic=" + com_compensacion.getValue());
-            try {
-                dou_puntosC = Double.parseDouble(tab_punto.getValor("puntos_iva_cntic"));
-                dou_puntosC = dou_puntosC / 100;
-            } catch (Exception e) {
-            }
-        }
-
         double base_grabada = 0;
         double base_no_objeto = 0;
         double base_tarifa0 = 0;
@@ -1238,9 +1351,7 @@ public class DocumentoCxP extends Dialogo {
             }
         }
         //base_grabada = base_grabada - descuento;
-        dou_montoC = ((base_grabada) - descuento) * dou_puntosC;
-        valor_iva = (base_grabada ) * tarifaIVA; //0.12
-        valor_iva = valor_iva - dou_montoC - descuento;
+        valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
 
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
@@ -1250,15 +1361,13 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva + otros)));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + otros));
 
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_monto_comp.setValue(utilitario.getFormatoNumero(dou_montoC));
         tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + otros));
-
-        utilitario.addUpdate("tab_documenoCxP:0:gri_valores,tab_documenoCxP:0:gcom");
+        utilitario.addUpdate("tab_documenoCxP:0:gri_valores");
     }
 
     /**
@@ -1329,7 +1438,7 @@ public class DocumentoCxP extends Dialogo {
 ////            return false;
 ////        }
         //Valida que no se haya ingresado ya el documento
-        List lis_numeros_fact = utilitario.getConexion().consultar("select * from cxp_cabece_factur where numero_cpcfa='" + tab_cab_documento.getValor("numero_cpcfa") + "' and ide_geper=" + tab_cab_documento.getValor("ide_geper") + " and autorizacio_cpcfa='" + tab_cab_documento.getValor("autorizacio_cpcfa") + "'");
+        List lis_numeros_fact = utilitario.getConexion().consultar("select numero_cpcfa,autorizacio_cpcfa from cxp_cabece_factur where numero_cpcfa='" + tab_cab_documento.getValor("numero_cpcfa") + "' and ide_geper=" + tab_cab_documento.getValor("ide_geper") + " and autorizacio_cpcfa='" + tab_cab_documento.getValor("autorizacio_cpcfa") + "'  and ide_cpefa=0");
         if (lis_numeros_fact.size() > 0) {
             utilitario.agregarMensajeError("Error al guardar el Documento", "El número de del documento ingresado ya existe ");
             return false;
@@ -1464,16 +1573,8 @@ public class DocumentoCxP extends Dialogo {
                 tab_com_reembolso.setValor(i, "total_cpcfa", utilitario.getFormatoNumero(dou_baseiva + dou_base0 + dou_basenoobjeto + dou_iva));
             }
             //valida total factura con total reembolso
-            if (!utilitario.getFormatoNumero(tab_cab_documento.getSumaColumna("base_grabada_cpcfa")).equals(utilitario.getFormatoNumero(tab_com_reembolso.getSumaColumna("base_grabada_cpcfa")))) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Grabada del Documento debe ser igual a la del Comprobante de Reembolso");
-                return false;
-            }
-            if (!utilitario.getFormatoNumero(tab_cab_documento.getSumaColumna("base_tarifa0_cpcfa")).equals(utilitario.getFormatoNumero(tab_com_reembolso.getSumaColumna("base_tarifa0_cpcfa")))) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base Trarifa 0 del Documento debe ser igual a la del Comprobante de Reembolso");
-                return false;
-            }
-            if (!utilitario.getFormatoNumero(tab_cab_documento.getSumaColumna("base_no_objeto_iva_cpcfa")).equals(utilitario.getFormatoNumero(tab_com_reembolso.getSumaColumna("base_no_objeto_iva_cpcfa")))) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "La Base No Objeto del Documento debe ser igual a la del Comprobante de Reembolso");
+            if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
+                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso");
                 return false;
             }
 
@@ -1489,7 +1590,7 @@ public class DocumentoCxP extends Dialogo {
         boolean bol_esnota = false;
         if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
             bol_esnota = true;
-            tab_det_documento.setScrollHeight(getAltoPanel() - 425);
+            tab_det_documento.setScrollHeight(getAltoPanel() - 415);
         } else {
             tab_det_documento.setScrollHeight(getAltoPanel() - 365);
         }
@@ -1539,7 +1640,7 @@ public class DocumentoCxP extends Dialogo {
 
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta"))) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
@@ -1557,7 +1658,7 @@ public class DocumentoCxP extends Dialogo {
                 String num_liq = tab_cxp_cab.getValor(0, "numero_cpcfa");
                 String num = (Integer.parseInt(num_liq.substring(6, num_liq.length())) + 1) + "";
                 String num_liquidacion = num_liq.substring(0, 6);
-                num_liquidacion = num_liquidacion.concat(utilitario.generarCero(8 - num.length())).concat(num);
+                num_liquidacion = num_liquidacion.concat(utilitario.generarCero(9 - num.length())).concat(num);
                 System.out.println("num " + num_liquidacion);
                 tab_cab_documento.setValor("numero_cpcfa", num_liquidacion);
                 utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
@@ -1577,10 +1678,9 @@ public class DocumentoCxP extends Dialogo {
         if (true) { //!!!!!!!!******Validar Datos Producto
             if (tab_creacion_producto.guardar()) {
                 //Respalda insertadas para que no guarde
-//                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
-//                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
-                if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
-                    utilitario.agregarMensaje("El Producto se guardo correctamente", "");
+                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
+                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                     tab_det_documento.actualizarCombos();
                     //tab_det_documento.insertar();
                     //lis_resp_deta.add(tab_det_documento.getFilaSeleccionada().getRowKey());
@@ -1591,8 +1691,8 @@ public class DocumentoCxP extends Dialogo {
                     //tab_creacion_producto.insertar();
                     dia_creacion_producto.cerrar();
                 }
-//                tab_cab_documento.setInsertadas(lis_resp_cab);
-//                tab_det_documento.setInsertadas(lis_resp_deta);
+                tab_cab_documento.setInsertadas(lis_resp_cab);
+                tab_det_documento.setInsertadas(lis_resp_deta);
             }
         }
     }
@@ -1601,11 +1701,10 @@ public class DocumentoCxP extends Dialogo {
         if (ser_proveedor.validarProveedor(tab_creacion_cliente)) {
             if (tab_creacion_cliente.guardar()) {
                 //Respalda insertadas para que no guarde
-                //     List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
-                //     List<String> lis_resp_deta = tab_det_documento.getInsertadas();
+                List<String> lis_resp_cab = tab_cab_documento.getInsertadas();
+                List<String> lis_resp_deta = tab_det_documento.getInsertadas();
 
-                if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
-                    utilitario.agregarMensaje("El Proveedor se guardo correctamente", "");
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                     //Se guardo correctamente
                     tab_cab_documento.actualizarCombos();
                     tab_cab_documento.setValor("ide_geper", tab_creacion_cliente.getValor("ide_geper"));
@@ -1618,8 +1717,8 @@ public class DocumentoCxP extends Dialogo {
                     //tab_creacion_cliente.insertar();
                     dia_creacion_cliente.cerrar();
                 }
-                //     tab_cab_documento.setInsertadas(lis_resp_cab);
-                //     tab_det_documento.setInsertadas(lis_resp_deta);
+                tab_cab_documento.setInsertadas(lis_resp_cab);
+                tab_det_documento.setInsertadas(lis_resp_deta);
             }
         }
     }
@@ -1689,7 +1788,6 @@ public class DocumentoCxP extends Dialogo {
         }
         double tarifaIVAReemb = ser_configuracion.getPorcentajeIva(tab_com_reembolso.getValor("fecha_emisi_cpcfa"));
         double iva = base * tarifaIVAReemb;
-
         tab_com_reembolso.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(iva));
         utilitario.addUpdateTabla(tab_com_reembolso, "valor_iva_cpcfa", "");
     }
@@ -1732,12 +1830,20 @@ public class DocumentoCxP extends Dialogo {
         if (dia_creacion_producto != null && dia_creacion_producto.isVisible()) {
             dia_creacion_producto.cerrar();
         }
+        if (dia_cxp_xml != null && dia_cxp_xml.isVisible()) {
+            dia_cxp_xml.cerrar();
+        }
     }
 
     public void abrirProducto() {
         if (tab_cab_documento.getValor("ide_geper") != null) {
-            tab_creacion_producto.limpiar();
-            tab_creacion_producto.insertar();
+            if (tab_det_documento.getValor("ide_inarti") != null) {
+                tab_creacion_producto.setCondicion("ide_inarti=" + tab_det_documento.getValor("ide_inarti"));
+                tab_creacion_producto.ejecutarSql();
+            } else {
+                tab_creacion_producto.limpiar();
+                tab_creacion_producto.insertar();
+            }
             dia_creacion_producto.dibujar();
         } else {
             utilitario.agregarMensajeInfo("Seleccione un Proveedor", "");
@@ -1746,8 +1852,13 @@ public class DocumentoCxP extends Dialogo {
 
     public void abrirProveedor() {
         if (com_tipo_documento.getValue() != null) {
-            tab_creacion_cliente.limpiar();
-            tab_creacion_cliente.insertar();
+            if (tab_cab_documento.getValor("ide_geper") != null) {
+                tab_creacion_cliente.setCondicion("ide_geper=" + tab_cab_documento.getValor("ide_geper"));
+                tab_creacion_cliente.ejecutarSql();
+            } else {
+                tab_creacion_cliente.limpiar();
+                tab_creacion_cliente.insertar();
+            }
             dia_creacion_cliente.dibujar();
         } else {
             utilitario.agregarMensajeInfo("Seleccione un Tipo de Documento", "");
@@ -1934,6 +2045,34 @@ public class DocumentoCxP extends Dialogo {
 
     public void setTab_com_reembolso(Tabla tab_com_reembolso) {
         this.tab_com_reembolso = tab_com_reembolso;
+    }
+
+    public boolean isFacturaElectronica() {
+        return false;
+    }
+
+    public Tabla getTab_electronica() {
+        return tab_electronica;
+    }
+
+    public void setTab_electronica(Tabla tab_electronica) {
+        this.tab_electronica = tab_electronica;
+    }
+
+    public Upload getUpl_cxp_xml() {
+        return upl_cxp_xml;
+    }
+
+    public void setUpl_cxp_xml(Upload upl_cxp_xml) {
+        this.upl_cxp_xml = upl_cxp_xml;
+    }
+
+    public Dialogo getDia_cxp_xml() {
+        return dia_cxp_xml;
+    }
+
+    public void setDia_cxp_xml(Dialogo dia_cxp_xml) {
+        this.dia_cxp_xml = dia_cxp_xml;
     }
 
 }

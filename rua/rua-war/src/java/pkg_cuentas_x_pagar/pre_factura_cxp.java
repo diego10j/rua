@@ -224,7 +224,7 @@ public class pre_factura_cxp extends Pantalla {
             tab_tabla1.getColumna("numero_cpcfa").setEstilo("font-size: 15px;font-weight: bold");
             tab_tabla1.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
             tab_tabla1.getColumna("numero_cpcfa").setMetodoChange("aceptarDatosFactura");
-            tab_tabla1.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+            tab_tabla1.getColumna("numero_cpcfa").setMascara("999-999-999999999");
             tab_tabla1.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
             tab_tabla1.getColumna("numero_cpcfa").setRequerida(true);
             tab_tabla1.getColumna("autorizacio_cpcfa").setLectura(true);

@@ -50,7 +50,7 @@ public class VistaRetencion extends Dialogo {
         tab_cab_retencion_vretencion.getColumna("ide_cnere").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_rete_normal"));
         tab_cab_retencion_vretencion.getColumna("es_venta_cncre").setValorDefecto("false");
         tab_cab_retencion_vretencion.getColumna("es_venta_cncre").setVisible(false);
-        tab_cab_retencion_vretencion.getColumna("numero_cncre").setMascara("999-999-99999999");
+        tab_cab_retencion_vretencion.getColumna("numero_cncre").setMascara("999-999-999999999");
         tab_cab_retencion_vretencion.getColumna("numero_cncre").setQuitarCaracteresEspeciales(false);
         tab_cab_retencion_vretencion.getColumna("autorizacion_cncre").setMascara("9999999999");
         tab_cab_retencion_vretencion.getColumna("autorizacion_cncre").setQuitarCaracteresEspeciales(true);

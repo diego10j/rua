@@ -25,6 +25,23 @@ public class ServicioProducto {
     @EJB
     private ServicioConfiguracion ser_configuracion;
 
+    public String getSqlListaProductos() {
+        return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1";
+    }
+
+    /**
+     * Retorna listado de Gastos - Servicios
+     *
+     * @return
+     */
+    public String getSqlListaGastos() {
+        return "select ide_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=2";
+    }
+
+    public String getCuentaContableGasto(String ide_inarti) {
+        return utilitario.consultar("select ide_cndpc,ide_inarti from inv_articulo where ide_inarti=" + ide_inarti).getValor("ide_cndpc");
+    }
+
     /**
      * Retorna los datos de un Producto
      *
@@ -91,6 +108,7 @@ public class ServicioProducto {
         tabla.getColumna("ide_intpr").setRequerida(true);
         tabla.getColumna("ide_inepr").setCombo("inv_estado_produc", "ide_inepr", "nombre_inepr", "");
         tabla.getColumna("nivel_inarti").setValorDefecto("HIJO");
+        tabla.getColumna("nivel_inarti").setVisible(false);        
         tabla.getColumna("hace_kardex_inarti").setValorDefecto("true");
         tabla.getColumna("es_combo_inarti").setValorDefecto("false");
         tabla.getColumna("nombre_inarti").setRequerida(true);
@@ -100,10 +118,12 @@ public class ServicioProducto {
         tabla.getColumna("iva_inarti").setRadio(getListaTipoIVA(), "1");
         tabla.getColumna("iva_inarti").setRadioVertical(true);
         tabla.getColumna("INV_IDE_INARTI").setVisible(true);
+        tabla.getColumna("ice_inarti").setVisible(false);
         tabla.getColumna("INV_IDE_INARTI").setCombo("select ide_inarti,nombre_inarti from inv_articulo where nivel_inarti ='PADRE' order by nombre_inarti");
         tabla.setTipoFormulario(true);
         tabla.getGrid().setColumns(4);
-        tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");// cargar un combo de una con el ide, nombre
+        tabla.getColumna("ide_georg").setVisible(false);
+        tabla.getColumna("es_combo_inarti").setVisible(false);
     }
 
     /**
@@ -321,6 +341,31 @@ public class ServicioProducto {
         return precio;
     }
 
+    public double getUltimoPrecioIngresoInventario(String ide_inarti) {
+        double precio = 0.00;
+        TablaGenerica tab_precio = utilitario.consultar("select precio_indci,fecha_efect_incci\n"
+                + "from inv_det_comp_inve a\n"
+                + "inner join inv_cab_comp_inve b on a.ide_incci=b.ide_incci\n"
+                + "inner join inv_tip_tran_inve c on b.ide_intti=c.ide_intti\n"
+                + "where ide_inarti=" + ide_inarti + "\n"
+                + "and ide_inepi=1\n"
+                + "and ide_intci=0\n"
+                + "and valor_indci>0\n"
+                + "and a.ide_sucu=\n" + utilitario.getVariable("ide_sucu")
+                + "and c.ide_intti !=16\n"
+                + "order by fecha_efect_incci desc limit 1");
+
+        if (tab_precio.isEmpty() == false) {
+            if (tab_precio.getValor(0, "precio_indci") != null) {
+                try {
+                    precio = Double.parseDouble(tab_precio.getValor(0, "precio_indci"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return precio;
+    }
+
     /**
      * Retorna el ultimo valor de configuracion de la compra del Producto de un
      * Cliente
@@ -411,7 +456,7 @@ public class ServicioProducto {
                 + strCondicionBodega
                 + "ORDER BY cci.fecha_trans_incci asc,dci.ide_indci asc,signo_intci asc";
     }
-
+   
     public List<Double> getSaldosInicialesKardex(String ide_inarti, String fecha_fin, String ide_inbod) {
         List<Double> resultado = new ArrayList();
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
@@ -639,7 +684,7 @@ public class ServicioProducto {
                 + "and a.ide_inarti=" + ide_inarti + "\n"
                 + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + "\n"
                 + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
-                + "order by 3,nom_geper desc";
+                + "order by 3 desc,nom_geper ";
     }
 
     /**
@@ -663,6 +708,28 @@ public class ServicioProducto {
                 + "AND a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + "\n"
                 + "group by a.ide_inarti,b.ide_geper,nom_geper\n"
                 + "order by 3,nom_geper desc";
+    }
+
+    public String getSqlDatosProducto(String ide_inarti) {
+        return "select ide_inarti,codigo_inarti CODIGO,nombre_inarti NOMBRE, nombre_inuni UNIDAD\n"
+                + "from inv_articulo a\n"
+                + "left join inv_unidad b on a.ide_inuni= b.ide_inuni\n"
+                + "where ide_inarti in (" + ide_inarti + ") order by nombre_inarti";
+    }
+
+    /**
+     * Retorna el total de productos creados
+     *
+     * @return
+     */
+    public int getTotalProductos() {
+        TablaGenerica tag = utilitario.consultar("select count(1) as NUMERO, 'total' as TOTAL from inv_articulo where  nivel_inarti='HIJO'");
+        int total = 0;
+        try {
+            total = Integer.parseInt(tag.getValor("NUMERO"));
+        } catch (Exception e) {
+        }
+        return total;
     }
 
 }

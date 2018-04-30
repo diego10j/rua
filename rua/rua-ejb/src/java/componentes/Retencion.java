@@ -7,7 +7,6 @@ package componentes;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
-import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -15,7 +14,6 @@ import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
-import framework.componentes.Upload;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -419,16 +417,17 @@ public class Retencion extends Dialogo {
         tab_cb_retencion.getColumna("ide_cnere").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_rete_normal"));
         tab_cb_retencion.getColumna("es_venta_cncre").setValorDefecto("false");
         tab_cb_retencion.getColumna("es_venta_cncre").setVisible(false);
-        tab_cb_retencion.getColumna("numero_cncre").setOrden(1);
+        tab_cb_retencion.getColumna("numero_cncre").setOrden(2);
         tab_cb_retencion.getColumna("numero_cncre").setNombreVisual("NÚMERO");
-        tab_cb_retencion.getColumna("numero_cncre").setMascara("999-999-99999999");
+        tab_cb_retencion.getColumna("numero_cncre").setMascara("999-999-999999999");
         tab_cb_retencion.getColumna("numero_cncre").setQuitarCaracteresEspeciales(false);
         tab_cb_retencion.getColumna("numero_cncre").setEstilo("font-size: 12px;font-weight: bold");
         tab_cb_retencion.getColumna("autorizacion_cncre").setMascara("9999999999");
-        tab_cb_retencion.getColumna("autorizacion_cncre").setOrden(2);
+        tab_cb_retencion.getColumna("autorizacion_cncre").setOrden(1);
         tab_cb_retencion.getColumna("autorizacion_cncre").setNombreVisual("NUM. AUTORIZACIÓN");
         tab_cb_retencion.getColumna("autorizacion_cncre").setQuitarCaracteresEspeciales(true);
         tab_cb_retencion.getColumna("autorizacion_cncre").setEstilo("font-size: 12px;font-weight: bold");
+        tab_cb_retencion.getColumna("autorizacion_cncre").setMetodoChangeRuta("pre_index.clase." + this.getId() + ".cambioAutorizacion");
         tab_cb_retencion.getColumna("numero_cncre").setQuitarCaracteresEspeciales(true);
         tab_cb_retencion.getColumna("OBSERVACION_CNCRE").setVisible(false);
         tab_cb_retencion.getColumna("FECHA_EMISI_CNCRE").setNombreVisual("FECHA EMISIÓN");
@@ -749,6 +748,22 @@ public class Retencion extends Dialogo {
             }
         }
         return true;
+    }
+
+    public void cambioAutorizacion(AjaxBehaviorEvent evt) {
+        tab_cb_retencion.modificar(evt);
+        String num_retencion = null;
+        if (tab_cb_retencion.getValor("autorizacion_cncre") != null) {
+            if (tab_cb_retencion.getValor("autorizacion_cncre").equals("0000000000")) {
+                num_retencion = "000000000000000";
+                tab_dt_retencion.limpiar();
+            } else {
+                num_retencion = ser_retencion.getNumeroRetencion(tab_cb_retencion.getValor("autorizacion_cncre"));
+            }
+
+        }
+        tab_cb_retencion.setValor("numero_cncre", num_retencion);
+        utilitario.addUpdateTabla(tab_cb_retencion, "numero_cncre", "");
     }
 
     public void cambioImpuesto(SelectEvent evt) {

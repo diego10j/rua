@@ -120,7 +120,7 @@ public class pre_reembolso_cajas extends Pantalla {
         tab_cab_factura_visual.getColumna("numero_cpcfa").setEstilo("font-size: 15px;font-weight: bold");
         tab_cab_factura_visual.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
         tab_cab_factura_visual.getColumna("numero_cpcfa").setMetodoChange("aceptarDatosFactura");
-        tab_cab_factura_visual.getColumna("numero_cpcfa").setMascara("999-999-99999999");
+        tab_cab_factura_visual.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_cab_factura_visual.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_factura_visual.getColumna("autorizacio_cpcfa").setLectura(false);
         tab_cab_factura_visual.getColumna("base_grabada_cpcfa").setEtiqueta();

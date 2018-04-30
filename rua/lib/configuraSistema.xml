@@ -1,0 +1,24 @@
+<empresas>
+	 <empresa>
+		<secuencial>1</secuencial>
+        <codigoEmpresa>0</codigoEmpresa>
+        <nombreEmpresa>SOCIEDAD SALESIANA EN EL ECUADOR</nombreEmpresa>
+        <marcaBase>postgres</marcaBase>
+        <recursoJDBC>sistema</recursoJDBC>
+        <servidorWeb>glassfish</servidorWeb>
+        <temaInicial>sam</temaInicial>
+        <rutaUpload>D:/</rutaUpload>
+    </empresa> 
+	
+	<empresa>
+		<secuencial>2</secuencial>
+        <codigoEmpresa>0</codigoEmpresa>
+        <nombreEmpresa>FONDO VOCACIONAL SALESIANO</nombreEmpresa>
+        <marcaBase>postgres</marcaBase>
+        <recursoJDBC>fondo</recursoJDBC>
+        <servidorWeb>glassfish</servidorWeb>
+        <temaInicial>sam</temaInicial>
+        <rutaUpload>D:/</rutaUpload>
+    </empresa>
+	
+</empresas>

@@ -154,8 +154,7 @@ public class pre_documentosCxP extends Pantalla {
         // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");        
         mep_menu.agregarSubMenu("PRESUPUESTO");
         mep_menu.agregarItem("Compromiso Documentos CxP", "dibujarCompromiso", "ui-icon-calculator");
-        mep_menu.agregarSubMenu("FACTURAS ELECTRONICAS");
-        mep_menu.agregarItem("Seleccionar Factura XML", "dibujarFacturaElectronica", "ui-icon-signal-diag");
+
         agregarComponente(mep_menu);
         dibujarDocumentos();
 

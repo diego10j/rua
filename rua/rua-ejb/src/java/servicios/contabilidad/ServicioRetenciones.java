@@ -133,7 +133,7 @@ public class ServicioRetenciones extends ServicioBase {
         String str_sql = "select  max(CAST(coalesce(numero_cncre,'0') AS BIGINT))  as num_retencion from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and autorizacion_cncre ='" + autorizacion + "' "
                 + "and es_venta_cncre is FALSE ";
-        System.out.println(str_sql);
+       // System.out.println(str_sql);
         //System.out.println("sql num retencion " + str_sql);
         List lis_cabecera_retencion = utilitario.getConexion().consultar(str_sql);
         if (lis_cabecera_retencion.size() > 0) {
@@ -146,7 +146,7 @@ public class ServicioRetenciones extends ServicioBase {
                     int num = Integer.parseInt(aux_num);
                     num = num + 1;
                     aux_num = num + "";
-                    String ceros = utilitario.generarCero(8 - aux_num.length());
+                    String ceros = utilitario.generarCero(9 - aux_num.length());
                     num_max_retencion = num_max_retencion.concat(ceros).concat(aux_num);
                     return num_max_retencion;
                 } catch (Exception e) {
