@@ -946,6 +946,9 @@ public class FacturaCxC extends Dialogo {
 
         for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
             String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
+            if (iva == null) {
+                iva = "-1";
+            }
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_grabada;
                 porcentaje_iva = tarifaIVA;

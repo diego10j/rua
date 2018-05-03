@@ -718,8 +718,20 @@ public class AsientoContable extends Dialogo {
         this.relacion = ide_cccfa;
         this.tipo = TipoAsientoEnum.FACTURAS_CXC.getCodigo();
         //Consulta las facturas
-        TablaGenerica tab_fac = utilitario.consultar("SELECT * FROM cxc_cabece_factura WHERE ide_cccfa in (" + ide_cccfa + ")");
+        TablaGenerica tab_fac = utilitario.consultar("SELECT a.ide_cccfa,ide_geper,secuencial_cccfa,fecha_emisi_cccfa,"
+                + "total_cccfa,base_grabada_cccfa,base_tarifa0_cccfa,valor_iva_cccfa, "
+                + " (select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1 ) retRenta,\n"
+                + "(select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) retIva,\n"
+                + "(select porcentaje_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1 ) porRenta,\n"
+                + "(select porcentaje_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) porIva,\n"
+                + "(select f.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) ide_cncimRenta,\n"
+                + "(select f.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) ide_cncimIva\n"
+                + " FROM cxc_cabece_factura a WHERE a.ide_cccfa in (" + ide_cccfa + ")");
+        tab_cabe_asiento.limpiar();
+        tab_deta_asiento.limpiar();
+        tab_cabe_asiento.insertar();
         if (tab_fac.isEmpty() == false) {
+            tab_cabe_asiento.setValor("fecha_trans_cnccc", tab_fac.getValor("fecha_emisi_cccfa"));
             if (tab_fac.getTotalFilas() == 1) {
                 //una
                 tab_cabe_asiento.setValor("ide_geper", tab_fac.getValor("ide_geper"));
@@ -751,6 +763,97 @@ public class AsientoContable extends Dialogo {
                     tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
                 }
             }
+
+            tab_cabe_asiento.setValor("ide_cntcm", "0");//DIARIO            
+            //Recupera cuentas contables asiento de factura de ventas
+            cls_contabilidad cls_conta = new cls_contabilidad();
+            String p_con_lugar_debe = parametros.get("p_con_lugar_debe");
+            String p_con_lugar_haber = parametros.get("p_con_lugar_haber");
+
+            tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 997);
+            tab_deta_asiento.setCondicion("ide_cndcc=-1");
+            tab_deta_asiento.ejecutarSql();
+            //CUENTA                               DEBE              HABER
+            //RETENCION IVA VENTA                     X
+            //RETENCION RENTA VENTA                   X
+            //1CUENTA POR COBRAR                      X
+            //2VENTAS12                                                  X
+            //3VENTAS0                                                   X
+            //4IVA EN VENTAS                                             X
+
+            //verifica si hay retenciones en venta
+            double retRentaVenta = 0;
+            double retIvaVenta = 0;
+            if (tab_fac.getValor("porRenta") != null) {
+                tab_deta_asiento.insertar();
+                String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA POR COBRAR", null, null, tab_fac.getValor("ide_cncimRenta"), null, null, null); //RETENCION renta
+                retRentaVenta = tab_fac.getSumaColumna("retRenta");
+                tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
+                tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retRentaVenta));
+                if (cuenta_retRenta == null) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "RETENCION RENTA POR COBRAR");
+                }
+            }
+            if (tab_fac.getValor("porIva") != null) {
+                tab_deta_asiento.insertar();
+                String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA POR COBRAR", null, null, tab_fac.getValor("ide_cncimIva"), null, null, null); //RETENCION iva
+                retIvaVenta = tab_fac.getSumaColumna("retIva");
+                tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
+                tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retIvaVenta));
+                if (cuenta_retRenta == null) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "RETENCION RENTA POR COBRAR");
+                }
+            }
+
+            tab_deta_asiento.insertar();
+            String cuenta_cxc = cls_conta.buscarCuentaPersona("CUENTA POR COBRAR", tab_cabe_asiento.getValor("ide_geper"));
+            double valor_cxc = tab_fac.getSumaColumna("total_cccfa");
+            valor_cxc = valor_cxc - retRentaVenta - retIvaVenta;
+            tab_deta_asiento.setValor("ide_cndpc", cuenta_cxc);
+            tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
+            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
+            if (cuenta_cxc == null) {
+                tab_deta_asiento.setValor("observacion_cndcc", "CUENTA POR COBRAR");
+            }
+
+            String cuenta_venta12 = cls_conta.buscarCuenta("VENTAS", null, null, null, "2", null, null);
+            double valor_venta12 = tab_fac.getSumaColumna("base_grabada_cccfa");
+            if (valor_venta12 > 0) {
+                tab_deta_asiento.insertar();
+                tab_deta_asiento.setValor("ide_cndpc", cuenta_venta12);
+                tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+                tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_venta12));
+                if (cuenta_venta12 == null) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "VENTAS BASE IMPONIBLE");
+                }
+            }
+
+            String cuenta_venta0 = cls_conta.buscarCuenta("VENTAS", null, null, null, "0", null, null);
+            double valor_venta0 = tab_fac.getSumaColumna("base_tarifa0_cccfa");
+            if (valor_venta0 > 0) {
+                tab_deta_asiento.insertar();
+                tab_deta_asiento.setValor("ide_cndpc", cuenta_venta0);
+                tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+                tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_venta0));
+                if (cuenta_venta0 == null) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "VENTAS 0%");
+                }
+            }
+
+            String cuenta_iva = cls_conta.buscarCuenta("IVA EN VENTAS", null, null, null, null, null, null);
+            double valor_iva = tab_fac.getSumaColumna("valor_iva_cccfa");
+            if (valor_iva > 0) {
+                tab_deta_asiento.insertar();
+                tab_deta_asiento.setValor("ide_cndpc", cuenta_iva);
+                tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+                tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_iva));
+                if (cuenta_venta0 == null) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "IVA EN VENTAS");
+                }
+            }
+
         } else {
             utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe la Factura");
         }
