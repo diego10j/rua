@@ -39,6 +39,12 @@ public class ServiciosAdquisiones {
         sql = "select IDE_ADTIAR, DETALLE_ADTIAR from ADQ_TIPO_AREA";
         return sql;
     }
+    
+    public String getTipoAreaDatos(String IDE_ADTIAR) {
+        String sql = "";
+        sql = "select IDE_ADTIAR, DETALLE_ADTIAR from ADQ_TIPO_AREA  where IDE_ADTIAR in ("+IDE_ADTIAR+") order by DETALLE_ADTIAR";
+        return sql;
+    }
 
     public String getGrupoMaterial() {
         String sql = "";
@@ -155,6 +161,17 @@ public class ServiciosAdquisiones {
         String sql = "";
         sql = "select IDE_ADCOBI, IDE_ADMATE, IDE_ADCOMP from ADQ_COMPRA_BIENES WHERE IDE_ADCOMP =" + ide_adcomp;
         return sql;
+    }
+    
+    public String getDepartamento (){
+        String sql = "";
+        sql= "SELECT ide_acuba, nombre_acuba FROM act_ubicacion_activo ORDER BY nombre_acuba";
+                return sql;
+    }
+    public String getDepartamentoDatos (String ide_acuba){
+        String sql = "";
+        sql= "SELECT ide_acuba, nombre_acuba , codigo_acuba FROM act_ubicacion_activo where ide_acuba in ("+ide_acuba+") ORDER BY nombre_acuba";
+                return sql;
     }
 
     public void setUpdateEstadoGastos(int codigo, String dato) {
