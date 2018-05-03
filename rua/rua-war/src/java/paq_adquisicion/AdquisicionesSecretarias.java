@@ -371,8 +371,7 @@ public class AdquisicionesSecretarias extends Pantalla {
             sel_tabla_material.setWidth("80%");
             sel_tabla_material.setHeight("70%");
             sel_tabla_material.setRadio();
-            sel_tabla_material.getBot_aceptar().setMetodo("aceptarMaterial");
-            agregarComponente(sel_tabla_material);
+           
 
             Boton bot_sel_material = new Boton();
             bot_sel_material.setValue("SELECCIONAR MATERIAL");
