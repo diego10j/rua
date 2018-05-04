@@ -112,5 +112,9 @@ public class ServicioSistema {
                 + "and tipo_opci is not null and paquete_opci is not null\n"
                 + "ORDER BY NOM_OPCI";
     }
-
+        public String getUsuarioSistema(String ide_usua,String condicion) {
+        String sql="";
+        sql="select ide_usua,nom_usua,nick_usua,ide_gtemp from sis_usuario where ide_usua in("+ide_usua+") "+condicion;
+        return sql;
+    }  
 }
