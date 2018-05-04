@@ -880,4 +880,31 @@ public List getListaGruposNivelPresupuesto(){
 		lista.add(fila3);
 		return lista;
 	}
+	/**
+	 * Metodo que devuelve las subactividades presupuestarias de acuerdo al programa 
+	 * @param programa recibe el o los estados true y false, ejemplo: true o false
+	 * @return String SQL Clasificador Presupuestario solo para consulta de autompletar
+	 */        
+public String getSubactvidadesPrograma (String programa){
+	String sql="select ide_prpro from pre_programa where ide_prfup in (" +
+                    " select ide_prfup from pre_funcion_programa " +
+                    " where pre_ide_prfup in (" +
+                    " select ide_prfup from pre_funcion_programa " +
+                    " where pre_ide_prfup in (" +
+                    " select ide_prfup from pre_funcion_programa " +
+                    " where pre_ide_prfup in (" +
+                    " select ide_prfup from pre_funcion_programa " +
+                    " where pre_ide_prfup = " +programa+
+                    " ) " +
+                    " )" +
+                    " )" +
+                    " )";
+	return sql;
+	
+} 
+public String getFuncionPrograma (String nivel){
+	String sql="select ide_prfup,detalle_prfup from pre_funcion_programa where ide_prnfp in( "+nivel+") order by detalle_prfup";
+	return sql;
+	
+} 
 }
