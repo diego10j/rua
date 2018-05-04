@@ -102,7 +102,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="46" y="7" width="32" height="15"/>
+				<reportElement uuid="c2db1851-7db3-4cca-a9ca-f09929b261cf" x="45" y="7" width="32" height="15"/>
 				<box leftPadding="2" rightPadding="1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
@@ -393,7 +393,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[IVA 14%]]></text>
+				<text><![CDATA[IVA 12%]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="841e6cab-5455-4016-b254-e9c3945bdee0" x="255" y="75" width="79" height="15"/>
