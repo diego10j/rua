@@ -27,6 +27,7 @@ public class pre_anual_egresos extends Pantalla {
 	private Tabla tab_mensual= new Tabla();
 	private Tabla tab_reforma= new Tabla();
 	private Combo com_anio =new Combo();
+        private Combo com_casas = new Combo();
 	private SeleccionTabla set_programa = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
         private Dialogo dia_por_devengar = new Dialogo();
@@ -51,10 +52,22 @@ public class pre_anual_egresos extends Pantalla {
 		self_reporte.setId("self_reporte"); //id
 		agregarComponente(self_reporte);
 		
+		com_anio.setId("com_anio");
 		com_anio.setCombo(ser_contabilidad.getAnioDetalle("true,false","true,false"));
-		com_anio.setMetodo("seleccionaElAnio");
+		//com_anio.setMetodo("seleccionaElAnio");
 		bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 		bar_botones.agregarComponente(com_anio);
+                
+                com_casas.setId("com_casas");
+    		com_casas.setCombo(ser_presupuesto.getFuncionPrograma("1"));
+		//com_casas.setMetodo("seleccionaElAnio");
+		bar_botones.agregarComponente(new Etiqueta("Seleccione la Sucursal"));
+		bar_botones.agregarComponente(com_casas);            
+                
+                Boton bot_actualizar = new Boton();
+                bot_actualizar.setValue("Consultar");
+                bot_actualizar.setMetodo("seleccionaElAnio");
+                bar_botones.agregarBoton(bot_actualizar);
 
 		
 		Tabulador tab_tabulador = new Tabulador();
@@ -315,17 +328,18 @@ public class pre_anual_egresos extends Pantalla {
 	}
 	///metodo Año
 	public void seleccionaElAnio (){
-		if(com_anio.getValue()!=null){
-			tab_anual.setCondicion("not ide_prpro is null and ide_geani="+com_anio.getValue());
+                if(com_anio.getValue()==null){                        
+			utilitario.agregarMensajeInfo("Selecione un Año","");
+		}
+                else if(com_casas.getValue()==null){                        
+			utilitario.agregarMensajeInfo("Selecione un Casa","");
+		}    
+		else{
+                        tab_anual.setCondicion("not ide_prpro is null and ide_geani="+com_anio.getValue()+" and ide_prpro in ("+ser_presupuesto.getSubactvidadesPrograma(com_casas.getValue().toString())+")");
 			tab_anual.ejecutarSql();
 			//tab_mes.ejecutarValorForanea(tab_poa.getValorSeleccionado());
                         tab_mensual.ejecutarValorForanea(tab_anual.getValorSeleccionado());
                        tab_reforma.ejecutarValorForanea(tab_anual.getValorSeleccionado());
-
-
-		}
-		else{
-			utilitario.agregarMensajeInfo("Selecione un Año", "");
 
 		}
 	}
@@ -474,7 +488,6 @@ public void aceptarReporte(){
 			p_parametros.put("pide_anio",Integer.parseInt(com_anio.getValue().toString()));
 
 			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
-			
 		self_reporte.dibujar();
 		
 		}
