@@ -787,7 +787,7 @@ public class pre_documentosCxP extends Pantalla {
         Boton bot_ver = new Boton();
         bot_ver.setValue("Ver Factura");
         bot_ver.setMetodo("abrirVerFactura");
-        bar_menu.agregarComponente(bot_ver);
+       // bar_menu.agregarComponente(bot_ver);
         eti1.setId("eti1");
         eti1.setValue("NUM. SELECCIONADOS : 0  -  VALOR : 0.00");
         eti1.setEstiloCabecera("");
