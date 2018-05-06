@@ -169,6 +169,7 @@ public class AsientoContable extends Dialogo {
         tab_deta_asiento.getColumna("valor_cndcc").setMetodoChangeRuta("pre_index.clase." + getId() + ".ingresaCantidad");
         tab_deta_asiento.getColumna("ide_cnlap").setMetodoChangeRuta("pre_index.clase." + getId() + ".seleccionarLugarAplica");
         tab_deta_asiento.getColumna("ide_cndpc").setNombreVisual("CUENTA CONTABLE");
+        tab_deta_asiento.getColumna("ide_cndpc").setMetodoChangeRuta("pre_index.clase." + getId() + ".seleccionarCuenta");
         tab_deta_asiento.getColumna("observacion_cndcc").setNombreVisual("OBSERVACIÓN");
         tab_deta_asiento.getColumna("VALOR_cndcc").setNombreVisual("VALOR");
         tab_deta_asiento.getColumna("ide_cnlap").setNombreVisual("LUGAR APLICA");
@@ -494,6 +495,16 @@ public class AsientoContable extends Dialogo {
         }
     }
 
+    public void seleccionarCuenta(SelectEvent evt) {
+        tab_deta_asiento.modificar(evt);
+        if (tab_deta_asiento.getValor("observacion_cndcc") != null) {
+            if (tab_deta_asiento.getValor("observacion_cndcc").startsWith("***")) {
+                tab_deta_asiento.setValor("observacion_cndcc", "");
+                utilitario.addUpdateTabla(tab_deta_asiento, "observacion_cndcc", "");
+            }
+        }
+    }
+
     public void seleccionarLugarAplica(AjaxBehaviorEvent evt) {
         tab_deta_asiento.modificar(evt);
 //        if (isPresupuesto()) {
@@ -791,8 +802,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retRentaVenta));
-                if (cuenta_retRenta == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "RETENCION RENTA POR COBRAR");
+                if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION RENTA POR COBRAR");
                 }
             }
             if (tab_fac.getValor("porIva") != null) {
@@ -802,8 +813,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retIvaVenta));
-                if (cuenta_retRenta == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "RETENCION RENTA POR COBRAR");
+                if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION RENTA POR COBRAR");
                 }
             }
 
@@ -814,8 +825,8 @@ public class AsientoContable extends Dialogo {
             tab_deta_asiento.setValor("ide_cndpc", cuenta_cxc);
             tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
             tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
-            if (cuenta_cxc == null) {
-                tab_deta_asiento.setValor("observacion_cndcc", "CUENTA POR COBRAR");
+            if (cuenta_cxc == null || cuenta_cxc.equals("null")) {
+                tab_deta_asiento.setValor("observacion_cndcc", "*** CUENTA POR COBRAR");
             }
 
             String cuenta_venta12 = cls_conta.buscarCuenta("VENTAS", null, null, null, "2", null, null);
@@ -825,8 +836,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_venta12);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_venta12));
-                if (cuenta_venta12 == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "VENTAS BASE IMPONIBLE");
+                if (cuenta_venta12 == null || cuenta_venta12.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** VENTAS BASE IMPONIBLE");
                 }
             }
 
@@ -837,8 +848,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_venta0);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_venta0));
-                if (cuenta_venta0 == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "VENTAS 0%");
+                if (cuenta_venta0 == null || cuenta_venta0.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** VENTAS 0%");
                 }
             }
 
@@ -849,8 +860,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_iva);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_iva));
-                if (cuenta_venta0 == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "IVA EN VENTAS");
+                if (cuenta_iva == null || cuenta_iva.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** IVA EN VENTAS");
                 }
             }
 
@@ -959,12 +970,12 @@ public class AsientoContable extends Dialogo {
             //SI ES DIFERENTE DE NOTA DE CREDITO 
             if (!tab_fac.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito"))) { //0=NOTA DE CREDITO
 
-                TablaGenerica tab_det_doc = utilitario.consultar("select a.ide_inarti,valor_cpdfa,nombre_inarti from cxp_detall_factur a inner join inv_articulo b on a.ide_inarti=b.ide_inarti where ide_cpcfa=" + ide_cpcfa);
+                TablaGenerica tab_det_doc = utilitario.consultar("select a.ide_inarti,valor_cpdfa,nombre_inarti from cxp_detall_factur a inner join inv_articulo b on a.ide_inarti=b.ide_inarti where ide_cpcfa in(" + ide_cpcfa + ")");
                 cls_contabilidad cls_conta = new cls_contabilidad();
                 tab_cabe_asiento.setValor("ide_cntcm", "0");//DIARIO           
                 //Recupera cuentas contables asiento de factura de ventas
                 String p_con_lugar_debe = parametros.get("p_con_lugar_debe");
-                String p_con_lugar_haber = parametros.get("p_con_lugar_haber");              
+                String p_con_lugar_haber = parametros.get("p_con_lugar_haber");
                 tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 997);
                 tab_deta_asiento.setCondicion("ide_cndcc=-1");
                 tab_deta_asiento.ejecutarSql();
@@ -986,7 +997,7 @@ public class AsientoContable extends Dialogo {
                     tab_deta_asiento.setValor("ide_cndpc", ide_cndpc);
                     tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
                     tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valorDetalle));
-                    tab_deta_asiento.setValor("observacion_cndcc", tab_det_doc.getValor(i, "nombre_inarti"));
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** " + tab_det_doc.getValor(i, "nombre_inarti"));
                 }
 
                 String cuenta_iva = cls_conta.buscarCuenta("IVA CREDITO TRIBUTARIO", null, null, null, null, null, null);
@@ -996,8 +1007,9 @@ public class AsientoContable extends Dialogo {
                     tab_deta_asiento.setValor("ide_cndpc", cuenta_iva);
                     tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
                     tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_iva));
-                    if (cuenta_iva == null) {
-                        tab_deta_asiento.setValor("observacion_cndcc", "IVA CREDITO TRIBUTARIO");
+
+                    if (cuenta_iva == null || cuenta_iva.equals("null")) {
+                        tab_deta_asiento.setValor("observacion_cndcc", "*** IVA CREDITO TRIBUTARIO");
                     }
                 }
 
@@ -1005,12 +1017,12 @@ public class AsientoContable extends Dialogo {
                 double retRentaVenta = 0; //acumula ret iva
                 double retIvaVenta = 0; //acumula ret renta
                 for (int j = 0; j < tab_fac.getTotalFilas(); j++) {
-                    if (tab_fac.getValor(j, "ide_cnimp")==null){
+                    if (tab_fac.getValor(j, "ide_cnimp") == null) {
                         continue;
                     }
 
                     if (tab_fac.getValor(j, "ide_cnimp").equals("1")) {  //renta
-                        tab_deta_asiento.insertar();
+
                         String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncim"), null, null, null); //RETENCION renta
                         double retActual = 0;
                         try {
@@ -1018,15 +1030,17 @@ public class AsientoContable extends Dialogo {
                         } catch (Exception e) {
                         }
                         retRentaVenta += retActual;
-
-                        tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
-                        tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
-                        tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
-                        if (cuenta_retRenta == null) {
-                            tab_deta_asiento.setValor("observacion_cndcc", "RETENCION RENTA POR PAGAR");
+                        if (retActual > 0) {
+                            tab_deta_asiento.insertar();
+                            tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                            tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+                            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
+                            if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                                tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION RENTA POR PAGAR");
+                            }
                         }
                     } else { //iva
-                        tab_deta_asiento.insertar();
+
                         String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION IVA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncim"), null, null, null); //RETENCION iva
                         double retActual = 0;
                         try {
@@ -1034,12 +1048,14 @@ public class AsientoContable extends Dialogo {
                         } catch (Exception e) {
                         }
                         retIvaVenta += retActual;
-
-                        tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
-                        tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
-                        tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
-                        if (cuenta_retRenta == null) {
-                            tab_deta_asiento.setValor("observacion_cndcc", "RETENCION IVA POR PAGAR");
+                        if (retActual > 0) {
+                            tab_deta_asiento.insertar();
+                            tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                            tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+                            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
+                            if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                                tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION IVA POR PAGAR");
+                            }
                         }
                     }
                 }
@@ -1051,14 +1067,14 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_cxc);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
-                if (cuenta_cxc == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "CUENTA POR PAGAR");
+                if (cuenta_cxc == null || cuenta_cxc.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** CUENTA POR PAGAR");
                 }
 
             } else {
                 //asiento de nota de credito
                 tab_cabe_asiento.setValor("observacion_cnccc", "V/. NOTA DE CREDITO N." + tab_fac.getValor("numero_cpcfa"));
-                TablaGenerica tab_det_doc = utilitario.consultar("select a.ide_inarti,ide_cndpc,valor_cpdfa,nombre_inarti from cxp_detall_factur a inner join inv_articulo b on a.ide_inarti=b.ide_inarti where ide_cpcfa=" + ide_cpcfa);
+                TablaGenerica tab_det_doc = utilitario.consultar("select a.ide_inarti,ide_cndpc,valor_cpdfa,nombre_inarti from cxp_detall_factur a inner join inv_articulo b on a.ide_inarti=b.ide_inarti where ide_cpcfa in(" + ide_cpcfa + ")");
                 cls_contabilidad cls_conta = new cls_contabilidad();
                 tab_cabe_asiento.setValor("ide_cntcm", "0");//DIARIO           
                 //Recupera cuentas contables asiento de factura de ventas
@@ -1083,7 +1099,7 @@ public class AsientoContable extends Dialogo {
                     tab_deta_asiento.setValor("ide_cndpc", ide_cndpc);
                     tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                     tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valorDetalle));
-                    tab_deta_asiento.setValor("observacion_cndcc", tab_det_doc.getValor(i, "nombre_inarti"));
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** " + tab_det_doc.getValor(i, "nombre_inarti"));
                 }
 
                 String cuenta_iva = cls_conta.buscarCuenta("IVA CREDITO TRIBUTARIO", null, null, null, null, null, null);
@@ -1093,8 +1109,8 @@ public class AsientoContable extends Dialogo {
                     tab_deta_asiento.setValor("ide_cndpc", cuenta_iva);
                     tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
                     tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_iva));
-                    if (cuenta_iva == null) {
-                        tab_deta_asiento.setValor("observacion_cndcc", "IVA CREDITO TRIBUTARIO");
+                    if (cuenta_iva == null || cuenta_iva.equals("null")) {
+                        tab_deta_asiento.setValor("observacion_cndcc", "*** IVA CREDITO TRIBUTARIO");
                     }
                 }
 
@@ -1104,8 +1120,8 @@ public class AsientoContable extends Dialogo {
                 tab_deta_asiento.setValor("ide_cndpc", cuenta_cxc);
                 tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
                 tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
-                if (cuenta_cxc == null) {
-                    tab_deta_asiento.setValor("observacion_cndcc", "CUENTA POR PAGAR");
+                if (cuenta_cxc == null || cuenta_cxc.equals("null")) {
+                    tab_deta_asiento.setValor("observacion_cndcc", "*** CUENTA POR PAGAR");
                 }
 
             }

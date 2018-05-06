@@ -242,7 +242,7 @@ public class cls_contabilidad {
             List lis_configura = utilitario.getConexion().consultar(str_sql);
             if (lis_configura != null && !lis_configura.isEmpty()) {
                 //  return ltab_identificador.obtener_texto(0, "ide_cndpc");
-                return lis_configura.get(0) + "";
+                return String.valueOf(lis_configura.get(0)); 
             }
         } else {
             System.out.println("no existe identificador");
@@ -315,7 +315,7 @@ public class cls_contabilidad {
         TablaGenerica tab_identificador = utilitario.consultar(str_sql);
         if (tab_identificador.getTotalFilas() > 0) {
             str_cuenta = buscarCuenta(identificador, null, producto, null, null, null, null);
-            System.out.println("str_cuenta " + str_cuenta);
+            //System.out.println("str_cuenta " + str_cuenta);
             str_padre = tab_identificador.getValor(0, "inv_ide_inarti");
             if (str_cuenta == null) {
                 if (str_padre == null) {
@@ -707,15 +707,13 @@ public class cls_contabilidad {
             try {
                 if (Integer.parseInt(tab_saldo.getValor(i, "ide_cnncu")) > nivel_tope) {
                     tab_saldo.setValor(i, "valor", "0");
-                } else {
-                    if (Integer.parseInt(tab_saldo.getValor(i, "ide_cnncu")) > 1) {
-                        for (int j = 0; j < (Integer.parseInt(tab_saldo.getValor(i, "ide_cnncu")) - 1) * 6; j++) {
-                            espacio += " ";
-                        }
-                        tab_saldo.setValor(i, "nombre_cndpc", espacio + tab_saldo.getValor(i, "nombre_cndpc"));
-                    } else {
-                        tab_saldo.setValor(i, "nombre_cndpc", espacio + tab_saldo.getValor(i, "nombre_cndpc"));
+                } else if (Integer.parseInt(tab_saldo.getValor(i, "ide_cnncu")) > 1) {
+                    for (int j = 0; j < (Integer.parseInt(tab_saldo.getValor(i, "ide_cnncu")) - 1) * 6; j++) {
+                        espacio += " ";
                     }
+                    tab_saldo.setValor(i, "nombre_cndpc", espacio + tab_saldo.getValor(i, "nombre_cndpc"));
+                } else {
+                    tab_saldo.setValor(i, "nombre_cndpc", espacio + tab_saldo.getValor(i, "nombre_cndpc"));
                 }
                 espacio = "";
             } catch (Exception e) {
