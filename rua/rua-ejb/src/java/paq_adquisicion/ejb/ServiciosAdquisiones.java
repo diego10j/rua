@@ -173,6 +173,20 @@ public class ServiciosAdquisiones {
         sql= "SELECT ide_acuba, nombre_acuba , codigo_acuba FROM act_ubicacion_activo where ide_acuba in ("+ide_acuba+") ORDER BY nombre_acuba";
                 return sql;
     }
+    public String getDatosEmpleado (){
+        String sql = "";
+        sql= "select ide_gtemp, documento_identidad_gtemp, apellido_paterno_gtemp||' '||(case when apellido_materno_gtemp is null then '' else apellido_materno_gtemp end)||' '||primer_nombre_gtemp ||' '||\n" +
+             "(case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as nombres_empleado\n" +
+             "from gth_empleado order by nombres_empleado";
+                return sql;
+    }
+    public String getDatosEmpleadoConsulta (String ide_gtemp){
+        String sql = "";
+        sql= "select ide_gtemp, documento_identidad_gtemp, apellido_paterno_gtemp||' '||(case when apellido_materno_gtemp is null then '' else apellido_materno_gtemp end)||' '||primer_nombre_gtemp ||' '||\n" +
+             "(case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as nombres_empleado\n" +
+             "from gth_empleado where ide_gtemp in ("+ide_gtemp+") order by nombres_empleado";
+                return sql;
+    }
 
     public void setUpdateEstadoGastos(int codigo, String dato) {
         String auSql = "UPDATE adq_compra\n"
