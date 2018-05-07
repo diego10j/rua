@@ -109,7 +109,7 @@ public class AreaAdministrativa extends Pantalla{
         sel_tab_tipo_area.dibujar();
     }
      public void aceptarArea(){
-         tipo_area=sel_tab_tipo_area.getValorSeleccionado();
+        tipo_area=sel_tab_tipo_area.getValorSeleccionado();
         sel_tab_departamento.dibujar();
         sel_tab_tipo_area.cerrar();
     }
@@ -121,14 +121,13 @@ public class AreaAdministrativa extends Pantalla{
     }
      
      public void insertaDatos(){
+         
         String str_ins = sel_tab_departamento.getSeleccionados();
-        
-        
         TablaGenerica departamento = utilitario.consultar(ser_adquisiciones.getDepartamentoDatos(str_ins));
 
        //  if(sel_tab_departamento.getValorSeleccionado()!=null){
              for (int i=0;i<departamento.getTotalFilas();i++){
-                 tab_area_administrativa.insertar();
+                tab_area_administrativa.insertar();
 		tab_area_administrativa.setValor("ide_adtiar",tipo_area);
 		tab_area_administrativa.setValor("detalle_adarad",departamento.getValor(i,"nombre_acuba"));
 		tab_area_administrativa.setValor("codigo_adarad",departamento.getValor(i,"codigo_acuba"));

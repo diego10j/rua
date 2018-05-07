@@ -25,6 +25,7 @@ public class Empleado extends Pantalla {
     private Tabla tab_empleado = new Tabla();
     private Texto text_texto = new Texto();
     private AutoCompletar autBusca = new AutoCompletar();
+    private SeleccionTabla sel_tab_empleado = new SeleccionTabla();
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
@@ -32,12 +33,12 @@ public class Empleado extends Pantalla {
 
     public Empleado() {
 
-        autBusca.setId("autBusca");
+      /*  autBusca.setId("autBusca");
         autBusca.setAutoCompletar("SELECT IDE_ADEMPLE,CEDULA_ADEMPLE,NOMBRES_ADEMPLE,DIRECCION_ADEMPLE from ADQ_EMPLEADO order by NOMBRES_ADEMPLE");
         autBusca.setSize(70);
         autBusca.setMetodoChange("buscaEmpleado");
         bar_botones.agregarComponente(new Etiqueta("Busca Empleado : "));
-        bar_botones.agregarComponente(autBusca);
+        bar_botones.agregarComponente(autBusca);*/
 
         tab_empleado.setId("tab_empleado");   //identificador
         tab_empleado.setTabla("adq_empleado", "ide_ademple", 1);
@@ -58,12 +59,27 @@ public class Empleado extends Pantalla {
         tab_empleado.getColumna("CEDULA_ADEMPLE").setOrden(1);
         tab_empleado.getColumna("NOMBRES_ADEMPLE").setOrden(2);
         tab_empleado.getColumna("DIRECCION_ADEMPLE").setOrden(5);
-
         tab_empleado.getColumna("FIRMA_ADEMPLE").setUpload();
         tab_empleado.getColumna("FIRMA_ADEMPLE").setImagen();
         tab_empleado.setTipoFormulario(true);
         tab_empleado.getGrid().setColumns(2);
         tab_empleado.dibujar();
+        
+        Boton bot_agregar_solicitante = new Boton();
+        Boton bot_anular = new Boton();
+        bot_anular.setIcon("ui-icon-search");
+        bot_anular.setValue("IMPORTAR EMPLEADO");
+        bot_anular.setMetodo("abrirDialogoEmpleado");
+        agregarComponente(bot_anular);
+        bar_botones.agregarBoton(bot_anular);
+        
+        sel_tab_empleado.setId("sel_tab_empleado");
+        sel_tab_empleado.setTitle("EMPLEADO");
+        sel_tab_empleado.setSeleccionTabla(ser_adquisiciones.getDatosEmpleado(), "ide_gtemp");
+        sel_tab_empleado.setWidth("80%");
+        sel_tab_empleado.setHeight("70%");
+        sel_tab_empleado.getBot_aceptar().setMetodo("aceptarEmpleado");
+        agregarComponente(sel_tab_empleado);
 
         PanelTabla pat_empleado = new PanelTabla();
         pat_empleado.setId("pat_empleado");
@@ -89,13 +105,38 @@ public class Empleado extends Pantalla {
 //         TablaGenerica tabActual = adminRemuneracion.getVerificaDatos(text_texto.getValue().toString());
 //         utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo ExtraOrdinario Pendiente");
 //    }
-
+    String emple="";
     public void buscarPersona(SelectEvent evt) {
         autBusca.onSelect(evt);
         if (autBusca.getValor() != null) {
             tab_empleado.setFilaActual(autBusca.getValor());
             utilitario.addUpdate("tab_empleado");
         }
+    }
+    
+    public void abrirDialogoEmpleado(){
+        sel_tab_empleado.dibujar();
+    }
+    
+    public void aceptarEmpleado(){
+         String str_emple = sel_tab_empleado.getSeleccionados();
+        
+        TablaGenerica tab_dat_emple = utilitario.consultar(ser_adquisiciones.getDatosEmpleadoConsulta(str_emple));
+        for (int i=0;i<tab_dat_emple.getTotalFilas();i++){
+                tab_empleado.insertar();
+		tab_empleado.setValor("ide_adtide",null);
+		tab_empleado.setValor("ide_usua",null);
+		tab_empleado.setValor("cedula_ademple",tab_dat_emple.getValor(i,"documento_identidad_gtemp"));
+                tab_empleado.setValor("nombres_ademple",tab_dat_emple.getValor(i,"nombres_empleado"));
+                tab_empleado.setValor("direccion_ademple",null);
+               // tab_empleado.setValor("firma_ademple",null);	
+                tab_empleado.getColumna("FIRMA_ADEMPLE").setUpload();
+                tab_empleado.getColumna("FIRMA_ADEMPLE").setImagen();
+	       }
+            // tab_empleado.guardar();
+            // guardarPantalla();
+             sel_tab_empleado.cerrar();
+	     utilitario.addUpdate("tab_empleado");
     }
 
     @Override
@@ -130,4 +171,28 @@ public class Empleado extends Pantalla {
         this.autBusca = autBusca;
     }
 
+    public Texto getText_texto() {
+        return text_texto;
+    }
+
+    public void setText_texto(Texto text_texto) {
+        this.text_texto = text_texto;
+    }
+
+    public SeleccionTabla getSel_tab_empleado() {
+        return sel_tab_empleado;
+    }
+
+    public void setSel_tab_empleado(SeleccionTabla sel_tab_empleado) {
+        this.sel_tab_empleado = sel_tab_empleado;
+    }
+
+    public String getEmple() {
+        return emple;
+    }
+
+    public void setEmple(String emple) {
+        this.emple = emple;
+    }
+  
 }
