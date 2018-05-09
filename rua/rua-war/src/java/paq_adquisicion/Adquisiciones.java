@@ -7,6 +7,7 @@ package paq_adquisicion;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
@@ -25,7 +26,7 @@ import sistema.aplicacion.Pantalla;
 public class Adquisiciones extends Pantalla {
 
     private Tabla tab_adquisiones = new Tabla();
-    //private Tabla tab_certificacion = new Tabla();
+    private Tabla tab_presupuesto = new Tabla();
     private Tabla tab_compra_bienes = new Tabla();
     
     private Reporte rep_reporte = new Reporte(); //Listado de Reportes, siempre se llama rep_reporte
@@ -93,11 +94,12 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleado());
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
-//        tab_adquisiones.agregarRelacion(tab_certificacion);
+        tab_adquisiones.getColumna("IDE_ADARAD ").setCombo(ser_adquisiciones.getAreaAdministrativa("0", "0"));
+        tab_adquisiones.agregarRelacion(tab_presupuesto);
         tab_adquisiones.agregarRelacion(tab_compra_bienes);
         tab_adquisiones.setTipoFormulario(true);
         tab_adquisiones.getGrid().setColumns(6);
-                tab_adquisiones.getColumna("IDE_ADEMAP").setNombreVisual("SOLICITANTE");
+        tab_adquisiones.getColumna("IDE_ADEMAP").setNombreVisual("SOLICITANTE");
         tab_adquisiones.getColumna("IDE_ADEMDE").setNombreVisual("RESPONSABLE SOLICITUD");
         tab_adquisiones.getColumna("IDE_ADCOMP").setNombreVisual("CODIGO");
         tab_adquisiones.getColumna("IDE_ADAPRO").setNombreVisual("APROBACION");
@@ -180,26 +182,37 @@ public class Adquisiciones extends Pantalla {
         pat_adquisiciones.setId("pat_adquisiciones");
         pat_adquisiciones.setPanelTabla(tab_adquisiones);
 
-        /*
-        tab_certificacion.setId("tab_certificacion");
-        tab_certificacion.setIdCompleto("tab_tabulador:tab_certificacion");
-        tab_certificacion.setTabla("ADQ_CERTIFICACION", "IDE_ADCERT", 2);
-        List lista3 = new ArrayList();
+        
+        tab_presupuesto.setId("tab_presupuesto");
+        tab_presupuesto.setIdCompleto("tab_tabulador:tab_presupuesto");
+        tab_presupuesto.setTabla("adq_presupuesto", "ide_adpres", 2);
+      /*  List lista3 = new ArrayList();
         Object fila3[] = {"1", "CERTIFICACION"};
         Object fila4[] = {"2", "COMPROMISO"};
         lista3.add(fila3);
         lista3.add(fila4);
-        tab_certificacion.getColumna("tipo_documento_adcert").setCombo(lista3);
-        tab_certificacion.getColumna("IDE_ADCERT").setNombreVisual("CODIGO");
-        tab_certificacion.getColumna("TIPO_DOCUMENTO_ADCERT").setNombreVisual("TIPO DOCUMENTO");
-        tab_certificacion.getColumna("NRO_CERTIFICACION_ADCERT").setNombreVisual("NUMERO CERTIFICACION");
-        tab_certificacion.getColumna("PARTIDA_ADCERT").setNombreVisual("PARTIDA");
-        tab_certificacion.getColumna("VALOR_ADCERT").setNombreVisual("VALOR");
-        tab_certificacion.dibujar();
-        PanelTabla pat_panel_certificacion = new PanelTabla();
-        pat_panel_certificacion.setId("pat_panel_certificacion");
-        pat_panel_certificacion.setPanelTabla(tab_certificacion);
-*/
+        tab_presupuesto.getColumna("tipo_documento_adcert").setCombo(lista3);
+        tab_presupuesto.getColumna("IDE_ADCERT").setNombreVisual("CODIGO");
+        tab_presupuesto.getColumna("TIPO_DOCUMENTO_ADCERT").setNombreVisual("TIPO DOCUMENTO");
+        tab_presupuesto.getColumna("NRO_CERTIFICACION_ADCERT").setNombreVisual("NUMERO CERTIFICACION");
+        tab_presupuesto.getColumna("PARTIDA_ADCERT").setNombreVisual("PARTIDA");
+        tab_certificacion.getColumna("VALOR_ADCERT").setNombreVisual("VALOR");*/
+        tab_presupuesto.dibujar();
+        
+        Grid gri_presupuesto = new Grid();
+        gri_presupuesto.setColumns(3);
+        Boton bot_busca_presu = new Boton();
+        bot_busca_presu.setValue("BUSCAR PRESUPUESTO");
+        bot_busca_presu.setIcon("ui-icon-search");
+        bot_busca_presu.setMetodo("insertCompraBienes");
+        
+        gri_presupuesto.getChildren().add(bot_busca_presu);
+        
+        PanelTabla pat_panel_presupuesto = new PanelTabla();
+        pat_panel_presupuesto.setId("pat_panel_presupuesto");
+        pat_panel_presupuesto.getChildren().add(gri_presupuesto);
+        pat_panel_presupuesto.setPanelTabla(tab_presupuesto);
+        
         tab_compra_bienes.setId("tab_compra_bienes");
         tab_compra_bienes.setIdCompleto("tab_tabulador:tab_compra_bienes");
         tab_compra_bienes.setTabla("ADQ_COMPRA_BIENES", "IDE_ADCOBI", 3);
@@ -240,12 +253,12 @@ public class Adquisiciones extends Pantalla {
         pat_panel_compra_bienes.setId("pat_panel_compra_bienes");
         pat_panel_compra_bienes.setPanelTabla(tab_compra_bienes);
 
-//        tab_tabulador.agregarTab("CERTIFICACION", pat_panel_certificacion);
-  //      tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
+        tab_tabulador.agregarTab("PRESUPUESTO", pat_panel_presupuesto);
+        tab_tabulador.agregarTab("COMPRA BIENES", pat_panel_compra_bienes);
 
         Division div_adquisiciones = new Division();
         div_adquisiciones.setId("div_adquisiciones");
-        div_adquisiciones.dividir2(pat_adquisiciones, pat_panel_compra_bienes, "70%", "H");
+        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "70%", "H");
         agregarComponente(div_adquisiciones);
         
         sel_rep.setId("sel_rep");
@@ -388,6 +401,14 @@ public class Adquisiciones extends Pantalla {
 
     public void setVipdf_comprobante(VisualizarPDF vipdf_comprobante) {
         this.vipdf_comprobante = vipdf_comprobante;
+    }
+
+    public Tabla getTab_presupuesto() {
+        return tab_presupuesto;
+    }
+
+    public void setTab_presupuesto(Tabla tab_presupuesto) {
+        this.tab_presupuesto = tab_presupuesto;
     }
 
 }

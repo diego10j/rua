@@ -12,6 +12,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
 import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import sistema.aplicacion.Pantalla;
 public class Empleado extends Pantalla {
 
     private Tabla tab_empleado = new Tabla();
+    private Tabla tab_caja_empleado = new Tabla();
     private Texto text_texto = new Texto();
     private AutoCompletar autBusca = new AutoCompletar();
     private SeleccionTabla sel_tab_empleado = new SeleccionTabla();
@@ -63,7 +65,12 @@ public class Empleado extends Pantalla {
         tab_empleado.getColumna("FIRMA_ADEMPLE").setImagen();
         tab_empleado.setTipoFormulario(true);
         tab_empleado.getGrid().setColumns(2);
+        tab_empleado.agregarRelacion(tab_caja_empleado);
         tab_empleado.dibujar();
+        
+        PanelTabla pat_empleado = new PanelTabla();
+        pat_empleado.setId("pat_empleado");
+        pat_empleado.setPanelTabla(tab_empleado);
         
         Boton bot_agregar_solicitante = new Boton();
         Boton bot_anular = new Boton();
@@ -81,12 +88,23 @@ public class Empleado extends Pantalla {
         sel_tab_empleado.getBot_aceptar().setMetodo("aceptarEmpleado");
         agregarComponente(sel_tab_empleado);
 
-        PanelTabla pat_empleado = new PanelTabla();
-        pat_empleado.setId("pat_empleado");
-        pat_empleado.setPanelTabla(tab_empleado);
+        
+        tab_caja_empleado.setId("tab_caja_empleado");   //identificador
+        tab_caja_empleado.setIdCompleto("tab_tabulador:tab_caja_empleado");
+        tab_caja_empleado.setTabla("cxc_caja_empleado", "ide_cxcaem", 2);
+        tab_caja_empleado.dibujar();
+        
+        PanelTabla pat_caja_empleado = new PanelTabla();
+        pat_caja_empleado.setId("pat_caja_empleado");
+        pat_caja_empleado.setPanelTabla(tab_caja_empleado);
+        
+        Tabulador tab_tabulador = new Tabulador();
+        tab_tabulador.setId("tab_tabulador");        
+        tab_tabulador.agregarTab("CAJA EMPLEADO", pat_caja_empleado);
+        
         Division div_empleado = new Division();
         div_empleado.setId("div_empleado");
-        div_empleado.dividir1(pat_empleado);
+        div_empleado.dividir2(pat_empleado, tab_tabulador, "70%", "H");
         agregarComponente(div_empleado);
 
 //        text_texto.setId("text_texto");
@@ -193,6 +211,14 @@ public class Empleado extends Pantalla {
 
     public void setEmple(String emple) {
         this.emple = emple;
+    }
+
+    public Tabla getTab_caja_empleado() {
+        return tab_caja_empleado;
+    }
+
+    public void setTab_caja_empleado(Tabla tab_caja_empleado) {
+        this.tab_caja_empleado = tab_caja_empleado;
     }
   
 }
