@@ -612,7 +612,7 @@ public class pre_facturasCxC extends Pantalla {
                     utilitario.agregarMensajeInfo("Comprobante de Contabilidad", "La factura seleccionada no tiene Comprobante de Contabilidad");
                 }
             }
-        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Ventas")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Iva en Ventas") || rep_reporte.getReporteSelecionado().equals("Reporte de Ventas")) {
             if (rep_reporte.isVisible()) {
                 rep_reporte.cerrar();
                 sel_sucursales.dibujar();
