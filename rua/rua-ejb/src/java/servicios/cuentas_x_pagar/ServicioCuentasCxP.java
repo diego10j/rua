@@ -647,6 +647,38 @@ public class ServicioCuentasCxP extends ServicioBase {
     }
 
     /**
+     * Retorna sentencia SQL para obtener los documentos pendientes de pago un
+     * rango de fechas por pagar X SUCURSAL
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     *
+     * @return
+     */
+    public String getSqlDocumentosPorPagarAnticipos(String fechaInicio, String fechaFin) {
+
+        return "select dt.ide_cpctr,"
+                + "dt.ide_cpcfa,"
+                + "case when (cf.fecha_emisi_cpcfa) is null then ct.fecha_trans_cpctr else cf.fecha_emisi_cpcfa end as FECHA,"
+                + "nom_geper,identificac_geper,nombre_cntdo,cf.numero_cpcfa,"
+                + "cf.total_cpcfa,"
+                + "sum (dt.valor_cpdtr*tt.signo_cpttr) as saldo_x_pagar,"
+                + "case when (cf.observacion_cpcfa) is NULL then ct.observacion_cpctr else cf.observacion_cpcfa end as OBSERVACION "
+                + "from cxp_detall_transa dt "
+                + "left join cxp_cabece_transa ct on dt.ide_cpctr=ct.ide_cpctr "
+                + "left join cxp_cabece_factur cf on cf.ide_cpcfa=ct.ide_cpcfa and cf.ide_cpefa=" + utilitario.getVariable("p_cxp_estado_factura_normal") + " "
+                + "left join cxp_tipo_transacc tt on tt.ide_cpttr=dt.ide_cpttr "
+                + "left join con_tipo_document co on cf.ide_cntdo= co.ide_cntdo "
+                + "left join gen_persona b on cf.ide_geper=b.ide_geper "
+                + "where cf.ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_rem_cpcfa is null "
+                + "and cf.fecha_emisi_cpcfa BETWEEN '" + fechaInicio + "' and '" + fechaFin + "'  and cf.ide_cnccc is null "
+                + "GROUP BY dt.ide_cpcfa,dt.ide_cpctr,cf.numero_cpcfa,nombre_cntdo, "
+                + "cf.observacion_cpcfa,ct.observacion_cpctr,cf.fecha_emisi_cpcfa,ct.fecha_trans_cpctr,cf.total_cpcfa,nom_geper,identificac_geper "
+                + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
+    }
+
+    /**
      * Sql de total de compras por mes por sucursal
      *
      * @param anio

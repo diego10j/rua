@@ -864,7 +864,7 @@ public class AsientoContable extends Dialogo {
                     tab_deta_asiento.setValor("observacion_cndcc", "*** IVA EN VENTAS");
                 }
             }
-
+            calcularTotal();
         } else {
             utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe la Factura");
         }
@@ -932,7 +932,7 @@ public class AsientoContable extends Dialogo {
                 + "FROM cxp_cabece_factur a \n"
                 + "left join con_detall_retenc b on a.ide_cncre=b.ide_cncre\n"
                 + "left join con_cabece_impues c on b.ide_cncim=c.ide_cncim "
-                + "WHERE a.ide_cpcfa in (" + ide_cpcfa + ")"); ////INER JOIN A RETENCION
+                + "WHERE a.ide_cpcfa in (" + ide_cpcfa + ")"); ////INER JOIN A RETENCION        
         if (tab_fac.isEmpty() == false) {
             if (tab_fac.getTotalFilas() == 1) {
                 //una
@@ -945,6 +945,9 @@ public class AsientoContable extends Dialogo {
                 for (int i = 0; i < tab_fac.getTotalFilas(); i++) {
                     if (i == 0) {
                         str_ide_geper = tab_fac.getValor(i, "ide_geper");
+                    }
+                    if (str_ide_geper == null) {
+                        str_ide_geper = "";
                     }
                     if (str_ide_geper.equals(tab_fac.getValor(i, "ide_geper")) == false) {
                         boo_mismo_clie = false;
@@ -1125,7 +1128,7 @@ public class AsientoContable extends Dialogo {
                 }
 
             }
-
+            calcularTotal();
         } else {
             utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe el Documento");
         }

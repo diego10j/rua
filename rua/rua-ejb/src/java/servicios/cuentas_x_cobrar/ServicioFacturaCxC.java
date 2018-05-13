@@ -718,4 +718,8 @@ public class ServicioFacturaCxC extends ServicioBase {
         return ide_cpctr;
     }
 
+    public String getIdeGeperTransaccionCXC(String ide_ccctr) {
+        return utilitario.consultar("select ide_geper,ide_ccctr from cxc_cabece_transa where ide_ccctr=" + ide_ccctr).getValor("ide_geper");
+    }
+
 }
