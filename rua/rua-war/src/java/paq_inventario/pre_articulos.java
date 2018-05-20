@@ -29,6 +29,7 @@ import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
+import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
 
@@ -52,7 +53,7 @@ public class pre_articulos extends Pantalla {
     private Calendario cal_fecha_fin;
 
     //Movimientos opcion 5
-      /*CONTABILIDAD*/
+    /*CONTABILIDAD*/
     @EJB
     private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
     private AutoCompletar aut_cuentas;
@@ -70,6 +71,10 @@ public class pre_articulos extends Pantalla {
 
     private GraficoCartesiano gca_grafico;
     private Combo com_periodo;
+    String ide_inbod;
+
+    @EJB
+    private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
 
     public pre_articulos() {
         bar_botones.quitarBotonsNavegacion();
@@ -149,6 +154,9 @@ public class pre_articulos extends Pantalla {
                 case 11:
                     dibujarCosto();
                     break;
+                case 12:
+                    dibujarCosto();
+                    break;
                 default:
                     dibujarProducto();
             }
@@ -172,7 +180,7 @@ public class pre_articulos extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-        mep_menu.dibujar(1, "DATOS DEL PRODUCTO", pat_panel);
+        mep_menu.dibujar(1, "fa fa-database", "Datos del producto", pat_panel, false);
     }
 
     /**
@@ -198,7 +206,7 @@ public class pre_articulos extends Pantalla {
         PanelTabla pat_panel_costo = new PanelTabla();
         pat_panel_costo.setPanelTabla(tab_costo);
         pat_panel_costo.getMenuTabla().getItem_buscar().setRendered(false);
-        mep_menu.dibujar(11, "Costo de Venta", pat_panel_costo);
+        mep_menu.dibujar(12, "fa fa-money", "Costo del producto", pat_panel_costo, false);
     }
 
     /**
@@ -221,7 +229,7 @@ public class pre_articulos extends Pantalla {
         PanelArbol paa_panel = new PanelArbol();
         paa_panel.setPanelArbol(arb_estructura);
         gru_grupo.getChildren().add(paa_panel);
-        mep_menu.dibujar(7, "CLASIFICACIÓN DE PRODUCTOS", gru_grupo);
+        mep_menu.dibujar(7, "fa fa-cubes", "Clasificación de grupo de productos.", gru_grupo, true);
     }
 
     /**
@@ -260,20 +268,106 @@ public class pre_articulos extends Pantalla {
             tab_tabla = new Tabla();
             tab_tabla.setNumeroTabla(-1);
             tab_tabla.setId("tab_tabla");
-            tab_tabla.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
-            tab_tabla.getColumna("ide_indci").setVisible(true);
+            ide_inbod = ser_inventario.getBodegaSucursal();
+
+            tab_tabla.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ide_inbod));
             tab_tabla.getColumna("ide_indci").setVisible(false);
-            tab_tabla.getColumna("ide_incci").setVisible(true);
-            tab_tabla.getColumna("ide_incci").setNombreVisual("COMP INVENTARIO");
+            tab_tabla.getColumna("ide_incci").setNombreVisual("COM. INV");
             tab_tabla.getColumna("fecha_trans_incci").setNombreVisual("FECHA");
             tab_tabla.getColumna("nom_geper").setNombreVisual("CLIENTE / PROVEEDOR");
-            tab_tabla.getColumna("nombre_intti").setNombreVisual("TIPO DE TRANSACCIÓN");
+            tab_tabla.getColumna("nom_geper").setFiltroContenido();
+            tab_tabla.getColumna("FACTURA").setLongitud(25);
+            tab_tabla.getColumna("FACTURA").setFiltroContenido();
+            tab_tabla.getColumna("INGRESO").alinearDerecha();
+            tab_tabla.getColumna("INGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("EGRESO").alinearDerecha();
+            tab_tabla.getColumna("EGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("PRECIO").alinearDerecha();
+            tab_tabla.getColumna("SALDO").alinearDerecha();
+            tab_tabla.getColumna("INGRESO").setLongitud(20);
+            tab_tabla.getColumna("EGRESO").setLongitud(20);
+            tab_tabla.getColumna("SALDO").setLongitud(20);
+            tab_tabla.getColumna("SALDO").setFormatoNumero(3);
+            tab_tabla.getColumna("SALDO").setEstilo("font-weight: bold;");
+            tab_tabla.getColumna("nom_geper").setFiltroContenido();
+            tab_tabla.setColumnaSuma("INGRESO,EGRESO,SALDO");
+
+            tab_tabla.getColumna("INGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("EGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("SALDO").setFormatoNumero(3);
+
+            tab_tabla.getColumna("SALDO").setSuma(false);
+            tab_tabla.setOrdenar(false);
+            tab_tabla.setLectura(true);
+            tab_tabla.setRows(20);
+            tab_tabla.dibujar();
+            if (tab_tabla.isEmpty() == false) {
+                //va a la ultima págia
+                tab_tabla.fin();
+            }
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_tabla);
+            gru_grupo.getChildren().add(pat_panel);
+
+            calculaKardex();
+        }
+        mep_menu.dibujar(2, "fa fa-list-alt", "Kardex del producto.", gru_grupo, true);
+
+    }
+
+    /**
+     * Kardex, Opcion 2
+     */
+    public void dibujarPrecioPromedio() {
+        Grupo gru_grupo = new Grupo();
+        if (isProductoSeleccionado()) {
+
+            Fieldset fis_consulta = new Fieldset();
+            Grid gri_fechas = new Grid();
+            gri_fechas.setColumns(5);
+            gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA DESDE :</strong>"));
+            cal_fecha_inicio = new Calendario();
+            cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
+            gri_fechas.getChildren().add(cal_fecha_inicio);
+            gri_fechas.getChildren().add(new Etiqueta("<strong>FECHA HASTA :</strong>"));
+            cal_fecha_fin = new Calendario();
+            cal_fecha_fin.setFechaActual();
+            gri_fechas.getChildren().add(cal_fecha_fin);
+            fis_consulta.getChildren().add(gri_fechas);
+
+            Boton bot_consultar = new Boton();
+            bot_consultar.setValue("Consultar");
+            bot_consultar.setMetodo("actualizarKardex");
+            bot_consultar.setIcon("ui-icon-search");
+
+            gri_fechas.getChildren().add(bot_consultar);
+
+            fis_consulta.getChildren().add(gri_fechas);
+            gru_grupo.getChildren().add(fis_consulta);
+
+            Separator separar = new Separator();
+            fis_consulta.getChildren().add(separar);
+
+            tab_tabla = new Tabla();
+            tab_tabla.setNumeroTabla(-1);
+            tab_tabla.setId("tab_tabla");
+            ide_inbod = ser_inventario.getBodegaSucursal();
+
+            tab_tabla.setSql(ser_producto.getSqlKardexPromedio(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ide_inbod));
+            tab_tabla.getColumna("ide_indci").setVisible(false);
+            tab_tabla.getColumna("ide_incci").setNombreVisual("COM. INV");
+            tab_tabla.getColumna("fecha_trans_incci").setNombreVisual("FECHA");
+            tab_tabla.getColumna("nom_geper").setNombreVisual("CLIENTE / PROVEEDOR");
+            tab_tabla.getColumna("nombre_intti").setNombreVisual("TRANSACCIÓN");
             tab_tabla.getColumna("CANT_INGRESO").setNombreVisual("CANT. INGRESO");
             tab_tabla.getColumna("VUNI_INGRESO").setNombreVisual("V/U INGRESO");
             tab_tabla.getColumna("VTOT_INGRESO").setNombreVisual("TOTAL INGRESO");
             tab_tabla.getColumna("CANT_EGRESO").setNombreVisual("CANT. EGRESO");
             tab_tabla.getColumna("VUNI_EGRESO").setNombreVisual("V/U EGRESO");
             tab_tabla.getColumna("VTOT_EGRESO").setNombreVisual("TOTAL EGRESO");
+            tab_tabla.getColumna("FACTURA").setLongitud(25);
+            tab_tabla.getColumna("FACTURA").setFiltroContenido();
+            tab_tabla.getColumna("nombre_intti").setLongitud(25);
             tab_tabla.getColumna("CANT_SALDO").setNombreVisual("CANT. SALDO");
             tab_tabla.getColumna("VUNI_SALDO").setNombreVisual("V/U SALDO");
             tab_tabla.getColumna("VTOT_SALDO").setNombreVisual("TOTAL SALDO");
@@ -305,6 +399,14 @@ public class pre_articulos extends Pantalla {
             tab_tabla.getColumna("nombre_intti").setFiltroContenido();
             tab_tabla.getColumna("nom_geper").setFiltroContenido();
             tab_tabla.setColumnaSuma("CANT_INGRESO,VTOT_INGRESO,CANT_EGRESO,VTOT_EGRESO,CANT_SALDO,VTOT_SALDO");
+
+            tab_tabla.getColumna("CANT_INGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("VTOT_INGRESO").setFormatoNumero(2);
+            tab_tabla.getColumna("CANT_EGRESO").setFormatoNumero(3);
+            tab_tabla.getColumna("VTOT_EGRESO").setFormatoNumero(2);
+            tab_tabla.getColumna("CANT_SALDO").setFormatoNumero(3);
+            tab_tabla.getColumna("VTOT_SALDO").setFormatoNumero(2);
+
             tab_tabla.getColumna("CANT_SALDO").setSuma(false);
             tab_tabla.getColumna("VUNI_SALDO").setSuma(false);
             tab_tabla.getColumna("VTOT_SALDO").setSuma(false);
@@ -313,21 +415,25 @@ public class pre_articulos extends Pantalla {
             tab_tabla.setScrollable(true);
             tab_tabla.setRows(20);
             tab_tabla.dibujar();
+            if (tab_tabla.isEmpty() == false) {
+                //va a la ultima págia
+                tab_tabla.fin();
+            }
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla);
             gru_grupo.getChildren().add(pat_panel);
 
-            //actualizarSaldoxCobrar();
+            calculaKardexPromedio();
         }
-        mep_menu.dibujar(2, "KARDEX", gru_grupo);
-        calculaKardex();
+        mep_menu.dibujar(11, "fa fa-list-alt", "Consulta Kradex Precio Promedio del producto.", gru_grupo, true);
+
     }
 
     /**
      * Calcula los saldos del kardex
      */
-    private void calculaKardex() {
-        List<Double> lisSaldos = ser_producto.getSaldosInicialesKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), "");
+    private void calculaKardexPromedio() {
+        List<Double> lisSaldos = ser_producto.getSaldosInicialesKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), ser_inventario.getBodegaSucursal());
 
         double dou_canti = lisSaldos.get(0);
         double dou_precioi = lisSaldos.get(1);
@@ -376,7 +482,7 @@ public class pre_articulos extends Pantalla {
                 }
 
             }
-            tab_tabla.setValor(i, "CANT_SALDO", utilitario.getFormatoNumero(dou_cantf));
+            tab_tabla.setValor(i, "CANT_SALDO", utilitario.getFormatoNumero(dou_cantf, 3));
             tab_tabla.setValor(i, "VUNI_SALDO", utilitario.getFormatoNumero(dou_preciof));
             tab_tabla.setValor(i, "VTOT_SALDO", utilitario.getFormatoNumero(dou_saldof));
         }
@@ -384,7 +490,7 @@ public class pre_articulos extends Pantalla {
         if (dou_saldoi != 0) {
             tab_tabla.setLectura(false);
             tab_tabla.insertar();
-            tab_tabla.setValor("CANT_SALDO", utilitario.getFormatoNumero(dou_canti));
+            tab_tabla.setValor("CANT_SALDO", utilitario.getFormatoNumero(dou_canti, 3));
             tab_tabla.setValor("VUNI_SALDO", utilitario.getFormatoNumero(dou_precioi));
             tab_tabla.setValor("VTOT_SALDO", utilitario.getFormatoNumero(dou_saldoi));
             tab_tabla.setValor("nom_geper", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
@@ -394,6 +500,50 @@ public class pre_articulos extends Pantalla {
         tab_tabla.getColumna("CANT_SALDO").setTotal(dou_cantf);
         tab_tabla.getColumna("VUNI_SALDO").setTotal(dou_preciof);
         tab_tabla.getColumna("VTOT_SALDO").setTotal(dou_saldof);
+
+    }
+
+    /**
+     * Calcula los saldos del kardex
+     */
+    private void calculaKardex() {
+        List<Double> lisSaldos = ser_producto.getSaldosInicialesKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), ser_inventario.getBodegaSucursal());
+
+        double dou_canti = lisSaldos.get(0);
+
+        double dou_cantf = dou_canti; //acumula
+
+        for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
+            double dou_cant_fila = 0;
+
+            if (tab_tabla.getValor(i, "INGRESO") != null && tab_tabla.getValor(i, "INGRESO").isEmpty() == false) {
+                try {
+                    dou_cant_fila = Double.parseDouble(tab_tabla.getValor(i, "INGRESO"));
+                } catch (Exception e) {
+                }
+                dou_cantf += dou_cant_fila;
+            } else if (tab_tabla.getValor(i, "EGRESO") != null && tab_tabla.getValor(i, "EGRESO").isEmpty() == false) {
+                try {
+                    dou_cant_fila = Double.parseDouble(tab_tabla.getValor(i, "EGRESO"));
+
+                } catch (Exception e) {
+                }
+                dou_cantf -= dou_cant_fila;
+
+            }
+            tab_tabla.setValor(i, "SALDO", utilitario.getFormatoNumero(dou_cantf, 3));
+
+        }
+
+        if (dou_canti != 0) {
+            tab_tabla.setLectura(false);
+            tab_tabla.insertar();
+            tab_tabla.setValor("SALDO", utilitario.getFormatoNumero(dou_canti, 3));
+            tab_tabla.setValor("nom_geper", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+            tab_tabla.setValor("fecha_trans_incci", cal_fecha_inicio.getFecha());
+            tab_tabla.setLectura(true);
+        }
+        tab_tabla.getColumna("SALDO").setTotal(dou_cantf);
 
     }
 
@@ -459,7 +609,8 @@ public class pre_articulos extends Pantalla {
                 utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El Producto seleccionado no tiene asociado una cuenta contable");
             }
         }
-        mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
+
+        mep_menu.dibujar(5, "fa fa-book", "Libro mayor de la cuenta contable del producto.", gru_grupo, true);
     }
 
     public void dibujarConfiguraCuenta() {
@@ -532,7 +683,7 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel2);
 
         }
-        mep_menu.dibujar(4, "CONFIGURACIÓN DE CUENTA CONTABLE", gru_grupo);
+        mep_menu.dibujar(4, "fa fa-cogs", "Configurar cuenta contable del producto.", gru_grupo, true);
     }
 
     public void dibujarVentas() {
@@ -563,9 +714,10 @@ public class pre_articulos extends Pantalla {
             fis_consulta.getChildren().add(gri_fechas);
             gru_grupo.getChildren().add(fis_consulta);
             tab_tabla = new Tabla();
-            tab_tabla.setNumeroTabla(3);
+            tab_tabla.setNumeroTabla(4);
             tab_tabla.setId("tab_tabla");
             tab_tabla.setSql(ser_producto.getSqlVentasProducto(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_tabla.setCampoPrimaria("ide_ccdfa");
             tab_tabla.getColumna("ide_ccdfa").setVisible(false);
             tab_tabla.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
             tab_tabla.getColumna("serie_ccdaf").setNombreVisual("N. SERIE");
@@ -575,6 +727,7 @@ public class pre_articulos extends Pantalla {
             tab_tabla.getColumna("precio_ccdfa").setNombreVisual("PRECIO UNI.");
             tab_tabla.getColumna("total_ccdfa").setNombreVisual("TOTAL");
             tab_tabla.getColumna("precio_ccdfa").alinearDerecha();
+            tab_tabla.setColumnaSuma("cantidad_ccdfa,total_ccdfa");
             tab_tabla.getColumna("total_ccdfa").alinearDerecha();
             tab_tabla.getColumna("total_ccdfa").setEstilo("font-weight: bold");
             tab_tabla.getColumna("nom_geper").setFiltroContenido();
@@ -587,7 +740,7 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
 
-        mep_menu.dibujar(3, "DETALLE DE VENTAS DEL PRODUCTO", gru_grupo);
+        mep_menu.dibujar(3, "fa fa-list-ul", "Detalle de ventas del producto.", gru_grupo, true);
     }
 
     public void dibujarCompras() {
@@ -621,12 +774,14 @@ public class pre_articulos extends Pantalla {
             tab_tabla.setId("tab_tabla");
             tab_tabla.setSql(ser_producto.getSqlComprasProducto(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla.getColumna("ide_cpdfa").setVisible(false);
+            tab_tabla.setCampoPrimaria("ide_cpdfa");
             tab_tabla.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA");
             tab_tabla.getColumna("numero_cpcfa").setNombreVisual("N. FACTURA");
             tab_tabla.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
             tab_tabla.getColumna("cantidad_cpdfa").setNombreVisual("CANTIDAD");
             tab_tabla.getColumna("precio_cpdfa").setNombreVisual("PRECIO UNI.");
             tab_tabla.getColumna("valor_cpdfa").setNombreVisual("TOTAL");
+            tab_tabla.setColumnaSuma("cantidad_cpdfa,valor_cpdfa");
             tab_tabla.getColumna("precio_cpdfa").alinearDerecha();
             tab_tabla.getColumna("valor_cpdfa").alinearDerecha();
             tab_tabla.getColumna("valor_cpdfa").setEstilo("font-weight: bold");
@@ -640,7 +795,8 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
 
-        mep_menu.dibujar(6, "DETALLE DE COMPRAS DEL PRODUCTO", gru_grupo);
+        mep_menu.dibujar(6, "fa fa-list-ul", "Detalle de compras del producto.", gru_grupo, true);
+
     }
 
     public void dibujarGraficoVentas() {
@@ -679,7 +835,7 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
             gru_grupo.getChildren().add(gca_grafico);
         }
-        mep_menu.dibujar(8, "GRAFICO DE VENTAS", gru_grupo);
+        mep_menu.dibujar(8, "fa fa-bar-chart", "Gráficos estadísticos de ventas del producto.", gru_grupo, true);
     }
 
     public void dibujarGraficoCompras() {
@@ -718,7 +874,8 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
             gru_grupo.getChildren().add(gca_grafico);
         }
-        mep_menu.dibujar(9, "GRAFICO DE COMPRAS", gru_grupo);
+
+        mep_menu.dibujar(9, "fa fa-bar-chart", "Gráficos estadísticos de compras del producto.", gru_grupo, true);
     }
 
     public void dibujarPrecios() {
@@ -802,7 +959,8 @@ public class pre_articulos extends Pantalla {
             gru_grupo.getChildren().add(tab_tabulador);
 
         }
-        mep_menu.dibujar(10, "ÚLTIMOS PRECIOS", gru_grupo);
+
+        mep_menu.dibujar(10, "fa fa-sort-numeric-asc", "Últimos precios de ventas y compras del producto.", gru_grupo, true);
     }
 
     public void actualizarGraficoVentas() {
@@ -869,9 +1027,21 @@ public class pre_articulos extends Pantalla {
     /**
      * Actualiza el kardex de un producto segun las fechas selecionadas
      */
-    public void actualizarKardex() {
-        tab_tabla.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
+    public void actualizarKardexPromedio() {
+
+        tab_tabla.setSql(ser_producto.getSqlKardexPromedio(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ide_inbod));
         tab_tabla.ejecutarSql();
+        tab_tabla.fin();
+        // actualizarSaldoxCobrar();
+        calculaKardexPromedio();
+        utilitario.addUpdate("tex_saldo_final,tex_total_debe,tex_saldo_inicial");
+    }
+
+    public void actualizarKardex() {
+
+        tab_tabla.setSql(ser_producto.getSqlKardex(aut_productos.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ide_inbod));
+        tab_tabla.ejecutarSql();
+        tab_tabla.fin();
         // actualizarSaldoxCobrar();
         calculaKardex();
         utilitario.addUpdate("tex_saldo_final,tex_total_debe,tex_saldo_inicial");
@@ -883,6 +1053,7 @@ public class pre_articulos extends Pantalla {
     public void actualizarMovimientos() {
         tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), ""));
         tab_tabla.ejecutarSql();
+        tab_tabla.fin();
         actualizarSaldosContable();
     }
 
@@ -901,7 +1072,6 @@ public class pre_articulos extends Pantalla {
      * Actualiza los solados que se visualizan en pantalla
      */
     private void actualizarSaldosContable() {
-
         double saldo_anterior = ser_contabilidad.getSaldoInicialCuenta(ser_producto.getCuentaProducto(aut_productos.getValor()), cal_fecha_inicio.getFecha());
         double dou_saldo_inicial = saldo_anterior;
         double dou_saldo_actual = 0;
@@ -945,7 +1115,7 @@ public class pre_articulos extends Pantalla {
 
     public void limpiar() {
         aut_productos.limpiar();
-        mep_menu.limpiar();
+        mep_menu.limpiar();      
     }
 
     /**
@@ -971,7 +1141,7 @@ public class pre_articulos extends Pantalla {
             tab_tabla.insertar();
         } else if (mep_menu.getOpcion() == 4) {
             tab_detalle_asiento.insertar();
-        } else if (mep_menu.getOpcion() == 11) {
+        } else if (mep_menu.getOpcion() == 12) {
             tab_costo.insertar();
             tab_costo.setValor("IDE_INARTI", aut_productos.getValor());
         } else {
@@ -1003,7 +1173,7 @@ public class pre_articulos extends Pantalla {
         } else if (mep_menu.getOpcion() == 7) {
             //Classificacion de Productos
             guardarPantalla();
-        } else if (mep_menu.getOpcion() == 11) {
+        } else if (mep_menu.getOpcion() == 12) {
             if (tab_costo.guardar()) {
                 guardarPantalla();
             }

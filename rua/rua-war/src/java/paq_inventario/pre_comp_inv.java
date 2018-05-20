@@ -38,7 +38,7 @@ public class pre_comp_inv extends Pantalla {
     private SeleccionArbol sel_arbol = new SeleccionArbol();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
-    private SeleccionTabla sel_tab = new SeleccionTabla();//bodega
+    private SeleccionTabla sel_tab = new SeleccionTabla();
     private final Texto tex_num_transaccion = new Texto();
     private final Boton bot_buscar_transaccion = new Boton();
     private SeleccionTabla sel_empleado = new SeleccionTabla();
@@ -68,7 +68,9 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_tabla1.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
-
+        tab_tabla1.getColumna("referencia_incci").setVisible(true);
+        tab_tabla1.getColumna("referencia_incci").setUnico(true);
+        tab_tabla1.getColumna("ide_georg").setVisible(false);
         tab_tabla1.getColumna("ide_usua").setVisible(false);
         tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
@@ -105,13 +107,15 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getSqlComboProductosKardex());
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
         tab_tabla2.getColumna("cantidad_indci").setMetodoChange("calcularTotalDetalles");
         tab_tabla2.getColumna("precio_indci").setMetodoChange("calcularTotalDetalles");
         tab_tabla2.getColumna("cantidad_indci").setRequerida(true);
+        tab_tabla2.getColumna("cantidad_indci").setFormatoNumero(3);
+        tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("precio_indci").setRequerida(true);
 //        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setRequerida(true);
@@ -120,16 +124,15 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
         tab_tabla2.setRows(10);
-        //tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
-        //tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
-        //tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
-        //tab_tabla2.getColumna("ide_cccfa").setLectura(true);
-        tab_tabla2.getColumna("ide_cccfa").setVisible(false);
-        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
+////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
+////        tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
+////        tab_tabla2.getColumna("ide_cccfa").setLectura(true);
         tab_tabla2.getColumna("precio_promedio_indci").setVisible(false);
 
-        // tab_tabla2.getColumna("ide_cpdfa").setVisible(false);
-        // tab_tabla2.getColumna("ide_cndcc").setVisible(false); 
+        tab_tabla2.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -140,7 +143,6 @@ public class pre_comp_inv extends Pantalla {
 
         sec_rango_reporte.setId("sec_rango_reporte");
         sec_rango_reporte.setMultiple(false);
-        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sec_rango_reporte);
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
@@ -149,7 +151,7 @@ public class pre_comp_inv extends Pantalla {
         sel_arbol.setId("sel_arbol");
         sel_arbol.setSeleccionArbol("inv_articulo", "ide_inarti", "nombre_inarti", "inv_ide_inarti");
         sel_arbol.getArb_seleccion().setCondicion("ide_inarti=" + utilitario.getVariable("p_inv_articulo_bien"));
-        //sel_arbol.getArb_seleccion().setOptimiza(true);
+        sel_arbol.getArb_seleccion().setOptimiza(true);
         agregarComponente(sel_arbol);
         sel_arbol.getBot_aceptar().setMetodo("aceptarReporte");
 
@@ -175,8 +177,8 @@ public class pre_comp_inv extends Pantalla {
             tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue());
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
-            tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
-            tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=" + tab_tabla2.getValor("ide_cccfa"));
+            ////tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
+            ////tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=" + tab_tabla2.getValor("ide_cccfa"));
             utilitario.addUpdate("tab_tabla1,tab_tabla2");
         }
     }
@@ -191,17 +193,15 @@ public class pre_comp_inv extends Pantalla {
         try {
             List<Double> lisSaldos = ser_producto.getSaldoPromedioProductoBodega(tab_tabla2.getValor("ide_inarti"), utilitario.getFechaActual(), tab_tabla1.getValor("ide_inbod"));
             double dou_precioi = lisSaldos.get(1);
-
+            tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
+            utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
             double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), tab_tabla1.getValor("ide_inbod"));
             if (dou_existencia <= 0) {
                 utilitario.agregarMensajeError("No hay existencia de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " en Bodega", "");
             }
-            tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
-
         } catch (Exception e) {
             System.out.println("Error al cargar precio " + e);
         }
-        utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
     }
 
     private void calcularDetalles() {
@@ -217,7 +217,7 @@ public class pre_comp_inv extends Pantalla {
         }
         double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), tab_tabla1.getValor("ide_inbod"));
         if (dou_cantidad > dou_existencia) {
-            utilitario.agregarMensajeError("La cantidad ingresada es mayor a la existencia en Inventario", "Existencia actual de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " es :" + utilitario.getFormatoNumero(dou_existencia));
+            utilitario.agregarMensajeError("La cantidad ingresada es mayor a la existencia en Inventario", "Existencia actual de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " es :" + utilitario.getFormatoNumero(dou_existencia, 3));
         }
 
         dou_valor = dou_cantidad * dou_precio;
@@ -238,15 +238,16 @@ public class pre_comp_inv extends Pantalla {
 
     @Override
     public void guardar() {
-        /*  if (validar()) {
-         if (tab_tabla1.isFilaInsertada()) {
-         tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
-         }*/
-        tab_tabla1.guardar();
-        tab_tabla2.guardar();
-        utilitario.getConexion().guardarPantalla();
-
-        // }
+        if (validar()) {
+            if (tab_tabla1.isFilaInsertada()) {
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+            }
+            if (tab_tabla1.guardar()) {
+                if (tab_tabla2.guardar()) {
+                    utilitario.getConexion().guardarPantalla();
+                }
+            }
+        }
     }
 
     @Override
@@ -340,7 +341,7 @@ public class pre_comp_inv extends Pantalla {
                 sef_formato.dibujar();
                 utilitario.addUpdate("sef_formato,sec_rango_reporte");
             }
-        } else if (rep_reporte.getReporteSelecionado().equals("Kardex")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Kardex")) {           
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -406,8 +407,8 @@ public class pre_comp_inv extends Pantalla {
                 sel_empleado.cerrar();
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sef_formato.dibujar();
-            }
         }
+    }
     }
 
     public Tabla getTab_tabla1() {
@@ -468,7 +469,7 @@ public class pre_comp_inv extends Pantalla {
 
     public SeleccionTabla getSel_empleado() {
         return sel_empleado;
-    }
+}
 
     public void setSel_empleado(SeleccionTabla sel_empleado) {
         this.sel_empleado = sel_empleado;

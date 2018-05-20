@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioContabilidadGeneral;
 import servicios.cuentas_x_cobrar.ServicioCliente;
-import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
+import servicios.cuentas_x_cobrar.ServicioCuentasCxC;
 import servicios.prestamo.ServicioPrestamo;
 import sistema.aplicacion.Pantalla;
 
@@ -44,7 +44,7 @@ public class pre_clientes extends Pantalla {
     private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
 
     @EJB
-    private final ServicioFacturaCxC ser_factura = (ServicioFacturaCxC) utilitario.instanciarEJB(ServicioFacturaCxC.class);
+    private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
 
     private final MenuPanel mep_menu = new MenuPanel();
     private AutoCompletar aut_clientes = new AutoCompletar();
@@ -54,6 +54,7 @@ public class pre_clientes extends Pantalla {
     private Calendario cal_fecha_fin;
 
     private Tabla tab_tabla;
+    private Tabla tab_tabla1;
     private Arbol arb_estructura;// Estructura Gerarquica de clientes
 
     /*CONTABILIDAD*/
@@ -70,6 +71,7 @@ public class pre_clientes extends Pantalla {
 
     /*INFOMRES*/
     private GraficoCartesiano gca_grafico;
+
     private Combo com_periodo;
 
     private Combo com_fac_pendientes;
@@ -83,7 +85,7 @@ public class pre_clientes extends Pantalla {
         aut_clientes.setAutoCompletar(ser_cliente.getSqlComboClientes());
         aut_clientes.setSize(75);
         aut_clientes.setAutocompletarContenido(); // no startWith para la busqueda
-        aut_clientes.setMetodoChangeRuta("pre_index.clase.seleccionarCliente");
+        aut_clientes.setMetodoChange("seleccionarCliente");
 
         bar_botones.agregarComponente(aut_clientes);
         Boton bot_clean = new Boton();
@@ -92,15 +94,18 @@ public class pre_clientes extends Pantalla {
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
 
-        mep_menu.setMenuPanel("OPCIONES CLIENTE", "20%");
-        mep_menu.agregarItem("Información Cliente", "dibujarCliente", "ui-icon-person");
+        mep_menu.setMenuPanel("OPCIONES CLIENTE", "22%");
+        mep_menu.agregarItem("Listado de Clientes", "dibujarDashBoard", "ui-icon-home");//15
+        mep_menu.agregarItem("Datos Cliente", "dibujarCliente", "ui-icon-person");
         mep_menu.agregarItem("Clasificación Clientes", "dibujarEstructura", "ui-icon-arrow-4-diag");
-        mep_menu.agregarItem("Grupos de Clientes", "dibujarGrupoCliente", "ui-icon-person");
+
+        // mep_menu.agregarItem("Tarjeta Kardex", "dibujarTarjetaKardex", "ui-icon-calculator"); //14
+        // mep_menu.agregarItem("Importar Clientes", "dibujarImportar", "ui-icon-circle-arrow-n");//13
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Transacciones Cliente", "dibujarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Ingresar Transacción", "dibujarIngresarTransacciones", "ui-icon-contact");
         mep_menu.agregarItem("Productos Cliente", "dibujarProductos", "ui-icon-cart");
-        mep_menu.agregarItem("Facturas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
+        mep_menu.agregarItem("Cuentas Por Cobrar", "dibujarFacturas", "ui-icon-calculator");
         mep_menu.agregarItem("Préstamos - Créditos", "dibujarPrestamos", "ui-icon-calculator");
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
@@ -109,10 +114,12 @@ public class pre_clientes extends Pantalla {
         mep_menu.agregarItem("Gráfico de Ventas", "dibujarGrafico", "ui-icon-bookmark");
         mep_menu.agregarItem("Reporte Cuentas por Cobrar", "dibujarReporteCxC", "ui-icon-bookmark");
         mep_menu.agregarItem("Productos Vendidos", "dibujarProductosVendidos", "ui-icon-cart");
+        //mep_menu.agregarItem("Reporte Cuentas por Cobrar", "dibujarReporteCxC", "ui-icon-bookmark");
 
         agregarComponente(mep_menu);
         asc_asiento.setId("asc_asiento");
         agregarComponente(asc_asiento);
+        dibujarDashBoard();
     }
 
     /**
@@ -171,6 +178,34 @@ public class pre_clientes extends Pantalla {
         }
     }
 
+    public void dibujarDashBoard() {
+
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setNumeroTabla(115);
+        tab_tabla.setSql(ser_cliente.getSqlListaClientes());
+        tab_tabla.setLectura(true);
+        tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.setRows(20);
+        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.getColumna("nom_geper").setNombreVisual("NOMBRE");
+        tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_geper").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("codigo_geper").setFiltro(true);
+        tab_tabla.getColumna("identificac_geper").setNombreVisual("IDENTIDICACIÓN");
+        tab_tabla.getColumna("correo_geper").setNombreVisual("CORREO");
+        tab_tabla.getColumna("direccion_geper").setNombreVisual("DIRECCIÓN");
+        tab_tabla.getColumna("telefono_geper").setNombreVisual("TELÉFONO");
+        tab_tabla.getColumna("contacto_geper").setNombreVisual("CONTACTO");
+
+        tab_tabla.dibujar();
+
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+
+        mep_menu.dibujar(15, "LISTADO DE CLIENTES", pat_panel);
+    }
+
     public void dibujarGrupoCliente() {
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
@@ -210,25 +245,49 @@ public class pre_clientes extends Pantalla {
         mep_menu.dibujar(13, "GRUPO DE CLIENTES", pat_panel);
     }
 
-    public void dibujarReporteCxC() {
-//12
-        tab_tabla = new Tabla();
-        tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_factura.getSqlTransaccionesCxC());
-        tab_tabla.setCampoPrimaria("ide_geper");
-        tab_tabla.getColumna("cliente").setLongitud(190);
-        tab_tabla.getColumna("cliente").setFiltroContenido();
-        tab_tabla.getColumna("IDENTIFICACION").setFiltroContenido();
-        tab_tabla.getColumna("ide_geper").setVisible(false);
-        tab_tabla.setLectura(true);
-        tab_tabla.setColumnaSuma("SALDO");
-        tab_tabla.setRows(20);
-        tab_tabla.dibujar();
-        PanelTabla pat_panel = new PanelTabla();
-        pat_panel.setPanelTabla(tab_tabla);
-        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-        mep_menu.dibujar(12, "REPORTE  CUENTAS POR COBRAR", pat_panel);
+    public void dibujarTodosMejoresClientes() {
+        Grupo gru_grupo = new Grupo();
+//        tex_num_asiento = new Texto(); //Año
+//        tex_num_asiento.setSize(5);
+//        tex_num_asiento.setTitle("AÑO");
+//        tex_num_asiento.setMaxlength(4);
+//        tex_num_asiento.setSoloEnteros();
+//
+//        PanelGrid pg = new PanelGrid();
+//        pg.setColumns(3);
+//        pg.getChildren().add(new Etiqueta("PERÍODO :"));
+//        pg.getChildren().add(tex_num_asiento);
+//        Boton bot = new Boton();
+//        bot.setTitle("Actualizar");
+//        bot.setIcon("ui-icon-search");
+//        bot.setMetodo("actualizarMejoresClientes");
+//        pg.getChildren().add(bot);
+//        gru_grupo.getChildren().add(pg);
+//
+//        tab_tabla = new Tabla();
+//        tab_tabla.setId("tab_tabla");
+//        tab_tabla.setNumeroTabla(15);
+//        tab_tabla.setConexion(ser_integra.getConexionEscritorio());
+//        tab_tabla.setLectura(true);
+//        tab_tabla.setSql(ser_integra.getSqlMejoresClientes(null, null));
+//        tab_tabla.setCampoPrimaria("COD_CLIE");
+//        tab_tabla.getColumna("COD_CLIE").setVisible(false);
+//        tab_tabla.getColumna("NUM_FACTURAS").setNombreVisual("N. FACTURAS");
+//        tab_tabla.getColumna("NOM_CLIE").setNombreVisual("CLIENTE");
+//        tab_tabla.getColumna("TOTAL").alinearDerecha();
+//        tab_tabla.setCampoOrden("TOTAL");
+//        tab_tabla.setRows(20);
+//        tab_tabla.dibujar();
+//        PanelTabla pat_panel = new PanelTabla();
+//        pat_panel.setPanelTabla(tab_tabla);
+//        gru_grupo.getChildren().add(pat_panel);
 
+        mep_menu.dibujar(16, "fa fa-sort-numeric-asc", "Cuadro estadístico de Mejores Clientes.", gru_grupo, true);
+    }
+
+    public void actualizarMejoresClientes() {
+//        tab_tabla.setSql(ser_integra.getSqlMejoresClientes(null, String.valueOf(tex_num_asiento.getValue())));
+//        tab_tabla.ejecutarSql();
     }
 
     public void dibujarPrestamos() {
@@ -259,9 +318,9 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("cuota").alinearDerecha();
             tab_tabla.getColumna("fecha_ultimo_pago").setNombreVisual("FECHA ULT. PAGO");
             tab_tabla.setColumnaSuma("saldo,capital,interes");
+            tab_tabla.setRows(20);
             tab_tabla.setOrdenar(false);
             tab_tabla.setNumeroTabla(-1);
-            tab_tabla.setRows(20);
             tab_tabla.setLectura(true);
             tab_tabla.dibujar();
             PanelTabla pat_panel = new PanelTabla();
@@ -270,13 +329,37 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
         mep_menu.dibujar(11, "PRÉSTAMOS - CRÉDITOS", gru_grupo);
+    }
 
+    public void dibujarReporteCxC() {
+//12
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_factura.getSqlTransaccionesCxC());
+        tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.getColumna("cliente").setLongitud(190);
+        tab_tabla.getColumna("cliente").setFiltroContenido();
+        tab_tabla.getColumna("IDENTIFICACION").setFiltroContenido();
+        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.setLectura(true);
+        tab_tabla.setColumnaSuma("SALDO");
+
+        tab_tabla.getColumna("SALDO").setFormatoNumero(2);
+        tab_tabla.setRows(20);
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+
+        mep_menu.dibujar(12, "fa fa-money", "Reporte de saldos por cobrar de los clientes.", pat_panel, true);
     }
 
     /**
      * Dibuja el formulario de datos del Cliente, osigna opcion 1
      */
     public void dibujarCliente() {
+        Grupo gru = new Grupo();
+
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         ser_cliente.configurarTablaCliente(tab_tabla);
@@ -287,7 +370,9 @@ public class pre_clientes extends Pantalla {
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-        mep_menu.dibujar(1, "DATOS DEL CLIENTE", pat_panel);
+        gru.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(1, "fa fa-user", "Datos generales del cliente.", gru, false);
     }
 
     public void dibujarIngresarTransacciones() {
@@ -357,7 +442,7 @@ public class pre_clientes extends Pantalla {
 
             gru_grupo.getChildren().add(pat_panel2);
         }
-        mep_menu.dibujar(10, "INGRESAR TRANSACCIÓN", gru_grupo);
+        mep_menu.dibujar(10, "fa fa-pencil-square-o", "Ingresar transacciones del cliente.", gru_grupo, true);
     }
 
     public void dibujarTransacciones() {
@@ -413,21 +498,32 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("saldo").alinearDerecha();
             tab_tabla.getColumna("saldo").setEstilo("font-weight: bold;");
             tab_tabla.setColumnaSuma("INGRESOS,EGRESOS,saldo");
+
             tab_tabla.getColumna("INGRESOS").setSuma(false);
             tab_tabla.getColumna("EGRESOS").setSuma(false);
             tab_tabla.getColumna("saldo").setSuma(false);
+
+            tab_tabla.getColumna("INGRESOS").setFormatoNumero(2);
+            tab_tabla.getColumna("EGRESOS").setFormatoNumero(2);
+            tab_tabla.getColumna("saldo").setFormatoNumero(2);
+
             tab_tabla.setOrdenar(false);
             tab_tabla.setLectura(true);
             tab_tabla.setScrollable(true);
             tab_tabla.setRows(20);
             tab_tabla.dibujar();
+            if (tab_tabla.isEmpty() == false) {
+                //va a la ultima págia
+                tab_tabla.fin();
+            }
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla);
             gru_grupo.getChildren().add(pat_panel);
 
             actualizarSaldoxCobrar();
         }
-        mep_menu.dibujar(2, "TRANSACCIONES DEL CLIENTE", gru_grupo);
+
+        mep_menu.dibujar(2, "fa fa-calculator", "Detalle de transacciones del cliente.", gru_grupo, true);
     }
 
     public void dibujarProductos() {
@@ -462,6 +558,9 @@ public class pre_clientes extends Pantalla {
             tab_tabla.setId("tab_tabla");
             tab_tabla.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla.getColumna("ide_ccdfa").setVisible(false);
+
+            tab_tabla.getColumna("observacion_ccdfa").setNombreVisual("NOMBRE FACTURADO");
+            tab_tabla.getColumna("observacion_ccdfa").setFiltroContenido();
             tab_tabla.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
             tab_tabla.getColumna("serie_ccdaf").setNombreVisual("N. SERIE");
             tab_tabla.getColumna("secuencial_cccfa").setNombreVisual("N. FACTURA");
@@ -483,7 +582,7 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
         }
 
-        mep_menu.dibujar(3, "DETALLE DE PRODUCTOS VENDIDOS AL CLIENTE", gru_grupo);
+        mep_menu.dibujar(3, "fa fa-calendar-check-o", "Detalle de productos vendidos al cliente.", gru_grupo, true);
     }
 
     public void dibujarConfiguraCuenta() {
@@ -510,7 +609,8 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(gri_contenido);
             gru_grupo.getChildren().add(new Etiqueta("<p style='padding-top:10px;'><strong >NOTA: </strong> La cuenta contable seleccionada se relacionará a los movimientos-transacciones que realice el Cliente, a partir que se <strong>guarde </strong> el cambio. </p>"));
         }
-        mep_menu.dibujar(4, "CONFIGURACIÓN DE CUENTA CONTABLE", gru_grupo);
+
+        mep_menu.dibujar(4, "fa fa-cogs", "Configurar cuenta contable del cliente.", gru_grupo, true);
     }
 
     public void dibujarMovimientos() {
@@ -563,9 +663,18 @@ public class pre_clientes extends Pantalla {
                 tab_tabla.getColumna("haber").setSuma(false);
                 tab_tabla.getColumna("saldo").setSuma(false);
                 tab_tabla.setColumnaSuma("debe,haber,saldo");
+
+                tab_tabla.getColumna("debe").setFormatoNumero(2);
+                tab_tabla.getColumna("haber").setFormatoNumero(2);
+                tab_tabla.getColumna("saldo").setFormatoNumero(2);
+
                 tab_tabla.setRows(20);
                 tab_tabla.setOrdenar(false);
                 tab_tabla.dibujar();
+                if (tab_tabla.isEmpty() == false) {
+                    //va a la ultima págia
+                    tab_tabla.fin();
+                }
                 PanelTabla pat_panel = new PanelTabla();
                 pat_panel.setPanelTabla(tab_tabla);
                 gru_grupo.getChildren().add(pat_panel);
@@ -574,7 +683,8 @@ public class pre_clientes extends Pantalla {
                 utilitario.agregarMensajeInfo("No se encontro Cuenta Contable", "El cliente seleccionado no tiene asociado una cuenta contable");
             }
         }
-        mep_menu.dibujar(5, "MOVIMIENTOS CONTABLES", gru_grupo);
+
+        mep_menu.dibujar(5, "fa fa-book", "Libro mayor de la cuenta contable del cliente.", gru_grupo, true);
     }
 
     /**
@@ -600,6 +710,7 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("saldo_x_pagar").alinearDerecha();
             tab_tabla.setCampoPrimaria("ide_ccctr");
             tab_tabla.getColumna("ide_ccctr").setVisible(false);
+            tab_tabla.getColumna("FECHA_VENCE").setLongitud(1);
             tab_tabla.getColumna("fecha").setVisible(true);
             tab_tabla.getColumna("serie_ccdaf").setNombreVisual("SERIE");
             tab_tabla.getColumna("secuencial_cccfa").setNombreVisual("N. FACTURA");
@@ -608,19 +719,44 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("total_cccfa").setNombreVisual("TOTAL");
             tab_tabla.getColumna("total_cccfa").setEstilo("font-size: 13px;");
             tab_tabla.getColumna("total_cccfa").alinearDerecha();
-            tab_tabla.setRows(20);
+            tab_tabla.getColumna("dias_credito").alinearCentro();
+            tab_tabla.getColumna("dias_credito").setNombreVisual("DÍAS CRÉDITO");
+            tab_tabla.setRows(10);
             tab_tabla.setLectura(true);
             tab_tabla.setColumnaSuma("saldo_x_pagar");
             tab_tabla.dibujar();
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.setPanelTabla(tab_tabla);
             gru_grupo.getChildren().add(pat_panel);
-
             if (tab_tabla.isEmpty()) {
                 tab_tabla.setEmptyMessage("El cliente no tiene facturas por pagar");
             }
+
+            tab_tabla1 = new Tabla();
+            tab_tabla1.setHeader("CHEQUES POSFECHADOS PENDIENTES DE COBRO");
+            tab_tabla1.setId("tab_tabla1");
+            tab_tabla1.setSql(ser_cliente.getSqlChequesPosfechadosCliente(aut_clientes.getValor()));
+            tab_tabla1.setRows(10);
+            tab_tabla1.setLectura(true);
+            tab_tabla1.getColumna("ide_teclb").setVisible(false);
+            tab_tabla1.setCampoPrimaria("ide_teclb");
+            tab_tabla1.getColumna("VALOR").alinearDerecha();
+            tab_tabla1.getColumna("VALOR").setLongitud(25);
+            tab_tabla1.getColumna("NUMERO").setFiltroContenido();
+            tab_tabla1.getColumna("BENEFICIARIO").setVisible(false);
+            tab_tabla1.getColumna("fec_cam_est_teclb").setNombreVisual("FECHA VENCE");
+            tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[1] <= '" + utilitario.getFechaActual() + "' ?   'text-red' : null");
+            tab_tabla1.setColumnaSuma("valor");
+            tab_tabla1.dibujar();
+            PanelTabla pat_panel1 = new PanelTabla();
+            pat_panel1.setPanelTabla(tab_tabla1);
+            gru_grupo.getChildren().add(pat_panel1);
+            if (tab_tabla1.isEmpty()) {
+                tab_tabla1.setEmptyMessage("El cliente no tiene cheques posfechados");
+            }
+
         }
-        mep_menu.dibujar(6, "FACTURAS POR COBRAR AL CLIENTE", gru_grupo);
+        mep_menu.dibujar(6, "fa fa-clock-o", "Cuentas por Cobrar del cliente.", gru_grupo, true);
     }
 
     public void dibujarEstructura() {
@@ -638,8 +774,10 @@ public class pre_clientes extends Pantalla {
         }
         PanelArbol paa_panel = new PanelArbol();
         paa_panel.setPanelArbol(arb_estructura);
+
         gru_grupo.getChildren().add(paa_panel);
-        mep_menu.dibujar(7, "CLASIFICACIÓN DE CLIENTES", gru_grupo);
+        mep_menu.dibujar(7, "fa fa-users", "Clasificación de grupo de clientes.", gru_grupo, true);
+
     }
 
     public void agregarPadre() {
@@ -673,6 +811,12 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("ventas0").alinearDerecha();
             tab_tabla.getColumna("iva").alinearDerecha();
             tab_tabla.getColumna("total").alinearDerecha();
+
+            tab_tabla.getColumna("ventas12").setFormatoNumero(2);
+            tab_tabla.getColumna("ventas0").setFormatoNumero(2);
+            tab_tabla.getColumna("iva").setFormatoNumero(2);
+            tab_tabla.getColumna("total").setFormatoNumero(2);
+
             tab_tabla.dibujar();
 
             Grid gri_opciones = new Grid();
@@ -689,7 +833,7 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel);
             gru_grupo.getChildren().add(gca_grafico);
         }
-        mep_menu.dibujar(8, "GRAFICO DE VENTAS", gru_grupo);
+        mep_menu.dibujar(8, "fa fa-bar-chart", "Gráficos estadísticos de ventas del cliente.", gru_grupo, true);
     }
 
     public void dibujarProductosVendidos() {
@@ -701,6 +845,8 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("ide_inarti").setVisible(false);
             tab_tabla.setRows(25);
             tab_tabla.getColumna("nombre_inarti").setNombreVisual("PRODUCTO");
+            tab_tabla.getColumna("observacion_ccdfa").setNombreVisual("NOMBRE FACTURADO");
+            tab_tabla.getColumna("observacion_ccdfa").setFiltroContenido();
             tab_tabla.getColumna("nombre_inarti").setFiltroContenido();
             tab_tabla.getColumna("nombre_inarti").setLongitud(200);
             tab_tabla.getColumna("fecha_ultima_venta").setNombreVisual("FECHA ULTIMA VENTA");
@@ -717,7 +863,7 @@ public class pre_clientes extends Pantalla {
             gru_grupo.getChildren().add(pat_panel1);
 
         }
-        mep_menu.dibujar(9, "PRODUCTOS VENDIDOS", gru_grupo);
+        mep_menu.dibujar(9, "fa fa-cart-arrow-down", "Últimos precios de productos vendidos al cliente.", gru_grupo, true);
     }
 
     public void actualizarGrafico() {
@@ -734,6 +880,7 @@ public class pre_clientes extends Pantalla {
     public void actualizarMovimientos() {
         tab_tabla.setSql(ser_contabilidad.getSqlMovimientosCuentaPersona(ser_cliente.getCuentaCliente(aut_clientes.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), aut_clientes.getValor()));
         tab_tabla.ejecutarSql();
+        tab_tabla.fin();
         actualizarSaldosContable();
     }
 
@@ -743,6 +890,7 @@ public class pre_clientes extends Pantalla {
     public void actualizarTransacciones() {
         tab_tabla.setSql(ser_cliente.getSqlTransaccionesCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_tabla.ejecutarSql();
+        tab_tabla.fin();
         actualizarSaldoxCobrar();
     }
 
@@ -753,6 +901,7 @@ public class pre_clientes extends Pantalla {
     public void actualizarProductos() {
         tab_tabla.setSql(ser_cliente.getSqlProductosCliente(aut_clientes.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_tabla.ejecutarSql();
+        tab_tabla.fin();
         if (tab_tabla.isEmpty()) {
 
             tab_tabla.setEmptyMessage("No existen Productos en el rango de fechas seleccionado");
@@ -903,6 +1052,7 @@ public class pre_clientes extends Pantalla {
     public void limpiar() {
         aut_clientes.limpiar();
         mep_menu.limpiar();
+        dibujarDashBoard();
     }
 
     @Override
@@ -972,13 +1122,11 @@ public class pre_clientes extends Pantalla {
                 tab_tabla.setValor("numero_pago_ccdtr", "1");
                 tab_tabla.setValor("ide_cccfa", ide_cccfa);
             }
-            tab_tabla.setValor("ide_ccctr", ide_ccctr);
-            tab_tabla.setValor("ide_cnccc", ide_cnccc);
             if (ide_cnccc != null) {
                 //Asigna num de asiento a documento cxc y a transaccion cxc
-
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa);
                 if (ide_cccfa != null) {
-                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa + " and ide_cnccc is null");
+                    utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa set ide_cnccc=" + ide_cnccc + " WHERE ide_ccctr=" + ide_ccctr + " and ide_cnccc is null");
                 }
             }
 
@@ -987,12 +1135,6 @@ public class pre_clientes extends Pantalla {
             tab_tabla.guardar();
             if (guardarPantalla().isEmpty()) {
                 dibujarTransacciones();
-            }
-        } else if (mep_menu.getOpcion() == 13) {
-            tab_tabla.guardar();
-            if (guardarPantalla().isEmpty()) {
-                tab_tabla.insertar();
-                tab_tabla.actualizarCombos();
             }
         }
     }
@@ -1065,6 +1207,14 @@ public class pre_clientes extends Pantalla {
 
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
+    }
+
+    public Tabla getTab_tabla1() {
+        return tab_tabla1;
+    }
+
+    public void setTab_tabla1(Tabla tab_tabla1) {
+        this.tab_tabla1 = tab_tabla1;
     }
 
 }

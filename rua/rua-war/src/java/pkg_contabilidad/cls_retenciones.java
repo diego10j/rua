@@ -258,7 +258,7 @@ public class cls_retenciones {
                     int num = Integer.parseInt(aux_num);
                     num = num + 1;
                     aux_num = num + "";
-                    String ceros = utilitario.generarCero(8 - aux_num.length());
+                    String ceros = utilitario.generarCero(9 - aux_num.length());
                     num_max_retencion = num_max_retencion.concat(ceros).concat(aux_num);
                     return num_max_retencion;
                 } catch (Exception e) {

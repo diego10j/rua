@@ -40,7 +40,7 @@ public class pre_articulos extends Pantalla {
         
         
         com_bodegas.setId("com_bodegas");
-        com_bodegas.setCombo(ser_inventario.getBodegaSucursalDatos());
+        com_bodegas.setCombo(ser_inventario.getBodegaSucursal());
         bar_botones.agregarComponente(new Etiqueta("Periodo Fiscal: "));
         bar_botones.agregarComponente(com_anio);
         bar_botones.agregarComponente(new Etiqueta("Bodega: "));

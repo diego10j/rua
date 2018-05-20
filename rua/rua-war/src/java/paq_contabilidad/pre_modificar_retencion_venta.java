@@ -17,6 +17,8 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import servicios.contabilidad.ServicioRetenciones;
+import servicios.cuentas_x_cobrar.ServicioCliente;
+import servicios.cuentas_x_cobrar.ServicioCuentasCxC;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
 import servicios.inventario.ServicioProducto;
@@ -26,31 +28,31 @@ import sistema.aplicacion.Pantalla;
  *
  * @author DIEGOFERNANDOJACOMEG
  */
-public class pre_modificar_retencion extends Pantalla {
+public class pre_modificar_retencion_venta extends Pantalla {
 
     @EJB
-    private final ServicioProveedor ser_proveedor = (ServicioProveedor) utilitario.instanciarEJB(ServicioProveedor.class);
+    private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
     @EJB
     private final ServicioRetenciones ser_retencion = (ServicioRetenciones) utilitario.instanciarEJB(ServicioRetenciones.class);
     @EJB
-    private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
+    private final ServicioCuentasCxC ser_cuentas_cxc = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
 
     private AutoCompletar aut_proveedor = new AutoCompletar();
     private SeleccionTabla sel_factura = new SeleccionTabla();
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    private String ide_cpcfa = null;
+    private String ide_cccfa = null;
 
-    public pre_modificar_retencion() {
+    public pre_modificar_retencion_venta() {
         bar_botones.quitarBotonsNavegacion();
 
         aut_proveedor.setId("aut_proveedor");
-        aut_proveedor.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
+        aut_proveedor.setAutoCompletar(ser_cliente.getSqlComboClientes());
         aut_proveedor.setAutocompletarContenido();
         aut_proveedor.setMetodoChange("abrirRetenciones");
         aut_proveedor.setSize(70);
 
-        bar_botones.agregarComponente(new Etiqueta("PROVEEDOR"));
+        bar_botones.agregarComponente(new Etiqueta("CLIENTE"));
         bar_botones.agregarComponente(aut_proveedor);
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
@@ -100,13 +102,13 @@ public class pre_modificar_retencion extends Pantalla {
         agregarComponente(div_division);
 
         sel_factura.setId("sel_factura");
-        sel_factura.setTitle("RETENCIONES DEL PROVEEDOR");
+        sel_factura.setTitle("RETENCIONES DEL CLIENTE");
         sel_factura.setHeight("50%");
         sel_factura.setWidth("65%");
         sel_factura.setRadio();
-        sel_factura.setSeleccionTabla(ser_retencion.getSqlRetencionesProveedor("-1"), "ide_cncre");
+        sel_factura.setSeleccionTabla(ser_retencion.getSqlRetencionesCliente("-1"), "ide_cncre");
         sel_factura.getTab_seleccion().getColumna("NUMERO").setFiltroContenido();
-        sel_factura.getTab_seleccion().getColumna("ide_cpcfa").setVisible(false);
+        sel_factura.getTab_seleccion().getColumna("ide_cccfa").setVisible(false);
 
         sel_factura.getBot_aceptar().setMetodo("aceptarRetencion");
         agregarComponente(sel_factura);
@@ -141,7 +143,7 @@ public class pre_modificar_retencion extends Pantalla {
         if (sel_factura.getValorSeleccionado() != null) {
             sel_factura.cerrar();
             tab_tabla1.setCondicion("ide_cncre=" + sel_factura.getValorSeleccionado());
-            ide_cpcfa = sel_factura.getTab_seleccion().getValor("ide_cpcfa");
+            ide_cccfa = sel_factura.getTab_seleccion().getValor("ide_cccfa");
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
         } else {
@@ -152,7 +154,7 @@ public class pre_modificar_retencion extends Pantalla {
     public void abrirRetenciones(SelectEvent evt) {
         aut_proveedor.onSelect(evt);
         if (aut_proveedor.getValor() != null) {
-            sel_factura.setSql(ser_retencion.getSqlRetencionesProveedor(aut_proveedor.getValor()));
+            sel_factura.setSql(ser_retencion.getSqlRetencionesCliente(aut_proveedor.getValor()));
             sel_factura.getTab_seleccion().ejecutarSql();
             if (sel_factura.getTab_seleccion().isEmpty() == false) {
                 sel_factura.setTitle("COMPROBANTES DE RETENCIÓN - " + aut_proveedor.getValorArreglo(2));
@@ -160,7 +162,7 @@ public class pre_modificar_retencion extends Pantalla {
             } else {
                 tab_tabla1.limpiar();
                 tab_tabla2.limpiar();
-                utilitario.agregarMensaje("El proveedor seleccionado no tiene Comprobantes de Retención", "");
+                utilitario.agregarMensaje("El cliente seleccionado no tiene Comprobantes de Retención", "");
             }
         }
     }
@@ -176,7 +178,7 @@ public class pre_modificar_retencion extends Pantalla {
     public void guardar() {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
-                ser_cuentas_cxp.generarModificarTransaccionRetencion(ide_cpcfa, tab_tabla2.getSumaColumna("valor_cndre"));
+                ser_cuentas_cxc.generarModificarTransaccionRetencion(ide_cccfa, tab_tabla2.getSumaColumna("valor_cndre"));
                 utilitario.getConexion().guardarPantalla();
             }
         }

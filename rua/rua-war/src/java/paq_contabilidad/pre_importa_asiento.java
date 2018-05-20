@@ -405,19 +405,8 @@ public class pre_importa_asiento extends Pantalla {
                     for (int i = (tab_detalle.getTotalFilas() - 1); i >= 0; i--) {
                         //si la cuenta no termina en .
                         String c = tab_detalle.getValor(i, "codig_recur_cndpc");
-                        int cuenta = 0;
-                        for (int j = 0; j < c.length(); j++) {
-                            if (c.charAt(j) == '.') {
-                                cuenta++;
-                            }
-                        }
-                        if (tab_detalle.getValor(i, "codig_recur_cndpc").endsWith(".") == false) {
-
-                            //if (cuenta == 7) { 
-                            if (tab_detalle.getValor(i, "debe") == null && tab_detalle.getValor(i, "haber") == null) {
-                                continue;
-                            }
-
+                        //if (tab_detalle.getValor(i, "codig_recur_cndpc").endsWith(".") == false) {
+                        if (c.endsWith(".") == false) {
                             asc_asiento.getTab_deta_asiento().insertar();
                             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", tab_detalle.getValor(i, "ide_cndcc"));
                             if (tab_detalle.getValor(i, "debe") != null) {
@@ -425,7 +414,7 @@ public class pre_importa_asiento extends Pantalla {
                                 asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "debe"));
                             } else if (tab_detalle.getValor(i, "haber") != null) {
                                 asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
-                                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "haber").replace("-", ""));
+                                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "haber"));
                             }
                             asc_asiento.getTab_deta_asiento().getFila(0).setLectura(true); //para no permitir editar
                         }
