@@ -116,6 +116,7 @@ public class cls_retenciones {
             }
             band = 0;
         }
+
         for (int i = 0; i < l_casillero.size(); i++) {
             casillero = l_casillero.get(i).toString();
             for (int j = 0; j < tab_detalle_factura.getTotalFilas(); j++) {
@@ -123,8 +124,10 @@ public class cls_retenciones {
                     if (casillero.equals(conta.buscarParametroProducto("ide_cncim", "RETENCION RENTA POR COBRAR", tab_detalle_factura.getValor(j, "ide_inarti")))) {
                         suma = Double.parseDouble(tab_detalle_factura.getValor(j, "total_ccdfa")) + suma;
                     }
-                } else if (casillero.equals(conta.buscarParametroProducto("ide_cncim", "RETENCION RENTA POR PAGAR", tab_detalle_factura.getValor(j, "ide_inarti")))) {
-                    suma = Double.parseDouble(tab_detalle_factura.getValor(j, "valor_cpdfa")) + suma;
+                } else {
+                    if (casillero.equals(conta.buscarParametroProducto("ide_cncim", "RETENCION RENTA POR PAGAR", tab_detalle_factura.getValor(j, "ide_inarti")))) {
+                        suma = Double.parseDouble(tab_detalle_factura.getValor(j, "valor_cpdfa")) + suma;
+                    }
                 }
             }
             l_valor_casillero.add(suma);
@@ -214,7 +217,7 @@ public class cls_retenciones {
                 + "and ide_cntco=(select ide_cntco from gen_persona where ide_geper=" + proveedor + " "
                 + ")");
         if (sql_porcentaje != null && !sql_porcentaje.isEmpty()) {
-            // System.out.println("porcentaje " + sql_porcentaje.get(0).toString());
+            System.out.println("porcentaje " + sql_porcentaje.get(0).toString());
             return sql_porcentaje.get(0).toString();
         } else {
             return null;
@@ -224,7 +227,7 @@ public class cls_retenciones {
     public String getNumeroAutorizacion() {
         TablaGenerica tab_cabecera_retencion = utilitario.consultar("select * from con_cabece_retenc where ide_sucu=" + utilitario.getVariable("ide_sucu") + " "
                 + "and es_venta_cncre is FALSE "
-                + "and autorizacion_cncre not like '000000%' "
+                + "and autorizacion_cncre not like '0000000000' "
                 + "order by ide_cncre desc");
         if (tab_cabecera_retencion.getTotalFilas() > 0) {
             if (tab_cabecera_retencion.getValor(0, "autorizacion_cncre") != null && !tab_cabecera_retencion.getValor(0, "autorizacion_cncre").isEmpty()) {

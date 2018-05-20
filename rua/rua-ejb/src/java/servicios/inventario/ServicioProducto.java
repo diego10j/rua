@@ -25,6 +25,36 @@ public class ServicioProducto {
     @EJB
     private ServicioConfiguracion ser_configuracion;
 
+    public double getConversionCantidadProducto(String ide_inarti, String ide_inuni, double cantidad) {
+        double convertir = 0;
+
+        TablaGenerica tag = utilitario.consultar("SELECT * FROM inv_conversion_unidad where ide_inarti=" + ide_inarti + " and inv_ide_inuni=" + ide_inuni);
+
+        if (tag.isEmpty() == false) {
+            double valor = 0;
+            double cant = 0;
+            try {
+                valor = Double.parseDouble(tag.getValor("valor_incon"));
+            } catch (Exception e) {
+            }
+
+            try {
+                cant = Double.parseDouble(tag.getValor("cantidad_incon"));
+            } catch (Exception e) {
+            }
+            try {
+                convertir = (cantidad * cant) / valor;
+            } catch (Exception e) {
+            }
+        }
+
+        if (convertir == 0) {
+            convertir = cantidad;
+        }
+
+        return convertir;
+    }
+
     public String getSqlListaProductos() {
         return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1";
     }
@@ -108,7 +138,7 @@ public class ServicioProducto {
         tabla.getColumna("ide_intpr").setRequerida(true);
         tabla.getColumna("ide_inepr").setCombo("inv_estado_produc", "ide_inepr", "nombre_inepr", "");
         tabla.getColumna("nivel_inarti").setValorDefecto("HIJO");
-        tabla.getColumna("nivel_inarti").setVisible(false);        
+        tabla.getColumna("nivel_inarti").setVisible(false);
         tabla.getColumna("hace_kardex_inarti").setValorDefecto("true");
         tabla.getColumna("es_combo_inarti").setValorDefecto("false");
         tabla.getColumna("nombre_inarti").setRequerida(true);
@@ -124,6 +154,8 @@ public class ServicioProducto {
         tabla.getGrid().setColumns(4);
         tabla.getColumna("ide_georg").setVisible(false);
         tabla.getColumna("es_combo_inarti").setVisible(false);
+        tabla.getColumna("ide_cndpc").setVisible(false); //cuenta contable
+
     }
 
     /**
@@ -432,11 +464,16 @@ public class ServicioProducto {
      * @param ide_inbod null o vacio no filtra por bodegas
      * @return
      */
-    public String getSqlKardex(String ide_inarti, String fecha_inicio, String fecha_fin, String ide_inbod) {
+    public String getSqlKardexPromedio(String ide_inarti, String fecha_inicio, String fecha_fin, String ide_inbod) {
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
 
-        String strCondicionBodega = ide_inbod.isEmpty() ? "" : " ide_inbod in (" + ide_inbod + ") \n";
-        return "SELECT dci.ide_indci,cci.ide_incci,cci.fecha_trans_incci,nom_geper,nombre_intti,\n"
+        if (ide_inbod.equalsIgnoreCase("null")) {
+            ide_inbod = "";
+        }
+
+        String strCondicionBodega = ide_inbod.isEmpty() ? "" : " and ide_inbod in (" + ide_inbod + ") \n";
+        return "SELECT dci.ide_indci,cci.ide_incci,cci.fecha_trans_incci,nom_geper,nombre_intti,COALESCE((select secuencial_cccfa from cxc_cabece_factura where ide_cccfa=dci.ide_cccfa),\n"
+                + "(select numero_cpcfa from cxp_cabece_factur where ide_cpcfa=dci.ide_cpcfa)) as FACTURA ,\n"
                 + "case when signo_intci = 1 THEN cantidad_indci  end as CANT_INGRESO,\n"
                 + "case when signo_intci = 1 THEN precio_indci  end as VUNI_INGRESO,\n"
                 + "case when signo_intci = 1 THEN valor_indci  end as VTOT_INGRESO,\n"
@@ -456,7 +493,34 @@ public class ServicioProducto {
                 + strCondicionBodega
                 + "ORDER BY cci.fecha_trans_incci asc,dci.ide_indci asc,signo_intci asc";
     }
-   
+
+    public String getSqlKardex(String ide_inarti, String fecha_inicio, String fecha_fin, String ide_inbod) {
+        ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();
+
+        if (ide_inbod.equalsIgnoreCase("null")) {
+            ide_inbod = "";
+        }
+
+        String strCondicionBodega = ide_inbod.isEmpty() ? "" : " and ide_inbod in (" + ide_inbod + ") \n";
+        return "SELECT dci.ide_indci,cci.ide_incci,cci.fecha_trans_incci,nom_geper,COALESCE((select secuencial_cccfa from cxc_cabece_factura where ide_cccfa=dci.ide_cccfa),\n"
+                + "(select numero_cpcfa from cxp_cabece_factur where ide_cpcfa=dci.ide_cpcfa)) as FACTURA ,\n"
+                + "case when signo_intci = 1 THEN cantidad_indci  end as INGRESO,\n"
+                + "case when signo_intci = -1 THEN cantidad_indci  end as EGRESO,\n"
+                + "precio_indci as PRECIO,\n"
+                + "'' as SALDO\n"
+                + "from inv_det_comp_inve dci \n"
+                + "left join inv_cab_comp_inve cci on cci.ide_incci=dci.ide_incci \n"
+                + "left join gen_persona gpe on cci.ide_geper=gpe.ide_geper\n"
+                + "left join inv_tip_tran_inve tti on tti.ide_intti=cci.ide_intti \n"
+                + "left join inv_tip_comp_inve tci on tci.ide_intci=tti.ide_intci \n"
+                + "left join inv_articulo arti on dci.ide_inarti=arti.ide_inarti\n"
+                + "where dci.ide_inarti=" + ide_inarti + " \n"
+                + "and fecha_trans_incci BETWEEN '" + fecha_inicio + "'  and '" + fecha_fin + "' \n"
+                + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " \n" //Comprobantes en estado  normal
+                + strCondicionBodega
+                + "ORDER BY cci.fecha_trans_incci asc,dci.ide_indci asc,signo_intci asc";
+    }
+
     public List<Double> getSaldosInicialesKardex(String ide_inarti, String fecha_fin, String ide_inbod) {
         List<Double> resultado = new ArrayList();
         ide_inbod = ide_inbod == null ? "" : ide_inbod.trim();

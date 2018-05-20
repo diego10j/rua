@@ -244,8 +244,10 @@ public class Utilitario extends Framework {
                             boo_correcto = true;
                         }
                     } else //Para cedulas que terminan en 0
-                    if (lint_suma % 10 == 0) {
-                        boo_correcto = true;
+                    {
+                        if (lint_suma % 10 == 0) {
+                            boo_correcto = true;
+                        }
                     }
 
                 } else {
@@ -490,169 +492,173 @@ public class Utilitario extends Framework {
                 cadena = recursivoNumeroLetras(numero / 1000000) + " Millones" + recursivoNumeroLetras(numero % 1000000);
             }
         } else // Aqui identifico si lleva Miles
-        if ((numero / 1000) > 0) {
+        {
+            if ((numero / 1000) > 0) {
 
-            if ((numero / 1000) == 1) {
-                cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
-            } else {
-                cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
-            }
-        } else // Aqui identifico si lleva cientos
-        if ((numero / 100) > 0) {
-            if ((numero / 100) == 1) {
-                if ((numero % 100) == 0) {
-                    cadena = " Cien";
+                if ((numero / 1000) == 1) {
+                    cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
                 } else {
-                    cadena = " Ciento" + recursivoNumeroLetras(numero % 100);
+                    cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
                 }
-            } else if ((numero / 100) == 5) {
-                cadena = " Quinientos" + recursivoNumeroLetras(numero % 100);
-            } else if ((numero / 100) == 9) {
-                cadena = " Novecientos" + recursivoNumeroLetras(numero % 100);
-            } else {
-                cadena = recursivoNumeroLetras(numero / 100) + "cientos" + recursivoNumeroLetras(numero % 100);
-            }
-        } // Aqui se identifican las Decenas
-        else if ((numero / 10) > 0) {
-            switch (numero / 10) {
-                case 1:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Diez";
-                            break;
+            } else // Aqui identifico si lleva cientos
+            {
+                if ((numero / 100) > 0) {
+                    if ((numero / 100) == 1) {
+                        if ((numero % 100) == 0) {
+                            cadena = " Cien";
+                        } else {
+                            cadena = " Ciento" + recursivoNumeroLetras(numero % 100);
+                        }
+                    } else if ((numero / 100) == 5) {
+                        cadena = " Quinientos" + recursivoNumeroLetras(numero % 100);
+                    } else if ((numero / 100) == 9) {
+                        cadena = " Novecientos" + recursivoNumeroLetras(numero % 100);
+                    } else {
+                        cadena = recursivoNumeroLetras(numero / 100) + "cientos" + recursivoNumeroLetras(numero % 100);
+                    }
+                } // Aqui se identifican las Decenas
+                else if ((numero / 10) > 0) {
+                    switch (numero / 10) {
                         case 1:
-                            cadena = " Once";
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Diez";
+                                    break;
+                                case 1:
+                                    cadena = " Once";
+                                    break;
+                                case 2:
+                                    cadena = " Doce";
+                                    break;
+                                case 3:
+                                    cadena = " Trece";
+                                    break;
+                                case 4:
+                                    cadena = " Catorce";
+                                    break;
+                                case 5:
+                                    cadena = " Quince";
+                                    break;
+                                default:
+                                    cadena = " Diez y " + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
                         case 2:
-                            cadena = " Doce";
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Veinte";
+                                    break;
+                                default:
+                                    cadena = " Veinti" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
                         case 3:
-                            cadena = " Trece";
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Treinta";
+                                    break;
+                                default:
+                                    cadena = " Treinta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
                         case 4:
-                            cadena = " Catorce";
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Cuarenta";
+                                    break;
+                                default:
+                                    cadena = " Cuarenta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
                         case 5:
-                            cadena = " Quince";
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Cincuenta";
+                                    break;
+                                default:
+                                    cadena = " Cincuenta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
-                        default:
-                            cadena = " Diez y " + recursivoNumeroLetras(numero % 10);
+                        case 6:
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Sesenta";
+                                    break;
+                                default:
+                                    cadena = " Sesenta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
+                            break;
+                        case 7:
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Setenta";
+                                    break;
+                                default:
+                                    cadena = " Setenta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
+                            break;
+                        case 8:
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Ochenta";
+                                    break;
+                                default:
+                                    cadena = " Ochenta y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
+                            break;
+                        case 9:
+                            switch (numero % 10) {
+                                case 0:
+                                    cadena = " Noventa";
+                                    break;
+                                default:
+                                    cadena = " Noventa y" + recursivoNumeroLetras(numero % 10);
+                                    break;
+                            }
                             break;
                     }
-                    break;
-                case 2:
-                    switch (numero % 10) {
+                } else {
+                    switch (numero) {
+                        case 1:
+                            cadena = " Uno";
+                            break;
+                        case 2:
+                            cadena = " Dos";
+                            break;
+                        case 3:
+                            cadena = " Tres";
+                            break;
+                        case 4:
+                            cadena = " Cuatro";
+                            break;
+                        case 5:
+                            cadena = " Cinco";
+                            break;
+                        case 6:
+                            cadena = " Seis";
+                            break;
+                        case 7:
+                            cadena = " Siete";
+                            break;
+                        case 8:
+                            cadena = " Ocho";
+                            break;
+                        case 9:
+                            cadena = " Nueve";
+                            break;
                         case 0:
-                            cadena = " Veinte";
-                            break;
-                        default:
-                            cadena = " Veinti" + recursivoNumeroLetras(numero % 10);
+                            //      cadena = " Cero";
                             break;
                     }
-                    break;
-                case 3:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Treinta";
-                            break;
-                        default:
-                            cadena = " Treinta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 4:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Cuarenta";
-                            break;
-                        default:
-                            cadena = " Cuarenta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 5:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Cincuenta";
-                            break;
-                        default:
-                            cadena = " Cincuenta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 6:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Sesenta";
-                            break;
-                        default:
-                            cadena = " Sesenta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 7:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Setenta";
-                            break;
-                        default:
-                            cadena = " Setenta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 8:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Ochenta";
-                            break;
-                        default:
-                            cadena = " Ochenta y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-                case 9:
-                    switch (numero % 10) {
-                        case 0:
-                            cadena = " Noventa";
-                            break;
-                        default:
-                            cadena = " Noventa y" + recursivoNumeroLetras(numero % 10);
-                            break;
-                    }
-                    break;
-            }
-        } else {
-            switch (numero) {
-                case 1:
-                    cadena = " Uno";
-                    break;
-                case 2:
-                    cadena = " Dos";
-                    break;
-                case 3:
-                    cadena = " Tres";
-                    break;
-                case 4:
-                    cadena = " Cuatro";
-                    break;
-                case 5:
-                    cadena = " Cinco";
-                    break;
-                case 6:
-                    cadena = " Seis";
-                    break;
-                case 7:
-                    cadena = " Siete";
-                    break;
-                case 8:
-                    cadena = " Ocho";
-                    break;
-                case 9:
-                    cadena = " Nueve";
-                    break;
-                case 0:
-                    //      cadena = " Cero";
-                    break;
+                }
             }
         }
         return cadena;
@@ -986,7 +992,6 @@ public class Utilitario extends Framework {
     /*Valida el ingreso de solo numeros enteros positivos (telefono)
      * 
      */
-
     public boolean isEnteroPositivo(String numero_validar) {
         try {
             int int_num_val = Integer.parseInt(numero_validar);
@@ -1150,6 +1155,55 @@ public class Utilitario extends Framework {
             Date dat_fecha = formatoFecha.parse(fecha);
             return dat_fecha;
         } catch (Exception e) {
+        }
+        return null;
+    }
+
+    /**
+     * Valida una direccion de correo
+     *
+     * @param email
+     * @return
+     */
+    public boolean isCorreoValido(String email) {
+        Pattern pat = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher mat = pat.matcher(email);
+        if (mat.find()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Permite hacer una istalacion a certificados SSL para webservice
+     *
+     * @return
+     */
+    public String instalarCertificados() {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }};
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            return e.getMessage();
         }
         return null;
     }

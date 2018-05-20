@@ -5,7 +5,7 @@
  */
 package servicios.cuentas_x_cobrar;
 
-import comprobantesElectronicos.dao.ComprobanteDAOLocal;
+
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.List;
@@ -24,8 +24,7 @@ public class ServicioFacturaCxC extends ServicioBase {
 
     @EJB
     private ServicioContabilidadGeneral ser_conta_general;
-    @EJB
-    private ComprobanteDAOLocal comprobateElectronico;
+
 
     @PostConstruct
     public void init() {
@@ -353,10 +352,6 @@ public class ServicioFacturaCxC extends ServicioBase {
             }
         }
         return num + 1;
-    }
-
-    public String guardarComprobanteElectronicoFactura(Tabla tab_factura, Tabla tab_detalle) {
-        return comprobateElectronico.guardarComprobanteFactura(tab_factura, tab_detalle);
     }
 
     /**
