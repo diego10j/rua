@@ -135,7 +135,7 @@ public class ServicioCuentasCxC extends ServicioBase {
         if (isFacturaElectronica(ide_ccdaf)) { //si tiene facturacion electrónica
             return "select a.ide_cccfa, secuencial_cccfa,ide_cnccc,a.ide_ccefa,nombre_sresc as nombre_ccefa, fecha_emisi_cccfa,(select numero_cncre from con_cabece_retenc where ide_cncre=a.ide_cncre)as NUM_RETENCION,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                     + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                    + "claveacceso_srcom as CLAVE_ACCESO, nombre_vgven as VENDEDOR,nombre_cndfp as DIAS_CREDITO ,fecha_trans_cccfa,ide_cncre,d.ide_srcom,a.ide_geper,direccion_cccfa  "
+                    + "claveacceso_srcom as CLAVE_ACCESO, nombre_vgven as VENDEDOR,nombre_cndfp as DIAS_CREDITO ,fecha_trans_cccfa,a.ide_cncre,d.ide_srcom,a.ide_geper,direccion_cccfa  "
                     + "from cxc_cabece_factura a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
@@ -146,11 +146,11 @@ public class ServicioCuentasCxC extends ServicioBase {
                     + "and ide_ccdaf=" + ide_ccdaf + " "
                     // + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " " 
                     + "AND a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal")
-                    + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+                    + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
         } else {
             return "select a.ide_cccfa, secuencial_cccfa, ide_cnccc,a.ide_ccefa,nombre_ccefa ,fecha_emisi_cccfa,(select numero_cncre from con_cabece_retenc where ide_cncre=a.ide_cncre)as NUM_RETENCION,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
                     + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                    + "observacion_cccfa, nombre_vgven as VENDEDOR,fecha_trans_cccfa,ide_cncre,a.ide_geper,direccion_cccfa "
+                    + "observacion_cccfa, nombre_vgven as VENDEDOR,fecha_trans_cccfa,a.ide_cncre,a.ide_geper,direccion_cccfa "
                     + "from cxc_cabece_factura a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
