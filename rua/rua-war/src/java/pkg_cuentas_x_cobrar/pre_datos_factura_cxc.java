@@ -18,6 +18,10 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("cxc_datos_fac", "ide_ccdaf", 1);
         tab_tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
+        tab_tabla.getColumna("ide_cntdoc").setCombo("con_tipo_document", "ide_cntdo", "nombre_cntdo", "");
+        tab_tabla.getColumna("ide_cntdoc").setRequerida(true);
+        tab_tabla.getColumna("activo_ccdaf").setValorDefecto("true");
+        tab_tabla.setCondicionSucursal(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
