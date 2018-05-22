@@ -11,6 +11,7 @@ import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.VisualizarPDF;
@@ -33,7 +34,9 @@ public class Adquisiciones extends Pantalla {
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte(); //formato de salida del reporte
     private Map map_parametros = new HashMap();//Parametros del reporte
     public static String par_ti_anulado;
-    private VisualizarPDF vipdf_comprobante = new VisualizarPDF();    
+    private VisualizarPDF vipdf_comprobante = new VisualizarPDF();   
+    private SeleccionTabla sel_tab_proveedor = new SeleccionTabla();
+    private SeleccionTabla sel_tab_presupuesto = new SeleccionTabla();
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
@@ -59,6 +62,11 @@ public class Adquisiciones extends Pantalla {
         bot_imprimir.setIcon("ui-icon-print");
         bot_imprimir.setValue("IMPRIMIR SOLICITUD");
         bot_imprimir.setMetodo("generarPDF");
+        
+        Boton bot_importar = new Boton();
+        bot_imprimir.setIcon("ui-icon-print");
+        bot_imprimir.setValue("IMPORTAR PROVEEDOR");
+        bot_imprimir.setMetodo("abrirDialogoProveedor");
         
         bar_botones.agregarBoton(bot_imprimir);
         
@@ -197,6 +205,15 @@ public class Adquisiciones extends Pantalla {
         tab_presupuesto.getColumna("NRO_CERTIFICACION_ADCERT").setNombreVisual("NUMERO CERTIFICACION");
         tab_presupuesto.getColumna("PARTIDA_ADCERT").setNombreVisual("PARTIDA");
         tab_certificacion.getColumna("VALOR_ADCERT").setNombreVisual("VALOR");*/
+        tab_presupuesto.getColumna("ide_adpres").setNombreVisual("CODIGO");
+        tab_presupuesto.getColumna("ide_prpot").setNombreVisual("CODIGO PRESUPUESTO");
+        tab_presupuesto.getColumna("valor_adpres").setNombreVisual("VALOR PRESUPUESTO");
+        tab_presupuesto.getColumna("saldo_adpres").setNombreVisual("SALDO PRESUPUESTO");
+	tab_presupuesto.getColumna("valor_adpres").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_presupuesto.getColumna("saldo_adpres").setEtiqueta();
+	tab_presupuesto.getColumna("saldo_adpres").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
+	tab_presupuesto.setColumnaSuma("valor_adpres");
+        tab_presupuesto.getColumna("valor_adpres").setMetodoChange("CalcularSuma");
         tab_presupuesto.dibujar();
         
         Grid gri_presupuesto = new Grid();
@@ -204,7 +221,7 @@ public class Adquisiciones extends Pantalla {
         Boton bot_busca_presu = new Boton();
         bot_busca_presu.setValue("BUSCAR PRESUPUESTO");
         bot_busca_presu.setIcon("ui-icon-search");
-        bot_busca_presu.setMetodo("insertCompraBienes");
+        bot_busca_presu.setMetodo("abrirDialogoPresupuesto");
         
         gri_presupuesto.getChildren().add(bot_busca_presu);
         
@@ -258,8 +275,31 @@ public class Adquisiciones extends Pantalla {
 
         Division div_adquisiciones = new Division();
         div_adquisiciones.setId("div_adquisiciones");
-        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "70%", "H");
+        div_adquisiciones.dividir2(pat_adquisiciones, tab_tabulador, "60%", "H");
         agregarComponente(div_adquisiciones);
+        
+        sel_tab_proveedor.setId("sel_tab_proveedor");
+        sel_tab_proveedor.setTitle("PROVEEDOR");
+        sel_tab_proveedor.setSeleccionTabla(ser_adquisiciones.getDatosProveedor(), "ide_geper");
+        sel_tab_proveedor.setWidth("80%");
+        sel_tab_proveedor.setHeight("70%");
+        sel_tab_proveedor.setRadio();
+        sel_tab_proveedor.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
+        sel_tab_proveedor.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
+        sel_tab_proveedor.getBot_aceptar().setMetodo("aceptarProveedor");
+        
+        sel_tab_presupuesto.setId("sel_tab_presupuesto");
+        sel_tab_presupuesto.setTitle("PRESUPUESTO");
+        sel_tab_presupuesto.setSeleccionTabla(ser_adquisiciones.getDatosPresupuesto(), "ide_prpot");
+        sel_tab_presupuesto.setWidth("80%");
+        sel_tab_presupuesto.setHeight("70%");
+        sel_tab_presupuesto.setRadio();
+        sel_tab_presupuesto.getTab_seleccion().getColumna("cod_programa_prpro").setFiltroContenido();
+        sel_tab_presupuesto.getTab_seleccion().getColumna("detalle_actividad").setFiltroContenido();
+        sel_tab_presupuesto.getBot_aceptar().setMetodo("aceptarPresupuesto");
+        
+        agregarComponente(sel_tab_proveedor);
+        agregarComponente(sel_tab_presupuesto);
         
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
@@ -270,6 +310,29 @@ public class Adquisiciones extends Pantalla {
         
 
     }
+    
+    public void CalcularSuma(AjaxBehaviorEvent evt){
+        tab_presupuesto.modificar(evt); //Siempre es la primera linea
+        double valor_presupuesto=0;
+        double valor_saldo=0;
+        valor_presupuesto= Double.parseDouble(tab_presupuesto.getValor("valor_adpres"));
+        valor_saldo=Double.parseDouble(tab_presupuesto.getValor("saldo_adpres"));
+        if(valor_presupuesto<=0){
+			utilitario.agregarMensajeError("Ingrese un valor positivo o mayor a cero", "Ingrese un valor positivo o mayor a cero");
+		    tab_presupuesto.setValor("valor_adpres", "0");
+		    utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");
+		    return;
+		}
+		if(valor_saldo<valor_presupuesto){
+			utilitario.agregarMensajeError("No puede Exceder valor asignado", "Ingrese un valor menor igual al disponible en saldo: "+valor_saldo);
+		    tab_presupuesto.setValor("valor_adpres", "0");
+		    utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");
+		    return;
+		}
+                utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");	
+                tab_presupuesto.setColumnaSuma("saldo_adpres");
+    }
+    
     public void prueba (AjaxBehaviorEvent evt){
         tab_adquisiones.modificar(evt);
         String valor=tab_adquisiones.getValor("IDE_ADEMAP");
@@ -293,6 +356,47 @@ public class Adquisiciones extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
         }
     }
+    public void abrirDialogoProveedor(){
+        sel_tab_proveedor.dibujar();
+    }
+    public void abrirDialogoPresupuesto(){
+        sel_tab_presupuesto.dibujar();
+    }
+    public void aceptarProveedor(){
+         String str_prove = sel_tab_proveedor.getValorSeleccionado();
+        
+        TablaGenerica tab_dat_prove = utilitario.consultar(ser_adquisiciones.getDatosProveedorConsulta(str_prove));
+        for (int i=0;i<tab_dat_prove.getTotalFilas();i++){
+                tab_adquisiones.insertar();
+		tab_adquisiones.setValor("proveedor_adcomp",tab_dat_prove.getValor(i,"nom_geper"));
+                tab_adquisiones.setValor("ruc_proveedor_adcomp",tab_dat_prove.getValor(i,"identificac_geper"));
+                //tab_adquisiones.setValor("direccion_ademple",null);
+               
+	       }
+            // tab_empleado.guardar();
+            // guardarPantalla();
+             sel_tab_proveedor.cerrar();
+	     utilitario.addUpdate("tab_adquisiones");
+    }
+    
+    public void aceptarPresupuesto(){
+         String str_presu = sel_tab_presupuesto.getValorSeleccionado();
+        
+        TablaGenerica tab_dat_presu = utilitario.consultar(ser_adquisiciones.getDatosPresupuestoConsulta(str_presu));
+        for (int i=0;i<tab_dat_presu.getTotalFilas();i++){
+                tab_presupuesto.insertar();
+		tab_presupuesto.setValor("ide_prpot",tab_dat_presu.getValor(i,"ide_prpot"));
+                tab_presupuesto.setValor("valor_adpres",tab_dat_presu.getValor(i,"saldoxdevengado"));
+                tab_presupuesto.setValor("saldo_adpres",tab_dat_presu.getValor(i,"saldoxdevengado"));
+                //tab_adquisiones.setValor("direccion_ademple",null);
+               
+	       }
+            // tab_empleado.guardar();
+            // guardarPantalla();
+             sel_tab_presupuesto.cerrar();
+	     utilitario.addUpdate("tab_presupuesto");
+    }
+    
     @Override
       public void abrirListaReportes() {
         // TODO Auto-generated method stub
@@ -341,10 +445,10 @@ public class Adquisiciones extends Pantalla {
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.insertar();
-        } /*else if (tab_certificacion.isFocus()) {
-            tab_certificacion.insertar();
-        }*/ else if (tab_compra_bienes.isFocus()) {
+        } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.insertar();
+        } else if (tab_presupuesto.isFocus()) {
+            tab_presupuesto.insertar();
         }
     }
 
@@ -352,10 +456,10 @@ public class Adquisiciones extends Pantalla {
     public void guardar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.guardar();
-        } /*else if (tab_certificacion.isFocus()) {
-            tab_certificacion.guardar();
-        }*/ else if (tab_compra_bienes.isFocus()) {
+        } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.guardar();
+        } else if (tab_presupuesto.isFocus()) {
+            tab_presupuesto.guardar();
         }
         guardarPantalla();
     }
@@ -364,10 +468,10 @@ public class Adquisiciones extends Pantalla {
     public void eliminar() {
         if (tab_adquisiones.isFocus()) {
             tab_adquisiones.eliminar();
-        } /*else if (tab_certificacion.isFocus()) {
-            tab_certificacion.eliminar();
-        } */else if (tab_compra_bienes.isFocus()) {
+        } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.eliminar();
+        } else if (tab_presupuesto.isFocus()) {
+            tab_presupuesto.eliminar();
         }
     }
 
@@ -409,6 +513,22 @@ public class Adquisiciones extends Pantalla {
 
     public void setTab_presupuesto(Tabla tab_presupuesto) {
         this.tab_presupuesto = tab_presupuesto;
+    }
+
+    public SeleccionTabla getSel_tab_proveedor() {
+        return sel_tab_proveedor;
+    }
+
+    public void setSel_tab_proveedor(SeleccionTabla sel_tab_proveedor) {
+        this.sel_tab_proveedor = sel_tab_proveedor;
+    }
+
+    public SeleccionTabla getSel_tab_presupuesto() {
+        return sel_tab_presupuesto;
+    }
+
+    public void setSel_tab_presupuesto(SeleccionTabla sel_tab_presupuesto) {
+        this.sel_tab_presupuesto = sel_tab_presupuesto;
     }
 
 }

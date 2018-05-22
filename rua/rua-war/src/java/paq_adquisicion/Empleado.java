@@ -25,6 +25,7 @@ public class Empleado extends Pantalla {
 
     private Tabla tab_empleado = new Tabla();
     private Tabla tab_caja_empleado = new Tabla();
+    private Tabla tab_empleado_dat_factura = new Tabla();
     private Texto text_texto = new Texto();
     private AutoCompletar autBusca = new AutoCompletar();
     private SeleccionTabla sel_tab_empleado = new SeleccionTabla();
@@ -66,6 +67,7 @@ public class Empleado extends Pantalla {
         tab_empleado.setTipoFormulario(true);
         tab_empleado.getGrid().setColumns(2);
         tab_empleado.agregarRelacion(tab_caja_empleado);
+        tab_empleado.agregarRelacion(tab_empleado_dat_factura);
         tab_empleado.dibujar();
         
         PanelTabla pat_empleado = new PanelTabla();
@@ -85,6 +87,8 @@ public class Empleado extends Pantalla {
         sel_tab_empleado.setSeleccionTabla(ser_adquisiciones.getDatosEmpleado(), "ide_gtemp");
         sel_tab_empleado.setWidth("80%");
         sel_tab_empleado.setHeight("70%");
+        sel_tab_empleado.getTab_seleccion().getColumna("documento_identidad_gtemp").setFiltroContenido();
+        sel_tab_empleado.getTab_seleccion().getColumna("nombres_empleado").setFiltroContenido();
         sel_tab_empleado.getBot_aceptar().setMetodo("aceptarEmpleado");
         agregarComponente(sel_tab_empleado);
 
@@ -92,19 +96,31 @@ public class Empleado extends Pantalla {
         tab_caja_empleado.setId("tab_caja_empleado");   //identificador
         tab_caja_empleado.setIdCompleto("tab_tabulador:tab_caja_empleado");
         tab_caja_empleado.setTabla("cxc_caja_empleado", "ide_cxcaem", 2);
+        tab_caja_empleado.getColumna("ide_cocaj").setCombo(ser_adquisiciones.getTipoCaja());
         tab_caja_empleado.dibujar();
         
         PanelTabla pat_caja_empleado = new PanelTabla();
         pat_caja_empleado.setId("pat_caja_empleado");
         pat_caja_empleado.setPanelTabla(tab_caja_empleado);
         
+        tab_empleado_dat_factura.setId("tab_empleado_dat_factura");   //identificador
+        tab_empleado_dat_factura.setIdCompleto("tab_tabulador:tab_empleado_dat_factura");
+        tab_empleado_dat_factura.setTabla("CXC_DAT_FAC_EMP", "IDE_CXDAEM", 3);
+        tab_empleado_dat_factura.getColumna("IDE_CCDAF").setCombo(ser_adquisiciones.getDatosFactura());
+        tab_empleado_dat_factura.dibujar();
+        
+        PanelTabla pat_empleado_dat_factura = new PanelTabla();
+        pat_empleado_dat_factura.setId("pat_empleado_dat_factura");
+        pat_empleado_dat_factura.setPanelTabla(tab_empleado_dat_factura);
+        
         Tabulador tab_tabulador = new Tabulador();
         tab_tabulador.setId("tab_tabulador");        
         tab_tabulador.agregarTab("CAJA EMPLEADO", pat_caja_empleado);
+        tab_tabulador.agregarTab("PUNTO DE EMISIÒN", pat_empleado_dat_factura);
         
         Division div_empleado = new Division();
         div_empleado.setId("div_empleado");
-        div_empleado.dividir2(pat_empleado, tab_tabulador, "70%", "H");
+        div_empleado.dividir2(pat_empleado, tab_tabulador, "60%", "H");
         agregarComponente(div_empleado);
 
 //        text_texto.setId("text_texto");
@@ -159,18 +175,43 @@ public class Empleado extends Pantalla {
 
     @Override
     public void insertar() {
-        tab_empleado.insertar();
+        if (tab_empleado.isFocus()){
+            tab_empleado.insertar();
+        }
+        else if (tab_caja_empleado.isFocus()){
+            tab_caja_empleado.insertar();
+        }
+        else if (tab_empleado_dat_factura.isFocus()){
+            tab_empleado_dat_factura.insertar();
+        }
     }
 
     @Override
     public void guardar() {
-        tab_empleado.guardar();
+        if (tab_empleado.isFocus()){
+            tab_empleado.guardar();
+        }
+        else if (tab_caja_empleado.isFocus()){
+            tab_caja_empleado.guardar();
+        }
+        else if (tab_empleado_dat_factura.isFocus()){
+            tab_empleado_dat_factura.guardar();
+        }
         guardarPantalla();
+            
     }
 
     @Override
     public void eliminar() {
-        tab_empleado.eliminar();
+        if (tab_empleado.isFocus()){
+            tab_empleado.eliminar();
+        }
+        else if (tab_caja_empleado.isFocus()){
+            tab_caja_empleado.eliminar();
+        }
+        else if (tab_empleado_dat_factura.isFocus()){
+            tab_empleado_dat_factura.eliminar();
+        }
     }
 
     public Tabla getTab_empleado() {
@@ -219,6 +260,14 @@ public class Empleado extends Pantalla {
 
     public void setTab_caja_empleado(Tabla tab_caja_empleado) {
         this.tab_caja_empleado = tab_caja_empleado;
+    }
+
+    public Tabla getTab_empleado_dat_factura() {
+        return tab_empleado_dat_factura;
+    }
+
+    public void setTab_empleado_dat_factura(Tabla tab_empleado_dat_factura) {
+        this.tab_empleado_dat_factura = tab_empleado_dat_factura;
     }
   
 }
