@@ -74,7 +74,7 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
                     .append("		</infoTributaria> \n")
                     .append("		<infoNotaCredito> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
-                    .append("			<dirEstablecimiento>").append(comprobante.getDirestablecimiento()).append("</dirEstablecimiento> \n")
+                    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
                     .append("			<tipoIdentificacionComprador>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionComprador> \n")
                     .append("			<razonSocialComprador>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialComprador> \n")
                     .append("			<identificacionComprador>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionComprador> \n")

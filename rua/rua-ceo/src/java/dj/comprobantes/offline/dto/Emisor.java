@@ -28,6 +28,7 @@ public class Emisor implements Serializable {
     private Integer ambiente;
     private String wsdlrecepcion;
     private String wsdlautirizacion;
+     private String dirsucursal;
     private String xmlversion;
 
     public Emisor() {
@@ -129,4 +130,13 @@ public class Emisor implements Serializable {
         this.xmlversion = xmlversion;
     }
 
+    public String getDirsucursal() {
+        return dirsucursal;
+    }
+
+    public void setDirsucursal(String dirsucursal) {
+        this.dirsucursal = dirsucursal;
+    }
+
+    
 }

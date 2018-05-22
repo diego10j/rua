@@ -31,21 +31,26 @@ public class EmisorDAOImp implements EmisorDAO {
         ConexionCEO conn = new ConexionCEO();
         ResultSet resultSet = null;
         try {
-            resultSet = conn.consultar("select ide_sremi,identicicacion_sucu,nom_sucu,nombre_comercial_sucu,direccion_sucu,contribuyenteespecial_sucu,obligadocontabilidad_sucu,\n"
-                    + " tiempo_espera_sremi,ambiente_sremi,wsdl_recep_offline_sremi,wsdl_autori_offline_sremi from sri_emisor a inner join sis_sucursal b on a.ide_sucu=b.ide_sucu where a.ide_sucu=" + sucursal);
+            resultSet = conn.consultar("select ide_sremi,identificacion_empr,nom_corto_empr,nom_empr,direccion_empr,contribuyenteespecial_empr,obligadocontabilidad_empr,direccion_sucu\n"
+                    + " tiempo_espera_sremi,ambiente_sremi,wsdl_recep_offline_sremi,wsdl_autori_offline_sremi "
+                    + " from sri_emisor a "
+                    + " inner join sis_sucursal b on a.ide_sucu=b.ide_sucu "
+                    + " inner join sis_empresa c on b.ide_empr=c.ide_empr "
+                    + " where a.ide_sucu=" + sucursal);
             if (resultSet.next()) {
                 emisor = new Emisor();
                 emisor.setCodigoemisor(resultSet.getInt("ide_sremi"));
-                emisor.setRuc(resultSet.getString("identicicacion_sucu"));
-                emisor.setRazonsocial(resultSet.getString("nom_sucu"));
-                emisor.setNombrecomercial(resultSet.getString("nombre_comercial_sucu"));
-                emisor.setDirmatriz(resultSet.getString("direccion_sucu"));
-                emisor.setContribuyenteespecial(resultSet.getString("contribuyenteespecial_sucu"));
-                emisor.setObligadocontabilidad(resultSet.getString("obligadocontabilidad_sucu"));
+                emisor.setRuc(resultSet.getString("identificacion_empr"));
+                emisor.setRazonsocial(resultSet.getString("nom_empr"));
+                emisor.setNombrecomercial(resultSet.getString("nom_corto_empr"));
+                emisor.setDirmatriz(resultSet.getString("direccion_empr"));
+                emisor.setContribuyenteespecial(resultSet.getString("contribuyenteespecial_empr"));
+                emisor.setObligadocontabilidad(resultSet.getString("obligadocontabilidad_empr"));
                 emisor.setTiempomaxespera(resultSet.getInt("tiempo_espera_sremi"));
                 emisor.setAmbiente(resultSet.getInt("ambiente_sremi"));
                 emisor.setWsdlrecepcion(resultSet.getString("wsdl_recep_offline_sremi"));
                 emisor.setWsdlautirizacion(resultSet.getString("wsdl_autori_offline_sremi"));
+                 emisor.setDirsucursal(resultSet.getString("direccion_sucu"));
             }
         } catch (SQLException e) {
             throw new GenericException("ERROR. No se puede retornar el Emisor", e);

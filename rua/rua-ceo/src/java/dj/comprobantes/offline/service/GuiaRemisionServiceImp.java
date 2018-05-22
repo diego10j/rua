@@ -46,7 +46,7 @@ public class GuiaRemisionServiceImp implements GuiaRemisionService {
                     .append("			<dirMatriz>").append(emisor.getDirmatriz()).append("</dirMatriz> \n")
                     .append("		</infoTributaria> \n")
                     .append("		<infoGuiaRemision> \n")
-                    .append("			<dirEstablecimiento>").append(emisor.getDirmatriz()).append("</dirEstablecimiento> \n")
+                    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
                     .append("			<dirPartida>").append(comprobante.getDirPartida()).append("</dirPartida> \n")
                     .append("			<razonSocialTransportista>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialTransportista> \n")
                     .append("			<tipoIdentificacionTransportista>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionTransportista> \n")

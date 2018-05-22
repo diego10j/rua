@@ -51,7 +51,7 @@ public class RetencionServiceImp implements RetencionService {
                     .append("		</infoTributaria> \n")
                     .append("		<infoCompRetencion> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
-                    .append("			<dirEstablecimiento>").append(comprobante.getDirestablecimiento()).append("</dirEstablecimiento> \n")
+                    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
                     .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
                     .append("			<tipoIdentificacionSujetoRetenido>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionSujetoRetenido> \n")
