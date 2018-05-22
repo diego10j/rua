@@ -117,4 +117,9 @@ public class ServicioSistema {
         sql="select ide_usua,nom_usua,nick_usua,ide_gtemp from sis_usuario where ide_usua in("+ide_usua+") "+condicion;
         return sql;
     }  
+        public String getUsuarioSistemaValidado(String ide_usua) {
+        String sql="";
+        sql="select ide_usua,nom_usua,nick_usua,ide_gtemp from sis_usuario where ide_usua in("+ide_usua+") ";
+        return sql;
+    } 
 }
