@@ -10,10 +10,8 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
-import servicios.contabilidad.ServicioContabilidadGeneral;
 
 /**
  *
@@ -22,12 +20,9 @@ import servicios.contabilidad.ServicioContabilidadGeneral;
 @Stateless
 public class ServicioCuentasCxC extends ServicioBase {
 
-    @EJB
-    private ServicioContabilidadGeneral ser_conta_general;
-
     @PostConstruct
     public void init() {
-        //Recupera todos los parametros que se van a ocupar en el EJB
+        //Recupera todos los parametros que se van a ocupar en el EJB  
         parametros = utilitario.getVariables("p_cxc_estado_factura_normal", "p_cxc_tipo_trans_factura", "p_cxc_tipo_trans_pago", "p_con_tipo_documento_factura", "p_con_tipo_documento_nota_credito", "p_cxc_tipo_trans_retencion", "p_con_estado_comprobante_anulado");
     }
 
@@ -159,14 +154,13 @@ public class ServicioCuentasCxC extends ServicioBase {
                     + "from cxc_cabece_factura a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "inner join cxc_estado_factura c on  a.ide_ccefa=c.ide_ccefa "
-                    + "left join nombre_vgven v on a.ide_vgven=v.ide_vgven "
+                    + "left join ven_vendedor v on a.ide_vgven=v.ide_vgven "
                     + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                     + "and ide_ccdaf=" + ide_ccdaf + " "
                     // + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                     + "AND a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal")
-                    + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+                    + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
         }
-
     }
 
     public String getSqlFacturasElectronicasPorEstado(String ide_ccdaf, String fechaInicio, String fechaFin, EstadoComprobanteEnum estado) {
