@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_ret_compras" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89fe452f-287d-4c3c-ade6-794101a2b484">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="368"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="28"/>
 	<parameter name="ide_empr" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -112,6 +112,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band height="101" splitType="Stretch">
 			<subreport isUsingCache="true">
 				<reportElement uuid="f3c50785-f2a8-4c32-93fe-dcab6e0ed2ea" x="10" y="1" width="232" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ide_sucu">
 					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>

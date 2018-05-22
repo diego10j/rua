@@ -112,6 +112,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band height="101" splitType="Stretch">
 			<subreport isUsingCache="true">
 				<reportElement uuid="f3c50785-f2a8-4c32-93fe-dcab6e0ed2ea" x="10" y="1" width="232" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ide_sucu">
 					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>
