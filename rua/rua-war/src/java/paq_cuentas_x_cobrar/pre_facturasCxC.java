@@ -85,7 +85,7 @@ public class pre_facturasCxC extends Pantalla {
     private Mascara mas_secuencial;
 
     private Confirmar con_confirma = new Confirmar();
-    
+
     private Etiqueta eti1 = new Etiqueta();
     private Retencion ret_retencion = new Retencion();
 
@@ -703,7 +703,7 @@ public class pre_facturasCxC extends Pantalla {
 
     }
 
-public void dibujarFacturasNoContabilizadas() {
+    public void dibujarFacturasNoContabilizadas() {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
@@ -1184,9 +1184,9 @@ public void dibujarFacturasNoContabilizadas() {
             } else if (sel_sucursales.isVisible()) {
                 if (sel_sucursales.getSeleccionados() != null && sel_sucursales.getSeleccionados().isEmpty() == false) {
                     parametro = new HashMap();
-                    parametro.put("sucursales", sel_sucursales.getSeleccionados());                    
+                    parametro.put("sucursales", sel_sucursales.getSeleccionados());
                     sel_sucursales.cerrar();
-                sec_rango_reporte.dibujar();
+                    sec_rango_reporte.dibujar();
                 } else {
                     utilitario.agregarMensaje("Seleccione una sucursal", "");
                 }
@@ -1252,7 +1252,6 @@ public void dibujarFacturasNoContabilizadas() {
     public void insertar() {
         fcc_factura.setPuntodeEmision(String.valueOf(com_pto_emision.getValue()));
         fcc_factura.nuevaFactura();
-
         fcc_factura.dibujar();
     }
 
