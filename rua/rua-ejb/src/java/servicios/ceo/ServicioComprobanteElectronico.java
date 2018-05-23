@@ -176,7 +176,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 //////                //elimina detalles si modifica
 //////                utilitario.getConexion().agregarSqlPantalla("delete from sri_detalle_comprobante where ide_srcom =" + ide_srcom);
 //////            }
-//////            tab_detalle.guardar();
+//////            tab_detalle.guardar();            
 
             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                 //Si la factura es nueva Asigna nuevo secuencial

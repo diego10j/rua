@@ -870,7 +870,7 @@ public class FacturaCxC extends Dialogo {
             tab_electronica.getColumna("fechaautoriza_srcom").setVisible(true);
             tab_electronica.getColumna("fechaautoriza_srcom").setNombreVisual("FECHA AUTORIZACIÓN");
             tab_electronica.getColumna("fechaautoriza_srcom").setOrden(3);
-            tab_electronica.getColumna("autorizacion_srcomn").setVisible(false);
+            tab_electronica.getColumna("autorizacion_srcom").setVisible(false);
             tab_electronica.setMostrarNumeroRegistros(false);
             tab_electronica.dibujar();
 
