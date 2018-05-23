@@ -105,7 +105,7 @@ public final class Comprobante implements Serializable {
             this.numdocmodificado = resultado.getString("num_doc_mod_srcom");
             this.fechaemisiondocsustento = resultado.getDate("fecha_emision_mod_srcom");
             this.valormodificacion = resultado.getBigDecimal("valor_mod_srcom");
-            this.numAutorizacion = resultado.getString("autorizacion_srcomn");
+            this.numAutorizacion = resultado.getString("autorizacion_srcom");
             this.correo = resultado.getString("correo_srcom");
 
             this.diasCredito = resultado.getInt("dias_credito_srcom");
@@ -671,5 +671,4 @@ public final class Comprobante implements Serializable {
         this.infoAdicional3 = infoAdicional3;
     }
 
-    
 }

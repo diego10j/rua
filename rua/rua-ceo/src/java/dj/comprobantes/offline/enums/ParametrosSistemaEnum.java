@@ -20,14 +20,14 @@ public enum ParametrosSistemaEnum {
     //RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
     PROXY_HOST(""),
     PROXY_PORT(""),
-    MAIL_SMTP_HOST("mail.globalquim.com.ec"),
+    MAIL_SMTP_HOST("mail.dominio.com.ec"),
     MAIL_SMTP_PORT(""),//25  //465
     MAIL_PASSWORD(""),
-    MAIL_GENERIC("comprobantes@globalquim.com.ec"),
-    PAGINA_CONSULTA("http://www.comprobantes.globalquim.com.ec"),
-    CPANEL_WEB_COMPROBANTE("http://comprobantes.globalquim.com.ec/framework/servicios/ServicioNube.php/subirComprobante"),
-    CPANEL_WEB_REENVIAR("http://comprobantes.globalquim.com.ec/framework/servicios/ServicioNube.php/reenviarComprobante"),
-    CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.globalquim.com.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
+    MAIL_GENERIC("comprobantes@dominio.com.ec"),
+    PAGINA_CONSULTA("http://www.comprobantes.dominio.com.ec"),
+    CPANEL_WEB_COMPROBANTE("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/subirComprobante"),
+    CPANEL_WEB_REENVIAR("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/reenviarComprobante"),
+    CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
     ///
 
     private final String codigo;

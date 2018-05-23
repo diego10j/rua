@@ -132,7 +132,7 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
                 + " ide_sresc=?"
                 + " ,claveacceso_srcom=?"
                 + " ,ide_srfid=?"
-                + " ,autorizacion_srcomn=?"
+                + " ,autorizacion_srcom=?"
                 + " ,tipoemision_srcom=?"
                 + " ,fechaautoriza_srcom=?"
                 + " ,en_nube_srcom=?"

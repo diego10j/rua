@@ -31,7 +31,7 @@ public class EmisorDAOImp implements EmisorDAO {
         ConexionCEO conn = new ConexionCEO();
         ResultSet resultSet = null;
         try {
-            resultSet = conn.consultar("select ide_sremi,identificacion_empr,nom_corto_empr,nom_empr,direccion_empr,contribuyenteespecial_empr,obligadocontabilidad_empr,direccion_sucu\n"
+            resultSet = conn.consultar("select ide_sremi,identificacion_empr,nom_corto_empr,nom_empr,direccion_empr,contribuyenteespecial_empr,obligadocontabilidad_empr,direccion_sucu,\n"
                     + " tiempo_espera_sremi,ambiente_sremi,wsdl_recep_offline_sremi,wsdl_autori_offline_sremi "
                     + " from sri_emisor a "
                     + " inner join sis_sucursal b on a.ide_sucu=b.ide_sucu "
@@ -50,7 +50,7 @@ public class EmisorDAOImp implements EmisorDAO {
                 emisor.setAmbiente(resultSet.getInt("ambiente_sremi"));
                 emisor.setWsdlrecepcion(resultSet.getString("wsdl_recep_offline_sremi"));
                 emisor.setWsdlautirizacion(resultSet.getString("wsdl_autori_offline_sremi"));
-                 emisor.setDirsucursal(resultSet.getString("direccion_sucu"));
+                emisor.setDirsucursal(resultSet.getString("direccion_sucu"));
             }
         } catch (SQLException e) {
             throw new GenericException("ERROR. No se puede retornar el Emisor", e);

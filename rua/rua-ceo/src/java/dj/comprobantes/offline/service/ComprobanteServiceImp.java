@@ -101,7 +101,7 @@ public class ComprobanteServiceImp implements ComprobanteService {
     }
 
     @Override
-    public String getClaveAcceso(Comprobante comprobante) throws GenericException {
+    public String getClaveAcceso(Comprobante comprobante) throws GenericException {        
         String fechaEmision = utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy");
         String tipoComprobante = comprobante.getCoddoc();
         Emisor emisor = emisorService.getEmisor(comprobante.getOficina());
