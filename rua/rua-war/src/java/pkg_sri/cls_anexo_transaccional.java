@@ -45,7 +45,7 @@ public class cls_anexo_transaccional {
                         + " LEFT JOIN cxc_datos_fac df ON (df.ide_ccdaf = cf.ide_ccdaf)"
                         + " where fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                         + " GROUP BY substr(df.serie_ccdaf, 1, 3)");
-                //tab_estab.imprimirSql();
+                //System.out.println("1111:  " + tab_estab.getSql());
                 Element raiz = doc_anexo.createElement("iva");
                 raiz.appendChild(crearElemento("TipoIDInformante", null, "R")); //  Ruc
                 raiz.appendChild(crearElemento("IdInformante", null, tab_empresa.getValor("identificacion_empr")));
@@ -84,6 +84,7 @@ public class cls_anexo_transaccional {
                             + " where  cabece.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'"
                             + " and ide_rem_cpcfa is null and ide_cpefa=0"
                             + " order by cabece.fecha_emisi_cpcfa, cabece.ide_cpcfa ");
+                    //System.out.println("COMPRAS:  " + tab_compras.getSql());
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
@@ -96,19 +97,19 @@ public class cls_anexo_transaccional {
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
-
+                    //System.out.println("tab_rete_iva_bienes_:  " + tab_rete_iva_bienes_.getSql());
                     TablaGenerica tab_rete_iva_servicios_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva70") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
-
+                    // System.out.println("tab_rete_iva_servicios_:  " + tab_rete_iva_servicios_.getSql());
                     TablaGenerica tab_rete_iva_servicios100_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva100") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
-
+                    // System.out.println("tab_rete_iva_servicios100_:  " + tab_rete_iva_servicios100_.getSql());
                     TablaGenerica tab_retencion_ = utilitario.consultar("SELECT impuesto.casillero_cncim,sum(base_cndre) as base_cndre,porcentaje_cndre,sum(valor_cndre) as valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cnimp=" + utilitario.getVariable("p_con_impuesto_renta") + " and cabece.ide_cncre in(" + ideRetenciones + ") GROUP BY impuesto.casillero_cncim,porcentaje_cndre,cabece.ide_cncre order by cabece.ide_cncre");
-
+                    // System.out.println("tab_retencion_:  " + tab_retencion_.getSql());
                     for (int i = 0; i < tab_compras.getTotalFilas(); i++) {
                         Element detalleCompras = doc_anexo.createElement("detalleCompras");
                         compras.appendChild(detalleCompras);
@@ -305,28 +306,29 @@ public class cls_anexo_transaccional {
                                         detalleAir.appendChild(crearElemento("valRetAir", null, utilitario.getFormatoNumero(dou_total)));
                                     }
                                 }
-                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
-                                if (numero_retencion != null) {
-                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
-                                        if (dou_total > 0) {
-                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
-                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
-                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
-                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
-                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
-                                        }
-                                    }
-//                                else {
-//                                    //para las retenciones q no se imprimen las de % 0
-//                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
-//                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
-//                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
-//                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
-//                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
-//                                }
-                                }
+/////BORRA 332 AUTOMATICO                                
+//////////////                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
+//////////////                                if (numero_retencion != null) {
+//////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
+//////////////                                        if (dou_total > 0) {
+//////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
+//////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
+//////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
+//////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+//////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
+//////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
+//////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+//////////////                                        }
+//////////////                                    }
+////////////////                                else {
+////////////////                                    //para las retenciones q no se imprimen las de % 0
+////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
+////////////////                                }
+//////////////                                }
 
                             } else {
                                 //si no hay retención
@@ -369,23 +371,40 @@ public class cls_anexo_transaccional {
 
                 if (opcionAnexo.equals("1") || opcionAnexo.equals("3")) {
                     //VENTAS
+
+                    //Actualiza valores retencion iva y fuente en ventas
+                    utilitario.getConexion().ejecutarSql("update cxc_cabece_factura cab\n"
+                            + "set ret_iva_cccfa = (\n"
+                            + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
+                            + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
+                            + "where es_venta_cncre =TRUE\n"
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 )\n"
+                            + "and a.ide_cncre=cab.ide_cncre\n"
+                            + "),\n"
+                            + "ret_fuente_cccfa = (\n"
+                            + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
+                            + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
+                            + "where es_venta_cncre =TRUE\n"
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 )\n"
+                            + "and a.ide_cncre=cab.ide_cncre\n"
+                            + ")\n"
+                            + "where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                    );
+
                     Element ventas = doc_anexo.createElement("ventas");
                     raiz.appendChild(ventas);
                     TablaGenerica tab_ventas = utilitario.consultar("select tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,count(cab.ide_geper) as numcomprobantes, "
                             + "sum(cab.base_tarifa0_cccfa)as base_tarifa0_cccfa,sum(base_grabada_cccfa)as base_grabada, "
                             + "sum(base_no_objeto_iva_cccfa) as base_no_objeto_iva_cccfa, "
-                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(dret1.valor_cndre) as retiva, sum(dret2.valor_cndre) as retrenta "
+                            + "sum(valor_iva_cccfa) as valor_iva_cccfa , sum(ret_iva_cccfa) as retiva, sum(ret_fuente_cccfa) as retrenta "
                             + "from cxc_cabece_factura cab "
                             + "left join gen_persona cli on cab.ide_geper=cli.ide_geper "
                             + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid "
                             + "left join con_tipo_document doc on cab.ide_cntdo=doc.ide_cntdo "
-                            //             + "left join con_deta_forma_pago  fpa on cab.ide_cndfp=fpa.ide_cndfp "
                             + "left join con_cabece_retenc rete on rete.ide_cncre=cab.ide_cncre and rete.es_venta_cncre=true "
-                            + "left join con_detall_retenc dret1 on rete.ide_cncre= dret1.ide_cncre  and dret1.ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 ) "
-                            + "left join con_detall_retenc dret2 on rete.ide_cncre= dret2.ide_cncre  and dret2.ide_cncim in (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 ) "
                             + " where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                             + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
-                    //System.out.println("VENTAS --- " + tab_ventas.getSql());
+                    // System.out.println("VENTAS --- " + tab_ventas.getSql());
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
                         ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
                         Element detalleVentas = doc_anexo.createElement("detalleVentas");
@@ -430,58 +449,6 @@ public class cls_anexo_transaccional {
                         formasDePago.appendChild(crearElemento("formaPago", null, "20"));
                     }
 
-////////////                    ////NOTAS DE CREDITO
-////////////                    TablaGenerica tab_notaC = utilitario.consultar("select tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo,count(cab.ide_geper) as numcomprobantes, \n"
-////////////                            + "sum(cab.base_tarifa0_cpcno)as base_tarifa0_cpcno,sum(base_grabada_cpcno)as base_grabada, \n"
-////////////                            + "sum(base_no_objeto_iva_cpcno) as base_no_objeto_iva_cpcno, \n"
-////////////                            + "sum(valor_iva_cpcno) as valor_iva_cpcno\n"
-////////////                            + "from cxp_cabecera_nota cab \n"
-////////////                            + "left join gen_persona cli on cab.ide_geper=cli.ide_geper \n"
-////////////                            + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid \n"
-////////////                            + "left join con_tipo_document doc on cab.ide_cntdo=doc.ide_cntdo \n"
-////////////                            + "where cab.fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno= 1\n"
-////////////                            + " and  cab.ide_sucu= " + utilitario.getVariable("IDE_SUCU")
-////////////                            + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
-////////////                    // System.out.println("NOTAS CREDITO --- " + tab_notaC.getSql());
-////////////                    for (int i = 0; i < tab_notaC.getTotalFilas(); i++) {
-////////////                        ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
-////////////                        Element detalleVentas = doc_anexo.createElement("detalleVentas");
-////////////                        ventas.appendChild(detalleVentas);
-////////////                        detalleVentas.appendChild(crearElemento("tpIdCliente", null, tab_notaC.getValor(i, "alterno2_getid")));
-////////////                        detalleVentas.appendChild(crearElemento("idCliente", null, tab_notaC.getValor(i, "identificac_geper")));
-////////////                        if (!tab_notaC.getValor(i, "alterno2_getid").equals("07")) {
-////////////                            detalleVentas.appendChild(crearElemento("parteRelVtas", null, "NO"));
-////////////                        }
-////////////
-////////////                        if (tab_notaC.getValor(i, "alterno2_getid").equals("06")) {//PASAPORTE
-////////////                            TablaGenerica tab_persona = utilitario.consultar("SELECT identificac_geper,nom_geper,alter_tribu_cntco from gen_persona cli "
-////////////                                    + "left join con_tipo_contribu tcon on cli.ide_cntco=tcon.ide_cntco "
-////////////                                    + "where identificac_geper='" + tab_notaC.getValor(i, "identificac_geper") + "'");
-////////////                            detalleVentas.appendChild(crearElemento("tipoCliente", null, tab_persona.getValor("alter_tribu_cntco") == null ? "01" : tab_persona.getValor("alter_tribu_cntco")));
-////////////                            detalleVentas.appendChild(crearElemento("denoCli", null, tab_persona.getValor("nom_geper")));
-////////////                        }
-////////////
-////////////                        detalleVentas.appendChild(crearElemento("tipoComprobante", null, "04"));
-////////////                        detalleVentas.appendChild(crearElemento("tipoEmision", null, "F"));
-////////////                        detalleVentas.appendChild(crearElemento("numeroComprobantes", null, tab_notaC.getValor(i, "numcomprobantes")));
-////////////                        detalleVentas.appendChild(crearElemento("baseNoGraIva", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_no_objeto_iva_cpcno"))));
-////////////                        detalleVentas.appendChild(crearElemento("baseImponible", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_tarifa0_cpcno"))));
-////////////                        detalleVentas.appendChild(crearElemento("baseImpGrav", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_grabada"))));
-////////////                        //double montoIva = Double.parseDouble(utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_grabada"))) * 0.12;///!!!!!!RECUPER TARIFA IVA                         
-////////////                        //detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
-////////////                        detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "valor_iva_cpcno"))));
-////////////                        detalleVentas.appendChild(crearElemento("montoIce", null, "0.00"));
-////////////                        detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
-////////////                        detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
-//////////////                        Element formasDePago = doc_anexo.createElement("formasDePago");
-//////////////                        detalleVentas.appendChild(formasDePago);
-//////////////                        if (tab_notaC.getValor(i, "alterno_ats") == null) {
-//////////////                            formasDePago.appendChild(crearElemento("formaPago", null, "20"));
-//////////////                        } else {
-//////////////                            formasDePago.appendChild(crearElemento("formaPago", null, tab_notaC.getValor(i, "alterno_ats")));
-//////////////                        }
-////////////
-////////////                    }
                     //ventasEstablecimiento
                     Element ventasEstablecimiento = doc_anexo.createElement("ventasEstablecimiento");
                     raiz.appendChild(ventasEstablecimiento);
@@ -490,7 +457,7 @@ public class cls_anexo_transaccional {
                         Element ventaEst = doc_anexo.createElement("ventaEst");
                         ventasEstablecimiento.appendChild(ventaEst);
                         ventaEst.appendChild(crearElemento("codEstab", null, tab_estab.getValor(i, "establecimiento")));
-                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(tab_estab.getValor(i, "total_ventas"))));
+                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(totalVentas)));
                     }
 
                 }
@@ -506,6 +473,7 @@ public class cls_anexo_transaccional {
                         + " INNER JOIN cxc_estado_factura ef ON (ef.ide_ccefa = cf.ide_ccefa) "
                         + " WHERE ef.ide_ccefa = " + utilitario.getVariable("p_cxc_estado_factura_anulada")
                         + " and cf.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
+                        + " and  autorizacion_ccdaf is not null"
                         + " ORDER BY cf.secuencial_cccfa ");
 
                 for (int i = 0; i < tab_anulados.getTotalFilas(); i++) {
@@ -528,7 +496,7 @@ public class cls_anexo_transaccional {
                         + "from con_cabece_retenc \n"
                         + "where ide_cnere=1 "
                         + " and fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'"
-                        + " AND numero_cncre !='00000000000000' "
+                        + " and es_venta_cncre=false"
                         + " order by  numero_cncre");
                 for (int i = 0; i < tab_anulados_rete.getTotalFilas(); i++) {
                     ////////////////////BUSCAR TODAS LAS VENTAS ANULADAS ESTO ES EN UN FOR
