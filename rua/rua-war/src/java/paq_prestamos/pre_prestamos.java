@@ -352,7 +352,7 @@ public class pre_prestamos extends Pantalla {
         tab_tabla1.getColumna("hora_sistema_ipcpr").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("fecha_sistema_ipcpr").setVisible(false);
         tab_tabla1.getColumna("hora_sistema_ipcpr").setVisible(false);
-        tab_tabla1.getColumna("IDE_CNCCC").setNombreVisual("N. ASIENTO");                
+        tab_tabla1.getColumna("IDE_CNCCC").setNombreVisual("N. ASIENTO");
         tab_tabla1.getColumna("IDE_CNCCC").setVisible(true);
         tab_tabla1.setCondicion("ide_ipcpr=" + aut_prestamos.getValor());
         tab_tabla1.setMostrarNumeroRegistros(false);
@@ -691,13 +691,22 @@ public class pre_prestamos extends Pantalla {
                 //Cambiar de estado a pagado las dividendos seleccionados
                 String pagados = "";
                 String seleccionado = "";
+                String num_coutas = "";
+                double dou_capital = 0;
                 for (int i = 0; i < tab_tabla1.getTotalFilas(); i++) {
                     if (tab_tabla1.getValor(i, "pagado_ipdpr").equalsIgnoreCase("true")) {
                         if (!pagados.isEmpty()) {
                             pagados += ", ";
+                            num_coutas += " - ";
                         }
                         pagados += "" + tab_tabla1.getValor(i, "ide_ipdpr");
                         seleccionado = tab_tabla1.getValor(i, "ide_ipdpr");
+                        num_coutas += "" + tab_tabla1.getValor(i, "num_ipdpr");
+                        try {
+                            dou_capital += Double.parseDouble(tab_tabla1.getValor("capital_ipdpr"));
+                        } catch (Exception e) {
+                        }
+
                     }
                 }
                 fcc_factura.guardar();
@@ -707,7 +716,7 @@ public class pre_prestamos extends Pantalla {
                         String ide_cccfa = fcc_factura.getTab_cab_factura().getValor("ide_cccfa");
                         if (ide_cccfa != null) {
                             utilitario.getConexion().agregarSqlPantalla(ser_prestamo.getSqlPagarDividendos(pagados, ide_cccfa));
-                            ser_prestamo.generarTransaccionCapitalPrestamo(ide_cccfa, Double.parseDouble(tab_tabla1.getValor("capital_ipdpr")), "Capital cuota " + tab_tabla1.getValor("num_ipdpr"));
+                            ser_prestamo.generarTransaccionCapitalPrestamo(ide_cccfa, dou_capital, "Capital cuota " + num_coutas);
                             utilitario.getConexion().ejecutarListaSql();
                         }
                     }
