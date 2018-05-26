@@ -25,6 +25,7 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla1.setRows(15);
         tab_tabla1.onSelect("seleccionarTipoDocumento");
         tab_tabla1.setLectura(true);
+        tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
 
@@ -33,8 +34,10 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tab_tabla.getColumna("activo_ccdaf").setValorDefecto("true");
         tab_tabla.setCondicionSucursal(true);
-        tab_tabla.setCondicion("ide_cntdo is null ");
+        tab_tabla.setCondicion("ide_cntdoc is null ");
+        tab_tabla.getColumna("ide_cntdoc").setVisible(false); 
         tab_tabla.dibujar();
+
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         Division div_division = new Division();
@@ -46,7 +49,7 @@ public class pre_datos_factura_cxc extends Pantalla {
 
     public void seleccionarTipoDocumento(SelectEvent evt) {
         tab_tabla1.seleccionarFila(evt);
-        tab_tabla.setCondicion("ide_cntdo=" + tab_tabla1.getValorSeleccionado());
+        tab_tabla.setCondicion("ide_cntdoc=" + tab_tabla1.getValorSeleccionado());
         tab_tabla.ejecutarSql();
     }
 
@@ -54,7 +57,7 @@ public class pre_datos_factura_cxc extends Pantalla {
     public void insertar() {
         if (tab_tabla1.getValorSeleccionado() != null) {
             tab_tabla.insertar();
-            tab_tabla.setValor("ide_cntdo", tab_tabla1.getValorSeleccionado());
+            tab_tabla.setValor("ide_cntdoc", tab_tabla1.getValorSeleccionado());
         }
     }
 

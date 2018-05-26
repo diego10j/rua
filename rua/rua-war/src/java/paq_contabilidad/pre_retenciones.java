@@ -87,7 +87,8 @@ public class pre_retenciones extends Pantalla {
         bar_botones.agregarSeparador();
         bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
 
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-" + utilitario.getMes(utilitario.getFechaActual()) + "-01"));
+        //cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-" + utilitario.getMes(utilitario.getFechaActual()) + "-01"));
+        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
         bar_botones.agregarComponente(cal_fecha_inicio);
         bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
 
@@ -332,13 +333,14 @@ public class pre_retenciones extends Pantalla {
         tab_tabla.getColumna("NUMERO").setLongitud(50);
         tab_tabla.getColumna("ide_cnccc").setFiltroContenido();
         tab_tabla.getColumna("NUM_FACTURA").setFiltroContenido();
+        tab_tabla.getColumna("PROVEEDOR").setFiltroContenido();
         tab_tabla.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_tabla.getColumna("VALOR").alinearDerecha();
         tab_tabla.getColumna("numero").setLongitud(25);
         tab_tabla.setLectura(true);
         tab_tabla.setValueExpression("rowStyleClass", "fila.campos[1] eq '1' ? 'text-red' : null");
 
-        tab_tabla.setRows(25);
+        tab_tabla.setRows(20);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
@@ -593,6 +595,36 @@ public class pre_retenciones extends Pantalla {
                 gri_dashboard.getChildren().add(p6);
             }
         }
+    }
+
+    public void filtrarPendientes() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.PENDIENTE));
+        tab_tabla.ejecutarSql();
+    }
+
+    public void filtrarRecibidas() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.RECIBIDA));
+        tab_tabla.ejecutarSql();
+    }
+
+    public void filtrarDevueltas() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.DEVUELTA));
+        tab_tabla.ejecutarSql();
+    }
+
+    public void filtrarRechazadas() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.RECHAZADO));
+        tab_tabla.ejecutarSql();
+    }
+
+    public void filtrarAutorizadas() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.AUTORIZADO));
+        tab_tabla.ejecutarSql();
+    }
+
+    public void filtrarNoAutorizadas() {
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesElectronicasPorEstado(String.valueOf(com_autoriza.getValue()) + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), EstadoComprobanteEnum.NOAUTORIZADO));
+        tab_tabla.ejecutarSql();
     }
 
     public void dibujarAnuladas() {
