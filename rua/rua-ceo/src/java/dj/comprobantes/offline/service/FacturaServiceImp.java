@@ -79,9 +79,11 @@ public class FacturaServiceImp implements FacturaService {
                     .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
                     .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
-                    .append("			<tipoIdentificacionComprador>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionComprador> \n")
-                    .append("			<guiaRemision>").append(comprobante.getGuiaremision()).append("</guiaRemision> \n")
-                    .append("			<razonSocialComprador>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialComprador> \n")
+                    .append("			<tipoIdentificacionComprador>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionComprador> \n");
+            if (comprobante.getGuiaremision() != null) {
+                str_xml.append("			<guiaRemision>").append(comprobante.getGuiaremision()).append("</guiaRemision> \n");
+            }
+            str_xml.append("			<razonSocialComprador>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialComprador> \n")
                     .append("			<identificacionComprador>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionComprador> \n")
                     .append("			<direccionComprador>").append(comprobante.getCliente().getDireccion()).append("</direccionComprador> \n")
                     .append("			<totalSinImpuestos>").append(utilitario.getFormatoNumero(totalSinImpuestos)).append("</totalSinImpuestos> \n")
@@ -108,7 +110,7 @@ public class FacturaServiceImp implements FacturaService {
                     .append("                   </pagos>\n")
                     .append("		</infoFactura> \n")
                     .append("		<detalles> \n");
-            for (DetalleComprobante detalle : comprobante.getDetalle()) {                
+            for (DetalleComprobante detalle : comprobante.getDetalle()) {
                 str_xml.append("			<detalle> \n")
                         .append("				<codigoPrincipal>").append(detalle.getCodigoprincipal()).append("</codigoPrincipal> \n")
                         .append("				<codigoAuxiliar>").append((detalle.getCodigoauxiliar() == null ? detalle.getCodigoprincipal() : detalle.getCodigoauxiliar())).append("</codigoAuxiliar> \n")
