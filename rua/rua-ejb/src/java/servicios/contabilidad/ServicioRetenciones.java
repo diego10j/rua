@@ -72,14 +72,38 @@ public class ServicioRetenciones extends ServicioBase {
                 + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
                 + "and es_venta_cncre = false\n"
                 + ide_ccdaf
-                + "ORDER BY ide_cncre desc";
+                + "ORDER BY numero_cncre desc,ide_cncre desc";
+    }
+
+    public String getSqlRetencionesElectronicasPorEstado(String ide_ccdaf, String fechaInicio, String fechaFin, EstadoComprobanteEnum estado) {
+        if (ide_ccdaf == null) {
+            ide_ccdaf = "-1";
+        }
+        ide_ccdaf = ide_ccdaf.replace("null", "-1").trim();
+        if (ide_ccdaf.isEmpty() == false) {
+            ide_ccdaf = " and ide_ccdaf='" + ide_ccdaf + "' ";
+        }
+        return "SELECT a.ide_cncre,ide_cnere,fecha_emisi_cncre,a.ide_cnccc,nombre_sresc as ESTADO,observacion_cncre as OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
+                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
+                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS VALOR,ide_cpcfa,numero_cpcfa as NUM_FACTURA,nom_geper AS PROVEEDOR,a.ide_srcom\n"
+                + "FROM con_cabece_retenc a\n"
+                + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
+                + "left join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
+                + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
+                + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
+                + "and es_venta_cncre = false\n"
+                + " and d.ide_sresc =" + estado.getCodigo() + " "
+                + ide_ccdaf
+                + "ORDER BY numero_cncre desc,ide_cncre desc";
     }
 
     public String getSqlRetencionesProveedor(String ide_geper) {
         String fechaFin = utilitario.getFechaActual();
-        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -45));
+        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -90));
 
-        return "SELECT a.ide_cncre,fecha_emisi_cncre AS FECHA,numero_cncre AS NUMERO,autorizacion_cncre AS NUM_AUTORIZACION,observacion_cncre AS OBSERVACION,numero_cpcfa as NUM_FACTURA,ide_cpcfa\n"
+        return "SELECT a.ide_cncre,fecha_emisi_cncre AS FECHA_EMISION,numero_cncre AS NUMERO,autorizacion_cncre AS NUM_AUTORIZACION,observacion_cncre AS OBSERVACION,numero_cpcfa as NUM_FACTURA,ide_cpcfa\n"
                 + "FROM con_cabece_retenc a\n"
                 + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
                 + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
@@ -88,14 +112,14 @@ public class ServicioRetenciones extends ServicioBase {
                 + "and es_venta_cncre = false\n"
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and ide_cnere!=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " "
-                + "ORDER BY numero_cncre desc";
+                + "ORDER BY fecha_emisi_cncre desc";
     }
 
     public String getSqlRetencionesCliente(String ide_geper) {
         String fechaFin = utilitario.getFechaActual();
-        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -45));
+        String fechaInicio = utilitario.getFormatoFecha(utilitario.sumarDiasFecha(new Date(), -90));
 
-        return "SELECT a.ide_cncre,fecha_emisi_cncre AS FECHA,numero_cncre AS NUMERO,autorizacion_cncre AS NUM_AUTORIZACION,observacion_cncre AS OBSERVACION,secuencial_cccfa as NUM_FACTURA,ide_cccfa\n"
+        return "SELECT a.ide_cncre,fecha_emisi_cncre AS FECHA_EMISION,numero_cncre AS NUMERO,autorizacion_cncre AS NUM_AUTORIZACION,observacion_cncre AS OBSERVACION,secuencial_cccfa as NUM_FACTURA,ide_cccfa\n"
                 + "FROM con_cabece_retenc a\n"
                 + "left join cxc_cabece_factura b on a.ide_cncre=b.ide_cncre\n"
                 + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
@@ -104,7 +128,7 @@ public class ServicioRetenciones extends ServicioBase {
                 + "and es_venta_cncre = true\n"
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and ide_cnere!=" + utilitario.getVariable("p_con_estado_comprobante_rete_anulado") + " "
-                + "ORDER BY numero_cncre desc";
+                + "ORDER BY fecha_emisi_cncre desc";
     }
 
     public String getSqlConsultaImpuestos(String autorizacion_cncre, String fechaInicio, String fechaFin, String ide_cncim) {
@@ -270,7 +294,7 @@ public class ServicioRetenciones extends ServicioBase {
      * @return
      */
     public String getSqlPuntosEmision() {
-        return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc=8 and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
+        return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc=8  and activo_ccdaf=true and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
 
     public boolean isElectronica() {
@@ -281,7 +305,7 @@ public class ServicioRetenciones extends ServicioBase {
         return "SELECT ide_cncim, nombre_cncim,casillero_cncim FROM con_cabece_impues order by ide_cnimp,casillero_cncim";
     }
 
-    //Retorna el Ãºltimo correo de las retenciones realizadas
+    //Retorna el último correo de las retenciones realizadas
     public String getCorreoRetencion(String ide_geper) {
         return utilitario.consultar("select ide_cpcfa,correo_cncre from con_cabece_retenc a\n"
                 + "inner join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"

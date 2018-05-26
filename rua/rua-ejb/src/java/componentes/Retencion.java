@@ -842,7 +842,7 @@ public class Retencion extends Dialogo {
                         dou_retencion = Double.parseDouble(String.valueOf(tex_total.getValue()));
                     } catch (Exception e) {
                     }
-                    System.out.println("-------==== " + ide_cccfa);
+                    //System.out.println("-------==== " + ide_cccfa);
                     if (ide_cpcfa != null) {
                         if (dou_retencion > 0) {
                             ser_cuentas_cxp.generarTransaccionRetencion(ide_cpcfa, dou_retencion);
@@ -1035,15 +1035,16 @@ public class Retencion extends Dialogo {
     }
 
     public boolean isFacturaElectronica() {
-        String p_sri_activa_comp_elect = parametros.get("p_sri_activa_comp_elect");
-        if (p_sri_activa_comp_elect == null) {
-            return false;
-        }
-        if (p_sri_activa_comp_elect.equalsIgnoreCase("true")) {
-            return true;
-        } else {
-            return false;
-        }
+//        String p_sri_activa_comp_elect = parametros.get("p_sri_activa_comp_elect");
+//        if (p_sri_activa_comp_elect == null) {
+//            return false;
+//        }
+//        if (p_sri_activa_comp_elect.equalsIgnoreCase("true")) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return ser_retencion.isElectronica();
     }
 
     public Tabla getTab_cb_retencion() {
