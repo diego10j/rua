@@ -217,7 +217,12 @@ public class cls_anexo_transaccional {
                         pagoExterior.appendChild(crearElemento("pagExtSujRetNorLeg", null, "NA"));
 
                         double dou_total_factura = Double.parseDouble(tab_compras.getValor(i, "total_cpcfa"));
-                        if (dou_total_factura >= 1000) {
+
+                        double dou_base_imp = Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa"));
+
+                        double dou_base_grava = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa"));
+
+                        if (dou_total_factura >= 1000 || dou_base_imp > 0 || dou_base_grava > 0) {
                             Element formasDePago = doc_anexo.createElement("formasDePago");
                             detalleCompras.appendChild(formasDePago);
                             formasDePago.appendChild(crearElemento("formaPago", null, tab_compras.getValor(i, "alterno_ats")));
@@ -307,19 +312,19 @@ public class cls_anexo_transaccional {
                                     }
                                 }
 /////BORRA 332 AUTOMATICO                                
-//////////////                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
-//////////////                                if (numero_retencion != null) {
-//////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
-//////////////                                        if (dou_total > 0) {
-//////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
-//////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
-//////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
-//////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-//////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
-//////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-//////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
-//////////////                                        }
-//////////////                                    }
+                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
+                                if (numero_retencion != null) {
+                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
+                                        if (dou_total > 0) {
+                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
+                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
+                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
+                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
+                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
+                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                                        }
+                                    }
 ////////////////                                else {
 ////////////////                                    //para las retenciones q no se imprimen las de % 0
 ////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
@@ -328,7 +333,7 @@ public class cls_anexo_transaccional {
 ////////////////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
 ////////////////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
 ////////////////                                }
-//////////////                                }
+                                }
 
                             } else {
                                 //si no hay retención
@@ -457,7 +462,7 @@ public class cls_anexo_transaccional {
                         Element ventaEst = doc_anexo.createElement("ventaEst");
                         ventasEstablecimiento.appendChild(ventaEst);
                         ventaEst.appendChild(crearElemento("codEstab", null, tab_estab.getValor(i, "establecimiento")));
-                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(totalVentas)));
+                        ventaEst.appendChild(crearElemento("ventasEstab", null, utilitario.getFormatoNumero(tab_estab.getValor(i, "total_ventas"))));
                     }
 
                 }

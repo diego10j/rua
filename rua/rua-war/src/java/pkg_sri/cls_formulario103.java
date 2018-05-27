@@ -80,7 +80,7 @@ public class cls_formulario103 {
                 v325 = consultarBaseCasillero("325");
                 v327 = consultarBaseCasillero("327");
                 v328 = consultarBaseCasillero("328");
-                v332 = consultarBaseCasillero("332");
+                v332 = consultarBaseCasillero332();
                 v340 = consultarBaseCasillero("340");
                 v341 = consultarBaseCasillero("341");
                 v342 = consultarBaseCasillero("342");
@@ -113,7 +113,9 @@ public class cls_formulario103 {
                         //resto al 332 actual la diferencia                        
                         d332 -= diferencia;
                     }
-                    v332 = utilitario.getFormatoNumero(d332);
+                    v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
+                    //v332 = consultarBaseCasillero332();
+
                     v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
                             + Double.parseDouble(v303) + Double.parseDouble(v304)
                             + Double.parseDouble(v307) + Double.parseDouble(v308)
@@ -327,6 +329,27 @@ public class cls_formulario103 {
                 + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
                 + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
                 + " AND ci.casillero_cncim in (" + utilitario.generarComillaSimple(casillero) + ") "
+                + " AND ide_cnere=0 "//no anuladas
+                + " and es_venta_cncre=false");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+                dou_valor = 0;
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+
+    }
+
+    public String consultarBaseCasillero332() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.base_cndre) "
+                + " FROM con_cabece_retenc cr "
+                + " LEFT JOIN con_detall_retenc dr ON (dr.ide_cncre = cr.ide_cncre) "
+                + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
+                + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
+                + " AND dr.ide_cncim  in (select ide_cncim from con_cabece_impues where casillero_cncim like '332%') "
                 + " AND ide_cnere=0 "//no anuladas
                 + " and es_venta_cncre=false");
         if (lis_sql != null && !lis_sql.isEmpty()) {
