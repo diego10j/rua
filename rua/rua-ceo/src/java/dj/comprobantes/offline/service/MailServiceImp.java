@@ -73,8 +73,8 @@ public class MailServiceImp implements MailService {
         try {
             BodyPart texto = new MimeBodyPart();
             String stb_mensaje = "<html><head><title></title></head><body style='font-family: sans-serif'><div align=\"justify\">"
-                    + "<span style='color:#939598;font-size:44px;'> <img src='http://www.produquimic.com.ec/images/logo_mail.gif'/> </span>"
-                    + "<div align='right' style='background-color:#43BEAC;color:white;white:100%;padding-right:15px;height:30px;font-size:24px;'>  COMPROBANTES ELECTRONICOS</div>"
+                    //+ "<span style='color:#939598;font-size:44px;'> <img src='http://www.produquimic.com.ec/images/logo_mail.gif'/> </span>"
+                    + "<div align='right' style='background-color:#e50440;color:white;white:100%;padding-right:15px;height:30px;font-size:24px;'>  COMPROBANTES ELECTRONICOS</div>"
                     + "<div style='padding-left:15px;font-size:14px;'>"
                     + "<p>Estimad@ " + comprobanteMail.getCliente().getNombreCliente().toUpperCase() + "</p>"
                     + "<p>" + "Usted a recibido un Comprobante Electr&oacute;nico :</p>"

@@ -15,19 +15,19 @@ package dj.comprobantes.offline.enums;
  */
 public enum ParametrosSistemaEnum {
 
-    ///GLOBALQUIM
-    RUTA_SISTEMA("C:\\ComprobantesElectronicosSRIOffline"), //Ruta del sistema
-    //RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
+    
+    //RUTA_SISTEMA("C:\\ComprobantesElectronicosSRIOffline"), //Ruta del sistema
+    RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
     PROXY_HOST(""),
     PROXY_PORT(""),
-    MAIL_SMTP_HOST("mail.dominio.com.ec"),
-    MAIL_SMTP_PORT(""),//25  //465
-    MAIL_PASSWORD(""),
-    MAIL_GENERIC("comprobantes@dominio.com.ec"),
-    PAGINA_CONSULTA("http://www.comprobantes.dominio.com.ec"),
-    CPANEL_WEB_COMPROBANTE("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/subirComprobante"),
-    CPANEL_WEB_REENVIAR("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/reenviarComprobante"),
-    CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.dominio.com.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
+    MAIL_SMTP_HOST("smtp.office365.com"),
+    MAIL_SMTP_PORT("587"),//25  //465
+    MAIL_PASSWORD("Inspectoria2018"),
+    MAIL_GENERIC("comprobantes@salesianos.org.ec"),
+    PAGINA_CONSULTA("http://comprobates.salesianos.org.ec"),
+    CPANEL_WEB_COMPROBANTE("http://comprobates.salesianos.org.ec/framework/servicios/ServicioNube.php/subirComprobante"),
+    CPANEL_WEB_REENVIAR("http://comprobates.salesianos.org.ec/framework/servicios/ServicioNube.php/reenviarComprobante"),
+    CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobates.salesianos.org.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
     ///
 
     private final String codigo;
