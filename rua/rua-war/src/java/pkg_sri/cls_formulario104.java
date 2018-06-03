@@ -206,7 +206,7 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "511"}, v511));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "521"}, v521));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "501"}, v501));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "512"}, v512));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "512"}, v512));  //nota credito este mes IVA
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "502"}, v502));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "522"}, v522));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "523"}, v523));
@@ -221,7 +221,7 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "526"}, "0.00"));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "506"}, v506));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "516"}, v516));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "517"}, v517));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "517"}, v517));   //nota credito este mes IVA 0
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "507"}, v507));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "508"}, v508));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "518"}, v518));

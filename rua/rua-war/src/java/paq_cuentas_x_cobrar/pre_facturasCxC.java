@@ -287,7 +287,7 @@ public class pre_facturasCxC extends Pantalla {
         int num_devueltas = 0;
         int num_autorizadas = 0;
         int num_no_autorizadas = 0;
-        TablaGenerica tg = utilitario.consultar(ser_facElect.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.FACTURA));
+        TablaGenerica tg = utilitario.consultar(ser_facElect.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.FACTURA, com_pto_emision.getValue() + ""));
         if (tg.isEmpty() == false) {
             for (int i = 0; i < tg.getTotalFilas(); i++) {
                 if (tg.getValor(i, "ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {

@@ -491,7 +491,7 @@ public class pre_retenciones extends Pantalla {
                 int num_devueltas = 0;
                 int num_autorizadas = 0;
                 int num_no_autorizadas = 0;
-                TablaGenerica tg = utilitario.consultar(ser_comElec.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.COMPROBANTE_DE_RETENCION));
+                TablaGenerica tg = utilitario.consultar(ser_comElec.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.COMPROBANTE_DE_RETENCION,com_autoriza.getValue() + ""));
                 if (tg.isEmpty() == false) {
                     for (int i = 0; i < tg.getTotalFilas(); i++) {
                         if (tg.getValor(i, "ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {
