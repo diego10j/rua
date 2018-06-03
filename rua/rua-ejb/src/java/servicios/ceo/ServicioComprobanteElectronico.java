@@ -75,8 +75,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 //////                + "where a.ide_cccfa=" + ide_cccfa);
 
         TablaGenerica tab_factura = utilitario.consultar("select a.ide_cccfa,secuencial_cccfa,fecha_emisi_cccfa,serie_ccdaf,base_grabada_cccfa\n"
-                + ",base_tarifa0_cccfa,valor_iva_cccfa,total_cccfa,e.alterno_ats,identificac_geper\n"
-                + ",a.ide_geper,ide_cntdo,ide_srcom,dias_credito_cccfa,orden_compra_cccfa,correo_cccfa,nombre_vgven,f.nombre_cndfp,OBSERVACION_CCCFA \n"
+                + ",base_tarifa0_cccfa + base_no_objeto_iva_cccfa as base_tarifa0_cccfa,valor_iva_cccfa,total_cccfa,e.alterno_ats,identificac_geper\n"
+                + ",a.ide_geper,ide_cntdo,ide_srcom,dias_credito_cccfa,orden_compra_cccfa,correo_cccfa,nombre_vgven,f.nombre_cndfp,OBSERVACION_CCCFA,a.ide_ccdaf \n"
                 + "from cxc_cabece_factura a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
                 + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
@@ -147,6 +147,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("infoadicional2_srcom", tab_factura.getValor("nombre_cndfp"));
             tab_cabecara.setValor("infoadicional3_srcom", tab_factura.getValor("OBSERVACION_CCCFA"));
 
+            tab_cabecara.setValor("ide_ccdaf1", tab_factura.getValor("ide_ccdaf"));
+
             tab_cabecara.guardar();
             ide_srcom = tab_cabecara.getValor("ide_srcom");
 //////****COMENTADO POR QUE SE VA A LEER EL DETALLE DE LA FACTURA 
@@ -181,7 +183,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                 //Si la factura es nueva Asigna nuevo secuencial
                 if (tab_cabecara.getValor("secuencial_srcom") == null) {
-                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.FACTURA);
+                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.FACTURA, tab_factura.getValor("ide_ccdaf"));
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.FACTURA.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura SET  ide_srcom=" + ide_srcom + ", secuencial_cccfa='" + strSecuencialF + "' where ide_cccfa=" + ide_cccfa);
@@ -228,11 +230,11 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 //////                + "inner join  inv_articulo f on c.ide_inarti =f.ide_inarti\n"
 //////                + "left join  inv_unidad g on c.ide_inuni =g.ide_inuni\n"
 //////                + "inner join  cxp_motivo_nota h on a.ide_cpmno =h.ide_cpmno\n"
-//////                + "where a.ide_cpcno=" + ide_cpcno);
+//////                + "where a.ide_cpcno=" + ide_cpcno); 
 
         TablaGenerica tab_factura = utilitario.consultar("select a.ide_cpcno,numero_cpcno,fecha_emisi_cpcno,serie_ccdaf,base_grabada_cpcno\n"
-                + ",base_tarifa0_cpcno,valor_iva_cpcno,total_cpcno,alterno_ats,identificac_geper,\n"
-                + "a.ide_geper,ide_cntdo,ide_srcom,nombre_cpmno,num_doc_mod_cpcno,fecha_emision_mod_cpcno,valor_mod_cpcno,correo_geper \n"
+                + ",base_tarifa0_cpcno + base_no_objeto_iva_cpcno as base_tarifa0_cpcno,valor_iva_cpcno,total_cpcno,alterno_ats,identificac_geper,\n"
+                + "a.ide_geper,ide_cntdo,ide_srcom,nombre_cpmno,num_doc_mod_cpcno,fecha_emision_mod_cpcno,valor_mod_cpcno,correo_geper,a.ide_ccdaf \n"
                 + "from cxp_cabecera_nota  a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
                 + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
@@ -302,6 +304,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
             //tab_cabecara.setValor("numero_cpcno", tab_factura.getValor("secuencial_cccfa")); !!!!!SOLO PARA PRUEBAS COMENTADO
             tab_cabecara.setValor("correo_srcom", tab_factura.getValor("correo_geper"));
+            tab_cabecara.setValor("ide_ccdaf1", tab_factura.getValor("ide_ccdaf"));
 
             tab_cabecara.guardar();
             ide_srcom = tab_cabecara.getValor("ide_srcom");
@@ -336,7 +339,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                 //Si la Nota de Credito es nueva Asigna nuevo secuencial
                 if (tab_cabecara.getValor("secuencial_srcom") == null) {
-                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.NOTA_DE_CREDITO);
+                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.NOTA_DE_CREDITO, tab_factura.getValor("ide_ccdaf"));
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE cxp_cabecera_nota SET  ide_srcom=" + ide_srcom + ", numero_cpcno='" + strSecuencialF + "' where ide_cpcno=" + ide_cpcno);
@@ -367,7 +370,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
         String ide_srcom = "-1";
 
         TablaGenerica tab_guia = utilitario.consultar("select serie_ccdaf,fecha_emision_ccgui,identificac_geper,\n"
-                + "a.gen_ide_geper,ide_cntdo,a.ide_srcom, e.ide_srcom as ide_srcom_factura,a.placa_gecam,fecha_ini_trasla_ccgui,fecha_fin_trasla_ccgui,punto_partida_ccgui,correo_cccfa \n"
+                + "a.gen_ide_geper,ide_cntdo,a.ide_srcom, e.ide_srcom as ide_srcom_factura,a.placa_gecam,fecha_ini_trasla_ccgui,fecha_fin_trasla_ccgui,punto_partida_ccgui,correo_cccfa,a.ide_ccdaf \n"
                 + "from cxc_guia a\n"
                 + "inner join gen_persona b on a.gen_ide_geper = b.ide_geper  \n"
                 + "left join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
@@ -411,13 +414,14 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("ide_empr", utilitario.getVariable("ide_empr"));
             tab_cabecara.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
             tab_cabecara.setValor("correo_srcom", tab_guia.getValor("correo_cccfa"));
+            tab_cabecara.setValor("ide_ccdaf1", tab_guia.getValor("ide_ccdaf"));
 
             if (tab_cabecara.guardar()) {
                 ide_srcom = tab_cabecara.getValor("ide_srcom");
                 if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                     //Si la Nota de Credito es nueva Asigna nuevo secuencial
                     if (tab_cabecara.getValor("secuencial_srcom") == null) {
-                        String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.GUIA_DE_REMISION);
+                        String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.GUIA_DE_REMISION, tab_guia.getValor("ide_ccdaf"));
                         utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                         utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET num_guia_srcom='" + tab_cabecara.getValor("estab_srcom") + "-" + tab_cabecara.getValor("ptoemi_srcom") + "-" + strSecuencialF + "' where ide_srcom=" + tab_cabecara.getValor("sri_ide_srcom"));
                         utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo() + "'");
@@ -452,7 +456,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 
         TablaGenerica tab_factura = utilitario.consultar("select serie_ccdaf,fecha_emisi_cncre,identificac_geper"
                 + ",e.ide_geper,a.ide_srcom,correo_cncre,"
-                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre ) as valor_cndre "
+                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre ) as valor_cndre,a.ide_ccdaf "
                 + "from con_cabece_retenc a "
                 + "inner join cxp_cabece_factur e on a.ide_cncre=e.ide_cncre\n"
                 + "inner join gen_persona b on e.ide_geper = b.ide_geper  \n"
@@ -492,13 +496,14 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
             tab_cabecara.setValor("periodo_fiscal_srcom", utilitario.getMes(tab_factura.getValor("fecha_emisi_cncre")) < 10 ? "0" + utilitario.getMes(tab_factura.getValor("fecha_emisi_cncre")) + "/" + utilitario.getAnio(tab_factura.getValor("fecha_emisi_cncre")) : utilitario.getMes(tab_factura.getValor("fecha_emisi_cncre")) + "/" + utilitario.getAnio(tab_factura.getValor("fecha_emisi_cncre")));
             tab_cabecara.setValor("total_srcom", utilitario.getFormatoNumero(tab_factura.getValor("valor_cndre")));
+            tab_cabecara.setValor("ide_ccdaf1", tab_factura.getValor("ide_ccdaf"));
             tab_cabecara.guardar();
             ide_srcom = tab_cabecara.getValor("ide_srcom");
 
             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
                 //Si la Nota de Credito es nueva Asigna nuevo secuencial
                 if (tab_cabecara.getValor("secuencial_srcom") == null) {
-                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION);
+                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION, tab_factura.getValor("ide_ccdaf"));
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET  ide_srcom=" + ide_srcom + " , numero_cncre='" + tab_factura.getValor("serie_ccdaf") + strSecuencialF + "' where ide_cncre=" + ide_cncre);
@@ -523,14 +528,15 @@ public class ServicioComprobanteElectronico extends ServicioBase {
      * Retorna el secuencial de los comprobantes Electrónicos
      *
      * @param tipoComprobante
+     * @param ide_ccdaf
      * @return
      */
-    public String getSecuencialComprobante(TipoComprobanteEnum tipoComprobante) {
+    public String getSecuencialComprobante(TipoComprobanteEnum tipoComprobante, String ide_ccdaf) {
         long maximo = 0;
         //reutiliza secuenciales si existe
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT secuencial_srcom FROM sri_comprobante where coddoc_srcom='").append(tipoComprobante.getCodigo()).append("' and reutiliza_srcom=true  and ide_sucu=").append(utilitario.getVariable("ide_sucu")).append(" order by secuencial_srcom limit 1");
+            sql.append("SELECT secuencial_srcom FROM sri_comprobante where coddoc_srcom='").append(tipoComprobante.getCodigo()).append("' and reutiliza_srcom=true and ide_ccdaf1=").append(ide_ccdaf).append(" and ide_sucu=").append(utilitario.getVariable("ide_sucu")).append(" order by secuencial_srcom limit 1");
             List lisResultado = utilitario.getConexion().consultar(sql.toString());
             return (String.valueOf(lisResultado.get(0)));
         } catch (Exception e) {
@@ -538,7 +544,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT MAX(secuencial_srcom) FROM sri_comprobante where coddoc_srcom='").append(tipoComprobante.getCodigo()).append("' and ide_sucu=").append(utilitario.getVariable("ide_sucu"));
+            sql.append("SELECT MAX(secuencial_srcom) FROM sri_comprobante where coddoc_srcom='").append(tipoComprobante.getCodigo()).append("' and  ide_ccdaf1=").append(ide_ccdaf).append(" and ide_sucu=").append(utilitario.getVariable("ide_sucu"));
             List lisResultado = utilitario.getConexion().consultar(sql.toString());
             maximo = Long.parseLong(String.valueOf(lisResultado.get(0)));
             //System.out.println("///// " + maximo);
@@ -617,12 +623,13 @@ public class ServicioComprobanteElectronico extends ServicioBase {
      * @param tipoComprobante
      * @return
      */
-    public String getSqlTotalComprobantesPorEstado(String fecha_inicio, String fecha_fin, TipoComprobanteEnum tipoComprobante) {
+    public String getSqlTotalComprobantesPorEstado(String fecha_inicio, String fecha_fin, TipoComprobanteEnum tipoComprobante, String ide_ccdaf) {
         return "select count(1) as contador,nombre_sresc,a.ide_sresc from sri_comprobante a\n"
                 + "inner join sri_estado_comprobante b on a.ide_sresc=b.ide_sresc\n"
                 + "where coddoc_srcom='" + tipoComprobante.getCodigo() + "'\n"
                 + "and fechaemision_srcom BETWEEN '" + fecha_inicio + "' and '" + fecha_fin + "'\n"
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and a.ide_ccdaf1=" + ide_ccdaf + " "
                 + "GROUP BY nombre_sresc,a.ide_sresc";
     }
 
