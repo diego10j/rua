@@ -15,9 +15,8 @@ package dj.comprobantes.offline.enums;
  */
 public enum ParametrosSistemaEnum {
 
-    
-    //RUTA_SISTEMA("C:\\ComprobantesElectronicosSRIOffline"), //Ruta del sistema
-    RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
+    RUTA_SISTEMA("C:\\ComprobantesElectronicosSRIOffline"), //Ruta del sistema 
+    //RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
     PROXY_HOST(""),
     PROXY_PORT(""),
     MAIL_SMTP_HOST("smtp.office365.com"),

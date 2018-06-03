@@ -32,7 +32,7 @@ public class DetalleComprobante implements Serializable {
 
     public DetalleComprobante(ResultSet resultado) {
         try {
-            this.codigoprincipal = resultado.getString("codigo_inarti");
+            this.codigoprincipal = resultado.getString("ide_inarti"); //codigo_inarti
             this.codigoauxiliar = resultado.getString("ide_inarti");
             this.cantidad = resultado.getBigDecimal("cantidad_ccdfa");
             this.descripciondet = resultado.getString("nombre_inarti").trim();
