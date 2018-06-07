@@ -79,10 +79,10 @@ public class RetencionServiceImp implements RetencionService {
             } else {
                 str_xml.append("      		<campoAdicional nombre=\"Email\">").append("ventas@gmail.com").append("</campoAdicional> \n");
             }
-            if (comprobante.getCliente().getTelefono() != null) {
+            if (comprobante.getCliente().getTelefono() != null && comprobante.getCliente().getTelefono().isEmpty() == false) {
                 str_xml.append("      		<campoAdicional nombre=\"Teléfono\">").append(comprobante.getCliente().getTelefono()).append("</campoAdicional> \n");
             }
-            if (comprobante.getCliente().getDireccion() != null) {
+            if (comprobante.getCliente().getDireccion() != null && comprobante.getCliente().getDireccion().isEmpty() == false) {
                 str_xml.append("      		<campoAdicional nombre=\"Dirección\">").append(comprobante.getCliente().getDireccion()).append("</campoAdicional> \n");
             }
             str_xml.append("		</infoAdicional> \n");

@@ -42,11 +42,5 @@ public interface CPanelService {
      */
     public void reenviarComprobante(String correo, Long id) throws GenericException;
 
-    /**
-     * Guarda los detalles de un comprobante en la nube
-     *
-     * @param detalleComprobante
-     * @throws GenericException
-     */
-    public void guardarDetalleComprobanteNube(DetalleComprobante detalleComprobante) throws GenericException;
+    
 }

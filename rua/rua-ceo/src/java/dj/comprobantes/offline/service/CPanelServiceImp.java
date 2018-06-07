@@ -51,11 +51,11 @@ public class CPanelServiceImp implements CPanelService {
         boolean guardo = true;
         UtilitarioCeo utilitario = new UtilitarioCeo();
         Map<String, Object> params = new LinkedHashMap<>();
-        params.put("NOMBRE_USUARIO", comprobante.getCliente().getNombreCliente());
+        params.put("NOMBRE_USUARIO", utilitario.reemplazarCaracteresEspeciales(comprobante.getCliente().getNombreCliente().toUpperCase()));
         params.put("IDENTIFICACION_USUARIO", comprobante.getCliente().getIdentificacion());
         params.put("CORREO_USUARIO", comprobante.getCliente().getCorreo());
         params.put("CODIGO_ESTADO", EstadoUsuarioEnum.NUEVO.getCodigo());
-        params.put("DIRECCION_USUARIO", comprobante.getCliente().getDireccion());
+        params.put("DIRECCION_USUARIO", utilitario.reemplazarCaracteresEspeciales(comprobante.getCliente().getDireccion().toUpperCase()));
         params.put("PK_CODIGO_COMP", comprobante.getCodigocomprobante());
         params.put("CODIGO_DOCUMENTO", comprobante.getCoddoc());
         params.put("ESTADO", EstadoComprobanteEnum.AUTORIZADO.getDescripcion());
@@ -66,9 +66,9 @@ public class CPanelServiceImp implements CPanelService {
         params.put("FECHA_AUTORIZACION", utilitario.getFormatoFecha(comprobante.getFechaautoriza()));
         params.put("ESTABLECIM", comprobante.getEstab());
         params.put("PTO_EMISION", comprobante.getPtoemi());
-        params.put("TOTAL", comprobante.getImportetotal());
-        params.put("CODIGO_EMPR", comprobante.getOficina()); //02-02-2018  //Sucursal 
+        params.put("TOTAL", comprobante.getImportetotal());        
         params.put("CORREO_DOCUMENTO", comprobante.getCorreo()); //Para guardar el correo que se envio el comprobante
+        params.put("CODIGO_EMPR", comprobante.getOficina()); //02-02-2018  //Sucursal 
         byte[] bxml = archivoService.getXml(comprobante);
         StringBuilder postData = new StringBuilder();
         postData.append("{");
@@ -175,14 +175,6 @@ public class CPanelServiceImp implements CPanelService {
             guardo = false;
             throw new GenericException(e);
         }
-        if (guardo) {
-            //Guarda el detalle de la factura
-            if (comprobante.getCoddoc().equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
-                for (DetalleComprobante detActual : comprobante.getDetalle()) {
-                    guardarDetalleComprobanteNube(detActual);
-                }
-            }
-        }
         return guardo;
     }
 
@@ -236,56 +228,6 @@ public class CPanelServiceImp implements CPanelService {
             throw new GenericException(e);
         }
 
-    }
-
-    @Override
-    public void guardarDetalleComprobanteNube(DetalleComprobante detalleComprobante) throws GenericException {
-        Map<String, Object> params = new LinkedHashMap<>();
-        params.put("PK_CODIGO_COMP", detalleComprobante.getComprobante().getCodigocomprobante());
-        params.put("CODIGO_AUXILIAR", detalleComprobante.getCodigoauxiliar());
-        params.put("CODIGO_PRINCIPAL", detalleComprobante.getCodigoprincipal());
-        params.put("DESCRIPCION", detalleComprobante.getDescripciondet());
-        params.put("PORCENTAJE_IVA", detalleComprobante.getPorcentajeiva());
-        params.put("CANTIDAD", detalleComprobante.getCantidad());
-        params.put("PRECIO", detalleComprobante.getPreciounitario());
-        params.put("DESCUENTO", detalleComprobante.getDescuento());
-        params.put("TOTAL", detalleComprobante.getPreciototalsinimpuesto());
-        StringBuilder postData = new StringBuilder();
-        try {
-            URL url = new URL(ParametrosSistemaEnum.CPANEL_WEB_DETALLE_COMPROBANTE.getCodigo());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Accept", "application/json;odata=verbose");
-            conn.setRequestProperty("Authorization", "AccesToken");
-            postData.append("{");
-            for (Map.Entry<String, Object> param : params.entrySet()) {
-                if (postData.length() != 1) {
-                    postData.append(',');
-                }
-                postData.append("\"").append(param.getKey()).append("\"");
-                postData.append(":\"");
-                postData.append(String.valueOf(param.getValue())).append("\"");
-            }
-            postData.append("}");
-            byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-            OutputStream os = conn.getOutputStream();
-            os.write(postDataBytes);
-            os.flush();
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-            String output;
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-            }
-            conn.disconnect();
-        } catch (IOException | RuntimeException e) {
-            throw new GenericException(e);
-        }
     }
 
 }

@@ -24,9 +24,9 @@ public enum ParametrosSistemaEnum {
     MAIL_PASSWORD("Inspectoria2018"),
     MAIL_GENERIC("comprobantes@salesianos.org.ec"),
     PAGINA_CONSULTA("http://comprobantes.salesianos.org.ec"),
-    CPANEL_WEB_COMPROBANTE("http://comprobantes.salesianos.org.ec/framework/servicios/ServicioNube.php/subirComprobante"),
-    CPANEL_WEB_REENVIAR("http://comprobantes.salesianos.org.ec/framework/servicios/ServicioNube.php/reenviarComprobante"),
-    CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.salesianos.org.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
+    CPANEL_WEB_COMPROBANTE("http://192.168.1.205/framework/servicios/ServicioNube.php/subirComprobante"),
+    CPANEL_WEB_REENVIAR("http://192.168.1.205/framework/servicios/ServicioNube.php/reenviarComprobante");
+    //CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.salesianos.org.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
     ///
 
     private final String codigo;
