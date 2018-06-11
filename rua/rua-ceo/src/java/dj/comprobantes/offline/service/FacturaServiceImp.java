@@ -59,6 +59,13 @@ public class FacturaServiceImp implements FacturaService {
                 dou_porcentaje_iva = (comprobante.getIva().doubleValue() * 100) / totalSinImpuestos;
             } catch (Exception e) {
             }
+
+            double dou_descuento = 0;
+            try {
+                dou_descuento = comprobante.getTotaldescuento().doubleValue();
+            } catch (Exception e) {
+            }
+
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                     .append("     <factura id=\"comprobante\" version=\"2.1.0\"> \n")
                     .append("		<infoTributaria> \n")
@@ -87,7 +94,7 @@ public class FacturaServiceImp implements FacturaService {
                     .append("			<identificacionComprador>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionComprador> \n")
                     .append("			<direccionComprador>").append(comprobante.getCliente().getDireccion()).append("</direccionComprador> \n")
                     .append("			<totalSinImpuestos>").append(utilitario.getFormatoNumero(totalSinImpuestos)).append("</totalSinImpuestos> \n")
-                    .append("			<totalDescuento>").append((utilitario.getFormatoNumero(0))).append("</totalDescuento> \n")
+                    .append("			<totalDescuento>").append((utilitario.getFormatoNumero(dou_descuento))).append("</totalDescuento> \n")
                     .append("			<totalConImpuestos> \n")
                     .append("				<totalImpuesto> \n")
                     .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
@@ -152,10 +159,10 @@ public class FacturaServiceImp implements FacturaService {
                 str_xml.append("      		<campoAdicional nombre=\"Dirección\">").append(comprobante.getCliente().getDireccion()).append("</campoAdicional> \n");
             }
             if (comprobante.getNumOrdenCompra() != null) {
-                str_xml.append("      		<campoAdicional nombre=\"Orden de Compra\">").append(comprobante.getNumOrdenCompra()).append("</campoAdicional> \n");
+                str_xml.append("      		<campoAdicional nombre=\"Referencia\">").append(comprobante.getNumOrdenCompra()).append("</campoAdicional> \n");
             }
             if (comprobante.getInfoAdicional1() != null) {
-                str_xml.append("      		<campoAdicional nombre=\"Vendedor\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
+                str_xml.append("      		<campoAdicional nombre=\"Usuario\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
             }
             if (comprobante.getInfoAdicional2() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Forma de Pago\">").append(comprobante.getInfoAdicional2()).append("</campoAdicional> \n");

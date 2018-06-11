@@ -37,7 +37,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante  WHERE ide_sresc =?"; //
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and ide_sresc =?"; //
             ps = con.getPreparedStatement(sql);
             ps.setInt(1, estado.getCodigo());
             res = ps.executeQuery();
@@ -68,7 +69,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante  WHERE claveacceso_srcom = ?";
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and claveacceso_srcom = ?";
             ps = con.getPreparedStatement(sql);
             ps.setString(1, claveAcceso);
             res = ps.executeQuery();
@@ -99,7 +101,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante WHERE identificacion_srcom= ? and coddoc_srcom = ? and ide_sresc='" + EstadoComprobanteEnum.AUTORIZADO.getCodigo() + "' order by secuencial_srcom desc";
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and identificacion_srcom= ? and coddoc_srcom = ? and ide_sresc='" + EstadoComprobanteEnum.AUTORIZADO.getCodigo() + "' order by secuencial_srcom desc";
             ps = con.getPreparedStatement(sql);
             ps.setString(1, identificacion);
             ps.setString(2, codigoDocumento.getCodigo());
@@ -140,13 +143,9 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         try {
             preparedStatement = con.getPreparedStatement(sql);
             preparedStatement.setInt(1, comprobante.getCodigoestado());
-            preparedStatement.setString(2, comprobante.getClaveacceso());            
-            if (comprobante.getOficina().equals("0")) { //GLOBALQUIM
-                preparedStatement.setInt(3, 1);
-            } else {
-                preparedStatement.setInt(3, 2);
-            }
-            preparedStatement.setString(4, comprobante.getClaveacceso()); 
+            preparedStatement.setString(2, comprobante.getClaveacceso());
+            preparedStatement.setInt(3, 1);
+            preparedStatement.setString(4, comprobante.getClaveacceso());
             preparedStatement.setString(5, comprobante.getTipoemision());
             if (comprobante.getFechaautoriza() != null) {
                 preparedStatement.setTimestamp(6, new java.sql.Timestamp(comprobante.getFechaautoriza().getTime()));
@@ -176,7 +175,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante  WHERE ide_srcom = ?";
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and ide_srcom = ?";
             ps = con.getPreparedStatement(sql);
             ps.setLong(1, ide_srcom);
             res = ps.executeQuery();
@@ -208,7 +208,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante  WHERE ide_sresc =? AND en_nube_srcom =false"; //
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and ide_sresc =? AND en_nube_srcom =false"; //
             ps = con.getPreparedStatement(sql);
             ps.setInt(1, EstadoComprobanteEnum.AUTORIZADO.getCodigo());
             res = ps.executeQuery();
@@ -239,7 +240,8 @@ public class ComprobanteDAOImp implements ComprobanteDAO {
         PreparedStatement ps = null;
         ResultSet res = null;
         try {
-            String sql = "SELECT * FROM sri_comprobante  WHERE sri_ide_srcom = ?";
+            String sql = "SELECT a.*,identificacion_empr FROM sri_comprobante  a , sis_empresa b\n"
+                    + "where a.ide_empr=b.ide_empr and sri_ide_srcom = ?";
             ps = con.getPreparedStatement(sql);
             ps.setLong(1, ide_srcom);
             res = ps.executeQuery();

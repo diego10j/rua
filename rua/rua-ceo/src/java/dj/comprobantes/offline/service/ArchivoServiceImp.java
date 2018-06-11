@@ -251,8 +251,7 @@ public class ArchivoServiceImp implements ArchivoService {
      */
     private Map<String, Object> getParametrosComunes(String cadenaXML, Comprobante comprobante) {
         Map<String, Object> parametros = new HashMap<>();
-        try {
-            parametros.put("IDE_SUCU", comprobante.getOficina());
+        try {            
             parametros.put("PAGINA_CONSULTA", ParametrosSistemaEnum.PAGINA_CONSULTA.getCodigo());
             parametros.put("SUBREPORT_DIR", ParametrosSistemaEnum.RUTA_SISTEMA.getCodigo());
             parametros.put("RUC", utilitario.getValorEtiqueta(cadenaXML, "ruc"));

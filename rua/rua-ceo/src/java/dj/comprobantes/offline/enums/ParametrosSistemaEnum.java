@@ -26,8 +26,6 @@ public enum ParametrosSistemaEnum {
     PAGINA_CONSULTA("http://comprobantes.salesianos.org.ec"),
     CPANEL_WEB_COMPROBANTE("http://192.168.1.205/framework/servicios/ServicioNube.php/subirComprobante"),
     CPANEL_WEB_REENVIAR("http://192.168.1.205/framework/servicios/ServicioNube.php/reenviarComprobante");
-    //CPANEL_WEB_DETALLE_COMPROBANTE("http://comprobantes.salesianos.org.ec/framework/servicios/ServicioNube.php/subirDetalleComprobante");
-    ///
 
     private final String codigo;
 

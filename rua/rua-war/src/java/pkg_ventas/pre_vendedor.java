@@ -2,8 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 package pkg_ventas;
 
 import framework.componentes.Division;
@@ -18,21 +16,20 @@ import sistema.aplicacion.Pantalla;
 public class pre_vendedor extends Pantalla {
 
     private Tabla tab_tabla = new Tabla();
-    private Division div_division = new Division();
 
     public pre_vendedor() {
 
-
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("ven_vendedor","ide_vgven" , 1);
-        
+        tab_tabla.setTabla("ven_vendedor", "ide_vgven", 1);
+
         tab_tabla.getColumna("ide_vgtve").setCombo("ven_tipo_vendedor", "ide_vgtve", "nombre_vgtve", "");
-        tab_tabla.setTipoFormulario(true);
+        tab_tabla.setTipoFormulario(false);
         tab_tabla.getGrid().setColumns(4);
-        
+
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
+        Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
 
@@ -62,6 +59,5 @@ public class pre_vendedor extends Pantalla {
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-
 
 }

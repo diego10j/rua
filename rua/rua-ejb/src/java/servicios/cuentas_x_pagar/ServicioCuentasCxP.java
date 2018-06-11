@@ -212,7 +212,12 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cpcfa")));
             tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
             tab_det_tran_cxp.setValor("numero_pago_cpdtr", "0");
-            tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cpcfa")), ser_conta_general.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
+            int dias_credito = 0;
+            try {
+                dias_credito = Integer.parseInt(tab_cab_factura.getValor("dias_credito_cpcfa"));
+            } catch (Exception e) {
+            }
+            tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cpcfa")), dias_credito)));
             tab_det_tran_cxp.setValor("docum_relac_cpdtr", tab_cab_factura.getValor("numero_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxp.setValor("valor_anticipo_cpdtr", "0");
@@ -260,9 +265,9 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_cab_tran_cxp.setValor("ide_geper", tab_cab_factura.getValor("ide_geper"));
             tab_cab_tran_cxp.setValor("fecha_trans_cpctr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
             tab_cab_tran_cxp.setValor("ide_cpcfa", tab_cab_factura.getValor("ide_cpcfa"));
-            if (tab_cab_factura.getValor("observacion_cpcfa") != null && !tab_cab_factura.getValor("observacion_cpcfa").isEmpty()) {
-                tab_cab_tran_cxp.setValor("observacion_cpctr", tab_cab_factura.getValor("observacion_cpcfa"));
-            }
+//            if (tab_cab_factura.getValor("observacion_cpcfa") != null && !tab_cab_factura.getValor("observacion_cpcfa").isEmpty()) {
+//                tab_cab_tran_cxp.setValor("observacion_cpctr", tab_cab_factura.getValor("observacion_cpcfa"));
+//            } //dfj
             tab_cab_tran_cxp.guardar();
             if (tab_det_tran_cxp.isEmpty()) {
                 tab_det_tran_cxp.insertar();
@@ -290,7 +295,13 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cpcfa")));
             tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
             tab_det_tran_cxp.setValor("numero_pago_cpdtr", "0");
-            tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cpcfa")), ser_conta_general.getDiasFormaPago(tab_cab_factura.getValor("ide_cndfp")))));
+            int dias_credito = 0;
+            try {
+                dias_credito = Integer.parseInt(tab_cab_factura.getValor("dias_credito_cpcfa"));
+            } catch (Exception e) {
+            }
+            tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cpcfa")), dias_credito)));
+
             tab_det_tran_cxp.setValor("docum_relac_cpdtr", tab_cab_factura.getValor("numero_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxp.setValor("valor_anticipo_cpdtr", "0");
@@ -335,6 +346,13 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setValor("docum_relac_cpdtr", tab_cab_factura.getValor("numero_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
             tab_det_tran_cxp.setValor("valor_anticipo_cpdtr", "0");
+            int dias_credito = 0;
+            try {
+                dias_credito = Integer.parseInt(tab_cab_factura.getValor("dias_credito_cpcfa"));
+            } catch (Exception e) {
+            }
+            tab_det_tran_cxp.setValor("fecha_venci_cpdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cpcfa")), dias_credito)));
+
             tab_det_tran_cxp.guardar();
         }
         return ide_cpctr;
@@ -810,6 +828,18 @@ public class ServicioCuentasCxP extends ServicioBase {
     public String getFormaPago(String alterno_ats) {
         TablaGenerica tg = utilitario.consultar("select ide_cndfp,alterno_ats from con_deta_forma_pago where alterno_ats='" + alterno_ats + "'");
         return tg.getValor("ide_cndfp");
+    }
+
+    public int getDiasCreditoFormaPago(String ide_cndfp) {
+        int dias = 0;
+        TablaGenerica tag = utilitario.consultar("select ide_cndfp,dias_cndfp from con_deta_forma_pago where ide_cndfp=" + ide_cndfp);
+        if (tag.isEmpty() == false) {
+            try {
+                dias = Integer.parseInt(tag.getValor("dias_cndfp"));
+            } catch (Exception e) {
+            }
+        }
+        return dias;
     }
 
 }

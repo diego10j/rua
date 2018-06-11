@@ -5,6 +5,8 @@
  */
 package componentes;
 
+import dj.comprobantes.offline.enums.TipoComprobanteEnum;
+import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
@@ -649,11 +651,21 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("ide_cntdo").setVisible(false);
         tab_cab_documento.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
         tab_cab_documento.getColumna("ide_cpefa").setVisible(false);
-        tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cndfp not in ( " + parametros.get("p_con_for_pag_reembolso_caja") + "," + parametros.get("p_con_for_pag_anticipo") + " )");
+        tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
         tab_cab_documento.getColumna("ide_cndfp").setRequerida(true);
         tab_cab_documento.getColumna("TARIFA_IVA_CPCFA").setVisible(false);
         tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
-        tab_cab_documento.getColumna("ide_cndfp").setOrden(0);
+        tab_cab_documento.getColumna("ide_cndfp").setOrden(5);
+        tab_cab_documento.getColumna("dias_credito_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("dias_credito_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("dias_credito_cpcfa").setValorDefecto("0");
+
+        tab_cab_documento.getColumna("ide_cndfp1").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp!=3");
+        tab_cab_documento.getColumna("ide_cndfp1").setOrden(50);
+        tab_cab_documento.getColumna("ide_cndfp1").setNombreVisual("DÍAS CREDITO");
+        tab_cab_documento.getColumna("ide_cndfp1").setEstilo("width:140px");
+        tab_cab_documento.getColumna("ide_cndfp1").setRequerida(true);
+
         tab_cab_documento.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
         tab_cab_documento.getColumna("ide_usua").setVisible(false);
         tab_cab_documento.getColumna("MONTO_COM_CPCFA").setVisible(false);
@@ -1028,7 +1040,7 @@ public class DocumentoCxP extends Dialogo {
             }
             //Validaciones
             String codDoc = utilitario.getValorEtiqueta(fileContents.toString(), "codDoc");
-            if (codDoc == null || codDoc.equals("01") == false) {
+            if (codDoc == null || codDoc.equals(TipoComprobanteEnum.FACTURA.getCodigo()) == false) {
                 utilitario.agregarMensajeError("Error archivo XML", "Tipo de comprobante no válido");
                 return;
             }
@@ -1048,7 +1060,7 @@ public class DocumentoCxP extends Dialogo {
             String numero_cpcfa = utilitario.getValorEtiqueta(fileContents.toString(), "estab") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "ptoEmi") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "secuencial");
             tab_cab_documento.setValor("ide_geper", ide_geper);
             tab_cab_documento.setValor("autorizacio_cpcfa", autorizacio_cpcfa);
-            System.out.println("--- " + numero_cpcfa);
+            //System.out.println("--- " + numero_cpcfa);
             tab_cab_documento.setValor("numero_cpcfa", numero_cpcfa);
             tab_cab_documento.setValor("fecha_emisi_cpcfa", utilitario.getFormatoFecha(utilitario.toDate(utilitario.getFormatoFecha(utilitario.getValorEtiqueta(fileContents.toString(), "fechaEmision")), "dd/MM/yyyy")));
             tab_cab_documento.setValor("ide_cndfp", ser_cuentas_cxp.getFormaPago(utilitario.getValorEtiqueta(fileContents.toString(), "formaPago")));
@@ -1063,9 +1075,9 @@ public class DocumentoCxP extends Dialogo {
                 tab_det_documento.setValor("precio_cpdfa", utilitario.getValorEtiqueta(strDetalleActual, "precioUnitario"));
                 tab_det_documento.setValor("valor_cpdfa", utilitario.getValorEtiqueta(strDetalleActual, "precioTotalSinImpuesto"));
                 String codigoPorcentaje = utilitario.getValorEtiqueta(strDetalleActual, "codigoPorcentaje");
-                if (codigoPorcentaje.equals("0")) {                    //NO IVA
+                if (codigoPorcentaje.equals(TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo())) {                    //NO IVA
                     tab_det_documento.setValor("iva_inarti_cpdfa", "-1");
-                } else if (codigoPorcentaje.equals("6")) {
+                } else if (codigoPorcentaje.equals(TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo()) || codigoPorcentaje.equals(TipoImpuestoIvaEnum.IVA_EXCENTO.getCodigo())) {
                     tab_det_documento.setValor("iva_inarti_cpdfa", "0");
                 } else {
                     tab_det_documento.setValor("iva_inarti_cpdfa", "1");
@@ -1220,6 +1232,7 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
             tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros_valores.getValue()));
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
+             tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
 
             if (validarDocumento()) {
                 obteneAlterno104();

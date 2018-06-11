@@ -9,13 +9,13 @@
         </properties>
     </persistence-unit>
     
-        <persistence-unit name="fondo" transaction-type="JTA">
+    <persistence-unit name="rua_col_dbk" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>fondo</jta-data-source>
+        <jta-data-source>rua_col_dbk</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
     </persistence-unit>
-    
+            
 </persistence>

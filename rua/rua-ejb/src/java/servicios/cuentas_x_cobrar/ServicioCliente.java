@@ -170,8 +170,8 @@ public class ServicioCliente extends ServicioBase {
         tabla.getColumna("es_proveedo_geper").setVisible(false);
         //tabla.getColumna("ide_geubi").setCombo("gen_ubicacion", "ide_geubi", "nombre_geubi", "nivel_geubi='HIJO'");
         //tabla.getColumna("ide_gegen").setCombo("gen_genero", "ide_gegen", "nombre_gegen", "");
-        //tabla.getColumna("ide_vgtcl").setCombo("ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl", "");
-        //tabla.getColumna("ide_vgecl").setCombo("ven_estado_client", "ide_vgecl", "nombre_vgecl", "");
+        tabla.getColumna("ide_vgtcl").setCombo("ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl", "");
+        tabla.getColumna("ide_vgecl").setCombo("ven_estado_client", "ide_vgecl", "nombre_vgecl", "");
         tabla.getColumna("ide_vgven").setVisible(true);
         tabla.getColumna("ide_vgven").setCombo("SELECT ide_vgven,nombre_vgven FROM ven_vendedor ORDER BY nombre_vgven");
         tabla.getColumna("jornada_inicio_geper").setVisible(false);

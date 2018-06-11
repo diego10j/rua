@@ -24,7 +24,7 @@ public class ServicioProveedor {
      */
     public final static String P_PADRE_PROVEEDORES = "1";
     private final Utilitario utilitario = new Utilitario();
-    
+
     @EJB
     private ServicioConfiguracion ser_configuracion;
 
@@ -90,7 +90,7 @@ public class ServicioProveedor {
     public String getSqlComboProveedor() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_proveedo_geper is TRUE and identificac_geper is not null order by nom_geper ";
     }
-    
+
     public String getSqlListaProveedores() {
         return "select ide_geper,codigo_geper,identificac_geper,nom_geper,correo_geper,direccion_geper,telefono_geper,contacto_geper from gen_persona  where es_proveedo_geper is TRUE and identificac_geper is not null order by nom_geper";
     }
@@ -101,7 +101,7 @@ public class ServicioProveedor {
      * @param tabla
      */
     public void configurarTablaProveedor(Tabla tabla) {
-        
+
         tabla.setTabla("gen_persona", "ide_geper", -1);
         tabla.setCondicion("es_proveedo_geper=true");
         tabla.getColumna("es_proveedo_geper").setValorDefecto("true");
@@ -116,7 +116,7 @@ public class ServicioProveedor {
         tabla.getColumna("IDE_VGECL").setVisible(false);
         tabla.getColumna("ide_gegen").setVisible(false);
         tabla.getColumna("IDE_VGTCL").setVisible(false);
-        
+
         tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tabla.getColumna("identificac_geper").setUnico(true);
@@ -154,7 +154,7 @@ public class ServicioProveedor {
         tabla.getColumna("GEN_IDE_GEPER").setVisible(true);
         tabla.getColumna("GEN_IDE_GEPER").setCombo("select ide_geper,nom_geper from gen_persona where nivel_geper ='PADRE' and es_proveedo_geper=true order by nom_geper");
         tabla.getColumna("ide_tetcb").setVisible(false);
-        tabla.getColumna("ide_coepr").setVisible(false);
+        tabla.getColumna("ide_coepr").setVisible(true);
         tabla.getColumna("es_proveedo_geper").setVisible(false);
         tabla.getColumna("ide_geubi").setCombo("gen_ubicacion", "ide_geubi", "nombre_geubi", "nivel_geubi='HIJO'");
         tabla.getColumna("ide_gegen").setCombo("gen_genero", "ide_gegen", "nombre_gegen", "");
@@ -168,6 +168,8 @@ public class ServicioProveedor {
         tabla.getColumna("jornada_fin_geper").setVisible(false);
         tabla.getColumna("jornada_inicio_geper").setVisible(false);
         tabla.getColumna("numero_geper").setVisible(false);
+        tabla.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp!=3");
+        tabla.getColumna("ide_cndfp").setVisible(true);
         tabla.setTipoFormulario(true);
         tabla.getGrid().setColumns(4);
     }
@@ -240,7 +242,7 @@ public class ServicioProveedor {
         }
         return saldo;
     }
-    
+
     public String getSqlCuentasPorPagar(String ide_geper) {
         String str_sql_cxp = "select dt.ide_cpctr,"
                 + "dt.ide_cpcfa,"
@@ -289,7 +291,7 @@ public class ServicioProveedor {
                 + "HAVING sum (dt.valor_cpdtr*tt.signo_cpttr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cpcfa ASC ,ct.fecha_trans_cpctr ASC,dt.ide_cpctr ASC";
     }
-    
+
     public String getSqlComboFacturasPorPagar(String ide_geper) {
         return "select dt.ide_cpctr,"
                 + "coalesce(nombre_cntdo,'Cuenta por Pagar'),coalesce(cf.numero_cpcfa,''),"
@@ -477,7 +479,7 @@ public class ServicioProveedor {
                 + "and ide_geper= " + ide_geper + " "
                 + "order by fec_cam_est_teclb, ide_teclb";
     }
-    
+
     public String getParametroProveedor(String parametro, String ide_geper) {
         if (ide_geper != null && !ide_geper.isEmpty()) {
             TablaGenerica tab_persona = utilitario.consultar("select * from gen_persona where ide_empr=" + utilitario.getVariable("ide_empr") + " and ide_geper=" + ide_geper);

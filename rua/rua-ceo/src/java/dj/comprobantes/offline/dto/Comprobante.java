@@ -51,6 +51,7 @@ public final class Comprobante implements Serializable {
     private Firma codigofirma;
     private Integer codigoestado;
     private String oficina;
+    private String rucEmpresa;
     private Date fechaautoriza;
     private Cliente cliente;
     private BigDecimal subtotal0;
@@ -121,6 +122,9 @@ public final class Comprobante implements Serializable {
             //inicio 02-02-2018 
             if (resultado.getString("ide_sucu") != null) {
                 this.oficina = resultado.getString("ide_sucu");
+            }
+            if (resultado.getString("identificacion_empr") != null) {
+                this.rucEmpresa = resultado.getString("identificacion_empr");
             }
             //fin
 
@@ -485,6 +489,14 @@ public final class Comprobante implements Serializable {
 
     public void setOficina(String oficina) {
         this.oficina = oficina;
+    }
+
+    public String getRucEmpresa() {
+        return rucEmpresa;
+    }
+
+    public void setRucEmpresa(String rucEmpresa) {
+        this.rucEmpresa = rucEmpresa;
     }
 
     public Date getFechaautoriza() {

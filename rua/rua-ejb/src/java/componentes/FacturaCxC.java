@@ -69,6 +69,8 @@ public class FacturaCxC extends Dialogo {
     private final Texto tex_subtotal0 = new Texto();
     private final Texto tex_iva = new Texto();
     private final Texto tex_total = new Texto();
+    private final Texto tex_subtotal_no_objeto = new Texto();
+    private final Texto tex_descuento = new Texto();
     private Combo com_pto_emision = new Combo();
     private double tarifaIVA = 0;
     private boolean haceKardex = false;
@@ -275,12 +277,14 @@ public class FacturaCxC extends Dialogo {
 
         ate_observacion.limpiar();
         ate_observacion.setDisabled(false);
-
+        tex_descuento.setDisabled(false);
         //com_pto_emision.setDisabled(false);
         tex_iva.setValue("0,00");
         tex_subtotal0.setValue("0,00");
         tex_subtotal12.setValue("0,00");
         tex_total.setValue("0,00");
+        tex_descuento.setValue("0,00");
+        tex_subtotal_no_objeto.setValue("0,00");
         cargarMaximoSecuencialFactura();
         setActivarGuiaRemision(haceGuia);
         //Activa click derecho insertar y eliminar
@@ -364,15 +368,19 @@ public class FacturaCxC extends Dialogo {
             } catch (Exception e) {
             }
             this.setTitle("FACTURA N. " + tab_cab_factura.getValor("secuencial_cccfa"));
-            tex_subtotal0.setValue(utilitario.getFormatoNumero(dou_subt0 + dou_subtno));
+            tex_subtotal0.setValue(utilitario.getFormatoNumero(dou_subt0));
+            tex_subtotal_no_objeto.setValue(utilitario.getFormatoNumero(dou_subtno));
             tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("base_grabada_cccfa")));
             tex_total.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("total_cccfa")));
+            tex_descuento.setValue(utilitario.getFormatoNumero(tab_cab_factura.getValor("descuento_cccfa")));
+
             ate_observacion.setValue(tab_cab_factura.getValor("observacion_cccfa"));
             if (tab_cab_factura.getFilaSeleccionada() != null) {
                 tab_cab_factura.getFilaSeleccionada().setLectura(true);
             }
             ate_observacion.setDisabled(true);
             com_pto_emision.setDisabled(true);
+            tex_descuento.setDisabled(true);
             //Desactiva click derecho insertar y eliminar
             try {
                 PanelTabla pat_panel = (PanelTabla) tab_deta_factura.getParent();
@@ -741,8 +749,9 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("ide_vgven").setRequerida(true);
         tab_cab_factura.getColumna("ide_srcom").setVisible(false);  //FE
 
-        tab_cab_factura.getColumna("ret_fuente_cccfa").setVisible(false); //produquimic
-        tab_cab_factura.getColumna("ret_iva_cccfa").setVisible(false); //produquimic
+        tab_cab_factura.getColumna("ret_fuente_cccfa").setVisible(false);
+        tab_cab_factura.getColumna("ret_iva_cccfa").setVisible(false);
+        tab_cab_factura.getColumna("descuento_cccfa").setVisible(false);
 
         tab_cab_factura.getColumna("telefono_cccfa").setNombreVisual("TELEFONO");
         tab_cab_factura.getColumna("telefono_cccfa").setOrden(5);
@@ -770,7 +779,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("ide_geper").setMetodoChangeRuta(tab_cab_factura.getRuta() + ".seleccionarCliente");
         tab_cab_factura.getColumna("ide_geper").setNombreVisual("CLIENTE");
 
-        tab_cab_factura.getColumna("orden_compra_cccfa").setNombreVisual("N. ORDEN COMPRA");
+        tab_cab_factura.getColumna("orden_compra_cccfa").setNombreVisual("N. REFERENCIA");
         //tab_cab_factura.getColumna("dias_credito_cccfa").setNombreVisual("DÍAS CREDITO");
         tab_cab_factura.getColumna("correo_cccfa").setNombreVisual("E-MAIL");
         tab_cab_factura.getColumna("correo_cccfa").setLectura(false);
@@ -954,30 +963,41 @@ public class FacturaCxC extends Dialogo {
         gri_total.setColumns(2);
 
         Grid gri_observa = new Grid();
-        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong> <span style='color:red;font-weight: bold;'> *</span>"));
-        ate_observacion.setCols(80);
+        gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
+        ate_observacion.setCols(60);
         gri_observa.getChildren().add(ate_observacion);
         gri_total.getChildren().add(gri_observa);
 
         Grid gri_valores = new Grid();
         gri_valores.setId("gri_valores");
-        gri_valores.setColumns(4);
+        gri_valores.setColumns(6);
         eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
         gri_valores.getChildren().add(eti_subtotal);
         tex_subtotal12.setDisabled(true);
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_subtotal12);
 
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :</strong>"));
+        tex_subtotal0.setDisabled(true);
+        tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
+        gri_valores.getChildren().add(tex_subtotal0);
+
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL NO OBJ. IVA :</strong>"));
+        tex_subtotal_no_objeto.setDisabled(true);
+        tex_subtotal_no_objeto.setStyle("font-size: 14px;text-align: right;width:110px");
+        gri_valores.getChildren().add(tex_subtotal_no_objeto);
+
+        gri_valores.getChildren().add(new Etiqueta("<strong> DESCUENTO :</strong>"));
+        tex_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
+        tex_descuento.setMetodoChangeRuta("pre_index.clase." + getId() + ".calcularTotalFactura");
+
+        gri_valores.getChildren().add(tex_descuento);
+
         eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
         gri_valores.getChildren().add(eti_iva);
         tex_iva.setDisabled(true);
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         gri_valores.getChildren().add(tex_iva);
-
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :</strong>"));
-        tex_subtotal0.setDisabled(true);
-        tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
-        gri_valores.getChildren().add(tex_subtotal0);
 
         gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :</strong>"));
         tex_total.setDisabled(true);
@@ -1400,6 +1420,10 @@ public class FacturaCxC extends Dialogo {
         calcularTotalFactura();
     }
 
+    public void calcularTotalFactura(AjaxBehaviorEvent evt) {
+        calcularTotalFactura();
+    }
+
     /**
      * Calcula totales de la factura
      */
@@ -1411,6 +1435,7 @@ public class FacturaCxC extends Dialogo {
             double valor_iva = 0;
             double porcentaje_iva = 0;
 
+            double descuento = 0;
             for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
                 String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
                 if (iva.equals("1")) { //SI IVA
@@ -1432,16 +1457,23 @@ public class FacturaCxC extends Dialogo {
                     }
                 }
             }
+            try {
+                descuento = Double.parseDouble(tex_descuento.getValue() + "");
+            } catch (Exception e) {
+            }
+
             tab_cab_factura.setValor("base_grabada_cccfa", utilitario.getFormatoNumero(base_grabada));
             tab_cab_factura.setValor("base_no_objeto_iva_cccfa", utilitario.getFormatoNumero(base_no_objeto));
             tab_cab_factura.setValor("valor_iva_cccfa", utilitario.getFormatoNumero(valor_iva));
             tab_cab_factura.setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(base_tarifa0));
-            tab_cab_factura.setValor("total_cccfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva));
+            tab_cab_factura.setValor("total_cccfa", utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva) - descuento));
 
             tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
-            tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
+            tex_subtotal0.setValue(utilitario.getFormatoNumero(base_tarifa0));
+            tex_subtotal_no_objeto.setValue(utilitario.getFormatoNumero(base_no_objeto));
             tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-            tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva));
+            tex_descuento.setValue(utilitario.getFormatoNumero(descuento));
+            tex_total.setValue(utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva) - descuento));
 
             utilitario.addUpdate("tab_factura:0:gri_valores");
         } catch (Exception e) {
@@ -1495,10 +1527,10 @@ public class FacturaCxC extends Dialogo {
                 tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));
                 tab_cab_factura.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
                 tab_cab_factura.setValor("dias_credito_cccfa", String.valueOf(ser_factura.getDiasCreditoFormaPago(tab_cab_factura.getValor("ide_cndfp1"))));
+                tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(tex_descuento.getValue()));
                 if (haceGuia) {
                     tab_guia.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
                 }
-
                 //valida la factura
                 if (validarFactura()) {
                     generarFactura();
@@ -1732,10 +1764,10 @@ public class FacturaCxC extends Dialogo {
                 return false;
             }
         }
-        if (tab_cab_factura.getValor("observacion_cccfa") == null || tab_cab_factura.getValor("observacion_cccfa").isEmpty()) {
-            utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar una Observacion");
-            return false;
-        }
+//        if (tab_cab_factura.getValor("observacion_cccfa") == null || tab_cab_factura.getValor("observacion_cccfa").isEmpty()) {
+//            utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar una Observacion");
+//            return false;
+//        }
         if (tab_cab_factura.getValor("telefono_cccfa") == null || tab_cab_factura.getValor("telefono_cccfa").isEmpty()) {
             utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar una Número Telefónico");
             return false;

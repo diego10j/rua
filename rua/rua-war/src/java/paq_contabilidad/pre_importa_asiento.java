@@ -262,9 +262,15 @@ public class pre_importa_asiento extends Pantalla {
             for (int fila = (int_fin - 1); fila >= int_inicio; fila--) {
                 String codig_recur_cndpc = hoja.getCell(0, fila).getContents();
                 String nombre_cndpc = hoja.getCell(1, fila).getContents();
+                if (nombre_cndpc == null || nombre_cndpc.isEmpty()) {
+                    continue;
+                }
                 String debe = hoja.getCell(2, fila).getContents();
                 String haber = hoja.getCell(3, fila).getContents();
                 tab_detalle.insertar();
+                if (codig_recur_cndpc.endsWith(".") == false) {
+                    codig_recur_cndpc = codig_recur_cndpc + ".";
+                }
                 tab_detalle.setValor("codig_recur_cndpc", codig_recur_cndpc);
                 tab_detalle.setValor("nombre_cndpc", nombre_cndpc);
                 if (utilitario.getFormatoNumero(debe.replace(",", ".")) != null) {

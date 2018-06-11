@@ -7,11 +7,9 @@ package dj.comprobantes.offline.service;
 
 import dj.comprobantes.offline.dao.ComprobanteDAO;
 import dj.comprobantes.offline.dto.Comprobante;
-import dj.comprobantes.offline.dto.DetalleComprobante;
 import dj.comprobantes.offline.enums.EstadoComprobanteEnum;
 import dj.comprobantes.offline.enums.EstadoUsuarioEnum;
 import dj.comprobantes.offline.enums.ParametrosSistemaEnum;
-import dj.comprobantes.offline.enums.TipoComprobanteEnum;
 import dj.comprobantes.offline.exception.GenericException;
 import dj.comprobantes.offline.util.UtilitarioCeo;
 import java.io.BufferedReader;
@@ -66,9 +64,9 @@ public class CPanelServiceImp implements CPanelService {
         params.put("FECHA_AUTORIZACION", utilitario.getFormatoFecha(comprobante.getFechaautoriza()));
         params.put("ESTABLECIM", comprobante.getEstab());
         params.put("PTO_EMISION", comprobante.getPtoemi());
-        params.put("TOTAL", comprobante.getImportetotal());        
+        params.put("TOTAL", comprobante.getImportetotal());
         params.put("CORREO_DOCUMENTO", comprobante.getCorreo()); //Para guardar el correo que se envio el comprobante
-        params.put("CODIGO_EMPR", comprobante.getOficina()); //02-02-2018  //Sucursal 
+        params.put("CODIGO_EMPR", comprobante.getRucEmpresa()); //ruc empresa 
         byte[] bxml = archivoService.getXml(comprobante);
         StringBuilder postData = new StringBuilder();
         postData.append("{");
