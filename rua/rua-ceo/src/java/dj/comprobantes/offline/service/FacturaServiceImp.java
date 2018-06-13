@@ -12,6 +12,7 @@ package dj.comprobantes.offline.service;
 import dj.comprobantes.offline.dto.Comprobante;
 import dj.comprobantes.offline.dto.DetalleComprobante;
 import dj.comprobantes.offline.dto.Emisor;
+import dj.comprobantes.offline.dto.InfoAdicional;
 import dj.comprobantes.offline.enums.TipoComprobanteEnum;
 import dj.comprobantes.offline.enums.TipoImpuestoEnum;
 import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
@@ -149,8 +150,6 @@ public class FacturaServiceImp implements FacturaService {
             str_xml.append("		<infoAdicional> \n");
             if (comprobante.getCliente().getCorreo() != null && utilitario.isCorreoValido(comprobante.getCliente().getCorreo())) {
                 str_xml.append("      		<campoAdicional nombre=\"Email\">").append(comprobante.getCliente().getCorreo()).append("</campoAdicional> \n");
-            } else {
-                str_xml.append("      		<campoAdicional nombre=\"Email\">").append("ventas@produquimic.com.ec").append("</campoAdicional> \n");
             }
             if (comprobante.getCliente().getTelefono() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Teléfono\">").append(comprobante.getCliente().getTelefono()).append("</campoAdicional> \n");
@@ -170,7 +169,9 @@ public class FacturaServiceImp implements FacturaService {
             if (comprobante.getInfoAdicional3() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional3()).append("</campoAdicional> \n");
             }
-
+            for (InfoAdicional inf : comprobante.getInfoAdicional()) {
+                str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
+            }
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </factura>");
         }

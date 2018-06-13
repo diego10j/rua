@@ -68,6 +68,8 @@ public final class Comprobante implements Serializable {
     private String infoAdicional2;
     private String infoAdicional3;
 
+    private List<InfoAdicional> infoAdicional;
+
     private String correo;
 
     //Campos para guias de remisión
@@ -173,6 +175,25 @@ public final class Comprobante implements Serializable {
             }
 
             if (this.coddoc.equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
+
+                //busca InfoAdicional
+                infoAdicional = new ArrayList<>();
+                try {
+                    Statement sentensia = con.getConnection().createStatement();
+                    String sql = "SELECT nombre_srina,valor_srina from sri_info_adicional"
+                            + " where ide_srcom=" + this.codigocomprobante;
+                    ResultSet res = sentensia.executeQuery(sql);
+                    if (res.next()) {
+                        InfoAdicional inf = new InfoAdicional(res);
+                        inf.setComprobante(this);
+                        infoAdicional.add(inf);
+                    }
+                    sentensia.close();
+                    res.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 //Busca los detalles del Comprobante
                 try {
                     detalle = new ArrayList<>();
@@ -221,7 +242,6 @@ public final class Comprobante implements Serializable {
             } else if (this.coddoc.equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 //Busca datos de la guia de remision
                 try {
-
                     String sql = "select c.identificac_geper,c.nom_geper,c.direccion_geper,nombre_cctgi,c.telefono_geper,c.correo_geper,\n"
                             + "h.coddoc_srcom,h.estab_srcom,h.ptoemi_srcom,h.secuencial_srcom,h.claveacceso_srcom,h.fechaemision_srcom\n"
                             + "from cxc_guia a\n"
@@ -681,6 +701,14 @@ public final class Comprobante implements Serializable {
 
     public void setInfoAdicional3(String infoAdicional3) {
         this.infoAdicional3 = infoAdicional3;
+    }
+
+    public List<InfoAdicional> getInfoAdicional() {
+        return infoAdicional;
+    }
+
+    public void setInfoAdicional(List<InfoAdicional> infoAdicional) {
+        this.infoAdicional = infoAdicional;
     }
 
 }
