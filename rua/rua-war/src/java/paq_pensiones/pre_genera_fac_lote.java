@@ -5,8 +5,10 @@
  */
 package paq_pensiones;
 
+import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -110,7 +112,23 @@ public class pre_genera_fac_lote extends Pantalla {
         tab_detalle.setLectura(false);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_detalle);
+
+        Grupo gri = new Grupo();
+
+        gri.getChildren().add(new Etiqueta("<div align='center'>"));
+
+        Boton bot_subir = new Boton();
+        bot_subir.setValue("Generar Facturas");
+        bot_subir.setMetodo("generarFacturas");
+        gri.getChildren().add(bot_subir);
+        gri.getChildren().add(new Etiqueta("</div>"));
+        pat_panel.setFooter(gri);
+
         agregarComponente(pat_panel);
+
+    }
+
+    public void generarFacturas() {
 
     }
 
@@ -237,16 +255,15 @@ public class pre_genera_fac_lote extends Pantalla {
                         tab_detalle.setValor("", utilitario.getFormatoNumero(total.replace(",", ".")));
                     }
                 }
-                tab_detalle.setValor("", cod_factura);
-                tab_detalle.setValor("", fecha);
-                tab_detalle.setValor("", concepto);
-                tab_detalle.setValor("", representante);
-                tab_detalle.setValor("", cedula);
-                tab_detalle.setValor("", periodo_lectivo);
-                tab_detalle.setValor("", correo);
-                tab_detalle.setValor("", direccion);
-                tab_detalle.setValor("", telefono);
-
+                tab_detalle.setValor("cod_factura_petlf", cod_factura);
+                tab_detalle.setValor("fecha_petlf", fecha);
+                tab_detalle.setValor("concepto_petlf", concepto);
+                tab_detalle.setValor("representante_petlf", representante);
+                tab_detalle.setValor("cedula_petlf", cedula);
+                tab_detalle.setValor("periodo_lectivo_petlf", periodo_lectivo);
+                tab_detalle.setValor("correo_petlf", correo);
+                tab_detalle.setValor("direccion_petlf", direccion);
+                tab_detalle.setValor("telefono_petlf", telefono);
             }
 
             //tab_detalle.sumarColumnas();
