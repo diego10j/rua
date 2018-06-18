@@ -189,6 +189,8 @@ public class CPanelServiceImp implements CPanelService {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("PK_CODIGO_COMP", id);
         params.put("CORREO_USUARIO", correo);
+  //      Comprobante comprobante = comprobanteDAO.getComprobantePorId(id);
+  //      params.put("CODIGO_EMPR", comprobante.getRucEmpresa()); //ruc empresa 
         StringBuilder postData = new StringBuilder();
         try {
             URL url = new URL(ParametrosSistemaEnum.CPANEL_WEB_REENVIAR.getCodigo());
