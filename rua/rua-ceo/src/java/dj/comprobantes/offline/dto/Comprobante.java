@@ -183,7 +183,7 @@ public final class Comprobante implements Serializable {
                     String sql = "SELECT nombre_srina,valor_srina from sri_info_adicional"
                             + " where ide_srcom=" + this.codigocomprobante;
                     ResultSet res = sentensia.executeQuery(sql);
-                    if (res.next()) {
+                    while (res.next()) {
                         InfoAdicional inf = new InfoAdicional(res);
                         inf.setComprobante(this);
                         infoAdicional.add(inf);
