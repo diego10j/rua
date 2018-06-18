@@ -5,6 +5,8 @@
  */
 package paq_pensiones;
 
+import dj.comprobantes.offline.exception.GenericException;
+import dj.comprobantes.offline.service.ComprobanteService;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
@@ -46,6 +48,8 @@ public class pre_genera_fac_lote extends Pantalla {
     private final ServicioComprobanteElectronico ser_comprobante_electronico = (ServicioComprobanteElectronico) utilitario.instanciarEJB(ServicioComprobanteElectronico.class);
     @EJB
     private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
+    @EJB
+    private final ComprobanteService comprobanteService = (ComprobanteService) utilitario.instanciarEJB(ComprobanteService.class);
 
     public pre_genera_fac_lote() {
         bar_botones.limpiar();
@@ -130,12 +134,29 @@ public class pre_genera_fac_lote extends Pantalla {
         Boton bot_subir = new Boton();
         bot_subir.setValue("Generar Facturas");
         bot_subir.setMetodo("generarFacturas");
+        bot_subir.setIcon("ui-icon-check");
         bar_botones.agregarBoton(bot_subir);
+
+        bar_botones.agregarSeparador();
+        Boton bot_enviar = new Boton();
+        bot_enviar.setValue("Enviar al SRI");
+        bot_enviar.setMetodo("enviarSRI");
+        bot_enviar.setIcon("ui-icon-signal-diag");
+        bar_botones.agregarBoton(bot_enviar);
 
         Division div = new Division();
         div.dividir1(gri);
         agregarComponente(div);
 
+    }
+
+    public void enviarSRI() {
+        try {
+            comprobanteService.enviarRecepcionSRI();
+            comprobanteService.enviarAutorizacionSRI();
+        } catch (Exception e) {
+            utilitario.crearError("Error al enviar al SRI", "enviarSRI()", e);
+        }
     }
 
     public void generarFacturas() {
@@ -291,6 +312,7 @@ public class pre_genera_fac_lote extends Pantalla {
                                 ser_comprobante_electronico.generarFacturaElectronica(tab_cab_fac.getValor(i, "ide_cccfa"));
                             }
                             utilitario.getConexion().ejecutarSql("UPDATE sri_info_adicional a set ide_srcom = (select ide_srcom from cxc_cabece_factura where ide_cccfa=a.ide_cccfa) where ide_srcom IS NOT  null");
+                            utilitario.agregarMensaje("Se guardo Correctamente", "");
                         }
                     }
                 }
