@@ -504,7 +504,7 @@ public class pre_facturasCxC extends Pantalla {
         tab_tabla.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
         tab_tabla.getColumna("IDE_CNCCC").alinearCentro();
         tab_tabla.getColumna("ventas0").alinearDerecha();
-        tab_tabla.getColumna("ventas0").setNombreVisual("VENTAS IVA 0");
+        tab_tabla.getColumna("ventas0").setNombreVisual("VENTAS 0");
         tab_tabla.getColumna("ventas12").alinearDerecha();
         tab_tabla.getColumna("ventas12").setNombreVisual("VENTAS IVA");
         tab_tabla.getColumna("valor_iva_cccfa").alinearDerecha();
