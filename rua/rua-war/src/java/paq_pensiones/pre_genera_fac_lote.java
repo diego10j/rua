@@ -5,8 +5,9 @@
  */
 package paq_pensiones;
 
-import dj.comprobantes.offline.exception.GenericException;
+import dj.comprobantes.offline.dto.Comprobante;
 import dj.comprobantes.offline.service.ComprobanteService;
+import dj.comprobantes.offline.service.ComprobanteServiceImp;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
@@ -49,7 +50,7 @@ public class pre_genera_fac_lote extends Pantalla {
     @EJB
     private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
     @EJB
-    private final ComprobanteService comprobanteService = (ComprobanteService) utilitario.instanciarEJB(ComprobanteService.class);
+    private final ComprobanteService comprobanteService = (ComprobanteService) utilitario.instanciarEJBCEO(ComprobanteServiceImp.class); 
 
     public pre_genera_fac_lote() {
         bar_botones.limpiar();
@@ -143,6 +144,15 @@ public class pre_genera_fac_lote extends Pantalla {
         bot_enviar.setMetodo("enviarSRI");
         bot_enviar.setIcon("ui-icon-signal-diag");
         bar_botones.agregarBoton(bot_enviar);
+        
+        bar_botones.agregarSeparador();
+        Boton bot_genera = new Boton();
+        bot_genera.setValue("Generar Claves de Acceso");
+        bot_genera.setMetodo("generarClaveAcceso");
+        bot_genera.setIcon("ui-icon-refresh");
+        bar_botones.agregarBoton(bot_genera);
+        
+        
 
         Division div = new Division();
         div.dividir1(gri);
@@ -298,7 +308,13 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_info_adicional.insertar();
                 tab_info_adicional.setValor("nombre_srina", "Paralelo");
                 tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "paralelo_petlf"));
+                tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));                
+                tab_info_adicional.insertar();
+                tab_info_adicional.setValor("nombre_srina", "Período Lectivo");
+                tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "periodo_lectivo_petlf"));
                 tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
+                
+                
 
                 ide_cccfa++;
             }
@@ -463,6 +479,21 @@ public class pre_genera_fac_lote extends Pantalla {
         } catch (Exception e) {
             e.printStackTrace();
             utilitario.agregarMensajeError("No se puede abrir el archivo", e.getMessage());
+        }
+    }
+
+    public void generarClaveAcceso() {
+        try {
+            TablaGenerica tab = utilitario.consultar("select ide_srcom,claveacceso_srcom from sri_comprobante where ide_sresc=5");
+            for (int i = 0; i < tab.getTotalFilas(); i++) {
+                String ide_srcom = tab.getValor(i, "ide_srcom");
+                Comprobante comprobanteFactura = comprobanteService.getComprobantePorId(Long.parseLong(ide_srcom));
+                String strClaveAcceso = comprobanteService.getClaveAcceso(comprobanteFactura);
+                utilitario.getConexion().agregarSqlPantalla("UPDATE sri_comprobante SET claveacceso_srcom='" + strClaveAcceso + "' where ide_srcom=" + ide_srcom);
+            }
+            guardarPantalla();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
