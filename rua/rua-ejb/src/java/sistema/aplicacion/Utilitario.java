@@ -771,6 +771,24 @@ public class Utilitario extends Framework {
         return null;
     }
 
+    public Object instanciarEJBCEO(Class<?> ejb) {
+        //Para cuando se necesite instanciar el EJB
+        try {
+            Context c = new InitialContext();
+            String nomProyecyo = getNombreProyecto();
+            //Si es un ear: remplazamos para que los servicios apuente al ejb
+            if (nomProyecyo.contains("-war")) {
+                //Ejemplo: sistema-war =  sistema/sistema-ejb
+                nomProyecyo = nomProyecyo.replace("-war", "").trim();
+                nomProyecyo = nomProyecyo + "/" + nomProyecyo + "-ceo";
+            }
+            return c.lookup("java:global/" + nomProyecyo + "/" + ejb.getSimpleName());
+        } catch (Exception e) {
+            System.out.println("FALLO AL INSTANCIAR EL EJB " + ejb.getSimpleName() + " :" + e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Retorna el nombre del proyecto de la aplicación web
      *
