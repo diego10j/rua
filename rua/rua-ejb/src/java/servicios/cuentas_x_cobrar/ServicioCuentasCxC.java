@@ -134,13 +134,12 @@ public class ServicioCuentasCxC extends ServicioBase {
     public String getSqlFacturas(String ide_ccdaf, String fechaInicio, String fechaFin) {
         if (isFacturaElectronica(ide_ccdaf)) { //si tiene facturacion electrónica
             return "select a.ide_cccfa, secuencial_cccfa,ide_cnccc,a.ide_ccefa,nombre_sresc as nombre_ccefa, fecha_emisi_cccfa,(select numero_cncre from con_cabece_retenc where ide_cncre=a.ide_cncre)as NUM_RETENCION,nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
-                    + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
-                    + "claveacceso_srcom as CLAVE_ACCESO, nombre_vgven as VENDEDOR,nombre_cndfp as DIAS_CREDITO ,fecha_trans_cccfa,a.ide_cncre,d.ide_srcom,a.ide_geper,direccion_cccfa  "
+                    + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,descuento_cccfa as DESCUENTO,valor_iva_cccfa,total_cccfa, "
+                    + "claveacceso_srcom as CLAVE_ACCESO, fecha_trans_cccfa,a.ide_cncre,d.ide_srcom,a.ide_geper,direccion_cccfa,orden_compra_cccfa AS NUM_REFERENCIA  "
                     + "from cxc_cabece_factura a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
-                    + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
-                    + "left join ven_vendedor v on a.ide_vgven=v.ide_vgven "
+                    + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "                    
                     + "left join con_deta_forma_pago x on a.ide_cndfp1=x.ide_cndfp "
                     + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                     + "and ide_ccdaf=" + ide_ccdaf + " "

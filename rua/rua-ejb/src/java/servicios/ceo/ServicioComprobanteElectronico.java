@@ -82,7 +82,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
                 + "inner join con_deta_forma_pago e on a.ide_cndfp=e.ide_cndfp\n"
                 + "inner join con_deta_forma_pago f on a.ide_cndfp1=f.ide_cndfp\n"
-                + "inner join ven_vendedor g on a.ide_vgven=g.ide_vgven\n"
+                + "left join ven_vendedor g on a.ide_vgven=g.ide_vgven\n"
                 + "where a.ide_cccfa=" + ide_cccfa);
         if (tab_factura.isEmpty() == false) {
             if (tab_factura.getValor("ide_srcom") != null) {
