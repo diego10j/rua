@@ -229,20 +229,20 @@ public class pre_genera_fac_lote extends Pantalla {
             tab_clientes.ejecutarSql();
 
             //inserta facturas
-            Tabla tab_cab_fac = new Tabla();
-            tab_cab_fac.setTabla("cxc_cabece_factura", "ide_cccfa", 999);
+            TablaGenerica tab_cab_fac = new TablaGenerica();
+            tab_cab_fac.setTabla("cxc_cabece_factura", "ide_cccfa");
             tab_cab_fac.setCondicion("ide_cccfa=-1");
             tab_cab_fac.setGenerarPrimaria(false);
             tab_cab_fac.getColumna("ide_cccfa").setExterna(false);
             tab_cab_fac.ejecutarSql();
 
-            Tabla tab_det_fac = new Tabla();
-            tab_det_fac.setTabla("cxc_deta_factura", "ide_ccdfa", 999);
+            TablaGenerica tab_det_fac = new TablaGenerica();
+            tab_det_fac.setTabla("cxc_deta_factura", "ide_ccdfa");
             tab_det_fac.setCondicion("ide_ccdfa=-1");
             tab_det_fac.ejecutarSql();
 
-            Tabla tab_info_adicional = new Tabla();
-            tab_info_adicional.setTabla("sri_info_adicional", "ide_srina", 999);
+            TablaGenerica tab_info_adicional = new TablaGenerica();
+            tab_info_adicional.setTabla("sri_info_adicional", "ide_srina");
             tab_info_adicional.setCondicion("ide_srina=-1");
             tab_info_adicional.ejecutarSql();
 
@@ -327,7 +327,7 @@ public class pre_genera_fac_lote extends Pantalla {
                             for (int i = 0; i < tab_cab_fac.getTotalFilas(); i++) {
                                 ser_comprobante_electronico.generarFacturaElectronica(tab_cab_fac.getValor(i, "ide_cccfa"));
                             }
-                            utilitario.getConexion().ejecutarSql("UPDATE sri_info_adicional a set ide_srcom = (select ide_srcom from cxc_cabece_factura where ide_cccfa=a.ide_cccfa) where ide_srcom IS NOT  null");
+                            utilitario.getConexion().ejecutarSql("UPDATE sri_info_adicional a set ide_srcom = (select ide_srcom from cxc_cabece_factura where ide_cccfa=a.ide_cccfa) where ide_srcom IS null");
                             utilitario.agregarMensaje("Se guardo Correctamente", "");
                         }
                     }
