@@ -132,6 +132,8 @@ public class FacturaCxC extends Dialogo {
     private Dialog dia_mensaje_fac = new Dialog();
     private Boton bot_listado = new Boton();
 
+    private Tabla tab_info_adi;
+
     public FacturaCxC() {
         parametros = utilitario.getVariables("p_con_tipo_documento_factura",
                 "p_cxc_estado_factura_normal", "p_con_for_pag_reembolso_caja",
@@ -183,7 +185,8 @@ public class FacturaCxC extends Dialogo {
         tab_factura.agregarTab("COMPROBANTE DE CONTABILIDAD", null);//2       
         tab_factura.agregarTab("COMPROBANTE DE RETENCIÓN", null);//3
         tab_factura.agregarTab("GUIA DE REMISIÓN", null);//4
-        tab_factura.agregarTab("SRI XML", null);//5
+        tab_factura.agregarTab("SRI XML", null);//5        
+        tab_factura.agregarTab("INFO. ADICIONAL", null);//6
         this.setDialogo(tab_factura);
         //Recupera porcentaje iva 
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
@@ -252,6 +255,7 @@ public class FacturaCxC extends Dialogo {
         tab_factura.getTab(3).getChildren().clear();
         tab_factura.getTab(4).getChildren().clear();
         tab_factura.getTab(5).getChildren().clear();
+        tab_factura.getTab(6).getChildren().clear();
         haceKardex = false;
         tab_factura.getTab(0).getChildren().add(dibujarFactura());
         if (haceGuia) {
@@ -260,6 +264,10 @@ public class FacturaCxC extends Dialogo {
 
         if (isFacturaElectronica() == false) {
             tab_factura.getTab(5).setDisabled(true);
+        }
+
+        if (isFacturaElectronica()) {
+            tab_factura.getTab(6).getChildren().add(dibujarInfoAdicional());
         }
 
         utilitario.getConexion().getSqlPantalla().clear();//LIMPIA SQL EXISTENTES
@@ -320,6 +328,7 @@ public class FacturaCxC extends Dialogo {
             tab_factura.getTab(3).getChildren().clear();
             tab_factura.getTab(4).getChildren().clear();
             tab_factura.getTab(5).getChildren().clear();
+            tab_factura.getTab(6).getChildren().clear();
             tab_factura.getTab(0).getChildren().add(dibujarFactura());
 
             opcion = 2;
@@ -349,6 +358,16 @@ public class FacturaCxC extends Dialogo {
 
             if (isFacturaElectronica()) {
                 tab_factura.getTab(5).getChildren().add(dibujarXmlFactura());
+                tab_factura.getTab(6).getChildren().add(dibujarInfoAdicional());
+                tab_info_adi.setCondicion("IDE_SRCOM=" + tab_cab_factura.getValor("IDE_SRCOM"));
+                tab_info_adi.ejecutarSql();
+                //Desactiva click derecho insertar y eliminar
+                try {
+                    PanelTabla pat_panel = (PanelTabla) tab_info_adi.getParent();
+                    pat_panel.getMenuTabla().getItem_insertar().setDisabled(true);
+                    pat_panel.getMenuTabla().getItem_eliminar().setDisabled(true);
+                } catch (Exception e) {
+                }
             }
 
             com_pto_emision.setValue(tab_cab_factura.getValor("ide_ccdaf"));
@@ -560,6 +579,49 @@ public class FacturaCxC extends Dialogo {
         } else {
             utilitario.agregarMensajeInfo("No se puede cambiar a estado RECIBIDA", "");
         }
+    }
+
+    public Grupo dibujarInfoAdicional() {
+        Grupo grupo = new Grupo();
+        if (isFacturaElectronica()) {
+            tab_info_adi = new Tabla();
+            tab_info_adi.setId("tab_info_adi");
+            tab_info_adi.setIdCompleto("tab_factura:tab_info_adi");
+            tab_info_adi.setHeader("INFORMACIÓN ADICIONAL DE LA FACTURA");
+            tab_info_adi.setRuta("pre_index.clase." + getId());
+            tab_info_adi.setTabla("sri_info_adicional", "ide_srina", 988);
+            tab_info_adi.setCondicion("ide_srcom=-1");
+            tab_info_adi.getColumna("ide_cccfa").setVisible(false);
+            tab_info_adi.getColumna("ide_srina").setVisible(false);
+            tab_info_adi.getColumna("ide_srcom").setVisible(false);
+            tab_info_adi.getColumna("nombre_srina").setNombreVisual("NOMBRE");
+            tab_info_adi.getColumna("valor_srina").setNombreVisual("VALOR");
+            tab_info_adi.setRecuperarLectura(true);
+            tab_info_adi.dibujar();
+            PanelTabla pat_panel = new PanelTabla();
+            pat_panel.setPanelTabla(tab_info_adi);
+
+            pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+            pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+            pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
+            pat_panel.getMenuTabla().getItem_formato().setRendered(false);
+            pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertarInfo");
+            pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminarInfo");
+            pat_panel.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
+            pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
+
+            grupo.getChildren().add(pat_panel);
+        }
+
+        return grupo;
+    }
+
+    public void insertarInfo() {
+        tab_info_adi.insertar();
+    }
+
+    public void eliminarInfo() {
+        tab_info_adi.eliminar();
     }
 
     /**
@@ -1566,6 +1628,13 @@ public class FacturaCxC extends Dialogo {
                 auxGuardaGuia = tab_guia.guardar();
             }
 
+            if (isFacturaElectronica()) {
+                for (int i = 0; i < tab_info_adi.getTotalFilas(); i++) {
+                    tab_info_adi.setValor(i, "ide_cccfa", ide_cccfa);
+                }
+                tab_info_adi.guardar();
+            }
+
             if (auxGuardaGuia) {
                 if (tab_deta_factura.guardar()) {
                     //Guarda la cuenta por cobrar
@@ -2099,6 +2168,14 @@ public class FacturaCxC extends Dialogo {
 
     public void setCon_lista_producto(Consulta con_lista_producto) {
         this.con_lista_producto = con_lista_producto;
+    }
+
+    public Tabla getTab_info_adi() {
+        return tab_info_adi;
+    }
+
+    public void setTab_info_adi(Tabla tab_info_adi) {
+        this.tab_info_adi = tab_info_adi;
     }
 
 }

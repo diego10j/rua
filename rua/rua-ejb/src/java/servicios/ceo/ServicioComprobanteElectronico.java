@@ -187,6 +187,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.FACTURA.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura SET  ide_srcom=" + ide_srcom + ", secuencial_cccfa='" + strSecuencialF + "' where ide_cccfa=" + ide_cccfa);
+                    utilitario.getConexion().ejecutarSql("UPDATE sri_info_adicional SET  ide_srcom=" + ide_srcom + " where ide_cccfa=" + ide_cccfa); //INFO ADICIONAL 19-06-2018
 
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_transa SET  observacion_ccctr='V/. Factura " + strSecuencialF + "' where ide_cccfa=" + ide_cccfa);
                     utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET  observacion_ccdtr='V/. Factura " + strSecuencialF + "',docum_relac_ccdtr='" + strSecuencialF + "' where ide_cccfa=" + ide_cccfa);
