@@ -620,6 +620,7 @@ public class pre_prestamos extends Pantalla {
         }
         if (rad_hace_factrua.getValue().toString().equals("true")) {
             if (dou_interes > 0) {
+                fcc_factura.setPuntodeEmision("15"); //15 facturas electronicas 
                 fcc_factura.nuevaFactura();
                 fcc_factura.setCliente(tab_tabla1.getValor("ide_geper"));
                 fcc_factura.setObservacion("Préstamo cuota " + cuotas);
