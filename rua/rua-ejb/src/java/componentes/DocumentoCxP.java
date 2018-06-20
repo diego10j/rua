@@ -218,10 +218,13 @@ public class DocumentoCxP extends Dialogo {
     }
 
     public void cambioFecha() {
-        tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
-        eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
-        eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
-        calcularTotalDocumento();
+        try {
+            tarifaIVA = ser_configuracion.getPorcentajeIva(tab_cab_documento.getValor("fecha_emisi_cpcfa"));
+            eti_subtotal.setValue("<strong>SUBTOTAL TARIFA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
+            eti_iva.setValue("<strong>IVA " + (utilitario.getFormatoNumero(tarifaIVA * 100)) + "% :</strong>");
+            calcularTotalDocumento();
+        } catch (Exception e) {
+        }
     }
 
     public void verDocumento(String ide_cpcfa) {
@@ -1232,7 +1235,7 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
             tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros_valores.getValue()));
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
-             tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
+            tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
 
             if (validarDocumento()) {
                 obteneAlterno104();
