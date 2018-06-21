@@ -505,6 +505,15 @@ public class cls_anexo_transaccional {
                         + " order by  numero_cncre");
                 for (int i = 0; i < tab_anulados_rete.getTotalFilas(); i++) {
                     ////////////////////BUSCAR TODAS LAS VENTAS ANULADAS ESTO ES EN UN FOR
+                    //si es 0 no añade
+                    int sec = 0;
+                    try {
+                        sec = Integer.parseInt(tab_anulados_rete.getValor(i, "secuencial"));
+                    } catch (Exception e) {
+                    }
+                    if (sec == 0) {
+                        continue;
+                    }
                     Element detalleAnulados = doc_anexo.createElement("detalleAnulados");
                     anulados.appendChild(detalleAnulados);
                     detalleAnulados.appendChild(crearElemento("tipoComprobante", null, tab_anulados_rete.getValor(i, "alter_tribu_cntdo")));
