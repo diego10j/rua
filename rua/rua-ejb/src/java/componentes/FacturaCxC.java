@@ -295,6 +295,7 @@ public class FacturaCxC extends Dialogo {
         tex_subtotal_no_objeto.setValue("0,00");
         cargarMaximoSecuencialFactura();
         setActivarGuiaRemision(haceGuia);
+        setActivarInfoAdicional(isFacturaElectronica());
         //Activa click derecho insertar y eliminar
         try {
             PanelTabla pat_panel = (PanelTabla) tab_deta_factura.getParent();
@@ -583,36 +584,31 @@ public class FacturaCxC extends Dialogo {
 
     public Grupo dibujarInfoAdicional() {
         Grupo grupo = new Grupo();
-        if (isFacturaElectronica()) {
-            tab_info_adi = new Tabla();
-            tab_info_adi.setId("tab_info_adi");
-            tab_info_adi.setIdCompleto("tab_factura:tab_info_adi");
-            tab_info_adi.setHeader("INFORMACIÓN ADICIONAL DE LA FACTURA");
-            tab_info_adi.setRuta("pre_index.clase." + getId());
-            tab_info_adi.setTabla("sri_info_adicional", "ide_srina", 988);
-            tab_info_adi.setCondicion("ide_srcom=-1");
-            tab_info_adi.getColumna("ide_cccfa").setVisible(false);
-            tab_info_adi.getColumna("ide_srina").setVisible(false);
-            tab_info_adi.getColumna("ide_srcom").setVisible(false);
-            tab_info_adi.getColumna("nombre_srina").setNombreVisual("NOMBRE");
-            tab_info_adi.getColumna("valor_srina").setNombreVisual("VALOR");
-            tab_info_adi.setRecuperarLectura(true);
-            tab_info_adi.dibujar();
-            PanelTabla pat_panel = new PanelTabla();
-            pat_panel.setPanelTabla(tab_info_adi);
-
-            pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-            pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
-            pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
-            pat_panel.getMenuTabla().getItem_formato().setRendered(false);
-            pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertarInfo");
-            pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminarInfo");
-            pat_panel.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
-            pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
-
-            grupo.getChildren().add(pat_panel);
-        }
-
+        tab_info_adi = new Tabla();
+        tab_info_adi.setId("tab_info_adi");
+        tab_info_adi.setIdCompleto("tab_factura:tab_info_adi");
+        tab_info_adi.setHeader("INFORMACIÓN ADICIONAL DE LA FACTURA");
+        tab_info_adi.setRuta("pre_index.clase." + getId());
+        tab_info_adi.setTabla("sri_info_adicional", "ide_srina", 988);
+        tab_info_adi.setCondicion("ide_srcom=-1");
+        tab_info_adi.getColumna("ide_cccfa").setVisible(false);
+        tab_info_adi.getColumna("ide_srina").setVisible(false);
+        tab_info_adi.getColumna("ide_srcom").setVisible(false);
+        tab_info_adi.getColumna("nombre_srina").setNombreVisual("NOMBRE");
+        tab_info_adi.getColumna("valor_srina").setNombreVisual("VALOR");
+        tab_info_adi.setRecuperarLectura(true);
+        tab_info_adi.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_info_adi);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_guardar().setRendered(false);
+        pat_panel.getMenuTabla().getItem_formato().setRendered(false);
+        pat_panel.getMenuTabla().getItem_insertar().setMetodoRuta("pre_index.clase." + getId() + ".insertarInfo");
+        pat_panel.getMenuTabla().getItem_eliminar().setMetodoRuta("pre_index.clase." + getId() + ".eliminarInfo");
+        pat_panel.getMenuTabla().getItem_eliminar().setValueExpression("rendered", "true");
+        pat_panel.getMenuTabla().getItem_eliminar().setRendered(true);
+        grupo.getChildren().add(pat_panel);
         return grupo;
     }
 
@@ -2044,6 +2040,11 @@ public class FacturaCxC extends Dialogo {
     public void setActivarGuiaRemision(boolean activarGuiaRemision) {
         tab_factura.getTab(4).setRendered(activarGuiaRemision);
         tab_factura.getTab(4).setDisabled(!activarGuiaRemision);
+    }
+
+    public void setActivarInfoAdicional(boolean activarGuiaRemision) {
+        tab_factura.getTab(6).setRendered(activarGuiaRemision);
+        tab_factura.getTab(6).setDisabled(!activarGuiaRemision);
     }
 
     public boolean isActivarRetencion() {
