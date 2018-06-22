@@ -23,13 +23,15 @@ public class Emisor implements Serializable {
     private String nombrecomercial;
     private String dirmatriz;
     private String contribuyenteespecial;
-    private String obligadocontabilidad;    
+    private String obligadocontabilidad;
     private Integer tiempomaxespera;
     private Integer ambiente;
     private String wsdlrecepcion;
     private String wsdlautirizacion;
-     private String dirsucursal;
+    private String dirsucursal;
     private String xmlversion;
+    private String telefonos;
+    private boolean sinFinesLucro=false;
 
     public Emisor() {
     }
@@ -138,5 +140,20 @@ public class Emisor implements Serializable {
         this.dirsucursal = dirsucursal;
     }
 
-    
+    public String getTelefonos() {
+        return telefonos;
+    }
+
+    public void setTelefonos(String telefonos) {
+        this.telefonos = telefonos;
+    }
+
+    public boolean isSinFinesLucro() {
+        return sinFinesLucro;
+    }
+
+    public void setSinFinesLucro(boolean sinFinesLucro) {
+        this.sinFinesLucro = sinFinesLucro;
+    }
+
 }

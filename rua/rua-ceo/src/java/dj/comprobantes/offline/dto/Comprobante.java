@@ -79,6 +79,8 @@ public final class Comprobante implements Serializable {
     private String placa;
     private Destinatario destinatario;
     private Long codigoComprobanteFactura;
+    private String telefonos;
+    private boolean sinFinesLucro = false;
 
     public Comprobante() {
     }
@@ -127,6 +129,13 @@ public final class Comprobante implements Serializable {
             }
             if (resultado.getString("identificacion_empr") != null) {
                 this.rucEmpresa = resultado.getString("identificacion_empr");
+            }
+
+            if (resultado.getString("telefono_empr") != null) {
+                this.telefonos = resultado.getString("telefono_empr");
+            }
+            if (resultado.getString("fines_lucro_empr") != null) {
+                this.sinFinesLucro = resultado.getBoolean("fines_lucro_empr");
             }
             //fin
 
@@ -709,6 +718,22 @@ public final class Comprobante implements Serializable {
 
     public void setInfoAdicional(List<InfoAdicional> infoAdicional) {
         this.infoAdicional = infoAdicional;
+    }
+
+    public String getTelefonos() {
+        return telefonos;
+    }
+
+    public void setTelefonos(String telefonos) {
+        this.telefonos = telefonos;
+    }
+
+    public boolean isSinFinesLucro() {
+        return sinFinesLucro;
+    }
+
+    public void setSinFinesLucro(boolean sinFinesLucro) {
+        this.sinFinesLucro = sinFinesLucro;
     }
 
 }

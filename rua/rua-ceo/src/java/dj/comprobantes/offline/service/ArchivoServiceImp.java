@@ -251,7 +251,7 @@ public class ArchivoServiceImp implements ArchivoService {
      */
     private Map<String, Object> getParametrosComunes(String cadenaXML, Comprobante comprobante) {
         Map<String, Object> parametros = new HashMap<>();
-        try {            
+        try {
             parametros.put("PAGINA_CONSULTA", ParametrosSistemaEnum.PAGINA_CONSULTA.getCodigo());
             parametros.put("SUBREPORT_DIR", ParametrosSistemaEnum.RUTA_SISTEMA.getCodigo());
             parametros.put("RUC", utilitario.getValorEtiqueta(cadenaXML, "ruc"));
@@ -269,6 +269,9 @@ public class ArchivoServiceImp implements ArchivoService {
             parametros.put("RS_COMPRADOR", utilitario.getValorEtiqueta(cadenaXML, "razonSocialComprador"));
             parametros.put("RUC_COMPRADOR", utilitario.getValorEtiqueta(cadenaXML, "identificacionComprador"));
             parametros.put("GUIA", utilitario.getValorEtiqueta(cadenaXML, "guiaRemision"));
+
+            parametros.put("TELEFONO", comprobante.getTelefonos());//22-06-2018
+            parametros.put("SIN_FINES_LUCRO", String.valueOf(comprobante.isSinFinesLucro())); //22-06-2018
 
             parametros.put("NUM_DOC_MODIFICADO", utilitario.getValorEtiqueta(cadenaXML, "numDocModificado"));
             parametros.put("DOC_MODIFICADO", TipoComprobanteEnum.getDescripcion(utilitario.getValorEtiqueta(cadenaXML, "codDocModificado")));
