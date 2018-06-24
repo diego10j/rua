@@ -50,7 +50,7 @@ public class pre_genera_fac_lote extends Pantalla {
     @EJB
     private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
     @EJB
-    private final ComprobanteService comprobanteService = (ComprobanteService) utilitario.instanciarEJBCEO(ComprobanteServiceImp.class); 
+    private final ComprobanteService comprobanteService = (ComprobanteService) utilitario.instanciarEJBCEO(ComprobanteServiceImp.class);
 
     public pre_genera_fac_lote() {
         bar_botones.limpiar();
@@ -144,15 +144,13 @@ public class pre_genera_fac_lote extends Pantalla {
         bot_enviar.setMetodo("enviarSRI");
         bot_enviar.setIcon("ui-icon-signal-diag");
         bar_botones.agregarBoton(bot_enviar);
-        
+
         bar_botones.agregarSeparador();
         Boton bot_genera = new Boton();
         bot_genera.setValue("Generar Claves de Acceso");
         bot_genera.setMetodo("generarClaveAcceso");
         bot_genera.setIcon("ui-icon-refresh");
         bar_botones.agregarBoton(bot_genera);
-        
-        
 
         Division div = new Division();
         div.dividir1(gri);
@@ -270,7 +268,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_cab_fac.setValor("fecha_emisi_cccfa", tab_detalle.getValor(i, "fecha_petlf"));
                 tab_cab_fac.setValor("dias_credito_cccfa", "0");
                 tab_cab_fac.setValor("ide_cndfp", "13");//13=OTROS SIN UTILIZAR SITEMA FINANCIERO
-                tab_cab_fac.setValor("ide_cndfp1", "3");//3=EFECTIVO
+                tab_cab_fac.setValor("ide_cndfp1", "8");//8=CRÉDITO 10 DÍAS
                 tab_cab_fac.setValor("DIRECCION_CCCFA", tab_detalle.getValor(i, "direccion_petlf"));
                 tab_cab_fac.setValor("base_grabada_cccfa", "0");
                 tab_cab_fac.setValor("base_no_objeto_iva_cccfa", "0");
@@ -308,16 +306,60 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_info_adicional.insertar();
                 tab_info_adicional.setValor("nombre_srina", "Paralelo");
                 tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "paralelo_petlf"));
-                tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));                
+                tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
                 tab_info_adicional.insertar();
                 tab_info_adicional.setValor("nombre_srina", "Período Lectivo");
                 tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "periodo_lectivo_petlf"));
                 tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
-                
-                
 
                 ide_cccfa++;
             }
+
+            //guarda alumnos
+            tab_clientes.setCondicion("identificac_geper in (" + tab_detalle.getStringColumna("cedula_alumno_petlf") + ",'9999999999')");
+            tab_clientes.ejecutarSql();
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                //1 inserta Clientes
+                String cedula_alumno_petlf = tab_detalle.getValor(i, "cedula_alumno_petlf");
+
+                if (cedula_alumno_petlf == null || cedula_alumno_petlf.isEmpty()) {
+                    continue;
+                }
+                boolean existe_cliente = false;
+                for (int j = 0; j < tab_clientes.getTotalFilas(); j++) {
+                    if (cedula_alumno_petlf.equals(tab_clientes.getValor(j, "identificac_geper"))) {
+                        existe_cliente = true;
+                        break;
+                    }
+                }
+                if (existe_cliente == false) {
+                    tab_clientes.insertar();
+                    tab_clientes.setValor("identificac_geper", tab_detalle.getValor(i, "cedula_alumno_petlf"));
+                    tab_clientes.setValor("nombre_compl_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
+                    tab_clientes.setValor("nom_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
+                    tab_clientes.setValor("repre_legal_geper", tab_detalle.getValor(i, "representante_petlf"));
+                    tab_clientes.setValor("direccion_geper", tab_detalle.getValor(i, "direccion_petlf"));
+                    tab_clientes.setValor("telefono_geper", tab_detalle.getValor(i, "telefono_petlf"));
+                    tab_clientes.setValor("correo_geper", tab_detalle.getValor(i, "correo_petlf"));
+                    tab_clientes.setValor("es_cliente_geper", "true");
+                    tab_clientes.setValor("nivel_geper", "HIJO");
+                    tab_clientes.setValor("fecha_ingre_geper", utilitario.getFechaActual());
+                    tab_clientes.setValor("gen_ide_geper", "3");//3 = ALUMNOS  
+                    tab_clientes.setValor("ide_vgtcl", "1"); // ALUMNOS                    
+                    if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
+                        tab_clientes.setValor("ide_getid", "0"); // CEDULA                               
+                    } else if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
+                        tab_clientes.setValor("ide_getid", "1"); // RUC        
+                    } else {
+                        tab_clientes.setValor("ide_getid", "2"); // PASAPORTE
+                    }
+                    tab_clientes.setValor("ide_cntco", "2"); // PERSONA NATURAL
+                    tab_clientes.setValor("ide_vgecl", "0"); // ACTIVO
+                    tab_clientes.setValor("ide_cndfp", "13"); // OTROS SIN UTILIZAR EL SISTEMA FINANCIERO
+                }
+            }
+            tab_clientes.guardar();
+
             if (tab_cab_fac.guardar()) {
                 if (tab_det_fac.guardar()) {
                     if (tab_info_adicional.guardar()) {
@@ -428,19 +470,39 @@ public class pre_genera_fac_lote extends Pantalla {
             for (int fila = (int_fin - 1); fila >= int_inicio; fila--) {
                 String codigo_alumno = hoja.getCell(0, fila).getContents();
                 String nombre_alumno = hoja.getCell(1, fila).getContents();
-                String paralelo = hoja.getCell(2, fila).getContents();
-                String subtotal = hoja.getCell(3, fila).getContents();
-                String rebaja = hoja.getCell(4, fila).getContents();
-                String total = hoja.getCell(5, fila).getContents();
-                String cod_factura = hoja.getCell(6, fila).getContents();
-                String fecha = hoja.getCell(7, fila).getContents();  //dd/mm/yyyy
-                String concepto = hoja.getCell(8, fila).getContents();
-                String representante = hoja.getCell(9, fila).getContents();
-                String cedula = hoja.getCell(10, fila).getContents();
-                String periodo_lectivo = hoja.getCell(11, fila).getContents();
-                String correo = hoja.getCell(12, fila).getContents();
-                String direccion = hoja.getCell(13, fila).getContents();
-                String telefono = hoja.getCell(14, fila).getContents();
+                String cedula_alumno = hoja.getCell(2, fila).getContents();
+                String paralelo = hoja.getCell(3, fila).getContents();
+                String subtotal = hoja.getCell(4, fila).getContents();
+                String rebaja = hoja.getCell(5, fila).getContents();
+                String total = hoja.getCell(6, fila).getContents();
+                String cod_factura = hoja.getCell(7, fila).getContents();
+                String fecha = hoja.getCell(8, fila).getContents();  //dd/mm/yyyy
+                String concepto = hoja.getCell(9, fila).getContents();
+                String representante = hoja.getCell(10, fila).getContents();
+                String cedula = hoja.getCell(11, fila).getContents();
+                String periodo_lectivo = hoja.getCell(12, fila).getContents();
+                String correo = hoja.getCell(13, fila).getContents();
+                String direccion = hoja.getCell(14, fila).getContents();
+                String telefono = hoja.getCell(15, fila).getContents();
+
+                try {
+                    String vecFecha[] = fecha.split("/");
+                    String dia = vecFecha[0];
+                    String mes = vecFecha[1];
+                    String ano = vecFecha[2];
+
+                    if (dia.length() == 1) {
+                        dia = "0" + dia;
+                    }
+                    if (mes.length() == 1) {
+                        mes = "0" + mes;
+                    }
+                    if (ano.length() == 2) {
+                        ano = "20" + ano;
+                    }
+                    fecha = ano + "-" + mes + "-" + dia;
+                } catch (Exception e) {
+                }
 
                 tab_detalle.insertar();
                 tab_detalle.setValor("codigo_alumno_petlf", codigo_alumno);
@@ -462,7 +524,7 @@ public class pre_genera_fac_lote extends Pantalla {
                     }
                 }
                 tab_detalle.setValor("cod_factura_petlf", cod_factura);
-                tab_detalle.setValor("fecha_petlf", utilitario.getFormatoFecha(utilitario.toDate(fecha, "dd/MM/YYYY")));
+                tab_detalle.setValor("fecha_petlf", fecha);
                 tab_detalle.setValor("concepto_petlf", concepto);
                 tab_detalle.setValor("representante_petlf", representante);
                 tab_detalle.setValor("cedula_petlf", cedula);
@@ -470,6 +532,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_detalle.setValor("correo_petlf", correo);
                 tab_detalle.setValor("direccion_petlf", direccion);
                 tab_detalle.setValor("telefono_petlf", telefono);
+                tab_detalle.setValor("cedula_alumno_petlf", cedula_alumno);
             }
             tab_detalle.setLectura(true);
 
