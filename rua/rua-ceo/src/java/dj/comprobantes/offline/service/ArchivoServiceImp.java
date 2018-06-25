@@ -145,7 +145,7 @@ public class ArchivoServiceImp implements ArchivoService {
             // //Forma un arreglo de todos los detalles
             String strDetalles[] = cadenaDetalles.split("</detalle>");
 
-            String columnas[] = {"codigoPrincipal", "codigoAuxiliar", "cantidad", "descripcion", "precioUnitario", "precioTotalSinImpuesto"};
+            String columnas[] = {"codigoPrincipal", "codigoAuxiliar", "cantidad", "descripcion", "precioUnitario", "precioTotalSinImpuesto", "descuento"};
             for (String strDetalleActual : strDetalles) {
                 Object valores[] = {
                     (utilitario.getValorEtiqueta(strDetalleActual, "codigoPrincipal").isEmpty() ? utilitario.getValorEtiqueta(strDetalleActual,
@@ -154,7 +154,8 @@ public class ArchivoServiceImp implements ArchivoService {
                     "codigoAdicional") : utilitario.getValorEtiqueta(strDetalleActual, "codigoAuxiliar")),
                     utilitario.getFormatoNumero(utilitario.getValorEtiqueta(strDetalleActual, "cantidad"), 3), utilitario.getValorEtiqueta(strDetalleActual, "descripcion"),
                     utilitario.getValorEtiqueta(strDetalleActual, "precioUnitario"),
-                    utilitario.getValorEtiqueta(strDetalleActual, "precioTotalSinImpuesto")};
+                    utilitario.getValorEtiqueta(strDetalleActual, "precioTotalSinImpuesto"),
+                    utilitario.getValorEtiqueta(strDetalleActual, "descuento")};
                 lisDetalle.add(new DetalleReporte(columnas, valores));
             }
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {

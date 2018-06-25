@@ -37,13 +37,18 @@ public class DetalleComprobante implements Serializable {
             this.cantidad = resultado.getBigDecimal("cantidad_ccdfa");
             this.descripciondet = resultado.getString("nombre_inarti").trim();
             this.preciounitario = resultado.getBigDecimal("precio_ccdfa");
-            this.descuento = new BigDecimal("0.00");
+            if (resultado.getBigDecimal("descuento_ccdfa") == null) {
+                this.descuento = new BigDecimal("0.00");
+            } else {
+                this.descuento = resultado.getBigDecimal("descuento_ccdfa");
+            }
             this.preciototalsinimpuesto = resultado.getBigDecimal("total_ccdfa");
             if (resultado.getString("iva_inarti_ccdfa").equals("1")) {
                 this.porcentajeiva = resultado.getBigDecimal("tarifa_iva_cccfa");
             } else {
                 this.porcentajeiva = new BigDecimal("0.00");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
