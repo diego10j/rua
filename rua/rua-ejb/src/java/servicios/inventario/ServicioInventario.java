@@ -527,7 +527,7 @@ public class ServicioInventario {
             //Busca sucursal x defecto
             ide_inbod = getBodegaSucursal();
         }
-
+        ///Aumentar solo para productos que hacen kardex  ////////////////***********************
         double saldo = 0;
         TablaGenerica tag = utilitario.consultar("select dci.ide_inarti,sum (cantidad_indci * signo_intci) as saldo_cantidad from inv_det_comp_inve dci "
                 + "left join inv_cab_comp_inve cci on cci.ide_incci=dci.ide_incci "

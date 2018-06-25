@@ -1445,6 +1445,7 @@ public class FacturaCxC extends Dialogo {
         double cantidad = 0;
         double precio = 0;
         double total = 0;
+        double descuento = 0;
         try {
             cantidad = Double.parseDouble(tab_deta_factura.getValor("cantidad_ccdfa"));
         } catch (Exception e) {
@@ -1455,6 +1456,7 @@ public class FacturaCxC extends Dialogo {
         } catch (Exception e) {
             precio = 0;
         }
+        precio = precio - descuento;
         total = cantidad * precio;
         tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(total));
         utilitario.addUpdateTabla(tab_deta_factura, "total_ccdfa", "");

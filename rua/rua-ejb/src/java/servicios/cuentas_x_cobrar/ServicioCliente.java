@@ -127,6 +127,7 @@ public class ServicioCliente extends ServicioBase {
         tabla.getColumna("ide_rhtro").setVisible(false);
         tabla.getColumna("ide_rhcon").setVisible(false);
         tabla.getColumna("ide_teban").setVisible(false);
+        tabla.getColumna("rep_ide_geper").setVisible(false);
         tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         // tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tabla.getColumna("identificac_geper").setUnico(true);

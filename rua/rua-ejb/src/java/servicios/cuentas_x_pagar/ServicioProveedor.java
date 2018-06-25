@@ -116,7 +116,7 @@ public class ServicioProveedor {
         tabla.getColumna("IDE_VGECL").setVisible(false);
         tabla.getColumna("ide_gegen").setVisible(false);
         tabla.getColumna("IDE_VGTCL").setVisible(false);
-
+        tabla.getColumna("rep_ide_geper").setVisible(false);
         tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         tabla.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tabla.getColumna("identificac_geper").setUnico(true);
