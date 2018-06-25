@@ -1422,4 +1422,13 @@ public class pre_facturasCxC extends Pantalla {
         this.sec_rango_reporte = sec_rango_reporte;
     }
 
+    public SeleccionTabla getSel_sucursales() {
+        return sel_sucursales;
+    }
+
+    public void setSel_sucursales(SeleccionTabla sel_sucursales) {
+        this.sel_sucursales = sel_sucursales;
+    }
+    
+
 }
