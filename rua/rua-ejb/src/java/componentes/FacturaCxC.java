@@ -285,7 +285,7 @@ public class FacturaCxC extends Dialogo {
 
         ate_observacion.limpiar();
         ate_observacion.setDisabled(false);
-        tex_descuento.setDisabled(false);
+        tex_descuento.setDisabled(true);
         //com_pto_emision.setDisabled(false);
         tex_iva.setValue("0,00");
         tex_subtotal0.setValue("0,00");
@@ -971,14 +971,19 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setOrden(3);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
+        tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
+        tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
+        tab_deta_factura.getColumna("descuento_ccdfa").setOrden(4);
+        tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));        
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
-        tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(4);
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(5);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setNombreVisual("IVA");
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setLongitud(-1);
         tab_deta_factura.getColumna("total_ccdfa").setNombreVisual("TOTAL");
-        tab_deta_factura.getColumna("total_ccdfa").setOrden(5);
+        tab_deta_factura.getColumna("total_ccdfa").setOrden(6);
         tab_deta_factura.getColumna("OBSERVACION_CCDFA").setNombreVisual("NOMBRE IMPRIME");
         tab_deta_factura.getColumna("total_ccdfa").setEtiqueta();
         tab_deta_factura.getColumna("total_ccdfa").setEstilo("font-size:14px;font-weight: bold;");
@@ -1456,6 +1461,11 @@ public class FacturaCxC extends Dialogo {
         } catch (Exception e) {
             precio = 0;
         }
+        try {
+            descuento = Double.parseDouble(tab_deta_factura.getValor("descuento_ccdfa"));
+        } catch (Exception e) {
+            descuento = 0;
+        }
         precio = precio - descuento;
         total = cantidad * precio;
         tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(total));
@@ -1518,10 +1528,11 @@ public class FacturaCxC extends Dialogo {
                 }
             }
             try {
-                descuento = Double.parseDouble(tex_descuento.getValue() + "");
+                descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_deta_factura.getSumaColumna("descuento_ccdfa")));
             } catch (Exception e) {
             }
 
+            tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(descuento));
             tab_cab_factura.setValor("base_grabada_cccfa", utilitario.getFormatoNumero(base_grabada));
             tab_cab_factura.setValor("base_no_objeto_iva_cccfa", utilitario.getFormatoNumero(base_no_objeto));
             tab_cab_factura.setValor("valor_iva_cccfa", utilitario.getFormatoNumero(valor_iva));
@@ -1587,7 +1598,7 @@ public class FacturaCxC extends Dialogo {
                 tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));
                 tab_cab_factura.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
                 tab_cab_factura.setValor("dias_credito_cccfa", String.valueOf(ser_factura.getDiasCreditoFormaPago(tab_cab_factura.getValor("ide_cndfp1"))));
-                tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(tex_descuento.getValue()));
+                
                 if (haceGuia) {
                     tab_guia.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
                 }
