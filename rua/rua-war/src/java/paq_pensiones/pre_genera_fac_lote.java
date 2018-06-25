@@ -269,6 +269,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_cab_fac.setValor("dias_credito_cccfa", "0");
                 tab_cab_fac.setValor("ide_cndfp", "13");//13=OTROS SIN UTILIZAR SITEMA FINANCIERO
                 tab_cab_fac.setValor("ide_cndfp1", "8");//8=CRÉDITO 10 DÍAS
+                tab_cab_fac.setValor("dias_credito_cccfa", "10");//10 DÍAS
                 tab_cab_fac.setValor("DIRECCION_CCCFA", tab_detalle.getValor(i, "direccion_petlf"));
                 tab_cab_fac.setValor("base_grabada_cccfa", "0");
                 tab_cab_fac.setValor("base_no_objeto_iva_cccfa", "0");
