@@ -316,8 +316,10 @@ public class pre_genera_fac_lote extends Pantalla {
             }
 
             //guarda alumnos
-            tab_clientes.setCondicion("identificac_geper in (" + tab_detalle.getStringColumna("cedula_alumno_petlf") + ",'9999999999')");
-            tab_clientes.ejecutarSql();
+            TablaGenerica tab_alumnos = new TablaGenerica();
+            tab_alumnos.setTabla("gen_persona", "ide_geper");
+            tab_alumnos.setCondicion("identificac_geper in (" + tab_detalle.getStringColumna("cedula_alumno_petlf") + ",'9999999999')");
+            tab_alumnos.ejecutarSql();
             for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
                 //1 inserta Clientes
                 String cedula_alumno_petlf = tab_detalle.getValor(i, "cedula_alumno_petlf");
@@ -326,39 +328,57 @@ public class pre_genera_fac_lote extends Pantalla {
                     continue;
                 }
                 boolean existe_cliente = false;
-                for (int j = 0; j < tab_clientes.getTotalFilas(); j++) {
-                    if (cedula_alumno_petlf.equals(tab_clientes.getValor(j, "identificac_geper"))) {
+                for (int j = 0; j < tab_alumnos.getTotalFilas(); j++) {
+                    if (cedula_alumno_petlf.equals(tab_alumnos.getValor(j, "identificac_geper"))) {
                         existe_cliente = true;
                         break;
                     }
                 }
-                if (existe_cliente == false) {
-                    tab_clientes.insertar();
-                    tab_clientes.setValor("identificac_geper", tab_detalle.getValor(i, "cedula_alumno_petlf"));
-                    tab_clientes.setValor("nombre_compl_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
-                    tab_clientes.setValor("nom_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
-                    tab_clientes.setValor("repre_legal_geper", tab_detalle.getValor(i, "representante_petlf"));
-                    tab_clientes.setValor("direccion_geper", tab_detalle.getValor(i, "direccion_petlf"));
-                    tab_clientes.setValor("telefono_geper", tab_detalle.getValor(i, "telefono_petlf"));
-                    tab_clientes.setValor("correo_geper", tab_detalle.getValor(i, "correo_petlf"));
-                    tab_clientes.setValor("es_cliente_geper", "true");
-                    tab_clientes.setValor("nivel_geper", "HIJO");
-                    tab_clientes.setValor("fecha_ingre_geper", utilitario.getFechaActual());
-                    tab_clientes.setValor("gen_ide_geper", "3");//3 = ALUMNOS  
-                    tab_clientes.setValor("ide_vgtcl", "1"); // ALUMNOS                    
-                    if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
-                        tab_clientes.setValor("ide_getid", "0"); // CEDULA                               
-                    } else if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
-                        tab_clientes.setValor("ide_getid", "1"); // RUC        
-                    } else {
-                        tab_clientes.setValor("ide_getid", "2"); // PASAPORTE
+
+                //ide_geper_representante
+                String ide_geper = null;
+                String cedula_repre = tab_detalle.getValor(i, "cedula_petlf");
+                if (cedula_repre == null || cedula_repre.isEmpty()) {
+                    ide_geper = null;
+                }
+                if (ide_geper != null) {
+                    for (int j = 0; j < tab_clientes.getTotalFilas(); j++) {
+                        if (cedula_repre.equals(tab_clientes.getValor(j, "identificac_geper"))) {
+                            ide_geper = tab_clientes.getValor(j, "ide_geper");
+                            break;
+                        }
                     }
-                    tab_clientes.setValor("ide_cntco", "2"); // PERSONA NATURAL
-                    tab_clientes.setValor("ide_vgecl", "0"); // ACTIVO
-                    tab_clientes.setValor("ide_cndfp", "13"); // OTROS SIN UTILIZAR EL SISTEMA FINANCIERO
+                }
+
+                if (existe_cliente == false) {
+                    tab_alumnos.insertar();
+                    tab_alumnos.setValor("codigo_geper", tab_detalle.getValor(i, "codigo_alumno_petlf"));
+                    tab_alumnos.setValor("identificac_geper", tab_detalle.getValor(i, "cedula_alumno_petlf"));
+                    tab_alumnos.setValor("nombre_compl_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
+                    tab_alumnos.setValor("nom_geper", tab_detalle.getValor(i, "nombre_alumno_petlf"));
+                    tab_alumnos.setValor("repre_legal_geper", tab_detalle.getValor(i, "representante_petlf"));
+                    tab_alumnos.setValor("rep_ide_geper", ide_geper);
+                    tab_alumnos.setValor("direccion_geper", tab_detalle.getValor(i, "direccion_petlf"));
+                    tab_alumnos.setValor("telefono_geper", tab_detalle.getValor(i, "telefono_petlf"));
+                    tab_alumnos.setValor("correo_geper", tab_detalle.getValor(i, "correo_petlf"));
+                    tab_alumnos.setValor("es_cliente_geper", "true");
+                    tab_alumnos.setValor("nivel_geper", "HIJO");
+                    tab_alumnos.setValor("fecha_ingre_geper", utilitario.getFechaActual());
+                    tab_alumnos.setValor("gen_ide_geper", "3");//3 = ALUMNOS  
+                    tab_alumnos.setValor("ide_vgtcl", "1"); // ALUMNOS                    
+                    if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
+                        tab_alumnos.setValor("ide_getid", "0"); // CEDULA                               
+                    } else if (tab_detalle.getValor(i, "cedula_petlf").length() == 10) {
+                        tab_alumnos.setValor("ide_getid", "1"); // RUC        
+                    } else {
+                        tab_alumnos.setValor("ide_getid", "2"); // PASAPORTE
+                    }
+                    tab_alumnos.setValor("ide_cntco", "2"); // PERSONA NATURAL
+                    tab_alumnos.setValor("ide_vgecl", "0"); // ACTIVO
+                    tab_alumnos.setValor("ide_cndfp", "13"); // OTROS SIN UTILIZAR EL SISTEMA FINANCIERO
                 }
             }
-            tab_clientes.guardar();
+            tab_alumnos.guardar();
 
             if (tab_cab_fac.guardar()) {
                 if (tab_det_fac.guardar()) {
