@@ -975,7 +975,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("descuento_ccdfa").setOrden(4);
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
-        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));        
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(5);
@@ -1466,8 +1466,8 @@ public class FacturaCxC extends Dialogo {
         } catch (Exception e) {
             descuento = 0;
         }
-        precio = precio - descuento;
-        total = cantidad * precio;
+
+        total = (cantidad * precio) - descuento;
         tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(total));
         utilitario.addUpdateTabla(tab_deta_factura, "total_ccdfa", "");
 
@@ -1598,7 +1598,7 @@ public class FacturaCxC extends Dialogo {
                 tab_cab_factura.setValor("OBSERVACION_CCCFA", String.valueOf(ate_observacion.getValue()));
                 tab_cab_factura.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
                 tab_cab_factura.setValor("dias_credito_cccfa", String.valueOf(ser_factura.getDiasCreditoFormaPago(tab_cab_factura.getValor("ide_cndfp1"))));
-                
+
                 if (haceGuia) {
                     tab_guia.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
                 }
