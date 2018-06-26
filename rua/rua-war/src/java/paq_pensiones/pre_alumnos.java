@@ -79,6 +79,7 @@ public class pre_alumnos extends Pantalla {
         tab_tabla1.setNumeroTabla(2);
         tab_tabla1.setHeader("LISTADO DE ALUMNOS");
         tab_tabla1.setCampoPrimaria("ide_geper");
+        tab_tabla1.setRows(10);
         tab_tabla1.getColumna("CODIGO").setFiltroContenido();
         tab_tabla1.getColumna("CEDULA").setFiltroContenido();
         tab_tabla1.getColumna("APELLIDOS_Y_NOMBRES").setFiltroContenido();
