@@ -170,4 +170,15 @@ public class pre_alumnos extends Pantalla {
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
+
+//---
+//ALTER TABLE "public"."gen_persona"
+//ADD COLUMN "rep_ide_geper" int4;
+//
+//ALTER TABLE "public"."gen_persona"
+//ADD CONSTRAINT "fk_representante" FOREIGN KEY ("rep_ide_geper") REFERENCES "public"."gen_persona" ("ide_geper") ON DELETE RESTRICT ON UPDATE RESTRICT;
+//
+//--descuento deta fac
+//ALTER TABLE "public"."cxc_deta_factura"
+//ADD COLUMN "descuento_ccdfa" decimal(12,2);
 }
