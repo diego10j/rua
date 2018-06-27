@@ -25,11 +25,17 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.LinkedHashMap;
 
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
-import paq_gestion.ejb.ServicioEmpleado;
 import paq_nomina.ejb.ServicioNomina;
 import sistema.aplicacion.Pantalla;
 import servicios.sistema.ServicioSeguridad;
@@ -259,12 +265,69 @@ public class pre_usuarios extends Pantalla {
         tex_nick = ((Texto) utilitario.getComponente(tab_tabla1.getColumna("NICK_USUA").getId()));
         cambiarEstadoNick();
 
+        Boton bot_reenviar = new Boton();
+        bot_reenviar.setValue("Enviar Correo");
+        bot_reenviar.setTitle("Enviar correo de Creación ");
+        bot_reenviar.setMetodo("enviarCorreoCreaUsuario");
+        bot_reenviar.setIcon("ui-icon-mail-closed");
+        bar_botones.agregarBoton(bot_reenviar);
+
     }
 
     public void seleccionaEmpelado(SelectEvent evt) {
         if (tab_tabla1.getValor("ide_gtemp") != null) {
             tab_tabla1.setValor("nom_usua", tab_tabla1.getValorArreglo("ide_gtemp", 1) + tab_tabla1.getValorArreglo("ide_gtemp", 2) + tab_tabla1.getValorArreglo("ide_gtemp", 3) + tab_tabla1.getValorArreglo("ide_gtemp", 4));
         }
+    }
+
+    public void enviarCorreoCreaUsuario() {
+
+        String url_web_service = "http://192.168.1.205/framework/servicios/ServicioRUA.php/creaUsuarioRUA";
+        if (tab_tabla1.getValorSeleccionado() != null) {
+            Map<String, Object> params = new LinkedHashMap<>();
+            params.put("NOMBRE_USUARIO", tab_tabla1.getValor("nom_usua"));
+            params.put("CORREO_USUARIO", tab_tabla1.getValor("mail_usua"));
+            params.put("NICK_USUARIO", tab_tabla1.getValor("nick_usua"));
+            params.put("EMPRESA", utilitario.getConfiguraEmpresa().getNombreEmpresa());
+            StringBuilder postData = new StringBuilder();
+
+            try {
+                URL url = new URL(url_web_service);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Accept", "application/json;odata=verbose");
+                conn.setRequestProperty("Authorization", "AccesToken");
+                postData.append("{");
+                for (Map.Entry<String, Object> param : params.entrySet()) {
+                    if (postData.length() != 1) {
+                        postData.append(',');
+                    }
+                    postData.append("\"").append(param.getKey()).append("\"");
+                    postData.append(":\"");
+                    postData.append(String.valueOf(param.getValue())).append("\"");
+                }
+                postData.append("}");
+                byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+                OutputStream os = conn.getOutputStream();
+                os.write(postDataBytes);
+                os.flush();
+                if (conn.getResponseCode() != 200) {
+                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                }
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        (conn.getInputStream())));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                }
+                conn.disconnect();
+            } catch (IOException | RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void limpiar() {
@@ -502,6 +565,10 @@ public class pre_usuarios extends Pantalla {
     @Override
     public void guardar() {
         // valida la longitud minima del campo nick si inserto o modifico
+        if (!utilitario.isCorreoValido(tab_tabla1.getValor("mail_usua"))) {
+            utilitario.agregarMensajeError("Correo no válido", "");
+            return;
+        }
         if (tab_tabla1.isFilaInsertada() || tab_tabla1.isFilaModificada()) {
             if (tab_tabla1.getValor("NICK_USUA") == null
                     || (tab_tabla1.getValor("NICK_USUA").length() < int_longitud_minima_login)) {
