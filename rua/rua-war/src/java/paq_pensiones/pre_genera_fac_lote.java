@@ -290,6 +290,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_det_fac.setValor("CANTIDAD_CCDFA", "1");
                 tab_det_fac.setValor("PRECIO_CCDFA", utilitario.getFormatoNumero(tab_detalle.getValor(i, "subtotal_petlf")));
                 tab_det_fac.setValor("iva_inarti_ccdfa", "-1");
+                tab_det_fac.setValor("descuento_ccDfa", utilitario.getFormatoNumero(tab_detalle.getValor(i, "rebaja_petlf")));
                 tab_det_fac.setValor("total_ccdfa", utilitario.getFormatoNumero(tab_detalle.getValor(i, "subtotal_petlf")));
                 tab_det_fac.setValor("OBSERVACION_CCDFA", tab_detalle.getValor(i, "concepto_petlf"));
                 tab_det_fac.setValor("ALTERNO_CCDFA", "00");
