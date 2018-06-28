@@ -659,4 +659,14 @@ public class ServicioComprobanteElectronico extends ServicioBase {
         }
     }
 
+    public String getSqlComprobantesconError() {
+        return "select a.ide_cntdo,nombre_cntdo,fechaemision_srcom,nombre_sresc,estab_srcom,ptoemi_srcom,secuencial_srcom,identificacion_srcom,nom_geper,claveacceso_srcom,msg_recepcion_srxmc,msg_autoriza_srxmc from sri_comprobante a\n"
+                + "left join sri_estado_comprobante b on a.ide_sresc = b.ide_sresc\n"
+                + "left join sri_xml_comprobante c on a.ide_srcom = c.ide_srcom\n"
+                + "left join con_tipo_document  d on d.ide_cntdo = a.ide_cntdo\n"
+                + "left join gen_persona e on a.ide_geper = e.ide_geper\n"
+                + "where a.ide_sresc in (2,3,4)\n"
+                + "order by fechaemision_srcom desc";
+    }
+
 }
