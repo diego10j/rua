@@ -16,6 +16,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
+import servicios.ceo.ServicioComprobanteElectronico;
 import servicios.contabilidad.ServicioRetenciones;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.cuentas_x_pagar.ServicioProveedor;
@@ -34,6 +35,8 @@ public class pre_modificar_retencion extends Pantalla {
     private final ServicioRetenciones ser_retencion = (ServicioRetenciones) utilitario.instanciarEJB(ServicioRetenciones.class);
     @EJB
     private final ServicioCuentasCxP ser_cuentas_cxp = (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class);
+    @EJB
+    private final ServicioComprobanteElectronico ser_comp_electronico = (ServicioComprobanteElectronico) utilitario.instanciarEJB(ServicioComprobanteElectronico.class);
 
     private AutoCompletar aut_proveedor = new AutoCompletar();
     private SeleccionTabla sel_factura = new SeleccionTabla();
@@ -177,7 +180,16 @@ public class pre_modificar_retencion extends Pantalla {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
                 ser_cuentas_cxp.generarModificarTransaccionRetencion(ide_cpcfa, tab_tabla2.getSumaColumna("valor_cndre"));
-                utilitario.getConexion().guardarPantalla();
+                if (utilitario.getConexion().guardarPantalla().isEmpty()) {
+                    //Si es electrónica cambia a estado PENDIENTE
+                    if (ser_retencion.isElectronica()) {
+                        if (tab_tabla1.getValor("ide_srcom") != null) {
+                            String ide_cncre = tab_tabla1.getValor("ide_cncre");
+                            ser_comp_electronico.generarRetencionElectronica(ide_cncre);
+                        }
+                    }
+
+                }
             }
         }
     }
