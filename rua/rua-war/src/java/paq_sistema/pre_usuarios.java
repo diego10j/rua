@@ -265,13 +265,6 @@ public class pre_usuarios extends Pantalla {
         tex_nick = ((Texto) utilitario.getComponente(tab_tabla1.getColumna("NICK_USUA").getId()));
         cambiarEstadoNick();
 
-        Boton bot_reenviar = new Boton();
-        bot_reenviar.setValue("Enviar Correo");
-        bot_reenviar.setTitle("Enviar correo de Creación ");
-        bot_reenviar.setMetodo("enviarCorreoCreaUsuario");
-        bot_reenviar.setIcon("ui-icon-mail-closed");
-        bar_botones.agregarBoton(bot_reenviar);
-
     }
 
     public void seleccionaEmpelado(SelectEvent evt) {
@@ -564,12 +557,15 @@ public class pre_usuarios extends Pantalla {
 
     @Override
     public void guardar() {
-        // valida la longitud minima del campo nick si inserto o modifico
-        if (!utilitario.isCorreoValido(tab_tabla1.getValor("mail_usua"))) {
-            utilitario.agregarMensajeError("Correo no válido", "");
-            return;
-        }
+        boolean auxInserta = tab_tabla1.isFilaInsertada();
+
         if (tab_tabla1.isFilaInsertada() || tab_tabla1.isFilaModificada()) {
+            //valida correo
+            if (!utilitario.isCorreoValido(tab_tabla1.getValor("mail_usua"))) {
+                utilitario.agregarMensajeError("Correo no válido", "");
+                return;
+            }
+            // valida la longitud minima del campo nick si inserto o modifico
             if (tab_tabla1.getValor("NICK_USUA") == null
                     || (tab_tabla1.getValor("NICK_USUA").length() < int_longitud_minima_login)) {
                 utilitario.agregarMensajeError("No se puede guardar",
@@ -598,6 +594,9 @@ public class pre_usuarios extends Pantalla {
             }
         }
         if (guardarPantalla().isEmpty()) {
+            if (auxInserta) {
+                enviarCorreoCreaUsuario();
+            }
             aut_usuarios.actualizar();
         }
         cambiarEstadoNick();
