@@ -274,53 +274,67 @@ public class pre_usuarios extends Pantalla {
     }
 
     public void enviarCorreoCreaUsuario() {
-
-        String url_web_service = "http://192.168.1.205/framework/servicios/ServicioRUA.php/creaUsuarioRUA";
         if (tab_tabla1.getValorSeleccionado() != null) {
             Map<String, Object> params = new LinkedHashMap<>();
             params.put("NOMBRE_USUARIO", tab_tabla1.getValor("nom_usua"));
             params.put("CORREO_USUARIO", tab_tabla1.getValor("mail_usua"));
             params.put("NICK_USUARIO", tab_tabla1.getValor("nick_usua"));
             params.put("EMPRESA", utilitario.getConfiguraEmpresa().getNombreEmpresa());
-            StringBuilder postData = new StringBuilder();
-
-            try {
-                URL url = new URL(url_web_service);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestProperty("Accept", "application/json;odata=verbose");
-                conn.setRequestProperty("Authorization", "AccesToken");
-                postData.append("{");
-                for (Map.Entry<String, Object> param : params.entrySet()) {
-                    if (postData.length() != 1) {
-                        postData.append(',');
-                    }
-                    postData.append("\"").append(param.getKey()).append("\"");
-                    postData.append(":\"");
-                    postData.append(String.valueOf(param.getValue())).append("\"");
-                }
-                postData.append("}");
-                byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-                OutputStream os = conn.getOutputStream();
-                os.write(postDataBytes);
-                os.flush();
-                if (conn.getResponseCode() != 200) {
-                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-                }
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        (conn.getInputStream())));
-                String output;
-                while ((output = br.readLine()) != null) {
-                    System.out.println(output);
-                }
-                conn.disconnect();
-            } catch (IOException | RuntimeException e) {
-                e.printStackTrace();
-            }
+            String url_web_service = "http://192.168.1.205/framework/servicios/ServicioRUA.php/creaUsuarioRUA";
+            enviarCorreo(url_web_service, params);
         }
+    }
 
+    public void enviarCorreoResetearUsuario() {
+        if (tab_tabla1.getValorSeleccionado() != null) {
+            Map<String, Object> params = new LinkedHashMap<>();
+            params.put("NOMBRE_USUARIO", tab_tabla1.getValor("nom_usua"));
+            params.put("CORREO_USUARIO", tab_tabla1.getValor("mail_usua"));
+            params.put("NICK_USUARIO", tab_tabla1.getValor("nick_usua"));
+            params.put("CLAVE_USUARIO", String.valueOf(eti_clave.getValue()));
+            params.put("EMPRESA", utilitario.getConfiguraEmpresa().getNombreEmpresa());
+            String url_web_service = "http://192.168.1.205/framework/servicios/ServicioRUA.php/resetearUsuarioRUA";
+            enviarCorreo(url_web_service, params);
+        }
+    }
+
+    private void enviarCorreo(String url_web_service, Map<String, Object> params) {
+        StringBuilder postData = new StringBuilder();
+        try {
+            URL url = new URL(url_web_service);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Accept", "application/json;odata=verbose");
+            conn.setRequestProperty("Authorization", "AccesToken");
+            postData.append("{");
+            for (Map.Entry<String, Object> param : params.entrySet()) {
+                if (postData.length() != 1) {
+                    postData.append(',');
+                }
+                postData.append("\"").append(param.getKey()).append("\"");
+                postData.append(":\"");
+                postData.append(String.valueOf(param.getValue())).append("\"");
+            }
+            postData.append("}");
+            byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+            OutputStream os = conn.getOutputStream();
+            os.write(postDataBytes);
+            os.flush();
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+            }
+            conn.disconnect();
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 
     public void limpiar() {
@@ -644,6 +658,7 @@ public class pre_usuarios extends Pantalla {
         tab_tabla1.setValor("CAMBIA_CLAVE_USUA", "true");
         utilitario.addUpdate("tab_tabla1");
         dia_clave.cerrar();
+        enviarCorreoResetearUsuario();
     }
 
     public Dialogo getDia_clave() {

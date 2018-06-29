@@ -5,6 +5,7 @@
  */
 package paq_sri;
 
+import dj.comprobantes.offline.enums.EstadoComprobanteEnum;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
@@ -32,6 +33,13 @@ public class pre_error_comprobantes extends Pantalla {
         bot_actualiza.setIcon("ui-icon-refresh");
         bar_botones.agregarBoton(bot_actualiza);
 
+        bar_botones.agregarSeparador();
+        Boton bot_cambia_estado = new Boton();
+        bot_cambia_estado.setValue("Cambiar de estado a PENDIENTE");
+        bot_cambia_estado.setIcon("ui-icon-refresh");
+        bot_cambia_estado.setMetodo("cambiaPendiente");;
+        bar_botones.agregarBoton(bot_cambia_estado);
+
         tab_consulta.setId("tab_consulta");
         tab_consulta.setLectura(true);
         tab_consulta.setSql(ser_facElect.getSqlComprobantesconError());
@@ -42,9 +50,13 @@ public class pre_error_comprobantes extends Pantalla {
         pat_panel.setPanelTabla(tab_consulta);
         Division div = new Division();
         div.dividir1(pat_panel);
+        agregarComponente(div);
 
-        agregarComponente(pat_panel);
+    }
 
+    public void cambiaPendiente() {
+        utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET ide_sresc=" + EstadoComprobanteEnum.PENDIENTE.getCodigo() + " where ide_srcom=" + tab_consulta.getValor("ide_srcom"));
+        tab_consulta.actualizar();
     }
 
     @Override
