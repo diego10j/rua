@@ -276,7 +276,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_cab_fac.setValor("valor_iva_cccfa", "0");
                 tab_cab_fac.setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(tab_detalle.getValor(i, "subtotal_petlf")));
                 tab_cab_fac.setValor("descuento_cccfa", utilitario.getFormatoNumero(tab_detalle.getValor(i, "rebaja_petlf")));
-                tab_cab_fac.setValor("orden_compra_cccfa", tab_detalle.getValor(i, "cod_factura_petlf"));
+                tab_cab_fac.setValor("orden_compra_cccfa", tab_detalle.getValor(i, "cedula_alumno_petlf"));  //Guarda la cedula del alumno 
                 tab_cab_fac.setValor("total_cccfa", utilitario.getFormatoNumero(tab_detalle.getValor(i, "total_petlf")));
                 tab_cab_fac.setValor("correo_cccfa", tab_detalle.getValor(i, "correo_petlf"));
                 tab_cab_fac.setValor("pagado_cccfa", "false");

@@ -20,7 +20,7 @@ import sistema.aplicacion.Pantalla;
 public class pre_alumnos extends Pantalla {
 
     @EJB
-    private final ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
+    private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
 
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla1 = new Tabla();
