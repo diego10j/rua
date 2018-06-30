@@ -26,9 +26,9 @@ public class ServicioPensiones extends ServicioBase {
     }
 
     public String getSqlComboAlumnos() {
-        return "SELECT a.ide_geper,a.identificac_geper AS CEDULA,a.nom_geper AS APELLIDOS_Y_NOMBRES,a.codigo_geper as CODIGO where a.ide_vgtcl=1 and a.nivel_geper='HIJO' order by a.nom_geper";
+        return "SELECT a.ide_geper,a.identificac_geper AS CEDULA,a.nom_geper AS APELLIDOS_Y_NOMBRES,a.codigo_geper as CODIGO FROM gen_persona a where a.ide_vgtcl=1 and a.nivel_geper='HIJO' order by a.nom_geper";
     }
-
+ 
     /**
      *
      * @param cedula_alumno
@@ -44,7 +44,7 @@ public class ServicioPensiones extends ServicioBase {
                 + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
                 + "left join con_deta_forma_pago x on a.ide_cndfp1=x.ide_cndfp "
                 + "where orden_compra_cccfa='" + cedula_alumno + "' "
-                + "AND a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal")
+                + "AND a.ide_ccefa =0" 
                 + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
