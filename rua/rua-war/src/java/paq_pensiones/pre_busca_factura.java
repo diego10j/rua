@@ -52,6 +52,12 @@ public class pre_busca_factura extends Pantalla {
         aut_alumno.setSize(75);
         aut_alumno.setAutocompletarContenido(); // no startWith para la busqueda
         aut_alumno.setMetodoChange("seleccionarAlumno");
+        bar_botones.agregarComponente(aut_alumno);
+        Boton bot_clean = new Boton();
+        bot_clean.setIcon("ui-icon-cancel");
+        bot_clean.setTitle("Limpiar");
+        bot_clean.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_clean);
         bar_botones.agregarSeparador();
         Boton bot_enviar = new Boton();
         bot_enviar.setValue("Enviar al SRI");
@@ -141,10 +147,25 @@ public class pre_busca_factura extends Pantalla {
     public void seleccionarAlumno(SelectEvent evt) {
         aut_alumno.onSelect(evt);
         if (aut_alumno.getValor() != null) {
-            tab_tabla.setSql(ser_pensiones.getFacturasAlumno(ser_pensiones.getFacturasAlumno(aut_alumno.getValorArreglo(1))));
+            tab_tabla.setSql(ser_pensiones.getFacturasAlumno(aut_alumno.getValorArreglo(1)));
             tab_tabla.ejecutarSql();
         } else {
             tab_tabla.limpiar();
+        }
+    }
+
+    public void limpiar() {
+        aut_alumno.limpiar();
+        tab_tabla.limpiar();
+    }
+
+    public void aceptarReenviar() {
+        if (utilitario.isCorreoValido(String.valueOf(tex_correo.getValue()))) {
+            ser_facElect.reenviarComprobante(String.valueOf(tex_correo.getValue()), tab_tabla.getValor("ide_srcom"));
+            dia_correo.cerrar();
+            tex_correo.setValue(null);
+        } else {
+            utilitario.agregarMensajeError("Correo electrónico no válido", "");
         }
     }
 
