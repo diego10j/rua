@@ -1537,14 +1537,14 @@ public class FacturaCxC extends Dialogo {
             tab_cab_factura.setValor("base_no_objeto_iva_cccfa", utilitario.getFormatoNumero(base_no_objeto));
             tab_cab_factura.setValor("valor_iva_cccfa", utilitario.getFormatoNumero(valor_iva));
             tab_cab_factura.setValor("base_tarifa0_cccfa", utilitario.getFormatoNumero(base_tarifa0));
-            tab_cab_factura.setValor("total_cccfa", utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva) - descuento));
+            tab_cab_factura.setValor("total_cccfa", utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva)));
 
             tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
             tex_subtotal0.setValue(utilitario.getFormatoNumero(base_tarifa0));
             tex_subtotal_no_objeto.setValue(utilitario.getFormatoNumero(base_no_objeto));
             tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
             tex_descuento.setValue(utilitario.getFormatoNumero(descuento));
-            tex_total.setValue(utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva) - descuento));
+            tex_total.setValue(utilitario.getFormatoNumero((base_grabada + base_no_objeto + base_tarifa0 + valor_iva)));
 
             utilitario.addUpdate("tab_factura:0:gri_valores");
         } catch (Exception e) {
