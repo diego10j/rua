@@ -1054,8 +1054,8 @@ public class ServicioCuentasCxC extends ServicioBase {
         String secuencial_cccfa = num_doc_mod_cpcno.substring(6, 15);
         String serie_ccdaf = num_doc_mod_cpcno.substring(0, 6);      
         return utilitario.consultar("select ide_geper,fecha_emisi_cccfa,total_cccfa,base_grabada_cccfa,base_no_objeto_iva_cccfa,base_tarifa0_cccfa,valor_iva_cccfa,\n"
-                + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa\n"
-                + "from cxc_cabece_factura a\n"
+                + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa,descuento_ccdfa\n"
+                + "from cxc_cabece_factura a\n" 
                 + "inner join cxc_deta_factura b on a.ide_cccfa=b.ide_cccfa\n"
                 + "inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf\n"
                 + "where secuencial_cccfa='" + secuencial_cccfa + "'\n"

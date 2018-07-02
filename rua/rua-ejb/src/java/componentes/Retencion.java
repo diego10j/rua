@@ -975,12 +975,17 @@ public class Retencion extends Dialogo {
         }
         tab_dt_retencion.setValor("porcentaje_cndre", porcen);
 
-        if (ide_cccfa != null) {
+        if (ide_cccfa != null || ide_cpcfa != null) {
+
             if (tab_dt_retencion.getValor("base_cndre") == null || tab_dt_retencion.getValor("base_cndre").isEmpty()) {
                 if (ser_retencion.isImpuestoRenta(tab_dt_retencion.getValor("ide_cncim"))) {
-                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
+                    if (douBaseImponibleRentaTotal > 0) {
+                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
+                    }
                 } else {
-                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
+                    if (douBaseImponibleIvaTotal > 0) {
+                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
+                    }
                 }
             }
             utilitario.addUpdateTabla(tab_dt_retencion, "base_cndre", "");
