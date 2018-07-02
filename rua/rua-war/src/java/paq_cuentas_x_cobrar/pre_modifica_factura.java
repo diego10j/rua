@@ -561,6 +561,7 @@ public class pre_modifica_factura extends Pantalla {
         double cantidad = 0;
         double precio = 0;
         double total = 0;
+        double descuento = 0;
         try {
             cantidad = Double.parseDouble(tab_deta_factura.getValor("cantidad_ccdfa"));
         } catch (Exception e) {
@@ -571,7 +572,13 @@ public class pre_modifica_factura extends Pantalla {
         } catch (Exception e) {
             precio = 0;
         }
-        total = cantidad * precio;
+        try {
+            descuento = Double.parseDouble(tab_deta_factura.getValor("descuento_ccdfa"));
+        } catch (Exception e) {
+            descuento = 0;
+        }
+
+        total = (cantidad * precio) - descuento;
         tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(total));
         utilitario.addUpdateTabla(tab_deta_factura, "total_ccdfa", "");
         calcularTotalFactura();
@@ -586,7 +593,7 @@ public class pre_modifica_factura extends Pantalla {
         double base_tarifa0 = 0;
         double valor_iva = 0;
         double porcentaje_iva = 0;
-
+        double descuento = 0;
         for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
             String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
             if (iva.equals("1")) { //SI IVA
@@ -599,6 +606,13 @@ public class pre_modifica_factura extends Pantalla {
                 base_no_objeto = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_no_objeto;
             }
         }
+        try {
+            descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_deta_factura.getSumaColumna("descuento_ccdfa")));
+        } catch (Exception e) {
+        }
+
+        tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(descuento));
+        utilitario.addUpdateTabla(tab_cab_factura, "descuento_cccfa", null);
         tab_cab_factura.setValor("base_grabada_cccfa", utilitario.getFormatoNumero(base_grabada));
         tab_cab_factura.setValor("base_no_objeto_iva_cccfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_factura.setValor("valor_iva_cccfa", utilitario.getFormatoNumero(valor_iva));
