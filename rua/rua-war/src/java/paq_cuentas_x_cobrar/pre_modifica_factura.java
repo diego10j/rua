@@ -47,6 +47,8 @@ public class pre_modifica_factura extends Pantalla {
     private Tabla tab_cab_factura = new Tabla();
     private Tabla tab_deta_factura = new Tabla();
 
+    private Tabla tab_inf_adi = new Tabla();
+
     @EJB
     private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
     @EJB
@@ -253,6 +255,19 @@ public class pre_modifica_factura extends Pantalla {
         d.dividir1(grupo);
         agregarComponente(d);
 
+        tab_inf_adi.setId("tab_inf_adi");
+        tab_inf_adi.setHeader("INFORMACIÓN ADICIONAL DE LA FACTURA");
+        tab_inf_adi.setTabla("sri_info_adicional", "ide_srina", 3);
+        tab_inf_adi.setCondicion("ide_cccfa=-1");
+        tab_inf_adi.getColumna("ide_cccfa").setVisible(false);
+        tab_inf_adi.getColumna("ide_srina").setVisible(false);
+        tab_inf_adi.getColumna("ide_srcom").setVisible(false);
+        tab_inf_adi.getColumna("nombre_srina").setNombreVisual("NOMBRE");
+        tab_inf_adi.getColumna("valor_srina").setNombreVisual("VALOR");
+        tab_inf_adi.dibujar();
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_inf_adi);
+        grupo.getChildren().add(pat_panel2);
     }
 
     public void cambioFecha(AjaxBehaviorEvent evt) {
@@ -288,6 +303,10 @@ public class pre_modifica_factura extends Pantalla {
             }
             setObservacion(tab_cab_factura.getValor("OBSERVACION_CCCFA"));
             tab_deta_factura.ejecutarValorForanea(tab_cab_factura.getValorSeleccionado());
+
+            tab_inf_adi.setCondicion("ide_cccfa=" + tab_cab_factura.getValorSeleccionado());
+            tab_inf_adi.ejecutarSql();
+
             haceKardex = false;
             if (ser_factura.isFacturaElectronica(String.valueOf(com_pto_emision.getValue()))) {
                 //si es factura electronica valida que este en pendiente
@@ -334,6 +353,11 @@ public class pre_modifica_factura extends Pantalla {
             } else {
                 utilitario.agregarMensajeInfo("Seleccione Cliente", "Debe seleccionar un cliente para realizar la factura");
             }
+        } else if (tab_inf_adi.isFocus()) {
+            if (tab_cab_factura.getValor("ide_cccfa") != null) {
+                tab_inf_adi.insertar();
+                tab_inf_adi.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+            }
         }
     }
 
@@ -350,6 +374,7 @@ public class pre_modifica_factura extends Pantalla {
             tab_cab_factura.modificar(tab_cab_factura.getFilaActual());
             if (tab_cab_factura.guardar()) {
                 if (tab_deta_factura.guardar()) {
+                    tab_inf_adi.guardar();
                     //Guarda la cuenta por cobrar
                     ser_factura.generarModificarTransaccionFactura(tab_cab_factura);
                     //Transaccion de Inventario
@@ -454,6 +479,8 @@ public class pre_modifica_factura extends Pantalla {
         if (tab_deta_factura.isFocus()) {
             tab_deta_factura.eliminar();
             calcularTotalFactura();
+        } else if (tab_inf_adi.isFocus()) {
+            tab_inf_adi.eliminar();
         }
     }
 
@@ -600,6 +627,14 @@ public class pre_modifica_factura extends Pantalla {
 
     public void setTab_deta_factura(Tabla tab_deta_factura) {
         this.tab_deta_factura = tab_deta_factura;
+    }
+
+    public Tabla getTab_inf_adi() {
+        return tab_inf_adi;
+    }
+
+    public void setTab_inf_adi(Tabla tab_inf_adi) {
+        this.tab_inf_adi = tab_inf_adi;
     }
 
 }

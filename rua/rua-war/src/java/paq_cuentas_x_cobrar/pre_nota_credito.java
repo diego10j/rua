@@ -123,7 +123,7 @@ public class pre_nota_credito extends Pantalla {
         int num_devueltas = 0;
         int num_autorizadas = 0;
         int num_no_autorizadas = 0;
-        TablaGenerica tg = utilitario.consultar(ser_comprobante_electronico.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.NOTA_DE_CREDITO,com_pto_emision.getValue() + ""));
+        TablaGenerica tg = utilitario.consultar(ser_comprobante_electronico.getSqlTotalComprobantesPorEstado(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), TipoComprobanteEnum.NOTA_DE_CREDITO, com_pto_emision.getValue() + ""));
         if (tg.isEmpty() == false) {
             for (int i = 0; i < tg.getTotalFilas(); i++) {
                 if (tg.getValor(i, "ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {
@@ -290,7 +290,7 @@ public class pre_nota_credito extends Pantalla {
         }
         tab_tabla1.getColumna("ide_cntdo").setVisible(false);
         tab_tabla1.getColumna("ide_cntdo").setValorDefecto("0"); //nota de credito
-        tab_tabla1.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "");
+        tab_tabla1.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
         tab_tabla1.getColumna("ide_cndfp").setRequerida(true);
         tab_tabla1.getColumna("fecha_trans_cpcno").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_trans_cpcno").setVisible(false);
@@ -349,6 +349,8 @@ public class pre_nota_credito extends Pantalla {
         tab_tabla2.getColumna("valor_cpdno").setEtiqueta();
         tab_tabla2.getColumna("valor_cpdno").setEstilo("font-size:14px;font-weight: bold;");
         tab_tabla2.getColumna("valor_cpdno").alinearDerecha();
+        tab_tabla2.getColumna("descuento_cpdno").alinearDerecha();
+        tab_tabla2.getColumna("descuento_cpdno").setValorDefecto(utilitario.getFormatoNumero("0"));
 
         tab_tabla2.setScrollable(true);
         tab_tabla2.getColumna("iva_inarti_cpdno").setCombo(ser_producto.getListaTipoIVA());
@@ -393,6 +395,7 @@ public class pre_nota_credito extends Pantalla {
                 tab_tabla2.setValor("valor_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "total_ccdfa")));
                 tab_tabla2.setValor("iva_inarti_cpdno", tab_fac.getValor(i, "iva_inarti_ccdfa"));
                 tab_tabla2.setValor("observacion_cpdno", tab_fac.getValor(i, "observacion_ccdfa"));
+                tab_tabla2.setValor("descuento_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "descuento_ccdfa")));
             }
         }
         calcularTotalFactura();
