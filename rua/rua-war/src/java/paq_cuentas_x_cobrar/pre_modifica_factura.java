@@ -173,9 +173,10 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.getColumna("SECUENCIAL_CCDFA").setVisible(false);
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setMetodoChange("cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setRequerida(true);
-        tab_deta_factura.getColumna("CANTIDAD_CCDFA").setFormatoNumero(3);
+        tab_deta_factura.getColumna("CANTIDAD_CCDFA").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
         tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChange("cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
+        tab_deta_factura.getColumna("PRECIO_CCDFA").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChange("cambioPrecioCantidadIva");
@@ -193,6 +194,15 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.getColumna("precio_promedio_ccdfa").setLectura(true);
         tab_deta_factura.getColumna("ALTERNO_CCDFA").setValorDefecto("00");
         tab_deta_factura.getColumna("ALTERNO_CCDFA").setVisible(false);
+        
+        tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
+        tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChange("cambioPrecioCantidadIva");
+        tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
+        tab_deta_factura.getColumna("descuento_ccdfa").setDecimales(tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()); //DFJ
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0", tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()));
+        
+        
+        
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(utilitario.getAltoPantalla() - 350);
         tab_deta_factura.dibujar();
@@ -596,6 +606,7 @@ public class pre_modifica_factura extends Pantalla {
         double descuento = 0;
         for (int i = 0; i < tab_deta_factura.getTotalFilas(); i++) {
             String iva = tab_deta_factura.getValor(i, "iva_inarti_ccdfa");
+            double des = 0;
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_grabada;
                 porcentaje_iva = tarifaIVA;
@@ -605,10 +616,11 @@ public class pre_modifica_factura extends Pantalla {
             } else if (iva.equals("0")) { // NO OBJETO
                 base_no_objeto = Double.parseDouble(tab_deta_factura.getValor(i, "total_ccdfa")) + base_no_objeto;
             }
-        }
-        try {
-            descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_deta_factura.getSumaColumna("descuento_ccdfa")));
-        } catch (Exception e) {
+            try {
+                des = Double.parseDouble(tab_deta_factura.getValor(i, "descuento_ccdfa"));
+            } catch (Exception e) {
+            }
+            descuento += des;
         }
 
         tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(descuento));
