@@ -202,7 +202,7 @@ public class ArchivoServiceImp implements ArchivoService {
             String cadenaDetalles = utilitario.getValorEtiqueta(cadenaXML, "impuestos");
             // //Forma un arreglo de todos los impuestos
             String strDetalles[] = cadenaDetalles.split("</impuesto>");
-            String columnas[] = {"baseImponible", "porcentajeRetener", "valorRetenido", "nombreImpuesto", "nombreComprobante", "numeroComprobante", "fechaEmisionCcompModificado"};
+            String columnas[] = {"baseImponible", "porcentajeRetener", "valorRetenido", "nombreImpuesto", "nombreComprobante", "numeroComprobante", "fechaEmisionCcompModificado", "codigoRetencion"};
             for (String strDetalleActual : strDetalles) {
                 Object valores[] = {
                     utilitario.getValorEtiqueta(strDetalleActual, "baseImponible"),
@@ -211,7 +211,9 @@ public class ArchivoServiceImp implements ArchivoService {
                     TipoImpuestoEnum.getDescripcion(utilitario.getValorEtiqueta(strDetalleActual, "codigo")),
                     TipoComprobanteEnum.getDescripcion(utilitario.getValorEtiqueta(strDetalleActual, "codDocSustento")),
                     utilitario.getValorEtiqueta(strDetalleActual, "numDocSustento"),
-                    utilitario.getValorEtiqueta(strDetalleActual, "fechaEmisionDocSustento")};
+                    utilitario.getValorEtiqueta(strDetalleActual, "fechaEmisionDocSustento"),
+                    utilitario.getValorEtiqueta(strDetalleActual, "codigoRetencion")
+                };
                 lisDetalle.add(new DetalleReporte(columnas, valores));
             }
         }

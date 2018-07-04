@@ -32,6 +32,9 @@ public class Emisor implements Serializable {
     private String xmlversion;
     private String telefonos;
     private boolean sinFinesLucro=false;
+    
+    private int decimalesCantidad = 2;
+    private int decimalesPrecioUnitario = 2;
 
     public Emisor() {
     }
@@ -156,4 +159,20 @@ public class Emisor implements Serializable {
         this.sinFinesLucro = sinFinesLucro;
     }
 
+    public int getDecimalesCantidad() {
+        return decimalesCantidad;
+    }
+
+    public void setDecimalesCantidad(int decimalesCantidad) {
+        this.decimalesCantidad = decimalesCantidad;
+    }
+
+    public int getDecimalesPrecioUnitario() {
+        return decimalesPrecioUnitario;
+    }
+
+    public void setDecimalesPrecioUnitario(int decimalesPrecioUnitario) {
+        this.decimalesPrecioUnitario = decimalesPrecioUnitario;
+    }
+      
 }
