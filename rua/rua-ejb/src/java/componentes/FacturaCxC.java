@@ -966,16 +966,19 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setOrden(2);
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setRequerida(true);
-        tab_deta_factura.getColumna("CANTIDAD_CCDFA").setDecimales(3); //DFJ
+        tab_deta_factura.getColumna("CANTIDAD_CCDFA").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
         tab_deta_factura.getColumna("PRECIO_CCDFA").setNombreVisual("PRECIO");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setOrden(3);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
+        tab_deta_factura.getColumna("PRECIO_CCDFA").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
         tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
         tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("descuento_ccdfa").setOrden(4);
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
-        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
+        tab_deta_factura.getColumna("descuento_ccdfa").setDecimales(tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()); //DFJ
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0", tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()));
+
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(5);
@@ -1405,7 +1408,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.modificar(evt);
         String cod_prod = null;
         if (tab_deta_factura.getValor("ide_inarti") != null) {
-            tab_deta_factura.setValor("precio_ccdfa", utilitario.getFormatoNumero(ser_producto.getUltimoPrecioProductoCliente(tab_cab_factura.getValor("ide_geper"), tab_deta_factura.getValor("ide_inarti"))));
+            tab_deta_factura.setValor("precio_ccdfa", utilitario.getFormatoNumero(ser_producto.getUltimoPrecioProductoCliente(tab_cab_factura.getValor("ide_geper"), tab_deta_factura.getValor("ide_inarti")), tab_deta_factura.getColumna("precio_ccdfa").getDecimales()));
 
             TablaGenerica tab_producto = ser_producto.getProducto(tab_deta_factura.getValor("ide_inarti"));
             if (!tab_producto.isEmpty()) {
@@ -1526,12 +1529,13 @@ public class FacturaCxC extends Dialogo {
                     } catch (Exception e) {
                     }
                 }
+                double des = 0;
+                try {
+                    des = Double.parseDouble(tab_deta_factura.getValor(i, "descuento_ccdfa"));
+                } catch (Exception e) {
+                }
+                descuento += des;
             }
-            try {
-                descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_deta_factura.getSumaColumna("descuento_ccdfa")));
-            } catch (Exception e) {
-            }
-
             tab_cab_factura.setValor("descuento_cccfa", utilitario.getFormatoNumero(descuento));
             tab_cab_factura.setValor("base_grabada_cccfa", utilitario.getFormatoNumero(base_grabada));
             tab_cab_factura.setValor("base_no_objeto_iva_cccfa", utilitario.getFormatoNumero(base_no_objeto));

@@ -139,7 +139,7 @@ public class ServicioCuentasCxC extends ServicioBase {
                     + "from cxc_cabece_factura a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
-                    + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "                    
+                    + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
                     + "left join con_deta_forma_pago x on a.ide_cndfp1=x.ide_cndfp "
                     + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                     + "and ide_ccdaf=" + ide_ccdaf + " "
@@ -1052,10 +1052,10 @@ public class ServicioCuentasCxC extends ServicioBase {
             num_doc_mod_cpcno = num_doc_mod_cpcno.replace("-", "");
         }
         String secuencial_cccfa = num_doc_mod_cpcno.substring(6, 15);
-        String serie_ccdaf = num_doc_mod_cpcno.substring(0, 6);      
+        String serie_ccdaf = num_doc_mod_cpcno.substring(0, 6);
         return utilitario.consultar("select ide_geper,fecha_emisi_cccfa,total_cccfa,base_grabada_cccfa,base_no_objeto_iva_cccfa,base_tarifa0_cccfa,valor_iva_cccfa,\n"
                 + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa,descuento_ccdfa\n"
-                + "from cxc_cabece_factura a\n" 
+                + "from cxc_cabece_factura a\n"
                 + "inner join cxc_deta_factura b on a.ide_cccfa=b.ide_cccfa\n"
                 + "inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf\n"
                 + "where secuencial_cccfa='" + secuencial_cccfa + "'\n"
@@ -1237,5 +1237,54 @@ public class ServicioCuentasCxC extends ServicioBase {
             }
         }
         return dias;
+    }
+
+    /**
+     * Retorna Emisor de Facturas electrónicas
+     *
+     * @return
+     */
+    public TablaGenerica getEmisor() {
+        return utilitario.consultar("select * from sri_emisor where ide_sucu=" + utilitario.getVariable("ide_sucu"));
+    }
+
+    /**
+     * Retorna el numero de decimales para manejar cantidad
+     *
+     * @return
+     */
+    public int getDecimalesCantidad() {
+        int numDecimales = 2;
+        TablaGenerica tab_emisor = getEmisor();
+        if (tab_emisor.isEmpty() == false) {
+            if (tab_emisor.getValor("cant_decim_sremi") != null) {
+                try {
+                    numDecimales = Integer.parseInt(tab_emisor.getValor("cant_decim_sremi"));
+                } catch (Exception e) {
+                    numDecimales = 2;
+                }
+            }
+        }
+        return numDecimales;
+    }
+
+    /**
+     * Retorna el numero de decimales para manejar precio unitario
+     *
+     * @return
+     */
+    public int getDecimalesPrecioUnitario() {
+        int numDecimales = 2;
+        TablaGenerica tab_emisor = getEmisor();
+        if (tab_emisor.isEmpty() == false) {
+            if (tab_emisor.getValor("preciou_decim_sremi") != null) {
+                try {
+                    numDecimales = Integer.parseInt(tab_emisor.getValor("preciou_decim_sremi"));
+                } catch (Exception e) {
+                    numDecimales = 2;
+                }
+            }
+        }
+        return numDecimales;
     }
 }

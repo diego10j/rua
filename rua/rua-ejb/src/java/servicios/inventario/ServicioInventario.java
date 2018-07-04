@@ -136,8 +136,8 @@ public class ServicioInventario {
             double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_ccdfa"));
             double total = cant_convertida * precio;
 
-            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, 3));
-            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio));
+            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
+            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_ccdfa"));
 
@@ -196,8 +196,8 @@ public class ServicioInventario {
             double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_ccdfa"));
             double total = cant_convertida * precio;
 
-            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, 3));
-            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio));
+            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
+            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
 
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_ccdfa"));
@@ -254,8 +254,8 @@ public class ServicioInventario {
             tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
             tab_det_comp_inv.setValor("ide_cpcfa", tab_factura_cxp.getValor("ide_cpcfa"));
             tab_det_comp_inv.setValor("ide_incci", tab_cab_comp_inv.getValor("ide_incci"));
-            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "cantidad_cpdfa"), 3));
-            tab_det_comp_inv.setValor("precio_indci", tab_detalle.getValor(i, "precio_cpdfa"));
+            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "cantidad_cpdfa"), getDecimalesCantidad()));
+            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "precio_cpdfa"), getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", tab_detalle.getValor(i, "valor_cpdfa"));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_cpdfa"));
 
@@ -364,7 +364,7 @@ public class ServicioInventario {
                 }
                 double valor = Double.parseDouble(tab_detalle.getValor(i, "cantidad_cpdfa")) * precio;
 
-                tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio));
+                tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio,getDecimalesPrecioUnitario()));
                 tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(valor));
 //                String precio_promedio = in.getPrecioPromedioTransaccionPositiva(tab_tabla2.getValor(i, "ide_inarti"), "1", Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")), Double.parseDouble(tab_tabla2.getValor(i, "cantidad_cpdfa")));
 //                if (precio_promedio != null) {
@@ -374,7 +374,7 @@ public class ServicioInventario {
             tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
             tab_det_comp_inv.setValor("ide_cpcfa", tab_factura_cxp.getValor("ide_cpcfa"));
             tab_det_comp_inv.setValor("ide_incci", tab_cab_comp_inv.getValor("ide_incci"));
-            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "cantidad_cpdfa"), 3));
+            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "cantidad_cpdfa"), getDecimalesCantidad()));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_cpdfa"));
         }
         //}
@@ -606,8 +606,8 @@ public class ServicioInventario {
             double precio = Double.parseDouble(tab_deta_nota.getValor(i, "precio_cpdno"));
             double total = cant_convertida * precio;
 
-            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, 3));
-            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio));
+            tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
+            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio,getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
             tab_det_comp_inv.setValor("observacion_indci", tab_cab_comp_inv.getValor("observacion_incci"));
 
@@ -642,6 +642,48 @@ public class ServicioInventario {
 
     public String getSqlComboProductosKardex() {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
+    }
+    
+    
+
+    /**
+     * Retorna el numero de decimales para manejar cantidad
+     *
+     * @return
+     */
+    public int getDecimalesCantidad() {
+        int numDecimales = 2;
+        TablaGenerica tab_emisor = utilitario.consultar("select ide_sucu,cant_decim_sremi from sri_emisor where ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_emisor.isEmpty() == false) {
+            if (tab_emisor.getValor("cant_decim_sremi") != null) {
+                try {
+                    numDecimales = Integer.parseInt(tab_emisor.getValor("cant_decim_sremi"));
+                } catch (Exception e) {
+                    numDecimales = 2;
+                }
+            }
+        }
+        return numDecimales;
+    }
+
+    /**
+     * Retorna el numero de decimales para manejar precio unitario
+     *
+     * @return
+     */
+    public int getDecimalesPrecioUnitario() {
+        int numDecimales = 2;
+        TablaGenerica tab_emisor = utilitario.consultar("select ide_sucu,preciou_decim_sremi from sri_emisor where ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_emisor.isEmpty() == false) {
+            if (tab_emisor.getValor("preciou_decim_sremi") != null) {
+                try {
+                    numDecimales = Integer.parseInt(tab_emisor.getValor("preciou_decim_sremi"));
+                } catch (Exception e) {
+                    numDecimales = 2;
+                }
+            }
+        }
+        return numDecimales;
     }
 
 }
