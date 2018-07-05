@@ -194,15 +194,13 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.getColumna("precio_promedio_ccdfa").setLectura(true);
         tab_deta_factura.getColumna("ALTERNO_CCDFA").setValorDefecto("00");
         tab_deta_factura.getColumna("ALTERNO_CCDFA").setVisible(false);
-        
+
         tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
         tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChange("cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
-        tab_deta_factura.getColumna("descuento_ccdfa").setDecimales(tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()); //DFJ
-        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0", tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()));
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
         
-        
-        
+
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(utilitario.getAltoPantalla() - 350);
         tab_deta_factura.dibujar();
