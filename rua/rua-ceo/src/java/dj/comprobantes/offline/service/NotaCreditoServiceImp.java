@@ -104,7 +104,7 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
                         .append("				<descripcion>").append(detalle.getDescripciondet()).append("</descripcion> \n")
                         .append("				<cantidad>").append(utilitario.getFormatoNumero(detalle.getCantidad(), emisor.getDecimalesCantidad())).append("</cantidad> \n")
                         .append("				<precioUnitario>").append(utilitario.getFormatoNumero(detalle.getPreciounitario(), emisor.getDecimalesPrecioUnitario())).append("</precioUnitario> \n")
-                        .append("				<descuento>").append((detalle.getDescuento() == null ? utilitario.getFormatoNumero(0) : utilitario.getFormatoNumero(detalle.getDescuento(), emisor.getDecimalesPrecioUnitario()))).append("</descuento> \n")
+                        .append("				<descuento>").append((detalle.getDescuento() == null ? utilitario.getFormatoNumero(0) : utilitario.getFormatoNumero(detalle.getDescuento()))).append("</descuento> \n")
                         .append("				<precioTotalSinImpuesto>").append(utilitario.getFormatoNumero(detalle.getPreciototalsinimpuesto())).append("</precioTotalSinImpuesto> \n")
                         .append("				<impuestos> \n")
                         .append("					<impuesto> \n")
