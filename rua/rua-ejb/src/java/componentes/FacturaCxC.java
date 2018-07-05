@@ -975,9 +975,8 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
         tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("descuento_ccdfa").setOrden(4);
-        tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
-        tab_deta_factura.getColumna("descuento_ccdfa").setDecimales(tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()); //DFJ
-        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0", tab_deta_factura.getColumna("PRECIO_CCDFA").getDecimales()));
+        tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);        
+        tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
 
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
