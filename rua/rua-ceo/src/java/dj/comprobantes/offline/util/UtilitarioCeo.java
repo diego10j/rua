@@ -6,6 +6,7 @@
 package dj.comprobantes.offline.util;
 
 import framework.aplicacion.Framework;
+import java.math.RoundingMode;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -192,12 +193,13 @@ public class UtilitarioCeo extends Framework {
             if (i == 0) {
                 lstr_formato += ".";
             }
-            lstr_formato += "#";
+            lstr_formato += "0";
         }
         DecimalFormat formatoNumero;
         DecimalFormatSymbols idfs_simbolos = new DecimalFormatSymbols();
         idfs_simbolos.setDecimalSeparator('.');
         formatoNumero = new DecimalFormat(lstr_formato, idfs_simbolos);
+        formatoNumero.setRoundingMode(RoundingMode.CEILING);
         try {
             double ldob_valor = Double.parseDouble(numero.toString());
             return formatoNumero.format(ldob_valor);
