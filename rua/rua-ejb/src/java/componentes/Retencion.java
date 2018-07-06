@@ -6,7 +6,6 @@
 package componentes;
 
 import dj.comprobantes.offline.enums.TipoComprobanteEnum;
-import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
@@ -1015,11 +1014,11 @@ public class Retencion extends Dialogo {
         try {
             dou_por_ret = Double.parseDouble(tab_dt_retencion.getValor("porcentaje_cndre"));
             dou_por_ret = dou_por_ret / 100;
-            dou_por_ret = Double.parseDouble(utilitario.getFormatoNumero(dou_por_ret));
         } catch (Exception e) {
         }
         try {
             dou_val_ret = (Double.parseDouble(tab_dt_retencion.getValor("base_cndre")) * dou_por_ret);
+            System.out.println("---" + dou_por_ret + "..." + dou_val_ret);
         } catch (Exception e) {
         }
         tab_dt_retencion.setValor("valor_cndre", utilitario.getFormatoNumero(dou_val_ret));

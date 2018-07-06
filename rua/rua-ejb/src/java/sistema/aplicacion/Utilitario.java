@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.*;
+import java.math.RoundingMode;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -338,18 +339,20 @@ public class Utilitario extends Framework {
      * @param numero_decimales
      * @return
      */
+    @Override
     public String getFormatoNumero(Object numero, int numero_decimales) {
         String lstr_formato = "#";
         for (int i = 0; i < numero_decimales; i++) {
             if (i == 0) {
                 lstr_formato += ".";
             }
-            lstr_formato += "#";
+            lstr_formato += "0";
         }
         DecimalFormat formatoNumero;
         DecimalFormatSymbols idfs_simbolos = new DecimalFormatSymbols();
         idfs_simbolos.setDecimalSeparator('.');
         formatoNumero = new DecimalFormat(lstr_formato, idfs_simbolos);
+        formatoNumero.setRoundingMode(RoundingMode.CEILING);
         try {
             double ldob_valor = Double.parseDouble(numero.toString());
             return formatoNumero.format(ldob_valor);
@@ -1080,13 +1083,7 @@ public class Utilitario extends Framework {
 
     @Override
     public String getFormatoNumero(Object numero) {
-        double dou_num = 0;
-        try {
-            dou_num = Double.parseDouble(String.valueOf(numero));
-            dou_num = Math.rint(dou_num * 100) / 100;
-        } catch (Exception e) {
-        }
-        return super.getFormatoNumero(dou_num); //To change body of generated methods, choose Tools | Templates.
+        return getFormatoNumero(numero, 2);
     }
 
     /**
