@@ -152,7 +152,8 @@ public class ArchivoServiceImp implements ArchivoService {
                     "codigoInterno") : utilitario.getValorEtiqueta(strDetalleActual, "codigoPrincipal")),
                     (utilitario.getValorEtiqueta(strDetalleActual, "codigoAuxiliar").isEmpty() ? utilitario.getValorEtiqueta(strDetalleActual,
                     "codigoAdicional") : utilitario.getValorEtiqueta(strDetalleActual, "codigoAuxiliar")),
-                    utilitario.getFormatoNumero(utilitario.getValorEtiqueta(strDetalleActual, "cantidad"), 3), utilitario.getValorEtiqueta(strDetalleActual, "descripcion"),
+                    utilitario.getValorEtiqueta(strDetalleActual, "cantidad"),
+                    utilitario.getValorEtiqueta(strDetalleActual, "descripcion"),
                     utilitario.getValorEtiqueta(strDetalleActual, "precioUnitario"),
                     utilitario.getValorEtiqueta(strDetalleActual, "precioTotalSinImpuesto"),
                     utilitario.getValorEtiqueta(strDetalleActual, "descuento")};
@@ -335,7 +336,6 @@ public class ArchivoServiceImp implements ArchivoService {
             }
             parametros.put("TARIFA_IVA", TipoImpuestoIvaEnum.getPorcentaje(dou_porcentaje_iva));
             parametros.put("IVA_0", utilitario.getFormatoNumero(dou_base_tarifa0 + dou_base_no_objeto_iva));
-
         } catch (Exception e) {
         }
         return parametros;
