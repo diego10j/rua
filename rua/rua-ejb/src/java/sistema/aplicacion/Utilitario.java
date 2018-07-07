@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.*;
-import java.math.RoundingMode;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -342,19 +341,25 @@ public class Utilitario extends Framework {
     @Override
     public String getFormatoNumero(Object numero, int numero_decimales) {
         String lstr_formato = "#";
+        String ceros = "1";
+        double dceros = 1;
         for (int i = 0; i < numero_decimales; i++) {
             if (i == 0) {
                 lstr_formato += ".";
             }
             lstr_formato += "0";
+            ceros += "0";
         }
+        ceros += ".00";
+        dceros = Double.parseDouble(ceros);
         DecimalFormat formatoNumero;
         DecimalFormatSymbols idfs_simbolos = new DecimalFormatSymbols();
         idfs_simbolos.setDecimalSeparator('.');
         formatoNumero = new DecimalFormat(lstr_formato, idfs_simbolos);
-        formatoNumero.setRoundingMode(RoundingMode.CEILING);
+
         try {
             double ldob_valor = Double.parseDouble(numero.toString());
+            ldob_valor = Math.round(ldob_valor * dceros) / dceros;
             return formatoNumero.format(ldob_valor);
         } catch (Exception ex) {
             return null;
