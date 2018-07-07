@@ -22,17 +22,17 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class EmisorDAOImp implements EmisorDAO {
-
+    
     private Emisor emisor = null;
-
+    
     @Override
     public Emisor getEmisor(String sucursal) throws GenericException {
-
+        
         ConexionCEO conn = new ConexionCEO();
         ResultSet resultSet = null;
         try {
             resultSet = conn.consultar("select ide_sremi,identificacion_empr,nom_corto_empr,nom_empr,direccion_empr,contribuyenteespecial_empr,obligadocontabilidad_empr,direccion_sucu,\n"
-                    + " tiempo_espera_sremi,ambiente_sremi,wsdl_recep_offline_sremi,wsdl_autori_offline_sremi,telefono_empr,fines_lucro_empr,cant_decim_sremi,preciou_decim_sremi "
+                    + " tiempo_espera_sremi,ambiente_sremi,wsdl_recep_offline_sremi,wsdl_autori_offline_sremi,telefono_empr,fines_lucro_empr,cant_decim_sremi,preciou_decim_sremi,mail_empr "
                     + " from sri_emisor a "
                     + " inner join sis_sucursal b on a.ide_sucu=b.ide_sucu "
                     + " inner join sis_empresa c on b.ide_empr=c.ide_empr "
@@ -52,14 +52,15 @@ public class EmisorDAOImp implements EmisorDAO {
                 emisor.setWsdlautirizacion(resultSet.getString("wsdl_autori_offline_sremi"));
                 emisor.setDirsucursal(resultSet.getString("direccion_sucu"));
                 emisor.setTelefonos(resultSet.getString("telefono_empr"));
+                emisor.setCorreo("mail_empr");
                 if (resultSet.getString("fines_lucro_empr") != null) {
                     emisor.setSinFinesLucro(resultSet.getBoolean("fines_lucro_empr"));
                 }
-
+                
                 if (resultSet.getString("cant_decim_sremi") != null) {
                     emisor.setDecimalesCantidad(resultSet.getInt("cant_decim_sremi"));
                 }
-
+                
                 if (resultSet.getString("preciou_decim_sremi") != null) {
                     emisor.setDecimalesPrecioUnitario(resultSet.getInt("preciou_decim_sremi"));
                 }
@@ -75,7 +76,7 @@ public class EmisorDAOImp implements EmisorDAO {
             }
             conn.desconectar();
         }
-
+        
         if (emisor == null) {
             throw new GenericException("ERROR. No existe Emisor");
         }
