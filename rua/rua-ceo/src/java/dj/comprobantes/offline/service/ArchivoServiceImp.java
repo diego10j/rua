@@ -276,6 +276,7 @@ public class ArchivoServiceImp implements ArchivoService {
 
             parametros.put("TELEFONO", comprobante.getTelefonos());//22-06-2018
             parametros.put("SIN_FINES_LUCRO", String.valueOf(comprobante.isSinFinesLucro())); //22-06-2018
+            parametros.put("CORREO_EMPRESA", comprobante.getCorreoEmpresa()); //07-07-2018
 
             parametros.put("NUM_DOC_MODIFICADO", utilitario.getValorEtiqueta(cadenaXML, "numDocModificado"));
             parametros.put("DOC_MODIFICADO", TipoComprobanteEnum.getDescripcion(utilitario.getValorEtiqueta(cadenaXML, "codDocModificado")));
