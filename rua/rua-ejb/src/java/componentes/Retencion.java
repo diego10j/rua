@@ -472,8 +472,7 @@ public class Retencion extends Dialogo {
                 tab_dt_retencion.insertar();
                 tab_dt_retencion.setValor("base_cndre", utilitario.getValorEtiqueta(strDetalleActual, "baseImponible"));
                 tab_dt_retencion.setValor("porcentaje_cndre", utilitario.getValorEtiqueta(strDetalleActual, "porcentajeRetener"));
-                tab_dt_retencion.setValor("valor_cndre", utilitario.getValorEtiqueta(strDetalleActual, "valorRetenido"));
-                System.out.println("--- " + utilitario.getValorEtiqueta(strDetalleActual, "codigoRetencion"));
+                tab_dt_retencion.setValor("valor_cndre", utilitario.getValorEtiqueta(strDetalleActual, "valorRetenido"));               
                 String ide_cncim = ser_retencion.getIdeCabeceraImpuesto(utilitario.getValorEtiqueta(strDetalleActual, "codigoRetencion"));
                 tab_dt_retencion.setValor("ide_cncim", ide_cncim);
             }
