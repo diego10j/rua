@@ -314,7 +314,7 @@ public class pre_genera_fac_lote extends Pantalla {
                 tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "periodo_lectivo_petlf"));
                 tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
                 tab_info_adicional.insertar();
-                tab_info_adicional.setValor("nombre_srina", "Recibo ");
+                tab_info_adicional.setValor("nombre_srina", "Recibo");
                 tab_info_adicional.setValor("valor_srina", tab_detalle.getValor(i, "cod_factura_petlf"));
                 tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
 
