@@ -68,7 +68,7 @@ public class FacturaServiceImp implements FacturaService {
             }
 
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                    .append("     <factura id=\"comprobante\" version=\"2.1.0\"> \n")
+                    .append("     <factura id=\"comprobante\" version=\"1.1.0\"> \n")
                     .append("		<infoTributaria> \n")
                     .append("			<ambiente>").append(emisor.getAmbiente()).append("</ambiente> \n")
                     .append("			<tipoEmision>").append(comprobante.getTipoemision()).append("</tipoEmision> \n")
