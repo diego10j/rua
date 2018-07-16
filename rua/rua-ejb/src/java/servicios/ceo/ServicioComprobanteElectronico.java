@@ -672,4 +672,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 + "order by fechaemision_srcom desc";
     }
 
+    public String getSqlComprobantesPendienets() {
+        return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc in (5,1) order by ide_sresc";
+    }
+
 }
