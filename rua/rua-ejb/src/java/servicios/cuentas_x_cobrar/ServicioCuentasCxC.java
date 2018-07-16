@@ -1086,7 +1086,7 @@ public class ServicioCuentasCxC extends ServicioBase {
         if (isFacturaElectronica(ide_ccdaf)) { //si tiene facturacion electrónica
             return "select a.ide_cpcno, numero_cpcno,ide_cnccc,a.ide_cpeno,nombre_sresc as nombre_cpeno, fecha_emisi_cpcno,motivo_srcom as MOTIVO,nom_geper,identificac_geper,base_grabada_cpcno as ventas12,"
                     + "base_tarifa0_cpcno+base_no_objeto_iva_cpcno as ventas0,valor_iva_cpcno,total_cpcno, "
-                    + "claveacceso_srcom as CLAVE_ACCESO, fecha_trans_cpcno,d.ide_srcom,a.ide_geper ,num_doc_mod_cpcno "
+                    + "claveacceso_srcom as CLAVE_ACCESO, fecha_trans_cpcno,d.ide_srcom,a.ide_geper ,num_doc_mod_cpcno,observacion_cpcno as OBSERVACION "
                     + "from cxp_cabecera_nota a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                     + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
