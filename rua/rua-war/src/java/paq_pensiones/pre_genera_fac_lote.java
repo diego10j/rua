@@ -160,8 +160,10 @@ public class pre_genera_fac_lote extends Pantalla {
 
     public void enviarSRI() {
         try {
-            comprobanteService.enviarRecepcionSRI();
-            comprobanteService.enviarAutorizacionSRI();
+            TablaGenerica tag_com = utilitario.consultar(ser_comprobante_electronico.getSqlComprobantesPendienets());
+            for (int i = 0; i < tag_com.getTotalFilas(); i++) {
+                ser_comprobante_electronico.enviarComprobante(tag_com.getValor(i, "claveacceso_srcom"));
+            }
         } catch (Exception e) {
             utilitario.crearError("Error al enviar al SRI", "enviarSRI()", e);
         }
