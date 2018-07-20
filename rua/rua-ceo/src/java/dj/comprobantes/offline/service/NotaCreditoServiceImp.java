@@ -130,6 +130,9 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
             if (comprobante.getCliente().getDireccion() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Dirección\">").append(comprobante.getCliente().getDireccion()).append("</campoAdicional> \n");
             }
+            if (comprobante.getInfoAdicional1() != null) {
+                str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
+            }
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </notaCredito>");
         }
