@@ -120,6 +120,7 @@ public class pre_genera_fac_lote extends Pantalla {
 
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("pen_tmp_lista_fact", "ide_petlf", 1);
+        tab_detalle.setCondicion("ide_petlf=-1");
         tab_detalle.getColumna("ide_petlf").setVisible(false);
         tab_detalle.setRows(20);
         tab_detalle.setLectura(true);
