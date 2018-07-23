@@ -101,6 +101,7 @@ public class cls_formulario103 {
                 //cuadra con ats por facturas que no generan retencion 332 
                 double dou_total_ats = Double.parseDouble(consultarComprasAts());
                 double dou_total = Double.parseDouble(v349);
+//                System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
                 if (dou_total != dou_total_ats) {
                     //1 si es mayor el total en el ats
                     double d332 = Double.parseDouble(v332);
@@ -113,6 +114,7 @@ public class cls_formulario103 {
                         //resto al 332 actual la diferencia                        
                         d332 -= diferencia;
                     }
+                    System.out.println("v332 " + d332);
                     v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
                     //v332 = consultarBaseCasillero332();
 
@@ -385,9 +387,10 @@ public class cls_formulario103 {
 
     public String consultarComprasAts() {
         double dou_valor = 0;
+        double dou_notas = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa + base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) as tatal from cxp_cabece_factur\n"
                 + "where fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
-                + "and ide_rem_cpcfa is null and ide_cpefa=0");  //filtra no anuladas
+                + "and ide_rem_cpcfa is null and ide_cpefa=0 and ide_cntdo !=0");  //filtra no anuladas y no notas de credito
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
@@ -395,7 +398,19 @@ public class cls_formulario103 {
                 dou_valor = 0;
             }
         }
-        return utilitario.getFormatoNumero(dou_valor);
+
+        lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa + base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) as tatal from cxp_cabece_factur\n"
+                + "where fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
+                + "and ide_rem_cpcfa is null and ide_cpefa=0 and ide_cntdo =0");  //filtra no anuladas y  notas de credito
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+                dou_notas = 0;
+            }
+        }
+
+        return utilitario.getFormatoNumero(dou_valor - dou_notas);
     }
 
     public String getTipoDeclaracion() {

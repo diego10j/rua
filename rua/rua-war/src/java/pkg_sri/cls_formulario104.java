@@ -32,7 +32,7 @@ public class cls_formulario104 {
     private String fecha_fin = "";
     private String porcentaje_iva = "";
     private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v423, v429, v431, v480, v481, v482, v483, v484, v485, v499;
-    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563, v543, v564, v526, v527,v520;
+    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563, v543, v564, v526, v527, v520;
     private String v601, v602, v605, v607, v609, v611, v613, v615, v617, v620, v621, v699;
     private String v721, v723, v725, v799, v859, v801, v731, v729;
     private String v890, v897, v898, v899, v880;
@@ -44,6 +44,27 @@ public class cls_formulario104 {
         try {
             fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
             fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
+
+            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
+                    + "alter_tribu_cpdfa='503', usuario_actua='sa'\n"
+                    + "where ide_cpdfa in\n"
+                    + "(\n"
+                    + "select ide_cpdfa from cxp_detall_factur a\n"
+                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
+                    + "where alter_tribu_cpdfa='00'\n"
+                    + "and iva_inarti_cpdfa=1  --IVA SI\n"
+                    + ")");
+
+            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
+                    + "alter_tribu_cpdfa='507', usuario_actua='sa'\n"
+                    + "where ide_cpdfa in\n"
+                    + "(\n"
+                    + "select ide_cpdfa from cxp_detall_factur a\n"
+                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
+                    + "where alter_tribu_cpdfa='00'\n"
+                    + "and iva_inarti_cpdfa=-1  --IVA NO\n"
+                    + ")");
+
             TablaGenerica tab_empresa = utilitario.consultar("SELECT identificacion_empr,nom_empr,identi_repre_empr from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
 
             porcentaje_iva = ser_configuracion.getPorcentajeIva(fecha_fin) + "";
@@ -388,7 +409,7 @@ public class cls_formulario104 {
                 + " FROM cxp_cabece_factur f "
                 + " LEFT JOIN cxp_detall_factur df ON (df.ide_cpcfa = f.ide_cpcfa) "
                 + " WHERE df.alter_tribu_cpdfa in(" + utilitario.generarComillaSimple(alterno) + ")"
-                + " AND f.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_rem_cpcfa is null and ide_cpefa=0");  //filtra no anuladas
+                + " AND f.fecha_emisi_cpcfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_rem_cpcfa is null and ide_cpefa=0  and ide_cntdo !=0");  //filtra no anuladas
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
@@ -669,4 +690,7 @@ public class cls_formulario104 {
         }
         this.numSustituye = numSustituye;
     }
+
+    
+
 }
