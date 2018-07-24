@@ -143,6 +143,7 @@ public class pre_comp_inv extends Pantalla {
 
         sec_rango_reporte.setId("sec_rango_reporte");
         sec_rango_reporte.setMultiple(false);
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sec_rango_reporte);
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
@@ -316,6 +317,7 @@ public class pre_comp_inv extends Pantalla {
             }
         } else if (rep_reporte.getReporteSelecionado().equals("Saldos de Productos")) {
             if (rep_reporte.isVisible()) {
+                System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
                 parametro = new HashMap();
                 rep_reporte.cerrar();
                 sel_tab.dibujar();
@@ -329,7 +331,7 @@ public class pre_comp_inv extends Pantalla {
                 utilitario.addUpdate("sel_tab,sel_arbol");
             } else if (sel_arbol.isVisible()) {
                 parametro.put("ide_inarti", sel_arbol.getSeleccionados());
-                System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
+               // System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
                 sel_arbol.cerrar();
                 sec_rango_reporte.setMultiple(false);
                 sec_rango_reporte.dibujar();
@@ -350,19 +352,22 @@ public class pre_comp_inv extends Pantalla {
             } else if (sel_tab.isVisible()) {
                 sel_tab.cerrar();
                 parametro.put("ide_inbod", sel_tab.getSeleccionados());
-                System.out.println("seleccion..de tabla..." + sel_tab.getSeleccionados());
+              //  System.out.println("seleccion..de tabla..." + sel_tab.getSeleccionados());
                 sel_arbol.dibujar();
                 //sec_rango_reporte.dibujar();
                 utilitario.addUpdate("sel_tab,sel_arbol");
             } else if (sel_arbol.isVisible()) {
+                
                 parametro.put("ide_inarti", sel_arbol.getSeleccionados());
-                System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
+               // System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
                 sel_arbol.cerrar();
                 sec_rango_reporte.setMultiple(true);
                 sec_rango_reporte.dibujar();
                 utilitario.addUpdate("sel_arbol,sec_rango_reporte");
             } else if (sec_rango_reporte.isVisible()) {
+                
                 parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
+               // System.out.println("seleccion..de arbol..." + sel_arbol.getSeleccionados());
                 parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
                 sec_rango_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
@@ -370,40 +375,48 @@ public class pre_comp_inv extends Pantalla {
                 utilitario.addUpdate("sef_formato,sec_rango_reporte");
             }
         } else if (rep_reporte.getReporteSelecionado().equals("Consumos por Departamento")) {
+           // System.out.println("seleccion..de arbol... entre" + sel_arbol.getSeleccionados());
             if (rep_reporte.isVisible()) {
+                
                 parametro = new HashMap();
+              //  System.out.println("seleccion..de arbol...ingre" + sel_arbol.getSeleccionados());
                 rep_reporte.cerrar();
                 sec_rango_reporte.setMultiple(true);
                 sec_rango_reporte.dibujar();
             } else if (sec_rango_reporte.isVisible()) {
+               
                 parametro.put("fecha_inicio", sec_rango_reporte.getFecha1());
                 parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
+               // System.out.println("seleccion..de arbol...ing" + sel_arbol.getSeleccionados());
                 sec_rango_reporte.cerrar();
                 sel_arbol.dibujar();
                 utilitario.addUpdate("sel_arbol,sec_rango_reporte");
             } else if (sel_arbol.isVisible()) {
+              
 //                if (sel_arbol.getSeleccionados() == null || sel_arbol.getSeleccionados().isEmpty()) {
 //                    return;
 //                }
                 parametro.put("ide_inarti", sel_arbol.getSeleccionados());
-                System.out.println("seleccion..de ide_inarti..." + sel_arbol.getSeleccionados());
+                //System.out.println("seleccion..de ide_inarti...entras" + sel_arbol.getSeleccionados());
                 sel_arbol.cerrar();
                 sel_departamento.dibujar();
             } else if (sel_departamento.isVisible()) {
+                
 //                if (sel_departamento.getSeleccionados() == null || sel_departamento.getSeleccionados().isEmpty()) {
 //                    return;
 //                }
                 parametro.put("ide_georg", sel_departamento.getSeleccionados());
-                System.out.println("seleccion..de ide_georg..." + sel_departamento.getSeleccionados());
+               // System.out.println("seleccion..de ide_georg..." + sel_departamento.getSeleccionados());
                 sel_departamento.cerrar();
                 sel_empleado.dibujar();
-            } else if (sel_empleado.isVisible()) {
+            } else if (sel_empleado.isVisible())  {
+              
 //                if (sel_empleado.getSeleccionados() == null || sel_empleado.getSeleccionados().isEmpty()) {
 //                    return;
 //                }
                 parametro.put("ide_geper", sel_empleado.getSeleccionados());
                 parametro.put("informe_para", "Jimmy Massa");
-                System.out.println("seleccion..de ide_geper..." + sel_empleado.getSeleccionados());
+              //  System.out.println("seleccion..de ide_geper..." + sel_empleado.getSeleccionados());
                 sel_empleado.cerrar();
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sef_formato.dibujar();
