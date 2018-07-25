@@ -221,7 +221,7 @@ public class ServiciosAdquisiones {
                 return sql;
     }
     
-    public String getDatosPresupuesto (){
+    public String getDatosPresupuesto (String tipo,String anio, String ide){
         String sql = "";
         sql= "select c.ide_prpot,comprometido_prpot,comprometido_prpot  - (case when devengado is null then 0 else devengado end) as saldoxdevengado,fecha_tramite_prtra,cod_programa_prpro,codigo_clasificador_prcla,detalle_actividad,detalle_subactividad,detalle_prfuf,elaborado,observaciones_prtra,a.ide_geedp,empleado_responsable \n" +
 "            from pre_tramite a \n" +
@@ -256,13 +256,23 @@ public class ServiciosAdquisiones {
 "            ) b, pre_fuente_financiamiento c,gen_anio d \n" +
 "            where a.ide_prpro = b.ide_prpro \n" +
 "            and a.ide_prfuf = c.ide_prfuf \n" +
-"            and a.ide_geani =d.ide_geani \n" +
-"            order by cod_programa_prpro \n" +
+"            and a.ide_geani =d.ide_geani \n" ;
+                if(tipo.equals("2")){
+                    sql +="     and a.ide_geani = "+anio ;
+                }
+                    sql+="    order by cod_programa_prpro \n" +
 "            ) d on c.ide_pranu = d.ide_pranu \n" +
 "            left join (select ide_prpot ,sum(valor_adpres) as devengado \n" +
 "            from adq_presupuesto group by ide_adpres ) e on c.ide_prpot = e.ide_prpot\n" +
 "            where not c.ide_prpot is null";
-                return sql;
+                
+                 if(tipo.equals("3")){
+                    sql +=" and (comprometido_prpot  - (case when devengado is null then 0 else devengado end)) > 0 ";
+                }
+                 if(tipo.equals("4")){
+                    sql +=" and c.ide_prpot =  "+ide;
+                }
+                 return sql;
     }
     
     public String getDatosEmpleadoConsulta (String ide_gtemp){
@@ -279,9 +289,10 @@ public class ServiciosAdquisiones {
                 return sql;
     }
     
-    public String getDatosPresupuestoConsulta (String ide_prpot){
+    public String getDatosPresupuestoConsulta (){
         String sql = "";
-        sql= "select c.ide_prpot,comprometido_prpot,comprometido_prpot  - (case when devengado is null then 0 else devengado end) as saldoxdevengado,fecha_tramite_prtra,cod_programa_prpro,codigo_clasificador_prcla,detalle_actividad,detalle_subactividad,detalle_prfuf,elaborado,observaciones_prtra,a.ide_geedp,empleado_responsable \n" +
+       
+        sql= "select c.ide_prpot,codigo_clasificador_prcla,detalle_subactividad,detalle_prfuf\n" +
 "            from pre_tramite a \n" +
 "            left join \n" +
 "            ( \n" +
@@ -319,8 +330,9 @@ public class ServiciosAdquisiones {
 "            ) d on c.ide_pranu = d.ide_pranu \n" +
 "            left join (select ide_prpot ,sum(valor_adpres) as devengado \n" +
 "            from adq_presupuesto group by ide_adpres ) e on c.ide_prpot = e.ide_prpot\n" +
-"            where not c.ide_prpot is null\n" +
-"            and c.ide_prpot in ("+ide_prpot+") ";
+"            where not c.ide_prpot is null\n" ;
+        
+       
                 return sql;
     }
     
