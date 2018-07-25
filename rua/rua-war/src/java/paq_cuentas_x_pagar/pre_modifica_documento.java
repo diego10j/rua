@@ -53,7 +53,7 @@ public class pre_modifica_documento extends Pantalla {
     private final Texto tex_total = new Texto();
     private final Texto tex_valor_descuento = new Texto();
     private final Texto tex_porc_descuento = new Texto();
-    private final Texto tex_otros_valores = new Texto();
+    private final Texto tex_ice = new Texto();
     
     private Tabla tab_cab_documento;
     private Tabla tab_det_documento;
@@ -426,11 +426,11 @@ public class pre_modifica_documento extends Pantalla {
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(6);
         
-        gri_valores.getChildren().add(new Etiqueta("<strong> OTROS VALORES :<s/trong>"));
-        tex_otros_valores.setStyle("font-size: 14px;text-align: right;width:110px");
-        tex_otros_valores.setMetodoChange("calcularTotalDocumento");
-        tex_otros_valores.setValue(utilitario.getFormatoNumero("0"));
-        gri_valores.getChildren().add(tex_otros_valores);
+        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR ICE:<s/trong>"));
+        tex_ice.setStyle("font-size: 14px;text-align: right;width:110px");
+        tex_ice.setMetodoChange("calcularTotalDocumento");
+        tex_ice.setValue(utilitario.getFormatoNumero("0"));
+        gri_valores.getChildren().add(tex_ice);
         gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :<s/trong>"));
         tex_porc_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_porc_descuento.setDisabled(true);
@@ -559,7 +559,7 @@ public class pre_modifica_documento extends Pantalla {
         }
         
         double descuento = 0;
-        double otros = 0;
+        double valor_ice = 0;
         
         if (tex_valor_descuento.getValue() != null) {
             try {
@@ -567,9 +567,9 @@ public class pre_modifica_documento extends Pantalla {
             } catch (Exception e) {
             }
         }
-        if (tex_otros_valores.getValue() != null) {
+        if (tex_ice.getValue() != null) {
             try {
-                otros = Double.parseDouble(utilitario.getFormatoNumero(tex_otros_valores.getValue()));
+                valor_ice = Double.parseDouble(utilitario.getFormatoNumero(tex_ice.getValue()));
             } catch (Exception e) {
             }
         }
@@ -578,18 +578,18 @@ public class pre_modifica_documento extends Pantalla {
 
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
-        tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(otros));
+        tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(tex_ice));
         
         tab_cab_documento.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + otros));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
         
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + otros));
+        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
         utilitario.addUpdate("gri_valores");
     }
 
@@ -945,7 +945,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.setValor("observacion_cpcfa", String.valueOf(ate_observacion.getValue()));
         
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
-        tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros_valores.getValue()));
+        tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(tex_ice.getValue()));
         tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
         tab_cab_documento.modificar(tab_cab_documento.getFilaActual());
         if (validarDocumento()) {
