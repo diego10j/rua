@@ -426,18 +426,18 @@ public class pre_modifica_documento extends Pantalla {
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(6);
         
-        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR ICE:<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR ICE:</strong>"));
         tex_ice.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_ice.setMetodoChange("calcularTotalDocumento");
         tex_ice.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_ice);
-        gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :</strong>"));
         tex_porc_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_porc_descuento.setDisabled(true);
         tex_porc_descuento.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_porc_descuento);
         
-        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR DESCUENTO :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR DESCUENTO :</strong>"));
         tex_valor_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_valor_descuento.setValue(utilitario.getFormatoNumero("0"));
         tex_valor_descuento.setMetodoChange("calcularTotalDocumento");
@@ -448,7 +448,7 @@ public class pre_modifica_documento extends Pantalla {
         tex_subtotal12.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal12.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_subtotal12);
-        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>SUBTOTAL TARIFA 0% :</strong>"));
         tex_subtotal0.setDisabled(true);
         tex_subtotal0.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_subtotal0.setValue(utilitario.getFormatoNumero("0"));
@@ -458,7 +458,7 @@ public class pre_modifica_documento extends Pantalla {
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_iva.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_iva);
-        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :<s/trong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :</strong>"));
         tex_total.setDisabled(true);
         tex_total.setStyle("font-size: 14px;font-weight: bold;text-align: right;width:110px");
         tex_total.setValue(utilitario.getFormatoNumero("0"));
