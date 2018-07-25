@@ -949,7 +949,7 @@ public class DocumentoCxP extends Dialogo {
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(6);
 
-        gri_valores.getChildren().add(new Etiqueta("<strong> MONTO ICE :</strong>"));
+        gri_valores.getChildren().add(new Etiqueta("<strong> VALOR ICE :</strong>"));
         tex_ice.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_ice.setMetodoChangeRuta(tab_det_documento.getRuta() + ".calcularTotalDocumento");
         tex_ice.setValue(utilitario.getFormatoNumero("0"));
