@@ -27,16 +27,16 @@ public class pre_concepto extends Pantalla {
 
         //configuracion de la tabla concepto (cabecera)
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setTabla("rec_concepto", "ide_concepto", 1);
-        tab_tabla1.setCampoOrden("des_concepto");
-        tab_tabla1.getColumna("ide_tipo_documento").setCombo("rec_tipo_documento", "ide_tipo_documento", "detalle", "");
-        tab_tabla1.getColumna("abonos").setMetodoChange("activarCampos");
+        tab_tabla1.setTabla("rec_concepto", "ide_concepto_recon", 1);
+        //tab_tabla1.setCampoOrden("des_concepto");
+        //tab_tabla1.getColumna("ide_tipo_documento").setCombo("rec_tipo_documento", "ide_tipo_documento", "detalle", "");
+        //tab_tabla1.getColumna("abonos").setMetodoChange("activarCampos");
         //  tab_tabla1.getColumna("urbano").setValorDefecto("true");
-        tab_tabla1.getColumna("urbano").setMetodoChange("cambiaUrbano");
-        tab_tabla1.getColumna("rural").setMetodoChange("cambiaRural");
+        //tab_tabla1.getColumna("urbano").setMetodoChange("cambiaUrbano");
+       /* tab_tabla1.getColumna("rural").setMetodoChange("cambiaRural");
         tab_tabla1.getColumna("uso").setMetodoChange("cambiaUso");
         tab_tabla1.getColumna("exoneracion").setMetodoChange("cambiaExoneracion");
-        tab_tabla1.getColumna("dependencia").setMetodoChange("cambiaDependencia");
+        tab_tabla1.getColumna("dependencia").setMetodoChange("cambiaDependencia");*/
         tab_tabla1.setRows(10);
         tab_tabla1.onSelect("seleccionar_tabla1");
         tab_tabla1.agregarRelacion(tab_tabla2);
@@ -44,11 +44,11 @@ public class pre_concepto extends Pantalla {
 
         //configuracion de la tabla impuesto (detalle)
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setTabla("rec_forma_impuesto", "ide_forma_impuesto", 2);
-        tab_tabla2.setCampoOrden("ide_impuesto");
-        tab_tabla2.getColumna("ide_impuesto").setCombo("rec_impuesto", "ide_impuesto", "des_impuesto,porcentaje,valor", "");
-        tab_tabla2.getColumna("ide_impuesto").setAutoCompletar();
-        tab_tabla2.setCampoForanea("ide_concepto");
+        tab_tabla2.setTabla("rec_forma_impuesto", "ide_forma_impuesto_refim", 2);
+        tab_tabla2.setCampoOrden("ide_impuesto_reimp");
+        tab_tabla2.getColumna("ide_impuesto_reimp").setCombo("rec_impuesto", "ide_impuesto_reimp", "des_impuesto_reimp,porcentaje_reimp,valor_reimp", "");
+        tab_tabla2.getColumna("ide_impuesto_reimp").setAutoCompletar();
+        tab_tabla2.setCampoForanea("ide_concepto_recon");
 
 
 
@@ -75,8 +75,9 @@ public class pre_concepto extends Pantalla {
                 utilitario.agregarMensajeInfo("Debe guardar el concepto que esta registrando", "");
             }
         } else if (tab_tabla2.isFocus()) {
-            String lstr_uso = tab_tabla1.getValor("uso");
-            if (!lstr_uso.equalsIgnoreCase("true")) {
+            tab_tabla2.insertar();
+            //String lstr_uso = tab_tabla1.getValor("uso");
+          /*  if (!lstr_uso.equalsIgnoreCase("true")) {
                 String lstr_porcentaje_exonera = tab_tabla1.getValor("exoneracion");
                 String lstr_porcentaje_abono = tab_tabla1.getValor("abonos");
 
@@ -95,7 +96,7 @@ public class pre_concepto extends Pantalla {
                 tab_tabla2.insertar();
             } else {
                 utilitario.agregarMensajeInfo("Atención", "Al marcar USO no puede registrar detalles");
-            }
+            }*/
         }
     }
 
@@ -116,20 +117,14 @@ public class pre_concepto extends Pantalla {
     }
 
     public void guardar() {
-        boolean valida = true;
-        if (tab_tabla2.getColumna("PORCENTAJE_EXONERA").isVisible()) {
-            valida = validarPorcentajeExoneracion();
-        }
-        if (valida == true && tab_tabla2.getColumna("porcentaje_abono").isVisible()) {
-            valida = validarPorcentajeAbono();
-        }
-        if (valida) {
-            tab_tabla1.guardar();
-            tab_tabla2.guardar();
-            utilitario.getConexion().guardarPantalla();
-        } else {
-            utilitario.agregarMensajeError("No se puede Guardar", "La suma de los detalles del porcentaje del detalle  debe ser igual a 100%");
-        }
+      if (tab_tabla1.isFocus()){
+          tab_tabla1.guardar();
+      }
+      else if (tab_tabla2.isFocus()){
+         tab_tabla2.guardar(); 
+      } 
+            guardarPantalla();
+
     }
 
     public void eliminar() {

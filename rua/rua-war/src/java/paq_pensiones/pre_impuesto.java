@@ -29,16 +29,16 @@ public class pre_impuesto extends Pantalla {
 
         //configuracion de la tabla impuesto
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("rec_impuesto", "ide_impuesto", 1);
-        tab_tabla.setCampoOrden("ide_impuesto");
-        tab_tabla.getColumna("ide_cuenta").setCombo("conc_catalogo_cuentas", "ide_cuenta", "ide_cuenta,cue_codigo,cue_descripcion", "");
-        tab_tabla.getColumna("ide_cuenta").setAutoCompletar();
-        tab_tabla.getColumna("ide_clasificador").setCombo("conc_clasificador", "ide_clasificador", "ide_clasificador,pre_codigo,pre_descripcion", "");
-        tab_tabla.getColumna("ide_clasificador").setAutoCompletar();
+        tab_tabla.setTabla("rec_impuesto", "ide_impuesto_reimp", 1);
+        tab_tabla.setCampoOrden("ide_impuesto_reimp");
+       // tab_tabla.getColumna("ide_cuenta").setCombo("conc_catalogo_cuentas", "ide_cuenta", "ide_cuenta,cue_codigo,cue_descripcion", "");
+        //tab_tabla.getColumna("ide_cuenta").setAutoCompletar();
+        //tab_tabla.getColumna("ide_clasificador").setCombo("conc_clasificador", "ide_clasificador", "ide_clasificador,pre_codigo,pre_descripcion", "");
+        //tab_tabla.getColumna("ide_clasificador").setAutoCompletar();
         tab_tabla.setRows(20);
-        tab_tabla.getColumna("porcentaje").setMetodoChange("cambiaPorcentaje");
-        tab_tabla.getColumna("valor").setMetodoChange("cambiaValor");
-        tab_tabla.getColumna("tipo_con").setVisible(false);
+        tab_tabla.getColumna("porcentaje_reimp").setMetodoChange("cambiaPorcentaje");
+        tab_tabla.getColumna("valor_reimp").setMetodoChange("cambiaValor");
+        //tab_tabla.getColumna("tipo_con").setVisible(false);
         tab_tabla.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();
