@@ -141,7 +141,7 @@ public class pre_genera_fac_lote extends Pantalla {
 
         bar_botones.agregarSeparador();
         Boton bot_enviar = new Boton();
-        bot_enviar.setValue("Enviar al SRI");
+        bot_enviar.setValue("Enviar Facturas al SRI");
         bot_enviar.setMetodo("enviarSRI");
         bot_enviar.setIcon("ui-icon-signal-diag");
         bar_botones.agregarBoton(bot_enviar);
