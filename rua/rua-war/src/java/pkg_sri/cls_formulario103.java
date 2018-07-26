@@ -101,36 +101,38 @@ public class cls_formulario103 {
                 //cuadra con ats por facturas que no generan retencion 332 
                 double dou_total_ats = Double.parseDouble(consultarComprasAts());
                 double dou_total = Double.parseDouble(v349);
-//                System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
-                if (dou_total != dou_total_ats) {
-                    //1 si es mayor el total en el ats
-                    double d332 = Double.parseDouble(v332);
-                    if (dou_total_ats > dou_total) {
-                        double diferencia = dou_total_ats - dou_total;
-                        //sumo al 332 actual la diferencia                        
-                        d332 += diferencia;
-                    } else {
-                        double diferencia = dou_total - dou_total_ats;
-                        //resto al 332 actual la diferencia                        
-                        d332 -= diferencia;
-                    }
-                    System.out.println("v332 " + d332);
-                    v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
-                    //v332 = consultarBaseCasillero332();
+                System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
+                System.out.println("v332 " + v332);
 
-                    v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
-                            + Double.parseDouble(v303) + Double.parseDouble(v304)
-                            + Double.parseDouble(v307) + Double.parseDouble(v308)
-                            + Double.parseDouble(v309) + Double.parseDouble(v310)
-                            + Double.parseDouble(v312) + Double.parseDouble(v319)
-                            + Double.parseDouble(v320) + Double.parseDouble(v322)
-                            + Double.parseDouble(v323) + Double.parseDouble(v325)
-                            + Double.parseDouble(v327) + Double.parseDouble(v328)
-                            + Double.parseDouble(v332) + Double.parseDouble(v340)
-                            + Double.parseDouble(v341) + Double.parseDouble(v342)
-                            + Double.parseDouble(v343) + Double.parseDouble(v344));
-                }
-
+////                if (dou_total != dou_total_ats) {
+////                    //1 si es mayor el total en el ats
+////                    double d332 = Double.parseDouble(v332);
+////                    if (dou_total_ats > dou_total) {
+////                        double diferencia = dou_total_ats - dou_total;
+////                        //sumo al 332 actual la diferencia                        
+////                        d332 += diferencia;
+////                    } else {
+////                        double diferencia = dou_total - dou_total_ats;
+////                        //resto al 332 actual la diferencia                        
+////                        d332 -= diferencia;
+////                    }
+////                    
+////                    // v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
+//////                    v332 = consultarBaseCasillero332();
+////                    System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
+////                    System.out.println("v332 " + d332);
+//////                    v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
+//////                            + Double.parseDouble(v303) + Double.parseDouble(v304)
+//////                            + Double.parseDouble(v307) + Double.parseDouble(v308)
+//////                            + Double.parseDouble(v309) + Double.parseDouble(v310)
+//////                            + Double.parseDouble(v312) + Double.parseDouble(v319)
+//////                            + Double.parseDouble(v320) + Double.parseDouble(v322)
+//////                            + Double.parseDouble(v323) + Double.parseDouble(v325)
+//////                            + Double.parseDouble(v327) + Double.parseDouble(v328)
+//////                            + Double.parseDouble(v332) + Double.parseDouble(v340)
+//////                            + Double.parseDouble(v341) + Double.parseDouble(v342)
+//////                            + Double.parseDouble(v343) + Double.parseDouble(v344));
+////                }
                 //valor
                 v352 = consultarRenta(utilitario.getVariable("p_sri_impuesto_renta"));
                 v353 = consultarValorCasillero("303");
