@@ -1368,7 +1368,9 @@ public class DocumentoCxP extends Dialogo {
         }
         //base_grabada = base_grabada - descuento;
         valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
-
+        if (valor_ice > 0) {
+            valor_iva += (valor_ice * tarifaIVA); //0.12
+        }
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
         tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(valor_ice));
