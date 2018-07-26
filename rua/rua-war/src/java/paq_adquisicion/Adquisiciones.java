@@ -37,6 +37,8 @@ public class Adquisiciones extends Pantalla {
     private VisualizarPDF vipdf_comprobante = new VisualizarPDF();   
     private SeleccionTabla sel_tab_proveedor = new SeleccionTabla();
     private SeleccionTabla sel_tab_presupuesto = new SeleccionTabla();
+    double dou_total = 0;
+    double dou_base_ingresada = 0;
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
@@ -123,7 +125,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("VALOR_PRESUPUESTADO_ADCOMP").setNombreVisual("VALOR PRESUPUESTADO");
         tab_adquisiones.getColumna("VALOR_ADCOMP").setNombreVisual("VALOR");
         tab_adquisiones.getColumna("VALOR_ADCOMP").setEtiqueta();
-        //tab_adquisiones.getColumna("VALOR_ADCOMP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
+        tab_adquisiones.getColumna("VALOR_ADCOMP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
         tab_adquisiones.getColumna("FECHA_ADJUDICADO_ADCOMP").setNombreVisual("FECHA ADJUDICADO");
         tab_adquisiones.getColumna("ADJUDICADOR_ADCOMP").setNombreVisual("ADJUDICADOR");
         tab_adquisiones.getColumna("PROVEEDOR_ADCOMP").setNombreVisual("PROVEEDOR");
@@ -146,6 +148,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("USO_ADCOMP").setNombreVisual("USO");
         tab_adquisiones.getColumna("OBSERVACIONES_ADCOMP").setNombreVisual("OBSERVACIONES");
         tab_adquisiones.getColumna("DESTINO_DEL_BIEN_ADCOMP").setNombreVisual("DESTINO");
+        //tab_adquisiones.setValor("valor_adcomp",""+tab_presupuesto.getSumaColumna("valor_adpres"));
         tab_adquisiones.getColumna("APLICA_ADCOMP").setVisible(false);
         tab_adquisiones.getColumna("APRUEBA_DIRECTOR_ADCOMP").setVisible(false);
         tab_adquisiones.getColumna("ATIENDE_BODEGA_ADCOMP").setVisible(false);
@@ -318,6 +321,7 @@ public class Adquisiciones extends Pantalla {
         sel_tab_presupuesto.getTab_seleccion().getColumna("detalle_actividad").setFiltroContenido();
         sel_tab_presupuesto.getBot_aceptar().setMetodo("aceptarPresupuesto");
         
+        
         agregarComponente(sel_tab_proveedor);
         agregarComponente(sel_tab_presupuesto);
         
@@ -349,14 +353,29 @@ public class Adquisiciones extends Pantalla {
 		    utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");
 		    return;
 		}
-                //utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");	
-              //  tab_presupuesto.setColumnaSuma("valor_adpres");
-               /* tab_adquisiones.getColumna("VALOR_ADCOMP").
-                tab_adquisiones.setValor("VALOR_ADCOMP",tab_presupuesto.getSumaColumna("valor_adpres")+"");
-		tab_adquisiones.modificar(tab_adquisiones.getFilaActual());
-		utilitario.addUpdateTabla(tab_adquisiones, "VALOR_ADCOMP","");	
-                tab_presupuesto.setColumnaSuma("valor_adpres");*/
+                tab_presupuesto.setColumnaSuma("valor_adpres");
+                utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");	
+                utilitario.addUpdate("tab_presupuesto");
+              //  tab_adquisiones.getColumna("VALOR_ADCOMP").
+              //  tab_adquisiones.setValor("valor_adcomp",""+tab_presupuesto.getSumaColumna("valor_adpres"));
+	//	tab_adquisiones.modificar(tab_adquisiones.getFilaActual());
+	//	utilitario.addUpdateTabla(tab_adquisiones, "VALOR_ADCOMP","");	
+            //    tab_presupuesto.setColumnaSuma("valor_adpres");
+                calcularTotal();
+
     }
+    
+    public void calcularTotal(){
+        dou_total = 0;
+        dou_base_ingresada = 0;
+        for (int i = 0; i < tab_presupuesto.getTotalFilas(); i++) {
+            dou_base_ingresada += Double.parseDouble(tab_presupuesto.getValor(i, "valor_adpres"));
+        }
+        tab_adquisiones.setValor("valor_adcomp", utilitario.getFormatoNumero(dou_base_ingresada, 2));
+        tab_adquisiones.modificar(tab_adquisiones.getFilaActual());//para que haga el update        
+        utilitario.addUpdate("tab_adquisiones");
+        utilitario.addUpdate("tab_presupuesto");
+      }
     
     public void prueba (AjaxBehaviorEvent evt){
         tab_adquisiones.modificar(evt);
@@ -394,7 +413,9 @@ public class Adquisiciones extends Pantalla {
         
         TablaGenerica tab_dat_prove = utilitario.consultar(ser_adquisiciones.getDatosProveedorConsulta(str_prove));
         for (int i=0;i<tab_dat_prove.getTotalFilas();i++){
+            if (tab_adquisiones.isFilaInsertada()==false){
                 tab_adquisiones.insertar();
+            }
                 tab_adquisiones.setValor("ide_geper",tab_dat_prove.getValor(i,"ide_geper"));
 		tab_adquisiones.setValor("proveedor_adcomp",tab_dat_prove.getValor(i,"nom_geper"));
                 tab_adquisiones.setValor("ruc_proveedor_adcomp",tab_dat_prove.getValor(i,"identificac_geper"));
@@ -412,7 +433,7 @@ public class Adquisiciones extends Pantalla {
         
         TablaGenerica tab_dat_presu = utilitario.consultar(ser_adquisiciones.getDatosPresupuesto("4", "2",str_presu));
         for (int i=0;i<tab_dat_presu.getTotalFilas();i++){
-            if (tab_presupuesto.isFilaInsertada()){
+            if (tab_presupuesto.isFilaInsertada()==false){
                 tab_presupuesto.insertar();
             }
 		tab_presupuesto.setValor("ide_prpot",tab_dat_presu.getValor(i,"ide_prpot"));
@@ -424,7 +445,13 @@ public class Adquisiciones extends Pantalla {
             // tab_empleado.guardar();
             // guardarPantalla();
              sel_tab_presupuesto.cerrar();
-	     utilitario.addUpdate("tab_presupuesto");
+             tab_presupuesto.setColumnaSuma("valor_adpres");
+             utilitario.addUpdateTabla(tab_presupuesto, "valor_adpres","");	
+             utilitario.addUpdate("tab_presupuesto");
+             calcularTotal();
+             tab_adquisiones.guardar();
+             tab_presupuesto.guardar();
+             guardarPantalla();
     }
     
     @Override
