@@ -161,7 +161,7 @@ public class pre_genera_fac_lote extends Pantalla {
 
     public void enviarSRI() {
         try {
-            TablaGenerica tag_com = utilitario.consultar(ser_comprobante_electronico.getSqlComprobantesPendienets());
+            TablaGenerica tag_com = utilitario.consultar(ser_comprobante_electronico.getSqlFacturasPendienets());
             for (int i = 0; i < tag_com.getTotalFilas(); i++) {
                 ser_comprobante_electronico.enviarComprobante(tag_com.getValor(i, "claveacceso_srcom"));
             }
