@@ -151,7 +151,7 @@ public class pre_genera_fac_lote extends Pantalla {
         bot_genera.setValue("Generar Claves de Acceso");
         bot_genera.setMetodo("generarClaveAcceso");
         bot_genera.setIcon("ui-icon-refresh");
-        bar_botones.agregarBoton(bot_genera);
+        //bar_botones.agregarBoton(bot_genera);
 
         Division div = new Division();
         div.dividir1(gri);
