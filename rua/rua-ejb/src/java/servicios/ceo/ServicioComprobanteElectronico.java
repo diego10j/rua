@@ -613,7 +613,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
     }
 
     public int getNumeroComprobantesporEstado(TipoComprobanteEnum tipo, EstadoComprobanteEnum estado) {
-        String sql = "SELECT coddoc_srcom,count(coddoc_srcom) as num FROM sri_comprobante WHERE coddoc_srcom =" + tipo.getCodigo() + "  AND ide_sresc=" + estado.getCodigo() + " group by coddoc_srcom,ide_sresc";
+        String sql = "SELECT coddoc_srcom,count(coddoc_srcom) as num FROM sri_comprobante WHERE coddoc_srcom ='" + tipo.getCodigo() + "'  AND ide_sresc=" + estado.getCodigo() + " group by coddoc_srcom,ide_sresc";
         TablaGenerica tab = utilitario.consultar(sql);
         return tab.getTotalFilas();
     }
@@ -674,8 +674,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 + "order by fechaemision_srcom desc";
     }
 
-    public String getSqlComprobantesPendienets() {
-        return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc in (5,1) order by ide_sresc";
+    public String getSqlFacturasPendienets() {
+        return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc in (5,1) and coddoc_srcom = '" + TipoComprobanteEnum.FACTURA.getCodigo() + "' order by ide_sresc";
     }
 
 }
