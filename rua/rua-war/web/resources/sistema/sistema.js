@@ -107,10 +107,26 @@ PrimeFaces.locales['es'] = {
 };
 
 function abrirPopUp(dir) {
+    var paramUrl = getParameterByName('filtroObras');
+    if (paramUrl) {
+        dir = dir + "?filtroObras=" + paramUrl;
+    }
     var w = window.open(dir, "sistemadj", "width=" + screen.availWidth + ", height=" + screen.availHeight + ", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes");
     w.focus();
 }
 function abrirNuevoPopUp(dir) {
     var w = window.open(dir, "", "width=" + screen.availWidth + ", height=" + screen.availHeight + ", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes");
     w.focus();
+}
+
+/**
+ * Retorna un parametro de la url
+ * @param {type} name
+ * @returns {String}
+ */
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
