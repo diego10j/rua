@@ -50,6 +50,8 @@ public class pre_login {
     @EJB
     private ServicioSeguridad ser_seguridad;
 
+    private String filtroObras;
+
     /**
      * Creates a new instance of pre_login
      */
@@ -69,6 +71,11 @@ public class pre_login {
 
         //Carga empresas configuradas
         List<ConfiguraEmpresa> listaEmpresas = utilitario.getListaConfiguracionInicial();
+        //Recupera si hay filtro de obras al combo
+        try {
+            filtroObras = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("filtroObras");
+        } catch (Exception e) {
+        }
 
         for (ConfiguraEmpresa conf_actual : listaEmpresas) {
             UISelectItem usi_empresa = new UISelectItem();
