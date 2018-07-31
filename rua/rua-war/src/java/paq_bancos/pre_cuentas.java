@@ -42,7 +42,7 @@ public class pre_cuentas extends Pantalla {
         tab_tabla2.setCondicionSucursal(true);
         tab_tabla2.getColumna("ide_tecba").setVisible(false);
         tab_tabla2.getColumna("ide_tetcb").setCombo("tes_tip_cuen_banc", "ide_tetcb", "nombre_tetcb", "");
-        tab_tabla2.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentasHijas());
+        tab_tabla2.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentas());
         tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
