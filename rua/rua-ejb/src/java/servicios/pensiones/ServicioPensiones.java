@@ -93,16 +93,23 @@ public class ServicioPensiones extends ServicioBase {
             tab_cab_fac.setValor("telefono_cccfa", tag.getValor("telefono_petlf"));
             tab_cab_fac.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
 
-            tab_det_fac.insertar();
-            tab_det_fac.setValor("ide_inarti", "57"); //55 == servicios colegio
-            tab_det_fac.setValor("CANTIDAD_CCDFA", "1");
-            tab_det_fac.setValor("PRECIO_CCDFA", utilitario.getFormatoNumero(tag.getValor("subtotal_petlf")));
-            tab_det_fac.setValor("iva_inarti_ccdfa", "-1");
-            tab_det_fac.setValor("descuento_ccDfa", utilitario.getFormatoNumero(tag.getValor("rebaja_petlf")));
-            tab_det_fac.setValor("total_ccdfa", utilitario.getFormatoNumero(tag.getValor("subtotal_petlf")));
-            tab_det_fac.setValor("OBSERVACION_CCDFA", tag.getValor("concepto_petlf"));
-            tab_det_fac.setValor("ALTERNO_CCDFA", "00");
-            tab_det_fac.setValor("ide_cccfa", String.valueOf(ide_cccfa));
+            TablaGenerica tag_con_detalle = utilitario.consultar("        select ide_valdet_revad,IDE_TITULO_RECVAL, detalle_revad, cantidad_revad, precio_revad, total_revad, valor_descuento_revad, c.iva_inarti, c.ide_inarti\\n"
+                    + "        from rec_valor_detalle  a\n"
+                    + "        left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n"
+                    + "        left join inv_articulo c on b.ide_inarti = c.ide_inarti\n"
+                    + "        where a.IDE_TITULO_RECVAL = " + tag.getValor("cod_factura_petlf"));
+            for (int j = 0; j < tag_con_detalle.getTotalFilas(); j++) {
+                tab_det_fac.insertar();
+                tab_det_fac.setValor("ide_inarti", tag_con_detalle.getValor(j, "ide_inarti")); //57 == servicios colegio
+                tab_det_fac.setValor("CANTIDAD_CCDFA", tag_con_detalle.getValor(j, "cantidad_revad"));
+                tab_det_fac.setValor("PRECIO_CCDFA", utilitario.getFormatoNumero(tag_con_detalle.getValor(j, "precio_revad")));
+                tab_det_fac.setValor("iva_inarti_ccdfa", tag_con_detalle.getValor(j, "iva_inarti"));
+                tab_det_fac.setValor("descuento_ccdfa", utilitario.getFormatoNumero(tag_con_detalle.getValor(j, "valor_descuento_revad")));
+                tab_det_fac.setValor("total_ccdfa", utilitario.getFormatoNumero(tag_con_detalle.getValor(j, "total_revad")));
+                tab_det_fac.setValor("OBSERVACION_CCDFA", tag_con_detalle.getValor(j, "detalle_revad"));
+                tab_det_fac.setValor("ALTERNO_CCDFA", "00");
+                tab_det_fac.setValor("ide_cccfa", String.valueOf(ide_cccfa));
+            }
 
             //info adicional
             tab_info_adicional.insertar();
@@ -161,10 +168,12 @@ public class ServicioPensiones extends ServicioBase {
     public String getSqlComboAlumnos() {
         return "SELECT a.ide_geper,a.identificac_geper AS CEDULA,a.nom_geper AS APELLIDOS_Y_NOMBRES,a.codigo_geper as CODIGO FROM gen_persona a where a.ide_vgtcl=1 and a.nivel_geper='HIJO' order by a.nom_geper";
     }
+
     public String getSqlComboRepresentantes() {
         return "SELECT a.ide_geper,a.identificac_geper AS CEDULA,a.nom_geper AS APELLIDOS_Y_NOMBRES FROM gen_persona a where a.ide_vgtcl=0 and a.nivel_geper='HIJO' order by a.nom_geper";
-    
+
     }
+
     public String getSqlRepresentantes() {
         return "SELECT a.ide_geper,a.identificac_geper AS CEDULA,a.nom_geper AS APELLIDOS_Y_NOMBRES, correo_geper as CORREO FROM gen_persona a where a.ide_vgtcl=0  and a.nivel_geper='HIJO' order by a.nom_geper";
     }
@@ -201,71 +210,77 @@ public class ServicioPensiones extends ServicioBase {
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
                 + " where a.ide_geper=" + ide_geper + " fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' ";
     }
-    
+
     public String getPeriodoAcademico(String activo) {
         String sql = "";
-        sql = "select a.ide_repea, b.nom_geani, a.descripcion_repea, a.fecha_inicial_repea, a.fecha_final_repea\n" +
-              "from rec_periodo_academico a\n" +
-              "inner join gen_anio b on a.ide_geani = b.ide_geani\n" +
-              "where activo_repea in ("+activo+")\n" +
-              "order by a.descripcion_repea";
+        sql = "select a.ide_repea, b.nom_geani, a.descripcion_repea, a.fecha_inicial_repea, a.fecha_final_repea\n"
+                + "from rec_periodo_academico a\n"
+                + "inner join gen_anio b on a.ide_geani = b.ide_geani\n"
+                + "where activo_repea in (" + activo + ")\n"
+                + "order by a.descripcion_repea";
         return sql;
     }
-    
+
     public String getCursos(String activo) {
         String sql = "";
-        sql = "select ide_recur, descripcion_recur \n" +
-              "from rec_curso \n" +
-              "where activo_recur in ("+activo+") \n" +
-              "order by orden_recur";
+        sql = "select ide_recur, descripcion_recur \n"
+                + "from rec_curso \n"
+                + "where activo_recur in (" + activo + ") \n"
+                + "order by orden_recur";
         return sql;
     }
+
     public String getParalelos(String activo) {
         String sql = "";
-        sql = "select ide_repar, descripcion_repar\n" +
-              "from rec_paralelos \n" +
-              "where activo_repar in ("+activo+") \n" +
-              "order by descripcion_repar";
+        sql = "select ide_repar, descripcion_repar\n"
+                + "from rec_paralelos \n"
+                + "where activo_repar in (" + activo + ") \n"
+                + "order by descripcion_repar";
         return sql;
     }
+
     public String getEspecialidad(String activo) {
         String sql = "";
-        sql = "select ide_reces, descripcion_reces\n" +
-              "from rec_especialidad \n" +
-              "where activo_reces in ("+activo+") \n" +
-              "order by descripcion_reces";
+        sql = "select ide_reces, descripcion_reces\n"
+                + "from rec_especialidad \n"
+                + "where activo_reces in (" + activo + ") \n"
+                + "order by descripcion_reces";
         return sql;
     }
+
     public String getListaAlumnos() {
         return "select ide_geper, identificac_geper, nom_geper  from gen_persona  where ide_vgtcl = 1 order by nom_geper ";
     }
+
     public String getPeriodosEstudiantes(String codigo) {
-        return "select a.ide_recalp, c.nom_geani, b.descripcion_repea, b.fecha_inicial_repea, b.fecha_final_repea\n" +
-               "from rec_alumno_periodo a\n" +
-               "inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n" +
-               "inner join gen_anio c on b.ide_geani = c.ide_geani\n" +
-               "where a.ide_geper =  "+codigo+"";
+        return "select a.ide_recalp, c.nom_geani, b.descripcion_repea, b.fecha_inicial_repea, b.fecha_final_repea\n"
+                + "from rec_alumno_periodo a\n"
+                + "inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n"
+                + "inner join gen_anio c on b.ide_geani = c.ide_geani\n"
+                + "where a.ide_geper =  " + codigo + "";
     }
-     public String selectPenTemp(String codigo) {
-        return "select a.IDE_TITULO_RECVAL as codigo_fac, b.ide_geper, b.codigo_geper as codigo_alumno, b.identificac_geper as cedula_alumno, b.nom_geper as nombres_alumno,\n" +
-               "c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, c.correo_geper as correo_repre,\n" +
-               "d.periodo_lectivo as periodo_academico, d.paralelo_alumno as paralelo, a.TOTAL_RECVA as total, des_concepto_recon as concepto, a.FECHA_EMISION_RECVA as fecha, a.ide_sucu as ide_sucu, a.ide_empr as ide_empr "
-             + " from rec_valores a \n" +
-               "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
-			   "left join gen_persona c on a.gen_ide_geper = c.ide_geper\n" +
-			   "left join  (select ide_recalp, c.nom_geani||' '||b.descripcion_repea as periodo_lectivo,\n" +
-			   "            d.descripcion_recur||' '||descripcion_repar as paralelo_alumno from rec_alumno_periodo a \n" +
-			   "            inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n" +
-			   "            inner join gen_anio c on b.ide_geani = c.ide_geani\n" +
-			   "            inner join rec_curso d on a.ide_recur = d.ide_recur\n" +
-			   "            inner join rec_paralelos e on a.ide_repar = e.ide_repar) d on a.ide_recalp = d.ide_recalp \n" +
-			   "left join rec_concepto e on a.IDE_CONCEPTO_RECON = e.IDE_CONCEPTO_RECON \n" +
-			   "where b.ide_vgtcl=1 and b.nivel_geper='HIJO' and c.ide_vgtcl=0 and c.nivel_geper='HIJO'\n" +
-               "and a.IDE_TITULO_RECVAL =  "+codigo+"";
+
+    public String selectPenTemp(String codigo) {
+        return "select a.IDE_TITULO_RECVAL as codigo_fac, b.ide_geper, b.codigo_geper as codigo_alumno, b.identificac_geper as cedula_alumno, b.nom_geper as nombres_alumno,\n"
+                + "c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, c.correo_geper as correo_repre,\n"
+                + "d.periodo_lectivo as periodo_academico, d.paralelo_alumno as paralelo, a.TOTAL_RECVA as total, des_concepto_recon as concepto, a.FECHA_EMISION_RECVA as fecha, a.ide_sucu as ide_sucu, a.ide_empr as ide_empr "
+                + " from rec_valores a \n"
+                + "left join gen_persona b on a.ide_geper = b.ide_geper\n"
+                + "left join gen_persona c on a.gen_ide_geper = c.ide_geper\n"
+                + "left join  (select ide_recalp, c.nom_geani||' '||b.descripcion_repea as periodo_lectivo,\n"
+                + "            d.descripcion_recur||' '||descripcion_repar as paralelo_alumno from rec_alumno_periodo a \n"
+                + "            inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n"
+                + "            inner join gen_anio c on b.ide_geani = c.ide_geani\n"
+                + "            inner join rec_curso d on a.ide_recur = d.ide_recur\n"
+                + "            inner join rec_paralelos e on a.ide_repar = e.ide_repar) d on a.ide_recalp = d.ide_recalp \n"
+                + "left join rec_concepto e on a.IDE_CONCEPTO_RECON = e.IDE_CONCEPTO_RECON \n"
+                + "where b.ide_vgtcl=1 and b.nivel_geper='HIJO' and c.ide_vgtcl=0 and c.nivel_geper='HIJO'\n"
+                + "and a.IDE_TITULO_RECVAL =  " + codigo + "";
     }
-        public String getCodigoMaximoTabla(String tabla, String primario){
-        String sql="";
-        sql="select 1 as codigo, (case when  max("+primario+") is null then 1 else max("+primario+") end) + 1 as maximo from "+tabla;
+
+    public String getCodigoMaximoTabla(String tabla, String primario) {
+        String sql = "";
+        sql = "select 1 as codigo, (case when  max(" + primario + ") is null then 1 else max(" + primario + ") end) + 1 as maximo from " + tabla;
         return sql;
     }
 }
