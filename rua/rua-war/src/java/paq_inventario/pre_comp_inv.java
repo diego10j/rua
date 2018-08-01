@@ -40,7 +40,9 @@ public class pre_comp_inv extends Pantalla {
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private SeleccionTabla sel_tab = new SeleccionTabla();
     private final Texto tex_num_transaccion = new Texto();
+    private final Texto tex_nomb_transaccion = new Texto();
     private final Boton bot_buscar_transaccion = new Boton();
+    private final Boton bot_buscar_transacciones = new Boton();
     private SeleccionTabla sel_empleado = new SeleccionTabla();
     private SeleccionTabla sel_departamento = new SeleccionTabla();
 
@@ -54,15 +56,27 @@ public class pre_comp_inv extends Pantalla {
 
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
-
+        //Busqueda del num de articulo
         tex_num_transaccion.setId("tex_num_transaccion");
         tex_num_transaccion.setSoloEnteros();
         bot_buscar_transaccion.setTitle("Buscar");
         bot_buscar_transaccion.setIcon("ui-icon-search");
         bot_buscar_transaccion.setMetodo("buscarTransaccion");
-        bar_botones.agregarComponente(new Etiqueta("NUM. COMPROBANTE DE INVENTARIO: "));
+        bot_buscar_transaccion.setValue("BUSCAR POR NUMERO TRANSACCION");
         bar_botones.agregarComponente(tex_num_transaccion);
         bar_botones.agregarBoton(bot_buscar_transaccion);
+        
+        //Busqueda del nombre de articulo
+        tex_nomb_transaccion.setId("tex_nomb_transaccion");
+        bot_buscar_transacciones.setTitle("Buscar");
+        bot_buscar_transacciones.setIcon("ui-icon-search");
+        bot_buscar_transacciones.setMetodo("buscarTransaccion");
+        bot_buscar_transacciones.setValue("BUSCAR POR DETALLE TRANSACCION");
+        bar_botones.agregarComponente(tex_nomb_transaccion);
+       
+        
+        bar_botones.agregarBoton(bot_buscar_transacciones);
+      
 
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
@@ -107,7 +121,7 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductoFiltro("false", "true"));
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
@@ -136,6 +150,7 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
+        
 
         Division div_division = new Division();
         div_division.dividir2(pat_panel1, pat_panel2, "40%", "H");
@@ -184,6 +199,20 @@ public class pre_comp_inv extends Pantalla {
         }
     }
 
+    
+    
+    
+    public void buscarnombTransaccion() {
+        if (tex_nomb_transaccion.getValue() != null && !tex_nomb_transaccion.getValue().toString().isEmpty()) {
+            tab_tabla1.setCondicion("observacion_incci=" + tex_nomb_transaccion.getValue());
+            tab_tabla1.ejecutarSql();
+            tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            utilitario.addUpdate("tab_tabla1,tab_tabla2");
+        }
+    }
+    
+    
+    
     public void calcularTotalDetalles(AjaxBehaviorEvent evt) {
         tab_tabla2.modificar(evt);
         calcularDetalles();
