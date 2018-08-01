@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package servicios.inventario;
-
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
@@ -58,7 +57,13 @@ public class ServicioProducto {
     public String getSqlListaProductos() {
         return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1";
     }
-
+  
+        public String getSqlListaProductoFiltro(String compra,String venta) {
+        return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and compra_inarti="+compra+" and venta_inarti="+venta;
+    }
+        
+ 
+        
     /**
      * Retorna listado de Gastos - Servicios
      *
