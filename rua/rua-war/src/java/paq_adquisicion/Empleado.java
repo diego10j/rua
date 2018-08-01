@@ -7,6 +7,7 @@ package paq_adquisicion;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
@@ -17,6 +18,7 @@ import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import sistema.aplicacion.Pantalla;
@@ -29,6 +31,7 @@ public class Empleado extends Pantalla {
     private Texto text_texto = new Texto();
     private AutoCompletar autBusca = new AutoCompletar();
     private SeleccionTabla sel_tab_empleado = new SeleccionTabla();
+    private Combo com_empleado=new Combo();
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
@@ -36,13 +39,22 @@ public class Empleado extends Pantalla {
 
     public Empleado() {
 
-      /*  autBusca.setId("autBusca");
+      /* autBusca.setId("autBusca");
         autBusca.setAutoCompletar("SELECT IDE_ADEMPLE,CEDULA_ADEMPLE,NOMBRES_ADEMPLE,DIRECCION_ADEMPLE from ADQ_EMPLEADO order by NOMBRES_ADEMPLE");
         autBusca.setSize(70);
         autBusca.setMetodoChange("buscaEmpleado");
         bar_botones.agregarComponente(new Etiqueta("Busca Empleado : "));
         bar_botones.agregarComponente(autBusca);*/
-
+List lista = new ArrayList();
+	       Object fila1[] = {
+	           "1", "INTERNO"
+	       };
+	       Object fila2[] = {
+	           "0", "EXTERNO"
+	       };
+	       
+	       lista.add(fila1);
+	       lista.add(fila2);
         tab_empleado.setId("tab_empleado");   //identificador
         tab_empleado.setTabla("adq_empleado", "ide_ademple", 1);
         tab_empleado.getColumna("IDE_ADTIDE").setCombo(ser_adquisiciones.getTipoDenominacion());
@@ -55,7 +67,7 @@ public class Empleado extends Pantalla {
         tab_empleado.getColumna("NOMBRES_ADEMPLE").setNombreVisual("NOMBRES");
         tab_empleado.getColumna("DIRECCION_ADEMPLE").setNombreVisual("DIRECCION");
         tab_empleado.getColumna("FIRMA_ADEMPLE").setNombreVisual("FIRMA");
-
+        tab_empleado.getColumna("tipo_persona_ademple").setCombo(lista);         
         tab_empleado.getColumna("IDE_ADEMPLE").setOrden(0);
         tab_empleado.getColumna("IDE_ADTIDE").setOrden(3);
         tab_empleado.getColumna("IDE_USUA").setOrden(4);
@@ -78,7 +90,7 @@ public class Empleado extends Pantalla {
         Boton bot_anular = new Boton();
         bot_anular.setIcon("ui-icon-search");
         bot_anular.setValue("IMPORTAR EMPLEADO");
-        bot_anular.setMetodo("abrirDialogoEmpleado");
+        bot_anular.setMetodo("validarcombo");
         agregarComponente(bot_anular);
         bar_botones.agregarBoton(bot_anular);
         
@@ -147,18 +159,32 @@ public class Empleado extends Pantalla {
             utilitario.addUpdate("tab_empleado");
         }
     }
-    
-    public void abrirDialogoEmpleado(){
+    public void validarcombo() {
+        //Valida que la factura este validar combo
+        
+        String smv = tab_empleado.getValor("tipo_persona_ademple");
+        if (smv.equals("1")) {
+            sel_tab_empleado.dibujar();
+        }
+        else{
+            utilitario.agregarNotificacionInfo("Aviso","Debe ingresar los datos del empleado nuevo");
+        }
+        }
+   /* public void abrirDialogoEmpleado(){
         sel_tab_empleado.dibujar();
     }
-    
+    */
     public void aceptarEmpleado(){
          String str_emple = sel_tab_empleado.getSeleccionados();
         
         TablaGenerica tab_dat_emple = utilitario.consultar(ser_adquisiciones.getDatosEmpleadoConsulta(str_emple));
         for (int i=0;i<tab_dat_emple.getTotalFilas();i++){
+            if (tab_empleado.isFilaInsertada()==false){
                 tab_empleado.insertar();
-		tab_empleado.setValor("ide_adtide",null);
+            }
+            
+		tab_empleado.setValor("ide_gtemp",tab_dat_emple.getValor(i, "ide_gtemp"));
+                tab_empleado.setValor("ide_adtide",null);
 		tab_empleado.setValor("ide_usua",null);
 		tab_empleado.setValor("cedula_ademple",tab_dat_emple.getValor(i,"documento_identidad_gtemp"));
                 tab_empleado.setValor("nombres_ademple",tab_dat_emple.getValor(i,"nombres_empleado"));
