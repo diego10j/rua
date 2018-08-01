@@ -39,6 +39,8 @@ public class pre_impuesto extends Pantalla {
         tab_tabla.getColumna("porcentaje_reimp").setMetodoChange("cambiaPorcentaje");
         tab_tabla.getColumna("valor_reimp").setMetodoChange("cambiaValor");
         //tab_tabla.getColumna("tipo_con").setVisible(false);
+        tab_tabla.getColumna("ide_inarti").setCombo("SELECT ide_inarti,nombre_inarti  FROM inv_articulo  WHERE nivel_inarti='HIJO'");
+        tab_tabla.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();

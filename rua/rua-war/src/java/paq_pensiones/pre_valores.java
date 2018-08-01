@@ -19,6 +19,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.pensiones.ServicioPensiones;
@@ -61,17 +62,26 @@ public class pre_valores extends Pantalla{
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getSqlComboRepresentantes());
         tab_tabla1.getColumna("gen_ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("gen_ide_geper").setNombreVisual("REPRESENTANTE");
+        tab_tabla1.getColumna("IDE_GTEMP").setCombo("gth_empleado", "ide_gtemp", "documento_identidad_gtemp,apellido_paterno_gtemp,primer_nombre_gtemp", "");
+        tab_tabla1.getColumna("IDE_GTEMP").setAutoCompletar();
+        tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("REGISTRADORR");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setCombo("gth_empleado", "ide_gtemp", "documento_identidad_gtemp,apellido_paterno_gtemp,primer_nombre_gtemp", "");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setAutoCompletar();
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("RECAUDADOR");
         tab_tabla1.getColumna("ide_concepto_recon").setCombo("rec_concepto", "ide_concepto_recon", "des_concepto_recon", "");
+        tab_tabla1.getColumna("ide_concepto_recon").setRequerida(true);
+        tab_tabla1.getColumna("TOTAL_RECVA ").setEtiqueta();
+        tab_tabla1.getColumna("TOTAL_RECVA ").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(6);
-        tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.dibujar();
+        tab_tabla1.agregarRelacion(tab_tabla2);
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
         pat_tabla1.setPanelTabla(tab_tabla1);
         
         tab_tabla2.setId("tab_tabla2");   //identificador
-        tab_tabla2.setTabla("rec_valor_detalle", "ide_valdet_revad", 1);
+        tab_tabla2.setTabla("rec_valor_detalle", "ide_valdet_revad", 2);
         tab_tabla2.dibujar();
         PanelTabla pat_tabla2 = new PanelTabla();
         pat_tabla2.setId("pat_tabla2");
@@ -84,7 +94,7 @@ public class pre_valores extends Pantalla{
         
         sel_tab_alumno.setId("sel_tab_alumno");
         sel_tab_alumno.setTitle("SELECCIONE EL PERIODO ACADÉMICO");
-        sel_tab_alumno.setSeleccionTabla(ser_pensiones.getPeriodosEstudiantes("-1"),"");
+        sel_tab_alumno.setSeleccionTabla(ser_pensiones.getPeriodosEstudiantes("2"),"");
         sel_tab_alumno.setWidth("80%");
         sel_tab_alumno.setHeight("70%");
         sel_tab_alumno.setRadio();
@@ -101,6 +111,58 @@ public class pre_valores extends Pantalla{
         agregarComponente(bot_fac_elec);
         bar_botones.agregarBoton(bot_fac_elec);
     }
+    
+    public void cargaDetalle(AjaxBehaviorEvent evt){
+        tab_tabla2.modificar(evt);
+        String dat_cmb_concep;
+        dat_cmb_concep = tab_tabla1.getValor("IDE_CONCEPTO_RECON");
+        if (tab_tabla1.getValor("IDE_CONCEPTO_RECON") != null){
+        TablaGenerica tab_concepto = utilitario.consultar("select ide_forma_impuesto_refim, b.ide_impuesto_reimp, b.des_impuesto_reimp, b.valor_reimp\n" +
+                                                          "from rec_forma_impuesto a\n" +
+                                                          "left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n" +
+                                                          "where a.ide_concepto_recon = "+dat_cmb_concep+"");
+         for (int i=0;i<tab_concepto.getTotalFilas();i++){
+             tab_tabla2.insertar();
+             tab_tabla2.setValor("ide_impuesto_reimp", tab_concepto.getValor(i, "ide_impuesto_reimp"));
+             tab_tabla2.setValor("detalle_revad", tab_concepto.getValor(i, "des_impuesto_reimp"));
+             tab_tabla2.setValor("precio_revad", tab_concepto.getValor(i, "valor_reimp"));
+             tab_tabla2.setValor("cantidad_revad", "1");
+             calcular();
+             tab_tabla2.guardar();
+         }
+        }
+        else {
+            utilitario.agregarMensajeError("No se puede guardar", "Debe seleccionar el Concepto");
+        }
+    }
+    public void calcular() {
+        //Variables para almacenar y calcular el total del detalle
+        double dou_cantidad = 0;
+        double dou_precio = 0;
+        double dou_total = 0;
+        
+        try {
+            //Obtenemos el valor de la cantidad
+            dou_cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_revad"));
+        } catch (Exception e) {
+        }
+
+        try {
+            //Obtenemos el valor
+            dou_precio = Double.parseDouble(tab_tabla2.getValor("precio_revad"));
+        } catch (Exception e) {
+        }
+        //Calculamos el total
+        dou_total = dou_cantidad * dou_precio;
+        //Asignamos el total a la tabla detalle, con 2 decimales
+        tab_tabla2.setValor("total_revad", utilitario.getFormatoNumero(dou_total, 2));
+        tab_tabla1.setValor("TOTAL_RECVA",""+tab_tabla2.getSumaColumna("total_revad"));
+	tab_tabla1.modificar(tab_tabla1.getFilaActual());
+	utilitario.addUpdateTabla(tab_tabla1, "TOTAL_RECVA","tab_tabla1");
+        utilitario.addUpdateTabla(tab_tabla2, "total_revad", "tab_tabla2");
+        utilitario.addUpdate("tab_tabla1");
+        utilitario.addUpdate("tab_tabla2");
+    }
     public void generarFactura(){
         String maximo = "";
        // String defecto = 0;
@@ -111,7 +173,7 @@ public class pre_valores extends Pantalla{
         TablaGenerica tab_datos_temp = utilitario.consultar(ser_pensiones.selectPenTemp(codig_val));
         for (int i=0;i<tab_datos_temp.getTotalFilas();i++){
             utilitario.getConexion().ejecutarSql("INSERT INTO pen_tmp_lista_fact (ide_petlf, codigo_alumno_petlf, nombre_alumno_petlf, paralelo_petlf, subtotal_petlf, rebaja_petlf, total_petlf, cod_factura_petlf, fecha_petlf, concepto_petlf, representante_petlf, cedula_petlf, periodo_lectivo_petlf, correo_petlf, direccion_petlf, telefono_petlf, cedula_alumno_petlf, ide_sucu, ide_empr)\n" +
-                                                 "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total")+", "+null+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
+                                                 "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total_revad")+", "+tab_datos_temp.getValor(i, "valor_descuento_revad")+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
                                                          + "'"+tab_datos_temp.getValor(i, "nom_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_repre")+"', '"+tab_datos_temp.getValor(i, "periodo_academico")+"', '"+tab_datos_temp.getValor(i, "correo_repre")+"', '"+tab_datos_temp.getValor(i, "direccion_repre")+"', '"+tab_datos_temp.getValor(i, "telefono_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_alumno")+"', "+tab_datos_temp.getValor(i, "ide_sucu")+", "+tab_datos_temp.getValor(i, "ide_empr")+")");
         }
         utilitario.getConexion().ejecutarSql(ser_pensiones.generarFacturaElectronica(codig_val));
@@ -170,8 +232,30 @@ public class pre_valores extends Pantalla{
 
     @Override
     public void guardar() {
+        
         if (tab_tabla1.isFocus()){
+            if (tab_tabla1.isFilaInsertada()){
+            
             tab_tabla1.guardar();
+            String dat_cmb_concep;
+            dat_cmb_concep = tab_tabla1.getValor("IDE_CONCEPTO_RECON");
+             TablaGenerica tab_concepto = utilitario.consultar("select ide_forma_impuesto_refim, b.ide_impuesto_reimp, b.des_impuesto_reimp, b.valor_reimp\n" +
+                                                          "from rec_forma_impuesto a\n" +
+                                                          "left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n" +
+                                                          "where a.ide_concepto_recon = "+dat_cmb_concep+"");
+         for (int i=0;i<tab_concepto.getTotalFilas();i++){
+             tab_tabla2.insertar();
+             tab_tabla2.setValor("ide_titulo_recval", tab_tabla1.getValor("ide_titulo_recval"));
+             tab_tabla2.setValor("ide_impuesto_reimp", tab_concepto.getValor(i, "ide_impuesto_reimp"));
+             tab_tabla2.setValor("detalle_revad", tab_concepto.getValor(i, "des_impuesto_reimp"));
+             tab_tabla2.setValor("precio_revad", tab_concepto.getValor(i, "valor_reimp"));
+             tab_tabla2.setValor("cantidad_revad", "1");
+             calcular();
+             tab_tabla2.guardar();
+          }
+         
+        }
+        
         }
         else if (tab_tabla2.isFocus()){
             tab_tabla2.guardar();

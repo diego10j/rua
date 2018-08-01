@@ -37,8 +37,9 @@ public class pre_concepto extends Pantalla {
         tab_tabla1.getColumna("uso").setMetodoChange("cambiaUso");
         tab_tabla1.getColumna("exoneracion").setMetodoChange("cambiaExoneracion");
         tab_tabla1.getColumna("dependencia").setMetodoChange("cambiaDependencia");*/
-        tab_tabla1.setRows(10);
-        tab_tabla1.onSelect("seleccionar_tabla1");
+        
+     //   tab_tabla1.setRows(10);
+  //      tab_tabla1.onSelect("seleccionar_tabla1");
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.dibujar();
 
@@ -48,6 +49,8 @@ public class pre_concepto extends Pantalla {
         tab_tabla2.setCampoOrden("ide_impuesto_reimp");
         tab_tabla2.getColumna("ide_impuesto_reimp").setCombo("rec_impuesto", "ide_impuesto_reimp", "des_impuesto_reimp,porcentaje_reimp,valor_reimp", "");
         tab_tabla2.getColumna("ide_impuesto_reimp").setAutoCompletar();
+        tab_tabla2.getColumna("porcentaje_abono_refim").setVisible(false);
+        tab_tabla2.getColumna("porcentaje_exonera_refim").setVisible(false);
         tab_tabla2.setCampoForanea("ide_concepto_recon");
 
 
@@ -100,21 +103,6 @@ public class pre_concepto extends Pantalla {
         }
     }
 
-    public boolean validarPorcentajeExoneracion() {
-        double dou_exonera = tab_tabla2.getSumaColumna("porcentaje_exonera");
-        if (dou_exonera == 100.0) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean validarPorcentajeAbono() {
-        double dou_abono = tab_tabla2.getSumaColumna("porcentaje_abono");
-        if (dou_abono == 100.0) {
-            return true;
-        }
-        return false;
-    }
 
     public void guardar() {
       if (tab_tabla1.isFocus()){
@@ -131,124 +119,7 @@ public class pre_concepto extends Pantalla {
         utilitario.getTablaisFocus().eliminar();
     }
 
-    public void cambiaUrbano(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "urbano").equals("true")) {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "rural", "false");
-        } else {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "rural", "true");
-        }
-        utilitario.addUpdateTabla(tab_tabla1, "rural", "");
-    }
-
-    public void cambiaUso(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "uso").equals("true")) {
-            if (tab_tabla2.getTotalFilas() == 0) {
-                tab_tabla1.setValor(tab_tabla1.getFilaActual(), "exoneracion", "true");
-                tab_tabla1.setValor(tab_tabla1.getFilaActual(), "dependencia", "false");
-            } else {
-                tab_tabla1.setValor(tab_tabla1.getFilaActual(), "uso", "false");
-                utilitario.addUpdateTabla(tab_tabla1, "uso", "");
-                utilitario.agregarMensajeError("No se puede cambiar a tipo uso por que ya tiene registros en el detalle", "");
-            }
-        } else {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "exoneracion", "false");
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "dependencia", "false");
-        }
-        utilitario.addUpdateTabla(tab_tabla1, "exoneracion,dependencia", "");
-    }
-
-    public void cambiaDependencia(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "dependencia").equals("true")) {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "exoneracion", "true");
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "uso", "false");
-        } else {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "exoneracion", "false");
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "uso", "false");
-        }
-
-        utilitario.addUpdateTabla(tab_tabla1, "exoneracion,uso", "");
-    }
-
-    public void cambiaExoneracion(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "exoneracion").equals("true")) {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "uso", "true");
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "dependencia", "false");
-        } else {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "uso", "false");
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "dependencia", "false");
-        }
-        utilitario.addUpdateTabla(tab_tabla1, "dependencia,uso", "");
-
-        /////
-        String lstr_porcentaje_exonera = tab_tabla1.getValor("exoneracion");
-        String lstr_porcentaje_abono = tab_tabla1.getValor("abonos");
-
-        if (lstr_porcentaje_abono.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(false);
-        }
-
-        if (lstr_porcentaje_exonera.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(false);
-        }
-        utilitario.addUpdate("tab_tabla2");
-    }
-
-    public void cambiaRural(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "rural").equals("true")) {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "urbano", "false");
-        } else {
-            tab_tabla1.setValor(tab_tabla1.getFilaActual(), "urbano", "true");
-        }
-
-        utilitario.addUpdateTabla(tab_tabla1, "urbano", "");
-    }
-
-    public void seleccionar_tabla1(SelectEvent evt) {
-        tab_tabla1.seleccionarFila(evt);
-        String lstr_porcentaje_exonera = tab_tabla1.getValor("exoneracion");
-        String lstr_porcentaje_abono = tab_tabla1.getValor("abonos");
-        if (lstr_porcentaje_abono != null && lstr_porcentaje_abono.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(false);
-        }
-
-        if (lstr_porcentaje_exonera.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(false);
-        }
-
-    }
-
-    public void activarCampos(AjaxBehaviorEvent evt) {
-        tab_tabla1.modificar(evt);
-
-        String lstr_porcentaje_exonera = tab_tabla1.getValor("exoneracion");
-        String lstr_porcentaje_abono = tab_tabla1.getValor("abonos");
-
-        if (lstr_porcentaje_abono.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_ABONO").setVisible(false);
-        }
-
-        if (lstr_porcentaje_exonera.equals("true")) {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(true);
-        } else {
-            tab_tabla2.getColumna("PORCENTAJE_EXONERA").setVisible(false);
-        }
-        utilitario.addUpdate("tab_tabla2");
-    }
+    
 
     public Tabla getTab_tabla1() {
         return tab_tabla1;

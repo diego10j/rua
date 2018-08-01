@@ -89,7 +89,7 @@ public class pre_alumno_periodo extends Pantalla{
         bot_filtro_alumno.setValue("Filtrar");
         bot_filtro_alumno.setMetodo("filtroAlumno");
         agregarComponente(bot_filtro_alumno);
-        bar_botones.agregarBoton(bot_filtro_alumno);
+   //     bar_botones.agregarBoton(bot_filtro_alumno);
         
         Boton bot_imp_alumno = new Boton();
         bot_imp_alumno.setIcon("ui-icon-search");
@@ -97,6 +97,13 @@ public class pre_alumno_periodo extends Pantalla{
         bot_imp_alumno.setMetodo("abrirDialogoAlumno");
         agregarComponente(bot_imp_alumno);
         bar_botones.agregarBoton(bot_imp_alumno);
+        
+        Boton bot_bus_alumno = new Boton();
+        bot_bus_alumno.setIcon("ui-icon-search");
+        bot_bus_alumno.setValue("Filtrar Alumno");
+        bot_bus_alumno.setMetodo("filtroAlumno");
+        agregarComponente(bot_bus_alumno);
+    //    bar_botones.agregarBoton(bot_bus_alumno);
         
         
         sel_tab_alumno.setId("sel_tab_alumno");
@@ -115,6 +122,30 @@ public class pre_alumno_periodo extends Pantalla{
         String cm_cur = com_cursos.getValue().toString();
         String cm_par = com_paralelos.getValue().toString();
         String cm_esp = com_especialidad.getValue().toString();
+        
+        if (com_periodo_academico.getValue().toString() != null){
+            tab_tabla1.setCondicion("ide_repea="+com_periodo_academico.getValue().toString());
+            tab_tabla1.ejecutarSql();
+            utilitario.addUpdate("tab_tabla1");
+        }
+        else if (com_cursos.getValue().toString() != null){
+            tab_tabla1.setCondicion("ide_recur="+com_cursos.getValue().toString());
+            tab_tabla1.ejecutarSql();
+            utilitario.addUpdate("tab_tabla1");
+        }
+        else if (com_paralelos.getValue().toString() != null){
+            tab_tabla1.setCondicion("ide_repar="+com_paralelos.getValue().toString());
+            tab_tabla1.ejecutarSql();
+            utilitario.addUpdate("tab_tabla1");
+        }
+        else if (com_especialidad.getValue().toString() != null){
+            tab_tabla1.setCondicion("ide_reces="+com_especialidad.getValue().toString());
+           tab_tabla1.ejecutarSql();
+           utilitario.addUpdate("tab_tabla1");
+    }
+        else {
+            tab_tabla1.limpiar();
+        }
     }
     
     public void filtroComboPeriodoAcademnico(){
