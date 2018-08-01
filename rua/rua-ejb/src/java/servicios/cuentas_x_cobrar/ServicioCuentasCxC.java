@@ -34,7 +34,7 @@ public class ServicioCuentasCxC extends ServicioBase {
     public String getSqlPuntosEmisionFacturas() {
         return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc=" + parametros.get("p_con_tipo_documento_factura") + " and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
-
+   
     public String getSqlPuntosEmisionNotasCredito() {
         return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc= " + parametros.get("p_con_tipo_documento_nota_credito") + " and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
