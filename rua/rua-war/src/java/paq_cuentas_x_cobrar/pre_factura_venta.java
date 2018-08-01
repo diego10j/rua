@@ -112,7 +112,19 @@ public class pre_factura_venta extends Pantalla {
         tab_cabece_factura.getColumna("base_tarifa0_cccfa").setVisible(false);
         tab_cabece_factura.getColumna("total_cccfa").setVisible(false);
         tab_cabece_factura.setRecuperarLectura(true);
-
+        tab_cabece_factura.getColumna("RET_FUENTE_CCCFA").setVisible(false);
+        tab_cabece_factura.getColumna("IDE_SRCOM").setVisible(false);
+        tab_cabece_factura.getColumna("CORREO_CCCFA ").setVisible(false);
+        tab_cabece_factura.getColumna("ORDEN_COMPRA_CCCFA").setVisible(false);
+        tab_cabece_factura.getColumna("IDE_CNDFP1").setVisible(false);
+      
+        tab_cabece_factura.getColumna("RET_IVA_CCCFA").setVisible(false);
+        tab_cabece_factura.getColumna("DIAS_CREDITO_CCCFA").setVisible(false);
+        tab_cabece_factura.getColumna("DESCUENTO_CCCFA").setVisible(false);
+        tab_cabece_factura.getColumna("FACT_MIG_CCCFA").setVisible(false);
+      
+        
+      
         tab_cabece_factura.dibujar();
         PanelTabla pat_cabece_factura = new PanelTabla();
         pat_cabece_factura.setId("pat_cabece_factura");
