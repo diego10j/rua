@@ -834,6 +834,10 @@ ALTER COLUMN "precio_indci" TYPE numeric(12,4);
 ALTER TABLE "public"."cxp_detall_factur"
 ALTER COLUMN "cantidad_cpdfa" TYPE numeric(12,2),
 ALTER COLUMN "precio_cpdfa" TYPE numeric(12,4);
+---cambiar a entero columnas decimales
+ALTER TABLE "public"."sri_emisor"
+ALTER COLUMN "cant_decim_sremi" TYPE int2,
+ALTER COLUMN "preciou_decim_sremi" TYPE int2;
 
 
 
