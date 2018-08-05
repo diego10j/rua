@@ -50,8 +50,6 @@ public class pre_login {
     @EJB
     private ServicioSeguridad ser_seguridad;
 
-    private String filtroObras;
-
     /**
      * Creates a new instance of pre_login
      */
@@ -72,19 +70,33 @@ public class pre_login {
         //Carga empresas configuradas
         List<ConfiguraEmpresa> listaEmpresas = utilitario.getListaConfiguracionInicial();
         //Recupera si hay filtro de obras al combo
+        String filtroObras = null;
         try {
             filtroObras = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("filtroObras");
         } catch (Exception e) {
+            filtroObras = null;
         }
-
         for (ConfiguraEmpresa conf_actual : listaEmpresas) {
-            UISelectItem usi_empresa = new UISelectItem();
-            usi_empresa.setItemDescription(conf_actual.getNombreEmpresa());
-            usi_empresa.setItemValue(conf_actual.getSecuencial());
-            usi_empresa.setItemLabel(conf_actual.getNombreEmpresa());
-            sel_empresa.getChildren().add(usi_empresa);
+            if (filtroObras != null) {
+                String filtroAcual = conf_actual.getFiltro();                
+                if (filtroAcual != null) {
+                    if (filtroAcual.equals(filtroObras)) {
+                        UISelectItem usi_empresa = new UISelectItem();
+                        usi_empresa.setItemDescription(conf_actual.getNombreEmpresa());
+                        usi_empresa.setItemValue(conf_actual.getSecuencial());
+                        usi_empresa.setItemLabel(conf_actual.getNombreEmpresa());
+                        sel_empresa.getChildren().add(usi_empresa);
+                    }
+                }
+            } else {
+                UISelectItem usi_empresa = new UISelectItem();
+                usi_empresa.setItemDescription(conf_actual.getNombreEmpresa());
+                usi_empresa.setItemValue(conf_actual.getSecuencial());
+                usi_empresa.setItemLabel(conf_actual.getNombreEmpresa());
+                sel_empresa.getChildren().add(usi_empresa);
+            }
         }
-        if (listaEmpresas.size() > 1) {
+        if (sel_empresa.getChildCount() > 1) {
             UISelectItem usi_seleccione = new UISelectItem();
             usi_seleccione.setItemDescription("Seleccione una Empresa...");
             usi_seleccione.setItemValue(null);
