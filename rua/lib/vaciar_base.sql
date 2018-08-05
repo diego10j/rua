@@ -201,3 +201,7 @@ delete from act_asignacion_activo;
 delete from act_transaccion;
 delete from act_acta_constata;
 delete from act_activo_fijo; 
+
+
+http://192.168.1.121:8080/rua-war/home.jsf?filtroObras=San_Patricio
+http://192.168.1.121:8080/rua-war/home.jsf?filtroObras=Kennedy
