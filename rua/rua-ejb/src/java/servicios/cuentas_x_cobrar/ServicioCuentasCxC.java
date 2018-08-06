@@ -1078,7 +1078,8 @@ public class ServicioCuentasCxC extends ServicioBase {
         return utilitario.consultar("select a.ide_cccfa,secuencial_cccfa"
                 + " from cxc_cabece_factura a\n"
                 + "inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf\n"
-                + "where secuencial_cccfa='" + secuencial_cccfa + "'\n"
+                + "where secuencial_cccfa='" + secuencial_cccfa + "'  and a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal") + " "
+                + "AND a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "and serie_ccdaf='" + serie_ccdaf + "' ").getValor("ide_cccfa");
     }
 
