@@ -76,7 +76,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 
         TablaGenerica tab_factura = utilitario.consultar("select a.ide_cccfa,secuencial_cccfa,fecha_emisi_cccfa,serie_ccdaf,base_grabada_cccfa\n"
                 + ",base_tarifa0_cccfa + base_no_objeto_iva_cccfa as base_tarifa0_cccfa,valor_iva_cccfa,total_cccfa,e.alterno_ats,identificac_geper\n"
-                + ",a.ide_geper,ide_cntdo,ide_srcom,dias_credito_cccfa,orden_compra_cccfa,correo_cccfa,nombre_vgven,f.nombre_cndfp,OBSERVACION_CCCFA,a.ide_ccdaf,descuento_cccfa \n"
+                + ",a.ide_geper,ide_cntdo,ide_srcom,dias_credito_cccfa,orden_compra_cccfa,correo_cccfa,nombre_vgven,f.nombre_cndfp,OBSERVACION_CCCFA,a.ide_ccdaf,descuento_cccfa,direccion_cccfa \n"
                 + "from cxc_cabece_factura a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
                 + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
@@ -148,7 +148,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("infoadicional3_srcom", tab_factura.getValor("OBSERVACION_CCCFA"));
 
             tab_cabecara.setValor("ide_ccdaf1", tab_factura.getValor("ide_ccdaf"));
-
+            tab_cabecara.setValor("direcion_partida_srcom", tab_factura.getValor("direccion_cccfa"));
             tab_cabecara.guardar();
             ide_srcom = tab_cabecara.getValor("ide_srcom");
 //////****COMENTADO POR QUE SE VA A LEER EL DETALLE DE LA FACTURA 
