@@ -71,6 +71,7 @@ public final class Comprobante implements Serializable {
     private List<InfoAdicional> infoAdicional;
     
     private String correo;
+    private String direccionFactura;
 
     //Campos para guias de remisión
     private String dirPartida;
@@ -168,6 +169,8 @@ public final class Comprobante implements Serializable {
             this.fechaIniTransporte = resultado.getDate("fecha_ini_trans_srcom");
             this.fechaFinTransporte = resultado.getDate("fecha_fin_trans_srcom");
             this.dirPartida = resultado.getString("direcion_partida_srcom");
+            
+            direccionFactura = resultado.getString("direcion_partida_srcom");
 
             //Busca el cliente 
             try {
@@ -181,6 +184,12 @@ public final class Comprobante implements Serializable {
                 }
                 sentensia.close();
                 res.close();
+                if (direccionFactura != null) {
+                    try {
+                        cliente.setDireccion(direccionFactura);
+                    } catch (Exception e) {
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -744,6 +753,14 @@ public final class Comprobante implements Serializable {
     
     public void setCorreoEmpresa(String correoEmpresa) {
         this.correoEmpresa = correoEmpresa;
+    }
+    
+    public String getDireccionFactura() {
+        return direccionFactura;
+    }
+    
+    public void setDireccionFactura(String direccionFactura) {
+        this.direccionFactura = direccionFactura;
     }
     
 }
