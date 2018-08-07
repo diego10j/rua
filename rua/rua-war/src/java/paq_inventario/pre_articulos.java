@@ -23,8 +23,6 @@ import framework.componentes.graficos.GraficoCartesiano;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.swing.RowFilter;
-import javax.swing.table.TableRowSorter;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
@@ -73,13 +71,12 @@ public class pre_articulos extends Pantalla {
 
     private GraficoCartesiano gca_grafico;
     private Combo com_periodo;
-    
     String ide_inbod;
-    
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
-    
+	
+
     public pre_articulos() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarComponente(new Etiqueta("PRODUCTO :"));
@@ -94,10 +91,6 @@ public class pre_articulos extends Pantalla {
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
-        
-        
-      //  bar_botones.agregarBoton(bot_clean);
-        
 
         mep_menu.setMenuPanel("OPCIONES PRODUCTO", "20%");
         mep_menu.agregarItem("Información Producto", "dibujarProducto", "ui-icon-cart");
@@ -119,15 +112,12 @@ public class pre_articulos extends Pantalla {
         agregarComponente(mep_menu);
 
     }
-public void filtro(){
 
-}
     /**
      * Selecciona un Producto del Autocompletar
      *
      * @param evt
      */
-    
     public void seleccionarProducto(SelectEvent evt) {
         aut_productos.onSelect(evt);
         if (aut_productos != null) {
@@ -193,6 +183,9 @@ public void filtro(){
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         mep_menu.dibujar(1, "fa fa-database", "Datos del producto", pat_panel, false);
     }
+	/*public void filtro() {
+        trsfiltro.setRowFilter(RowFilter.regexFilter(jTextField1.getText(), 1));
+}*/
 
     /**
      * Dibuja el formulario de datos del Producto, opcion 11
