@@ -170,7 +170,7 @@ List lista = new ArrayList();
             utilitario.agregarNotificacionInfo("Aviso","Debe ingresar los datos del empleado nuevo");
         }
         }
-   /* public void abrirDialogoEmpleado(){
+   /* publicoid abrirDialogoEmpleado(){
         sel_tab_empleado.dibujar();
     }
     */
@@ -219,6 +219,9 @@ List lista = new ArrayList();
         }
         else if (tab_caja_empleado.isFocus()){
             tab_caja_empleado.guardar();
+        }
+        else if (tab_empleado_dat_factura.isFocus()){
+            tab_empleado_dat_factura.guardar();
         }
         else if (tab_empleado_dat_factura.isFocus()){
             tab_empleado_dat_factura.guardar();
