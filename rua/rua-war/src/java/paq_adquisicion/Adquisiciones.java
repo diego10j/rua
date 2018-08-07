@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import static paq_adquisicion.AdquisicionesOrdenadorGasto.par_aprueba_gasto;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import sistema.aplicacion.Pantalla;
 
@@ -45,7 +46,7 @@ public class Adquisiciones extends Pantalla {
 
     public Adquisiciones() {
         
-        
+        if (tienePerfilSecretaria() != 0) {
          
         rep_reporte.setId("rep_reporte");
         agregarComponente(rep_reporte);
@@ -100,7 +101,8 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("APRUEBA_ADCOMP").setRadio(lista, "1");
         tab_adquisiones.getColumna("IDE_ADAPRO").setCombo(ser_adquisiciones.getAprobado());
         tab_adquisiones.getColumna("IDE_ADEMAP").setCombo(ser_adquisiciones.getEmpleadoAprueba("3","","",""));
-        tab_adquisiones.getColumna("IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
+        tab_adquisiones.getColumna("IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDep());
+        tab_adquisiones.getColumna("IDE_ADEMDE").setLectura(true);
         tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleado());
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
@@ -332,7 +334,31 @@ public class Adquisiciones extends Pantalla {
         vipdf_comprobante.setTitle("SOLICITUD DE COMPRA");
         agregarComponente(vipdf_comprobante);
         
+        } else {
+            utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de la orden de gasto de Compras. Consulte con el Administrador");
+        }
 
+    }
+    String empleado = "";
+    String cedula = "";
+    String ide_ademple = "";
+    
+    private int tienePerfilSecretaria() {
+        List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioSistemaEmpleado(utilitario.getVariable("IDE_USUA")));
+
+        if (!sql.isEmpty()) {
+            Object[] fila = (Object[]) sql.get(0);
+
+            empleado = fila[1].toString();
+            cedula = fila[2].toString();
+            ide_ademple = fila[0].toString();
+            return 1;
+            
+
+        } else {
+            return 0;
+            
+        }
     }
     
     public void CalcularSuma(AjaxBehaviorEvent evt){
@@ -470,38 +496,15 @@ public class Adquisiciones extends Pantalla {
          sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
          sel_rep.dibujar();
          }
-      }
-
-
-    public Reporte getRep_reporte() {
-        return rep_reporte;
-    }
-
-    public void setRep_reporte(Reporte rep_reporte) {
-        this.rep_reporte = rep_reporte;
-    }
-
-    public SeleccionFormatoReporte getSel_rep() {
-        return sel_rep;
-    }
-
-    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
-        this.sel_rep = sel_rep;
-    }
-
-    public Map getMap_parametros() {
-        return map_parametros;
-    }
-
-    public void setMap_parametros(Map map_parametros) {
-        this.map_parametros = map_parametros;
-    }
-      
+      }      
 
     @Override
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
-            tab_adquisiones.insertar();
+           tab_adquisiones.insertar();
+           tab_adquisiones.setValor("IDE_ADEMDE", ide_ademple);
+           System.out.println("empleado "+ide_ademple);
+            
         } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.insertar();
         } else if (tab_presupuesto.isFocus()) {
@@ -587,5 +590,27 @@ public class Adquisiciones extends Pantalla {
     public void setSel_tab_presupuesto(SeleccionTabla sel_tab_presupuesto) {
         this.sel_tab_presupuesto = sel_tab_presupuesto;
     }
+public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
 
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
+    }
+
+    public Map getMap_parametros() {
+        return map_parametros;
+    }
+
+    public void setMap_parametros(Map map_parametros) {
+        this.map_parametros = map_parametros;
+    }
 }
