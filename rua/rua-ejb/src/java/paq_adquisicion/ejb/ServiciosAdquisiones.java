@@ -130,7 +130,10 @@ public class ServiciosAdquisiones {
               " and activo_cxdaem = "+activo+" ";
         return sql;
     }
-
+    public String getEmpleadoDep(){
+         String sql = "select ide_ademple, cedula_ademple, nombres_ademple from adq_empleado order by nombres_ademple";
+         return sql;
+    }
     public String getEmpleadoDepartamento(String tipo, String empleado, String estado, String departamento) {
         String sql = "select ide_ademde,CEDULA_ADEMPLE,NOMBRES_ADEMPLE from ADQ_EMPLEADO_DEPARTAMENTO a,ADQ_EMPLEADO b where a.IDE_ADEMPLE = b.IDE_ADEMPLE ";
         if (tipo.equals("1")) {
@@ -184,7 +187,13 @@ public class ServiciosAdquisiones {
         sql = "select ide_ademde,NOMBRES_ADEMPLE,CEDULA_ADEMPLE from ADQ_EMPLEADO_DEPARTAMENTO a, ADQ_EMPLEADO b where a.IDE_ADEMPLE=b.IDE_ADEMPLE and ACTIVO_ADEMDE = " + activo + " and IDE_ADTIAP = " + tipo_aprobador + " and IDE_USUA =" + ide_usua;
         return sql;
     }
-
+    
+    public String getUsuarioSistemaEmpleado(String ide_usua) {
+        String sql = "";
+        sql = "select ide_ademple, cedula_ademple, nombres_ademple from adq_empleado where ide_usua =" + ide_usua;
+        return sql;
+    }
+    
     public String getUsuarioSistemaAprobador(String ide_usua, String activo, String tipo_aprobador) {
         String sql = "";
         sql = "select ide_ademap,NOMBRES_ADEMPLE,CEDULA_ADEMPLE from ADQ_EMPLEADO_APRUEBA a, ADQ_EMPLEADO b where a.IDE_ADEMPLE=b.IDE_ADEMPLE and ACTIVO_ADEMAP = " + activo + "  and IDE_USUA =" + ide_usua;
