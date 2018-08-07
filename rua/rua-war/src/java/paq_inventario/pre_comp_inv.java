@@ -70,7 +70,7 @@ public class pre_comp_inv extends Pantalla {
         tex_nomb_transaccion.setId("tex_nomb_transaccion");
         bot_buscar_transacciones.setTitle("Buscar");
         bot_buscar_transacciones.setIcon("ui-icon-search");
-        bot_buscar_transacciones.setMetodo("buscarTransaccion");
+        bot_buscar_transacciones.setMetodo("buscarnombTransaccion");
         bot_buscar_transacciones.setValue("BUSCAR POR DETALLE TRANSACCION");
         bar_botones.agregarComponente(tex_nomb_transaccion);
        
@@ -84,7 +84,7 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
         tab_tabla1.getColumna("referencia_incci").setVisible(true);
         tab_tabla1.getColumna("referencia_incci").setUnico(true);
-        tab_tabla1.getColumna("ide_georg").setVisible(false);
+        //tab_tabla1.getColumna("ide_georg").setVisible(false);
         tab_tabla1.getColumna("ide_usua").setVisible(false);
         tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
@@ -203,8 +203,9 @@ public class pre_comp_inv extends Pantalla {
     
     
     public void buscarnombTransaccion() {
-        if (tex_nomb_transaccion.getValue() != null && !tex_nomb_transaccion.getValue().toString().isEmpty()) {
-            tab_tabla1.setCondicion("observacion_incci=" + tex_nomb_transaccion.getValue());
+        String val_text = tex_nomb_transaccion.getValue().toString();
+        if (tex_nomb_transaccion.getValue() != null) {
+            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'");
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla1,tab_tabla2");
