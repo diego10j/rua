@@ -34,7 +34,7 @@ public class ServicioCuentasCxC extends ServicioBase {
     public String getSqlPuntosEmisionFacturas() {
         return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc=" + parametros.get("p_con_tipo_documento_factura") + " and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
-   
+
     public String getSqlPuntosEmisionNotasCredito() {
         return "select ide_ccdaf,serie_ccdaf, coalesce(autorizacion_ccdaf,''),observacion_ccdaf from cxc_datos_fac where ide_cntdoc= " + parametros.get("p_con_tipo_documento_nota_credito") + " and  ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
@@ -276,12 +276,13 @@ public class ServicioCuentasCxC extends ServicioBase {
         String ide_ccctr = "-1";
         if (tab_cab_factura != null) {
             TablaGenerica tab_cab_tran_cxc = new TablaGenerica();
-            String str_p_cxc_tipo_trans_pago = parametros.get("p_cxc_tipo_trans_pago");
+            //*** String str_p_cxc_tipo_trans_pago = parametros.get("p_cxc_tipo_trans_pago");
             TablaGenerica tab_det_tran_cxc = new TablaGenerica();
             tab_cab_tran_cxc.setTabla("cxc_cabece_transa", "ide_ccctr", -1);
             tab_cab_tran_cxc.getColumna("ide_ccctr").setExterna(false);
             //SI EXISTE UN PAGO ADICIONAL OCUPA ES TRANSACCIÓN
-            tab_cab_tran_cxc.setCondicion("ide_ccttr=" + str_p_cxc_tipo_trans_pago + " AND ide_cccfa is null and ide_geper=" + tab_cab_factura.getValor("ide_geper"));
+            //*** tab_cab_tran_cxc.setCondicion("ide_ccttr=" + str_p_cxc_tipo_trans_pago + " AND ide_cccfa is null and ide_geper=" + tab_cab_factura.getValor("ide_geper"));
+            tab_cab_tran_cxc.setCondicion("ide_ccctr=-1");
             tab_cab_tran_cxc.ejecutarSql();
             String str_p_cxc_tipo_trans_factura = parametros.get("p_cxc_tipo_trans_factura");//Tipo transaccion Factura 
             if (tab_cab_tran_cxc.isEmpty()) {
