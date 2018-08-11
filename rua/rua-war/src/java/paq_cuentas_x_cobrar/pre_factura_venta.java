@@ -4,11 +4,20 @@
  */
 package paq_cuentas_x_cobrar;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import sistema.aplicacion.Pantalla;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
+import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.event.SelectEvent;
+import paq_adquisicion.ejb.ServiciosAdquisiones;
+import servicios.cuentas_x_cobrar.ServicioCliente;
 import servicios.sistema.ServicioSistema;
 
 /**
@@ -18,13 +27,22 @@ import servicios.sistema.ServicioSistema;
 public class pre_factura_venta extends Pantalla {
 
     //private FacturaCxC fcc_factura = new FacturaCxC();
-
+    private Etiqueta eti_cajero = new Etiqueta();
+    private Etiqueta eti_caja = new Etiqueta();
+    private Etiqueta eti_emision = new Etiqueta();
     private Tabla tab_cabece_factura = new Tabla();
     private Tabla tab_detalle_factura = new Tabla();
+   
+    
+    
+    @EJB
+    private final ServicioCliente ser_cliente= (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
     @EJB
     private final ServicioSistema ser_sistema = (ServicioSistema) utilitario.instanciarEJB(ServicioSistema.class);
-
+    @EJB
+    private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     public pre_factura_venta() {
+         if (tienePerfilSecretaria() != 0) {
         /*    if (tienePerfilResponsable()) {
          } else {
          utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el control de Asistencia. Consulte con el Administrador");
@@ -62,7 +80,7 @@ public class pre_factura_venta extends Pantalla {
         tab_cabece_factura.getColumna("ide_geper").setAutoCompletar();
         tab_cabece_factura.getColumna("ide_geper").setOrden(3);
         tab_cabece_factura.getColumna("ide_geper").setRequerida(true);
-        tab_cabece_factura.getColumna("ide_geper").setMetodoChangeRuta(tab_cabece_factura.getRuta() + ".seleccionarCliente");
+        tab_cabece_factura.getColumna("ide_geper").setMetodoChange("datosCliente");
         tab_cabece_factura.getColumna("ide_geper").setNombreVisual("CLIENTE");
         tab_cabece_factura.getColumna("pagado_cccfa").setValorDefecto("false");
         tab_cabece_factura.getColumna("pagado_cccfa").setVisible(false);
@@ -122,7 +140,30 @@ public class pre_factura_venta extends Pantalla {
         tab_cabece_factura.getColumna("DIAS_CREDITO_CCCFA").setVisible(false);
         tab_cabece_factura.getColumna("DESCUENTO_CCCFA").setVisible(false);
         tab_cabece_factura.getColumna("FACT_MIG_CCCFA").setVisible(false);
-      
+        tab_cabece_factura.getColumna("ide_ademple").setVisible(true);
+        tab_cabece_factura.getColumna("ide_ademple").setCombo(ser_adquisiciones.getEmpleado());
+        
+        eti_cajero.setStyle("font-size:16px;font-weight: bold");
+                    eti_cajero.setValue("Cajero:"+cedula);
+                    
+        eti_caja.setStyle("font-size:16px;font-weight: bold");
+                    eti_caja.setValue("Caja:"+caja);
+                    
+        eti_emision.setStyle("font-size:16px;font-weight: bold");
+                    eti_emision.setValue("Emision:"+emision);
+                    
+                    Grid grup_titulo = new Grid();
+                    grup_titulo.setColumns(1);
+                    grup_titulo.setWidth("100%");
+                    grup_titulo.setId("grup_titulo");
+                    grup_titulo.getChildren().add(eti_cajero);
+                    grup_titulo.getChildren().add(eti_caja);
+                    grup_titulo.getChildren().add(eti_emision);
+                    
+        
+         
+  
+        
         
       
         tab_cabece_factura.dibujar();
@@ -172,41 +213,68 @@ public class pre_factura_venta extends Pantalla {
         pat_detalle_factura.setPanelTabla(tab_detalle_factura);
 
         Division div_factura = new Division();
+        
         div_factura.setId("div_factura");
         div_factura.dividir2(pat_cabece_factura, pat_detalle_factura, "50%", "H");
-        agregarComponente(div_factura);
-
+        
+        
+        Division div_cabecera=new Division();
+        div_cabecera.setId("div_cabecera");
+        div_cabecera.setFooter(grup_titulo, div_factura, "15%");
+        agregarComponente(div_cabecera);
+        
+        
+ } else {
+            utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la facturacion. Consulte con el Administrador");
+        }
     }
-    //String docente = "";
-    //String documento="";
-    //String ide_docente="";
-      /*  private boolean tienePerfilResponsable() {
-     List sql = utilitario.getConexion().consultar(ser_sistema.getUsuarioSistema(utilitario.getVariable("IDE_USUA")," and not ide_gtemp is null"));
+    
+    
+String empleado = "";
+    String cedula = "";
+    String ide_ademple = "";
+    String caja = "";
+     String emision = "";
+     public void datosCliente(SelectEvent evt)
+     {
+         
+         TablaGenerica tab_datocliente=ser_cliente.getCliente(tab_cabece_factura.getValor("ide_geper"));
+         tab_cabece_factura.setValor("telefono_cccfa",tab_datocliente.getValor("telefono_geper"));
+         tab_cabece_factura.setValor("direccion_cccfa",tab_datocliente.getValor("direccion_geper"));
+         utilitario.addUpdateTabla(tab_cabece_factura, "telefono_cccfa,direccion_cccfa","");
+         
+         
+         
+    
+     
+    }
+    private int tienePerfilSecretaria() {
+        List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioSistemaEmpleado(utilitario.getVariable("IDE_USUA")));
 
-     if (!sql.isEmpty()) {
-     Object[] fila = (Object[]) sql.get(0);
-     List sql2 =  utilitario.getConexion().consultar(ser_personal.getDatoPersonalCodigo(fila[3].toString()));
-     if (!sql2.isEmpty()) {
-     Object[] fila2 = (Object[]) sql2.get(0);
-     docente = fila2[1].toString()+" "+fila2[2].toString();
-     documento = fila2[3].toString();
-     ide_docente=fila2[0].toString();
-     return true;
-     }  
-     else{
-     return false;
-     }
-     } else {
-     return false;
-     }
+        if (!sql.isEmpty()) {
+            Object[] fila = (Object[]) sql.get(0);
+            empleado = fila[1].toString();
+            cedula = fila[2].toString();
+            ide_ademple = fila[0].toString();
+            caja = fila[3].toString();
+            emision = fila[4].toString();
+            return 1;
+            
 
-     return true;
-     }    */
-
+        } else {
+            return 0;
+            
+        }
+    }
+    
     @Override
     public void insertar() {
         if (tab_cabece_factura.isFocus()) {
             tab_cabece_factura.insertar();
+            
+            tab_cabece_factura.setValor("ide_ademple", ide_ademple);
+            /*tab_cabece_factura.setValor("ide_cocaj", ide_cocaj);*/
+            
         } else if (tab_detalle_factura.isFocus()) {
             tab_detalle_factura.insertar();
         }
