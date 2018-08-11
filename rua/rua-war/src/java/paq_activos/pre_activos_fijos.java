@@ -61,6 +61,7 @@ public class pre_activos_fijos extends Pantalla {
     private Tabla tab_tabla3;
     private Tabla tab_tabla4;
     private Tabla tab_tabla5;
+    private Tabla tab_tabla6;
     private AutoCompletar aut_custodio;
 
     private Reporte rep_reporte = new Reporte();
@@ -919,7 +920,13 @@ public class pre_activos_fijos extends Pantalla {
         gri_cb.getChildren().add(bot_imprimir);
 
         gri_cb.getChildren().add(new Etiqueta("</div>"));
-
+        
+        
+       
+        
+        
+        
+        
         tab_tabla4 = new Tabla();
         tab_tabla4.setId("tab_tabla4");
         tab_tabla4.setIdCompleto("tab_tabulador:tab_tabla4");
@@ -954,6 +961,8 @@ public class pre_activos_fijos extends Pantalla {
         pat_panel4.setPanelTabla(tab_tabla4);
         pat_panel4.getMenuTabla().getItem_eliminar().setRendered(false);
         tab_tabulador.agregarTab("FOTOS", pat_panel4);
+        
+        
 
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
@@ -983,6 +992,8 @@ public class pre_activos_fijos extends Pantalla {
         PanelTabla pat_panel5 = new PanelTabla();
         pat_panel5.setPanelTabla(tab_tabla3);
         tab_tabulador.agregarTab("TRANSACCIONES", pat_panel5);
+        
+        
 
         tab_tabla5 = new Tabla();
         tab_tabla5.setId("tab_tabla5");
@@ -994,10 +1005,27 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla5.setRows(10);
 
         tab_tabla5.dibujar();
-
+         
+   
+        
         PanelTabla pat_panel6 = new PanelTabla();
         pat_panel6.setPanelTabla(tab_tabla5);
         tab_tabulador.agregarTab("DETALLE CANTIDAD", pat_panel6);
+        
+        tab_tabla6 = new Tabla();
+        tab_tabla6.setId("tab_tabla6");
+        tab_tabla6.setIdCompleto("tab_tabulador:tab_tabla6");
+        tab_tabla6.setTabla("ACT_DEPRECIACION", "IDE_ACDEPR", 11);
+       // tab_tabla6.setCampoPrimaria("ide_acdepr");
+      //  tab_tabla6.getColumna("ide_acdepr").setVisible(false);
+        //tab_tabla6.setLectura(true);
+        //tab_tabla6.setRows(10);
+        //tab_tabla6.setRendered(false);
+        tab_tabla6.dibujar();
+
+        PanelTabla pat_panel7 = new PanelTabla();
+        pat_panel7.setPanelTabla(tab_tabla6);
+        tab_tabulador.agregarTab("DEPRECIACION", pat_panel7);
 
         Grupo gr = new Grupo();
         gr.setTransient(true);
@@ -1514,6 +1542,14 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setTab_foto(Tabla tab_foto) {
         this.tab_foto = tab_foto;
+    }
+
+    public Tabla getTab_tabla6() {
+        return tab_tabla6;
+    }
+
+    public void setTab_tabla6(Tabla tab_tabla6) {
+        this.tab_tabla6 = tab_tabla6;
     }
 
 }
