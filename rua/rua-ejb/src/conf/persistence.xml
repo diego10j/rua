@@ -1,54 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
-    
-    <!--- Casa Inspectorial Salesiana/> -->
-    <persistence-unit name="sistema" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>sistema</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <property name="eclipselink.logging.level" value="SEVERE"/>
-        </properties>
-    </persistence-unit>
-    
-    <!--- Colegio Don Bosco la Kennedy/> -->
-    <persistence-unit name="rua_col_dbk" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>rua_col_dbk</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <property name="eclipselink.logging.level" value="SEVERE"/>
-        </properties>
-    </persistence-unit>
-
-    <!--- Mecanoplast Don Bosco la Kennedy/> -->
-    <persistence-unit name="rua_meca_dbk" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>rua_meca_dbk</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <property name="eclipselink.logging.level" value="SEVERE"/>
-        </properties>
-    </persistence-unit>    
-    
-    <!--- Escela Don Bosco la Kennedy/> -->
-    <persistence-unit name="rua_esc_dbk" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>rua_esc_dbk</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <property name="eclipselink.logging.level" value="SEVERE"/>
-        </properties>
-    </persistence-unit>
-    
-    <!--- Centro de Espiritualidad San Patricio/> -->
-    <persistence-unit name="rua_san_pat" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>  
-        <jta-data-source>rua_san_pat</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <properties>
-            <property name="eclipselink.logging.level" value="SEVERE"/>
-        </properties>
-    </persistence-unit>                                               
-    
+  <persistence-unit name="rua_sanp_dbk" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>rua_sanp_dbk</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="SEVERE"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="rua_col_dbk" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>rua_col_dbk</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="SEVERE"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="rua_meca_dbk" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>rua_meca_dbk</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="SEVERE"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="rua_sanp_dbk" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>rua_sanp_dbk</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="SEVERE"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="rua_esc_dbk" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>rua_esc_dbk</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="SEVERE"/>
+    </properties>
+  </persistence-unit>
 </persistence>
