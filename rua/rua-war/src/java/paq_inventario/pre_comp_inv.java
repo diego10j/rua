@@ -270,8 +270,10 @@ public class pre_comp_inv extends Pantalla {
          }
          TablaGenerica tab_con_recibido = utilitario.consultar("select ide_cpdfa, recibido_compra_cpdfa \n" +
                                                                "from cxp_detall_factur where ide_cpcfa = "+factura+" \n" +
-                                                               "and recibido_compra_cpdfa = true");
-         if (tab_con_recibido.getTotalFilas() == 0){
+                                                               "and recibido_compra_cpdfa = false");
+         if (tab_con_recibido.getTotalFilas()> 0){
+             
+         } else {
              utilitario.getConexion().ejecutarSql("update cxp_cabece_factur set recibido_compra_cpcfa = true where ide_cpcfa = "+factura+"");
          }
          tab_tabla2.guardar();
