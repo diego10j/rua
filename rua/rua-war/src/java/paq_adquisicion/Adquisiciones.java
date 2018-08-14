@@ -30,7 +30,6 @@ public class Adquisiciones extends Pantalla {
     private Tabla tab_adquisiones = new Tabla();
     private Tabla tab_presupuesto = new Tabla();
     private Tabla tab_compra_bienes = new Tabla();
-    
     private Reporte rep_reporte = new Reporte(); //Listado de Reportes, siempre se llama rep_reporte
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte(); //formato de salida del reporte
     private Map map_parametros = new HashMap();//Parametros del reporte
@@ -79,6 +78,7 @@ public class Adquisiciones extends Pantalla {
 
         tab_adquisiones.setId("tab_adquisiones");   //identificador
         tab_adquisiones.setTabla("adq_compra", "ide_adcomp", 1);
+        //tab_adquisiones.setCondicion("ide_adcomp=-1");
         List lista = new ArrayList();
         List lista1 = new ArrayList();
         List lista2 = new ArrayList();
@@ -102,8 +102,9 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("IDE_ADAPRO").setCombo(ser_adquisiciones.getAprobado());
         tab_adquisiones.getColumna("IDE_ADEMAP").setCombo(ser_adquisiciones.getEmpleadoAprueba("3","","",""));
         tab_adquisiones.getColumna("IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDep());
-        tab_adquisiones.getColumna("IDE_ADEMDE").setLectura(true);
-        tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleado());
+        tab_adquisiones.getColumna("IDE_ADEMPLE").setLectura(true);
+        tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleadoDep());
+        tab_adquisiones.getColumna("IDE_ADEMPLE").setAutoCompletar();
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3","1","1","1"));
         tab_adquisiones.getColumna("IDE_ADARAD ").setCombo(ser_adquisiciones.getAreaAdministrativa("0", "0"));
@@ -114,7 +115,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.setTipoFormulario(true);
         tab_adquisiones.getGrid().setColumns(6);
         tab_adquisiones.getColumna("IDE_ADEMAP").setNombreVisual("SOLICITANTE");
-        tab_adquisiones.getColumna("IDE_ADEMDE").setNombreVisual("RESPONSABLE SOLICITUD");
+        tab_adquisiones.getColumna("IDE_ADEMPLE").setNombreVisual("RESPONSABLE SOLICITUD");
         tab_adquisiones.getColumna("IDE_ADCOMP").setNombreVisual("CODIGO");
         tab_adquisiones.getColumna("IDE_ADAPRO").setNombreVisual("APROBACION");
         tab_adquisiones.getColumna("TIPO_COMPRA_ADCOMP").setNombreVisual("TIPO DE COMPRA");
@@ -162,7 +163,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("ADJUDICADOR_ADCOMP").setVisible(false);
         tab_adquisiones.getColumna("EXISTE_ADCOMP").setVisible(false);
         tab_adquisiones.getColumna("APRUEBA_ADCOMP").setVisible(false);
-        tab_adquisiones.getColumna("IDE_ADEMPLE").setVisible(false);
+       // tab_adquisiones.getColumna("IDE_ADEMPLE").setVisible(true);
         tab_adquisiones.getColumna("ide_geper").setVisible(false);
         
       /*  tab_adquisiones.getColumna("IDE_ADAPRO").setVisible(false);
@@ -206,6 +207,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setVisible(false);
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setVisible(false);*/
         
+        tab_adquisiones.getColumna("facturado_adcomp").setValorDefecto("false");
         tab_adquisiones.dibujar();
 
         PanelTabla pat_adquisiciones = new PanelTabla();
@@ -282,14 +284,14 @@ public class Adquisiciones extends Pantalla {
         tab_compra_bienes.getColumna("IVA_ADCOBI").setVisible(false);
         tab_compra_bienes.getColumna("TOTAL_ADCOBI").setVisible(false);
         tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setVisible(false);
-         tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setValorDefecto("0");
+       //  tab_compra_bienes.getColumna("NO_EXISTE_ADCOBI").setValorDefecto("0");
        
-        tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setValorDefecto("0");
+     /*  tab_compra_bienes.getColumna("VALOR_UNITARIO_ADCOBI").setValorDefecto("0");
         tab_compra_bienes.getColumna("DECUENTO_ADCOBI").setValorDefecto("0");
         tab_compra_bienes.getColumna("PORCENTAJE_DESCUENTO_ADCOBI").setValorDefecto("0");
         tab_compra_bienes.getColumna("SUBTOTAL_ADCOBI").setValorDefecto("0");
         tab_compra_bienes.getColumna("IVA_ADCOBI").setValorDefecto("0");
-        tab_compra_bienes.getColumna("TOTAL_ADCOBI").setValorDefecto("0");
+        tab_compra_bienes.getColumna("TOTAL_ADCOBI").setValorDefecto("0");*/
         tab_compra_bienes.dibujar();
         PanelTabla pat_panel_compra_bienes = new PanelTabla();
         pat_panel_compra_bienes.setId("pat_panel_compra_bienes");
@@ -502,7 +504,7 @@ public class Adquisiciones extends Pantalla {
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
            tab_adquisiones.insertar();
-           tab_adquisiones.setValor("IDE_ADEMDE", ide_ademple);
+           tab_adquisiones.setValor("IDE_ADEMPLE", ide_ademple);
            System.out.println("empleado "+ide_ademple);
             
         } else if (tab_compra_bienes.isFocus()) {
@@ -613,4 +615,5 @@ public Reporte getRep_reporte() {
     public void setMap_parametros(Map map_parametros) {
         this.map_parametros = map_parametros;
     }
+    
 }
