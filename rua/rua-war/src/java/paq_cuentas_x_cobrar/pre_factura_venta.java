@@ -249,7 +249,7 @@ String empleado = "";
      
     }
     private int tienePerfilSecretaria() {
-        List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioSistemaEmpleado(utilitario.getVariable("IDE_USUA")));
+        List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
 
         if (!sql.isEmpty()) {
             Object[] fila = (Object[]) sql.get(0);
