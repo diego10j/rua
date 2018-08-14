@@ -11,7 +11,9 @@ import org.primefaces.event.NodeSelectEvent;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Arbol;
 import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
@@ -26,8 +28,10 @@ public class pre_funcion_programa extends Pantalla {
 	private Tabla tab_funcion_programa=new Tabla();
 	private Tabla tab_vigente= new Tabla();
 	private Arbol arb_funcion_programa=new Arbol();
+        private Tabla tab_programa_presupuestario= new Tabla();
 	private SeleccionTabla set_sub_actividad=new SeleccionTabla();
 	public static String par_sub_activdad;
+        private Dialogo crear_rpograma = new Dialogo();
         	///reporte
 	private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
@@ -146,7 +150,28 @@ public class pre_funcion_programa extends Pantalla {
 		set_sub_actividad.getBot_aceptar().setMetodo("aceptarSubActividad");
 		agregarComponente(set_sub_actividad);
       	
-      		
+            // BOTON  PARA CARGAR TABLA PROGRAMA
+            Boton bot_agregarPrograma = new Boton();
+            bot_agregarPrograma.setValue("Programas Presupuestarios");
+            bot_agregarPrograma.setIcon("ui-icon-person");
+            bot_agregarPrograma.setMetodo("crearAlumno");
+            bar_botones.agregarBoton(bot_agregarPrograma);
+                //PANTALLA CREAR PROGRAMA
+            crear_rpograma.setId("crear_rpograma");
+            crear_rpograma.setTitle("CREAR PROGRAMA PRESUPUESTARIO");
+            crear_rpograma.setWidth("45%");
+            crear_rpograma.setHeight("45%");
+
+            Grid gri_cuerpo = new Grid();
+            tab_programa_presupuestario.setId("tab_programa_presupuestario");
+            tab_programa_presupuestario.setTabla("pre_programa", "ide_prpro", 3);
+            tab_programa_presupuestario.getGrid().setColumns(4);
+            tab_programa_presupuestario.dibujar();
+            gri_cuerpo.getChildren().add(tab_programa_presupuestario);
+            crear_rpograma.getBot_aceptar().setMetodo("aceptarDialogoAlumno");
+            crear_rpograma.setDialogo(gri_cuerpo);
+            agregarComponente(crear_rpograma);
+
 	}
 	
 	/**DJ
@@ -435,6 +460,22 @@ public void aceptarReporte(){
 
     public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
         this.self_reporte = self_reporte;
+    }
+
+    public Dialogo getCrear_rpograma() {
+        return crear_rpograma;
+    }
+
+    public void setCrear_rpograma(Dialogo crear_rpograma) {
+        this.crear_rpograma = crear_rpograma;
+    }
+
+    public Tabla getTab_programa_presupuestario() {
+        return tab_programa_presupuestario;
+    }
+
+    public void setTab_programa_presupuestario(Tabla tab_programa_presupuestario) {
+        this.tab_programa_presupuestario = tab_programa_presupuestario;
     }
 
 
