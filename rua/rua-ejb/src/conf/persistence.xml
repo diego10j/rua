@@ -25,20 +25,18 @@
       <property name="eclipselink.logging.level" value="SEVERE"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="rua_sanp_dbk" transaction-type="JTA">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <jta-data-source>rua_sanp_dbk</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties>
-      <property name="eclipselink.logging.level" value="SEVERE"/>
-    </properties>
-  </persistence-unit>
   <persistence-unit name="rua_esc_dbk" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>rua_esc_dbk</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="SEVERE"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="sistema" transaction-type="JTA">
+    <jta-data-source>sistema</jta-data-source>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
 </persistence>
