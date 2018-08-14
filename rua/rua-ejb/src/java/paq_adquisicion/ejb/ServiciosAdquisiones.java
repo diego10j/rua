@@ -130,7 +130,9 @@ public class ServiciosAdquisiones {
               " and activo_cxdaem = "+activo+" ";
         return sql;
     }
-    public String getEmpleadoDep(){
+    
+    
+        public String getEmpleadoDep(){
          String sql = "select ide_ademple, cedula_ademple, nombres_ademple from adq_empleado order by nombres_ademple";
          return sql;
     }
@@ -194,6 +196,13 @@ public class ServiciosAdquisiones {
         return sql;
     }
     
+    public String getUsuarioCaja(String ide_usua){
+        String sql="";
+        sql="select a.ide_cocaj,detalle_cocaj,nombres_ademple,usuario_ingre,activo_cxcaem\n" +
+            "from cxc_caja_empleado a, cont_caja b ,adq_empleado c \n" +
+            "where a.ide_cocaj = b.ide_cocaj  and a.ide_ademple = c.ide_ademple and activo_cxcaem=true"+ide_usua;
+        return sql;
+    }
     public String getUsuarioSistemaAprobador(String ide_usua, String activo, String tipo_aprobador) {
         String sql = "";
         sql = "select ide_ademap,NOMBRES_ADEMPLE,CEDULA_ADEMPLE from ADQ_EMPLEADO_APRUEBA a, ADQ_EMPLEADO b where a.IDE_ADEMPLE=b.IDE_ADEMPLE and ACTIVO_ADEMAP = " + activo + "  and IDE_USUA =" + ide_usua;
