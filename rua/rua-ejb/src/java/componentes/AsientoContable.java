@@ -643,8 +643,14 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
-
-            vpd_asiento.setVisualizarPDF("rep_contabilidad/rep_comprobante_contabilidad.jasper", parametros_rep);
+            String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
+            String nom_rep = "rep_comprobante_contabilidad.jasper";
+            if (p_con_repo_nivel != null) {
+                if (p_con_repo_nivel.equalsIgnoreCase("true")) {
+                    nom_rep = "rep_comprobante_contabilidad_normal.jasper";
+                }
+            }
+            vpd_asiento.setVisualizarPDF("rep_contabilidad/" + nom_rep, parametros_rep);
         }
         if (reporteComprobante == 2) {//cheque
             TablaGenerica tab_lib_banc = utilitario.consultar("select * from tes_cab_libr_banc where ide_cnccc =" + ide_cnccc);
@@ -665,7 +671,14 @@ public class AsientoContable extends Dialogo {
             } else {
                 parametros_rep.put("p_identificacion", "");
             }
-            vpd_asiento.setVisualizarPDF("rep_bancos/rep_cheque.jasper", parametros_rep);
+            String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
+            String nom_rep = "rep_cheque.jasper";
+            if (p_con_repo_nivel != null) {
+                if (p_con_repo_nivel.equalsIgnoreCase("true")) {
+                    nom_rep = "rep_cheque_normal.jasper";
+                }
+            }
+            vpd_asiento.setVisualizarPDF("rep_bancos/" + nom_rep, parametros_rep);
 
         }
         vpd_asiento.dibujar();

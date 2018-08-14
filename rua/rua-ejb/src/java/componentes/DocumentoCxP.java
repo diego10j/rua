@@ -714,7 +714,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("base_tarifa0_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("otros_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("ide_srtst").setCombo("sri_tipo_sustento_tributario", "ide_srtst", "alterno_srtst,nombre_srtst", "");
-        tab_cab_documento.getColumna("ide_srtst").setValorDefecto(parametros.get("p_sri_tip_sus_tri02"));
+        tab_cab_documento.getColumna("ide_srtst").setValorDefecto(utilitario.getVariable("p_sri_tip_sus_tri02"));
         tab_cab_documento.getColumna("ide_srtst").setNombreVisual("SUSTENTO TRIBUTARIO");
         tab_cab_documento.getColumna("ide_srtst").setOrden(7);
         tab_cab_documento.getColumna("ide_cncre").setVisible(false);
