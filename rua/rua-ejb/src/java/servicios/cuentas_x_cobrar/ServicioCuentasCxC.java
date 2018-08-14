@@ -1052,8 +1052,16 @@ public class ServicioCuentasCxC extends ServicioBase {
         if (num_doc_mod_cpcno != null) {
             num_doc_mod_cpcno = num_doc_mod_cpcno.replace("-", "");
         }
-        String secuencial_cccfa = num_doc_mod_cpcno.substring(6, 15);
-        String serie_ccdaf = num_doc_mod_cpcno.substring(0, 6);
+        String secuencial_cccfa = "000000000";
+        String serie_ccdaf = "000000";
+        try {
+            secuencial_cccfa = num_doc_mod_cpcno.substring(6, 15);
+            serie_ccdaf = num_doc_mod_cpcno.substring(0, 6);
+        } catch (Exception e) {
+            secuencial_cccfa = "000000000";
+            serie_ccdaf = "000000";
+        }
+
         return utilitario.consultar("select ide_geper,fecha_emisi_cccfa,total_cccfa,base_grabada_cccfa,base_no_objeto_iva_cccfa,base_tarifa0_cccfa,valor_iva_cccfa,\n"
                 + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa,descuento_ccdfa\n"
                 + "from cxc_cabece_factura a\n"
