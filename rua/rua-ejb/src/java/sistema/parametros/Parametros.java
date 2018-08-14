@@ -210,7 +210,7 @@ public class Parametros {
         /*
          * VENTAS =8
          */
-        /*
+ /*
          * PRESTAMOS E INVERSIONES =9 *
          */
         lis_parametros.add(new Parametro("9", "p_iyp_activo", "Indica que se carga solo las cuentas de nivel de Activo", "0", "con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc"));
@@ -427,6 +427,10 @@ public class Parametros {
         lis_parametros.add(new Parametro("13", "p_gth_analista_tthh", "Indica el nombre del analista de talento humano", "Ing. Paola"));
 
 //////////////////////////////////////////////////////////////////////
+//CONTABILIDAD
+//
+        lis_parametros.add(new Parametro("0", "p_con_repo_nivel", "Visualiza reporte comprobante contable a nivel 5 ", "false"));
+
         return lis_parametros;
     }
 }
