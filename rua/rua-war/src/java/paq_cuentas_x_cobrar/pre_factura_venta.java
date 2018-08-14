@@ -144,7 +144,7 @@ public class pre_factura_venta extends Pantalla {
         tab_cabece_factura.getColumna("ide_ademple").setCombo(ser_adquisiciones.getEmpleado());
         
         eti_cajero.setStyle("font-size:16px;font-weight: bold");
-                    eti_cajero.setValue("Cajero:"+cedula);
+                    eti_cajero.setValue("Cajero:"+empleado);
                     
         eti_caja.setStyle("font-size:16px;font-weight: bold");
                     eti_caja.setValue("Caja:"+caja);
@@ -253,8 +253,8 @@ String empleado = "";
 
         if (!sql.isEmpty()) {
             Object[] fila = (Object[]) sql.get(0);
-            empleado = fila[1].toString();
-            cedula = fila[2].toString();
+            empleado = fila[2].toString();
+            cedula = fila[1].toString();
             ide_ademple = fila[0].toString();
             caja = fila[3].toString();
             emision = fila[4].toString();
