@@ -4,6 +4,7 @@
  */
 package paq_inventario;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -21,6 +22,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
+import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
@@ -45,12 +47,18 @@ public class pre_comp_inv extends Pantalla {
     private final Boton bot_buscar_transacciones = new Boton();
     private SeleccionTabla sel_empleado = new SeleccionTabla();
     private SeleccionTabla sel_departamento = new SeleccionTabla();
+    private SeleccionTabla sel_cabece_compra = new SeleccionTabla();
+    private SeleccionTabla sel_detalle_compra = new SeleccionTabla();
+    String factura ="";
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
 
+    @EJB
+    private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    
     public pre_comp_inv() {
         //Recuperar el plan de cuentas activo
 
@@ -121,7 +129,7 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductoFiltro("false", "true"));
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlProductosCombo());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
@@ -185,8 +193,91 @@ public class pre_comp_inv extends Pantalla {
         sel_departamento.setSeleccionTabla(ser_inventario.getSqlComboOrganigrama(), "ide_georg");
         agregarComponente(sel_departamento);
         sel_departamento.getBot_aceptar().setMetodo("aceptarReporte");
-
+        
+        Boton bot_busca_solici = new Boton();
+        bot_busca_solici.setValue("BUSCAR FACTURA");
+        bot_busca_solici.setIcon("ui-icon-search");
+        bot_busca_solici.setMetodo("dibujaSolicitud");
+        bar_botones.agregarBoton(bot_busca_solici);  
+        
+        sel_cabece_compra.setId("sel_cabece_compra");
+        sel_cabece_compra.setTitle("SELECCIONA UNA FACTURA");
+        sel_cabece_compra.setSeleccionTabla("select ide_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n" +
+                                            "from cxp_cabece_factur a\n" +
+                                            "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+                                            "left join adq_compra c on a.ide_adcomp = c.ide_adcomp\n" +
+                                            "where a.ide_adcomp = c.ide_adcomp\n" +
+                                            "and pagado_cpcfa = false", "ide_cpcfa");
+        sel_cabece_compra.setWidth("80%");
+        sel_cabece_compra.setHeight("70%");
+        sel_cabece_compra.setRadio();
+        sel_cabece_compra.getBot_aceptar().setMetodo("aceptarSolicitud");
+        agregarComponente(sel_cabece_compra);
+        
+        sel_detalle_compra.setId("sel_detalle_compra");
+        sel_detalle_compra.setTitle("SELECCIONA EL DETALLE DE LA FACTURA");
+        sel_detalle_compra.setSeleccionTabla(ser_adquisiciones.getdetalleFacturaCompra("1", ""), "ide_cpdfa");
+        sel_detalle_compra.setWidth("80%");
+        sel_detalle_compra.setHeight("70%");
+        //sel_tab_detalle_compra.setRadio();
+        sel_detalle_compra.getBot_aceptar().setMetodo("generarCabecera");
+        agregarComponente(sel_detalle_compra);
+        
     }
+    public void dibujaSolicitud(){
+        sel_cabece_compra.dibujar();
+    }
+    public void aceptarSolicitud(){
+        factura = sel_cabece_compra.getValorSeleccionado();
+        sel_cabece_compra.cerrar();
+        sel_detalle_compra.getTab_seleccion().setSql(ser_adquisiciones.getdetalleFacturaCompra("2", factura));
+        sel_detalle_compra.getTab_seleccion().ejecutarSql();   
+        sel_detalle_compra.dibujar();
+    }
+    
+     public void generarCabecera(){
+         TablaGenerica tab_fact_cabera = utilitario.consultar("select ide_cpcfa, a.ide_geper, nom_geper from cxp_cabece_factur a\n" +
+                                                              "left join gen_persona b on a.ide_geper = b.ide_geper \n" +
+                                                              "where ide_cpcfa = "+factura+"");
+          for (int i=0; i < tab_fact_cabera.getTotalFilas(); i++ ){
+              if (tab_tabla1.isFilaInsertada() == false){
+                  tab_tabla1.insertar();
+              }
+              tab_tabla1.setValor("ide_geper",tab_fact_cabera.getValor(i, "ide_geper"));
+          }
+           tab_tabla1.guardar();
+           guardarPantalla();
+           sel_detalle_compra.cerrar();
+	   utilitario.addUpdate("tab_tabla1");
+           generaDetalle();
+     }
+     
+     public void generaDetalle(){
+         String selec_productos = sel_detalle_compra.getSeleccionados();
+         TablaGenerica tab_detalle_fac = utilitario.consultar("select a.ide_cpdfa, b.ide_inarti, nombre_inarti, cantidad_cpdfa, precio_cpdfa, valor_cpdfa\n" +
+                                                              "from cxp_detall_factur a\n" +
+                                                              "left join inv_articulo b on a.ide_inarti = b.ide_inarti \n" +
+                                                              "where a.ide_cpcfa in ("+factura+")");
+         System.out.println("factura" +factura);
+         for (int i=0; i < tab_detalle_fac.getTotalFilas(); i++ ){
+             tab_tabla2.insertar();
+             tab_tabla2.setValor("ide_incci",tab_tabla1.getValor("ide_incci"));
+             tab_tabla2.setValor("ide_inarti",tab_detalle_fac.getValor(i, "ide_inarti"));
+             tab_tabla2.setValor("cantidad_indci",tab_detalle_fac.getValor(i, "cantidad_cpdfa"));
+             tab_tabla2.setValor("precio_indci",tab_detalle_fac.getValor(i, "precio_cpdfa"));   
+             tab_tabla2.setValor("valor_indci",tab_detalle_fac.getValor(i, "valor_cpdfa"));  
+             utilitario.getConexion().ejecutarSql("update cxp_detall_factur set recibido_compra_cpdfa = true where ide_cpdfa in ("+selec_productos+")");
+         }
+         TablaGenerica tab_con_recibido = utilitario.consultar("select ide_cpdfa, recibido_compra_cpdfa \n" +
+                                                               "from cxp_detall_factur where ide_cpcfa = "+factura+" \n" +
+                                                               "and recibido_compra_cpdfa = true");
+         if (tab_con_recibido.getTotalFilas() == 0){
+             utilitario.getConexion().ejecutarSql("update cxp_cabece_factur set recibido_compra_cpcfa = true where ide_cpcfa = "+factura+"");
+         }
+         tab_tabla2.guardar();
+         guardarPantalla();
+        utilitario.addUpdate("tab_tabla2");
+     }
 
     public void buscarTransaccion() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
@@ -524,6 +615,22 @@ public class pre_comp_inv extends Pantalla {
 
     public void setSel_departamento(SeleccionTabla sel_departamento) {
         this.sel_departamento = sel_departamento;
+    }
+
+    public SeleccionTabla getSel_cabece_compra() {
+        return sel_cabece_compra;
+    }
+
+    public void setSel_cabece_compra(SeleccionTabla sel_cabece_compra) {
+        this.sel_cabece_compra = sel_cabece_compra;
+    }
+
+    public SeleccionTabla getSel_detalle_compra() {
+        return sel_detalle_compra;
+    }
+
+    public void setSel_detalle_compra(SeleccionTabla sel_detalle_compra) {
+        this.sel_detalle_compra = sel_detalle_compra;
     }
 
 }
