@@ -15,17 +15,22 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_presupuesto.ejb.ServicioPresupuesto;
+import servicios.sistema.ServicioSeguridad;
 import sistema.aplicacion.Pantalla;
 
 public class pre_cedula_presupuestaria extends Pantalla {
 	private Tabla tab_fuente_financiamiento=new Tabla();
         private SeleccionCalendario sel_cal = new SeleccionCalendario();
         private Combo com_tipo_cedula = new Combo();
+        private Combo com_sucursal = new Combo ();
         private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
 	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();        
         @EJB
 	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
+        
+        @EJB
+	private ServicioSeguridad ser_seguridad=(ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
 
 	 public pre_cedula_presupuestaria() {
 		// TODO Auto-generated constructor stub
@@ -41,6 +46,7 @@ public class pre_cedula_presupuestaria extends Pantalla {
 		self_reporte.setId("self_reporte"); //id
 		agregarComponente(self_reporte);
                  
+                 com_sucursal.setId("com_sucursal");
                  com_tipo_cedula.setId("com_tipo_cedula");
                  List tipo_cedula = new ArrayList();
                  Object fila1[] ={
@@ -54,7 +60,9 @@ public class pre_cedula_presupuestaria extends Pantalla {
                          
                  com_tipo_cedula.setCombo(tipo_cedula);
                  com_tipo_cedula.setMetodo("seleccionaElAnio");
-                 bar_botones.agregarComponente(com_tipo_cedula);
+                 bar_botones.agregarComponente(com_tipo_cedula);                 
+                 com_sucursal.setCombo(ser_seguridad.getSQLSucursalesUsuario());
+                 bar_botones.agregarComponente(com_sucursal);
                  
 		 tab_fuente_financiamiento.setId("tab_fuente_financiamiento");
 		 tab_fuente_financiamiento.setTabla("pre_cedula_presupuestaria", "ide_prcep", 1);
