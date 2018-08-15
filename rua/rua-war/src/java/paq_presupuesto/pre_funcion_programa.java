@@ -16,22 +16,28 @@ import framework.componentes.Division;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
+import javax.ejb.EJB;
 
 import paq_contabilidad.ejb.ServicioContabilidad;
+import paq_presupuesto.ejb.ServicioPresupuesto;
 import sistema.aplicacion.Pantalla;
 
 
 public class pre_funcion_programa extends Pantalla {
 	private Tabla tab_funcion_programa=new Tabla();
 	private Tabla tab_vigente= new Tabla();
+        private Tabla tab_programa= new Tabla();
 	private Arbol arb_funcion_programa=new Arbol();
         private Tabla tab_programa_presupuestario= new Tabla();
 	private SeleccionTabla set_sub_actividad=new SeleccionTabla();
 	public static String par_sub_activdad;
         private Dialogo crear_rpograma = new Dialogo();
+	private SeleccionArbol sel_arbol_clasificador=new SeleccionArbol();
         	///reporte
 	private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
@@ -47,8 +53,11 @@ public class pre_funcion_programa extends Pantalla {
 	public static String par_programa;
 	public static String par_producto;
 	public static String par_fase;	
-
-	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
+        
+	@EJB
+        private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
+        @EJB
+        private ServicioPresupuesto ser_presupuesto = (ServicioPresupuesto ) utilitario.instanciarEJB(ServicioPresupuesto.class);
 	
 	public pre_funcion_programa (){
  
@@ -81,7 +90,8 @@ public class pre_funcion_programa extends Pantalla {
 		tab_funcion_programa.setTabla("pre_funcion_programa", "ide_prfup", 1);
 		tab_funcion_programa.getColumna("ide_prnfp").setCombo("pre_nivel_funcion_programa", "ide_prnfp", "detalle_prnfp","");
 		tab_funcion_programa.getColumna("ide_prnfp").setMetodoChange("validaSubActividad");
-		tab_funcion_programa.agregarRelacion(tab_vigente);
+		//tab_funcion_programa.agregarRelacion(tab_vigente);
+                tab_funcion_programa.agregarRelacion(tab_programa);
 		tab_funcion_programa.setCampoPadre( "pre_ide_prfup");
 		tab_funcion_programa.setCampoNombre("codigo_prfup||' '||detalle_prfup");
 		tab_funcion_programa.agregarArbol(arb_funcion_programa);
@@ -108,8 +118,9 @@ public class pre_funcion_programa extends Pantalla {
 		// tabla deaños vigente
 		tab_vigente.setId("tab_vigente");
 		tab_vigente.setHeader("AñO VIGENTE");
+                //tab_vigente.setIdCompleto("tab_tabulador:tab_vigente");
 		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
-		tab_vigente.setCondicion("not ide_prfup is null");
+		tab_vigente.setCondicion("not ide_prpro is null");
 		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
 		tab_vigente.getColumna("ide_geani").setUnico(true);
 		tab_vigente.getColumna("ide_prfup").setUnico(true);
@@ -121,11 +132,28 @@ public class pre_funcion_programa extends Pantalla {
 		tab_vigente.dibujar();
 		PanelTabla pat_panel2=new PanelTabla();
 		pat_panel2.setPanelTabla(tab_vigente);
-		
+                
+                tab_programa.setId("tab_programa");
+                //tab_programa.setIdCompleto("tab_tabulador:tab_programa");
+		tab_programa.setTabla("pre_programa", "ide_prpro", 3);
+                tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
+                tab_programa.getColumna("ide_prcla").setLectura(true);
+                tab_programa.getColumna("ide_prcla").setUnico(true);
+                tab_programa.getColumna("ide_prfup").setUnico(true);
+                tab_programa.agregarRelacion(tab_vigente);
+                tab_programa.dibujar ();
+                PanelTabla pat_pane3=new PanelTabla();
+		pat_pane3.setPanelTabla(tab_programa);
+                /*
+                Tabulador tab_tabulador = new Tabulador();
+                tab_tabulador.setId("tab_tabulador");
+                tab_tabulador.agregarTab("VIGENTE", pat_panel2);
+                tab_tabulador.agregarTab("PROGRAMA", pat_pane3);
+		*/
 		//division2
                 Division div_vigente = new Division();
  		div_vigente.setId("div_vigente");
- 		div_vigente.dividir2( pat_funcion_programa, pat_panel2,"50%","h");
+ 		div_vigente.dividir3( pat_funcion_programa, pat_pane3,pat_panel2,"50%","25%","h");
  		agregarComponente(div_vigente);
 
 				
@@ -171,8 +199,30 @@ public class pre_funcion_programa extends Pantalla {
             crear_rpograma.getBot_aceptar().setMetodo("aceptarDialogoAlumno");
             crear_rpograma.setDialogo(gri_cuerpo);
             agregarComponente(crear_rpograma);
+            
+            //BOTON CLASIFICADOR
+            Boton bot_agregar=new Boton();
+            bot_agregar.setValue("Agregar Clasificador");
+            bot_agregar.setMetodo("abrirArbolClasificador");
+            bar_botones.agregarBoton(bot_agregar);
+
+            sel_arbol_clasificador.setId("sel_arbol_clasificador");
+            sel_arbol_clasificador.setSeleccionArbol("pre_clasificador", "ide_prcla", "codigo_clasificador_prcla||' '||descripcion_clasificador_prcla", "pre_ide_prcla");
+            sel_arbol_clasificador.getArb_seleccion().setCondicion("ide_prcla=-1");
+            //sel_arbol.getArb_seleccion().setOptimiza(true);                
+            agregarComponente(sel_arbol_clasificador);
+            sel_arbol_clasificador.getBot_aceptar().setMetodo("aceptarArbolClasificador");        
 
 	}
+        
+        public void abrirArbolClasificador(){
+            //System.out.println("ingrese a abrir el arbol");
+            sel_arbol_clasificador.getArb_seleccion().setCondicion("1=1");
+            sel_arbol_clasificador.getArb_seleccion().ejecutarSql();
+            sel_arbol_clasificador.dibujar();
+            utilitario.addUpdate("sel_arbol_clasificador");
+
+        }        
 	
 	/**DJ
 	 * Se ejecuta cuando se selecciona algun nodo del arbol
@@ -478,6 +528,23 @@ public void aceptarReporte(){
         this.tab_programa_presupuestario = tab_programa_presupuestario;
     }
 
+    public Tabla getTab_programa() {
+        return tab_programa;
+    }
+
+    public void setTab_programa(Tabla tab_programa) {
+        this.tab_programa = tab_programa;
+    }
+
+    public SeleccionArbol getSel_arbol_clasificador() {
+        return sel_arbol_clasificador;
+    }
+
+    public void setSel_arbol_clasificador(SeleccionArbol sel_arbol_clasificador) {
+        this.sel_arbol_clasificador = sel_arbol_clasificador;
+    }
+
+    
 
 
 }
