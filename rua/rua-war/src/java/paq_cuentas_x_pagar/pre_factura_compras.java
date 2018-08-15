@@ -47,6 +47,7 @@ private Tabla tab_det_documento = new Tabla();
 String solicitud ="";
 double dou_total = 0;
 double dou_base_ingresada = 0;
+private double tarifaIVA = 0;
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
     @EJB
@@ -107,6 +108,7 @@ double dou_base_ingresada = 0;
         tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", ""); //por defecto no carga los clientes
         tab_cab_documento.getColumna("ide_geper").setAutoCompletar();
         tab_cab_documento.getColumna("ide_geper").setRequerida(false);
+        tab_cab_documento.getColumna("ide_geper").setLectura(true);
         tab_cab_documento.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
 
         tab_cab_documento.getColumna("ide_geper").setOrden(3);
@@ -132,13 +134,13 @@ double dou_base_ingresada = 0;
         tab_cab_documento.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_cab_documento.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
         tab_cab_documento.getColumna("numero_cpcfa").setRequerida(false);
-        tab_cab_documento.getColumna("base_grabada_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("base_grabada_cpcfa").setVisible(true);
         tab_cab_documento.getColumna("base_grabada_cpcfa").setValorDefecto("0");
-        tab_cab_documento.getColumna("valor_iva_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("valor_iva_cpcfa").setVisible(true);
         tab_cab_documento.getColumna("valor_iva_cpcfa").setValorDefecto("0");
-        tab_cab_documento.getColumna("base_no_objeto_iva_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("base_no_objeto_iva_cpcfa").setVisible(true);
         tab_cab_documento.getColumna("base_no_objeto_iva_cpcfa").setValorDefecto("0");
-        tab_cab_documento.getColumna("base_tarifa0_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("base_tarifa0_cpcfa").setVisible(true);
         tab_cab_documento.getColumna("base_tarifa0_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("otros_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("ide_srtst").setCombo("sri_tipo_sustento_tributario", "ide_srtst", "alterno_srtst,nombre_srtst", "");
@@ -148,12 +150,25 @@ double dou_base_ingresada = 0;
         tab_cab_documento.getColumna("ide_cncre").setVisible(false);
         tab_cab_documento.getColumna("ide_cnccc").setVisible(false);
         tab_cab_documento.getColumna("valor_ice_cpcfa").setValorDefecto("0");
-        tab_cab_documento.getColumna("valor_ice_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("valor_ice_cpcfa").setVisible(true);
         tab_cab_documento.getColumna("OTROS_CPCFA").setVisible(false);
-        tab_cab_documento.getColumna("DESCUENTO_CPCFA").setVisible(false);
-        tab_cab_documento.getColumna("PORCEN_DESC_CPCFA").setVisible(false);
+        tab_cab_documento.getColumna("DESCUENTO_CPCFA").setVisible(true);
+        tab_cab_documento.getColumna("PORCEN_DESC_CPCFA").setVisible(true);
+        
+        tab_cab_documento.getColumna("PORCEN_DESC_CPCFA").setEtiqueta();
+        tab_cab_documento.getColumna("PORCEN_DESC_CPCFA").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
+        tab_cab_documento.getColumna("DESCUENTO_CPCFA").setEtiqueta();
+        tab_cab_documento.getColumna("DESCUENTO_CPCFA").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
+        tab_cab_documento.getColumna("valor_ice_cpcfa").setEtiqueta();
+        tab_cab_documento.getColumna("valor_ice_cpcfa").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
+        tab_cab_documento.getColumna("BASE_NO_OBJETO_IVA_CPCFA").setEtiqueta();
+        tab_cab_documento.getColumna("BASE_NO_OBJETO_IVA_CPCFA").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
+        tab_cab_documento.getColumna("BASE_GRABADA_CPCFA").setEtiqueta();
+        tab_cab_documento.getColumna("BASE_GRABADA_CPCFA").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
+       
+        
         tab_cab_documento.setTipoFormulario(true);
-        tab_cab_documento.getGrid().setColumns(6);
+        tab_cab_documento.getGrid().setColumns(4);
         tab_cab_documento.setCondicion("ide_cpcfa=-1");
         tab_cab_documento.setRecuperarLectura(false);
 
@@ -184,6 +199,7 @@ double dou_base_ingresada = 0;
         tab_cab_documento.getColumna("ide_ademple").setCombo(ser_adquisiciones.getEmpleado());
         tab_cab_documento.getColumna("ide_ademple").setAutoCompletar();
         tab_cab_documento.getColumna("ide_adcomp").setVisible(false);
+        tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setLectura(true);
         tab_cab_documento.agregarRelacion(tab_det_documento);
         
         
@@ -240,6 +256,8 @@ double dou_base_ingresada = 0;
         tab_det_documento.getColumna("iva_inarti_cpdfa").setOrden(4);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setLongitud(-1);
         tab_det_documento.getColumna("iva_inarti_cpdfa").setNombreVisual("APLICA IVA");
+        tab_det_documento.getColumna("iva_inarti_cpdfa").setMetodoChange("calcularDetalle");
+       // tab_det_documento.getColumna("iva_inarti_cpdfa").setMetodoChangeRuta(tab_det_documento.getRuta() + ".cambioPrecioCantidadIva");
         tab_det_documento.getColumna("recibido_compra_cpdfa").setValorDefecto("FALSE");
    
         tab_det_documento.getColumna("credi_tribu_cpdfa").setVisible(false);
@@ -247,6 +265,7 @@ double dou_base_ingresada = 0;
         tab_det_documento.getColumna("devolucion_cpdfa").setVisible(false);
         //tab_det_documento.setRecuperarLectura(false);
         tab_det_documento.setRows(100);
+        tab_det_documento.getColumna("recibido_compra_cpdfa").setLectura(true);
         tab_det_documento.dibujar();
 
         PanelTabla pat_pane2 = new PanelTabla();
@@ -271,6 +290,8 @@ double dou_base_ingresada = 0;
         sel_tab_compras.setWidth("80%");
         sel_tab_compras.setHeight("70%");
         sel_tab_compras.setRadio();
+        sel_tab_compras.getTab_seleccion().getColumna("numero_orden_adcomp").setFiltroContenido();
+        sel_tab_compras.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
         sel_tab_compras.getBot_aceptar().setMetodo("aceptarSolicitud");
         agregarComponente(sel_tab_compras);
       //  sel_tab_compras.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
@@ -292,6 +313,80 @@ double dou_base_ingresada = 0;
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de la orden de gasto de Compras. Consulte con el Administrador");
         }     
        
+    }
+    
+    public void calcularTotalDocumento() {
+        tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
+        double base_grabada = 0;
+        double base_no_objeto = 0;
+        double base_tarifa0 = 0;
+        double valor_iva = 0;
+        // double porcentaje_iva = 0;
+
+        for (int i = 0; i < tab_det_documento.getTotalFilas(); i++) {
+            String iva = tab_det_documento.getValor(i, "iva_inarti_cpdfa");
+            switch (iva) {
+                case "1":
+                    //SI IVA
+                    base_grabada = Double.parseDouble(tab_det_documento.getValor(i, "valor_cpdfa")) + base_grabada;
+                    break;
+                case "-1":
+                    // NO IVA
+                    base_tarifa0 = Double.parseDouble(tab_det_documento.getValor(i, "valor_cpdfa")) + base_tarifa0;
+                    break;
+                case "0":
+                    // NO OBJETO
+                    base_no_objeto = Double.parseDouble(tab_det_documento.getValor(i, "valor_cpdfa")) + base_no_objeto;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        double porce_descuento = 0;
+
+            try {
+                porce_descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_cab_documento.getValor("porcen_desc_cpcfa")));
+            } catch (Exception e) {
+            }
+
+        
+
+        double descuento = 0;
+        double valor_ice = 0;
+
+        
+            try {
+                descuento = Double.parseDouble(utilitario.getFormatoNumero(tab_cab_documento.getValor("descuento_cpcfa")));
+            } catch (Exception e) {
+            }
+        
+        
+            try {
+                valor_ice = Double.parseDouble(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_ice_cpcfa")));
+            } catch (Exception e) {
+            }
+        
+        //base_grabada = base_grabada - descuento;
+        valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
+        if (valor_ice > 0) {
+            valor_iva += (valor_ice * tarifaIVA); //0.12
+        }
+        tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
+        tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
+        tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(valor_ice));
+
+        tab_cab_documento.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
+        tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
+        tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
+        tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+
+       // tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
+       // tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
+       // tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
+       // tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+        utilitario.addUpdate("tab_cab_documento");
     }
     
     public void abrirDialogoSolicitud(){
@@ -387,6 +482,7 @@ double dou_base_ingresada = 0;
         tab_cab_documento.guardar();
         tab_det_documento.guardar();
         guardarPantalla();
+        calcularTotalDocumento();
     }
     
     String empleado = "";
