@@ -114,7 +114,7 @@ public class pre_funcion_programa extends Pantalla {
 		arb_funcion_programa.setId("arb_funcion_programa");
 		arb_funcion_programa.onSelect("seleccionoClasificador");
 		arb_funcion_programa.dibujar();
-
+                /*
 		// tabla deaños vigente
 		tab_vigente.setId("tab_vigente");
 		tab_vigente.setHeader("AñO VIGENTE");
@@ -132,14 +132,16 @@ public class pre_funcion_programa extends Pantalla {
 		tab_vigente.dibujar();
 		PanelTabla pat_panel2=new PanelTabla();
 		pat_panel2.setPanelTabla(tab_vigente);
-                
+                */
                 tab_programa.setId("tab_programa");
                 //tab_programa.setIdCompleto("tab_tabulador:tab_programa");
 		tab_programa.setTabla("pre_programa", "ide_prpro", 3);
+                tab_programa.setHeader("PROGRAMAS PRESUPUESTARIOS");
                 tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
                 tab_programa.getColumna("ide_prcla").setLectura(true);
                 tab_programa.getColumna("ide_prcla").setUnico(true);
                 tab_programa.getColumna("ide_prfup").setUnico(true);
+                tab_programa.getColumna("cod_programa_prpro").setLectura(true);
                 tab_programa.agregarRelacion(tab_vigente);
                 tab_programa.dibujar ();
                 PanelTabla pat_pane3=new PanelTabla();
@@ -153,7 +155,7 @@ public class pre_funcion_programa extends Pantalla {
 		//division2
                 Division div_vigente = new Division();
  		div_vigente.setId("div_vigente");
- 		div_vigente.dividir3( pat_funcion_programa, pat_pane3,pat_panel2,"50%","25%","h");
+ 		div_vigente.dividir2( pat_funcion_programa, pat_pane3,"50%","h");
  		agregarComponente(div_vigente);
 
 				
@@ -178,12 +180,6 @@ public class pre_funcion_programa extends Pantalla {
 		set_sub_actividad.getBot_aceptar().setMetodo("aceptarSubActividad");
 		agregarComponente(set_sub_actividad);
       	
-            // BOTON  PARA CARGAR TABLA PROGRAMA
-            Boton bot_agregarPrograma = new Boton();
-            bot_agregarPrograma.setValue("Programas Presupuestarios");
-            bot_agregarPrograma.setIcon("ui-icon-person");
-            bot_agregarPrograma.setMetodo("crearAlumno");
-            bar_botones.agregarBoton(bot_agregarPrograma);
                 //PANTALLA CREAR PROGRAMA
             crear_rpograma.setId("crear_rpograma");
             crear_rpograma.setTitle("CREAR PROGRAMA PRESUPUESTARIO");
@@ -202,7 +198,7 @@ public class pre_funcion_programa extends Pantalla {
             
             //BOTON CLASIFICADOR
             Boton bot_agregar=new Boton();
-            bot_agregar.setValue("Agregar Clasificador");
+            bot_agregar.setValue("Agregar Partida Presupuestaria");
             bot_agregar.setMetodo("abrirArbolClasificador");
             bar_botones.agregarBoton(bot_agregar);
 
@@ -217,13 +213,30 @@ public class pre_funcion_programa extends Pantalla {
         
         public void abrirArbolClasificador(){
             //System.out.println("ingrese a abrir el arbol");
+            if(tab_funcion_programa.getValor("ide_prnfp").equals(par_sub_activdad)){
             sel_arbol_clasificador.getArb_seleccion().setCondicion("1=1");
             sel_arbol_clasificador.getArb_seleccion().ejecutarSql();
             sel_arbol_clasificador.dibujar();
             utilitario.addUpdate("sel_arbol_clasificador");
-
+            }
+            else {
+		utilitario.agregarNotificacionInfo("Nivel no Valido", "El nivel debe ser Sub Actividad para poder agregar una Partida Presupuestaria");
+            }
         }        
-	
+        public void aceptarArbolClasificador (){
+            TablaGenerica tab_consult_programa = utilitario.consultar("select ide_prcla,codigo_clasificador_prcla from pre_clasificador where ide_prcla in("+sel_arbol_clasificador.getSeleccionados()+") and nivel_prcla=4");
+            for(int l=0;l<tab_consult_programa.getTotalFilas();l++){
+            tab_programa.insertar();
+            tab_programa.setValor("ide_prcla",tab_consult_programa.getValor(l,"ide_prcla"));
+            tab_programa.setValor("cod_programa_prpro", tab_consult_programa.getValor(l,"codigo_clasificador_prcla")+tab_funcion_programa.getValor("codigo_prfup"));
+            tab_programa.setValor("activo_prpro", "true");
+//Actualiza 
+            }
+            tab_programa.guardar();
+            guardarPantalla();
+            utilitario.addUpdate("tab_programa");//actualiza mediante ajax el objeto tab_poa
+            sel_arbol_clasificador.cerrar();            
+        }	
 	/**DJ
 	 * Se ejecuta cuando se selecciona algun nodo del arbol
 	 */
@@ -234,7 +247,7 @@ public class pre_funcion_programa extends Pantalla {
 		//Filtra la tabla Padre
 		tab_funcion_programa.ejecutarValorPadre(arb_funcion_programa.getValorSeleccionado());
 		//Filtra la tabla tab_vigente
-		tab_vigente.ejecutarValorForanea(tab_funcion_programa.getValorSeleccionado());
+		tab_programa.ejecutarValorForanea(tab_funcion_programa.getValorSeleccionado());
 	  }
 	
 		public void agregarSubActividad(){
@@ -335,28 +348,8 @@ public void actualizaCodigo(){
 		
 		if(tab_funcion_programa.isEmpty()){
 			if (tab_funcion_programa.guardar()) {
-                            /*
-				   if(tab_funcion_programa.isFilaInsertada()){
-					   System.out.println("es uevo registro ");
-					if(tab_funcion_programa.getValor("ide_prnfp").equals(par_programa)){
-					ser_contabilidad.guardaSecuencial(ser_contabilidad.numeroSecuencial(par_sec_programa),par_sec_programa);
 
-					}
-					if(tab_funcion_programa.getValor("ide_prnfp").equals(par_proyecto)){
-					ser_contabilidad.guardaSecuencial(ser_contabilidad.numeroSecuencial(par_proyecto),par_proyecto);
-
-					}
-					if(tab_funcion_programa.getValor("ide_prnfp").equals(par_producto)){
-					ser_contabilidad.guardaSecuencial(ser_contabilidad.numeroSecuencial(par_producto),par_producto);
-					
-					}
-					if(tab_funcion_programa.getValor("ide_prnfp").equals(par_fase)){
-						ser_contabilidad.guardaSecuencial(ser_contabilidad.numeroSecuencial(par_fase),par_fase);
-
-					}
-				   }
-                                   */
-				if (tab_vigente.guardar()) {
+				if (tab_programa.guardar()) {
 					guardarPantalla();
 					//Actualizar el arbol
 					arb_funcion_programa.ejecutarSql();
@@ -401,7 +394,7 @@ public void actualizaCodigo(){
 			{	
 
 				if (tab_funcion_programa.guardar()) {
-					if (tab_vigente.guardar()) {
+					if (tab_programa.guardar()) {
 						//System.out.println(" entre aguardar ");
 						guardarPantalla();
 						//Actualizar el arbol
@@ -418,8 +411,8 @@ public void actualizaCodigo(){
 		}
 		}
 		
-		else if (tab_vigente.isFocus()){
-				tab_vigente.guardar();
+		else if (tab_programa.isFocus()){
+				tab_programa.guardar();
 				guardarPantalla();
 
 		}
