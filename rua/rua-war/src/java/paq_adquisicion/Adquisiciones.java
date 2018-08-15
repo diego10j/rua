@@ -36,6 +36,7 @@ public class Adquisiciones extends Pantalla {
     public static String par_ti_anulado;
     private VisualizarPDF vipdf_comprobante = new VisualizarPDF();   
     private SeleccionTabla sel_tab_proveedor = new SeleccionTabla();
+    private SeleccionTabla sel_tab_actualiza_proveedor = new SeleccionTabla();
     private SeleccionTabla sel_tab_presupuesto = new SeleccionTabla();
     double dou_total = 0;
     double dou_base_ingresada = 0;
@@ -66,12 +67,17 @@ public class Adquisiciones extends Pantalla {
         bot_imprimir.setMetodo("generarPDF");
         
         Boton bot_importar = new Boton();
-        bot_imprimir.setIcon("ui-icon-print");
+        bot_importar.setIcon("ui-icon-print");
         bot_imprimir.setValue("IMPORTAR PROVEEDOR");
         bot_imprimir.setMetodo("abrirDialogoProveedor");
         
         bar_botones.agregarBoton(bot_imprimir);
         
+        Boton bot_actualizar = new Boton();
+        bot_actualizar.setIcon("ui-icon-print");
+        bot_actualizar.setValue("ACTUALIZAR PROVEEDOR");
+        bot_actualizar.setMetodo("abrirActualizarProveedor");
+        bar_botones.agregarBoton(bot_actualizar);
         
         Tabulador tab_tabulador = new Tabulador();
         tab_tabulador.setId("tab_tabulador");
@@ -208,6 +214,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setVisible(false);*/
         
         tab_adquisiones.getColumna("facturado_adcomp").setValorDefecto("false");
+        tab_adquisiones.getColumna("FACTURADO_ADCOMP ").setLectura(true);
         tab_adquisiones.dibujar();
 
         PanelTabla pat_adquisiciones = new PanelTabla();
@@ -231,6 +238,7 @@ public class Adquisiciones extends Pantalla {
         tab_certificacion.getColumna("VALOR_ADCERT").setNombreVisual("VALOR");*/
         tab_presupuesto.getColumna("ide_adpres").setNombreVisual("CODIGO");
         tab_presupuesto.getColumna("ide_prpot").setNombreVisual("PARTIDA PRESUPUESTARIA");
+        tab_presupuesto.getColumna("ide_prpot").setLectura(true);
         tab_presupuesto.getColumna("ide_prpot").setCombo(ser_adquisiciones.getDatosPresupuestoConsulta());
         tab_presupuesto.getColumna("ide_prpot").setAutoCompletar();
         tab_presupuesto.getColumna("valor_adpres").setNombreVisual("VALOR PRESUPUESTO");
@@ -240,6 +248,7 @@ public class Adquisiciones extends Pantalla {
 	tab_presupuesto.getColumna("saldo_adpres").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
 	tab_presupuesto.setColumnaSuma("valor_adpres");
         tab_presupuesto.getColumna("valor_adpres").setMetodoChange("CalcularSuma");
+        
         tab_presupuesto.dibujar();
         
         Grid gri_presupuesto = new Grid();
@@ -315,6 +324,16 @@ public class Adquisiciones extends Pantalla {
         sel_tab_proveedor.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
         sel_tab_proveedor.getBot_aceptar().setMetodo("aceptarProveedor");
         
+        sel_tab_actualiza_proveedor.setId("sel_tab_actualiza_proveedor");
+        sel_tab_actualiza_proveedor.setTitle("ACTUALIZAR PROVEEDOR");
+        sel_tab_actualiza_proveedor.setSeleccionTabla(ser_adquisiciones.getDatosProveedor(), "ide_geper");
+        sel_tab_actualiza_proveedor.setWidth("80%");
+        sel_tab_actualiza_proveedor.setHeight("70%");
+        sel_tab_actualiza_proveedor.setRadio();
+        sel_tab_actualiza_proveedor.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
+        sel_tab_actualiza_proveedor.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
+        sel_tab_actualiza_proveedor.getBot_aceptar().setMetodo("aceptarActualizaProveedor");
+        
         sel_tab_presupuesto.setId("sel_tab_presupuesto");
         sel_tab_presupuesto.setTitle("PRESUPUESTO");
         sel_tab_presupuesto.setSeleccionTabla(ser_adquisiciones.getDatosPresupuesto("1", "2015","ide_prpot"), "ide_prpot");
@@ -325,7 +344,7 @@ public class Adquisiciones extends Pantalla {
         sel_tab_presupuesto.getTab_seleccion().getColumna("detalle_actividad").setFiltroContenido();
         sel_tab_presupuesto.getBot_aceptar().setMetodo("aceptarPresupuesto");
         
-        
+        agregarComponente(sel_tab_actualiza_proveedor);
         agregarComponente(sel_tab_proveedor);
         agregarComponente(sel_tab_presupuesto);
         
@@ -428,6 +447,27 @@ public class Adquisiciones extends Pantalla {
             utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
         }
     }
+    public void abrirActualizarProveedor (){
+            sel_tab_actualiza_proveedor.dibujar();
+        
+    }
+        
+    public void aceptarActualizaProveedor(){
+        String str_prove_actua = sel_tab_actualiza_proveedor.getValorSeleccionado();
+        
+        TablaGenerica tab_dat_prove = utilitario.consultar(ser_adquisiciones.getDatosProveedorConsulta(str_prove_actua));
+        for (int i=0;i<tab_dat_prove.getTotalFilas();i++){
+                tab_adquisiones.setValor("ide_geper",tab_dat_prove.getValor(i,"ide_geper"));
+		tab_adquisiones.setValor("proveedor_adcomp",tab_dat_prove.getValor(i,"nom_geper"));
+                tab_adquisiones.setValor("ruc_proveedor_adcomp",tab_dat_prove.getValor(i,"identificac_geper"));
+                tab_adquisiones.modificar(tab_adquisiones.getFilaActual());
+	       }
+             sel_tab_actualiza_proveedor.cerrar();
+             tab_adquisiones.guardar();
+             guardarPantalla();
+	     utilitario.addUpdate("tab_adquisiones");
+    }
+    
     public void abrirDialogoProveedor(){
         sel_tab_proveedor.dibujar();
     }
@@ -447,11 +487,7 @@ public class Adquisiciones extends Pantalla {
                 tab_adquisiones.setValor("ide_geper",tab_dat_prove.getValor(i,"ide_geper"));
 		tab_adquisiones.setValor("proveedor_adcomp",tab_dat_prove.getValor(i,"nom_geper"));
                 tab_adquisiones.setValor("ruc_proveedor_adcomp",tab_dat_prove.getValor(i,"identificac_geper"));
-                //tab_adquisiones.setValor("direccion_ademple",null);
-               
 	       }
-            // tab_empleado.guardar();
-            // guardarPantalla();
              sel_tab_proveedor.cerrar();
 	     utilitario.addUpdate("tab_adquisiones");
     }
@@ -614,6 +650,14 @@ public Reporte getRep_reporte() {
 
     public void setMap_parametros(Map map_parametros) {
         this.map_parametros = map_parametros;
+    }
+
+    public SeleccionTabla getSel_tab_actualiza_proveedor() {
+        return sel_tab_actualiza_proveedor;
+    }
+
+    public void setSel_tab_actualiza_proveedor(SeleccionTabla sel_tab_actualiza_proveedor) {
+        this.sel_tab_actualiza_proveedor = sel_tab_actualiza_proveedor;
     }
     
 }
