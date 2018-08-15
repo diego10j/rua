@@ -129,6 +129,7 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
+        tab_tabla2.setCondicion("ide_incci=-1");
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlProductosCombo());
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
@@ -246,8 +247,8 @@ public class pre_comp_inv extends Pantalla {
               }
               tab_tabla1.setValor("ide_geper",tab_fact_cabera.getValor(i, "ide_geper"));
           }
-           tab_tabla1.guardar();
-           guardarPantalla();
+          // tab_tabla1.guardar();
+          // guardarPantalla();
            sel_detalle_compra.cerrar();
 	   utilitario.addUpdate("tab_tabla1");
            generaDetalle();
@@ -258,7 +259,7 @@ public class pre_comp_inv extends Pantalla {
          TablaGenerica tab_detalle_fac = utilitario.consultar("select a.ide_cpdfa, b.ide_inarti, nombre_inarti, cantidad_cpdfa, precio_cpdfa, valor_cpdfa\n" +
                                                               "from cxp_detall_factur a\n" +
                                                               "left join inv_articulo b on a.ide_inarti = b.ide_inarti \n" +
-                                                              "where a.ide_cpcfa in ("+factura+")");
+                                                              "where a.ide_cpdfa in ("+selec_productos+")");
          System.out.println("factura" +factura);
          for (int i=0; i < tab_detalle_fac.getTotalFilas(); i++ ){
              tab_tabla2.insertar();
@@ -277,8 +278,8 @@ public class pre_comp_inv extends Pantalla {
          } else {
              utilitario.getConexion().ejecutarSql("update cxp_cabece_factur set recibido_compra_cpcfa = true where ide_cpcfa = "+factura+"");
          }
-         tab_tabla2.guardar();
-         guardarPantalla();
+        // tab_tabla2.guardar();
+        // guardarPantalla();
         utilitario.addUpdate("tab_tabla2");
      }
 
