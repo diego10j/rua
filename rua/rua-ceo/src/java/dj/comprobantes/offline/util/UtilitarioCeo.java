@@ -188,7 +188,7 @@ public class UtilitarioCeo extends Framework {
      */
     @Override
     public String getFormatoNumero(Object numero, int numero_decimales) {
-        String lstr_formato = "#";
+        String lstr_formato = "0";
         String ceros = "1";
         double dceros = 1;
         for (int i = 0; i < numero_decimales; i++) {
