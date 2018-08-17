@@ -244,11 +244,9 @@ public class Utilitario extends Framework {
                             boo_correcto = true;
                         }
                     } else //Para cedulas que terminan en 0
-                    {
-                        if (lint_suma % 10 == 0) {
+                     if (lint_suma % 10 == 0) {
                             boo_correcto = true;
                         }
-                    }
 
                 } else {
                     boo_correcto = false;
@@ -328,41 +326,6 @@ public class Utilitario extends Framework {
             return true;
         } else {
             return false;
-        }
-    }
-
-    /**
-     * Asigna un formato con una cantidad de decimales a una cantidad numérica
-     *
-     * @param numero
-     * @param numero_decimales
-     * @return
-     */
-    @Override
-    public String getFormatoNumero(Object numero, int numero_decimales) {
-        String lstr_formato = "0";
-        String ceros = "1";
-        double dceros = 1;
-        for (int i = 0; i < numero_decimales; i++) {
-            if (i == 0) {
-                lstr_formato += ".";
-            }
-            lstr_formato += "0";
-            ceros += "0";
-        }
-        ceros += ".00";
-        dceros = Double.parseDouble(ceros);
-        DecimalFormat formatoNumero;
-        DecimalFormatSymbols idfs_simbolos = new DecimalFormatSymbols();
-        idfs_simbolos.setDecimalSeparator('.');
-        formatoNumero = new DecimalFormat(lstr_formato, idfs_simbolos);
-
-        try {
-            double ldob_valor = Double.parseDouble(numero.toString());
-            ldob_valor = Math.round(ldob_valor * dceros) / dceros;
-            return formatoNumero.format(ldob_valor);
-        } catch (Exception ex) {
-            return null;
         }
     }
 
@@ -500,8 +463,7 @@ public class Utilitario extends Framework {
                 cadena = recursivoNumeroLetras(numero / 1000000) + " Millones" + recursivoNumeroLetras(numero % 1000000);
             }
         } else // Aqui identifico si lleva Miles
-        {
-            if ((numero / 1000) > 0) {
+         if ((numero / 1000) > 0) {
 
                 if ((numero / 1000) == 1) {
                     cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
@@ -509,8 +471,7 @@ public class Utilitario extends Framework {
                     cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
                 }
             } else // Aqui identifico si lleva cientos
-            {
-                if ((numero / 100) > 0) {
+             if ((numero / 100) > 0) {
                     if ((numero / 100) == 1) {
                         if ((numero % 100) == 0) {
                             cadena = " Cien";
@@ -667,8 +628,6 @@ public class Utilitario extends Framework {
                             break;
                     }
                 }
-            }
-        }
         return cadena;
     }
 
@@ -1086,10 +1045,6 @@ public class Utilitario extends Framework {
         return 1000;
     }
 
-    @Override
-    public String getFormatoNumero(Object numero) {
-        return getFormatoNumero(numero, 2);
-    }
 
     /**
      * Retorna nro de dias que le corresonde a un mes
