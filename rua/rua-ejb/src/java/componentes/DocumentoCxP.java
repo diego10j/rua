@@ -23,6 +23,7 @@ import framework.componentes.Texto;
 import framework.componentes.Upload;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -307,9 +308,14 @@ public class DocumentoCxP extends Dialogo {
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
-                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("LIQUIDA_NOTA_CPCFA")) {
                     tab_cab_documento.getGrid().getChildren().get(i).setRendered(bol_esnota);
                     tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(bol_esnota);
+                }
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNDFP1")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
                 }
             }
         }
@@ -744,6 +750,19 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("motivo_nc_cpcfa").setOrden(12);
         tab_cab_documento.getColumna("motivo_nc_cpcfa").setNombreVisual("MOTIVO");
         tab_cab_documento.getColumna("ide_rem_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setOrden(13);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setNombreVisual("LIQUIDAR N/C");
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "0", "MES ACTUAL"
+        };
+        Object fila2[] = {
+            "1", "MES SIGUIENTE"
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setRadio(lista, "0");
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setValorDefecto("0");
         //solo para que dibuje el *
         tab_cab_documento.getColumna("motivo_nc_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
@@ -761,7 +780,12 @@ public class DocumentoCxP extends Dialogo {
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
-                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("LIQUIDA_NOTA_CPCFA")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
+                }
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNDFP1")) {
                     tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
                     tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
                 }
@@ -777,6 +801,11 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(false);
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(false);
         tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("ide_cndfp1").setVisible(false);
+        tab_cab_documento.getColumna("ide_cndfp1").setValorDefecto("3"); //EFECTIVO
+        if (tab_cab_documento.getTotalFilas() > 0) {
+            tab_cab_documento.setValor("ide_cndfp1", "3");//EFECTIVO
+        }
 
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_cab_documento);
@@ -1619,9 +1648,14 @@ public class DocumentoCxP extends Dialogo {
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
-                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("LIQUIDA_NOTA_CPCFA")) {
                     tab_cab_documento.getGrid().getChildren().get(i).setRendered(bol_esnota);
                     tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(bol_esnota);
+                }
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNDFP1")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
                 }
             }
         }
@@ -1635,6 +1669,11 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setRequerida(bol_esnota);
         tab_cab_documento.getColumna("motivo_nc_cpcfa").setVisible(bol_esnota);
         tab_cab_documento.getColumna("motivo_nc_cpcfa").setRequerida(bol_esnota);
+        tab_cab_documento.getColumna("ide_cndfp1").setVisible(!bol_esnota);
+        tab_cab_documento.getColumna("ide_cndfp1").setValorDefecto("3"); //EFECTIVO
+        if (tab_cab_documento.getTotalFilas() > 0) {
+            tab_cab_documento.setValor("ide_cndfp1", "3");//EFECTIVO
+        }
 
         if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso"))) {
             //Activa tabla  y disminuye tamaño del detalle
