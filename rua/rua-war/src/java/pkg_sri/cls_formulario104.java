@@ -32,7 +32,7 @@ public class cls_formulario104 {
     private String fecha_fin = "";
     private String porcentaje_iva = "";
     private String v401, v402, v403, v404, v405, v406, v407, v408, v409, v411, v412, v413, v414, v415, v416, v417, v418, v419, v421, v422, v423, v429, v431, v480, v481, v482, v483, v484, v485, v499;
-    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563, v543, v564, v526, v527, v520;
+    private String v501, v502, v503, v504, v505, v506, v507, v508, v509, v510, v511, v512, v513, v514, v515, v516, v517, v518, v519, v521, v522, v523, v524, v525, v529, v531, v532, v533, v534, v535, v544, v545, v554, v563, v543, v564, v526, v527, v520;
     private String v601, v602, v605, v607, v609, v611, v613, v615, v617, v620, v621, v699;
     private String v721, v723, v725, v799, v859, v801, v731, v729;
     private String v890, v897, v898, v899, v880;
@@ -45,25 +45,25 @@ public class cls_formulario104 {
             fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
             fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
 
-            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
-                    + "alter_tribu_cpdfa='503', usuario_actua='sa'\n"
-                    + "where ide_cpdfa in\n"
-                    + "(\n"
-                    + "select ide_cpdfa from cxp_detall_factur a\n"
-                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
-                    + "where alter_tribu_cpdfa='00'\n"
-                    + "and iva_inarti_cpdfa=1  --IVA SI\n"
-                    + ")");
-
-            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
-                    + "alter_tribu_cpdfa='507', usuario_actua='sa'\n"
-                    + "where ide_cpdfa in\n"
-                    + "(\n"
-                    + "select ide_cpdfa from cxp_detall_factur a\n"
-                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
-                    + "where alter_tribu_cpdfa='00'\n"
-                    + "and iva_inarti_cpdfa=-1  --IVA NO\n"
-                    + ")");
+//            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
+//                    + "alter_tribu_cpdfa='503', usuario_actua='sa'\n"
+//                    + "where ide_cpdfa in\n"
+//                    + "(\n"
+//                    + "select ide_cpdfa from cxp_detall_factur a\n"
+//                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
+//                    + "where alter_tribu_cpdfa='00'\n"
+//                    + "and iva_inarti_cpdfa=1  --IVA SI\n"
+//                    + ")");
+//
+//            utilitario.getConexion().ejecutarSql("update cxp_detall_factur set\n"
+//                    + "alter_tribu_cpdfa='507', usuario_actua='sa'\n"
+//                    + "where ide_cpdfa in\n"
+//                    + "(\n"
+//                    + "select ide_cpdfa from cxp_detall_factur a\n"
+//                    + "inner join inv_articulo b on a.ide_inarti=b.ide_inarti\n"
+//                    + "where alter_tribu_cpdfa='00'\n"
+//                    + "and iva_inarti_cpdfa=-1  --IVA NO\n"
+//                    + ")");
 
             TablaGenerica tab_empresa = utilitario.consultar("SELECT identificacion_empr,nom_empr,identi_repre_empr from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
 
@@ -113,9 +113,9 @@ public class cls_formulario104 {
                 v409 = utilitario.getFormatoNumero(Double.parseDouble(v401) + Double.parseDouble(v403));
                 v431 = getValor431();
                 //Valor Bruto  -N/C  => valores brutos restados los descuentos y devoluciones que afecten a las ventas del período declarado
-                v411 = v401;
+                v411 = getValor411();
                 v412 = v402;
-                v413 = v403;
+                v413 = getValor413();
                 v414 = v404;
                 v415 = v405;
                 v416 = v406;
@@ -123,8 +123,8 @@ public class cls_formulario104 {
                 v418 = v408;
                 v419 = utilitario.getFormatoNumero(Double.parseDouble(v411) + Double.parseDouble(v412) + Double.parseDouble(v413) + Double.parseDouble(v414) + Double.parseDouble(v415) + Double.parseDouble(v416) + Double.parseDouble(v417) + Double.parseDouble(v418));
                 //Calculo del IVA
-                //v421 = getValor421();
-                v421 = utilitario.getFormatoNumero(Double.parseDouble(v411) * Double.parseDouble(porcentaje_iva));
+                v421 = getValor421();
+                //****** v421 = utilitario.getFormatoNumero(Double.parseDouble(v411) * Double.parseDouble(porcentaje_iva));
                 v422 = utilitario.getFormatoNumero(Double.parseDouble(v412) * Double.parseDouble(porcentaje_iva));
                 v429 = utilitario.getFormatoNumero((Double.parseDouble(v421) + Double.parseDouble(v422)));
 
@@ -174,36 +174,39 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "482"}, v482)); //= 429 TOTAL IVA
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "481"}, v481));//Ventas 12% crédito
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "480"}, v480));//Ventas 12% contado 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "510"}, "0.00"));//!!!!!****** BUSCAR 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "500"}, "0.00"));//!!!!!****** BUSCAR 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "520"}, "0.00"));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", v510}, v510));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "500"}, getValor500()));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "520"}, v520));//!!!!!****** BUSCAR 
                 /**
                  * COMPRAS
                  */
-                v501 = consultarAlternoCompras("501");
-                v502 = consultarAlternoCompras("502");
-                v503 = consultarAlternoCompras("503");
-                v504 = consultarAlternoCompras("504");
-                v505 = consultarAlternoCompras("505");
-                v506 = consultarAlternoCompras("506");
-                v507 = consultarAlternoCompras("507");
-                v508 = consultarAlternoCompras("508");
-                v509 = consultarAlternoCompras("501,502,503,504,505,506,507,508");
-                v531 = consultarAlternoCompras("531");
+                v501 = getValor501();
+                v502 = getValor502();
+                v503 = "0.00";
+                v504 = "0.00";
+                v505 = "0.00";
+                v506 = "0.00";
+                v507 = getValor507();
+                v508 = getValor508();
+                v509 = utilitario.getFormatoNumero((Double.parseDouble(v501) + Double.parseDouble(v502) + Double.parseDouble(v503) + Double.parseDouble(v504) + Double.parseDouble(v505) + Double.parseDouble(v506) + Double.parseDouble(v507)) + Double.parseDouble(v508));
+                //v509 = consultarAlternoCompras("501,502,503,504,505,506,507,508");
+                v531 = getValor531();
                 v532 = consultarAlternoCompras("532");
                 //Valor Bruto  -N/C  => valores brutos restados los descuentos y devoluciones que afecten a las ventas del período declarado
-                v511 = v501;
-                v512 = v502;
+                v510 = getValor510();
+                v511 = getValor511();
+                v512 = getValor512();
                 v513 = v503;
                 v514 = v504;
                 v515 = v505;
                 v516 = v506;
-                v517 = v507;
-                v518 = v508;///PARA LOS DE RISE
+                v517 = getValor517();
+                v518 = getValor518();
                 v519 = utilitario.getFormatoNumero(Double.parseDouble(v511) + Double.parseDouble(v512) + Double.parseDouble(v513) + Double.parseDouble(v514) + Double.parseDouble(v515) + Double.parseDouble(v516) + Double.parseDouble(v517) + Double.parseDouble(v518));
                 //Calculo del IVA
-                v521 = utilitario.getFormatoNumero(Double.parseDouble(v511) * Double.parseDouble(porcentaje_iva));
-                v522 = utilitario.getFormatoNumero(Double.parseDouble(v512) * Double.parseDouble(porcentaje_iva));
+                v520 = getValor520();
+                v521 = getValor521();
+                v522 = getValor522();
                 v523 = utilitario.getFormatoNumero(Double.parseDouble(v513) * Double.parseDouble(porcentaje_iva));
                 v524 = utilitario.getFormatoNumero(Double.parseDouble(v514) * Double.parseDouble(porcentaje_iva));
                 v525 = utilitario.getFormatoNumero(Double.parseDouble(v515) * Double.parseDouble(porcentaje_iva));
@@ -214,15 +217,15 @@ public class cls_formulario104 {
                     v563 = "0.00";
                 }
 
-                v543 = utilitario.getFormatoNumero(getValor543());
-                v544 = utilitario.getFormatoNumero(getValor544());
-                v554 = utilitario.getFormatoNumero(getValor554());
+                v543 = getValor543();
+                v544 = getValor544();
+                v554 = getValor554();
 
                 //////v564 = utilitario.getFormatoNumero((Double.parseDouble(v521) + Double.parseDouble(v522) + Double.parseDouble(v524) + Double.parseDouble(v525)) * Double.parseDouble(v553));
                 //////v554 = "0.00";
                 v526 = "0.00";
                 v527 = "0.00";
-                v520 = "0.00";
+
                 v564 = utilitario.getFormatoNumero((Double.parseDouble(v520) + Double.parseDouble(v521) + Double.parseDouble(v523) + Double.parseDouble(v524) + Double.parseDouble(v525) + Double.parseDouble(v526) + Double.parseDouble(v527)) * Double.parseDouble(v563));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "511"}, v511));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "521"}, v521));
@@ -249,7 +252,7 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "529"}, v529));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "519"}, v519));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "509"}, v509));
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", "541"}, v531));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "541"}, getValor541()));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "531"}, v531));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "532"}, v532));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "542"}, "0.00"));//!!!!!****** BUSCAR 
@@ -384,8 +387,8 @@ public class cls_formulario104 {
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario104);
                 //System.out.println(source + ".. " + doc_formulario104 + " --- " + doc_formulario104.getTextContent());
-                // String master = "D:/";
-                String master = System.getProperty("user.dir");
+                String master = "D:/";
+                //String master = System.getProperty("user.dir");
                 nombre = "04ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;
@@ -439,7 +442,7 @@ public class cls_formulario104 {
     private String getValor611() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(monto_com_cpcfa) from cxp_cabece_factur\n"
-                + "where ide_cpefa=0\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null AND liquida_nota_cpcfa=0 \n"
                 + "and fecha_emisi_cpcfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
@@ -450,6 +453,334 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    //ADQUISICIONES Y PAGOS (EXCLUYE ACTIVOS FIJOS) TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO
+    private String getValor500() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 2"); //  CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES Y PAGOS (EXCLUYE ACTIVOS FIJOS) TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO - NOTAS DE CREDITO 
+    private String getValor510() {
+        double dou_valor = Double.parseDouble(getValor500());
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 2"); //  CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //IVA ADQUISICIONES Y PAGOS (EXCLUYE ACTIVOS FIJOS) TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO
+    private String getValor520() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 2"); //  CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 2"); //  CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO
+    private String getValor501() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 0"); //  ACTIVO FIJO - CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO MENOS NOTAS DE CREDITO
+    private String getValor511() {
+        double dou_valor = Double.parseDouble(getValor501());
+
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 0"); //  ACTIVO FIJO - CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //IVA ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE CERO CON DERECHO A CREDITO TRIBUTARIO
+    private String getValor521() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 0"); //  ACTIVO FIJO - CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 0"); //  ACTIVO FIJO - CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //OTRAS ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE SIN  DERECHO A CREDITO TRIBUTARIO
+    private String getValor502() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 1"); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //OTRAS ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE SIN  DERECHO A CREDITO TRIBUTARIO - notas de credito
+    private String getValor512() {
+        double dou_valor = Double.parseDouble(getValor502());
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 1"); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //OTRAS ADQUISICIONES LOCALES DE ACTIVOS FIJOS GRAVADOS TARIFA DIFERENTE DE SIN  DERECHO A CREDITO TRIBUTARIO
+    private String getValor522() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 1"); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
+                + "and ide_srtst = 1"); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES Y PAGOS (INCLUYE ACTIVOS FIJOS) TARIFA 0%
+    private String getValor507() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_tarifa0_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"); //  CRÉDITO TRIBUTARIO PARA DECLARACIÓN DE IVA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES Y PAGOS (INCLUYE ACTIVOS FIJOS) TARIFA 0%  - NOTAS DE CREDITO
+    private String getValor517() {
+        double dou_valor = Double.parseDouble(getValor507());
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_tarifa0_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5 and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n");
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES NO OBJETO DE IVA
+    private String getValor531() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null \n"
+                + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES NO OBJETO DE IVA -NOTAS DE CREDITO
+    private String getValor541() {
+        double dou_valor = Double.parseDouble(getValor531());
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco !=5  and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n");
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES RISE
+    private String getValor508() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa+base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  \n"
+                + "and ide_cntdo=5"
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //ADQUISICIONES RISE - NOTAS DE CREDITO
+    private String getValor518() {
+        double dou_valor = Double.parseDouble(getValor508());
+
+        double dou_notas = 0;
+        List lis_sql1 = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa+base_grabada_cpcfa) from cxp_cabece_factur a \n"
+                + "inner join gen_persona b on a.ide_geper= b.ide_geper\n"
+                + "where ide_cpefa=0 and ide_rem_cpcfa is null  AND liquida_nota_cpcfa=0\n"
+                + "and ide_cntco =5  and  ide_cntdo= 0 " //SOLO NOTAS DE CREDITO
+                + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n");
+        if (lis_sql1 != null && !lis_sql1.isEmpty()) {
+            try {
+                dou_notas = Double.parseDouble(lis_sql1.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        dou_valor = dou_valor - dou_notas;
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //VENTAS LOCALES (EXCLUYE ACTIVOS FIJOS) TARIFA DIFERENTE DE CERO  
     private String getValor401() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cccfa) from cxc_cabece_factura\n"
@@ -461,6 +792,32 @@ public class cls_formulario104 {
             } catch (Exception e) {
             }
         }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    private String getValor411() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        //Se resta el valor de las notas de credito base_grabada_cccfa
+
+        List lis_sql2 = utilitario.getConexion().consultar(
+                "select  sum(base_grabada_cpcno) as total \n"
+                + "from cxp_cabecera_nota where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1");
+        double dou_notas = 0;
+        try {
+            dou_notas = Double.parseDouble(lis_sql2.get(0) + "");
+        } catch (Exception e) {
+        }
+        dou_valor = dou_valor - dou_notas;
+
         return utilitario.getFormatoNumero(dou_valor);
     }
 
@@ -492,6 +849,33 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    private String getValor413() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("select sum(base_tarifa0_cccfa) from cxc_cabece_factura\n"
+                + "where ide_ccefa=0\n"
+                + "and fecha_emisi_cccfa BETWEEN  '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+
+        //Se resta el valor de las notas de credito base_tarifa0_cpcno
+        List lis_sql2 = utilitario.getConexion().consultar(
+                "select  sum(base_tarifa0_cpcno) as total \n"
+                + "from cxp_cabecera_nota where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1");
+        double dou_notas = 0;
+        try {
+            dou_notas = Double.parseDouble(lis_sql2.get(0) + "");
+        } catch (Exception e) {
+        }
+        dou_valor = dou_valor - dou_notas;
+
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    //TRANSFERENCIAS NO OBJETO DE IVA
     private String getValor431() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cccfa) from cxc_cabece_factura\n"
@@ -506,10 +890,11 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    //NOTAS DE CREDITO TARIFA 0 POR COMPESNAR PROXIMO MES
     private String getValor543() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_no_objeto_iva_cpcfa+base_tarifa0_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
-                + "and fecha_emisi_cpcfa BETWEEN   '" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+                + "and fecha_emisi_cpcfa BETWEEN   '" + fecha_inicio + "' AND '" + fecha_fin + "' AND liquida_nota_cpcfa=1 ");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
@@ -519,10 +904,11 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    //NOTAS DE CREDITO TARIFA DIFERENTE DE 0 POR COMPESNAR PROXIMO MES
     private String getValor544() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(base_grabada_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
-                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' AND liquida_nota_cpcfa=1  ");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
@@ -532,10 +918,11 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+    //IVA NOTAS DE CREDITO TARIFA DIFERENTE DE 0 POR COMPESNAR PROXIMO MES
     private String getValor554() {
         double dou_valor = 0;
         List lis_sql = utilitario.getConexion().consultar("select sum(valor_iva_cpcfa) from cxp_cabece_factur where ide_cpefa=0 and ide_cntdo=0\n"
-                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' ");
+                + "and fecha_emisi_cpcfa BETWEEN'" + fecha_inicio + "' AND '" + fecha_fin + "' AND liquida_nota_cpcfa=1  ");
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
                 dou_valor = Double.parseDouble(lis_sql.get(0) + "");
@@ -691,6 +1078,7 @@ public class cls_formulario104 {
         this.numSustituye = numSustituye;
     }
 
-    
-
 }
+//ALTER TABLE "public"."cxp_cabece_factur"
+//ADD COLUMN "liquida_nota_cpcfa" int2;
+//update cxp_cabece_factur set liquida_nota_cpcfa = 0 

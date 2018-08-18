@@ -32,7 +32,7 @@ public class cls_anexo_transaccional {
 
         fecha_inicio = utilitario.getFormatoFecha(anio + "-" + mes + "-01");
         fecha_fin = utilitario.getUltimaFechaMes(fecha_inicio);
-
+        int aux_contador = 0;
         try {
             TablaGenerica tab_empresa = utilitario.consultar("SELECT identificacion_empr,nom_empr from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
             if (tab_empresa.getTotalFilas() > 0) {
@@ -218,11 +218,10 @@ public class cls_anexo_transaccional {
 
                         double dou_total_factura = Double.parseDouble(tab_compras.getValor(i, "total_cpcfa"));
 
-                        double dou_base_imp = Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa"));
-
-                        double dou_base_grava = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa"));
-
-                        if (dou_total_factura >= 1000 || dou_base_imp > 0 || dou_base_grava > 0) {
+//                        double dou_base_imp = Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa"));
+//                        double dou_base_grava = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa"));
+//if (dou_total_factura >= 1000 || dou_base_imp > 0 || dou_base_grava > 0) {
+                        if (dou_total_factura >= 1000) {
                             Element formasDePago = doc_anexo.createElement("formasDePago");
                             detalleCompras.appendChild(formasDePago);
                             formasDePago.appendChild(crearElemento("formaPago", null, tab_compras.getValor(i, "alterno_ats")));
@@ -239,9 +238,26 @@ public class cls_anexo_transaccional {
                                     + "inner join con_tipo_document tdo on ree.ide_cntdo=tdo.ide_cntdo\n"
                                     + "WHERE ide_rem_cpcfa=" + tab_compras.getValor(i, "ide_cpcfa") + " and ide_cpefa=0");
                             if (tab_reembolso.getTotalFilas() > 0) {
+                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
+                                if (numero_retencion != null) {
+                                    try {
+                                        String estabRetencion1 = numero_retencion.substring(0, 3);
+                                        String ptoEmiRetencion1 = numero_retencion.substring(3, 6);
+                                        int secRetencion1 = Integer.parseInt(numero_retencion.substring(6, numero_retencion.length()));
+                                        detalleCompras.appendChild(crearElemento("estabRetencion1", null, estabRetencion1));
+                                        detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, ptoEmiRetencion1));
+                                        detalleCompras.appendChild(crearElemento("secRetencion1", null, secRetencion1 + ""));
+                                        detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+                                        //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS                                    
+                                        detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                                    } catch (Exception e) {
+                                    }
+                                }
+
                                 Element reembolsos = doc_anexo.createElement("reembolsos");
                                 detalleCompras.appendChild(reembolsos);
                                 for (int r = 0; r < tab_reembolso.getTotalFilas(); r++) {
+                                    aux_contador++;
                                     Element reembolso = doc_anexo.createElement("reembolso");
                                     reembolsos.appendChild(reembolso);
                                     reembolso.appendChild(crearElemento("tipoComprobanteReemb", null, tab_reembolso.getValor(r, "alter_tribu_cntdo")));
@@ -292,7 +308,8 @@ public class cls_anexo_transaccional {
                                                 dou_porcen = dou_porcen / 100;
                                             }
                                             dou_base = Double.parseDouble(tab_retencion_.getValor(j, "base_cndre"));
-                                            dou_total = dou_porcen * dou_base;
+                                            //dou_total = dou_porcen * dou_base;  //Descuadraba los decimales
+                                            dou_total += Double.parseDouble(tab_retencion_.getValor(j, "valor_cndre"));
                                         } catch (Exception e) {
                                         }
                                         if (tab_retencion_.getValor(j, "casillero_cncim").startsWith("332")) {
@@ -301,12 +318,13 @@ public class cls_anexo_transaccional {
                                             detalleAir.appendChild(crearElemento("codRetAir", null, tab_retencion_.getValor(j, "casillero_cncim")));
                                         }
 
-                                        if (dou_base != 0.00) {
-                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
-                                        } else {
-                                            double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
-                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
-                                        }
+                                        detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
+//////                                        if (dou_base != 0.00) {
+//////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
+//////                                        } else {
+//////                                            double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
+//////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
+//////                                        }
                                         detalleAir.appendChild(crearElemento("porcentajeAir", null, tab_retencion_.getValor(j, "porcentaje_cndre")));
                                         detalleAir.appendChild(crearElemento("valRetAir", null, utilitario.getFormatoNumero(dou_total)));
                                     }
@@ -314,17 +332,17 @@ public class cls_anexo_transaccional {
 /////BORRA 332 AUTOMATICO                                
                                 String numero_retencion = tab_compras.getValor(i, "numero_cncre");
                                 if (numero_retencion != null) {
-                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
-                                        if (dou_total > 0) {
-                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
-                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
-                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
-                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
-                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
-                                        }
-                                    }
+////////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
+////////////////                                        if (dou_total > 0) {
+////////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
+////////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
+////////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
+////////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+////////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
+////////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
+////////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+////////////////                                        }
+////////////////                                    }
 ////////////////                                else {
 ////////////////                                    //para las retenciones q no se imprimen las de % 0
 ////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
@@ -337,13 +355,13 @@ public class cls_anexo_transaccional {
 
                             } else {
                                 //si no hay retención
-                                Element detalleAir = doc_anexo.createElement("detalleAir");
-                                air.appendChild(detalleAir);
-                                detalleAir.appendChild(crearElemento("codRetAir", null, "332"));//OTRAS COMPRAS Y SERVICIOS NO SUJETAS A RETENCIÓN.
-                                double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
-                                detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
-                                detalleAir.appendChild(crearElemento("porcentajeAir", null, "0"));
-                                detalleAir.appendChild(crearElemento("valRetAir", null, "0.00"));
+//                                Element detalleAir = doc_anexo.createElement("detalleAir");
+//                                air.appendChild(detalleAir);
+//                                detalleAir.appendChild(crearElemento("codRetAir", null, "332"));//OTRAS COMPRAS Y SERVICIOS NO SUJETAS A RETENCIÓN.
+//                                double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
+//                                detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
+//                                detalleAir.appendChild(crearElemento("porcentajeAir", null, "0"));
+//                                detalleAir.appendChild(crearElemento("valRetAir", null, "0.00"));
 //                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
 //                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
 //                            detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
@@ -464,7 +482,6 @@ public class cls_anexo_transaccional {
                             + "left join gen_tipo_identifi tide on cli.ide_getid=tide.ide_getid \n"
                             + "left join con_tipo_document doc on cab.ide_cntdo=doc.ide_cntdo \n"
                             + "where cab.fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno= 1\n"
-                            + " and  cab.ide_sucu= " + utilitario.getVariable("IDE_SUCU")
                             + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
                     // System.out.println("NOTAS CREDITO --- " + tab_notaC.getSql());
                     for (int i = 0; i < tab_notaC.getTotalFilas(); i++) {
@@ -588,7 +605,8 @@ public class cls_anexo_transaccional {
                 }
                 ///ESCRIBE EL DOCUMENTO                
                 Source source = new DOMSource(doc_anexo);
-                String master = System.getProperty("user.dir");
+                // String master = System.getProperty("user.dir");
+                String master = "D:";
                 nombre = "AT" + mes + anio + ".xml";
                 path = master + "/" + nombre;
                 Result console = new StreamResult(System.out);
@@ -616,7 +634,7 @@ public class cls_anexo_transaccional {
 
         TablaGenerica tab_total = utilitario.consultar(
                 "select  count(*),1*(sum(base_grabada_cpcno)+sum(base_no_objeto_iva_cpcno)+sum(base_tarifa0_cpcno)) as total_ventas \n"
-                + "from cxp_cabecera_nota where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1 and ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
+                + "from cxp_cabecera_nota where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1 ");
 //        tab_total.imprimirSql();
         str_valor = utilitario.getFormatoNumero(tab_total.getSumaColumna("total_ventas"));
 
@@ -632,9 +650,8 @@ public class cls_anexo_transaccional {
                 + "from cxp_cabecera_nota a "
                 + " inner join cxc_datos_fac b on a.ide_ccdaf=b.ide_ccdaf  "
                 + "where fecha_emisi_cpcno BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_cpeno=1 "
-                + " and serie_ccdaf like '" + codEstab + "%' "
-                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
-        tab_total.imprimirSql();
+                + " and serie_ccdaf like '" + codEstab + "%' ");
+        //tab_total.imprimirSql();
         str_valor = utilitario.getFormatoNumero(tab_total.getSumaColumna("total_ventas"));
 
         //  str_valor = "0.00";

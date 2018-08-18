@@ -16,6 +16,8 @@ import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -263,6 +265,21 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
         tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
+
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setOrden(13);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setNombreVisual("LIQUIDAR N/C");
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "0", "MES ACTUAL"
+        };
+        Object fila2[] = {
+            "1", "MES SIGUIENTE"
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setCombo(lista);
+        tab_cab_documento.getColumna("liquida_nota_cpcfa").setValorDefecto("0");
+
         tab_cab_documento.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_cab_documento);
@@ -848,9 +865,14 @@ public class pre_modifica_documento extends Pantalla {
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("FECHA_EMISION_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("NUMERO_NC_CPCFA")
                         || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("AUTORIZACIO_NC_CPCFA")
-                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")) {
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("MOTIVO_NC_CPCFA")
+                        || tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("LIQUIDA_NOTA_CPCFA")) {
                     tab_cab_documento.getGrid().getChildren().get(i).setRendered(bol_esnota);
                     tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(bol_esnota);
+                }
+                if (tab_cab_documento.getGrid().getChildren().get(i).getId().startsWith("IDE_CNDFP1")) {
+                    tab_cab_documento.getGrid().getChildren().get(i).setRendered(false);
+                    tab_cab_documento.getGrid().getChildren().get(i - 1).setRendered(false);
                 }
             }
         }

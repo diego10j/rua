@@ -28,7 +28,7 @@ public class cls_formulario103 {
     private final String[] nom_mes = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     private String fecha_inicio = "";
     private String fecha_fin = "";
-    private String v302, v303, v304, v307, v308, v309, v310, v312, v319, v320, v322, v323, v325, v327, v328, v332, v340, v341, v342, v343, v344, v349, v352, v353, v354, v357, v358, v359, v360, v362, v369, v370, v372, v373, v375, v377, v378, v390, v391, v392, v393, v394, v399;
+    private String v302, v303, v304, v307, v308, v309, v310, v311, v312, v319, v320, v322, v323, v325, v327, v328, v332, v333, v340, v341, v342, v343, v344, v349, v352, v353, v354, v357, v358, v359, v360, v362, v369, v370, v372, v373, v375, v377, v378, v390, v391, v392, v393, v394, v399;
     private String v401, v403, v405, v421, v427, v429, v451, v453, v455, v471, v498, v499;
     private String v890, v897, v898, v899, v880;
     private String v902, v903, v904, v999, v905, v907, v908, v909, v910, v911, v912, v913, v915;
@@ -72,6 +72,7 @@ public class cls_formulario103 {
                 v308 = consultarBaseCasillero("308");
                 v309 = consultarBaseCasillero("309");
                 v310 = consultarBaseCasillero("310");
+                v311 = consultarBaseCasillero("311");
                 v312 = consultarBaseCasillero("312");
                 v319 = consultarBaseCasillero("319");
                 v320 = consultarBaseCasillero("320");
@@ -81,6 +82,7 @@ public class cls_formulario103 {
                 v327 = consultarBaseCasillero("327");
                 v328 = consultarBaseCasillero("328");
                 v332 = consultarBaseCasillero332();
+                v333 = consultarBaseCasillero("333");
                 v340 = consultarBaseCasillero("340");
                 v341 = consultarBaseCasillero("341");
                 v342 = consultarBaseCasillero("342");
@@ -89,50 +91,50 @@ public class cls_formulario103 {
                 v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
                         + Double.parseDouble(v303) + Double.parseDouble(v304)
                         + Double.parseDouble(v307) + Double.parseDouble(v308)
-                        + Double.parseDouble(v309) + Double.parseDouble(v310)
+                        + Double.parseDouble(v309) + Double.parseDouble(v310) + Double.parseDouble(v311)
                         + Double.parseDouble(v312) + Double.parseDouble(v319)
                         + Double.parseDouble(v320) + Double.parseDouble(v322)
                         + Double.parseDouble(v323) + Double.parseDouble(v325)
                         + Double.parseDouble(v327) + Double.parseDouble(v328)
-                        + Double.parseDouble(v332) + Double.parseDouble(v340)
+                        + Double.parseDouble(v332) + Double.parseDouble(v340) + Double.parseDouble(v333)
                         + Double.parseDouble(v341) + Double.parseDouble(v342)
                         + Double.parseDouble(v343) + Double.parseDouble(v344));
 
                 //cuadra con ats por facturas que no generan retencion 332 
                 double dou_total_ats = Double.parseDouble(consultarComprasAts());
                 double dou_total = Double.parseDouble(v349);
-                System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
-                System.out.println("v332 " + v332);
-
-                if (dou_total != dou_total_ats) {
-                    //1 si es mayor el total en el ats
-                    double d332 = Double.parseDouble(v332);
-                    if (dou_total_ats > dou_total) {
-                        double diferencia = dou_total_ats - dou_total;
-                        //sumo al 332 actual la diferencia                        
-                        d332 += diferencia;
-                    } else {
-                        double diferencia = dou_total - dou_total_ats;
-                        //resto al 332 actual la diferencia                        
-                        d332 -= diferencia;
-                    }
-                    
-                    // v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
-//                    v332 = consultarBaseCasillero332();
-                    System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
-                    System.out.println("v332 " + d332);
-//                    v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
-//                            + Double.parseDouble(v303) + Double.parseDouble(v304)
-//                            + Double.parseDouble(v307) + Double.parseDouble(v308)
-//                            + Double.parseDouble(v309) + Double.parseDouble(v310)
-//                            + Double.parseDouble(v312) + Double.parseDouble(v319)
-//                            + Double.parseDouble(v320) + Double.parseDouble(v322)
-//                            + Double.parseDouble(v323) + Double.parseDouble(v325)
-//                            + Double.parseDouble(v327) + Double.parseDouble(v328)
-//                            + Double.parseDouble(v332) + Double.parseDouble(v340)
-//                            + Double.parseDouble(v341) + Double.parseDouble(v342)
-//                            + Double.parseDouble(v343) + Double.parseDouble(v344));
-                }
+                //  System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
+                // System.out.println("v332 " + v332);
+                v349 = utilitario.getFormatoNumero(dou_total_ats);
+//////////////                if (dou_total != dou_total_ats) {
+//////////////                    //1 si es mayor el total en el ats
+//////////////                    double d332 = Double.parseDouble(v332);
+//////////////                    if (dou_total_ats > dou_total) {
+//////////////                        double diferencia = dou_total_ats - dou_total;
+//////////////                        //sumo al 332 actual la diferencia                        
+//////////////                        d332 += diferencia;
+//////////////                    } else {
+//////////////                        double diferencia = dou_total - dou_total_ats;
+//////////////                        //resto al 332 actual la diferencia                        
+//////////////                        d332 -= diferencia;
+//////////////                    }
+//////////////
+//////////////                    // v332 = utilitario.getFormatoNumero(d332); //dfj comenta 26/05/2018
+////////////////                    v332 = consultarBaseCasillero332();
+//////////////                    System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
+//////////////                    System.out.println("v332 " + d332);
+////////////////                    v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
+////////////////                            + Double.parseDouble(v303) + Double.parseDouble(v304)
+////////////////                            + Double.parseDouble(v307) + Double.parseDouble(v308)
+////////////////                            + Double.parseDouble(v309) + Double.parseDouble(v310)
+////////////////                            + Double.parseDouble(v312) + Double.parseDouble(v319)
+////////////////                            + Double.parseDouble(v320) + Double.parseDouble(v322)
+////////////////                            + Double.parseDouble(v323) + Double.parseDouble(v325)
+////////////////                            + Double.parseDouble(v327) + Double.parseDouble(v328)
+////////////////                            + Double.parseDouble(v332) + Double.parseDouble(v340)
+////////////////                            + Double.parseDouble(v341) + Double.parseDouble(v342)
+////////////////                            + Double.parseDouble(v343) + Double.parseDouble(v344));
+//////////////                }
                 //valor
                 v352 = consultarRenta(utilitario.getVariable("p_sri_impuesto_renta"));
                 v353 = consultarValorCasillero("303");
@@ -265,7 +267,8 @@ public class cls_formulario103 {
 
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario103);
-                String master = System.getProperty("user.dir");
+                String master = "D:/";
+                //String master = System.getProperty("user.dir");
                 nombre = "03ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;
@@ -278,6 +281,7 @@ public class cls_formulario103 {
         } catch (Exception e) {
             System.err.println("Error al generar el Formulario 103: " + e.getMessage());
             utilitario.agregarMensajeError("No se pudo generar el Formulario", "No hay información para generar el formulario");
+            e.printStackTrace();
         }
         return null;
     }
@@ -369,7 +373,7 @@ public class cls_formulario103 {
 
     public String consultarValorCasillero(String casillero) {
         double dou_valor = 0;
-        List lis_sql = utilitario.getConexion().consultar("SELECT SUM(dr.porcentaje_cndre/100 * dr.base_cndre) "
+        List lis_sql = utilitario.getConexion().consultar("SELECT SUM(valor_cndre) "
                 + " FROM con_cabece_retenc cr "
                 + " LEFT JOIN con_detall_retenc dr ON (dr.ide_cncre = cr.ide_cncre) "
                 + " JOIN con_cabece_impues ci ON (ci.ide_cncim = dr.ide_cncim) "
