@@ -64,7 +64,6 @@ public class cls_formulario104 {
 //                    + "where alter_tribu_cpdfa='00'\n"
 //                    + "and iva_inarti_cpdfa=-1  --IVA NO\n"
 //                    + ")");
-
             TablaGenerica tab_empresa = utilitario.consultar("SELECT identificacion_empr,nom_empr,identi_repre_empr from sis_empresa where ide_empr=" + utilitario.getVariable("ide_empr"));
 
             porcentaje_iva = ser_configuracion.getPorcentajeIva(fecha_fin) + "";
@@ -387,8 +386,8 @@ public class cls_formulario104 {
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario104);
                 //System.out.println(source + ".. " + doc_formulario104 + " --- " + doc_formulario104.getTextContent());
-                String master = "D:/";
-                //String master = System.getProperty("user.dir");
+                //String master = "D:";
+                String master = System.getProperty("user.dir");
                 nombre = "04ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;

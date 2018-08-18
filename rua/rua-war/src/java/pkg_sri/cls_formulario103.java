@@ -267,8 +267,8 @@ public class cls_formulario103 {
 
                 ///ESCRIBE EL DOCUMENTO
                 Source source = new DOMSource(doc_formulario103);
-                String master = "D:/";
-                //String master = System.getProperty("user.dir");
+                //String master = "D:";
+                String master = System.getProperty("user.dir");
                 nombre = "03ORI_" + nom_mes[Integer.parseInt(mes) - 1] + anio + ".xml";
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 path = master + "/" + nombre;

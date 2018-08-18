@@ -605,8 +605,8 @@ public class cls_anexo_transaccional {
                 }
                 ///ESCRIBE EL DOCUMENTO                
                 Source source = new DOMSource(doc_anexo);
-                // String master = System.getProperty("user.dir");
-                String master = "D:";
+                String master = System.getProperty("user.dir");
+                //String master = "D:";
                 nombre = "AT" + mes + anio + ".xml";
                 path = master + "/" + nombre;
                 Result console = new StreamResult(System.out);
