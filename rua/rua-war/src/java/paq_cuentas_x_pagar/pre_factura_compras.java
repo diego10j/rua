@@ -5,6 +5,9 @@
  */
 package paq_cuentas_x_pagar;
 
+import componentes.DocumentoCxP;
+import dj.comprobantes.offline.enums.TipoComprobanteEnum;
+import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
@@ -21,10 +24,15 @@ import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
 import framework.componentes.Upload;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.event.FileUploadEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.contabilidad.ServicioConfiguracion;
@@ -48,6 +56,9 @@ String solicitud ="";
 double dou_total = 0;
 double dou_base_ingresada = 0;
 private double tarifaIVA = 0;
+private Dialogo dia_xml = new Dialogo();
+private Upload upl_xml = new Upload();
+private DocumentoCxP doc_cuenta_pagar = new DocumentoCxP();
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
     @EJB
@@ -68,11 +79,36 @@ private double tarifaIVA = 0;
     public pre_factura_compras(){
         
        if (tienePerfilSecretaria() != 0) {
+           
+       
+            Boton bt_panel = new Boton();
+            bt_panel.setValue("CARGAR XML");
+            bt_panel.setIcon("ui-icon-folder-open");
+            bt_panel.setTitle("Seleccionar una Factura Electrónica en formato XML");
+            bt_panel.setMetodo("dibujarXML");
+            bar_botones.agregarBoton(bt_panel);
+            
+         // creo dialogo para crear modalidad
+        dia_xml.setId("dia_modalidad");
+        dia_xml.setTitle("SELECCIONAR FACTURA ELECTRÓNICA XML");
+        dia_xml.setWidth("40%");
+        dia_xml.setHeight("30%");
+        dia_xml.getBot_aceptar().setMetodo("aceptarModalidad");
+        dia_xml.setResizable(false);
         
+        Grupo gru_cuerpo = new Grupo();
+        upl_xml.setId("upl_cxp_xml");
+        upl_xml.setAllowTypes("/(\\.|\\/)(xml)$/");
+        gru_cuerpo.getChildren().add(upl_xml);
+        upl_xml.setMetodo("seleccionarArchivoXML");
+        upl_xml.setUploadLabel("Validar Factura .xml");
+        upl_xml.setAuto(false);
+        dia_xml.setDialogo(gru_cuerpo);
+        agregarComponente(dia_xml);
+           
         tab_cab_documento.setId("tab_cab_documento");
-//        tab_cab_documento.setRuta("pre_index.clase." + getId());
+     //   tab_cab_documento.setRuta("pre_index.clase." + getId());
         tab_cab_documento.setMostrarNumeroRegistros(false);
-        ;
         tab_cab_documento.setTabla("cxp_cabece_factur", "ide_cpcfa", 1);
         tab_cab_documento.setCondicion("ide_cpcfa=-1");
         tab_cab_documento.getColumna("ide_cpcfa").setVisible(false);
@@ -200,6 +236,7 @@ private double tarifaIVA = 0;
         tab_cab_documento.getColumna("ide_ademple").setAutoCompletar();
         tab_cab_documento.getColumna("ide_adcomp").setVisible(false);
         tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setLectura(true);
+        tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setValorDefecto("FALSE");
         tab_cab_documento.agregarRelacion(tab_det_documento);
         
         
@@ -313,6 +350,15 @@ private double tarifaIVA = 0;
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para el registro de la orden de gasto de Compras. Consulte con el Administrador");
         }     
        
+    }
+    
+    public void dibujarXML(){
+       dia_xml.dibujar();
+    }
+    
+    public void seleccionarArchivoXML(FileUploadEvent event){
+        
+        doc_cuenta_pagar.seleccionarArchivoXML(event);
     }
     
     public void calcularTotalDocumento() {
@@ -565,6 +611,33 @@ private double tarifaIVA = 0;
 
     public void setSel_tab_detalle_compra(SeleccionTabla sel_tab_detalle_compra) {
         this.sel_tab_detalle_compra = sel_tab_detalle_compra;
+    }
+
+    public DocumentoCxP getDoc_cuenta_pagar() {
+        return doc_cuenta_pagar;
+    }
+
+    public void setDoc_cuenta_pagar(DocumentoCxP doc_cuenta_pagar) {
+        this.doc_cuenta_pagar = doc_cuenta_pagar;
+    }
+
+    public Upload getUpl_xml() {
+        return upl_xml;
+    }
+
+    public void setUpl_xml(Upload upl_xml) {
+        this.upl_xml = upl_xml;
+    }
+
+
+   
+
+    public Dialogo getDia_xml() {
+        return dia_xml;
+    }
+
+    public void setDia_xml(Dialogo dia_xml) {
+        this.dia_xml = dia_xml;
     }
 
    
