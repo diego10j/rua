@@ -173,7 +173,7 @@ public class cls_formulario104 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "482"}, v482)); //= 429 TOTAL IVA
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "481"}, v481));//Ventas 12% crédito
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "480"}, v480));//Ventas 12% contado 
-                detalle.appendChild(crearElemento("campo", new String[]{"numero", v510}, v510));//!!!!!****** BUSCAR 
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "510"}, v510));//!!!!!****** BUSCAR 
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "500"}, getValor500()));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "520"}, v520));//!!!!!****** BUSCAR 
                 /**
