@@ -13,6 +13,7 @@ import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -21,6 +22,7 @@ import framework.componentes.Mensaje;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -65,6 +67,9 @@ public class pre_nota_credito extends Pantalla {
     private String ide_cpcno = null;
 
     private final Grid gri_dashboard = new Grid();
+
+    private final Dialogo dia_correo = new Dialogo();
+    private final Texto tex_correo = new Texto();
 
     public pre_nota_credito() {
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
@@ -112,6 +117,19 @@ public class pre_nota_credito extends Pantalla {
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
+
+        dia_correo.setId("dia_correo");
+        dia_correo.setTitle("REENVIAR NOTA DE CRÉDITO ELECTRONICA AL CLIENTE");
+        dia_correo.setWidth("35%");
+        dia_correo.setHeight("17%");
+        dia_correo.getBot_aceptar().setMetodo("aceptarReenviar");
+        tex_correo.setStyle("width:" + (dia_correo.getAnchoPanel() - 35) + "px");
+        Grid gri = new Grid();
+        gri.setStyle("width:" + (dia_correo.getAnchoPanel() - 5) + "px; height:" + dia_correo.getAltoPanel() + "px;overflow:auto;display:block;vertical-align:middle;");
+        gri.getChildren().add(new Etiqueta("<strong> CORREO ELECTRÓNICO: </strong>"));
+        gri.getChildren().add(tex_correo);
+        dia_correo.setDialogo(gri);
+        agregarComponente(dia_correo);
 
         dibujarNotaCredito();
     }
@@ -499,6 +517,13 @@ public class pre_nota_credito extends Pantalla {
             bot_ride.setMetodo("abrirRIDE");
             bot_ride.setIcon("ui-icon-print");
             bar_menu.agregarBoton(bot_ride);
+
+            Boton bot_reenviar = new Boton();
+            bot_reenviar.setValue("Reenviar");
+            bot_reenviar.setTitle("Enviar nuevamente al correo del cliente");
+            bot_reenviar.setMetodo("reenviarNota");
+            bot_reenviar.setIcon("ui-icon-mail-closed");
+            bar_menu.agregarBoton(bot_reenviar);
         }
 
         tab_tabla1 = new Tabla();
@@ -562,6 +587,33 @@ public class pre_nota_credito extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "LISTADO DE NOTAS DE CRÉDITO", gru);
+    }
+
+    public void reenviarNota() {
+        //Valida que la factura este AUTORIZADA
+        if (tab_tabla1.getValor("ide_cpcno") != null) {
+            if (tab_tabla1.getValor("ide_srcom") != null) {
+                if (tab_tabla1.getValor("nombre_cpeno") != null && tab_tabla1.getValor("nombre_cpeno").equals(EstadoComprobanteEnum.AUTORIZADO.getDescripcion())) {
+                    dia_correo.dibujar();
+                } else {
+                    utilitario.agregarMensajeError("No se puede reenviar la Nota de Crédito", "La Nota de Crédito seleccionada debe estar en estado AUTORIZADO");
+                }
+            } else {
+                utilitario.agregarMensajeInfo("La Nota de Crédito seleccionada no es electrónica", "");
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Nota de Crédito", "");
+        }
+    }
+
+    public void aceptarReenviar() {
+        if (utilitario.isCorreoValido(String.valueOf(tex_correo.getValue()))) {
+            ser_comprobante_electronico.reenviarComprobante(String.valueOf(tex_correo.getValue()), tab_tabla1.getValor("ide_srcom"));
+            dia_correo.cerrar();
+            tex_correo.setValue(null);
+        } else {
+            utilitario.agregarMensajeError("Correo electrónico no válido", "");
+        }
     }
 
     public void abrirAnularNotas() {
