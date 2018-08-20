@@ -229,7 +229,7 @@ public class FacturaCxC extends Dialogo {
 
     public void actualizarClientesProductos() {
         lisClientes = utilitario.getConexion().consultar("SELECT ide_geper,nom_geper,identificac_geper FROM gen_persona WHERE es_cliente_geper=TRUE AND nivel_geper='HIJO'");
-        lisProductos = utilitario.getConexion().consultar("SELECT ide_inarti,codigo_inarti, nombre_inarti   FROM inv_articulo  WHERE nivel_inarti='HIJO'");
+        lisProductos = utilitario.getConexion().consultar("SELECT ide_inarti, nombre_inarti, codigo_inarti FROM inv_articulo  WHERE nivel_inarti='HIJO'");
         if (tab_deta_factura != null) {
             tab_deta_factura.getColumna("ide_inarti").setCombo(lisProductos);
         }
@@ -1466,7 +1466,7 @@ public class FacturaCxC extends Dialogo {
         try {
             descuento = Double.parseDouble(tab_deta_factura.getValor("descuento_ccdfa"));
         } catch (Exception e) {
-            descuento = 0;
+                descuento = 0;
         }
 
         total = (cantidad * precio) - descuento;
