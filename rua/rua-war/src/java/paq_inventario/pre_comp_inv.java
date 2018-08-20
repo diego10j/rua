@@ -203,13 +203,14 @@ public class pre_comp_inv extends Pantalla {
         bar_botones.agregarBoton(bot_busca_solici);  
         
         sel_cabece_compra.setId("sel_cabece_compra");
-        sel_cabece_compra.setTitle("SELECCIONA UNA FACTURA");
+        sel_cabece_compra.setTitle("SELECCIONE UNA FACTURA");
         sel_cabece_compra.setSeleccionTabla("select ide_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n" +
                                             "from cxp_cabece_factur a\n" +
                                             "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
                                             "left join adq_compra c on a.ide_adcomp = c.ide_adcomp\n" +
                                             "where a.ide_adcomp = c.ide_adcomp\n" +
-                                            "and pagado_cpcfa = false", "ide_cpcfa");
+                                            "and recibido_compra_cpcfa = false\n" +
+                                            "and c.ingreso_adcomp = 1", "ide_cpcfa");
         sel_cabece_compra.setWidth("80%");
         sel_cabece_compra.setHeight("70%");
         sel_cabece_compra.setRadio();
