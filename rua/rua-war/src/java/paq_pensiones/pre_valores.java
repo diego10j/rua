@@ -255,7 +255,6 @@ public class pre_valores extends Pantalla{
           }
          
         }
-        
         }
         else if (tab_tabla2.isFocus()){
             tab_tabla2.guardar();
