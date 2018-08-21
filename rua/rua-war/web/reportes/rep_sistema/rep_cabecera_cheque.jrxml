@@ -40,8 +40,8 @@ and s.ide_sucu=$P{ide_sucu}]]>
 				</textElement>
 				<textFieldExpression><![CDATA["RUC: "+$F{identificacion_empr}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="e5801649-5fab-4daf-930d-89b7d3cd862d" x="66" y="11" width="168" height="15"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e5801649-5fab-4daf-930d-89b7d3cd862d" x="66" y="6" width="194" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
