@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
+import servicios.sistema.ServicioSeguridad;
 import sistema.aplicacion.Pantalla;
 
 public class pre_anual_egresos extends Pantalla {
@@ -28,6 +29,7 @@ public class pre_anual_egresos extends Pantalla {
 	private Tabla tab_reforma= new Tabla();
 	private Combo com_anio =new Combo();
         private Combo com_casas = new Combo();
+        private SeleccionTabla sel_programas = new SeleccionTabla();
 	private SeleccionTabla set_programa = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
         private Dialogo dia_por_devengar = new Dialogo();
@@ -40,7 +42,9 @@ public class pre_anual_egresos extends Pantalla {
 	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
 	@EJB
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
-	
+	@EJB
+	private ServicioSeguridad ser_seguridad=(ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
+
 	public pre_anual_egresos(){
                 //bar_botones.getBot_insertar().setRendered(false);
             
@@ -253,6 +257,12 @@ public class pre_anual_egresos extends Pantalla {
                 
                 
 		iniciaPoa();
+                
+                sel_programas.setId("sel_programas");
+		sel_programas.setSeleccionTabla(ser_presupuesto.getFuncionPrograma("1"),"ide_prfup");
+		sel_programas.setTitle("Seleccione el Programa");
+		sel_programas.getBot_aceptar().setMetodo("aceptarReporte");
+		agregarComponente(sel_programas);
 
 	}
 	public void iniciaPoa(){
@@ -476,11 +486,18 @@ public class pre_anual_egresos extends Pantalla {
 	}
         //reporte
 public void abrirListaReportes() {
+        if(com_anio.getValue() == null){
+            utilitario.agregarMensajeInfo("Seleccione el Año", "Seleccione el Año para poder continuar");
+	
+        }
+        else {
 	// TODO Auto-generated method stub
 	rep_reporte.dibujar();
+         }
 }
 public void aceptarReporte(){
-	if(rep_reporte.getReporteSelecionado().equals("Presupuesto Anual Gastos"));{
+        
+            if(rep_reporte.getReporteSelecionado().equals("Presupuesto Anual Gastos")){
 		if (rep_reporte.isVisible()){
 			p_parametros=new HashMap();		
 			rep_reporte.cerrar();	
@@ -496,6 +513,33 @@ public void aceptarReporte(){
 
 		}
 	}
+        else if(rep_reporte.getReporteSelecionado().equals("Compromisos Presupuestarios")){
+                if (rep_reporte.isVisible()){
+                    
+                    sel_programas.getTab_seleccion().setSql(ser_presupuesto.getFuncionPrograma("1"));
+                    sel_programas.getTab_seleccion().ejecutarSql();
+                    sel_programas.dibujar();               
+                    rep_reporte.cerrar();
+		}
+                else if(sel_programas.isVisible()){
+                    String seleccionados=sel_programas.getSeleccionados();
+                    sel_programas.cerrar();
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+			p_parametros.put("panio",Integer.parseInt(com_anio.getValue().toString()));
+                        p_parametros.put("nombre",utilitario.getVariable("NICK"));
+                        p_parametros.put("pprograma",seleccionados);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+       
+         
 		
 }
 	@Override
@@ -618,6 +662,14 @@ public void aceptarReporte(){
 
     public void setSet_por_devengar(SeleccionTabla set_por_devengar) {
         this.set_por_devengar = set_por_devengar;
+    }
+
+    public SeleccionTabla getSel_programas() {
+        return sel_programas;
+    }
+
+    public void setSel_programas(SeleccionTabla sel_programas) {
+        this.sel_programas = sel_programas;
     }
 
 }
