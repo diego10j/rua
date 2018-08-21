@@ -240,6 +240,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.getColumna("OTROS_CPCFA").setVisible(false);
         tab_cab_documento.getColumna("DESCUENTO_CPCFA").setVisible(false);
         tab_cab_documento.getColumna("PORCEN_DESC_CPCFA").setVisible(false);
+        tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setVisible(false);  //Campo Luis
         tab_cab_documento.setTipoFormulario(true);
         tab_cab_documento.getGrid().setColumns(6);
         tab_cab_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
