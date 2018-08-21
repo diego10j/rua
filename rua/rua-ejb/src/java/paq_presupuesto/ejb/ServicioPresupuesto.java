@@ -907,4 +907,9 @@ public String getFuncionPrograma (String nivel){
 	return sql;
 	
 } 
+public String getActividadPrograma (String programa){
+	String sql="select ide_prfup, detalle_prfup,codigo_prfup from pre_funcion_programa where pre_ide_prfup in (select ide_prfup from pre_funcion_programa where pre_ide_prfup in (select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+programa+") )  ) order by codigo_prfup";
+	return sql;
+	
+}
 }
