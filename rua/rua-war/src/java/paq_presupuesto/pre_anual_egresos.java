@@ -11,6 +11,7 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
@@ -31,9 +32,11 @@ public class pre_anual_egresos extends Pantalla {
         private Combo com_casas = new Combo();
         private SeleccionTabla sel_programas = new SeleccionTabla();
 	private SeleccionTabla set_programa = new SeleccionTabla();
+        private SeleccionTabla set_actividad = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
         private Dialogo dia_por_devengar = new Dialogo();
         private SeleccionTabla set_por_devengar = new SeleccionTabla();
+	private SeleccionCalendario sel_calendario=new SeleccionCalendario();
         	///reporte
 	private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
@@ -263,6 +266,16 @@ public class pre_anual_egresos extends Pantalla {
 		sel_programas.setTitle("Seleccione el Programa");
 		sel_programas.getBot_aceptar().setMetodo("aceptarReporte");
 		agregarComponente(sel_programas);
+                //ACTIVIDAD
+                set_actividad.setId("set_actividad");
+		set_actividad.setSeleccionTabla(ser_presupuesto.getActividadPrograma("-1"),"ide_prfup");
+		set_actividad.setTitle("Seleccione la actividad");
+		set_actividad.getBot_aceptar().setMetodo("aceptarReporte");
+		agregarComponente(set_actividad);                
+                //Fechas
+		sel_calendario.setId("sel_calendario");
+		sel_calendario.getBot_aceptar().setMetodo("aceptarReporte");
+		agregarComponente(sel_calendario);
 
 	}
 	public void iniciaPoa(){
@@ -495,6 +508,8 @@ public void abrirListaReportes() {
 	rep_reporte.dibujar();
          }
 }
+String seleccionados="";
+String actividades="";
 public void aceptarReporte(){
         
             if(rep_reporte.getReporteSelecionado().equals("Presupuesto Anual Gastos")){
@@ -520,16 +535,36 @@ public void aceptarReporte(){
                     sel_programas.getTab_seleccion().ejecutarSql();
                     sel_programas.dibujar();               
                     rep_reporte.cerrar();
+                    
 		}
                 else if(sel_programas.isVisible()){
-                    String seleccionados=sel_programas.getSeleccionados();
+                    seleccionados=sel_programas.getSeleccionados();
                     sel_programas.cerrar();
+                    set_actividad.getTab_seleccion().setSql(ser_presupuesto.getActividadPrograma(seleccionados));
+                    set_actividad.getTab_seleccion().ejecutarSql();
+                    set_actividad.dibujar(); 
+
+                    }
+                else if(set_actividad.isVisible()){
+                    actividades=set_actividad.getSeleccionados();
+                    set_actividad.cerrar();
+                    sel_calendario.setFecha1(null);
+                    sel_calendario.setFecha2(null);					
+                    sel_calendario.dibujar();
+                    }
+                else if(sel_calendario.isVisible()){
+                    
+                    sel_calendario.cerrar();
 			p_parametros=new HashMap();		
 			rep_reporte.cerrar();	
 			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
 			p_parametros.put("panio",Integer.parseInt(com_anio.getValue().toString()));
                         p_parametros.put("nombre",utilitario.getVariable("NICK"));
                         p_parametros.put("pprograma",seleccionados);
+                        p_parametros.put("pactividad",actividades);
+                        p_parametros.put("pfecha_inicial",sel_calendario.getFecha1String());
+                        p_parametros.put("pfecha_final",sel_calendario.getFecha2String());
+                        System.out.println("paso parametrios "+p_parametros);
 			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
                         self_reporte.dibujar();
                     }
@@ -670,6 +705,14 @@ public void aceptarReporte(){
 
     public void setSel_programas(SeleccionTabla sel_programas) {
         this.sel_programas = sel_programas;
+    }
+
+    public SeleccionTabla getSet_actividad() {
+        return set_actividad;
+    }
+
+    public void setSet_actividad(SeleccionTabla set_actividad) {
+        this.set_actividad = set_actividad;
     }
 
 }

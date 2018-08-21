@@ -247,7 +247,7 @@ public class pre_funcion_programa extends Pantalla {
 		//Filtra la tabla Padre
 		tab_funcion_programa.ejecutarValorPadre(arb_funcion_programa.getValorSeleccionado());
 		//Filtra la tabla tab_vigente
-		tab_programa.ejecutarValorForanea(tab_funcion_programa.getValorSeleccionado());
+		tab_programa.ejecutarValorForanea(arb_funcion_programa.getValorSeleccionado());
 	  }
 	
 		public void agregarSubActividad(){
