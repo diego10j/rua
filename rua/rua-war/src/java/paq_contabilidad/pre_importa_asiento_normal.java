@@ -13,7 +13,6 @@ import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
-import framework.componentes.Radio;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import framework.componentes.Upload;
@@ -291,12 +290,19 @@ public class pre_importa_asiento_normal extends Pantalla {
 //            }
 
             String str_codigos = tab_detalle.getStringColumna("codig_recur_cndpc");
+            str_codigos = str_codigos.replace(".',", "',");
+            str_codigos = str_codigos.replace(".' ", "'");
             TablaGenerica tab_cuentas = ser_contabilidad.getCuentaporCodigo(str_codigos);
-            if (tab_cuentas.getTotalFilas() > 0) {
+            tab_cuentas.imprimirSql();
+            if (tab_cuentas.isEmpty() == false) {
                 //Busca ide_cndpc
                 boolean correcto = true;
                 for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
                     String codig_recur_cndpc = tab_detalle.getValor(i, "codig_recur_cndpc");
+                    if (codig_recur_cndpc.endsWith(".")) {
+                        codig_recur_cndpc = codig_recur_cndpc.substring(0, codig_recur_cndpc.length() - 1);
+                    }
+
                     if (codig_recur_cndpc != null && codig_recur_cndpc.isEmpty() == false) {
                         String ide_cndpc = null;
                         for (int j = 0; j < tab_cuentas.getTotalFilas(); j++) {
