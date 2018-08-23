@@ -9,7 +9,11 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Arbol;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import sistema.aplicacion.Pantalla;
 import org.primefaces.event.NodeSelectEvent;
@@ -17,15 +21,28 @@ import paq_presupuesto.ejb.ServicioPresupuesto;
 public class pre_clasificador extends Pantalla {
 	private Tabla tab_presupuesto=new Tabla();
 	private Tabla tab_vigente=new Tabla();
-	private Arbol arb_clasificador=new Arbol();
+	private Arbol arb_clasificador=new Arbol();        
+        //Reporte
+        private Map map_parametros=new HashMap();
+        private Reporte rep_reporte=new Reporte();
+        private SeleccionFormatoReporte sel_rep=new SeleccionFormatoReporte();
 	 @EJB
 	private ServicioContabilidad ser_contabilidad = (ServicioContabilidad ) utilitario.instanciarEJB(ServicioContabilidad.class);
 	 @EJB
         private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto)utilitario.instanciarEJB(ServicioPresupuesto.class);
-		
+	
+         
 
 
 	public pre_clasificador(){
+            
+            //Reporte
+            rep_reporte.setId("rep_reporte"); //id
+            rep_reporte.getBot_aceptar().setMetodo("aceptarReporte"); //ejecuta el metodo al aceptar el reporte
+            agregarComponente(rep_reporte); //agrega el componente a la pantalla            
+            bar_botones.agregarReporte(); //aparece el boton de reportes en la barra de botones
+            sel_rep.setId("sel_rep"); //id
+            agregarComponente(sel_rep); //agrego el componente a la pantalla
 		
 		tab_presupuesto.setId("tab_presupuesto");
 		tab_presupuesto.setTipoFormulario(true);
@@ -108,11 +125,27 @@ public class pre_clasificador extends Pantalla {
 		div_division.dividir2(arb_clasificador, div_vigente, "25%", "v");
       	agregarComponente(div_division);
       	
-      	
-    	
-				
-	}
-		
+
+ 
+
+}
+ //reporte      
+        @Override  
+        public void abrirListaReportes(){  
+          rep_reporte.dibujar();
+    
+}
+
+        @Override
+        public void aceptarReporte() {
+          if (rep_reporte.getReporteSelecionado().equals("Catalogo Presupuestario"))
+            rep_reporte.cerrar(); //cierra la lista de reportes
+            map_parametros.clear();//limpia parametros
+            map_parametros.put("titulo","Catálogo Presupuestarios");
+            sel_rep.setSeleccionFormatoReporte(map_parametros, rep_reporte.getPath());
+        
+          sel_rep.dibujar();
+        } 		
 	 /**DJ
 	 * Se ejecuta cuando se selecciona algun nodo del arbol
 	 */
@@ -182,4 +215,19 @@ public class pre_clasificador extends Pantalla {
 			this.tab_vigente = tab_vigente;
 		}
 
-	}
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
+    }
+}
