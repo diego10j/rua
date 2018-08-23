@@ -293,7 +293,6 @@ public class pre_importa_asiento_normal extends Pantalla {
             str_codigos = str_codigos.replace(".',", "',");
             str_codigos = str_codigos.replace(".')", "')");
             str_codigos = str_codigos.replace(".'", "'");
-            System.out.println("** "+ str_codigos);
             TablaGenerica tab_cuentas = ser_contabilidad.getCuentaporCodigo(str_codigos);
             tab_cuentas.imprimirSql();
             if (tab_cuentas.isEmpty() == false) {
