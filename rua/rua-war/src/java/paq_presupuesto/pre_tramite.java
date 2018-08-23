@@ -324,10 +324,21 @@ public class pre_tramite extends Pantalla   {
 		set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_producto").setFiltro(true);
 		set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_actividad").setFiltro(true);
 		set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_subactividad").setFiltro(true);
-		set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_prfuf").setFiltro(true);
 		set_ingresa_presupuesto.getTab_seleccion().getColumna("codigo_clasificador_prcla").setFiltro(true);
 		set_ingresa_presupuesto.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setFiltro(true);
-		set_ingresa_presupuesto.getBot_aceptar().setMetodo("aceptarAnual");
+		set_ingresa_presupuesto.getTab_seleccion().getColumna("valor_reformado_pranu").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("valor_inicial_pranu").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("valor_codificado_pranu").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("valor_devengado_pranu").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("valor_eje_comprometido_pranu").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_prfuf").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_programa").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_proyecto").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("detalle_producto").setVisible(false);
+                set_ingresa_presupuesto.getTab_seleccion().getColumna("codigo_clasificador_prcla").setVisible(false);
+		set_ingresa_presupuesto.getTab_seleccion().getColumna("descripcion_clasificador_prcla").setVisible(false);
+
+                set_ingresa_presupuesto.getBot_aceptar().setMetodo("aceptarAnual");
 		set_ingresa_presupuesto.setRadio();
                 //set_ingresa_presupuesto.getTab_seleccion().getSql();
 		agregarComponente(set_ingresa_presupuesto);

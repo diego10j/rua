@@ -569,6 +569,47 @@ public void aceptarReporte(){
                         self_reporte.dibujar();
                     }
         }
+        else if(rep_reporte.getReporteSelecionado().equals("Ejecución Actividades Presupuestarias")){
+                if (rep_reporte.isVisible()){
+                    
+                    sel_programas.getTab_seleccion().setSql(ser_presupuesto.getFuncionPrograma("1"));
+                    sel_programas.getTab_seleccion().ejecutarSql();
+                    sel_programas.dibujar();               
+                    rep_reporte.cerrar();
+                    
+		}
+                else if(sel_programas.isVisible()){
+                    seleccionados=sel_programas.getSeleccionados();
+                    sel_programas.cerrar();
+                    set_actividad.getTab_seleccion().setSql(ser_presupuesto.getActividadPrograma(seleccionados));
+                    set_actividad.getTab_seleccion().ejecutarSql();
+                    set_actividad.dibujar(); 
+
+                    }
+                else if(set_actividad.isVisible()){
+                    actividades=set_actividad.getSeleccionados();
+                    set_actividad.cerrar();
+                    sel_calendario.setFecha1(null);
+                    sel_calendario.setFecha2(null);					
+                    sel_calendario.dibujar();
+                    }
+                else if(sel_calendario.isVisible()){
+                    
+                    sel_calendario.cerrar();
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+			p_parametros.put("panio",Integer.parseInt(com_anio.getValue().toString()));
+                        p_parametros.put("nombre",utilitario.getVariable("NICK"));
+                        p_parametros.put("pprograma",seleccionados);
+                        p_parametros.put("pactividad",actividades);
+                        p_parametros.put("pfecha_inicial",sel_calendario.getFecha1String());
+                        p_parametros.put("pfecha_final",sel_calendario.getFecha2String());
+                        //System.out.println("paso parametrios "+p_parametros);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }
 		else{
 			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
 
@@ -620,6 +661,26 @@ public void aceptarReporte(){
 		// TODO Auto-generated method stub
 		utilitario.getTablaisFocus().eliminar();
 	}
+
+    @Override
+    public void atras() {
+        super.atras(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void siguiente() {
+        super.siguiente(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void fin() {
+        super.fin(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void inicio() {
+        super.inicio(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 
 	public Tabla getTab_anual() {

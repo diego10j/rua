@@ -43,12 +43,7 @@ public class pre_funcion_programa extends Pantalla {
 	private Reporte rep_reporte = new Reporte();
 	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
 	private Map map_parametros = new HashMap();        
-/*
-	public static String par_sec_proyecto;
-	public static String par_sec_programa;
-	public static String par_sec_producto;
-	public static String par_sec_fase;
-*/        
+        
 	public static String par_proyecto;
 	public static String par_programa;
 	public static String par_producto;
@@ -71,12 +66,7 @@ public class pre_funcion_programa extends Pantalla {
                 
                 
 		par_sub_activdad=utilitario.getVariable("p_sub_actividad");
-/*
-		par_sec_proyecto=utilitario.getVariable("p_modulo_secuencialproyecto");
-		par_sec_programa=utilitario.getVariable("p_modulo_secuencialprograma");
-		par_sec_producto=utilitario.getVariable("p_modulo_secuencialproducto");
-		par_sec_fase=utilitario.getVariable("p_modulo_secuencialfase");
-*/		
+	
 		par_proyecto=utilitario.getVariable("p_proyecto");
 		par_programa=utilitario.getVariable("p_programa");
 		par_producto=utilitario.getVariable("p_producto");
@@ -90,7 +80,6 @@ public class pre_funcion_programa extends Pantalla {
 		tab_funcion_programa.setTabla("pre_funcion_programa", "ide_prfup", 1);
 		tab_funcion_programa.getColumna("ide_prnfp").setCombo("pre_nivel_funcion_programa", "ide_prnfp", "detalle_prnfp","");
 		tab_funcion_programa.getColumna("ide_prnfp").setMetodoChange("validaSubActividad");
-		//tab_funcion_programa.agregarRelacion(tab_vigente);
                 tab_funcion_programa.agregarRelacion(tab_programa);
 		tab_funcion_programa.setCampoPadre( "pre_ide_prfup");
 		tab_funcion_programa.setCampoNombre("codigo_prfup||' '||detalle_prfup");
@@ -109,32 +98,12 @@ public class pre_funcion_programa extends Pantalla {
 		tab_funcion_programa.dibujar();
 		PanelTabla pat_funcion_programa=new PanelTabla();
 		pat_funcion_programa.setPanelTabla(tab_funcion_programa);
-		//agregarComponente(pat_funcion_programa);
 		
 		arb_funcion_programa.setId("arb_funcion_programa");
 		arb_funcion_programa.onSelect("seleccionoClasificador");
 		arb_funcion_programa.dibujar();
-                /*
-		// tabla deaños vigente
-		tab_vigente.setId("tab_vigente");
-		tab_vigente.setHeader("AñO VIGENTE");
-                //tab_vigente.setIdCompleto("tab_tabulador:tab_vigente");
-		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
-		tab_vigente.setCondicion("not ide_prpro is null");
-		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
-		tab_vigente.getColumna("ide_geani").setUnico(true);
-		tab_vigente.getColumna("ide_prfup").setUnico(true);
-		tab_vigente.getColumna("ide_prcla").setVisible(false);
-		tab_vigente.getColumna("ide_prasp").setVisible(false);
-		tab_vigente.getColumna("ide_cocac").setVisible(false);
-		tab_vigente.getColumna("ide_prpro").setVisible(false);
-		
-		tab_vigente.dibujar();
-		PanelTabla pat_panel2=new PanelTabla();
-		pat_panel2.setPanelTabla(tab_vigente);
-                */
+
                 tab_programa.setId("tab_programa");
-                //tab_programa.setIdCompleto("tab_tabulador:tab_programa");
 		tab_programa.setTabla("pre_programa", "ide_prpro", 3);
                 tab_programa.setHeader("PROGRAMAS PRESUPUESTARIOS");
                 tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
@@ -142,17 +111,10 @@ public class pre_funcion_programa extends Pantalla {
                 tab_programa.getColumna("ide_prcla").setUnico(true);
                 tab_programa.getColumna("ide_prfup").setUnico(true);
                 tab_programa.getColumna("cod_programa_prpro").setLectura(true);
-                tab_programa.agregarRelacion(tab_vigente);
                 tab_programa.dibujar ();
                 PanelTabla pat_pane3=new PanelTabla();
 		pat_pane3.setPanelTabla(tab_programa);
-                /*
-                Tabulador tab_tabulador = new Tabulador();
-                tab_tabulador.setId("tab_tabulador");
-                tab_tabulador.agregarTab("VIGENTE", pat_panel2);
-                tab_tabulador.agregarTab("PROGRAMA", pat_pane3);
-		*/
-		//division2
+
                 Division div_vigente = new Division();
  		div_vigente.setId("div_vigente");
  		div_vigente.dividir2( pat_funcion_programa, pat_pane3,"50%","h");
@@ -214,7 +176,7 @@ public class pre_funcion_programa extends Pantalla {
         public void abrirArbolClasificador(){
             //System.out.println("ingrese a abrir el arbol");
             if(tab_funcion_programa.getValor("ide_prnfp").equals(par_sub_activdad)){
-            sel_arbol_clasificador.getArb_seleccion().setCondicion("1=1");
+            sel_arbol_clasificador.getArb_seleccion().setCondicion("tipo_prcla=0");
             sel_arbol_clasificador.getArb_seleccion().ejecutarSql();
             sel_arbol_clasificador.dibujar();
             utilitario.addUpdate("sel_arbol_clasificador");
@@ -247,7 +209,7 @@ public class pre_funcion_programa extends Pantalla {
 		//Filtra la tabla Padre
 		tab_funcion_programa.ejecutarValorPadre(arb_funcion_programa.getValorSeleccionado());
 		//Filtra la tabla tab_vigente
-		tab_programa.ejecutarValorForanea(arb_funcion_programa.getValorSeleccionado());
+		tab_programa.ejecutarValorForanea(tab_funcion_programa.getValorSeleccionado());
 	  }
 	
 		public void agregarSubActividad(){
@@ -299,34 +261,7 @@ public void validaSubActividad(AjaxBehaviorEvent evt){
 	utilitario.addUpdateTabla(tab_funcion_programa, "detalle_prfup,codigo_prfup", "");
 	
 }
-/*
-public void actualizaCodigo(){
-	
-	TablaGenerica codigo_anterior=utilitario.consultar("select ide_prnfp,codigo_prfup from pre_funcion_programa where ide_prfup="+tab_funcion_programa.getValor("pre_ide_prfup"));
 
-	String nuevo_codigo="";
-	if(tab_funcion_programa.getValor("ide_prnfp").equals(par_programa)){
-		nuevo_codigo=ser_contabilidad.numeroSecuencial(par_sec_programa);
-
-	}
-	if(tab_funcion_programa.getValor("ide_prnfp").equals(par_proyecto)){
-		nuevo_codigo=codigo_anterior.getValor("codigo_prfup")+""+ser_contabilidad.numeroSecuencial(par_sec_proyecto);
-
-	}
-	if(tab_funcion_programa.getValor("ide_prnfp").equals(par_producto)){
-		nuevo_codigo=codigo_anterior.getValor("codigo_prfup")+"."+ser_contabilidad.numeroSecuencial(par_sec_producto);
-
-	}
-	if(tab_funcion_programa.getValor("ide_prnfp").equals(par_fase)){
-		nuevo_codigo=codigo_anterior.getValor("codigo_prfup")+"."+ser_contabilidad.numeroSecuencial(par_sec_fase);
-
-	}
-
-	tab_funcion_programa.setValor("codigo_prfup",nuevo_codigo);
-	utilitario.addUpdateTabla(tab_funcion_programa, "codigo_prfup", "");
-
-}
-*/
 	@Override
 	public void insertar() {
 		// TODO Auto-generated method stub
@@ -428,6 +363,7 @@ public void actualizaCodigo(){
 		guardarPantalla();
 	}
 
+   
 //reporte
 public void abrirListaReportes() {
 	// TODO Auto-generated method stub
