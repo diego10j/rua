@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -146,67 +144,24 @@ public class Utilitario extends Framework {
     public boolean validarRUC(String str_ruc) {
         boolean boo_correcto = false;
         try {
-            if (str_ruc.length() == 13) {
-                int[] int_digitos = new int[10];
-                int int_coeficiente = 10;
-                String str_valida = str_ruc.substring(10, 13);
-
-                if (str_valida.equals("001")) {
-                    for (int i = 0; i < int_digitos.length; i++) {
-                        int_digitos[i] = Integer.parseInt(str_ruc.charAt(i) + "");
-                    }
-                    int int_digito_verifica = int_digitos[9];
-                    int[] int_multiplica = {2, 1, 2, 1, 2, 1, 2, 1, 2};
-                    if (int_digitos[2] == 9) {
-                        int[] int_multiplica9 = {4, 3, 2, 7, 6, 5, 4, 3, 2};
-                        int_multiplica = int_multiplica9;
-                        int_coeficiente = 11;
-                    }
-                    if (int_digitos[2] == 6) {
-                        int[] aint_multiplica6 = {3, 2, 7, 6, 5, 4, 3, 2};
-                        int_digito_verifica = int_digitos[8];
-                        int_multiplica = aint_multiplica6;
-                        int_coeficiente = 11;
-                    }
-                    int int_suma = 0;
-                    for (int i = 0; i < (int_digitos.length - 1); i++) {
-                        try {
-                            if (int_coeficiente == 10) {
-                                int mul = int_digitos[i] * int_multiplica[i];
-                                if (mul > 9) {
-                                    String aux = mul + "";
-                                    mul = Integer.parseInt(aux.charAt(0) + "") + Integer.parseInt(aux.charAt(1) + "");
-                                }
-                                int_suma += mul;
-                            } else {
-                                int_suma += (int_digitos[i] * int_multiplica[i]);
-                            }
-                        } catch (Exception ex) {
-                        }
-                    }
-                    int int_valida = 0;
-                    if (int_coeficiente == 10) {
-                        if (int_suma % 10 == 0) {
-                            int_valida = 0;
-                        } else {
-                            int_valida = 10 - (int_suma % 10);
-                        }
-                    } else if (int_suma % 11 == 0) {
-                        int_valida = 0;
-                    } else {
-                        int_valida = 11 - (int_suma % 11);
-                    }
-
-                    if (int_valida == 0) {
-                        int_digito_verifica = 0;
-                    }
-                    if (int_valida == int_digito_verifica) {
-                        boo_correcto = true;
-                    }
-                }
-            }
+            boo_correcto = ValidarIdentificacion.validarRucPersonaNatural(str_ruc);
         } catch (Exception e) {
+            e.printStackTrace();
         }
+        if (boo_correcto == false) {
+            try {
+                boo_correcto = ValidarIdentificacion.validarRucSociedadPrivada(str_ruc);
+            } catch (Exception e) {
+            }
+
+        }
+        if (boo_correcto == false) {
+            try {
+                boo_correcto = ValidarIdentificacion.validarRucPublica(str_ruc);
+            } catch (Exception e) {
+            }
+        }
+
         return boo_correcto;
     }
 
@@ -219,40 +174,7 @@ public class Utilitario extends Framework {
     public boolean validarCedula(String str_cedula) {
         boolean boo_correcto = false;
         try {
-            if (str_cedula.length() == 10) {
-
-                if (!str_cedula.equals("2222222222")) {
-                    int lint_suma = 0;
-
-                    for (int i = 0; i < 9; i++) {
-                        int lstr_digito = Integer.parseInt(str_cedula.charAt(i) + "");
-                        if (i % 2 == 0) {
-                            lstr_digito = lstr_digito * 2;
-                            if (lstr_digito > 9) {
-                                String lstr_aux = lstr_digito + "";
-                                lstr_digito = Integer.parseInt(lstr_aux.charAt(0) + "") + Integer.parseInt(lstr_aux.charAt(1) + "");
-                            }
-                        }
-                        lint_suma += lstr_digito;
-                    }
-                    if (str_cedula.charAt(9) != '0') {
-                        String lstr_aux = lint_suma + "";
-                        int lint_superior = (Integer.parseInt(lstr_aux.charAt(0) + "") + 1) * 10;
-                        int lint_ultimo_real = lint_superior - lint_suma;
-                        int lint_ultimo_digito = Integer.parseInt(str_cedula.charAt(9) + "");
-                        if (lint_ultimo_digito == lint_ultimo_real) {
-                            boo_correcto = true;
-                        }
-                    } else //Para cedulas que terminan en 0
-                     if (lint_suma % 10 == 0) {
-                            boo_correcto = true;
-                        }
-
-                } else {
-                    boo_correcto = false;
-                }
-
-            }
+            boo_correcto = ValidarIdentificacion.validarCedula(str_cedula);
         } catch (Exception ex) {
         }
         return boo_correcto;
@@ -1044,7 +966,6 @@ public class Utilitario extends Framework {
         }
         return 1000;
     }
-
 
     /**
      * Retorna nro de dias que le corresonde a un mes
