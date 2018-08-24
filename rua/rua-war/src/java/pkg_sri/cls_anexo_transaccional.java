@@ -244,12 +244,14 @@ public class cls_anexo_transaccional {
                                         String estabRetencion1 = numero_retencion.substring(0, 3);
                                         String ptoEmiRetencion1 = numero_retencion.substring(3, 6);
                                         int secRetencion1 = Integer.parseInt(numero_retencion.substring(6, numero_retencion.length()));
-                                        detalleCompras.appendChild(crearElemento("estabRetencion1", null, estabRetencion1));
-                                        detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, ptoEmiRetencion1));
-                                        detalleCompras.appendChild(crearElemento("secRetencion1", null, secRetencion1 + ""));
-                                        detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-                                        //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS                                    
-                                        detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                                        if (secRetencion1 > 0) {
+                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, estabRetencion1));
+                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, ptoEmiRetencion1));
+                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, secRetencion1 + ""));
+                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS                                    
+                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                                        }
                                     } catch (Exception e) {
                                     }
                                 }
