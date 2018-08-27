@@ -1124,7 +1124,7 @@ public class pre_clientes extends Pantalla {
             }
             if (ide_cnccc != null) {
                 //Asigna num de asiento a documento cxc y a transaccion cxc
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa);
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa +" AND ide_cnccc IS NULL");
                 if (ide_cccfa != null) {
                     utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa set ide_cnccc=" + ide_cnccc + " WHERE ide_ccctr=" + ide_ccctr + " and ide_cnccc is null");
                 }
