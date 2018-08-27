@@ -126,8 +126,8 @@ public class pre_clasificador extends Pantalla {
       	agregarComponente(div_division);
       	
 
- 
-
+        
+        
 }
  //reporte      
         @Override  
