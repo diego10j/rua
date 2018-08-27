@@ -5,6 +5,7 @@
  */
 package paq_cuentas_x_cobrar;
 
+import componentes.AsientoContable;
 import dj.comprobantes.offline.enums.EstadoComprobanteEnum;
 import dj.comprobantes.offline.enums.TipoComprobanteEnum;
 import framework.aplicacion.TablaGenerica;
@@ -25,6 +26,7 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.panel.Panel;
 import servicios.ceo.ServicioComprobanteElectronico;
@@ -71,6 +73,8 @@ public class pre_nota_credito extends Pantalla {
     private final Dialogo dia_correo = new Dialogo();
     private final Texto tex_correo = new Texto();
 
+    private AsientoContable asc_asiento = new AsientoContable();
+
     public pre_nota_credito() {
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         bar_botones.quitarBotonsNavegacion();
@@ -102,6 +106,9 @@ public class pre_nota_credito extends Pantalla {
         //  mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotaCreditoNoContabilizadas", "ui-icon-notice"); //3
         //mep_menu.agregarItem("Notas de Crédito Anuladas", "dibujarNotaCreditoAnuladas", "ui-icon-cancel"); //4
 
+        mep_menu.agregarSubMenu("CONTABILIDAD");
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotasNoContabilizadas", "ui-icon-notice");
+
         agregarComponente(mep_menu);
 
         vpd_nota_ride.setId("vpd_nota_ride");
@@ -132,6 +139,85 @@ public class pre_nota_credito extends Pantalla {
         agregarComponente(dia_correo);
 
         dibujarNotaCredito();
+
+        asc_asiento.setId("asc_asiento");
+        asc_asiento.getBot_aceptar().setMetodo("guardar");
+        agregarComponente(asc_asiento);
+    }
+
+    public void dibujarNotasNoContabilizadas() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Asiento Contable");
+        bot_asi.setMetodo("abrirGeneraAsiento");
+        bar_menu.agregarComponente(bot_asi);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_seleccion");
+        tab_tabla1.setSql(ser_factura.getSqlNotasNoContabilizadas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla1.setCampoPrimaria("ide_cpcno");
+        tab_tabla1.getColumna("ide_cpcno").setVisible(false);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.getColumna("num_doc_mod_cpcno").setNombreVisual("DOC. MODIFICADO");
+        tab_tabla1.getColumna("fecha_trans_cpcno").setVisible(false);
+        tab_tabla1.getColumna("ide_cpeno").setVisible(false);
+        tab_tabla1.getColumna("nombre_cpeno").setFiltroContenido();
+        tab_tabla1.getColumna("fecha_emisi_cpcno").setNombreVisual("FECHA");
+        tab_tabla1.getColumna("nombre_cpeno").setVisible(true);
+        tab_tabla1.getColumna("nombre_cpeno").setNombreVisual("ESTADO");
+        tab_tabla1.getColumna("nombre_cpeno").setFiltroContenido();
+        tab_tabla1.getColumna("numero_cpcno").setNombreVisual("SECUENCIAL");
+        tab_tabla1.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla1.getColumna("nom_geper").setNombreVisual("CLIENTE");
+        tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
+        tab_tabla1.getColumna("identificac_geper").setNombreVisual("IDENTIFICACIÓN");
+        tab_tabla1.getColumna("ventas0").alinearDerecha();
+        tab_tabla1.getColumna("ventas0").setNombreVisual("VENTAS IVA 0");
+        tab_tabla1.getColumna("ventas12").alinearDerecha();
+        tab_tabla1.getColumna("ventas12").setNombreVisual("VENTAS IVA");
+        tab_tabla1.getColumna("valor_iva_cpcno").alinearDerecha();
+        tab_tabla1.getColumna("valor_iva_cpcno").setNombreVisual("IVA");
+        tab_tabla1.getColumna("total_cpcno").alinearDerecha();
+        tab_tabla1.getColumna("total_cpcno").setEstilo("font-size: 12px;font-weight: bold;");
+        tab_tabla1.getColumna("total_cpcno").setNombreVisual("TOTAL");
+        tab_tabla1.setRows(15);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setSeleccionTabla("multiple");
+
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(2, "NOTAS DE CRÉDITO NO CONTABILIZADAS", gru);
+    }
+
+    public void abrirGeneraAsiento() {
+        if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().length() > 0) {
+            asc_asiento.nuevoAsiento();
+            asc_asiento.dibujar();
+            asc_asiento.setAsientoNotasCreditoCxC(tab_tabla1.getFilasSeleccionadas());
+            asc_asiento.getBot_aceptar().setMetodo("guardar");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos una Nota de Crédito", "");
+        }
+    }
+
+    /**
+     * Abre el asiento contable seleccionado
+     *
+     * @param evt
+     */
+    public void abrirAsiento(ActionEvent evt) {
+        Link lin_ide_cnccc = (Link) evt.getComponent();
+        asc_asiento.setAsientoContable(lin_ide_cnccc.getValue().toString());
+        tab_tabla1.setFilaActual(lin_ide_cnccc.getDir());
+        asc_asiento.dibujar();
     }
 
     private void dibujarDashboard() {
@@ -250,6 +336,9 @@ public class pre_nota_credito extends Pantalla {
         if (mep_menu.getOpcion() == 1) {
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
             dibujarDashboard();
+        } else if (mep_menu.getOpcion() == 2) {
+            tab_tabla1.setSql(ser_factura.getSqlNotasNoContabilizadas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_tabla1.ejecutarSql();
         }
     }
 
@@ -716,14 +805,6 @@ public class pre_nota_credito extends Pantalla {
         }
     }
 
-    public void dibujarFacturasNoContabilizadas() {
-
-    }
-
-    public void dibujarFacturasAnuladas() {
-
-    }
-
     @Override
     public void insertar() {
         if (mep_menu.getOpcion() == 1) {
@@ -750,6 +831,13 @@ public class pre_nota_credito extends Pantalla {
                             abrirRIDE();
                         }
                     }
+                }
+            }
+        } else if (mep_menu.getOpcion() == 2) {
+            if (asc_asiento.isVisible()) {
+                asc_asiento.guardar();
+                if (asc_asiento.isVisible() == false) {
+                    dibujarNotasNoContabilizadas();
                 }
             }
         }
@@ -785,6 +873,22 @@ public class pre_nota_credito extends Pantalla {
 
     public void setCon_confirma(Confirmar con_confirma) {
         this.con_confirma = con_confirma;
+    }
+
+    public Tabla getTab_seleccion() {
+        return tab_tabla1;
+    }
+
+    public void setTab_seleccion(Tabla tab_tabla1) {
+        this.tab_tabla1 = tab_tabla1;
+    }
+
+    public AsientoContable getAsc_asiento() {
+        return asc_asiento;
+    }
+
+    public void setAsc_asiento(AsientoContable asc_asiento) {
+        this.asc_asiento = asc_asiento;
     }
 
 }
