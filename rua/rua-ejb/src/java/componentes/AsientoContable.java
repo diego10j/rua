@@ -734,6 +734,12 @@ public class AsientoContable extends Dialogo {
                 utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
 
             }
+            else if (tipo.equals(TipoAsientoEnum.NOTAS_CREDITO_CXC.getCodigo())) {
+                //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario               
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabecera_nota SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcno in(" + relacion + ") AND ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcno in(" + relacion + ") and numero_pago_ccdtr=0 AND ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cccfa in(" + relacion + ")) and ide_cnccc is null");
+            }
         }
     }
 
@@ -929,6 +935,14 @@ public class AsientoContable extends Dialogo {
         tb.ejecutarSql();
         setAsientoTipoSistema(TipoAsientoEnum.PRESTAMOS, tb);
 
+    }
+
+    //Genera un asiento contable Notas Credito CXC  (Se crea la cuenta por pagar)
+    public void setAsientoNotasCreditoCxC(String ide_cpcno) {
+        this.relacion = ide_cpcno;
+        this.tipo = TipoAsientoEnum.NOTAS_CREDITO_CXC.getCodigo();
+        
+        
     }
 
     public void setAsientoPagoFacturasCxC(String ide_cccfa) {

@@ -220,6 +220,21 @@ public class ServicioCuentasCxC extends ServicioBase {
                 + "ORDER BY secuencial_cccfa desc,ide_cccfa desc";
     }
 
+    public String getSqlNotasNoContabilizadas(String ide_ccdaf, String fechaInicio, String fechaFin) {
+
+        return "select a.ide_cpcno, numero_cpcno, a.ide_cpeno,nombre_cpeno ,fecha_emisi_cpcno,nom_geper,identificac_geper,base_grabada_cpcno as ventas12,"
+                + "base_tarifa0_cpcno+base_no_objeto_iva_cpcno as ventas0,valor_iva_cpcno,total_cpcno, "
+                + "num_doc_mod_cpcno,observacion_cpcno, fecha_trans_cpcno,a.ide_geper "
+                + "from cxp_cabecera_nota a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "inner join cxp_estado_nota c on  a.ide_cpeno=c.ide_cpeno "
+                + "where fecha_emisi_cpcno BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and ide_ccdaf=" + ide_ccdaf + " "
+                + " and ide_cnccc IS NULL "
+                + "ORDER BY numero_cpcno desc,ide_cpcno desc";
+
+    }
+
     /**
      * Retorna las facturas por cobrar de un punto de emsión en un rango de
      * fechas
@@ -1107,17 +1122,16 @@ public class ServicioCuentasCxC extends ServicioBase {
                     + "ORDER BY numero_cpcno desc,ide_cpcno desc";
         } else {
             return "select a.ide_cpcno, numero_cpcno, ide_cnccc,a.ide_cpeno,nombre_cpeno ,fecha_emisi_cpcno,nom_geper,identificac_geper,base_grabada_cpcno as ventas12,"
-                    + "base_tarifa0_cpcno+base_no_objeto_iva_cpcno as ventas0,valor_iva_cpcno,total_cpcno, "
-                    + "observacion_cccfa, fecha_trans_cpcno "
+                    + "base_tarifa0_cpcno+base_no_objeto_iva_cpcno as ventas0,valor_iva_cpcno,total_cpcno,num_doc_mod_cpcno, "
+                    + "observacion_cpcno, fecha_trans_cpcno,a.ide_geper "
                     + "from cxp_cabecera_nota a "
                     + "inner join gen_persona b on a.ide_geper=b.ide_geper "
-                    + "inner join cxc_estado_factura c on  a.ide_cpeno=c.ide_cpeno "
+                    + "inner join cxp_estado_nota c on  a.ide_cpeno=c.ide_cpeno "
                     + "where fecha_emisi_cpcno BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
                     + "and ide_ccdaf=" + ide_ccdaf + " "
                     // + " and a.IDE_SUCU =" + utilitario.getVariable("IDE_SUCU") + " "
                     + "ORDER BY numero_cpcno desc,ide_cpcno desc";
         }
-
     }
 
     public String getSqlNotasElectronicasPorEstado(String ide_ccdaf, String fechaInicio, String fechaFin, EstadoComprobanteEnum estado) {
