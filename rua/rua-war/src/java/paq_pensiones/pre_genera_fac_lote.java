@@ -172,6 +172,33 @@ public class pre_genera_fac_lote extends Pantalla {
 
     public void generarFacturas() {
         if (tab_detalle.isEmpty() == false) {
+            boolean ident_correctos = true;
+            //Valida cedulas / ruc correctos 
+            String identificacion = "";
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                identificacion = tab_detalle.getValor(i, "cedula_petlf");
+
+                if (identificacion == null) {
+                    ident_correctos = false;
+                    break;
+                }
+
+                if (identificacion.length() == 10) {
+                    //CEDULA
+                    ident_correctos = utilitario.validarCedula(identificacion);
+                } else {
+                    //RUC
+                    ident_correctos = utilitario.validarRUC(identificacion);
+                }
+                if (ident_correctos == false) {
+                    break;
+                }
+            }
+            if (ident_correctos == false) {
+                utilitario.agregarMensajeError("Error", "El número de identificación : " + identificacion + " no es válido");
+                return;
+            }
+
             TablaGenerica tab_clientes = new TablaGenerica();
             tab_clientes.setTabla("gen_persona", "ide_geper");
             tab_clientes.setCondicion("identificac_geper in (" + tab_detalle.getStringColumna("cedula_petlf") + ",'9999999999')");
