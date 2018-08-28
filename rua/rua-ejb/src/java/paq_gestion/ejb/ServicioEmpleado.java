@@ -31,7 +31,12 @@ public class ServicioEmpleado {
 		return null;
 		
 	}
-	
+	public String getCargoEmpleado() {
+        String sql = "";
+        sql = "select ide_gtcar ,detalle_gtcar from gth_cargo order by detalle_gtcar";
+        return sql;
+    }
+
 	public boolean isContratoActivo(String IDE_GEEDP){
 		TablaGenerica tab_emp_dep_par=utilitario.consultar("select * from GEN_EMPLEADOS_DEPARTAMENTO_PAR WHERE IDE_GEEDP="+IDE_GEEDP);
 		if (tab_emp_dep_par.getTotalFilas()>0){
