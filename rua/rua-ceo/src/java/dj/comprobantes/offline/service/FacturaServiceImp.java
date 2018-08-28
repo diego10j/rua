@@ -130,7 +130,7 @@ public class FacturaServiceImp implements FacturaService {
                         .append("				<impuestos> \n")
                         .append("					<impuesto> \n")
                         .append("						<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                        .append("						<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(String.valueOf(detalle.getPorcentajeiva()))).append("</codigoPorcentaje> \n")
+                        .append("						<codigoPorcentaje>").append(detalle.getCodigoPorcentaje()).append("</codigoPorcentaje> \n")
                         .append("						<tarifa>").append(detalle.getPorcentajeiva()).append("</tarifa> \n")
                         .append("						<baseImponible>").append(utilitario.getFormatoNumero(detalle.getPreciototalsinimpuesto())).append("</baseImponible> \n")
                         .append("						<valor>").append(utilitario.getFormatoNumero((detalle.getPreciototalsinimpuesto().doubleValue() * (detalle.getPorcentajeiva().doubleValue() / 100)))).append("</valor> \n")

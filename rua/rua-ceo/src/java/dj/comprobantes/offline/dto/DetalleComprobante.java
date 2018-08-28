@@ -9,6 +9,7 @@
  */
 package dj.comprobantes.offline.dto;
 
+import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -29,6 +30,7 @@ public class DetalleComprobante implements Serializable {
     private BigDecimal preciototalsinimpuesto;
     private BigDecimal porcentajeiva;
     private Comprobante comprobante;
+    private String codigoPorcentaje;
 
     public DetalleComprobante(ResultSet resultado) {
         try {
@@ -49,6 +51,21 @@ public class DetalleComprobante implements Serializable {
                 this.porcentajeiva = new BigDecimal("0.00");
             }
 
+            //CodigoPorcentaje
+            switch (resultado.getString("iva_inarti_ccdfa")) {
+                case "1":  //SI
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_12.getCodigo();
+                    break;
+                case "-1": //NO
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo();
+                    break;
+                case "0":  //NO OBJETO
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo();
+                    break;
+                default:
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_12.getCodigo();
+                    break;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,4 +143,11 @@ public class DetalleComprobante implements Serializable {
         this.porcentajeiva = porcentajeiva;
     }
 
+    public String getCodigoPorcentaje() {
+        return codigoPorcentaje;
+    }
+
+    public void setCodigoPorcentaje(String codigoPorcentaje) {
+        this.codigoPorcentaje = codigoPorcentaje;
+    }
 }

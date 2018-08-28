@@ -109,7 +109,7 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
                         .append("				<impuestos> \n")
                         .append("					<impuesto> \n")
                         .append("						<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                        .append("						<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(utilitario.getFormatoNumero(detalle.getPorcentajeiva()))).append("</codigoPorcentaje> \n")
+                        .append("						<codigoPorcentaje>").append(detalle.getCodigoPorcentaje()).append("</codigoPorcentaje> \n")
                         .append("						<tarifa>").append(utilitario.getFormatoNumero(detalle.getPorcentajeiva())).append("</tarifa> \n")
                         .append("						<baseImponible>").append(utilitario.getFormatoNumero(detalle.getPreciototalsinimpuesto())).append("</baseImponible> \n")
                         .append("						<valor>").append(utilitario.getFormatoNumero((detalle.getPreciototalsinimpuesto().doubleValue() * (detalle.getPorcentajeiva().doubleValue() / 100)))).append("</valor> \n")
