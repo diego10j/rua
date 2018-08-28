@@ -6,6 +6,7 @@
 package paq_adquisicion.ejb;
 
 import framework.aplicacion.TablaGenerica;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import persistencia.Conexion;
@@ -162,7 +163,7 @@ public class ServiciosAdquisiones {
 
     public String getCargo() {
         String sql = "";
-        sql = "SELECT IDE_ADCARG, DETALLE_ADCARG FROM ADQ_CARGO";
+        sql = "SELECT IDE_ADCARG, DETALLE_ADCARG FROM ADQ_CARGO by detalle_gtcar";
         return sql;
     }
 
@@ -477,6 +478,10 @@ public class ServiciosAdquisiones {
         sql += " and a.ide_cpcfa = "+factura+"";
         }
                 return sql;
+    }
+
+    public List getUnidad() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
