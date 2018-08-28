@@ -829,6 +829,11 @@ public class ServicioCuentasCxP extends ServicioBase {
         TablaGenerica tg = utilitario.consultar("select ide_cndfp,alterno_ats from con_deta_forma_pago where alterno_ats='" + alterno_ats + "'");
         return tg.getValor("ide_cndfp");
     }
+  public String getFormaPagolista() {
+      String sql="";
+        sql+="select ide_cndfp,nombre_cndfp from con_deta_forma_pago ";
+        return sql;
+    }
 
     public int getDiasCreditoFormaPago(String ide_cndfp) {
         int dias = 0;
