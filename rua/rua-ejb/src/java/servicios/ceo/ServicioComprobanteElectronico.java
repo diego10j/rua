@@ -75,7 +75,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 //////                + "where a.ide_cccfa=" + ide_cccfa);
 
         TablaGenerica tab_factura = utilitario.consultar("select a.ide_cccfa,secuencial_cccfa,fecha_emisi_cccfa,serie_ccdaf,base_grabada_cccfa\n"
-                + ",base_tarifa0_cccfa + base_no_objeto_iva_cccfa as base_tarifa0_cccfa,valor_iva_cccfa,total_cccfa,e.alterno_ats,identificac_geper\n"
+                + ",base_tarifa0_cccfa ,base_no_objeto_iva_cccfa,valor_iva_cccfa,total_cccfa,e.alterno_ats,identificac_geper\n"
                 + ",a.ide_geper,ide_cntdo,ide_srcom,dias_credito_cccfa,orden_compra_cccfa,correo_cccfa,nombre_vgven,f.nombre_cndfp,OBSERVACION_CCCFA,a.ide_ccdaf,descuento_cccfa,direccion_cccfa \n"
                 + "from cxc_cabece_factura a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
@@ -105,6 +105,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 tab_cabecara.modificar(tab_cabecara.getFilaActual());
             }
             double dou_base0 = 0;
+            double dou_base_no_objeto = 0;
             double dou_basegraba = 0;
             double dou_subtotal = 0;
             try {
@@ -115,7 +116,12 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 dou_basegraba = Double.parseDouble(tab_factura.getValor("base_grabada_cccfa"));
             } catch (Exception e) {
             }
-            dou_subtotal = dou_base0 + dou_basegraba;
+            try {
+                dou_base_no_objeto = Double.parseDouble(tab_factura.getValor("base_no_objeto_iva_cccfa"));
+            } catch (Exception e) {
+            }
+
+            dou_subtotal = dou_base_no_objeto + dou_base0 + dou_basegraba;
 
             tab_cabecara.setValor("ide_sresc", String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()));
             tab_cabecara.setValor("coddoc_srcom", TipoComprobanteEnum.FACTURA.getCodigo());
@@ -127,6 +133,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("fecha_sistema_srcom", utilitario.getFechaActual());
             tab_cabecara.setValor("ip_genera_srcom", utilitario.getIp());
             tab_cabecara.setValor("subtotal0_srcom", utilitario.getFormatoNumero(dou_base0));
+            tab_cabecara.setValor("subtotal_no_objeto_srcom", utilitario.getFormatoNumero(dou_base_no_objeto));
             tab_cabecara.setValor("base_grabada_srcom", utilitario.getFormatoNumero(dou_basegraba));
             tab_cabecara.setValor("subtotal_srcom", utilitario.getFormatoNumero(dou_subtotal));
             tab_cabecara.setValor("iva_srcom", tab_factura.getValor("valor_iva_cccfa"));
@@ -234,7 +241,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 //////                + "where a.ide_cpcno=" + ide_cpcno); 
 
         TablaGenerica tab_factura = utilitario.consultar("select a.ide_cpcno,numero_cpcno,fecha_emisi_cpcno,serie_ccdaf,base_grabada_cpcno\n"
-                + ",base_tarifa0_cpcno + base_no_objeto_iva_cpcno as base_tarifa0_cpcno,valor_iva_cpcno,total_cpcno,alterno_ats,identificac_geper,\n"
+                + ",base_tarifa0_cpcno,base_no_objeto_iva_cpcno,valor_iva_cpcno,total_cpcno,alterno_ats,identificac_geper,\n"
                 + "a.ide_geper,ide_cntdo,ide_srcom,nombre_cpmno,num_doc_mod_cpcno,fecha_emision_mod_cpcno,valor_mod_cpcno,correo_geper,a.ide_ccdaf,observacion_cpcno \n"
                 + "from cxp_cabecera_nota  a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
@@ -263,6 +270,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 tab_cabecara.modificar(tab_cabecara.getFilaActual());
             }
             double dou_base0 = 0;
+            double dou_base_no_objeto = 0;
             double dou_basegraba = 0;
             double dou_subtotal = 0;
             try {
@@ -273,7 +281,12 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                 dou_basegraba = Double.parseDouble(tab_factura.getValor("base_grabada_cpcno"));
             } catch (Exception e) {
             }
-            dou_subtotal = dou_base0 + dou_basegraba;
+            try {
+                dou_base_no_objeto = Double.parseDouble(tab_factura.getValor("base_no_objeto_iva_cpcno"));
+            } catch (Exception e) {
+            }
+
+            dou_subtotal = dou_base_no_objeto + dou_base0 + dou_basegraba;
 
             tab_cabecara.setValor("num_doc_mod_srcom", tab_factura.getValor("num_doc_mod_cpcno"));
             tab_cabecara.setValor("fecha_emision_mod_srcom", tab_factura.getValor("fecha_emision_mod_cpcno"));
@@ -291,6 +304,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             tab_cabecara.setValor("fecha_sistema_srcom", utilitario.getFechaActual());
             tab_cabecara.setValor("ip_genera_srcom", utilitario.getIp());
             tab_cabecara.setValor("subtotal0_srcom", utilitario.getFormatoNumero(dou_base0));
+            tab_cabecara.setValor("subtotal_no_objeto_srcom", utilitario.getFormatoNumero(dou_base_no_objeto));
             tab_cabecara.setValor("base_grabada_srcom", utilitario.getFormatoNumero(dou_basegraba));
             tab_cabecara.setValor("subtotal_srcom", utilitario.getFormatoNumero(dou_subtotal));
             tab_cabecara.setValor("iva_srcom", tab_factura.getValor("valor_iva_cpcno"));
@@ -679,3 +693,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
     }
 
 }
+
+//ALTER TABLE "public"."sri_comprobante"
+//ADD COLUMN "subtotal_no_objeto_srcom" numeric(12,2);
+

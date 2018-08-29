@@ -498,6 +498,16 @@ public class ServicioContabilidadGeneral {
         return false;
     }
 
+    public boolean existenCuentasPadre(String ide_cndpc) {
+        if (ide_cndpc != null && !ide_cndpc.isEmpty()) {
+            TablaGenerica tab_cuenta = utilitario.consultar("SELECT * FROM con_det_plan_cuen where ide_cndpc in (" + ide_cndpc + ") and nivel_cndpc='PADRE'");
+            if (tab_cuenta.isEmpty() == false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String personaMayorAnalitico(String cuenta) {
         String sql = "select ide_geper,nom_geper,identificac_geper from gen_persona where ide_geper in ( select ide_geper from con_det_conf_asie  WHERE ide_cndpc=" + cuenta + " )";
 
