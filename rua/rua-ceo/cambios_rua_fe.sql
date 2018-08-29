@@ -839,6 +839,8 @@ ALTER TABLE "public"."sri_emisor"
 ALTER COLUMN "cant_decim_sremi" TYPE int2,
 ALTER COLUMN "preciou_decim_sremi" TYPE int2;
 
+ALTER TABLE "public"."sri_comprobante"
+ADD COLUMN "subtotal_no_objeto_srcom" numeric(12,2);
 
 
 
