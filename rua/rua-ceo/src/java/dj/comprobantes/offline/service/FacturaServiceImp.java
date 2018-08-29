@@ -41,9 +41,14 @@ public class FacturaServiceImp implements FacturaService {
 
             String moneda = "DOLAR";
 
-            double dou_base_no_objeto_iva = 0; // No aplica
+            double dou_base_no_objeto_iva = 0;
             double dou_base_tarifa0 = 0;
             double dou_base_grabada = 0;
+
+            try {
+                dou_base_no_objeto_iva = comprobante.getSubtotalNoObjeto().doubleValue();
+            } catch (Exception e) {
+            }
             try {
                 dou_base_tarifa0 = comprobante.getSubtotal0().doubleValue();
             } catch (Exception e) {

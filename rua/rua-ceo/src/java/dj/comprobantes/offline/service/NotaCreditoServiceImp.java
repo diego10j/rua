@@ -38,9 +38,13 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
         if (comprobante != null) {
             String moneda = "DOLAR"; // *********!!!Poner variable
 
-            double dou_base_no_objeto_iva = 0; // No aplica para RC
+            double dou_base_no_objeto_iva = 0;
             double dou_base_tarifa0 = 0;
             double dou_base_grabada = 0;
+            try {
+                dou_base_no_objeto_iva = comprobante.getSubtotalNoObjeto().doubleValue();
+            } catch (Exception e) {
+            }
             try {
                 dou_base_tarifa0 = comprobante.getSubtotal0().doubleValue();
             } catch (Exception e) {

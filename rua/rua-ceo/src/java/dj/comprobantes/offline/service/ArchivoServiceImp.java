@@ -318,9 +318,13 @@ public class ArchivoServiceImp implements ArchivoService {
             }
 
             // Porcentaje iva
-            double dou_base_no_objeto_iva = 0; // No aplica
+            double dou_base_no_objeto_iva = 0;
             double dou_base_tarifa0 = 0;
             double dou_base_grabada = 0;
+            try {
+                dou_base_no_objeto_iva = comprobante.getSubtotalNoObjeto().doubleValue();
+            } catch (Exception e) {
+            }
             try {
                 dou_base_tarifa0 = comprobante.getSubtotal0().doubleValue();
             } catch (Exception e) {
@@ -336,7 +340,8 @@ public class ArchivoServiceImp implements ArchivoService {
             } catch (Exception e) {
             }
             parametros.put("TARIFA_IVA", TipoImpuestoIvaEnum.getPorcentaje(dou_porcentaje_iva));
-            parametros.put("IVA_0", utilitario.getFormatoNumero(dou_base_tarifa0 + dou_base_no_objeto_iva));
+            parametros.put("IVA_0", utilitario.getFormatoNumero(dou_base_tarifa0)); // +dou_base_no_objeto_iva  /29/08/2018
+            parametros.put("IVA_NO_OBJETO", utilitario.getFormatoNumero(dou_base_no_objeto_iva)); //29/08/2018
         } catch (Exception e) {
         }
         return parametros;

@@ -25,7 +25,7 @@ import java.util.List;
  * @author diego.jacome
  */
 public final class Comprobante implements Serializable {
-    
+
     private Long codigocomprobante;
     private String tipoemision;
     private String claveacceso;
@@ -56,6 +56,7 @@ public final class Comprobante implements Serializable {
     private Cliente cliente;
     private BigDecimal subtotal0;
     private BigDecimal subtotal;
+    private BigDecimal subtotalNoObjeto;  //29/08/2018
     private BigDecimal iva;
     private List<DetalleComprobante> detalle;
     private Boolean enNube = false;
@@ -67,9 +68,9 @@ public final class Comprobante implements Serializable {
     private String infoAdicional1;
     private String infoAdicional2;
     private String infoAdicional3;
-    
+
     private List<InfoAdicional> infoAdicional;
-    
+
     private String correo;
     private String direccionFactura;
 
@@ -83,10 +84,10 @@ public final class Comprobante implements Serializable {
     private String telefonos;
     private boolean sinFinesLucro = false;
     private String correoEmpresa;
-    
+
     public Comprobante() {
     }
-    
+
     public Comprobante(ResultSet resultado, ConexionCEO con) {
         try {
             this.codigocomprobante = resultado.getLong("ide_srcom");
@@ -114,14 +115,14 @@ public final class Comprobante implements Serializable {
             this.valormodificacion = resultado.getBigDecimal("valor_mod_srcom");
             this.numAutorizacion = resultado.getString("autorizacion_srcom");
             this.correo = resultado.getString("correo_srcom");
-            
+
             this.diasCredito = resultado.getInt("dias_credito_srcom");
             this.numOrdenCompra = resultado.getString("orden_compra_srcom");
-            
+
             this.infoAdicional1 = resultado.getString("infoadicional1_srcom");
             this.infoAdicional2 = resultado.getString("infoadicional2_srcom");
             this.infoAdicional3 = resultado.getString("infoadicional3_srcom");
-            
+
             if (resultado.getString("en_nube_srcom") != null) {
                 this.enNube = resultado.getBoolean("en_nube_srcom");
             }
@@ -132,7 +133,7 @@ public final class Comprobante implements Serializable {
             if (resultado.getString("identificacion_empr") != null) {
                 this.rucEmpresa = resultado.getString("identificacion_empr");
             }
-            
+
             if (resultado.getString("telefono_empr") != null) {
                 this.telefonos = resultado.getString("telefono_empr");
             }
@@ -152,6 +153,13 @@ public final class Comprobante implements Serializable {
             } else {
                 this.subtotal0 = resultado.getBigDecimal("subtotal0_srcom");
             }
+
+            if (resultado.getBigDecimal("subtotal_no_objeto_srcom") == null) {
+                this.subtotalNoObjeto = new BigDecimal("0");
+            } else {
+                this.subtotalNoObjeto = resultado.getBigDecimal("subtotal_no_objeto_srcom");
+            }
+
             if (resultado.getBigDecimal("base_grabada_srcom") == null) {
                 this.subtotal = this.totalsinimpuestos;
             } else {
@@ -163,13 +171,13 @@ public final class Comprobante implements Serializable {
                 this.iva = resultado.getBigDecimal("iva_srcom");
             }
             this.formaCobro = resultado.getString("forma_cobro_srcom");
-            
+
             this.fechaautoriza = resultado.getDate("fechaautoriza_srcom");
-            
+
             this.fechaIniTransporte = resultado.getDate("fecha_ini_trans_srcom");
             this.fechaFinTransporte = resultado.getDate("fecha_fin_trans_srcom");
             this.dirPartida = resultado.getString("direcion_partida_srcom");
-            
+
             direccionFactura = resultado.getString("direcion_partida_srcom");
 
             //Busca el cliente 
@@ -193,7 +201,7 @@ public final class Comprobante implements Serializable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
             if (this.coddoc.equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
 
                 //busca InfoAdicional
@@ -328,7 +336,7 @@ public final class Comprobante implements Serializable {
                     }
                     sentensia.close();
                     res.close();
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -336,431 +344,439 @@ public final class Comprobante implements Serializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     public Long getCodigocomprobante() {
         return codigocomprobante;
     }
-    
+
     public void setCodigocomprobante(Long codigocomprobante) {
         this.codigocomprobante = codigocomprobante;
     }
-    
+
     public String getTipoemision() {
         return tipoemision;
     }
-    
+
     public void setTipoemision(String tipoemision) {
         this.tipoemision = tipoemision;
     }
-    
+
     public String getClaveacceso() {
         return claveacceso;
     }
-    
+
     public void setClaveacceso(String claveacceso) {
         this.claveacceso = claveacceso;
     }
-    
+
     public String getCoddoc() {
         return coddoc;
     }
-    
+
     public void setCoddoc(String coddoc) {
         this.coddoc = coddoc;
     }
-    
+
     public String getEstab() {
         return estab;
     }
-    
+
     public void setEstab(String estab) {
         this.estab = estab;
     }
-    
+
     public String getPtoemi() {
         return ptoemi;
     }
-    
+
     public void setPtoemi(String ptoemi) {
         this.ptoemi = ptoemi;
     }
-    
+
     public String getSecuencial() {
         return secuencial;
     }
-    
+
     public void setSecuencial(String secuencial) {
         this.secuencial = secuencial;
     }
-    
+
     public Date getFechaemision() {
         return fechaemision;
     }
-    
+
     public void setFechaemision(Date fechaemision) {
         this.fechaemision = fechaemision;
     }
-    
+
     public String getDirestablecimiento() {
         return direstablecimiento;
     }
-    
+
     public void setDirestablecimiento(String direstablecimiento) {
         this.direstablecimiento = direstablecimiento;
     }
-    
+
     public String getGuiaremision() {
         return guiaremision;
     }
-    
+
     public void setGuiaremision(String guiaremision) {
         this.guiaremision = guiaremision;
     }
-    
+
     public BigDecimal getTotalsinimpuestos() {
         return totalsinimpuestos;
     }
-    
+
     public void setTotalsinimpuestos(BigDecimal totalsinimpuestos) {
         this.totalsinimpuestos = totalsinimpuestos;
     }
-    
+
     public BigDecimal getTotaldescuento() {
         return totaldescuento;
     }
-    
+
     public void setTotaldescuento(BigDecimal totaldescuento) {
         this.totaldescuento = totaldescuento;
     }
-    
+
     public BigDecimal getPropina() {
         return propina;
     }
-    
+
     public void setPropina(BigDecimal propina) {
         this.propina = propina;
     }
-    
+
     public BigDecimal getImportetotal() {
         return importetotal;
     }
-    
+
     public void setImportetotal(BigDecimal importetotal) {
         this.importetotal = importetotal;
     }
-    
+
     public String getMoneda() {
         return moneda;
     }
-    
+
     public void setMoneda(String moneda) {
         this.moneda = moneda;
     }
-    
+
     public String getPeriodofiscal() {
         return periodofiscal;
     }
-    
+
     public void setPeriodofiscal(String periodofiscal) {
         this.periodofiscal = periodofiscal;
     }
-    
+
     public String getRise() {
         return rise;
     }
-    
+
     public void setRise(String rise) {
         this.rise = rise;
     }
-    
+
     public String getCoddocmodificado() {
         return coddocmodificado;
     }
-    
+
     public void setCoddocmodificado(String coddocmodificado) {
         this.coddocmodificado = coddocmodificado;
     }
-    
+
     public String getNumdocmodificado() {
         return numdocmodificado;
     }
-    
+
     public void setNumdocmodificado(String numdocmodificado) {
         this.numdocmodificado = numdocmodificado;
     }
-    
+
     public Date getFechaemisiondocsustento() {
         return fechaemisiondocsustento;
     }
-    
+
     public void setFechaemisiondocsustento(Date fechaemisiondocsustento) {
         this.fechaemisiondocsustento = fechaemisiondocsustento;
     }
-    
+
     public BigDecimal getValormodificacion() {
         return valormodificacion;
     }
-    
+
     public void setValormodificacion(BigDecimal valormodificacion) {
         this.valormodificacion = valormodificacion;
     }
-    
+
     public Firma getCodigofirma() {
         return codigofirma;
     }
-    
+
     public void setCodigofirma(Firma codigofirma) {
         this.codigofirma = codigofirma;
     }
-    
+
     public String getNumAutorizacion() {
         return numAutorizacion;
     }
-    
+
     public void setNumAutorizacion(String numAutorizacion) {
         this.numAutorizacion = numAutorizacion;
     }
-    
+
     public String getOficina() {
         return oficina;
     }
-    
+
     public void setOficina(String oficina) {
         this.oficina = oficina;
     }
-    
+
     public String getRucEmpresa() {
         return rucEmpresa;
     }
-    
+
     public void setRucEmpresa(String rucEmpresa) {
         this.rucEmpresa = rucEmpresa;
     }
-    
+
     public Date getFechaautoriza() {
         return fechaautoriza;
     }
-    
+
     public void setFechaautoriza(Date fechaautoriza) {
         this.fechaautoriza = fechaautoriza;
     }
-    
+
     public Cliente getCliente() {
         return cliente;
     }
-    
+
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
+
     public BigDecimal getSubtotal0() {
         return subtotal0;
     }
-    
+
     public void setSubtotal0(BigDecimal subtotal0) {
         this.subtotal0 = subtotal0;
     }
-    
+
     public BigDecimal getSubtotal() {
         return subtotal;
     }
-    
+
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
-    
+
     public List<DetalleComprobante> getDetalle() {
         return detalle;
     }
-    
+
     public void setDetalle(List<DetalleComprobante> detalle) {
         this.detalle = detalle;
     }
-    
+
     public BigDecimal getIva() {
         return iva;
     }
-    
+
     public void setIva(BigDecimal iva) {
         this.iva = iva;
     }
-    
+
     public Integer getCodigoestado() {
         return codigoestado;
     }
-    
+
     public void setCodigoestado(Integer codigoestado) {
         this.codigoestado = codigoestado;
     }
-    
+
     public String getFormaCobro() {
         return formaCobro;
     }
-    
+
     public void setFormaCobro(String formaCobro) {
         this.formaCobro = formaCobro;
     }
-    
+
     public Boolean getEnNube() {
         return enNube;
     }
-    
+
     public void setEnNube(Boolean enNube) {
         this.enNube = enNube;
     }
-    
+
     public List<DetalleImpuesto> getImpuesto() {
         return impuesto;
     }
-    
+
     public void setImpuesto(List<DetalleImpuesto> impuesto) {
         this.impuesto = impuesto;
     }
-    
+
     public String getMotivo() {
         return motivo;
     }
-    
+
     public void setMotivo(String motivo) {
         this.motivo = motivo;
     }
-    
+
     public int getDiasCredito() {
         return diasCredito;
     }
-    
+
     public void setDiasCredito(int diasCredito) {
         this.diasCredito = diasCredito;
     }
-    
+
     public String getNumOrdenCompra() {
         return numOrdenCompra;
     }
-    
+
     public void setNumOrdenCompra(String numOrdenCompra) {
         this.numOrdenCompra = numOrdenCompra;
     }
-    
+
     public String getDirPartida() {
         return dirPartida;
     }
-    
+
     public void setDirPartida(String dirPartida) {
         this.dirPartida = dirPartida;
     }
-    
+
     public Date getFechaIniTransporte() {
         return fechaIniTransporte;
     }
-    
+
     public void setFechaIniTransporte(Date fechaIniTransporte) {
         this.fechaIniTransporte = fechaIniTransporte;
     }
-    
+
     public Date getFechaFinTransporte() {
         return fechaFinTransporte;
     }
-    
+
     public void setFechaFinTransporte(Date fechaFinTransporte) {
         this.fechaFinTransporte = fechaFinTransporte;
     }
-    
+
     public String getPlaca() {
         return placa;
     }
-    
+
     public void setPlaca(String placa) {
         this.placa = placa;
     }
-    
+
     public Destinatario getDestinatario() {
         return destinatario;
     }
-    
+
     public void setDestinatario(Destinatario destinatario) {
         this.destinatario = destinatario;
     }
-    
+
     public Long getCodigoComprobanteFactura() {
         return codigoComprobanteFactura;
     }
-    
+
     public void setCodigoComprobanteFactura(Long codigoComprobanteFactura) {
         this.codigoComprobanteFactura = codigoComprobanteFactura;
     }
-    
+
     public String getCorreo() {
         return correo;
     }
-    
+
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
+
     public String getInfoAdicional1() {
         return infoAdicional1;
     }
-    
+
     public void setInfoAdicional1(String infoAdicional1) {
         this.infoAdicional1 = infoAdicional1;
     }
-    
+
     public String getInfoAdicional2() {
         return infoAdicional2;
     }
-    
+
     public void setInfoAdicional2(String infoAdicional2) {
         this.infoAdicional2 = infoAdicional2;
     }
-    
+
     public String getInfoAdicional3() {
         return infoAdicional3;
     }
-    
+
     public void setInfoAdicional3(String infoAdicional3) {
         this.infoAdicional3 = infoAdicional3;
     }
-    
+
     public List<InfoAdicional> getInfoAdicional() {
         return infoAdicional;
     }
-    
+
     public void setInfoAdicional(List<InfoAdicional> infoAdicional) {
         this.infoAdicional = infoAdicional;
     }
-    
+
     public String getTelefonos() {
         return telefonos;
     }
-    
+
     public void setTelefonos(String telefonos) {
         this.telefonos = telefonos;
     }
-    
+
     public boolean isSinFinesLucro() {
         return sinFinesLucro;
     }
-    
+
     public void setSinFinesLucro(boolean sinFinesLucro) {
         this.sinFinesLucro = sinFinesLucro;
     }
-    
+
     public String getCorreoEmpresa() {
         return correoEmpresa;
     }
-    
+
     public void setCorreoEmpresa(String correoEmpresa) {
         this.correoEmpresa = correoEmpresa;
     }
-    
+
     public String getDireccionFactura() {
         return direccionFactura;
     }
-    
+
     public void setDireccionFactura(String direccionFactura) {
         this.direccionFactura = direccionFactura;
     }
-    
+
+    public BigDecimal getSubtotalNoObjeto() {
+        return subtotalNoObjeto;
+    }
+
+    public void setSubtotalNoObjeto(BigDecimal subtotalNoObjeto) {
+        this.subtotalNoObjeto = subtotalNoObjeto;
+    }
+
 }
