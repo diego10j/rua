@@ -313,16 +313,25 @@ public String getEliminaCedulaRua(){
     String sql="delete from pre_cedula_presupuestaria;";
     return sql;
 }
-public String getInsertaInicialGastosRua(){
+public String getInsertaInicialGastosRua(String seleccion_casas,String casa){
         String sql="update pre_cedula_presupuestaria" +
         "   set inicial_prcep= inicial" +
         "   from (" +
         "   select c.ide_prcla,sum(valor_inicial_pranu) as inicial" +
         "   from  pre_anual b, pre_programa c" +
-        "   where b.ide_prpro = c.ide_prpro" +
-        "   group by c.ide_prcla" +
+        "   where b.ide_prpro = c.ide_prpro" ;
+        if(seleccion_casas.equals("1")){
+            sql+=" and c.ide_prfup in ( select ide_prfup from pre_funcion_programa where ide_prfup in ( select "+casa+" as codigo union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+")\n" +
+                " ) union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) ) ) order by codigo_prfup )";
+        }        
+        sql +="   group by c.ide_prcla" +
         "   ) a" +
         "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla";
+        //System.out.println("insert alos inciiales "+sql);
     return sql;
 }
 public String getInsertaInicialIngresosRua(){
@@ -337,7 +346,7 @@ public String getInsertaInicialIngresosRua(){
     
     return sql;
 }
-public String getInsertaReformaGastoRua(String fecha_inicial,String fecha_final){
+public String getInsertaReformaGastoRua(String fecha_inicial,String fecha_final,String seleccion_casas,String casa){
         String sql="update pre_cedula_presupuestaria" +
         "   set reforma_prcep = (case when reformad is null then 0 else reformad end)-(case when reformah is null then 0 else reformah end)" +
         "   from(" +
@@ -345,13 +354,21 @@ public String getInsertaReformaGastoRua(String fecha_inicial,String fecha_final)
         "   from  pre_anual b, pre_programa c,pre_reforma_mes d" +
         "   where b.ide_prpro = c.ide_prpro" +
         "   and b.ide_pranu = d.ide_pranu" +
-        "   and fecha_reforma_prrem  between '"+fecha_inicial+"' and '"+fecha_final+"'" +
-        "   group by c.ide_prcla" +
+        "   and fecha_reforma_prrem  between '"+fecha_inicial+"' and '"+fecha_final+"'" ;
+        if(seleccion_casas.equals("1")){
+            sql+=" and c.ide_prfup in ( select ide_prfup from pre_funcion_programa where ide_prfup in ( select "+casa+" as codigo union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+")\n" +
+                " ) union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) ) ) order by codigo_prfup )";
+        }
+            sql+="   group by c.ide_prcla" +
         "   ) a" +
         "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla;";
     return sql;
 }
-public String getInsertaReformaIngresoRua(String fecha_inicial,String fecha_final){
+public String getInsertaReformaIngresoRua(String fecha_inicial,String fecha_final,String seleccion_casas,String casa ){
     String sql="update pre_cedula_presupuestaria " +
             "set reforma_prcep = (case when reformad is null then 0 else reformad end)-(case when reformah is null then 0 else reformah end) " +
             "from( " +
@@ -365,7 +382,7 @@ public String getInsertaReformaIngresoRua(String fecha_inicial,String fecha_fina
     
     return sql;
 }
-public String getInsertaEjecucionGastoPeriodoRua(String fecha_inicial, String fecha_final,String tipo){
+public String getInsertaEjecucionGastoPeriodoRua(String fecha_inicial, String fecha_final,String tipo,String seleccion_casas,String casa){
         String sql="update pre_cedula_presupuestaria";
         if(tipo.equals("1")){
             sql+="   set devengado_acumulado_prcep = devengado," +
@@ -379,8 +396,16 @@ public String getInsertaEjecucionGastoPeriodoRua(String fecha_inicial, String fe
         "   select c.ide_prcla,sum(devengado_prmen) as devengado,sum(comprometido_prmen) as comprometido" +
         "   from pre_mensual a, pre_anual b, pre_programa c" +
         "   where a.ide_pranu= b.ide_pranu  and b.ide_prpro = c.ide_prpro" +
-        "   and fecha_ejecucion_prmen between '"+fecha_inicial+"' and '"+fecha_final+"'" +
-        "   group by c.ide_prcla" +
+        "   and fecha_ejecucion_prmen between '"+fecha_inicial+"' and '"+fecha_final+"'" ;
+        if(seleccion_casas.equals("1")){
+            sql+=" and c.ide_prfup in ( select ide_prfup from pre_funcion_programa where ide_prfup in ( select "+casa+" as codigo union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+")\n" +
+                " ) union select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) union\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in (\n" +
+                " select ide_prfup from pre_funcion_programa where pre_ide_prfup in ( select ide_prfup from pre_funcion_programa where pre_ide_prfup in ("+casa+") ) ) ) ) order by codigo_prfup )";
+        }             
+            sql+="   group by c.ide_prcla" +
         "   ) a" +
         "   where a.ide_prcla = pre_cedula_presupuestaria.ide_prcla";
        //      System.out.println("sql devengados "+sql);
