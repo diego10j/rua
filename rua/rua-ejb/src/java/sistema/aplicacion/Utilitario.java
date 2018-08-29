@@ -146,7 +146,6 @@ public class Utilitario extends Framework {
         try {
             boo_correcto = ValidarIdentificacion.validarRucPersonaNatural(str_ruc);
         } catch (Exception e) {
-            e.printStackTrace();
         }
         if (boo_correcto == false) {
             try {
