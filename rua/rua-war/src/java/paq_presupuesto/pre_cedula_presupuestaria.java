@@ -2,7 +2,9 @@ package paq_presupuesto;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
+import framework.componentes.Check;
 import framework.componentes.Combo;
+import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
@@ -25,7 +27,8 @@ public class pre_cedula_presupuestaria extends Pantalla {
         private Combo com_sucursal = new Combo ();
         private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
-	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();        
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+        private Check che_todos_emp=new Check();        
         @EJB
 	private ServicioPresupuesto ser_presupuesto=(ServicioPresupuesto) utilitario.instanciarEJB(ServicioPresupuesto.class);
         
@@ -37,6 +40,12 @@ public class pre_cedula_presupuestaria extends Pantalla {
 		 bar_botones.getBot_insertar().setRendered(false);
                  bar_botones.getBot_guardar().setRendered(false);
 		 bar_botones.getBot_eliminar().setRendered(false);
+                 
+                 che_todos_emp.setId("che_todos_emp");
+		
+		Etiqueta eti_todos_emp=new Etiqueta("Consolidado");
+		bar_botones.agregarComponente(eti_todos_emp);
+		bar_botones.agregarComponente(che_todos_emp);
                  
                                          		///reporte
 		rep_reporte.setId("rep_reporte"); //id
@@ -61,7 +70,7 @@ public class pre_cedula_presupuestaria extends Pantalla {
                  com_tipo_cedula.setCombo(tipo_cedula);
                  com_tipo_cedula.setMetodo("seleccionaElAnio");
                  bar_botones.agregarComponente(com_tipo_cedula);                 
-                 com_sucursal.setCombo(ser_seguridad.getSQLSucursalesUsuario());
+                 com_sucursal.setCombo(ser_presupuesto.getFuncionPrograma("1"));
                  bar_botones.agregarComponente(com_sucursal);
                  
 		 tab_fuente_financiamiento.setId("tab_fuente_financiamiento");
@@ -111,9 +120,22 @@ public void importar(){
 		sel_cal.dibujar();
             }
 	}
+        String selecciono_casas="1";
+        String casa="-1";
 	public void aceptarImportar(){
 		//int int_total=ser_control.resumirAsistencia(sec_importar.getFecha1String(), sec_importar.getFecha2String());		
-		if(sel_cal.getFecha1().getYear() != sel_cal.getFecha2().getYear()){
+		
+                if(che_todos_emp.getValue()!=null && !che_todos_emp.getValue().toString().isEmpty()
+				&& che_todos_emp.getValue().toString().equalsIgnoreCase("true")){
+                    selecciono_casas="0";
+                }
+                else{
+                    selecciono_casas="1";
+                    casa =com_sucursal.getValue().toString();
+                }
+                
+                //System.out.println("valores seleccionados "+selecciono_casas+" ide casas "+casa);
+                if(sel_cal.getFecha1().getYear() != sel_cal.getFecha2().getYear()){
                     //System.out.println("entre ");
                     utilitario.agregarMensajeInfo("Debe seleccionar fechas dentro del rengo de un mismo año", "");
 			return;
@@ -121,10 +143,10 @@ public void importar(){
                 else if(com_tipo_cedula.getValue().toString().equals("0")){
                     utilitario.getConexion().ejecutarSql(ser_presupuesto.getEliminaCedulaRua());
                     utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaCedulaRua(com_tipo_cedula.getValue().toString(), sel_cal.getFecha1String(), sel_cal.getFecha2String()));
-                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaInicialGastosRua());
-                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaReformaGastoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String()));
+                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaInicialGastosRua(selecciono_casas,casa));
+                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaReformaGastoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String(),selecciono_casas,casa));
                     if(sel_cal.getFecha1().getMonth() == sel_cal.getFecha2().getMonth()){ //mismo mes
-                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String(), "2"));
+                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String(), "2",selecciono_casas,casa));
                     }
                     else {
                         TablaGenerica tab_meses=utilitario.consultar("select 1 as codigo,extract (year from cast('"+sel_cal.getFecha2String()+"' as date))||'' as anio,extract (month from cast('"+sel_cal.getFecha1String()+"'as date))||'' as mes_inicial,extract (month from cast('"+sel_cal.getFecha2String()+"'as date))||'' as mes_final");
@@ -132,8 +154,8 @@ public void importar(){
                         int nuro_dias=utilitario.getNrodias(mes, Integer.parseInt(tab_meses.getValor("anio")));
                         String fecha_final_acumulado =tab_meses.getValor("anio")+"-"+mes+"-"+nuro_dias;
                         String fecha_inicial_acumulado=tab_meses.getValor("anio")+"-"+tab_meses.getValor("mes_final")+"-01";
-                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(fecha_inicial_acumulado, sel_cal.getFecha2String(), "2"));
-                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(sel_cal.getFecha1String(), fecha_final_acumulado, "1"));
+                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(fecha_inicial_acumulado, sel_cal.getFecha2String(), "2",selecciono_casas,casa));
+                       utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionGastoPeriodoRua(sel_cal.getFecha1String(), fecha_final_acumulado, "1",selecciono_casas,casa));
                         
                     }
                     TablaGenerica tab_nivel =utilitario.consultar("select 1 as codigo,max(nivel_prcla) as nivel from pre_clasificador where tipo_prcla ="+com_tipo_cedula.getValue().toString());
@@ -148,7 +170,7 @@ public void importar(){
                     utilitario.getConexion().ejecutarSql(ser_presupuesto.getEliminaCedulaRua());
                     utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaCedulaRua(com_tipo_cedula.getValue().toString(), sel_cal.getFecha1String(), sel_cal.getFecha2String()));
                     utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaInicialIngresosRua());
-                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaReformaIngresoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String()));
+                    utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaReformaIngresoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String(),selecciono_casas,casa));
                     if(sel_cal.getFecha1().getMonth() == sel_cal.getFecha2().getMonth()){ //mismo mes
                        utilitario.getConexion().ejecutarSql(ser_presupuesto.getInsertaEjecucionIngresoPeriodoRua(sel_cal.getFecha1String(), sel_cal.getFecha2String(), "2"));
                     }
