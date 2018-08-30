@@ -27,6 +27,7 @@ import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.component.spinner.Spinner;
 import pkg_sri.cls_anexo_transaccional;
+import pkg_sri.cls_anexo_transaccional_electronicos;
 import pkg_sri.cls_formulario103;
 import pkg_sri.cls_formulario104;
 import sistema.aplicacion.Pantalla;
@@ -365,10 +366,14 @@ public class pre_formularios extends Pantalla {
         Object fila4[] = {
             "4", "Retenciones en Importaciones"
         };
+        Object fila5[] = {
+            "5", "ATS Comprobantes Electrónicos"
+        };
         lista.add(fila1);
         lista.add(fila2);
         lista.add(fila3);
         lista.add(fila4);
+        lista.add(fila5);
 
         rad_opciones.setRadio(lista);
         rad_opciones.setVertical();
@@ -392,11 +397,20 @@ public class pre_formularios extends Pantalla {
     }
 
     public void aceptarATS() {
-        cls_anexo_transaccional anexo = new cls_anexo_transaccional();
-        anexo.setOpcionAnexo((String) rad_opciones.getValue());
-        anexo.AnexoTransaccional(spi_anio.getValue() + "", com_mes.getValue() + "");
-        //  utilitario.crearArchivo(anexo.getPath(), anexo.getNombre(), "text/xml");
-        utilitario.crearArchivo(anexo.getPath());
+        if (!rad_opciones.getValue().equals("5")) {
+            cls_anexo_transaccional anexo = new cls_anexo_transaccional();
+            anexo.setOpcionAnexo((String) rad_opciones.getValue());
+            anexo.AnexoTransaccional(spi_anio.getValue() + "", com_mes.getValue() + "");
+            //  utilitario.crearArchivo(anexo.getPath(), anexo.getNombre(), "text/xml");
+            utilitario.crearArchivo(anexo.getPath());
+        } else {
+            cls_anexo_transaccional_electronicos anexo = new cls_anexo_transaccional_electronicos();
+            anexo.setOpcionAnexo("1");
+            anexo.AnexoTransaccional(spi_anio.getValue() + "", com_mes.getValue() + "");
+            //  utilitario.crearArchivo(anexo.getPath(), anexo.getNombre(), "text/xml");
+            utilitario.crearArchivo(anexo.getPath());
+        }
+
     }
 
     public void dibujarRDEP() {
