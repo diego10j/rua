@@ -1700,13 +1700,23 @@ public class DocumentoCxP extends Dialogo {
     
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
             tab_cab_documento.setValor("numero_cpcfa", "");
             utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
         }
+        
+        // RUC Y CEDULA
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_reembolso"))) {
+            tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO'");
+            tab_cab_documento.setValor("ide_geper", null);
+            tab_cab_documento.setValor("autorizacio_cpcfa", "");
+            tab_cab_documento.setValor("numero_cpcfa", "");
+            utilitario.addUpdate("tab_documenoCxP:0:tab_cab_documento:AUTORIZACIO_CPCFA_7,tab_documenoCxP:0:tab_cab_documento:NUMERO_CPCFA_6,tab_documenoCxP:0:tab_cab_documento:IDE_GEPER_4");
+        }
+        
         // diferencte de ruc
         if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_liquidacion_compra"))) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid!=" + parametros.get("p_gen_tipo_iden_ruc"));

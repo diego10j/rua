@@ -500,6 +500,8 @@ public class ServicioContabilidadGeneral {
 
     public boolean existenCuentasPadre(String ide_cndpc) {
         if (ide_cndpc != null && !ide_cndpc.isEmpty()) {
+            ide_cndpc = ide_cndpc.replace("'null'", "-1");
+            ide_cndpc = ide_cndpc.replace("null", "-1");
             TablaGenerica tab_cuenta = utilitario.consultar("SELECT * FROM con_det_plan_cuen where ide_cndpc in (" + ide_cndpc + ") and nivel_cndpc='PADRE'");
             if (tab_cuenta.isEmpty() == false) {
                 return true;
