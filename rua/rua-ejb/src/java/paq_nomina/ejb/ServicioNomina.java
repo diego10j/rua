@@ -1086,7 +1086,10 @@ public class ServicioNomina {
 			if (!str_ide_gepro.isEmpty()){
 				str_ide_gepro=str_ide_gepro.substring(0, str_ide_gepro.length()-1);
 			}
-//			System.out.println("fecha ini "+fecha_inicial+" fecha fin "+fecha_final+" ide_gepro resultado "+str_ide_gepro);
+                        else {
+                            str_ide_gepro="-1";
+                        }
+			//System.out.println("fecha ini "+fecha_inicial+" fecha fin "+fecha_final+" ide_gepro resultado "+str_ide_gepro);
 			return str_ide_gepro;
 		}
 
@@ -1103,11 +1106,13 @@ public class ServicioNomina {
 
 			String str_sql="";
 
+		//System.out.println("envio fechas  "+fecha_ini+" fecha final "+fecha_fin);
 
 			String ide_gepro=getPeriodosRol(fecha_ini, fecha_fin);
-		//System.out.println("ide_geproide_geproide_gepro "+ide_gepro);
+		
 
-			if (ide_gepro!=null){
+			if (ide_gepro!=null || !ide_gepro.isEmpty() || ide_gepro!="" ||!ide_gepro.equals("")|| !ide_gepro.equals(null)){
+                            //System.out.println("entre a pesar de no tener prriodo rol "+ide_gepro);
 				try{
 					str_sql="select "+IDE_GEEDP+" as ide_geedp,sum (sumatoria_rubro) as sumatoria_rubro from (select ide_geedp,SUM(VALOR_NRDRO) as sumatoria_rubro from NRH_DETALLE_ROL DRO " +
 							"inner join NRH_ROL rol on ROL.IDE_NRROL=DRO.IDE_NRROL " +
@@ -1408,7 +1413,7 @@ public class ServicioNomina {
 		String fecha_ini_dec=getFechaInicioDecimoTercerSueldo(str_ide_nrdtn,ide_gereg);
 		String fecha_fin_dec=getFechaFinalDecimoTercerSueldo(str_ide_nrdtn,ide_gereg);
 
-
+                //System.out.println("calculo decimo tercer sueldo "+fecha_ini_dec+" fecha final "+fecha_fin_dec);    
 		dou_decimo_tercer_sueldo=getSumatoriaRubro1(IDE_GEEDP, utilitario.getVariable("p_nrh_rubro_proviciones_d3"), fecha_ini_dec, fecha_fin_dec);
 
 		if (dou_decimo_tercer_sueldo>dou_remuneracion_base){
@@ -1479,6 +1484,8 @@ public class ServicioNomina {
 		String ide_gereg=serv_empleado.getRegionEmpleado(getEmpleadoDepartamento(IDE_GEEDP).getValor("IDE_GTEMP")).getValor("IDE_GEREG");
 		String fecha_ini_dec=getFechaInicioDecimoCuartoSueldo(str_ide_nrdtn,ide_gereg);
 		String fecha_fin_dec=getFechaFinalDecimoCuartoSueldo(str_ide_nrdtn,ide_gereg);
+              System.out.println("calculo valor_decimo_cuarto_sueldo "+fecha_ini_dec+" fecha final "+fecha_fin_dec);    
+
 		valor_decimo_cuarto_sueldo=getSumatoriaRubro1(IDE_GEEDP, utilitario.getVariable("p_nrh_rubro_proviciones_d4"), fecha_ini_dec, fecha_fin_dec);
 
 		if (valor_decimo_cuarto_sueldo>SBUV){
@@ -1943,6 +1950,8 @@ public class ServicioNomina {
 				double dou_aporte_personal_del_mes=Double.parseDouble(tab_aportaciones_empleados.getValor(i, "VALOR_NRDRO"));
 
 				// obtengo el total de aportes acumulado
+                                             // System.out.println("calculo dou_tot_aportes_acumul "+str_fecha_ini_calculo+" fecha final "+str_fecha_fin_calculo);    
+
 				double dou_tot_aportes_acumul=getSumatoriaRubro1(ide_geedp,utilitario.getVariable("p_nrh_rubro_aportes_personales"), str_fecha_ini_calculo,str_fecha_fin_calculo);
 
 				// calculo de proyeccion de aportes 
@@ -2086,6 +2095,8 @@ public class ServicioNomina {
 				// 9.- CALCULO DEL IMPUESTO MENSUAL
 
 				// obtengo el total retenido acumulado
+                                  //System.out.println("calculo dou_tot_aportes_acumul "+str_fecha_ini_calculo+" fecha final "+str_fecha_fin_calculo);    
+                                  
 				double dou_tot_ret_acum=getSumatoriaRubro1(ide_geedp,utilitario.getVariable("p_nrh_rubro_impuesto_renta_mensual"), str_fecha_ini_calculo,str_fecha_fin_calculo); 				
 				
 				// calcula el valor de rentencion mensual
