@@ -248,8 +248,12 @@ public class ServicioPensiones extends ServicioBase {
         return sql;
     }
 
-    public String getListaAlumnos() {
-        return "select ide_geper, identificac_geper, nom_geper  from gen_persona  where ide_vgtcl = 1 order by nom_geper ";
+    public String getListaAlumnos(String condicion,String tipo_persona) {
+        String sql="select ide_geper, identificac_geper, nom_geper  from gen_persona  ";
+                if(condicion.equals("1")){
+                    sql +="where ide_vgtcl in("+tipo_persona+") order by nom_geper ";
+                }
+        return sql;
     }
 
     public String getPeriodosEstudiantes(String codigo) {
