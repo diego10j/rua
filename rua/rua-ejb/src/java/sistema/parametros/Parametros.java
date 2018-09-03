@@ -89,7 +89,10 @@ public class Parametros {
          */
         lis_parametros.add(new Parametro("4", "p_act_tipo_activo_fijo", "Indica el tipo de activo fijo ", "0", "inv_tipo_producto", "ide_intpr", "nombre_intpr"));
         lis_parametros.add(new Parametro("4", "p_act_estado_dado_de_baja", "Indica el estado dado de baja de un activo ", "4", "act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf"));
-
+        lis_parametros.add(new Parametro("4", "p_act_area_ubicacion", "Indica el area de ubicacion de un activo ", "4", "act_ubicacion_activo", "ide_acuba", "nombre_acuba"));
+        lis_parametros.add(new Parametro("4", "p_act_custodio", "Indica la persona que lleva el custodio ", "4", "gen_persona", "ide_geper", "nom_geper"));
+        lis_parametros.add(new Parametro("4", "p_act_casa", "Indica la casa a la cual pertenece ", "4", "gen_casa", "ide_gecas", "nombre_gecas"));
+        lis_parametros.add(new Parametro("4", "p_act_obra", "Indica la obra a la cual pertenece ", "1", "gen_obra", "ide_geobr", "nombre_geobr"));
         /*
          * COMPRAS MODULO =5
          *
