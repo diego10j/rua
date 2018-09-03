@@ -479,10 +479,11 @@ public class ServiciosAdquisiones {
         }
                 return sql;
     }
-
-    public List getUnidad() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public String getUnidad() {
+        String sql = "";
+        sql = "select ide_inuni ,nombre_inuni from inv_unidad order by nombre_inuni";
+        return sql;
+          }
     
     
 }
