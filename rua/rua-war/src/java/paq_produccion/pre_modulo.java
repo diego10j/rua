@@ -48,7 +48,7 @@ public class pre_modulo extends Pantalla  {
         tab_modulo_secuencial.setId("tab_modulo_secuencial");
         tab_modulo_secuencial.setTabla("gen_modulo_secuencial","ide_gemos",2);
         tab_modulo_secuencial.getColumna("ide_geani").setCombo(ser_contabilidad.getAnio("true", ""));
-        tab_modulo_secuencial.setHeader("MODULU SECUENCIAL");
+        tab_modulo_secuencial.setHeader("MODULO SECUENCIAL");
         tab_modulo_secuencial.dibujar();
         
         PanelTabla pat_modulo_secuencial = new PanelTabla();
