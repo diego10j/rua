@@ -71,7 +71,9 @@ public class pre_comp_inv_activos extends Pantalla{
         tab_tabla.getColumna("fo_acafi").setVisible(false);
         tab_tabla.getColumna("modelo_acafi").setVisible(false);
         tab_tabla.getColumna("ide_inmar").setVisible(false);
-        tab_tabla.getColumna("ide_acuba").setVisible(false);
+        tab_tabla.getColumna("ide_acuba").setVisible(true);
+        tab_tabla.getColumna("ide_acuba").setCombo("act_ubicacion_activo", "ide_acuba", "nombre_acuba", "");
+        tab_tabla.getColumna("ide_acuba").setLectura(true);
         tab_tabla.getColumna("descripcion1_acafi").setVisible(false);
         tab_tabla.getColumna("cuenta_ant_sistema").setVisible(false);
         tab_tabla.getColumna("color_acafi").setVisible(false);
@@ -80,9 +82,15 @@ public class pre_comp_inv_activos extends Pantalla{
         tab_tabla.getColumna("fecha_fabrica_acafi").setVisible(false);
         tab_tabla.getColumna("fd_acafi").setVisible(false);
         tab_tabla.getColumna("codigo_barras_acafi").setVisible(false);
-        tab_tabla.getColumna("ide_gecas").setVisible(false);
-        tab_tabla.getColumna("ide_geobr").setVisible(false);
-        tab_tabla.getColumna("ide_accla").setVisible(false);
+        tab_tabla.getColumna("ide_gecas").setVisible(true);
+        tab_tabla.getColumna("ide_gecas").setLectura(true);
+        tab_tabla.getColumna("ide_gecas").setCombo("gen_casa", "ide_gecas", "nombre_gecas", "");
+        tab_tabla.getColumna("ide_geobr").setVisible(true);
+        tab_tabla.getColumna("ide_geobr").setLectura(true);
+        tab_tabla.getColumna("ide_geobr").setCombo("gen_obra", "ide_geobr", "nombre_geobr", "");
+        tab_tabla.getColumna("ide_accla").setVisible(true);
+        tab_tabla.getColumna("ide_accla").setLectura(true);
+        tab_tabla.getColumna("ide_accla").setCombo("act_clase_activo", "ide_accla", "nombre_accla", "");
         tab_tabla.getColumna("act_ide_acafi").setVisible(false);
         tab_tabla.getColumna("sec_masivo_acafi").setVisible(false);
         tab_tabla.getColumna("cod_anterior_acafi").setVisible(false); 
@@ -145,11 +153,14 @@ public class pre_comp_inv_activos extends Pantalla{
         int numero = 0;
         int cantidad = 1;
         String productos = sel_detalle_compra.getSeleccionados();
-        TablaGenerica tab_pro_fac = utilitario.consultar("select a.ide_cpcfa, b.ide_inarti, ide_geper, total_cpcfa, cantidad_cpdfa, observacion_cpdfa, a.fecha_emisi_cpcfa\n" +
+        TablaGenerica tab_pro_fac = utilitario.consultar("select a.ide_cpcfa, b.ide_inarti, ide_geper,ide_accla, total_cpcfa, cantidad_cpdfa, observacion_cpdfa, a.fecha_emisi_cpcfa\n" +
                                                          "from cxp_cabece_factur a\n" +
                                                          "left join cxp_detall_factur b on a.ide_cpcfa = b.ide_cpcfa\n" +
+                                                         "left join (select a.ide_accla, a.ide_inarti, nombre_inarti, b.nombre_accla from ACT_CLASE_ARTICULO a\n" +
+                                                         "left join ACT_CLASE_ACTIVO b on a.ide_accla = b.ide_accla\n" +
+                                                         "left join inv_articulo c on a.ide_inarti = c.ide_inarti) c on b.ide_inarti = c.ide_inarti\n" +
                                                          "where b.ide_cpdfa in ("+productos+")");
-        System.out.println("pro "+productos);
+        //System.out.println("pro "+productos);
         TablaGenerica pro_gen = utilitario.consultar("select ide_cpdfa, cast(cantidad_cpdfa as integer)  from cxp_detall_factur where ide_cpdfa in ("+productos+")");
         
         numero = Integer.parseInt(pro_gen.getValor("cantidad_cpdfa"));
@@ -164,6 +175,12 @@ public class pre_comp_inv_activos extends Pantalla{
                 tab_tabla.setValor("ide_cpcfa",tab_pro_fac.getValor(i, "ide_cpcfa"));
                 tab_tabla.setValor("observacion_acafi",tab_pro_fac.getValor(i, "observacion_cpdfa"));
                 tab_tabla.setValor("fecha_compra_acafi",tab_pro_fac.getValor(i, "fecha_emisi_cpcfa"));
+                tab_tabla.setValor("ide_acuba",utilitario.getVariable("p_act_area_ubicacion"));
+                tab_tabla.setValor("ide_gecas",utilitario.getVariable("p_act_casa"));
+                tab_tabla.setValor("ide_geobr",utilitario.getVariable("p_act_obra"));
+                tab_tabla.setValor("ide_accla",tab_pro_fac.getValor(i, "ide_accla"));
+                
+                
               //  utilitario.getConexion().ejecutarSql("update cxp_detall_factur set recibido_compra_cpdfa = true where ide_cpdfa in ("+productos+")");
             }
          }
