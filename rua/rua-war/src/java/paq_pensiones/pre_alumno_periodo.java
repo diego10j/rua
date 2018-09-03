@@ -7,7 +7,6 @@ package paq_pensiones;
 
 /**
  *
- * @author ANDRES REDROBAN
  */
 
 import framework.aplicacion.TablaGenerica;
@@ -15,12 +14,14 @@ import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.pensiones.ServicioPensiones;
 
 import sistema.aplicacion.Pantalla;
@@ -32,11 +33,42 @@ public class pre_alumno_periodo extends Pantalla{
     private Combo com_paralelos = new Combo();
     private Combo com_especialidad = new Combo();
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
+    private SeleccionTabla sel_tab_representante = new SeleccionTabla();
+    String titulo_alumno="";
     
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
+    @EJB
+    private ServiciosAdquisiones ser_adqusiiones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     
     public pre_alumno_periodo(){
+        
+        com_periodo_academico.setId("cmb_periodo_academico");
+        com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
+
+        com_cursos.setId("com_cursos");
+        com_cursos.setCombo(ser_pensiones.getCursos("true,false"));
+        
+       
+        com_paralelos.setId("com_paralelos");
+        com_paralelos.setCombo(ser_pensiones.getParalelos("true,false"));
+            
+        com_especialidad.setId("com_especialidad");
+        com_especialidad.setCombo(ser_pensiones.getEspecialidad("true"));
+        
+        Grid grup_titulo = new Grid();
+        grup_titulo.setColumns(8);
+        grup_titulo.setWidth("100%");
+        grup_titulo.setId("grup_titulo");
+        grup_titulo.getChildren().add(new Etiqueta("Periódo Académico"));
+        grup_titulo.getChildren().add(com_periodo_academico);
+        grup_titulo.getChildren().add(new Etiqueta("Curso"));
+        grup_titulo.getChildren().add(com_cursos);
+        grup_titulo.getChildren().add(new Etiqueta("Paralelo"));
+        grup_titulo.getChildren().add(com_paralelos);    
+        grup_titulo.getChildren().add(new Etiqueta("Especialidad"));
+        grup_titulo.getChildren().add(com_especialidad);
+        
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("REC_ALUMNO_PERIODO", "IDE_RECALP", 1);
         tab_tabla1.getColumna("ide_repea").setVisible(false);
@@ -44,8 +76,10 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_recur").setVisible(false);
         tab_tabla1.getColumna("ide_reces").setVisible(false);
         tab_tabla1.getColumna("ide_geper").setFiltro(true);
-        tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos());
+        tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
+        tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla1.getColumna("gen_ide_geper").setAutoCompletar();
         tab_tabla1.setCondicion("IDE_RECALP = -1");
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
@@ -54,61 +88,44 @@ public class pre_alumno_periodo extends Pantalla{
         Division div_tabla1 = new Division();
         div_tabla1.setId("div_tabla1");
         div_tabla1.dividir1(pat_tabla1);
-        agregarComponente(div_tabla1);
         
-        com_periodo_academico.setId("cmb_periodo_academico");
-        com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
-        com_periodo_academico.setMetodo("filtroComboPeriodoAcademnico");
         
-        bar_botones.agregarComponente(new Etiqueta("Periodo Academico: "));
-        bar_botones.agregarComponente(com_periodo_academico);
+        Division div_padre = new Division();
+        div_padre.dividir2(grup_titulo, div_tabla1, "8%","H");
+        agregarComponente(div_padre);
+
+        Boton bot_filtro_consulta = new Boton();
+        bot_filtro_consulta.setIcon("ui-icon-search");
+        bot_filtro_consulta.setValue("CONSULTAR ALUMNOS");
+        bot_filtro_consulta.setMetodo("filtroAlumno");
+        bar_botones.agregarBoton(bot_filtro_consulta);
         
-        com_cursos.setId("com_cursos");
-        com_cursos.setCombo(ser_pensiones.getCursos("true,false"));
-        com_cursos.setMetodo("filtroComboCursos");
-        
-        bar_botones.agregarComponente(new Etiqueta("Curso: "));
-        bar_botones.agregarComponente(com_cursos);
-        
-        com_paralelos.setId("com_paralelos");
-        com_paralelos.setCombo(ser_pensiones.getParalelos("true,false"));
-        com_paralelos.setMetodo("filtroComboParalelos");
-        
-        bar_botones.agregarComponente(new Etiqueta("Paralelo: "));
-        bar_botones.agregarComponente(com_paralelos);
-        
-        com_especialidad.setId("com_especialidad");
-        com_especialidad.setCombo(ser_pensiones.getEspecialidad("true"));
-        com_especialidad.setMetodo("filtroComboEspecialidad");
-        
-        bar_botones.agregarComponente(new Etiqueta("Especialidad: "));
-        bar_botones.agregarComponente(com_especialidad);
-        
-        Boton bot_filtro_alumno = new Boton();
-        bot_filtro_alumno.setIcon("ui-icon-search");
-        bot_filtro_alumno.setValue("Filtrar");
-        bot_filtro_alumno.setMetodo("filtroAlumno");
-        agregarComponente(bot_filtro_alumno);
+
    //     bar_botones.agregarBoton(bot_filtro_alumno);
         
         Boton bot_imp_alumno = new Boton();
-        bot_imp_alumno.setIcon("ui-icon-search");
-        bot_imp_alumno.setValue("Importar Alumno");
+        bot_imp_alumno.setIcon("ui-icon-person");
+        bot_imp_alumno.setValue("IMPORTAR ALUMNOS");
         bot_imp_alumno.setMetodo("abrirDialogoAlumno");
-        agregarComponente(bot_imp_alumno);
         bar_botones.agregarBoton(bot_imp_alumno);
         
-        Boton bot_bus_alumno = new Boton();
-        bot_bus_alumno.setIcon("ui-icon-search");
-        bot_bus_alumno.setValue("Filtrar Alumno");
-        bot_bus_alumno.setMetodo("filtroAlumno");
-        agregarComponente(bot_bus_alumno);
-    //    bar_botones.agregarBoton(bot_bus_alumno);
+        Boton bot_imp_repre = new Boton();
+        bot_imp_repre.setIcon("ui-icon-person");
+        bot_imp_repre.setValue("AGREGAR REPRESENTANTE");
+        bot_imp_repre.setMetodo("abrirDialogoRepresentante");
+        bar_botones.agregarBoton(bot_imp_repre);
+        
+        Boton bot_emision = new Boton();
+        bot_emision.setIcon("ui-icon-person");
+        bot_emision.setValue("REALIZAR LA EMISION DE PENSIONES");
+        //bot_emision.setMetodo("abrirDialogoRepresentante");
+        bar_botones.agregarBoton(bot_emision);
+        
         
         
         sel_tab_alumno.setId("sel_tab_alumno");
         sel_tab_alumno.setTitle("ALUMNOS");
-        sel_tab_alumno.setSeleccionTabla(ser_pensiones.getListaAlumnos(), "ide_geper");
+        sel_tab_alumno.setSeleccionTabla(ser_pensiones.getListaAlumnos("1","1"), "ide_geper");
         sel_tab_alumno.setWidth("80%");
         sel_tab_alumno.setHeight("70%");
         sel_tab_alumno.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
@@ -116,35 +133,43 @@ public class pre_alumno_periodo extends Pantalla{
         sel_tab_alumno.getBot_aceptar().setMetodo("aceptarAlumno");
         agregarComponente(sel_tab_alumno);
         
+        sel_tab_representante.setId("sel_tab_representante");
+        sel_tab_representante.setTitle("REPRSENTANTE DEL ALUMNO: "+titulo_alumno);
+        sel_tab_representante.setSeleccionTabla(ser_pensiones.getListaAlumnos("1","0"), "ide_geper");
+        sel_tab_representante.setWidth("80%");
+        sel_tab_representante.setHeight("70%");
+        sel_tab_representante.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
+        sel_tab_representante.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
+        sel_tab_representante.getBot_aceptar().setMetodo("aceptarRepresentante");
+        agregarComponente(sel_tab_representante);
+        
     }
     public void filtroAlumno(){
-        String cm_per_aca = com_periodo_academico.getValue().toString();
-        String cm_cur = com_cursos.getValue().toString();
-        String cm_par = com_paralelos.getValue().toString();
-        String cm_esp = com_especialidad.getValue().toString();
+        String cm_per_aca = "";
+        String cm_cur = com_cursos.getValue()+"";
+        String cm_par = com_paralelos.getValue()+"";
+        String cm_esp = com_especialidad.getValue()+"";
         
-        if (com_periodo_academico.getValue().toString() != null){
-            tab_tabla1.setCondicion("ide_repea="+com_periodo_academico.getValue().toString());
-            tab_tabla1.ejecutarSql();
-            utilitario.addUpdate("tab_tabla1");
+        String condicion="";
+        if(com_periodo_academico.getValue()==null){
+                       utilitario.agregarMensajeError("Seleccione Registro", "Para consultar listado de alumnos debe seleccionar un periodo academico");
+
         }
-        else if (com_cursos.getValue().toString() != null){
-            tab_tabla1.setCondicion("ide_recur="+com_cursos.getValue().toString());
-            tab_tabla1.ejecutarSql();
-            utilitario.addUpdate("tab_tabla1");
-        }
-        else if (com_paralelos.getValue().toString() != null){
-            tab_tabla1.setCondicion("ide_repar="+com_paralelos.getValue().toString());
-            tab_tabla1.ejecutarSql();
-            utilitario.addUpdate("tab_tabla1");
-        }
-        else if (com_especialidad.getValue().toString() != null){
-            tab_tabla1.setCondicion("ide_reces="+com_especialidad.getValue().toString());
+        else {
+         condicion+=" ide_repea= "+com_periodo_academico.getValue();
+           if(!cm_cur.equals("null")) {
+               condicion+=" and ide_recur= "+cm_cur;
+           }
+           if(!cm_par.equals("null")) {
+               condicion+=" and ide_repar= "+cm_par;
+           }
+           if(!cm_esp.equals("null")) {
+               condicion+=" and ide_reces= "+cm_esp;
+           }
+           System.out.println("condicion "+condicion);
+           tab_tabla1.setCondicion(condicion);
            tab_tabla1.ejecutarSql();
            utilitario.addUpdate("tab_tabla1");
-    }
-        else {
-            tab_tabla1.limpiar();
         }
     }
     
@@ -174,6 +199,15 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.ejecutarSql();
         utilitario.addUpdate("tab_tabla1");
     }
+    public void abrirDialogoRepresentante(){
+        if(tab_tabla1.getTotalFilas()>0){
+        sel_tab_alumno.dibujar();
+        }
+        else {
+            utilitario.agregarMensajeError("No existen registros", "No existen registros de alumnos para asignar un representante");
+        }
+        
+    }    
     public void abrirDialogoAlumno(){
         if (com_periodo_academico.getValue() == null){
             utilitario.agregarMensajeError("No se puede Continuar", "Debe seleccionar el Periodo Académico");       
@@ -189,8 +223,16 @@ public class pre_alumno_periodo extends Pantalla{
                     }
         
         else{
+        TablaGenerica tab_consulta = utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_geper"));
+        titulo_alumno=tab_consulta.getValor("nom_geper");
         sel_tab_alumno.dibujar();
         }
+    }
+    public void aceptarRepresentante(){
+        String str_repre = sel_tab_representante.getValorSeleccionado();       
+            tab_tabla1.setValor("gen_ide_geper",str_repre);        
+             sel_tab_representante.cerrar();
+	     utilitario.addUpdate("tab_tabla1");
     }
     public void aceptarAlumno(){
         String str_alum = sel_tab_alumno.getSeleccionados();
@@ -212,7 +254,6 @@ public class pre_alumno_periodo extends Pantalla{
              sel_tab_alumno.cerrar();
 	     utilitario.addUpdate("tab_tabla1");
     }
-    
     @Override
     public void insertar() {
         if (com_periodo_academico.getValue() == null){
@@ -308,6 +349,14 @@ public class pre_alumno_periodo extends Pantalla{
 
     public void setSer_pensiones(ServicioPensiones ser_pensiones) {
         this.ser_pensiones = ser_pensiones;
+    }
+
+    public SeleccionTabla getSel_tab_representante() {
+        return sel_tab_representante;
+    }
+
+    public void setSel_tab_representante(SeleccionTabla sel_tab_representante) {
+        this.sel_tab_representante = sel_tab_representante;
     }
 
 
