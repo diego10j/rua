@@ -36,7 +36,9 @@ public class pre_comp_inv_activos extends Pantalla{
     
     public pre_comp_inv_activos(){
         tab_tabla.setId("tab_tabla");   //identificador
-        tab_tabla.setSql("select * from act_activo_fijo order by ide_acafi desc limit 25");
+        tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
+       // tab_tabla.setCondicion("1=1 limit 25");
+     //   tab_tabla.setSql("select * from act_activo_fijo order by ide_acafi desc limit 25");
         tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "");
         tab_tabla.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "codigo_inarti,nombre_inarti", "");
         tab_tabla.getColumna("ide_geper").setLectura(true);
@@ -87,6 +89,7 @@ public class pre_comp_inv_activos extends Pantalla{
         tab_tabla.getColumna("ide_actac").setVisible(false); 
         tab_tabla.getColumna("ide_accls").setVisible(false); 
         
+        tab_tabla.setLimite(25);
         tab_tabla.dibujar();
         PanelTabla pat_tabla = new PanelTabla();
         pat_tabla.setId("pat_tabla");
