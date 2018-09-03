@@ -108,6 +108,7 @@ public class Adquisiciones extends Pantalla {
         tab_adquisiones.getColumna("IDE_ADAPRO").setCombo(ser_adquisiciones.getAprobado());
         tab_adquisiones.getColumna("IDE_ADEMAP").setCombo(ser_adquisiciones.getEmpleadoAprueba("3","","",""));
         tab_adquisiones.getColumna("IDE_ADEMDE").setCombo(ser_adquisiciones.getEmpleadoDep());
+         tab_adquisiones.getColumna("IDE_ADEMDE").setVisible(false);
         tab_adquisiones.getColumna("IDE_ADEMPLE").setLectura(true);
         tab_adquisiones.getColumna("IDE_ADEMPLE").setCombo(ser_adquisiciones.getEmpleadoDep());
         tab_adquisiones.getColumna("IDE_ADEMPLE").setAutoCompletar();
