@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="126"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -146,7 +146,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ValorTotal]]></text>
+				<text><![CDATA[Valor Total]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="1" y="80" width="101" height="20"/>
@@ -261,13 +261,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{cantidad_prdep}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e98f9a60-0b4f-4d50-a5e3-7157a3fb6876" x="153" y="0" width="64" height="20"/>
-				<textElement>
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="207" y="2" width="193" height="18"/>
 				<textElement>
 					<font size="7"/>
@@ -287,6 +280,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_total_prdep}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e98f9a60-0b4f-4d50-a5e3-7157a3fb6876" x="134" y="0" width="65" height="18"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -336,7 +336,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[     TOTAL:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="27" y="138" width="149" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="42" y="138" width="149" height="1"/>
 			</line>
 			<staticText>
 				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="373" y="0" width="105" height="20"/>
@@ -353,7 +353,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[     SubTotal:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="50ba4bef-c9d2-4ec7-9a7f-ca0d0ff6a5f2" x="63" y="155" width="77" height="20"/>
+				<reportElement uuid="50ba4bef-c9d2-4ec7-9a7f-ca0d0ff6a5f2" x="71" y="155" width="77" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
