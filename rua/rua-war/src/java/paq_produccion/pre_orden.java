@@ -142,7 +142,7 @@ public class pre_orden extends Pantalla{
         tab_detalle_orden.getColumna("ide_inuni").setCombo(ser_unidad.getUnidad());
         tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_articulo.getMaterial("", ""));
         tab_detalle_orden.setTipoFormulario(true);
-        tab_detalle_orden.getGrid().setColumns(4);
+        //tab_detalle_orden.getGrid().setColumns(4);
         tab_detalle_orden.setHeader("ORDEN  DETALLE");
         tab_detalle_orden.dibujar();
         

@@ -30,6 +30,7 @@ public class pre_proforma extends Pantalla {
      private Tabla tab_proforma=new Tabla();
      private Tabla tab_detalle_proforma=new Tabla();
      
+     // Servicios//
    @EJB
     private final ServicioCuentasCxP ser_cuentascxp= (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class); 
        
@@ -57,11 +58,11 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("numero_prpro").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
         tab_proforma.getColumna("numero_prpro").setEtiqueta();//etiqueta
         tab_proforma.getColumna("total_prpro").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
-        tab_proforma.getColumna("ide_cndfp").setCombo(ser_cuentascxp.getFormaPagolista());
+        tab_proforma.getColumna("ide_cndfp").setCombo(ser_cuentascxp.getFormaPagolista()); // llamada de servicios con get y fin//
         tab_proforma.getColumna("ide_geper").setCombo(ser_persona.getDatosProveedor());
         tab_proforma.getColumna("ide_geper").setAutoCompletar();
         tab_proforma.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
-        tab_proforma.getColumna("ide_gtemp").setAutoCompletar();
+        tab_proforma.getColumna("ide_gtemp").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
         tab_proforma.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado());
         tab_proforma.getColumna("ide_prvat").setCombo(ser_valtiempo.getValidezTiempo());
         tab_proforma.getColumna("pro_ide_prvat").setCombo(ser_valtiempo.getValidezTiempo());
@@ -71,9 +72,24 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("valor_descuento_prpro").setValorDefecto("0");
         tab_proforma.getColumna("por_descuento_prpro").setValorDefecto("0");
         tab_proforma.getColumna("fecha_prpro").setValorDefecto(utilitario.getFechaActual());// fecha actual x defecto
-
-
-
+        //Para visualizacion de datos en la pantalla nombres de etiquetas //
+        tab_proforma.getColumna("IDE_PRPRO").setNombreVisual("CODIGO");
+        tab_proforma.getColumna("IDE_GTEMP").setNombreVisual("EMPLEADO");
+        tab_proforma.getColumna("IDE_GTCAR").setNombreVisual("CARGO");
+        tab_proforma.getColumna("NUMERO_PRPRO ").setNombreVisual("NUMERO SECUENCIAL");
+        tab_proforma.getColumna("SOLITADO_POR_PRPRO").setNombreVisual("SOLICITADO POR");
+        tab_proforma.getColumna("POR_DESCUENTO_PRPRO").setNombreVisual("POR DESCUENTO");
+        tab_proforma.getColumna("TOTAL_PRPRO").setNombreVisual("TOTAL");
+        tab_proforma.getColumna("VALOR_DESCUENTO_PRPRO").setNombreVisual("VALOR DESCUENTO");
+        tab_proforma.getColumna("IDE_CNDFP").setNombreVisual("FORMA PAGO");
+        tab_proforma.getColumna("IDE_GEPER").setNombreVisual("RAZON SOCIAL");
+        tab_proforma.getColumna("IDE_PRVAT").setNombreVisual("VALIDEZ OFERTA ");
+        tab_proforma.getColumna("FECHA_PRPRO").setNombreVisual("FECHA");
+        tab_proforma.getColumna("SUBTOTAL_PRPRO").setNombreVisual("SUBTOTAL");
+        tab_proforma.getColumna("IVA_PRPRO").setNombreVisual("IVA");
+        tab_proforma.getColumna("OBSERVACION_PRPRO").setNombreVisual("OBSERVACION");
+        tab_proforma.getColumna("PRO_IDE_PRVAT").setNombreVisual("VALIDEZ TIEMPO");
+        ///Para visualizacion de datos fin//
         tab_proforma.setTipoFormulario(true);
         tab_proforma.getGrid().setColumns(4);// Poner cuatro columnas
         tab_proforma.agregarRelacion(tab_detalle_proforma);  //agrego relacion para las dos tablas tab_proforma padre e hijo and tab_detalle_proforma
@@ -83,6 +99,8 @@ public class pre_proforma extends Pantalla {
         PanelTabla pat_proforma = new PanelTabla(); // cada tabla debe contener su panel y su divicion 
         pat_proforma.setId("pat_proforma");
         pat_proforma.setPanelTabla(tab_proforma);
+        
+       
         
         
         tab_detalle_proforma.setId("tab_detalle_proforma");
@@ -95,6 +113,14 @@ public class pre_proforma extends Pantalla {
         tab_detalle_proforma.getColumna("cantidad_prdep").setValorDefecto("0");
         tab_detalle_proforma.getColumna("valor_unitario_prdep").setValorDefecto("0");
         tab_detalle_proforma.getColumna("ide_inarti").setCombo(ser_persona.getMaterial("", ""));
+        //Para visualizacion de datos en la pantalla nombres de etiquetas //
+        tab_detalle_proforma.getColumna("IDE_PRDEP").setNombreVisual("CODIGO");
+        tab_detalle_proforma.getColumna("IDE_INUNI").setNombreVisual("U/M");
+        tab_detalle_proforma.getColumna("IDE_INARTI").setNombreVisual("DETALLE ARTICULO");
+        tab_detalle_proforma.getColumna("CANTIDAD_PRDEP").setNombreVisual("CANTIDAD");
+        tab_detalle_proforma.getColumna("VALOR_UNITARIO_PRDEP").setNombreVisual("VALOR UNITARIO");
+        tab_detalle_proforma.getColumna("VALOR_TOTAL_PRDEP").setNombreVisual("VALOR TOTAL");
+        ///Para visualizacion de datos fin//
         tab_detalle_proforma.setHeader("DETALLE PROFORMA");
         tab_detalle_proforma.dibujar();
         
@@ -121,7 +147,7 @@ public class pre_proforma extends Pantalla {
          vipdf_proforma.setId("vipdf_proforma");
          vipdf_proforma.setTitle("PROFORMA");
         agregarComponente(vipdf_proforma);
-    }
+    }//Metodo impresion PDF//
     public void imprimir(){
         if (tab_proforma.getValorSeleccionado() != null) {
                         ///////////AQUI ABRE EL REPORTE
@@ -134,15 +160,14 @@ public class pre_proforma extends Pantalla {
                         vipdf_proforma.dibujar();
                         utilitario.addUpdate("vipdf_proforma");
         } else {
-            utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
+            utilitario.agregarMensajeInfo("Seleccione una Solititud de proforma", "");
         }
     }
     public void CalcularSuma(AjaxBehaviorEvent evt){
 		tab_detalle_proforma.modificar(evt); // Metodo para calcular la suma 
 		double valor_precio=0;
 		double valor_unitario=0;
-               double subtotal=0;
-                
+                double subtotal=0;
                 
                 double suma=0;
               

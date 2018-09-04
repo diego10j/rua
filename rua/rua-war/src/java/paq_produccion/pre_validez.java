@@ -16,6 +16,7 @@ import sistema.aplicacion.Pantalla;
  */
 public class pre_validez extends Pantalla{
 private Tabla tab_validez=new Tabla();
+ 
     
     public  pre_validez (){
         tab_validez.setId("tab_validez");
