@@ -470,9 +470,12 @@ public class ServiciosAdquisiones {
     }
     public String getdetalleFacturaCompra (String tipo, String factura){
         String sql = "";
-        sql += "select ide_cpdfa, b.nombre_inarti, cantidad_cpdfa, precio_cpdfa, valor_cpdfa as subtotal\n" +
+        sql += "select ide_cpdfa, b.nombre_inarti, c.nombre_accla, cantidad_cpdfa, precio_cpdfa, valor_cpdfa as subtotal\n" +
                "from cxp_detall_factur a \n" +
-               "left join inv_articulo b on a.ide_inarti = b.ide_inarti\n" +
+               "left join inv_articulo b on a.ide_inarti = b.ide_inarti and nivel_inarti = 'HIJO'\n" +
+               "left join (select a.ide_accla, a.ide_inarti, nombre_inarti, b.nombre_accla from ACT_CLASE_ARTICULO a\n" +
+               "left join ACT_CLASE_ACTIVO b on a.ide_accla = b.ide_accla\n" +
+               "left join inv_articulo c on a.ide_inarti = c.ide_inarti) c on a.ide_inarti = c.ide_inarti\n" +
                "where recibido_compra_cpdfa = false";
         if (tipo.equals("2")){
         sql += " and a.ide_cpcfa = "+factura+"";
