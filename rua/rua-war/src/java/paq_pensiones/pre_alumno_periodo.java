@@ -71,15 +71,26 @@ public class pre_alumno_periodo extends Pantalla{
         
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("REC_ALUMNO_PERIODO", "IDE_RECALP", 1);
+        tab_tabla1.getColumna("descripcion_recalp").setVisible(false);
         tab_tabla1.getColumna("ide_repea").setVisible(false);
-        tab_tabla1.getColumna("ide_repar").setVisible(false);
-        tab_tabla1.getColumna("ide_recur").setVisible(false);
-        tab_tabla1.getColumna("ide_reces").setVisible(false);
+        tab_tabla1.getColumna("ide_repar").setCombo(ser_pensiones.getParalelos("true,false"));
+        tab_tabla1.getColumna("ide_recur").setCombo(ser_pensiones.getCursos("true,false"));
+        tab_tabla1.getColumna("ide_reces").setCombo(ser_pensiones.getEspecialidad("true,false"));
+        tab_tabla1.getColumna("ide_repar").setAutoCompletar();
+        tab_tabla1.getColumna("ide_recur").setAutoCompletar();
+        tab_tabla1.getColumna("ide_reces").setAutoCompletar();
+        tab_tabla1.getColumna("ide_repar").setLectura(true);
+        tab_tabla1.getColumna("ide_recur").setLectura(true);
+        tab_tabla1.getColumna("ide_reces").setLectura(true);
+        tab_tabla1.getColumna("ide_geper").setLectura(true);
+        tab_tabla1.getColumna("gen_ide_geper").setLectura(true);
         tab_tabla1.getColumna("ide_geper").setFiltro(true);
         tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("gen_ide_geper").setAutoCompletar();
+        tab_tabla1.getColumna("ide_repar").setAncho(20);
+        tab_tabla1.getColumna("ide_geper").setEstilo("width:20 px");
         tab_tabla1.setCondicion("IDE_RECALP = -1");
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
@@ -201,7 +212,10 @@ public class pre_alumno_periodo extends Pantalla{
     }
     public void abrirDialogoRepresentante(){
         if(tab_tabla1.getTotalFilas()>0){
-        sel_tab_alumno.dibujar();
+                    TablaGenerica tab_consulta = utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_geper"));
+        titulo_alumno=tab_consulta.getValor("nom_geper");
+        //sel_tab_representante.setTitle("REPRSENTANTE DEL ALUMNO: "+titulo_alumno);
+        sel_tab_representante.dibujar();
         }
         else {
             utilitario.agregarMensajeError("No existen registros", "No existen registros de alumnos para asignar un representante");
@@ -223,8 +237,7 @@ public class pre_alumno_periodo extends Pantalla{
                     }
         
         else{
-        TablaGenerica tab_consulta = utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_geper"));
-        titulo_alumno=tab_consulta.getValor("nom_geper");
+
         sel_tab_alumno.dibujar();
         }
     }
