@@ -65,6 +65,9 @@ public class Cliente implements Serializable {
     }
 
     public String getDireccion() {
+        if (direccion == null) {
+            direccion = "";
+        }
         return direccion;
     }
 
