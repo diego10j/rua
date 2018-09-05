@@ -308,4 +308,9 @@ public class ServicioPensiones extends ServicioBase {
         sql = "select 1 as codigo, (case when  max(" + primario + ") is null then 1 else max(" + primario + ") end) + 1 as maximo from " + tabla;
         return sql;
     }
+    public String getSqlConceptos(){
+        String sql = "";
+        sql = "select ide_concepto_recon, des_concepto_recon from rec_concepto order by des_concepto_recon";
+        return sql;
+    }
 }
