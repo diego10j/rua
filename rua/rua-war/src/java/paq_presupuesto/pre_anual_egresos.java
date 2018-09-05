@@ -4,6 +4,7 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Arbol;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
@@ -37,6 +38,8 @@ public class pre_anual_egresos extends Pantalla {
         private Dialogo dia_por_devengar = new Dialogo();
         private SeleccionTabla set_por_devengar = new SeleccionTabla();
 	private SeleccionCalendario sel_calendario=new SeleccionCalendario();
+        private Arbol arb_arbol = new Arbol();
+        private Tabla tab_programa= new Tabla();
         	///reporte
 	private Map p_parametros = new HashMap();
 	private Reporte rep_reporte = new Reporte();
@@ -77,6 +80,24 @@ public class pre_anual_egresos extends Pantalla {
                 bar_botones.agregarBoton(bot_actualizar);
 
 		
+                arb_arbol.setId("arb_arbol");                
+		arb_arbol.setArbol("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "pre_ide_prfup");
+		arb_arbol.onSelect("seleccionar_arbol");	
+		arb_arbol.dibujar();
+                
+                tab_programa.setId("tab_programa");
+		tab_programa.setTabla("pre_programa", "ide_prpro", 4);
+                tab_programa.setHeader("PROGRAMAS PRESUPUESTARIOS");
+                tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
+                tab_programa.getColumna("ide_prcla").setLectura(true);
+                tab_programa.getColumna("ide_prcla").setUnico(true);
+                tab_programa.getColumna("ide_prfup").setUnico(true);
+                tab_programa.getColumna("cod_programa_prpro").setLectura(true);
+                tab_programa.agregarRelacion(tab_anual);
+                tab_programa.dibujar ();
+                PanelTabla pat_pane3=new PanelTabla();
+		pat_pane3.setPanelTabla(tab_programa);
+
 		Tabulador tab_tabulador = new Tabulador();
 		tab_tabulador.setId("tab_tabulador");
 
@@ -200,8 +221,11 @@ public class pre_anual_egresos extends Pantalla {
 
 		
 		Division div_division =new Division ();
-		div_division.dividir2(pat_panel1, tab_tabulador, "50%", "h");
-		agregarComponente(div_division);
+		div_division.dividir3(pat_pane3,pat_panel1, tab_tabulador,"20%", "50%", "h");
+		
+                Division div_division_arbol =new Division ();
+		div_division_arbol.dividir2(arb_arbol, div_division, "20%", "V");
+                agregarComponente(div_division_arbol);
                 
                 /*
 		Boton bot_importarpoa = new Boton();
@@ -775,5 +799,22 @@ public void aceptarReporte(){
     public void setSet_actividad(SeleccionTabla set_actividad) {
         this.set_actividad = set_actividad;
     }
+
+    public Arbol getArb_arbol() {
+        return arb_arbol;
+    }
+
+    public void setArb_arbol(Arbol arb_arbol) {
+        this.arb_arbol = arb_arbol;
+    }
+
+    public Tabla getTab_programa() {
+        return tab_programa;
+    }
+
+    public void setTab_programa(Tabla tab_programa) {
+        this.tab_programa = tab_programa;
+    }
+
 
 }
