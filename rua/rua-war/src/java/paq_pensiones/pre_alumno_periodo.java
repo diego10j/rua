@@ -11,13 +11,18 @@ package paq_pensiones;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -35,6 +40,10 @@ public class pre_alumno_periodo extends Pantalla{
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
     private SeleccionTabla sel_tab_representante = new SeleccionTabla();
     String titulo_alumno="";
+    private Dialogo dia_emision = new Dialogo();
+    private Calendario fechaInicio = new Calendario();
+    private Calendario fechaFin = new Calendario();
+    private Combo com_conceptos = new Combo();
     
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
@@ -42,6 +51,8 @@ public class pre_alumno_periodo extends Pantalla{
     private ServiciosAdquisiones ser_adqusiiones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     
     public pre_alumno_periodo(){
+        
+        
         
         com_periodo_academico.setId("cmb_periodo_academico");
         com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
@@ -129,7 +140,7 @@ public class pre_alumno_periodo extends Pantalla{
         Boton bot_emision = new Boton();
         bot_emision.setIcon("ui-icon-person");
         bot_emision.setValue("REALIZAR LA EMISION DE PENSIONES");
-        //bot_emision.setMetodo("abrirDialogoRepresentante");
+        bot_emision.setMetodo("abrirDialogoConcepto");
         bar_botones.agregarBoton(bot_emision);
         
         
@@ -149,11 +160,54 @@ public class pre_alumno_periodo extends Pantalla{
         sel_tab_representante.setSeleccionTabla(ser_pensiones.getListaAlumnos("1","0"), "ide_geper");
         sel_tab_representante.setWidth("80%");
         sel_tab_representante.setHeight("70%");
+        sel_tab_representante.setRadio();
         sel_tab_representante.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
         sel_tab_representante.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
         sel_tab_representante.getBot_aceptar().setMetodo("aceptarRepresentante");
         agregarComponente(sel_tab_representante);
         
+        // creo dialogo para crear modalidad
+        dia_emision.setId("dia_emision");
+        dia_emision.setTitle("Seleccion los parámetros");
+        dia_emision.setWidth("25%");
+        dia_emision.setHeight("30%");
+      //  dia_emision.getBot_aceptar().setMetodo("aceptarModalidad");
+        dia_emision.setResizable(false);
+        
+        com_conceptos.setId("com_conceptos");
+        com_conceptos.setCombo(ser_pensiones.getSqlConceptos());
+    
+        
+        Grid gru_cuerpo = new Grid();
+        gru_cuerpo.setColumns(2);
+        Etiqueta eti_mensaje = new Etiqueta();
+        eti_mensaje.setValue("Seleccione el concepto                                             ");
+        eti_mensaje.setStyle("font-size: 13px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+        
+        gru_cuerpo.getChildren().add(eti_mensaje);
+        gru_cuerpo.getChildren().add(com_conceptos);
+        
+        
+        gru_cuerpo.getChildren().add(new Etiqueta("FECHA INICIAL: "));
+        fechaInicio.setId("fechaInicio");
+        fechaInicio.setFechaActual();
+        fechaInicio.setTipoBoton(true);
+        gru_cuerpo.getChildren().add(fechaInicio);
+        
+        
+
+        gru_cuerpo.getChildren().add(new Etiqueta("FECHA FINAL: "));
+        fechaFin.setId("fechaFin");
+        fechaFin.setFechaActual();
+        fechaFin.setTipoBoton(true);
+        gru_cuerpo.getChildren().add(fechaFin);
+        
+        dia_emision.setDialogo(gru_cuerpo);
+        agregarComponente(dia_emision);
+    
+    }
+    public void abrirDialogoConcepto(){
+        dia_emision.dibujar();
     }
     public void filtroAlumno(){
         String cm_per_aca = "";
@@ -214,7 +268,7 @@ public class pre_alumno_periodo extends Pantalla{
         if(tab_tabla1.getTotalFilas()>0){
                     TablaGenerica tab_consulta = utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_geper"));
         titulo_alumno=tab_consulta.getValor("nom_geper");
-        //sel_tab_representante.setTitle("REPRSENTANTE DEL ALUMNO: "+titulo_alumno);
+        sel_tab_representante.setTitle("REPRSENTANTE DEL ALUMNO: "+titulo_alumno);
         sel_tab_representante.dibujar();
         }
         else {
@@ -242,9 +296,13 @@ public class pre_alumno_periodo extends Pantalla{
         }
     }
     public void aceptarRepresentante(){
-        String str_repre = sel_tab_representante.getValorSeleccionado();       
+        String str_repre = sel_tab_representante.getValorSeleccionado();     
+        System.out.println("repre "+str_repre);
             tab_tabla1.setValor("gen_ide_geper",str_repre);        
              sel_tab_representante.cerrar();
+             tab_tabla1.modificar(tab_tabla1.getFilaActual());
+             tab_tabla1.guardar();
+             guardarPantalla();
 	     utilitario.addUpdate("tab_tabla1");
     }
     public void aceptarAlumno(){
@@ -370,6 +428,38 @@ public class pre_alumno_periodo extends Pantalla{
 
     public void setSel_tab_representante(SeleccionTabla sel_tab_representante) {
         this.sel_tab_representante = sel_tab_representante;
+    }
+
+    public Dialogo getDia_emision() {
+        return dia_emision;
+    }
+
+    public void setDia_emision(Dialogo dia_emision) {
+        this.dia_emision = dia_emision;
+    }
+
+    public Calendario getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Calendario fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Calendario getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Calendario fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public Combo getCom_conceptos() {
+        return com_conceptos;
+    }
+
+    public void setCom_conceptos(Combo com_conceptos) {
+        this.com_conceptos = com_conceptos;
     }
 
 
