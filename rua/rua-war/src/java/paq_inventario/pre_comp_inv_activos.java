@@ -48,7 +48,9 @@ public class pre_comp_inv_activos extends Pantalla{
         tab_tabla.getColumna("numero_factu_acafi").setLectura(true);
         tab_tabla.getColumna("fecha_compra_acafi").setLectura(true);
         
-        tab_tabla.getColumna("ide_aceaf").setVisible(false);
+        tab_tabla.getColumna("ide_aceaf").setVisible(true);
+        tab_tabla.getColumna("ide_aceaf").setCombo("act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf", "");
+        tab_tabla.getColumna("ide_aceaf").setLectura(true);
         tab_tabla.getColumna("ide_usua").setVisible(false);
         tab_tabla.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla.getColumna("ide_geubi").setVisible(false);
@@ -179,6 +181,9 @@ public class pre_comp_inv_activos extends Pantalla{
                 tab_tabla.setValor("ide_gecas",utilitario.getVariable("p_act_casa"));
                 tab_tabla.setValor("ide_geobr",utilitario.getVariable("p_act_obra"));
                 tab_tabla.setValor("ide_accla",tab_pro_fac.getValor(i, "ide_accla"));
+                tab_tabla.setValor("ide_aceaf",utilitario.getVariable("p_act_estado_activo_fijo"));
+                tab_tabla.setValor("ide_accls",utilitario.getVariable("p_act_activo_fijo"));
+                
                 
                 
               //  utilitario.getConexion().ejecutarSql("update cxp_detall_factur set recibido_compra_cpdfa = true where ide_cpdfa in ("+productos+")");
