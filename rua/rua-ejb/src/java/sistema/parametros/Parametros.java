@@ -436,6 +436,12 @@ public class Parametros {
 //
         lis_parametros.add(new Parametro("0", "p_con_repo_nivel", "Visualiza reporte comprobante contable a nivel 5 ", "false"));
 
+        
+        // PRODUCCION = 14
+        
+          lis_parametros.add(new Parametro("14", "p_prod_numero_secuencial", "Indica el numero secuencial para cualquier documento", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+
+        
         return lis_parametros;
     }
 }
