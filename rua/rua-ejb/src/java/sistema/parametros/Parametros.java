@@ -12,7 +12,7 @@ public class Parametros {
 
     public List<Parametro> getParametrosSistema() {
         List<Parametro> lis_parametros = new ArrayList<>();
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
         /*
          * SISTEMA MODULO =0
          */
