@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="09b449b7-3a93-4ce8-97c7-b9553efa9387">
-	<property name="ireport.zoom" value="3.2153832150000055"/>
-	<property name="ireport.x" value="1178"/>
-	<property name="ireport.y" value="189"/>
-	<parameter name="logo" class="java.lang.String"/>
-	<parameter name="empresa" class="java.lang.String"/>
-	<parameter name="sucursal" class="java.lang.String"/>
-	<parameter name="direccion" class="java.lang.String"/>
-	<parameter name="telefono" class="java.lang.String"/>
-	<parameter name="ruc" class="java.lang.String"/>
+	<property name="ireport.zoom" value="1.3636363636363653"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="tot_debe" class="java.lang.Double"/>
 	<parameter name="tot_haber" class="java.lang.Double"/>
@@ -16,6 +10,12 @@
 	<parameter name="tot_acreedor" class="java.lang.Double"/>
 	<parameter name="fecha_inicio" class="java.lang.String"/>
 	<parameter name="fecha_fin" class="java.lang.String"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -29,46 +29,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="83" splitType="Stretch">
-			<textField isStretchWithOverflow="true">
-				<reportElement uuid="998298d4-5a0a-47c4-a500-37b5dbea3c09" x="99" y="2" width="204" height="12" forecolor="#000000"/>
-				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="0e8cb6db-cf44-43f0-8558-93443375c8bf" x="99" y="46" width="204" height="12"/>
-				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["RUC: "+$P{ruc}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="129a4125-b173-439b-b57b-c1c4701a14cf" x="99" y="13" width="204" height="12"/>
-				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{sucursal}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="80ef2a6f-614e-43c1-a6cc-f256a219f1e7" x="99" y="35" width="204" height="12"/>
-				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
-			</textField>
-			<image onErrorType="Blank">
-				<reportElement uuid="30ae47ae-ddc5-43cc-8d83-87e587cbd5df" x="4" y="2" width="95" height="60"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
-			</image>
-			<textField>
-				<reportElement uuid="f6e75155-43aa-4853-b92b-df161721d7e7" x="99" y="24" width="204" height="12"/>
-				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
-			</textField>
+		<band height="86" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="854cb2be-0958-4795-8cf4-69417db71357" x="303" y="13" width="251" height="22"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -83,6 +44,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Del    "+$P{fecha_inicio}+"    Al    "+$P{fecha_fin}]]></textFieldExpression>
 			</textField>
+			<subreport isUsingCache="true">
+				<reportElement uuid="20fb9eeb-2aaa-4a05-8a51-50305dc9b769" key="subreport-1" x="3" y="1" width="180" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<columnHeader>
