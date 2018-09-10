@@ -931,7 +931,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_activo", utilitario.getVariable("p_con_tipo_cuenta_activo"));
                     parametro.put("p_pasivo", utilitario.getVariable("p_con_tipo_cuenta_pasivo"));
                     parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
-                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+             /*       TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
                         parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
@@ -940,7 +940,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
                         parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
 
-                    }
+                    }*/
                     parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
                     TablaGenerica tab_balance = con.generarBalanceGeneral(true, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
@@ -959,8 +959,8 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_patrimonio", (tot_patrimonio));
                     }
                     sel_tab_nivel.cerrar();
-                    ReporteDataSource data = new ReporteDataSource(tab_balance);
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                   // ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_rep.dibujar();
 
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
@@ -998,7 +998,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_activo", utilitario.getVariable("p_con_tipo_cuenta_activo"));
                     parametro.put("p_pasivo", utilitario.getVariable("p_con_tipo_cuenta_pasivo"));
                     parametro.put("p_patrimonio", utilitario.getVariable("p_con_tipo_cuenta_patrimonio"));
-                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                /*    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
                         parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
@@ -1007,7 +1007,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
                         parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
 
-                    }
+                    }*/
                     parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
                     TablaGenerica tab_balance = con.generarBalanceGeneral(false, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
@@ -1026,8 +1026,8 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_patrimonio", (tot_patrimonio));
                     }
                     sel_tab_nivel.cerrar();
-                    ReporteDataSource data = new ReporteDataSource(tab_balance);
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                //    ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_rep.dibujar();
 
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
@@ -1063,7 +1063,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_ingresos", utilitario.getVariable("p_con_tipo_cuenta_ingresos"));
                     parametro.put("p_gastos", utilitario.getVariable("p_con_tipo_cuenta_gastos"));
                     parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
-                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+            /*        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
                         parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
@@ -1071,7 +1071,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
                         parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
                         parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
-                    }
+                    }*/
 
                     parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
@@ -1088,9 +1088,9 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_utilidad", utilidad_perdida);
                     }
                     parametro.put("titulo", "ESTADO DE RESULTADOS CONSOLIDADO");
-                    ReporteDataSource data = new ReporteDataSource(tab_estado);
+               //     ReporteDataSource data = new ReporteDataSource(tab_estado);
                     sel_tab_nivel.cerrar();
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_rep.dibujar();
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
                 }
@@ -1126,7 +1126,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("p_ingresos", utilitario.getVariable("p_con_tipo_cuenta_ingresos"));
                     parametro.put("p_gastos", utilitario.getVariable("p_con_tipo_cuenta_gastos"));
                     parametro.put("p_costos", utilitario.getVariable("p_con_tipo_cuenta_costos"));
-                    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                  /*  TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                     if (tab_datos.getTotalFilas() > 0) {
                         parametro.put("logo", "/upload/logos/logo_reporte.png");
                         parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
@@ -1134,7 +1134,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
                         parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
                         parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
-                    }
+                    }*/
 
                     parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio));
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
@@ -1150,10 +1150,10 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_costos", tot_costos);
                         parametro.put("p_utilidad", utilidad_perdida);
                     }
-                    ReporteDataSource data = new ReporteDataSource(tab_estado);
+                   // ReporteDataSource data = new ReporteDataSource(tab_estado);
                     parametro.put("titulo", "ESTADO DE RESULTADOS");
                     sel_tab_nivel.cerrar();
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                     sel_rep.dibujar();
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
                 }
@@ -1226,7 +1226,7 @@ public class pre_contabilidad extends Pantalla {
                             System.out.println("fecha fin " + fecha_fin1);
                             sec_rango_reporte.cerrar();
 
-                            TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                        /*    TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
                             if (tab_datos.getTotalFilas() > 0) {
                                 parametro.put("logo", "/upload/logos/logo_reporte.png");
                                 parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
@@ -1234,7 +1234,7 @@ public class pre_contabilidad extends Pantalla {
                                 parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
                                 parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
                                 parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
-                            }
+                            }*/
                             String fechaPeriodoActivo = con.obtenerFechaInicialPeriodoActivo();
 //                        if (fechaPeriodoActivo != null && !fechaPeriodoActivo.isEmpty()) {
                             parametro.put("fecha_inicio", getFormatoFecha(fecha_inicio1));
@@ -1254,8 +1254,8 @@ public class pre_contabilidad extends Pantalla {
                             parametro.put("tot_haber", suma_haber);
                             parametro.put("tot_deudor", suma_deudor);
                             parametro.put("tot_acreedor", suma_acreedor);
-                            ReporteDataSource data = new ReporteDataSource(tab_bal);
-                            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
+                          //  ReporteDataSource data = new ReporteDataSource(tab_bal);
+                            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                             sel_rep.dibujar();
                             utilitario.addUpdate("sel_rep,sec_rango_reporte");
                         }
