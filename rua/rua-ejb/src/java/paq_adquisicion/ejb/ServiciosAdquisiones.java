@@ -163,7 +163,7 @@ public class ServiciosAdquisiones {
 
     public String getCargo() {
         String sql = "";
-        sql = "SELECT IDE_ADCARG, DETALLE_ADCARG FROM ADQ_CARGO by detalle_gtcar";
+        sql = "SELECT IDE_ADCARG, DETALLE_ADCARG FROM ADQ_CARGO order by DETALLE_ADCARG";
         return sql;
     }
 
