@@ -249,7 +249,7 @@ public class ServicioPensiones extends ServicioBase {
     }
 
     public String getListaAlumnos(String condicion,String tipo_persona) {
-        String sql="select ide_geper, nom_geper, identificac_geper from gen_persona  ";
+        String sql="select ide_geper, nom_geper, identificac_geper from gen_persona  order by nom_geper";
                 if(condicion.equals("1")){
                     sql +="where ide_vgtcl in("+tipo_persona+") order by nom_geper ";
                 }
