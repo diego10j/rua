@@ -20,7 +20,7 @@ import org.primefaces.event.NodeSelectEvent;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 public class pre_clasificador extends Pantalla {
 	private Tabla tab_presupuesto=new Tabla();
-	private Tabla tab_vigente=new Tabla();
+	private Tabla tab_asociacion_presupuestaria=new Tabla();
 	private Arbol arb_clasificador=new Arbol();        
         //Reporte
         private Map map_parametros=new HashMap();
@@ -60,7 +60,7 @@ public class pre_clasificador extends Pantalla {
 		tab_presupuesto.getColumna("pre_ide_prcla").setCombo("select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_clasificador order by codigo_clasificador_prcla");
 		tab_presupuesto.getColumna("grupo_prcla").setCombo(ser_presupuesto.getListaGrupoCuentaPresupuesto());		
                 tab_presupuesto.getColumna("ide_prgre").setCombo("pre_grupo_economico","ide_prgre","detalle_prgre","");
-		tab_presupuesto.agregarRelacion(tab_vigente);				
+		tab_presupuesto.agregarRelacion(tab_asociacion_presupuestaria);				
 		tab_presupuesto.setCampoPadre("pre_ide_prcla"); //necesarios para el arbol
 		tab_presupuesto.setCampoNombre("(select codigo_clasificador_prcla||' '||descripcion_clasificador_prcla as descripcion_clasificador_prcla from pre_clasificador b where b. ide_prcla=a.ide_prcla)"); //necesarios para el arbol
 		tab_presupuesto.agregarArbol(arb_clasificador);//necesarios para el arbol
@@ -87,17 +87,21 @@ public class pre_clasificador extends Pantalla {
 		arb_clasificador.dibujar();
 		
 		// tabla deaÃ±os vigente
-		tab_vigente.setId("tab_vigente");
-		tab_vigente.setHeader("AÑO VIGENTE");
-		tab_vigente.setTabla("cont_vigente", "ide_covig", 2);
+		tab_asociacion_presupuestaria.setId("tab_vigente");
+		tab_asociacion_presupuestaria.setHeader("ASOCIACION PRESUPUESTARIA");
+		tab_asociacion_presupuestaria.setTabla("pre_asociacion_presupuestaria", "ide_prasp", 2);
+                tab_asociacion_presupuestaria.getColumna("ide_cocac").setCombo(ser_contabilidad.getCuentaContable("true,false"));
+		tab_asociacion_presupuestaria.getColumna("ide_cocac").setAutoCompletar();
+                tab_asociacion_presupuestaria.getColumna("ide_prmop").setCombo("pre_movimiento_presupuestario","ide_prmop","detalle_prmop","");
+                tab_asociacion_presupuestaria.getColumna("ide_cnlap").setCombo("con_lugar_aplicac","ide_cnlap","nombre_cnlap","");
 		//tab_vigente.setCondicion("ide_covig=-1");
-		tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
-                tab_vigente.getColumna("ide_geani").setUnico(true);
+		//tab_vigente.getColumna("ide_geani").setCombo("gen_anio","ide_geani","nom_geani","");
+               /* tab_vigente.getColumna("ide_geani").setUnico(true);
 		tab_vigente.getColumna("ide_prcla").setUnico(true);
 		tab_vigente.getColumna("ide_prasp").setVisible(false);
 		tab_vigente.getColumna("ide_cocac").setVisible(false);
 		tab_vigente.getColumna("ide_prfup").setVisible(false);
-		tab_vigente.getColumna("ide_prpro").setVisible(false);
+		tab_vigente.getColumna("ide_prpro").setVisible(false);*/
 
 		 //ocultar campos de las claves  foraneas
 		TablaGenerica  tab_generica=ser_contabilidad.getTablaVigente("cont_vigente");
@@ -108,9 +112,9 @@ public class pre_clasificador extends Pantalla {
 		//}				
 		
    	//	}
-		tab_vigente.dibujar();
+		tab_asociacion_presupuestaria.dibujar();
 		PanelTabla pat_panel2=new PanelTabla();
-		pat_panel2.setPanelTabla(tab_vigente);
+		pat_panel2.setPanelTabla(tab_asociacion_presupuestaria);
 		
 		//division2
       	Division div_vigente = new Division();
@@ -155,7 +159,7 @@ public class pre_clasificador extends Pantalla {
 		//Filtra la tabla Padre
 		tab_presupuesto.ejecutarValorPadre(arb_clasificador.getValorSeleccionado());
 		//Filtra la tabla tab_vigente
-		tab_vigente.ejecutarValorForanea(tab_presupuesto.getValorSeleccionado());
+		tab_asociacion_presupuestaria.ejecutarValorForanea(tab_presupuesto.getValorSeleccionado());
 	  }
 	
 
@@ -171,7 +175,7 @@ public class pre_clasificador extends Pantalla {
 			// TODO Auto-generated method stub
 			
 			if (tab_presupuesto.guardar()){
-				if (tab_vigente.guardar()) {
+				if (tab_asociacion_presupuestaria.guardar()) {
 					guardarPantalla();
 					//Actualizar el arbol
 					arb_clasificador.ejecutarSql();
@@ -205,14 +209,14 @@ public class pre_clasificador extends Pantalla {
 
 
 		public Tabla getTab_vigente() {
-			return tab_vigente;
+			return tab_asociacion_presupuestaria;
 		}
 
 
 
 
 		public void setTab_vigente(Tabla tab_vigente) {
-			this.tab_vigente = tab_vigente;
+			this.tab_asociacion_presupuestaria = tab_vigente;
 		}
 
     public Reporte getRep_reporte() {
