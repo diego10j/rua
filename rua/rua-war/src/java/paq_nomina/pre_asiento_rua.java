@@ -20,6 +20,8 @@ import paq_nomina.ejb.ServicioNomina;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import java.util.Map;
+import servicios.contabilidad.ServicioComprobanteContabilidad;
+import servicios.pensiones.ServicioPensiones;
 
 
 public class pre_asiento_rua extends Pantalla {
@@ -29,12 +31,20 @@ public class pre_asiento_rua extends Pantalla {
     private Tabla tab_tabla2 = new Tabla();
     private SeleccionTabla sel_tab_tipo_nomina = new SeleccionTabla();
     private SeleccionTabla sel_tab_consuta_descuadre = new SeleccionTabla();
-    	private Reporte rep_reporte=new Reporte();
-	private SeleccionFormatoReporte sef_reporte=new SeleccionFormatoReporte();
-        private Map p_parametros=new HashMap();
+    private Reporte rep_reporte=new Reporte();
+    private SeleccionFormatoReporte sef_reporte=new SeleccionFormatoReporte();
+    private Map p_parametros=new HashMap();
+    private String p_con_lugar_debe = utilitario.getVariable("p_con_lugar_debe");
+    private String p_con_lugar_haber = utilitario.getVariable("p_con_lugar_haber");
     
     	@EJB
 	private ServicioNomina ser_nomina = (ServicioNomina) utilitario.instanciarEJB(ServicioNomina.class);
+        
+        @EJB
+        private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
+        
+        @EJB
+        private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
 
     public pre_asiento_rua() {    
         
@@ -58,15 +68,15 @@ public class pre_asiento_rua extends Pantalla {
 	bar_botones.agregarBoton(bot_generar_asiento);
 
         Boton bot_cerrar_asiento=new Boton();
-	bot_cerrar_asiento.setMetodo("generarAsiento");
+	bot_cerrar_asiento.setMetodo("cerrarAsiento");
 	bot_cerrar_asiento.setValue("Cerrar Asiento Contable");
 	bot_cerrar_asiento.setIcon("ui-icon-mail-closed");
 	bar_botones.agregarBoton(bot_cerrar_asiento);
 
         Boton bot_transferir_asiento=new Boton();
-	bot_transferir_asiento.setMetodo("generarAsiento");
 	bot_transferir_asiento.setValue("Transferir Asiento Contable");
-	bot_transferir_asiento.setIcon("ui-icon-mail-closed");
+	bot_transferir_asiento.setIcon("ui-icon-transferthick-e-w");
+        bot_transferir_asiento.setMetodo("transferirAsiento");
 	bar_botones.agregarBoton(bot_transferir_asiento);
 
         Boton bot_consulta_descuadre=new Boton();
@@ -97,6 +107,7 @@ public class pre_asiento_rua extends Pantalla {
         tab_tabla2.getColumna("ide_gelua").setCombo("con_lugar_aplicac","ide_cnlap","nombre_cnlap","");
         tab_tabla2.getColumna("ide_cndpc").setCombo("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc||' '||nombre_cndpc", "");
         tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
+        tab_tabla2.getColumna("ide_cndpc").setLectura(true);
         tab_tabla2.setColumnaSuma("DEBE_NRDEA,HABER_NRDEA");
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
@@ -189,6 +200,64 @@ public void consultaDescuadre(){
                       }
                       
 }
+   public void transferirAsiento(){
+       String maximo_cabecera ="";
+       String maximo_detalle ="";
+       String valor_aplica = "";
+       String valor_debe = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("debe_nrdea"),2);
+       String valor_haber = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("haber_nrdea"),2);
+       // System.out.println("debe "+valor_debe);
+       // System.out.println("haber "+valor_haber);
+       if (valor_debe.equals(valor_haber)){
+      // String numero_secuencial = ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina");
+       TablaGenerica tab_cabecera_asiento = utilitario.consultar("select IDE_NRCAA, FECHA_ASIENTO_NRCAA, OBSERVACION_NRCAA from nrh_cabecera_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
+       TablaGenerica tab_detalle_asiento = utilitario.consultar("select ide_nrdea, IDE_NRCAA, ide_cndpc, ide_gelua, debe_nrdea, haber_nrdea  from nrh_detalle_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
+      // System.out.println("fecha: "+tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"));
+       TablaGenerica codigo_maximo_cabecera = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("con_cab_comp_cont", "ide_cnccc"));
+       maximo_cabecera = codigo_maximo_cabecera.getValor("maximo");
+       
+       try{
+       utilitario.getConexion().ejecutarSql("INSERT INTO con_cab_comp_cont(ide_cnccc, ide_usua, fecha_trans_cnccc, observacion_cnccc, ide_sucu, ide_empr, ide_cntcm, ide_cneco, fecha_siste_cnccc, hora_sistem_cnccc, usuario_ingre, numero_cnccc )\n" +
+                                            "VALUES ("+maximo_cabecera+", "+utilitario.getVariable("IDE_USUA")+", '"+tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA")+"', '"+tab_cabecera_asiento.getValor("OBSERVACION_NRCAA")+"'"
+                                                      + " , "+utilitario.getVariable("ide_sucu")+",  "+utilitario.getVariable("ide_empr")+", "+utilitario.getVariable("p_reh_tipo_comprobante_nomina")+", "+utilitario.getVariable("p_reh_estado_comprobante_nomina")+" "
+                                                      + " ,'"+utilitario.getFechaActual()+"', '"+utilitario.getHoraActual()+"', '"+utilitario.getVariable("NICK")+"', '"+ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina"))+"'  )");
+       TablaGenerica tab_consulta_cabecera = utilitario.consultar("select 1 as codigo, max(ide_cnccc) as maximo from con_cab_comp_cont");
+      // int numero_ultimo = Integer.parseInt(tab_consulta_cabecera.getValor("maximo"));
+             
+            for (int i =0; i<tab_detalle_asiento.getTotalFilas(); i++){
+                TablaGenerica codigo_maximo_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("con_det_comp_cont", "ide_cndcc"));
+                maximo_detalle = codigo_maximo_detalle.getValor("maximo");
+                if(tab_detalle_asiento.getValor(i, "ide_gelua").equals(p_con_lugar_debe)){
+                    valor_aplica = tab_detalle_asiento.getValor(i, "debe_nrdea");
+                }
+                else {
+                    valor_aplica = tab_detalle_asiento.getValor(i, "haber_nrdea");
+                }
+                utilitario.getConexion().ejecutarSql("INSERT INTO con_det_comp_cont(ide_cndcc, ide_empr, ide_sucu, ide_cnccc, ide_cndpc, ide_cnlap, valor_cndcc)\n" +
+                                                     "VALUES ( "+maximo_detalle+", "+utilitario.getVariable("ide_empr")+", "+utilitario.getVariable("ide_sucu")+", "+tab_consulta_cabecera.getValor("maximo")+", "+tab_detalle_asiento.getValor(i, "ide_cndpc")+"    "
+                                                             + ", "+tab_detalle_asiento.getValor(i, "ide_gelua")+", "+valor_aplica+")");
+            }
+            tab_tabla.setValor("IDE_ASIENTO_RUA", maximo_cabecera);
+            tab_tabla.setValor("TRASPASO_NRCAA", "true");
+            tab_tabla.setValor("ESTADO_NRCAA", "false");
+            tab_tabla.modificar(tab_tabla.getFilaActual());
+            utilitario.addUpdateTabla(tab_tabla, "IDE_ASIENTO_RUA","");	
+            utilitario.addUpdateTabla(tab_tabla, "TRASPASO_NRCAA","");	
+            utilitario.addUpdateTabla(tab_tabla, "ESTADO_NRCAA","");	
+            utilitario.addUpdate("tab_tabla");
+            tab_tabla.guardar();
+            guardarPantalla();
+           // utilitario.agregarMensaje("Se ha transferido correctamente", "");
+         } catch(Exception e){
+           utilitario.agregarMensajeError("Atencion", "No se pudo guardar " +e );
+           
+         }
+       }
+       else {
+            utilitario.agregarNotificacionInfo("Mensaje", "Los valores asignados al debe y al haber no son correctos. Por favor verifique.");
+        }
+   }
+ 
     @Override
     public void insertar() {
          if(tab_tabla.isFocus()){
@@ -216,22 +285,30 @@ public void consultaDescuadre(){
 
     @Override
     public void eliminar() {
+      if (tab_tabla.getValor("ESTADO_NRCAA").equals("false")){
         if(tab_tabla.isFocus()){
-
             utilitario.getConexion().ejecutarSql("delete from NRH_DETALLE_ASIENTO where IDE_NRCAA ="+tab_tabla.getValor("IDE_NRCAA"));
             utilitario.getConexion().ejecutarSql("delete from NRH_CABECERA_ASIENTO where IDE_NRCAA ="+tab_tabla.getValor("IDE_NRCAA"));    
             tab_tabla.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla2");
         }
+    } else{
+          utilitario.agregarMensajeError("No se puede eliminar", "El asiento ya se encuentra cerrado");
+      }
     }
     public void cerrarAsiento(){
-                tab_tabla.setValor("ESTADO_NRCAA", "true");
-                                        
+        
+        if (tab_tabla.getValor("TRASPASO_NRCAA").equals("true")){            
+                        tab_tabla.setValor("ESTADO_NRCAA", "true");                
                         tab_tabla.modificar(tab_tabla.getFilaActual());
                         tab_tabla.guardar();
                         guardarPantalla();
                         utilitario.addUpdate("tab_tabla");
+        }
+        else {
+            utilitario.agregarMensajeError("Debe transferir el asiento contable para poder cerrarlo", "");
+        }
     }
     public void aceptarAsiento (){
         		String str_seleccionado = sel_tab_tipo_nomina.getSeleccionados();
