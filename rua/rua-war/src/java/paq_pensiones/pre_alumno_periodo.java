@@ -9,6 +9,7 @@ package paq_pensiones;
  *
  */
 
+import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -95,7 +96,7 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_reces").setLectura(true);
         tab_tabla1.getColumna("ide_geper").setLectura(true);
         tab_tabla1.getColumna("gen_ide_geper").setLectura(true);
-        tab_tabla1.getColumna("ide_geper").setFiltro(true);
+        tab_tabla1.getColumna("ide_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
@@ -171,7 +172,7 @@ public class pre_alumno_periodo extends Pantalla{
         dia_emision.setTitle("Seleccion los parámetros");
         dia_emision.setWidth("25%");
         dia_emision.setHeight("30%");
-      //  dia_emision.getBot_aceptar().setMetodo("aceptarModalidad");
+        dia_emision.getBot_aceptar().setMetodo("generarConceptos");
         dia_emision.setResizable(false);
         
         com_conceptos.setId("com_conceptos");
@@ -207,7 +208,20 @@ public class pre_alumno_periodo extends Pantalla{
     
     }
     public void abrirDialogoConcepto(){
+        if (tab_tabla1.getValorSeleccionado() != null){
         dia_emision.dibujar();
+        }
+        else {
+            utilitario.agregarMensajeError("No se puede continuar", "Debe filtrar los alumnos a los que desea generar los rubros");
+        }
+    }
+    public void generarConceptos(){
+        
+          int l_alumno = tab_tabla1.getTotalFilasVisibles();
+          for (int i=0; i<tab_tabla1.getTotalFilasVisibles(); i++){
+//              System.out.println("alum "+alumnos);
+          }
+        
     }
     public void filtroAlumno(){
         String cm_per_aca = "";
