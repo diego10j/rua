@@ -116,6 +116,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("6", "p_reh_rubro_valor_recibir", "Indica el rubro valor a recibir", "37", "reh_cab_rubro", "ide_rhcru", "nombre_rhcru"));
         lis_parametros.add(new Parametro("6", "p_reh_estado_pre_nomina", "Indica el estado pre nomina del rol ", "0", "reh_estado_rol", "ide_rhero", "nombre_rhero"));
         lis_parametros.add(new Parametro("6", "p_reh_estado_cerrada", "Indica el estado cerrado del rol ", "2", "reh_estado_rol", "ide_rhero", "nombre_rhero"));
+        lis_parametros.add(new Parametro("6", "p_reh_tipo_comprobante_nomina", "Indica el tipo de comprobante de nominas ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
+        lis_parametros.add(new Parametro("6", "p_reh_estado_comprobante_nomina", "Indica el estado de comprobante ", "0", "con_estado_compro", "ide_cneco", "nombre_cneco"));
 // luis toapanta pamatros nuevos nomina desde aqui
         lis_parametros.add(new Parametro("6", "p_nrh_tipo_garante_empl_biess", "Indica el tipo de garante Empleado del Biess ", "1", "NRH_TIPO_GARANTE", "IDE_NRTIG", "DETALLE_NRTIG"));
         lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_escenario", "Indica el tipo de nomina NORMAL ", "5", "NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
