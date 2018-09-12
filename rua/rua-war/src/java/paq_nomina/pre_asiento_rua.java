@@ -247,7 +247,7 @@ public void consultaDescuadre(){
             utilitario.addUpdate("tab_tabla");
             tab_tabla.guardar();
             guardarPantalla();
-           // utilitario.agregarMensaje("Se ha transferido correctamente", "");
+            utilitario.agregarMensaje("Se ha transferido correctamente", "");
          } catch(Exception e){
            utilitario.agregarMensajeError("Atencion", "No se pudo guardar " +e );
            
