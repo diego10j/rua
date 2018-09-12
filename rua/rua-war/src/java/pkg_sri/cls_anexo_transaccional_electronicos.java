@@ -505,7 +505,7 @@ public class cls_anexo_transaccional_electronicos {
                         }
 
                         detalleVentas.appendChild(crearElemento("tipoComprobante", null, "04"));
-                        detalleVentas.appendChild(crearElemento("tipoEmision", null, "F"));
+                        detalleVentas.appendChild(crearElemento("tipoEmision", null, "E"));
                         detalleVentas.appendChild(crearElemento("numeroComprobantes", null, tab_notaC.getValor(i, "numcomprobantes")));
                         detalleVentas.appendChild(crearElemento("baseNoGraIva", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_no_objeto_iva_cpcno"))));
                         detalleVentas.appendChild(crearElemento("baseImponible", null, utilitario.getFormatoNumero(tab_notaC.getValor(i, "base_tarifa0_cpcno"))));
