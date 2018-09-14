@@ -315,5 +315,15 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join act_clasificacion as l on l.ide_accls=a.ide_accls)as c on c.ide_acafi=b.ide_acafi\n"
                 + "order by a.secuencial_acact,a.codigo_acact,a.fecha_asigna_acact";
     }
-
+   public void calcularTotalResidual(double valor_total, String p_con_por_valor_residual, String ide_acafi){
+      double valor_residual=0;
+     try{
+       valor_residual = (valor_total *  Double.parseDouble(p_con_por_valor_residual))/ 100;
+       utilitario.getConexion().ejecutarSql("update act_activo_fijo\n" +
+                                           "set recidual_acafi  = "+valor_residual+"\n" +
+                                           "where ide_acafi in("+ide_acafi+");");
+     } catch(Exception e){
+         
+     }
+    }
 }
