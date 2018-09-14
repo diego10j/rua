@@ -94,7 +94,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("4", "p_act_casa", "Indica la casa a la cual pertenece ", "4", "gen_casa", "ide_gecas", "nombre_gecas"));
         lis_parametros.add(new Parametro("4", "p_act_obra", "Indica la obra a la cual pertenece ", "1", "gen_obra", "ide_geobr", "nombre_geobr"));
         lis_parametros.add(new Parametro("4", "p_act_estado_activo_fijo", "Indica el estado del activo fijo ", "0", "act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf"));
-         lis_parametros.add(new Parametro("4", "p_act_activo_fijo", "Indica si es activo fijo o bien", "1", "act_clasificacion", "ide_accls", "nombre_accls"));
+        lis_parametros.add(new Parametro("4", "p_act_estado_activo_valora_deprec", "Indica el los estados que tienen los activos para valorar la depreciacion de los mismos. ", "0", "act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf"));
+        lis_parametros.add(new Parametro("4", "p_act_activo_fijo", "Indica si es activo fijo o bien", "1", "act_clasificacion", "ide_accls", "nombre_accls"));
+        lis_parametros.add(new Parametro("4", "p_act_porcen_valor_residual", "Porcentaje de valoracion de activos fijos", "30"));
         /*
          * COMPRAS MODULO =5
          *
