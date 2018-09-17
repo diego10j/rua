@@ -444,7 +444,14 @@ public class Parametros {
         // PRODUCCION = 14
         
           lis_parametros.add(new Parametro("14", "p_prod_numero_secuencial", "Indica el numero secuencial para cualquier documento", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_sec_orden_pro", "Indica el numero secuencial para cualquier documento de orden de produccion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
+          
+           
+        
+          
+           
 
+          
         
         return lis_parametros;
     }
