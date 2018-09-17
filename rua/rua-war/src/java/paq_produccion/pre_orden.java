@@ -104,8 +104,6 @@ public class pre_orden extends Pantalla{
           sel_tab_proforma.setWidth("80%");
           sel_tab_proforma.setHeight("70%");
           sel_tab_proforma.setRadio();
- //         sel_tab_proforma.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
-//          sel_tab_proforma.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
           sel_tab_proforma.getBot_aceptar().setMetodo("aceptarProforma");
           agregarComponente(sel_tab_proforma);
     }
@@ -206,7 +204,9 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.getColumna("ide_geper").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
         tab_orden_produccion.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado()); 
         tab_orden_produccion.getColumna("numero_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
-        tab_orden_produccion.getColumna("numero_prorp").setEtiqueta();//etiqueta
+        tab_orden_produccion.getColumna("numero_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
+        tab_orden_produccion.getColumna("numero_modulo_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
+        tab_orden_produccion.getColumna("numero_modulo_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
         tab_orden_produccion.setTipoFormulario(true);
         tab_orden_produccion.getGrid().setColumns(4);
         tab_orden_produccion.agregarRelacion(tab_detalle_orden);  
@@ -322,7 +322,9 @@ public class pre_orden extends Pantalla{
         if(tab_orden_produccion.isFocus()){
         tab_orden_produccion.insertar();
         TablaGenerica tab_secuencial=utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_sec_orden_pro")));
-            tab_orden_produccion.setValor("numero_prorp", tab_secuencial.getValor("nuevo_secuencial"));
+        TablaGenerica numero_secuencial = utilitario.consultar(ser_produccion.getNumeroSecuencial("numero_prorp", "prod_orden_produccion"));
+        tab_orden_produccion.setValor("numero_prorp", numero_secuencial.getValor("numero"));
+        tab_orden_produccion.setValor("numero_modulo_prorp", tab_secuencial.getValor("nuevo_secuencial"));
         }
         else if(tab_detalle_orden.isFocus()){
             tab_detalle_orden.insertar();
@@ -347,7 +349,7 @@ public class pre_orden extends Pantalla{
     public void guardar() {
         if (int_opcion==1) {
        if (tab_orden_produccion.guardar()){
-       utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
+      // utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
  
           tab_detalle_orden.guardar();
            guardarPantalla();
