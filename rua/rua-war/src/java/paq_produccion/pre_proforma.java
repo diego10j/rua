@@ -74,7 +74,7 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("fecha_prpro").setValorDefecto(utilitario.getFechaActual());// fecha actual x defecto
         //Para visualizacion de datos en la pantalla nombres de etiquetas //
         tab_proforma.getColumna("IDE_PRPRO").setNombreVisual("CODIGO");
-        tab_proforma.getColumna("IDE_GTEMP").setNombreVisual("EMPLEADO");
+        tab_proforma.getColumna("IDE_GTEMP").setNombreVisual("EMPLEADO ENCARGADO");
         tab_proforma.getColumna("IDE_GTCAR").setNombreVisual("CARGO");
         tab_proforma.getColumna("NUMERO_PRPRO ").setNombreVisual("NUMERO SECUENCIAL");
         tab_proforma.getColumna("SOLITADO_POR_PRPRO").setNombreVisual("SOLICITADO POR");
@@ -88,7 +88,7 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("SUBTOTAL_PRPRO").setNombreVisual("SUBTOTAL");
         tab_proforma.getColumna("IVA_PRPRO").setNombreVisual("IVA");
         tab_proforma.getColumna("OBSERVACION_PRPRO").setNombreVisual("OBSERVACION");
-        tab_proforma.getColumna("PRO_IDE_PRVAT").setNombreVisual("VALIDEZ TIEMPO");
+        tab_proforma.getColumna("PRO_IDE_PRVAT").setNombreVisual("TIEMPO ENTREGA");
         ///Para visualizacion de datos fin//
         tab_proforma.setTipoFormulario(true);
         tab_proforma.getGrid().setColumns(4);// Poner cuatro columnas
@@ -101,7 +101,6 @@ public class pre_proforma extends Pantalla {
         pat_proforma.setPanelTabla(tab_proforma);
         
        
-        
         
         tab_detalle_proforma.setId("tab_detalle_proforma");
         tab_detalle_proforma.setTabla("prod_detalle_proforma","ide_prdep",2);
@@ -299,7 +298,6 @@ public class pre_proforma extends Pantalla {
     public void setVipdf_proforma(VisualizarPDF vipdf_proforma) {
         this.vipdf_proforma = vipdf_proforma;
     }
-    
     
 }
 
