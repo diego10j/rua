@@ -73,13 +73,13 @@ public class pre_orden extends Pantalla{
           menup.setMenuPanel("ORDEN PRODUCION", "22%");
           menup.setTransient(true);
           menup.agregarItem("ORDEN", "dibujaOrden", "ui-icon-cart");
-          menup.agregarSubMenu("ORDENES DE PRODUCION");
-          
-          menup.agregarItem("CONTROL PRODUCCION", "dibujaControl", "ui-icon-home");
           menup.agregarSubMenu("CONTROL PRODUCCION");
           
-          menup.agregarItem("PROFORMA ORDEN", "dibujaProforma", "ui-icon-note");
+          menup.agregarItem("CONTROL PRODUCCION", "dibujaControl", "ui-icon-home");
           menup.agregarSubMenu("PROFORMA ORDEN");
+          
+          menup.agregarItem("PROFORMA ORDEN", "dibujaProforma", "ui-icon-note");
+         
         
         agregarComponente(menup);   
         
