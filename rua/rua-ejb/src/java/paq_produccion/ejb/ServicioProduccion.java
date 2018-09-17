@@ -49,17 +49,26 @@ public String getSecuencialModulo(String ide_gemos) {
 "(case when aplica_abreviatura_gemos=true then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
 "nom_geani||'-'||numero_secuencial_gemos end) as nuevo_secuencial\n" +
 "from gen_modulo_secuencial a, gen_anio b \n" +
-"where a.ide_gemos= b.ide_geani\n" +
+"where a.ide_geani= b.ide_geani\n" +
 "and ide_gemos="+ide_gemos;
+        //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
-        
-         }
+                 }
+
 
 public String getActualizarSecuencial(String ide_gemos) {
         String sql = "";
         sql = "update gen_modulo_secuencial set  numero_secuencial_gemos=numero_secuencial_gemos+1 where ide_gemos="+ide_gemos;
         return sql;
     }
-
-
+public String getColor() {
+        String sql = "";
+        sql = "select ide_prcol, detallete_prcol from prod_color order by detallete_prcol";
+        return sql;
+    }
+public String getOrdenPro() {
+        String sql = "";
+        sql = "select ide_prorp,numero_prorp from prod_orden_produccion order by numero_prorp";
+        return sql;
+    }
 }
