@@ -176,6 +176,8 @@ public class pre_orden extends Pantalla{
           tab_control_produccion.setTipoFormulario(true);
           tab_control_produccion.getGrid().setColumns(4);
           tab_control_produccion.setHeader("CONTROL PRODUCCION");
+          tab_control_produccion.getColumna("numero_prcop").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
+          tab_control_produccion.getColumna("numero_prcop").setEtiqueta();;
           tab_control_produccion.dibujar();
       
           
@@ -328,6 +330,7 @@ public class pre_orden extends Pantalla{
         }
         else if(tab_detalle_orden.isFocus()){
             tab_detalle_orden.insertar();
+            
         }
                                
     }
@@ -335,6 +338,8 @@ public class pre_orden extends Pantalla{
       if(int_opcion==2) {
           if(tab_control_produccion.isFocus()){
               tab_control_produccion.insertar();
+              TablaGenerica tab_secuencial=utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_control_pro")));
+              tab_control_produccion.setValor("numero_prcop", tab_secuencial.getValor("nuevo_secuencial"));
           }
       }   
       if(int_opcion==3)
