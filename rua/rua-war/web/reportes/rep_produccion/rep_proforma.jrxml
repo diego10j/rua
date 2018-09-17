@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="126"/>
+	<property name="ireport.y" value="179"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -39,7 +39,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_prpro,nombre_cndfp,identificac_geper,nom_geper,direccion_geper,telefono_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
-g.detalle_prvat as validez,numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,l.detalle_prvat as tiempo
+g.detalle_prvat as validez,numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,observacion_prpro,nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,l.detalle_prvat as tiempo
 from prod_proforma a,con_deta_forma_pago b,gen_persona c, gth_empleado d,gth_cargo f,prod_validez_tiempo g,inv_unidad h,inv_articulo i,prod_detalle_proforma k,prod_validez_tiempo l
 where a.ide_cndfp=b.ide_cndfp and a.ide_geper=c.ide_geper and a.ide_gtemp = d.ide_gtemp and a.ide_gtcar = f.ide_gtcar
 and a.ide_prvat  = g.ide_prvat  and a.ide_prpro  = k.ide_prpro and k.ide_inuni = h.ide_inuni and k.ide_inarti = i.ide_inarti
@@ -294,9 +294,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="45" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="2b61f0e8-32ce-49f0-8485-a4fbead2d518" x="2" y="0" width="553" height="45"/>
+				<reportElement uuid="2b61f0e8-32ce-49f0-8485-a4fbead2d518" x="2" y="0" width="553" height="33"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
@@ -305,7 +305,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="177" splitType="Stretch">
+		<band height="241" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="efbc2023-fac1-4f8c-8495-61e71d423b0a" x="478" y="0" width="77" height="20"/>
 			</rectangle>
@@ -336,7 +336,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[     TOTAL:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="42" y="138" width="149" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="109" y="197" width="149" height="1"/>
 			</line>
 			<staticText>
 				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="373" y="0" width="105" height="20"/>
@@ -351,13 +351,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[     SubTotal:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="50ba4bef-c9d2-4ec7-9a7f-ca0d0ff6a5f2" x="71" y="155" width="77" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Responsable de:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="373" y="20" width="105" height="20"/>
@@ -402,8 +395,8 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[     IVA 12%:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="33abbf0e-4ee8-43fb-aeec-1aba1c2b52fd" x="56" y="139" width="120" height="20"/>
-				<textElement/>
+				<reportElement uuid="33abbf0e-4ee8-43fb-aeec-1aba1c2b52fd" x="123" y="197" width="120" height="20"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_empleado}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -487,6 +480,34 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tiempo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="0" y="100" width="41" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="7" y="159" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Atentamente,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="95" y="218" width="174" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ MECANOPLAST DON BOSCO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0e32e755-74d1-4be6-9a06-198ba069e2c1" x="2" y="120" width="150" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_prpro}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
