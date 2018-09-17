@@ -63,7 +63,7 @@ public String getActualizarSecuencial(String ide_gemos) {
     }
 public String getColor() {
         String sql = "";
-        sql = "select ide_prcol, detallete_prcol from prod_color order by detallete_prcol";
+        sql = "select ide_prcol, detalle_prcol from prod_color order by detalle_prcol";
         return sql;
     }
 public String getOrdenPro() {
@@ -71,4 +71,11 @@ public String getOrdenPro() {
         sql = "select ide_prorp,numero_prorp from prod_orden_produccion order by numero_prorp";
         return sql;
     }
+public String getProforma(){
+    String sql = "";
+    sql = "select ide_prpro, numero_prpro, fecha_prpro, b.nom_geper, total_prpro, observacion_prpro\n" +
+          "from prod_proforma a\n" +
+          "left join gen_persona b on a.ide_geper = b.ide_geper";
+    return sql;
+}
 }
