@@ -278,18 +278,41 @@ public class pre_orden extends Pantalla{
     
     @Override
     public void aceptarReporte() {
-//Se ejecuta cuando se selecciona un reporte de la lista        
-        if (rep_reporte.getReporteSelecionado().equals("Orden de Produccion")) {
-            if (rep_reporte.isVisible()) {
-                parametro = new HashMap();
-                rep_reporte.cerrar();
-                parametro.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
-                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                sel_rep.dibujar();
-                utilitario.addUpdate("sel_rep");
-            
-            }
+//Se ejecuta cuando se selecciona un reporte de la lista
+        switch (int_opcion) {
+            case 1:
+
+                if (rep_reporte.getReporteSelecionado().equals("Orden de Produccion")) {
+                    if (rep_reporte.isVisible()) {
+                        parametro = new HashMap();
+                        rep_reporte.cerrar();
+                        parametro.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
+                        sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                        sel_rep.dibujar();
+                        utilitario.addUpdate("sel_rep");
+                        
+                    }
+                }                
+              break;
+            case 2:
+                if (rep_reporte.getReporteSelecionado().equals("Control de Produccion")) {
+                    if (rep_reporte.isVisible()) {
+                        parametro = new HashMap();
+                        rep_reporte.cerrar();
+                        parametro.put("ide_prcop", Integer.parseInt(tab_control_produccion.getValorSeleccionado()));
+                        sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                        sel_rep.dibujar();
+                        utilitario.addUpdate("sel_rep");
+                    }
+                }  
+                break;
+            default:
+                 utilitario.agregarMensajeError("Debe seleccionar el menú Control Produccion para imprimir este reporte", "");
+                break;
         }
+    
+    
+    
     }
       
    @Override
