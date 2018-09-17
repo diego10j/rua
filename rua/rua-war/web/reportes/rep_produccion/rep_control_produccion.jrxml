@@ -41,8 +41,7 @@ producto_bueno_prcop,cantidad_empaque_prcop,producto_mala_calidad_prcop,cantidad
 from prod_control_produccion a,prod_maquina  b,gth_empleado c,prod_turno d,prod_orden_produccion e,inv_articulo f,prod_turno g
 where a.ide_prmaq= b.ide_prmaq and a.ide_gtemp= c.ide_gtemp and a.ide_prtur=d.ide_prtur and a.ide_prorp=e.ide_prorp and a.ide_inarti=f.ide_inarti
 and a.ide_prtur=g.ide_prtur
-and a.ide_prcop=$P{ide_prcop}
-]]>
+and a.ide_prcop=$P{ide_prcop}]]>
 	</queryString>
 	<field name="ide_prcop" class="java.lang.Long"/>
 	<field name="fecha_prcop" class="java.sql.Date"/>
@@ -74,9 +73,9 @@ and a.ide_prcop=$P{ide_prcop}
 	<title>
 		<band height="86" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="324" y="1" width="228" height="85"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="238" y="0" width="228" height="85"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CONTROL DE PRODUCCIÓN]]></text>
 			</staticText>
@@ -95,19 +94,24 @@ and a.ide_prcop=$P{ide_prcop}
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement uuid="5026e175-a672-48fe-b338-38bd1e6206ae" x="465" y="35" width="85" height="17"/>
+				<reportElement uuid="5026e175-a672-48fe-b338-38bd1e6206ae" x="466" y="16" width="89" height="17"/>
 				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_prcop}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="465" y="52" width="85" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="466" y="33" width="89" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Versión 1]]></text>
 			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="db4273c1-c6cc-4e45-a035-b7be96192110" x="466" y="53" width="89" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
