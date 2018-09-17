@@ -11,6 +11,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -45,7 +46,7 @@ public class pre_orden extends Pantalla{
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private Map parametro = new HashMap();
-    
+    private SeleccionTabla sel_tab_proforma = new SeleccionTabla();
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones= (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class); 
   
@@ -96,6 +97,17 @@ public class pre_orden extends Pantalla{
        sel_rep.setId("sel_rep");
        agregarComponente(sel_rep);
           agregarComponente(rep_reporte);
+          
+          sel_tab_proforma.setId("sel_tab_proforma");
+          sel_tab_proforma.setTitle("PROFORMA");
+          sel_tab_proforma.setSeleccionTabla(ser_produccion.getProforma(), "ide_prpro");
+          sel_tab_proforma.setWidth("80%");
+          sel_tab_proforma.setHeight("70%");
+          sel_tab_proforma.setRadio();
+ //         sel_tab_proforma.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
+//          sel_tab_proforma.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
+          sel_tab_proforma.getBot_aceptar().setMetodo("aceptarProforma");
+          agregarComponente(sel_tab_proforma);
     }
       public void dibujaProforma(){
           int_opcion=3;
@@ -105,8 +117,17 @@ public class pre_orden extends Pantalla{
           tab_proforma_orden.setHeader("PROFORMA ORDEN");
           tab_proforma_orden.dibujar();
           
+          Grid gri_proformao = new Grid();
+          gri_proformao.setColumns(3);
+          Boton bot_busca_proforma = new Boton();
+          bot_busca_proforma.setValue("BUSCAR PROFORMA");
+          bot_busca_proforma.setIcon("ui-icon-search");
+          bot_busca_proforma.setMetodo("abrirProforma");
+          gri_proformao.getChildren().add(bot_busca_proforma);
+          
           PanelTabla pat_proforma_orden = new PanelTabla();
           pat_proforma_orden.setId("pat_proforma_orden");
+          pat_proforma_orden.getChildren().add(gri_proformao);
           pat_proforma_orden.setPanelTabla( tab_proforma_orden);
           
           
@@ -118,6 +139,30 @@ public class pre_orden extends Pantalla{
         
          
        
+      }
+      public void abrirProforma(){
+          if (tab_proforma_orden.isFilaInsertada() == false){
+              utilitario.agregarMensajeError("Debe seleccion una Orden de Produccion", "");
+          } else {
+              sel_tab_proforma.dibujar();
+          }
+          
+      }
+      public void aceptarProforma(){
+           String ide_proforma = sel_tab_proforma.getValorSeleccionado();
+          TablaGenerica tab_proforma_gen = utilitario.consultar("select ide_prpro, numero_prpro, fecha_prpro, b.nom_geper, total_prpro, observacion_prpro\n" +
+                                                                "from prod_proforma a\n" +
+                                                                "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+                                                                "where ide_prpro = "+ide_proforma+"");
+          
+
+          
+              tab_proforma_orden.setValor("ide_prpro", tab_proforma_gen.getValor("ide_prpro"));
+              tab_proforma_orden.modificar(tab_proforma_orden.getFilaActual());
+//              utilitario.addUpdateTabla(tab_proforma_orden, "prod_proforma_orden", "ide_prpro");
+              utilitario.addUpdate("tab_proforma_orden");
+              sel_tab_proforma.cerrar();
+          
       }
       public  void dibujaControl(){
           int_opcion=2;
@@ -398,6 +443,14 @@ public class pre_orden extends Pantalla{
 
     public void setAut_ord_produ(AutoCompletar aut_ord_produ) {
         this.aut_ord_produ = aut_ord_produ;
+    }
+
+    public SeleccionTabla getSel_tab_proforma() {
+        return sel_tab_proforma;
+    }
+
+    public void setSel_tab_proforma(SeleccionTabla sel_tab_proforma) {
+        this.sel_tab_proforma = sel_tab_proforma;
     }
     
 }   
