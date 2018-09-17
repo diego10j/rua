@@ -46,11 +46,11 @@ public String getOrdenProduccion() {
 public String getSecuencialModulo(String ide_gemos) {
         String sql = "";
         sql = "select a.ide_gemos,nom_geani,numero_secuencial_gemos,abreviatura_gemos,aplica_abreviatura_gemos,\n" +
-"(case when aplica_abreviatura_gemos=true then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
-"nom_geani||'-'||numero_secuencial_gemos end) as nuevo_secuencial\n" +
+"(case when aplica_abreviatura_gemos=false then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
+"abreviatura_gemos||' - '||'0'||''||numero_secuencial_gemos end) as nuevo_secuencial\n" +
 "from gen_modulo_secuencial a, gen_anio b \n" +
 "where a.ide_geani= b.ide_geani\n" +
-"and ide_gemos="+ide_gemos;
+"and ide_gemos ="+ide_gemos;
         //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
                  }
@@ -68,7 +68,7 @@ public String getColor() {
     }
 public String getOrdenPro() {
         String sql = "";
-        sql = "select ide_prorp,numero_prorp from prod_orden_produccion order by numero_prorp";
+        sql = "select ide_prorp, numero_prorp from prod_orden_produccion order by numero_prorp";
         return sql;
     }
 public String getProforma(){
@@ -76,6 +76,20 @@ public String getProforma(){
     sql = "select ide_prpro, numero_prpro, fecha_prpro, b.nom_geper, total_prpro, observacion_prpro\n" +
           "from prod_proforma a\n" +
           "left join gen_persona b on a.ide_geper = b.ide_geper";
+    return sql;
+}
+public String getNumeroSecuencial(String campo_numero, String tabla){
+    String sql = "";
+    sql="select ((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1) as maximo,\n" +
+        "length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') as longitud,\n" +
+        "(case when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 1 then '0000000'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 2 then '000000'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 3 then '00000'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 4 then '0000'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 5 then '000'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 6 then '00'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "when length(((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)||'') = 7 then '0'||((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1)\n" +
+        "end) as numero from "+tabla+"";
     return sql;
 }
 }
