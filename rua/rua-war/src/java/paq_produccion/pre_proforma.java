@@ -76,7 +76,7 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("IDE_PRPRO").setNombreVisual("CODIGO");
         tab_proforma.getColumna("IDE_GTEMP").setNombreVisual("EMPLEADO ENCARGADO");
         tab_proforma.getColumna("IDE_GTCAR").setNombreVisual("CARGO");
-        tab_proforma.getColumna("NUMERO_PRPRO ").setNombreVisual("NUMERO SECUENCIAL");
+        tab_proforma.getColumna("NUMERO_PRPRO ").setNombreVisual("NUMERO MÓDULO");
         tab_proforma.getColumna("SOLITADO_POR_PRPRO").setNombreVisual("SOLICITADO POR");
         tab_proforma.getColumna("POR_DESCUENTO_PRPRO").setNombreVisual("POR DESCUENTO");
         tab_proforma.getColumna("TOTAL_PRPRO").setNombreVisual("TOTAL");
@@ -254,7 +254,7 @@ public class pre_proforma extends Pantalla {
         if(tab_proforma.guardar()){
             
         if (tab_proforma.isFilaInsertada()){
-            utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(utilitario.getVariable("p_prod_numero_secuencial")));
+          //  utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(utilitario.getVariable("p_prod_numero_secuencial")));
             
         }
             tab_detalle_proforma.guardar();
