@@ -67,7 +67,11 @@ public class pre_orden extends Pantalla{
             aut_ord_produ.setSize(35);
 
             bar_botones.agregarComponente(aut_ord_produ);
-
+           Boton bot_clean = new Boton();
+           bot_clean.setIcon("ui-icon-cancel");
+           bot_clean.setTitle("Limpiar");
+           bot_clean.setMetodo("limpiar");
+           bar_botones.agregarComponente(bot_clean);
 
 
           menup.setMenuPanel("MENÚ PRODUCCIÓN", "22%");
@@ -390,6 +394,11 @@ public class pre_orden extends Pantalla{
           }
     }
 
+    public void limpiar() {
+        aut_ord_produ.limpiar();
+        menup.limpiar();
+    }
+    
     public Tabla getTab_orden_produccion() {
         return tab_orden_produccion;
     }
