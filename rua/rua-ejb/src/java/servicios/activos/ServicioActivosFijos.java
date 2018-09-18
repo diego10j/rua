@@ -323,7 +323,7 @@ public class ServicioActivosFijos extends ServicioBase {
                                            "set recidual_acafi  = "+valor_residual+"\n" +
                                            "where ide_acafi in("+ide_acafi+");");
      } catch(Exception e){
-         
      }
     }
+   
 }
