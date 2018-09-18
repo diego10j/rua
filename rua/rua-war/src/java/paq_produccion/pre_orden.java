@@ -84,7 +84,7 @@ public class pre_orden extends Pantalla{
         bot_anular.setValue("IMPRIMIR REPORTES");
         bot_anular.setMetodo("abrirListaReportes");
         
-        bar_botones.agregarBoton(bot_anular);
+      //  bar_botones.agregarBoton(bot_anular);
 
         rep_reporte.setId("rep_reporte");
        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
