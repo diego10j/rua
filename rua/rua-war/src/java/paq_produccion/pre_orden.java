@@ -287,8 +287,7 @@ public class pre_orden extends Pantalla{
                         parametro.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                         sel_rep.dibujar();
-                        utilitario.addUpdate("sel_rep");
-                        
+                        utilitario.addUpdate("sel_rep");     
                     }
                 }                
               break;
