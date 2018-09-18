@@ -13,6 +13,7 @@ import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -422,6 +423,7 @@ public class pre_activos_fijos extends Pantalla {
     public void dibujarDepreciar() {
         Grid grm = new Grid();
         grm.setColumns(3);
+       // grm.setWidth("0");
         grm.setStyle("font-size:14px;color:black;text-align:left;");
         grm.setMensajeInfo("Seleccione los parámetros para depreciar los activos");
         grm.getChildren().add(new Etiqueta("Fecha Valoración: "));
@@ -433,9 +435,54 @@ public class pre_activos_fijos extends Pantalla {
         bot_valorar.setValue("Valorar Depreciación");
         bot_valorar.setMetodo("dibujarSeleccionClaseActivos");
         
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
+        tab_tabla.setCampoPrimaria("ide_acafi");
+        tab_tabla.getColumna("ide_acafi").setVisible(true);
+        tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("ide_acafi").setFiltro(true);
+        tab_tabla.getColumna("act_ide_acafi").setVisible(false);
+        tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
+        tab_tabla.getColumna("nom_geper").setNombreVisual("CUSTODIO");
+        tab_tabla.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        tab_tabla.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla.getColumna("CASA").setFiltroContenido();
+        tab_tabla.getColumna("OBRA").setFiltroContenido();
+        tab_tabla.getColumna("CLASE").setFiltroContenido();
+        tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
+        tab_tabla.getColumna("SECUENCIAL").setFiltro(true);
+        tab_tabla.getColumna("SECUENCIAL").setAncho(2);
+        tab_tabla.getColumna("SECUENCIAL").setLongitud(2);
+        tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
+        tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla.getColumna("cantidad").alinearDerecha();
+        tab_tabla.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
+        tab_tabla.getColumna("valor_compra_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
+        tab_tabla.setLectura(true);
+        
+        tab_tabla.setRows(18);
+        tab_tabla.setTipoSeleccion(true);
+
+        //COLOR verde cantidad diferente de  1
+       // tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        
         grm.getChildren().add(cal_fecha_depreciacion);
         grm.getChildren().add(bot_valorar);
-        mep_menu.dibujar(6, "DEPRECIAR ACTIVOS FIJOS", grm);
+                
+        Grupo gru_grupo = new Grupo();
+        gru_grupo.getChildren().add(grm);
+        gru_grupo.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(6, "DEPRECIAR ACTIVOS FIJOS", gru_grupo);
     }
     
     public void calcularValorGrupal(){
