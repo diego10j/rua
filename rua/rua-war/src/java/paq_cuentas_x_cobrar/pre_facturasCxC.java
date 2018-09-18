@@ -689,10 +689,14 @@ public class pre_facturasCxC extends Pantalla {
     public void abrirAnularFactura() {
         if (tab_tabla.getValor("ide_cccfa") != null) {
             if (fcc_factura.isFacturaElectronica()) {
-                //valida que este en estado PENDIENTE
-                if (tab_tabla.getValor("nombre_ccefa") != null && !tab_tabla.getValor("nombre_ccefa").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) {
-                    utilitario.agregarMensajeError("No se puede anular la Factura Electrónica seleccionada", "Solo se pueden anular facturas en estado PENDIENTE");
-                    return;
+                //valida que este en estado PENDIENTE o AUTORIZADA            
+                if (tab_tabla.getValor("nombre_ccefa") != null) {
+                    if (!tab_tabla.getValor("nombre_ccefa").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) {
+                        if (!tab_tabla.getValor("nombre_ccefa").equals(EstadoComprobanteEnum.AUTORIZADO.getDescripcion())) {
+                            utilitario.agregarMensajeError("No se puede anular la Factura Electrónica seleccionada", "Solo se pueden anular FacturaS en estado PENDIENTE y AUTORIZADO");
+                            return;
+                        }
+                    }
                 }
             }
             con_confirma.getBot_aceptar().setMetodo("anularFactura");
@@ -1429,6 +1433,5 @@ public class pre_facturasCxC extends Pantalla {
     public void setSel_sucursales(SeleccionTabla sel_sucursales) {
         this.sel_sucursales = sel_sucursales;
     }
-    
 
 }

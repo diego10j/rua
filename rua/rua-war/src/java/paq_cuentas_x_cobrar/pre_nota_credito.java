@@ -708,11 +708,16 @@ public class pre_nota_credito extends Pantalla {
     public void abrirAnularNotas() {
         if (tab_tabla1.getValor("ide_cpcno") != null) {
             if (ser_factura.isFacturaElectronica(String.valueOf(com_pto_emision.getValue()))) {
-                //valida que este en estado PENDIENTE
-                if (tab_tabla1.getValor("nombre_cpeno") != null && !tab_tabla1.getValor("nombre_cpeno").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) {
-                    utilitario.agregarMensajeError("No se puede anular la Nota de Crédito Electrónica seleccionada", "Solo se pueden anular Notas de Crédito en estado PENDIENTE");
-                    return;
+                //valida que este en estado PENDIENTE o AUTORIZADA  
+                if (tab_tabla1.getValor("nombre_cpeno") != null) {
+                    if (!tab_tabla1.getValor("nombre_cpeno").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) {
+                        if (!tab_tabla1.getValor("nombre_cpeno").equals(EstadoComprobanteEnum.AUTORIZADO.getDescripcion())) {
+                            utilitario.agregarMensajeError("No se puede anular la Nota de Crédito Electrónica seleccionada", "Solo se pueden anular Notas de Crédito en estado PENDIENTE y AUTORIZADO");
+                            return;
+                        }
+                    }
                 }
+
             }
             con_confirma.getBot_aceptar().setMetodo("anularNota");
             con_confirma.dibujar();
