@@ -68,7 +68,7 @@ public String getColor() {
     }
 public String getOrdenPro() {
         String sql = "";
-        sql = "select ide_prorp, numero_prorp from prod_orden_produccion order by numero_prorp";
+        sql = "select ide_prorp, numero_modulo_prorp||' '||numero_prorp from prod_orden_produccion as orden_produccion order by numero_prorp ";
         return sql;
     }
 public String getProforma(){
