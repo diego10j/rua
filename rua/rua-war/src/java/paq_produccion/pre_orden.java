@@ -166,8 +166,9 @@ public class pre_orden extends Pantalla{
           int_opcion=2;
           tab_control_produccion.setId("tab_control_produccion");
           tab_control_produccion.setTabla("prod_control_produccion","ide_prcop",3);
-          tab_control_produccion.setCondicion("ide_prcop=" + aut_ord_produ.getValor());
+         // tab_control_produccion.setCondicion("ide_prcop=" + aut_ord_produ.getValor());
           tab_control_produccion.getColumna("ide_prorp").setCombo(ser_produccion.getOrdenProduccion());
+          tab_control_produccion.getColumna("ide_inarti").setCombo(ser_adquisiciones.getMaterial("", ""));
           tab_control_produccion.getColumna("ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
           tab_control_produccion.getColumna("gth_ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
           tab_control_produccion.getColumna("gth_ide_gtemp2").setCombo(ser_adquisiciones.getDatosEmpleado());
@@ -180,6 +181,7 @@ public class pre_orden extends Pantalla{
           tab_control_produccion.getColumna("numero_prcop").setEtiqueta();;
           tab_control_produccion.dibujar();
       
+          
           
           PanelTabla pat_control_produccion = new PanelTabla();
           pat_control_produccion.setId("pat_control_produccion");
