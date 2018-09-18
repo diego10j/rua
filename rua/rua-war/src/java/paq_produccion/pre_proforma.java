@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package paq_produccion;
 
 import framework.aplicacion.TablaGenerica;
@@ -176,10 +177,10 @@ public class pre_proforma extends Pantalla {
               suma=valor_precio*valor_unitario;
               
 
-              tab_detalle_proforma.setValor("valor_total_prdep", suma+""); 
+              tab_detalle_proforma.setValor("valor_total_prdep", utilitario.getFormatoNumero(suma, 2)+""); 
               utilitario.addUpdateTabla(tab_detalle_proforma, "valor_total_prdep","");
               subtotal=Double.parseDouble(tab_detalle_proforma.getSumaColumna("valor_total_prdep")+"");
-              tab_proforma.setValor("subtotal_prpro",subtotal+"");
+              tab_proforma.setValor("subtotal_prpro",utilitario.getFormatoNumero(subtotal, 2)+"");
               utilitario.addUpdateTabla(tab_proforma, "subtotal_prpro","");
               CalcularTotales();
               
@@ -201,8 +202,8 @@ public class pre_proforma extends Pantalla {
                             valor_total=(subtotal-descuento)+valor_iva_calculado;
               
               //Para sumar en el padre//
-              tab_proforma.setValor("iva_prpro",valor_iva_calculado+"");
-              tab_proforma.setValor("total_prpro",valor_total+"");
+              tab_proforma.setValor("iva_prpro",utilitario.getFormatoNumero(valor_iva_calculado, 2)+"");
+              tab_proforma.setValor("total_prpro",utilitario.getFormatoNumero(valor_total, 2)+"");
               tab_proforma.modificar(tab_proforma.getFilaActual());
 	      utilitario.addUpdateTabla(tab_proforma, "iva_prpro,total_prpro","");
                
@@ -230,7 +231,7 @@ public class pre_proforma extends Pantalla {
             subtotal=Double.parseDouble(tab_proforma.getValor("subtotal_prpro"));
             porcentaje=Double.parseDouble(tab_proforma.getValor("valor_descuento_prpro"));
             porcentajedescuento=(100*porcentaje)/subtotal;
-             tab_proforma.setValor("por_descuento_prpro", porcentajedescuento+"");
+             tab_proforma.setValor("por_descuento_prpro", utilitario.getFormatoNumero(porcentajedescuento, 2)+"");
              utilitario.addUpdateTabla(tab_proforma, "por_descuento_prpro","");
              CalcularTotales();
                
