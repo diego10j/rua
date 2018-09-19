@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+	<property name="ireport.zoom" value="1.3636363636363635"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="59ab0dd2-3e40-4347-9828-7d1130e711df"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_prpro" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_modulo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_prpro, nombre_cndfp, identificac_geper, nom_geper,direccion_geper,telefono_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
+detalle_prvat as validez, numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,
+nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo,
+(select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
+from prod_proforma a
+left join con_deta_forma_pago b on a.ide_cndfp = b.ide_cndfp
+left join gen_persona c on a.ide_geper = c.ide_geper
+left join gth_empleado d on a.ide_gtemp = d.ide_gtemp
+left join gth_cargo e on a.ide_gtcar = e.ide_gtcar
+left join prod_validez_tiempo f on a.ide_prvat = f.ide_prvat
+left join prod_detalle_proforma g on a.ide_prpro = g.ide_prpro
+left join inv_unidad h on g.ide_inuni = h.ide_inuni
+left join inv_articulo i on g.ide_inarti = i.ide_inarti
+where a.ide_prpro = $P{ide_prpro}]]>
+	</queryString>
+	<field name="ide_prpro" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
+	</field>
+	<field name="nombre_cndfp" class="java.lang.String"/>
+	<field name="identificac_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[empleado
+este campo es para guardar la cedula del empleado]]></fieldDescription>
+	</field>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="direccion_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="telefono_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="nombre_empleado" class="java.lang.String"/>
+	<field name="detalle_gtcar" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define elnombre del cargo.]]></fieldDescription>
+	</field>
+	<field name="validez" class="java.lang.String"/>
+	<field name="numero_prpro" class="java.lang.String"/>
+	<field name="fecha_prpro" class="java.sql.Date"/>
+	<field name="solitado_por_prpro" class="java.lang.String"/>
+	<field name="subtotal_prpro" class="java.math.BigDecimal"/>
+	<field name="valor_descuento_prpro" class="java.math.BigDecimal"/>
+	<field name="por_descuento_prpro" class="java.math.BigDecimal"/>
+	<field name="iva_prpro" class="java.math.BigDecimal"/>
+	<field name="total_prpro" class="java.math.BigDecimal"/>
+	<field name="observacion_prpro" class="java.lang.String"/>
+	<field name="nombre_inuni" class="java.lang.String"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="cantidad_prdep" class="java.math.BigDecimal"/>
+	<field name="valor_unitario_prdep" class="java.math.BigDecimal"/>
+	<field name="valor_total_prdep" class="java.math.BigDecimal"/>
+	<field name="subtotaldescuento" class="java.math.BigDecimal"/>
+	<field name="tiempo" class="java.lang.String"/>
+	<field name="fecha_modulo" class="java.sql.Date"/>
+	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="12" width="801" height="74"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="351" y="12" width="244" height="66"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[CRONOGRAMA DE  PRODUCCION]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="610" y="12" width="145" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_prpro}]]></textFieldExpression>
+			</textField>
+			<subreport isUsingCache="true">
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="44" y="7" width="168" height="66"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="610" y="37" width="145" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Versión 1]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="348" y="13" width="1" height="65"/>
+			</line>
+			<line>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="595" y="13" width="1" height="65"/>
+			</line>
+			<textField>
+				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="610" y="57" width="145" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_modulo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="65" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="43" width="802" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="298" y="42" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="0" y="42" width="56" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="121" y="42" width="71" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RP-01 No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="55" y="42" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Maquina]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="0" y="22" width="91" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ingresado por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="192" y="42" width="106" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Producto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="0" y="2" width="91" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="363" y="42" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prod.Bueno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="429" y="42" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prod.Malo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="495" y="42" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Horas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="561" y="42" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="627" y="42" width="87" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha T. Producción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="714" y="42" width="88" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="34" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2b61f0e8-32ce-49f0-8485-a4fbead2d518" x="2" y="0" width="553" height="33"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nota:MECANOPLAST DON BOSCO,recibe devolución de mercadería por defectos de producción no identificados anteriormente, hasta 30 días posteriores a la entrega.]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
