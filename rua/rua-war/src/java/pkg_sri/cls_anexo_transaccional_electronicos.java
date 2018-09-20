@@ -153,11 +153,11 @@ public class cls_anexo_transaccional_electronicos {
                             }
                         }
 
-                        if (booEncontro) {
-                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, tab_rete_iva_bienes_.getValor("valor_cndre")));
-                        } else {
+////////                        if (booEncontro) {
+////////                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, tab_rete_iva_bienes_.getValor("valor_cndre")));
+////////                        } else {
                             detalleCompras.appendChild(crearElemento("valorRetBienes", null, "0.00"));
-                        }
+////////                        }
 
                         ///
                         detalleCompras.appendChild(crearElemento("valRetServ50", null, "0.00"));
@@ -173,11 +173,11 @@ public class cls_anexo_transaccional_electronicos {
                                 break;
                             }
                         }
-                        if (booEncontro) {
-                            detalleCompras.appendChild(crearElemento("valorRetServicios", null, tab_rete_iva_servicios_.getValor("valor_cndre")));
-                        } else {
+//////////                        if (booEncontro) {
+//////////                            detalleCompras.appendChild(crearElemento("valorRetServicios", null, tab_rete_iva_servicios_.getValor("valor_cndre")));
+//////////                        } else {
                             detalleCompras.appendChild(crearElemento("valorRetServicios", null, "0.00"));
-                        }
+//////////                        }
 
 //                        TablaGenerica tab_rete_iva_servicios100 = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
 //                                + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
@@ -190,11 +190,11 @@ public class cls_anexo_transaccional_electronicos {
                                 break;
                             }
                         }
-                        if (booEncontro) {
-                            detalleCompras.appendChild(crearElemento("valRetServ100", null, tab_rete_iva_servicios100_.getValor("valor_cndre")));
-                        } else {
+//////////////                        if (booEncontro) {
+//////////////                            detalleCompras.appendChild(crearElemento("valRetServ100", null, tab_rete_iva_servicios100_.getValor("valor_cndre")));
+//////////////                        } else {
                             detalleCompras.appendChild(crearElemento("valRetServ100", null, "0.00"));
-                        }
+//////////////                        }
                         if (p_con_tipo_documento_reembolso.equals(tab_compras.getValor(i, "ide_cntdo"))) {
                             //reembolsos
                             TablaGenerica tab_sum_reembolso = utilitario.consultar("SELECT  ide_rem_cpcfa,sum(base_tarifa0_cpcfa + base_grabada_cpcfa +  base_no_objeto_iva_cpcfa) as valor\n"
@@ -458,17 +458,16 @@ public class cls_anexo_transaccional_electronicos {
                         //detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
                         detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "valor_iva_cccfa"))));
                         detalleVentas.appendChild(crearElemento("montoIce", null, "0.00"));
-                        //20-08-2018 --- No se reportan retenciones cuando son electronicas
-//////////////                        if (tab_ventas.getValor(i, "retiva") == null) {
-//////////////                            detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
-//////////////                        } else {
-//////////////                            detalleVentas.appendChild(crearElemento("valorRetIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retiva"))));
-//////////////                        }
-//////////////                        if (tab_ventas.getValor(i, "retrenta") == null) {
-//////////////                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
-//////////////                        } else {
-//////////////                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retrenta"))));
-//////////////                        }
+                        if (tab_ventas.getValor(i, "retiva") == null) {
+                            detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
+                        } else {
+                            detalleVentas.appendChild(crearElemento("valorRetIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retiva"))));
+                        }
+                        if (tab_ventas.getValor(i, "retrenta") == null) {
+                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
+                        } else {
+                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retrenta"))));
+                        }
 
                         Element formasDePago = doc_anexo.createElement("formasDePago");
                         detalleVentas.appendChild(formasDePago);
