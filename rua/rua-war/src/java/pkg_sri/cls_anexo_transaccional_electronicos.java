@@ -458,16 +458,17 @@ public class cls_anexo_transaccional_electronicos {
                         //detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(montoIva)));
                         detalleVentas.appendChild(crearElemento("montoIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "valor_iva_cccfa"))));
                         detalleVentas.appendChild(crearElemento("montoIce", null, "0.00"));
-                        if (tab_ventas.getValor(i, "retiva") == null) {
-                            detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
-                        } else {
-                            detalleVentas.appendChild(crearElemento("valorRetIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retiva"))));
-                        }
-                        if (tab_ventas.getValor(i, "retrenta") == null) {
-                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
-                        } else {
-                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retrenta"))));
-                        }
+                        //20-08-2018 --- No se reportan retenciones cuando son electronicas
+//////////////                        if (tab_ventas.getValor(i, "retiva") == null) {
+//////////////                            detalleVentas.appendChild(crearElemento("valorRetIva", null, "0.00"));
+//////////////                        } else {
+//////////////                            detalleVentas.appendChild(crearElemento("valorRetIva", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retiva"))));
+//////////////                        }
+//////////////                        if (tab_ventas.getValor(i, "retrenta") == null) {
+//////////////                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, "0.00"));
+//////////////                        } else {
+//////////////                            detalleVentas.appendChild(crearElemento("valorRetRenta", null, utilitario.getFormatoNumero(tab_ventas.getValor(i, "retrenta"))));
+//////////////                        }
 
                         Element formasDePago = doc_anexo.createElement("formasDePago");
                         detalleVentas.appendChild(formasDePago);
