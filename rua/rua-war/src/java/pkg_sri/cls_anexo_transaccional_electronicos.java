@@ -156,7 +156,7 @@ public class cls_anexo_transaccional_electronicos {
 ////////                        if (booEncontro) {
 ////////                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, tab_rete_iva_bienes_.getValor("valor_cndre")));
 ////////                        } else {
-                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, "0.00"));
+                        detalleCompras.appendChild(crearElemento("valorRetBienes", null, "0.00"));
 ////////                        }
 
                         ///
@@ -176,7 +176,7 @@ public class cls_anexo_transaccional_electronicos {
 //////////                        if (booEncontro) {
 //////////                            detalleCompras.appendChild(crearElemento("valorRetServicios", null, tab_rete_iva_servicios_.getValor("valor_cndre")));
 //////////                        } else {
-                            detalleCompras.appendChild(crearElemento("valorRetServicios", null, "0.00"));
+                        detalleCompras.appendChild(crearElemento("valorRetServicios", null, "0.00"));
 //////////                        }
 
 //                        TablaGenerica tab_rete_iva_servicios100 = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
@@ -193,7 +193,7 @@ public class cls_anexo_transaccional_electronicos {
 //////////////                        if (booEncontro) {
 //////////////                            detalleCompras.appendChild(crearElemento("valRetServ100", null, tab_rete_iva_servicios100_.getValor("valor_cndre")));
 //////////////                        } else {
-                            detalleCompras.appendChild(crearElemento("valRetServ100", null, "0.00"));
+                        detalleCompras.appendChild(crearElemento("valRetServ100", null, "0.00"));
 //////////////                        }
                         if (p_con_tipo_documento_reembolso.equals(tab_compras.getValor(i, "ide_cntdo"))) {
                             //reembolsos
@@ -616,8 +616,6 @@ public class cls_anexo_transaccional_electronicos {
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 //Result result = new StreamResult("D:/" + nombre); //nombre del archivo
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
                 transformer.transform(source, result);
                 transformer.transform(source, console);
             } else {

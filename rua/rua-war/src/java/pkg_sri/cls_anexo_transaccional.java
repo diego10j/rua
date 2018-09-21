@@ -615,8 +615,6 @@ public class cls_anexo_transaccional {
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 //Result result = new StreamResult("D:/" + nombre); //nombre del archivo
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
                 transformer.transform(source, result);
                 transformer.transform(source, console);
             } else {
