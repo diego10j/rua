@@ -151,13 +151,13 @@ public class pre_alumno_periodo extends Pantalla{
         sel_tab_alumno.setSeleccionTabla(ser_pensiones.getListaAlumnos("1","1"), "ide_geper");
         sel_tab_alumno.setWidth("80%");
         sel_tab_alumno.setHeight("70%");
+        sel_tab_alumno.getBot_aceptar().setMetodo("aceptarAlumno");
         sel_tab_alumno.getTab_seleccion().getColumna("identificac_geper").setFiltroContenido();
         sel_tab_alumno.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
-        sel_tab_alumno.getBot_aceptar().setMetodo("aceptarAlumno");
         agregarComponente(sel_tab_alumno);
         
         sel_tab_representante.setId("sel_tab_representante");
-        sel_tab_representante.setTitle("REPRSENTANTE DEL ALUMNO: "+titulo_alumno);
+        sel_tab_representante.setTitle("REPRESENTANTE DEL ALUMNO: "+titulo_alumno);
         sel_tab_representante.setSeleccionTabla(ser_pensiones.getListaAlumnos("1","0"), "ide_geper");
         sel_tab_representante.setWidth("80%");
         sel_tab_representante.setHeight("70%");
