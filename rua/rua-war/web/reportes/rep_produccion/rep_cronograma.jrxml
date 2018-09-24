@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.3636363636363635"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="913" pageHeight="595" orientation="Landscape" columnWidth="873" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="346"/>
+	<property name="ireport.y" value="98"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -31,69 +31,37 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="ide_prpro" class="java.lang.Integer">
+	<parameter name="fecha_ini" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pide_modulo" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prpro, nombre_cndfp, identificac_geper, nom_geper,direccion_geper,telefono_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
-detalle_prvat as validez, numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,
-nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo,
+		<![CDATA[select ide_prcrp, numero_modulo_prcrp, fecha_prcrp, numero_orden_prcrp, producto_prcrp, producto_bueno_prcrp, producto_malo_prcrp, horas_prcrp,
+fecha_terminacion_prcrp, observacion_prcrp, cliente_prcrp,
 (select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
-from prod_proforma a
-left join con_deta_forma_pago b on a.ide_cndfp = b.ide_cndfp
-left join gen_persona c on a.ide_geper = c.ide_geper
-left join gth_empleado d on a.ide_gtemp = d.ide_gtemp
-left join gth_cargo e on a.ide_gtcar = e.ide_gtcar
-left join prod_validez_tiempo f on a.ide_prvat = f.ide_prvat
-left join prod_detalle_proforma g on a.ide_prpro = g.ide_prpro
-left join inv_unidad h on g.ide_inuni = h.ide_inuni
-left join inv_articulo i on g.ide_inarti = i.ide_inarti
-where a.ide_prpro = $P{ide_prpro}]]>
+from prod_cronograma_produccion
+where fecha_prcrp between cast( $P{fecha_ini} as date)  AND cast($P{fecha_fin} as date)
+order by fecha_prcrp]]>
 	</queryString>
-	<field name="ide_prpro" class="java.lang.Long">
-		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
-	</field>
-	<field name="nombre_cndfp" class="java.lang.String"/>
-	<field name="identificac_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[empleado
-este campo es para guardar la cedula del empleado]]></fieldDescription>
-	</field>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="direccion_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="telefono_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="nombre_empleado" class="java.lang.String"/>
-	<field name="detalle_gtcar" class="java.lang.String">
-		<fieldDescription><![CDATA[Este campo define elnombre del cargo.]]></fieldDescription>
-	</field>
-	<field name="validez" class="java.lang.String"/>
-	<field name="numero_prpro" class="java.lang.String"/>
-	<field name="fecha_prpro" class="java.sql.Date"/>
-	<field name="solitado_por_prpro" class="java.lang.String"/>
-	<field name="subtotal_prpro" class="java.math.BigDecimal"/>
-	<field name="valor_descuento_prpro" class="java.math.BigDecimal"/>
-	<field name="por_descuento_prpro" class="java.math.BigDecimal"/>
-	<field name="iva_prpro" class="java.math.BigDecimal"/>
-	<field name="total_prpro" class="java.math.BigDecimal"/>
-	<field name="observacion_prpro" class="java.lang.String"/>
-	<field name="nombre_inuni" class="java.lang.String"/>
-	<field name="nombre_inarti" class="java.lang.String"/>
-	<field name="cantidad_prdep" class="java.math.BigDecimal"/>
-	<field name="valor_unitario_prdep" class="java.math.BigDecimal"/>
-	<field name="valor_total_prdep" class="java.math.BigDecimal"/>
-	<field name="subtotaldescuento" class="java.math.BigDecimal"/>
-	<field name="tiempo" class="java.lang.String"/>
+	<field name="ide_prcrp" class="java.lang.Long"/>
+	<field name="numero_modulo_prcrp" class="java.lang.String"/>
+	<field name="fecha_prcrp" class="java.sql.Date"/>
+	<field name="numero_orden_prcrp" class="java.lang.String"/>
+	<field name="producto_prcrp" class="java.lang.String"/>
+	<field name="producto_bueno_prcrp" class="java.math.BigDecimal"/>
+	<field name="producto_malo_prcrp" class="java.math.BigDecimal"/>
+	<field name="horas_prcrp" class="java.math.BigDecimal"/>
+	<field name="fecha_terminacion_prcrp" class="java.sql.Date"/>
+	<field name="observacion_prcrp" class="java.lang.String"/>
+	<field name="cliente_prcrp" class="java.lang.String"/>
 	<field name="fecha_modulo" class="java.sql.Date"/>
-	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[]]></variableExpression>
+	<variable name="suma_producto" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{producto_bueno_prcrp} + $F{producto_malo_prcrp}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -104,18 +72,18 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="12" width="801" height="74"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="351" y="12" width="244" height="66"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="351" y="12" width="244" height="74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[CRONOGRAMA DE  PRODUCCION]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="610" y="12" width="145" height="26"/>
+				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="596" y="14" width="206" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_prpro}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{numero_modulo_prcrp}]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="44" y="7" width="168" height="66"/>
@@ -132,20 +100,20 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="610" y="37" width="145" height="20"/>
+				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="596" y="37" width="206" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Versión 1]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="348" y="13" width="1" height="65"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="348" y="13" width="1" height="73"/>
 			</line>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="595" y="13" width="1" height="65"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="595" y="13" width="1" height="73"/>
 			</line>
-			<textField>
-				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="610" y="57" width="145" height="20"/>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="596" y="60" width="206" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -154,37 +122,62 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="65" splitType="Stretch">
-			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="43" width="802" height="20"/>
-			</rectangle>
+		<band height="63" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="298" y="42" width="65" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="298" y="42" width="114" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Cantidad]]></text>
+				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="0" y="42" width="56" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" stretchType="RelativeToBandHeight" x="0" y="42" width="55" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Fecha]]></text>
+				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="121" y="42" width="71" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" stretchType="RelativeToBandHeight" x="121" y="42" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RP-01 No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="55" y="42" width="66" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" stretchType="RelativeToBandHeight" x="55" y="42" width="66" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Maquina]]></text>
+				<text><![CDATA[MAQUINA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="0" y="22" width="91" height="20"/>
@@ -194,60 +187,130 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[Ingresado por:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="192" y="42" width="106" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" stretchType="RelativeToBandHeight" x="192" y="42" width="106" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Producto]]></text>
+				<text><![CDATA[PRODUCTO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="0" y="2" width="91" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Mes:]]></text>
+				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="363" y="42" width="66" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="298" y="54" width="57" height="8"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Prod.Bueno]]></text>
+				<text><![CDATA[P. Bueno]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="429" y="42" width="66" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="355" y="54" width="57" height="8"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Prod.Malo]]></text>
+				<text><![CDATA[P. Malo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="495" y="42" width="66" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="475" y="42" width="47" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Horas]]></text>
+				<text><![CDATA[HORAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="561" y="42" width="66" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="522" y="42" width="145" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Cliente]]></text>
+				<text><![CDATA[CLIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="627" y="42" width="87" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="667" y="42" width="76" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha T. Producción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="714" y="42" width="88" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="743" y="42" width="130" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Observaciones]]></text>
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fb199fb9-d84c-4ad9-8c85-aa4770adc0a8" x="92" y="0" width="298" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DEL "+$F{fecha_prcrp}+" AL "+$F{fecha_prcrp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3e44069d-a45b-4525-bad6-17c0b95f3d1e" x="412" y="42" width="63" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -255,21 +318,154 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch"/>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c13496d6-9e34-427e-bbca-fff1fc6c239b" x="121" y="0" width="71" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_orden_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="04b309ad-18f0-4389-b8d8-c44bacfb2d82" x="192" y="0" width="106" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="875ba7fc-f813-491f-b17c-9ceb287a18e7" x="298" y="0" width="57" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto_bueno_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1d1a6dc4-1124-4ea5-86ea-03f3a18fda85" x="355" y="0" width="57" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto_malo_prcrp}+" "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1c1df15a-a48a-477c-9771-eabc74ef92cb" x="412" y="0" width="63" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{suma_producto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2385866d-6d20-4062-ba32-d818e990a9ec" x="475" y="0" width="47" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a8f4f4bd-c57b-43ae-b2ca-2ecf984bc562" x="522" y="0" width="145" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$F{cliente_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="aa0c38c7-626a-4cf2-8de5-8d8b084a6cb7" x="667" y="0" width="76" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$F{fecha_terminacion_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="be9534e6-f012-49a8-aefd-2bbeb5c54eed" x="743" y="0" width="130" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$F{observacion_prcrp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="710e22bc-43b3-4783-89ee-e45bf0917bad" x="1" y="0" width="54" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$F{fecha_terminacion_prcrp}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="34" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="2b61f0e8-32ce-49f0-8485-a4fbead2d518" x="2" y="0" width="553" height="33"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Nota:MECANOPLAST DON BOSCO,recibe devolución de mercadería por defectos de producción no identificados anteriormente, hasta 30 días posteriores a la entrega.]]></text>
-			</staticText>
-		</band>
+		<band height="33" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>
