@@ -48,6 +48,13 @@ public class pre_modulo extends Pantalla  {
         tab_modulo_secuencial.setId("tab_modulo_secuencial");
         tab_modulo_secuencial.setTabla("gen_modulo_secuencial","ide_gemos",2);
         tab_modulo_secuencial.getColumna("ide_geani").setCombo(ser_contabilidad.getAnio("true", ""));
+        tab_modulo_secuencial.getColumna("ide_geani").setVisible(false);
+        tab_modulo_secuencial.getColumna("ide_gemos").setOrden(0);
+        tab_modulo_secuencial.getColumna("abreviatura_gemos").setOrden(1);
+        tab_modulo_secuencial.getColumna("numero_secuencial_gemos").setOrden(2);
+        tab_modulo_secuencial.getColumna("fecha_registro_gemos").setOrden(3);
+        tab_modulo_secuencial.getColumna("aplica_abreviatura_gemos").setOrden(4);
+        tab_modulo_secuencial.getColumna("activo_gemos").setOrden(5);
         tab_modulo_secuencial.setHeader("MODULO SECUENCIAL");
         tab_modulo_secuencial.dibujar();
         
@@ -87,7 +94,22 @@ public class pre_modulo extends Pantalla  {
         tab_modulo.guardar();
         }
         else if(tab_modulo_secuencial.isFocus()){
-            tab_modulo_secuencial.guardar();
+            TablaGenerica tab_valida_activos = utilitario.consultar("select ide_gemos, activo_gemos from gen_modulo_secuencial where activo_gemos = true and ide_gemod = "+tab_modulo.getValorSeleccionado()+"");
+            /*for (int i=0; i<tab_valida_activos.getTotalFilas(); i++){
+                
+            }*/
+            if (tab_valida_activos.getTotalFilas() > 0){
+            String tabla_1 = tab_valida_activos.getValor("activo_gemos");
+            String tabla_2 = tab_modulo_secuencial.getValor("activo_gemos");
+            System.out.println("tabla1"+tabla_1);
+            System.out.println("tabla2"+tabla_2);
+            if (tabla_1.equals(tabla_2)){
+                utilitario.agregarMensajeError("No se pueden tener mas de dos registros en estado activo a la vez", "Por favor verificar");
+            }
+            } else{
+             tab_modulo_secuencial.guardar();   
+            }
+            
         }
         guardarPantalla();
     }
@@ -104,6 +126,7 @@ public class pre_modulo extends Pantalla  {
 
     public Tabla getTab_modulo() {
         return tab_modulo;
+        
     }
 
     public void setTab_modulo(Tabla tab_modulo) {
