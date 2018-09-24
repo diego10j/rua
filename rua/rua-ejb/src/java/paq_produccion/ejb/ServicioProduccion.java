@@ -39,18 +39,16 @@ public String getMaquina() {
 
 public String getOrdenProduccion() {
         String sql = "";
-        sql = "select ide_prorp ,detalle_produccion_prorp from prod_orden_produccion order by detalle_produccion_prorp";
+        sql = "select ide_prorp, numero_prorp||'  '||numero_modulo_prorp as orden_produccion from prod_orden_produccion";
         return sql;
           }
 
-public String getSecuencialModulo(String ide_gemos) {
+public String getSecuencialModulo(String modulo) {
         String sql = "";
-        sql = "select a.ide_gemos,nom_geani,numero_secuencial_gemos,abreviatura_gemos,aplica_abreviatura_gemos,\n" +
-"(case when aplica_abreviatura_gemos=false then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
-"abreviatura_gemos||' - '||'0'||''||numero_secuencial_gemos end) as nuevo_secuencial\n" +
-"from gen_modulo_secuencial a, gen_anio b \n" +
-"where a.ide_geani= b.ide_geani\n" +
-"and ide_gemos ="+ide_gemos;
+        sql = "select ide_gemos, ide_gemod, abreviatura_gemos||' - '||'0'||''||numero_secuencial_gemos as nuevo_secuencial\n" +
+              "from gen_modulo_secuencial \n" +
+              "where ide_gemod = "+modulo+"\n" +
+              "and activo_gemos = true ";
         //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
                  }
@@ -92,4 +90,57 @@ public String getNumeroSecuencial(String campo_numero, String tabla){
         "end) as numero from "+tabla+"";
     return sql;
 }
+public String getSqlOrdenesProduccion(String numero_orden, String tipo){
+    String sql="";
+    sql = "select c.ide_prord, a.ide_prorp, c.ide_inarti, numero_modulo_prorp, numero_prorp, nom_geper, fecha_emision_prorp, nombre_inarti, total_prord as cantidad_produccion, total_producion_prorp\n" +
+          "from  prod_orden_produccion a\n" +
+          "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+          "left join prod_orden_detalle c on a.ide_prorp = c.ide_prorp\n" +
+          "left join inv_articulo d on c.ide_inarti = d.ide_inarti";
+      if (tipo.equals("2")){
+          sql += " where c.ide_prord = "+numero_orden+""; 
+      }
+      sql +=" order by numero_prorp";
+    return sql;
+}
+public String getControlProduccion (String tipo, String control){
+    String sql = "";
+    sql = "select ide_prcop, b.ide_prorp, nom_geper, numero_modulo_prorp, numero_prorp, nombre_inarti, producto_bueno_prcop, producto_mala_calidad_prcop, total_horas_prcop, fecha_termina_prcop\n" +
+          "from prod_control_produccion a\n" +
+          "left join prod_orden_produccion b on a.ide_prorp = b.ide_prorp\n" +
+          "left join gen_persona c on b.ide_geper = c.ide_geper\n" +
+          "left join inv_articulo d on a.ide_inarti = d.ide_inarti";
+     if(tipo.equals("2")){
+         sql += " where ide_prcop = "+control+"";
+     }
+     sql += " order by numero_prorp"; 
+    return sql;
+    
+    }
+  public String getControlProdRecepcion (){
+      String sql= "";
+      sql = "select a.ide_prcop,  b.ide_prcop as control_prod, a.numero_prcop, nombre_inarti, numero_modulo_prorp||'  '||numero_prorp as orden, detalle_prmaq\n" +
+            "from prod_control_produccion a\n" +
+            "left join prod_control_produccion b on a.ide_prcop = b.ide_prcop\n" +
+            "left join inv_articulo c on a.ide_inarti = c.ide_inarti\n" +
+            "left join prod_orden_produccion d on a.ide_prorp = d.ide_prorp\n" +
+            "left join prod_maquina e on a.ide_prmaq = e.ide_prmaq\n" +
+            "order by orden";
+      return sql;
+  }
+  public String getControlProdRecepcionDetalle (String tipo, String ide_control, String ide_detalle_control){
+      String sql = "";
+      sql = "select ide_prdecp, fecha_control_prdecp, detalle_prtur as turno, apellido_paterno_gtemp||' '||primer_nombre_gtemp as operario, producto_bueno_prdecp as total\n" +
+            "from prod_detalle_control_pro a\n" +
+            "left join gth_empleado b on a.ide_gtemp = b.ide_gtemp\n" +
+            "left join prod_turno c on a.ide_prtur = c.ide_prtur";
+       if (tipo.equals("2")){
+           sql +=" where a.ide_prcop = "+ide_control+"";
+       }
+       else if (tipo.equals("3")){
+           sql +=" and ide_prdecp = "+ide_detalle_control+"";
+       }
+       sql +=" order by fecha_control_prdecp";
+      return sql;
+  }
 }
