@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="740" pageHeight="595" orientation="Landscape" columnWidth="700" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -31,91 +31,76 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="ide_prpro" class="java.lang.Integer">
+	<parameter name="pide_control" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pide_modulo" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pide_recepcion" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prpro, nombre_cndfp, identificac_geper, nom_geper,direccion_geper,telefono_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
-detalle_prvat as validez, numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,
-nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo,
-(select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
-from prod_proforma a
-left join con_deta_forma_pago b on a.ide_cndfp = b.ide_cndfp
-left join gen_persona c on a.ide_geper = c.ide_geper
-left join gth_empleado d on a.ide_gtemp = d.ide_gtemp
-left join gth_cargo e on a.ide_gtcar = e.ide_gtcar
-left join prod_validez_tiempo f on a.ide_prvat = f.ide_prvat
-left join prod_detalle_proforma g on a.ide_prpro = g.ide_prpro
-left join inv_unidad h on g.ide_inuni = h.ide_inuni
-left join inv_articulo i on g.ide_inarti = i.ide_inarti
-where a.ide_prpro = $P{ide_prpro}]]>
+		<![CDATA[select IDE_PROREM,NUM_MODULO_PROREM, a.IDE_PRCOP, apellido_paterno_gtemp||' '||primer_nombre_gtemp as contabilizado_por, NUM_SECUENCIAL_PROREM, FECHA_RECEPCION_PROREM,
+OPERARIO_PROREM, FECHA_CONTABILIZADO_PROREM, MAQUINA_PROREM , NUM_ORDEN_PROREM, PRODUCTO_PROREM, codigo_inarti, nombre_inuni, detalle_prcol, BULTOS_PROREM,
+UNIDADES_PROREM, TOTAL_PROREM, (select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
+from prod_recepcion_mercaderia a
+left join (
+          select ide_prcop, a.ide_prorp, codigo_inarti, nombre_inarti, nombre_inuni, detalle_prcol from prod_control_produccion a
+          left join (
+          select a.ide_prorp, numero_prorp, nombre_inuni, detalle_prcol
+          from prod_orden_produccion a
+          left join prod_orden_detalle b on a.ide_prorp = b.ide_prorp
+          left join inv_unidad c on b.ide_inuni = c.ide_inuni
+          left join prod_color d on b.ide_prcol = d.ide_prcol
+          ) b on a.ide_prorp = b.ide_prorp
+          left join inv_articulo c on a.ide_inarti = c.ide_inarti where ide_prcop = $P{pide_control}
+) b on a.ide_prcop = b.ide_prcop
+left join gth_empleado c on a.ide_gtemp = c.ide_gtemp
+where IDE_PROREM = $P{pide_recepcion}]]>
 	</queryString>
-	<field name="ide_prpro" class="java.lang.Long">
-		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
-	</field>
-	<field name="nombre_cndfp" class="java.lang.String"/>
-	<field name="identificac_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[empleado
-este campo es para guardar la cedula del empleado]]></fieldDescription>
-	</field>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="direccion_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="telefono_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="nombre_empleado" class="java.lang.String"/>
-	<field name="detalle_gtcar" class="java.lang.String">
-		<fieldDescription><![CDATA[Este campo define elnombre del cargo.]]></fieldDescription>
-	</field>
-	<field name="validez" class="java.lang.String"/>
-	<field name="numero_prpro" class="java.lang.String"/>
-	<field name="fecha_prpro" class="java.sql.Date"/>
-	<field name="solitado_por_prpro" class="java.lang.String"/>
-	<field name="subtotal_prpro" class="java.math.BigDecimal"/>
-	<field name="valor_descuento_prpro" class="java.math.BigDecimal"/>
-	<field name="por_descuento_prpro" class="java.math.BigDecimal"/>
-	<field name="iva_prpro" class="java.math.BigDecimal"/>
-	<field name="total_prpro" class="java.math.BigDecimal"/>
-	<field name="observacion_prpro" class="java.lang.String"/>
+	<field name="ide_prorem" class="java.lang.Long"/>
+	<field name="num_modulo_prorem" class="java.lang.String"/>
+	<field name="ide_prcop" class="java.lang.Long"/>
+	<field name="contabilizado_por" class="java.lang.String"/>
+	<field name="num_secuencial_prorem" class="java.lang.String"/>
+	<field name="fecha_recepcion_prorem" class="java.sql.Date"/>
+	<field name="operario_prorem" class="java.lang.String"/>
+	<field name="fecha_contabilizado_prorem" class="java.sql.Date"/>
+	<field name="maquina_prorem" class="java.lang.String"/>
+	<field name="num_orden_prorem" class="java.lang.String"/>
+	<field name="producto_prorem" class="java.lang.String"/>
+	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
-	<field name="nombre_inarti" class="java.lang.String"/>
-	<field name="cantidad_prdep" class="java.math.BigDecimal"/>
-	<field name="valor_unitario_prdep" class="java.math.BigDecimal"/>
-	<field name="valor_total_prdep" class="java.math.BigDecimal"/>
-	<field name="subtotaldescuento" class="java.math.BigDecimal"/>
-	<field name="tiempo" class="java.lang.String"/>
+	<field name="detalle_prcol" class="java.lang.String"/>
+	<field name="bultos_prorem" class="java.lang.Long"/>
+	<field name="unidades_prorem" class="java.lang.Long"/>
+	<field name="total_prorem" class="java.math.BigDecimal"/>
 	<field name="fecha_modulo" class="java.sql.Date"/>
-	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[]]></variableExpression>
+	<variable name="sum_total" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_prorem}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="86" splitType="Stretch">
+		<band height="79" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="-2" y="13" width="555" height="66"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="13" width="682" height="66"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="272" y="12" width="136" height="66"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="316" y="12" width="219" height="66"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[RECEPCIÓN DE MERCADERÍA Producción a Bodega]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="408" y="12" width="145" height="26"/>
+				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="535" y="12" width="145" height="26"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_prpro}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{num_modulo_prorem}]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="7" width="168" height="66"/>
@@ -132,20 +117,20 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="408" y="37" width="145" height="20"/>
+				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="535" y="37" width="145" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Versión 1]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="271" y="13" width="1" height="65"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="315" y="13" width="1" height="65"/>
 			</line>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="408" y="13" width="1" height="65"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="535" y="13" width="1" height="65"/>
 			</line>
 			<textField>
-				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="408" y="57" width="145" height="20"/>
+				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="535" y="57" width="145" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -156,136 +141,222 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<pageHeader>
 		<band height="100" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="1" y="22" width="90" height="20"/>
+				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="47" y="22" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Operarios:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="1" y="42" width="90" height="20"/>
+				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="47" y="42" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Maquina No:]]></text>
 			</staticText>
-			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="0" y="80" width="555" height="20"/>
-			</rectangle>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="447" y="80" width="100" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor Total]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="1" y="80" width="76" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="51" y="80" width="76" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="205" y="80" width="86" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="255" y="80" width="86" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="77" y="80" width="128" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="127" y="80" width="128" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Producto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="316" y="2" width="84" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[ING.BOD.No:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="291" y="80" width="85" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="341" y="80" width="85" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Color]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="0" y="2" width="91" height="20"/>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="46" y="2" width="91" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Recepción:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="316" y="22" width="103" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="362" y="22" width="103" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Contabilizado:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="316" y="42" width="103" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="362" y="42" width="103" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Contabilizado por:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="91" y="42" width="126" height="20"/>
+				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="137" y="42" width="126" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{maquina_prorem}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="91" y="22" width="225" height="20"/>
+				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="137" y="22" width="225" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{operario_prorem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="91" y="2" width="100" height="20"/>
+				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="137" y="2" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{fecha_prpro}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_recepcion_prorem}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="376" y="80" width="71" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="426" y="80" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bultos]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b1c7ec4a-2e38-4e11-997b-c74090b57517" x="465" y="22" width="126" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_contabilizado_prorem}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="628cc293-8197-4888-83e5-f13c12dc7c16" x="465" y="42" width="126" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contabilizado_por}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="568" y="80" width="84" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="497" y="80" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unidades]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="857042e9-33f3-4ac5-90d5-910ab2eec004" x="544" y="2" width="139" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["N° "+$F{num_secuencial_prorem}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0af69fbf-a0b3-49d0-a600-9d64e1d2009e" x="51" y="0" width="76" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="127" y="0" width="128" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{producto_prorem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e8e6fd9b-3a36-4be5-89a7-3d640b5dc5fe" x="255" y="0" width="86" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c1b2d4e8-6b2b-4606-a9ad-fdc82cb8579c" x="341" y="0" width="85" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{detalle_prcol}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="dad50d44-29e2-4b78-822f-8f76640a0f96" x="426" y="0" width="71" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{bultos_prorem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4b279a51-572e-4024-912b-0ef9caf7333d" x="497" y="0" width="71" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{unidades_prorem}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ab728ab-9dd1-4982-a214-be62748732dd" x="568" y="0" width="84" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_prorem}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="34" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="2b61f0e8-32ce-49f0-8485-a4fbead2d518" x="2" y="0" width="553" height="33"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Nota:MECANOPLAST DON BOSCO,recibe devolución de mercadería por defectos de producción no identificados anteriormente, hasta 30 días posteriores a la entrega.]]></text>
-			</staticText>
-		</band>
+		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="86" splitType="Stretch">
-			<rectangle>
-				<reportElement uuid="3956f59d-e348-4ec7-997d-f1ca267ace61" x="447" y="1" width="108" height="20"/>
-			</rectangle>
+		<band height="170" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="376" y="1" width="71" height="20"/>
+				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="473" y="0" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -299,50 +370,50 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[     TOTAL:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="109" y="42" width="149" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="161" y="121" width="149" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="66a37599-850c-47e0-a0bb-08219b7e32eb" x="447" y="1" width="108" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="10"/>
+				<reportElement uuid="66a37599-850c-47e0-a0bb-08219b7e32eb" x="544" y="0" width="108" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total_prpro}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{sum_total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="7" y="4" width="84" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Atentamente,]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="108" y="63" width="146" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="164" y="142" width="146" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Encargado de Grupo]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="362" y="41" width="149" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="391" y="120" width="149" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="399" y="61" width="92" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="391" y="140" width="146" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Bodega]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="108" y="43" width="146" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="164" y="122" width="146" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Firma]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="369" y="41" width="146" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="391" y="120" width="146" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Firma]]></text>
 			</staticText>
