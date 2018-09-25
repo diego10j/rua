@@ -58,6 +58,9 @@ public class ServicioProducto {
         return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1";
     }
   
+        public String getSqlListaArticulos() {
+        return "select ide_inarti,nombre_inarti,codigo_inarti from inv_articulo order by nombre_inarti";
+    }
         public String getSqlListaProductoFiltro(String compra,String venta) {
         return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and compra_inarti="+compra+" and venta_inarti="+venta;
     }
