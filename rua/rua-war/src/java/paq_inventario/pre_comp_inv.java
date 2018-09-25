@@ -129,9 +129,9 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        tab_tabla2.setCondicion("ide_incci=-1");
-        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlProductosCombo());
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+        //tab_tabla2.setCondicion("ide_incci=-1");
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
