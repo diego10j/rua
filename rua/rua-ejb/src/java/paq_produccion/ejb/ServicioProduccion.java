@@ -39,16 +39,18 @@ public String getMaquina() {
 
 public String getOrdenProduccion() {
         String sql = "";
-        sql = "select ide_prorp, numero_prorp||'  '||numero_modulo_prorp as orden_produccion from prod_orden_produccion";
+        sql = "select ide_prorp, numero_prorp from prod_orden_produccion";
         return sql;
           }
 
 public String getSecuencialModulo(String modulo) {
         String sql = "";
-        sql = "select ide_gemos, ide_gemod, abreviatura_gemos||' - '||'0'||''||numero_secuencial_gemos as nuevo_secuencial\n" +
-              "from gen_modulo_secuencial \n" +
-              "where ide_gemod = "+modulo+"\n" +
-              "and activo_gemos = true ";
+        sql = "select a.ide_gemos, ide_gemod, nom_geani,numero_secuencial_gemos,abreviatura_gemos,aplica_abreviatura_gemos,\n" +
+              "(case when aplica_abreviatura_gemos = true then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
+              "nom_geani||'-'||numero_secuencial_gemos end) as nuevo_secuencial\n" +
+              "from gen_modulo_secuencial a, gen_anio b \n" +
+              "where a.ide_geani= b.ide_geani\n" +
+              "and ide_gemos = "+modulo+"";
         //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
                  }
@@ -66,7 +68,7 @@ public String getColor() {
     }
 public String getOrdenPro() {
         String sql = "";
-        sql = "select ide_prorp, numero_modulo_prorp||' '||numero_prorp from prod_orden_produccion as orden_produccion order by numero_prorp ";
+        sql = "select ide_prorp, numero_prorp from prod_orden_produccion as orden_produccion order by numero_prorp ";
         return sql;
     }
 public String getProforma(){
@@ -92,7 +94,7 @@ public String getNumeroSecuencial(String campo_numero, String tabla){
 }
 public String getSqlOrdenesProduccion(String numero_orden, String tipo){
     String sql="";
-    sql = "select c.ide_prord, a.ide_prorp, c.ide_inarti, numero_modulo_prorp, numero_prorp, nom_geper, fecha_emision_prorp, nombre_inarti, total_prord as cantidad_produccion, total_producion_prorp\n" +
+    sql = "select c.ide_prord, a.ide_prorp, c.ide_inarti, numero_prorp, nom_geper, fecha_emision_prorp, nombre_inarti, total_prord as cantidad_produccion, total_producion_prorp\n" +
           "from  prod_orden_produccion a\n" +
           "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
           "left join prod_orden_detalle c on a.ide_prorp = c.ide_prorp\n" +
