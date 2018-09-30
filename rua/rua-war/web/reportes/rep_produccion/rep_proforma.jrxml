@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.3636363636363635"/>
-	<property name="ireport.x" value="29"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="48"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -34,14 +34,10 @@
 	<parameter name="ide_prpro" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_modulo" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_prpro, nombre_cndfp, identificac_geper, nom_geper,direccion_geper,telefono_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
 detalle_prvat as validez, numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,
-nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo,
-(select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
+nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo
 from prod_proforma a
 left join con_deta_forma_pago b on a.ide_cndfp = b.ide_cndfp
 left join gen_persona c on a.ide_geper = c.ide_geper
@@ -110,13 +106,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<text><![CDATA[PROFORMA]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="408" y="12" width="145" height="26"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_prpro}]]></textFieldExpression>
-			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="7" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -144,13 +133,20 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="408" y="13" width="1" height="65"/>
 			</line>
-			<textField>
-				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="408" y="57" width="145" height="20"/>
+			<staticText>
+				<reportElement uuid="36394a44-384c-4542-b00d-519f462bc767" x="408" y="13" width="145" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fecha_modulo}]]></textFieldExpression>
-			</textField>
+				<text><![CDATA[RAC - 01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3c03c20a-ade5-4f20-8a5f-dc3aa8412bf4" x="409" y="57" width="144" height="21"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[20/08/2018]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
