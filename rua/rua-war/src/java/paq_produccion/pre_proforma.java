@@ -153,7 +153,7 @@ public class pre_proforma extends Pantalla {
                         ///////////AQUI ABRE EL REPORTE
                         Map parametros = new HashMap();
                         parametros.put("ide_prpro", Integer.parseInt(tab_proforma.getValor("ide_prpro")));
-                        parametros.put("pide_modulo", Integer.parseInt(utilitario.getVariable("p_prod_numero_proforma")));
+                        //parametros.put("pide_modulo", Integer.parseInt(utilitario.getVariable("p_prod_numero_proforma")));
 
                         //System.out.println(" " + str_titulos);
                         vipdf_proforma.setVisualizarPDF("rep_produccion/rep_proforma.jasper", parametros);
@@ -255,7 +255,7 @@ public class pre_proforma extends Pantalla {
         if(tab_proforma.guardar()){
             
         if (tab_proforma.isFilaInsertada()){
-          //  utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(utilitario.getVariable("p_prod_numero_secuencial")));
+            utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(utilitario.getVariable("p_prod_numero_proforma")));
             
         }
             tab_detalle_proforma.guardar();
