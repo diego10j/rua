@@ -237,7 +237,7 @@ public class ServiciosAdquisiones {
     
     public String getDatosProveedor (){
         String sql = "";
-        sql= "select ide_geper, identificac_geper, nom_geper from gen_persona order by nom_geper";
+        sql= "select ide_geper, nom_geper, identificac_geper from gen_persona order by nom_geper";
                 return sql;
     }
     
