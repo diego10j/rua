@@ -35,7 +35,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, numero_modulo_prorp as modulo, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
+		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
 from prod_orden_produccion a
 left join (select ide_geper, nom_geper, identificac_geper, direccion_geper, telefono_geper, correo_geper from gen_persona) b on a.ide_geper = b.ide_geper
 --detalle de orden
@@ -70,7 +70,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="fecha_emision_prorp" class="java.sql.Date"/>
 	<field name="hora_terminado_prorp" class="java.sql.Time"/>
 	<field name="numero_proforma" class="java.lang.String"/>
-	<field name="modulo" class="java.lang.String"/>
 	<field name="fecha_terminado_prorp" class="java.sql.Date"/>
 	<field name="total_producion_prorp" class="java.math.BigDecimal"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
@@ -119,18 +118,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[Versión 1]]></text>
 			</staticText>
 			<textField pattern="yyyy/MM/dd">
-				<reportElement uuid="37896ea8-f711-498c-9db9-74762889abe0" x="448" y="59" width="107" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="8a6cbfac-e7c1-4e66-b35f-4759f2111cda" x="448" y="10" width="107" height="20"/>
+				<reportElement uuid="37896ea8-f711-498c-9db9-74762889abe0" x="448" y="59" width="107" height="26"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{modulo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="263" y="1" width="1" height="84"/>
@@ -138,6 +130,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="446" y="1" width="1" height="84"/>
 			</line>
+			<staticText>
+				<reportElement uuid="b26ed67e-d8c7-4912-8e51-9e87dae41676" x="448" y="1" width="107" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RP - 01]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
