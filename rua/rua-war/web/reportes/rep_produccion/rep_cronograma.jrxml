@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="913" pageHeight="595" orientation="Landscape" columnWidth="873" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="346"/>
-	<property name="ireport.y" value="98"/>
+	<property name="ireport.zoom" value="0.84819523674497"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -41,33 +41,38 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select ide_prcrp, numero_modulo_prcrp, fecha_prcrp, numero_orden_prcrp, producto_prcrp, producto_bueno_prcrp, producto_malo_prcrp, horas_prcrp,
-fecha_terminacion_prcrp, observacion_prcrp, cliente_prcrp,
-(select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
-from prod_cronograma_produccion
-where fecha_prcrp between cast( $P{fecha_ini} as date)  AND cast($P{fecha_fin} as date)
-order by fecha_prcrp]]>
+		<![CDATA[select a.ide_prcop,fecha_prcop as fecha_inico,fecha_terminado_prorp,detalle_prmaq,numero_prorp,hora_trabajo_prcop,producto_bueno_prcop,producto_mala_calidad_prcop, nombre_inarti, nom_geper, observacion_prorp
+from prod_control_produccion a
+left join prod_maquina b on a.ide_prmaq=b.ide_prmaq
+left join (select ide_prord, a.ide_inarti, nombre_inarti, fecha_terminado_prorp, numero_prorp, nom_geper, observacion_prorp from prod_orden_detalle a
+left join inv_articulo b on a.ide_inarti = b.ide_inarti
+left join prod_orden_produccion c on a.ide_prorp = c.ide_prorp
+left join gen_persona d on c.ide_geper = d.ide_geper) c on a.ide_prord = c.ide_prord
+where fecha_prcop between cast( $P{fecha_ini} as date)  AND cast($P{fecha_fin} as date)
+and ide_prcop = $P{pide_modulo}
+order by fecha_prcop]]>
 	</queryString>
-	<field name="ide_prcrp" class="java.lang.Long"/>
-	<field name="numero_modulo_prcrp" class="java.lang.String"/>
-	<field name="fecha_prcrp" class="java.sql.Date"/>
-	<field name="numero_orden_prcrp" class="java.lang.String"/>
-	<field name="producto_prcrp" class="java.lang.String"/>
-	<field name="producto_bueno_prcrp" class="java.math.BigDecimal"/>
-	<field name="producto_malo_prcrp" class="java.math.BigDecimal"/>
-	<field name="horas_prcrp" class="java.math.BigDecimal"/>
-	<field name="fecha_terminacion_prcrp" class="java.sql.Date"/>
-	<field name="observacion_prcrp" class="java.lang.String"/>
-	<field name="cliente_prcrp" class="java.lang.String"/>
-	<field name="fecha_modulo" class="java.sql.Date"/>
+	<field name="ide_prcop" class="java.lang.Long"/>
+	<field name="fecha_inico" class="java.sql.Date"/>
+	<field name="fecha_terminado_prorp" class="java.sql.Date"/>
+	<field name="detalle_prmaq" class="java.lang.String"/>
+	<field name="numero_prorp" class="java.lang.String"/>
+	<field name="hora_trabajo_prcop" class="java.math.BigDecimal"/>
+	<field name="producto_bueno_prcop" class="java.lang.String"/>
+	<field name="producto_mala_calidad_prcop" class="java.lang.String"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="observacion_prorp" class="java.lang.String"/>
 	<variable name="suma_producto" class="java.lang.String" calculation="Sum">
-		<variableExpression><![CDATA[$F{producto_bueno_prcrp} + $F{producto_malo_prcrp}]]></variableExpression>
+		<variableExpression><![CDATA[$F{producto_bueno_prcop} + $F{producto_mala_calidad_prcop}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="86" splitType="Stretch">
+		<band height="89" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="12" width="801" height="74"/>
 			</rectangle>
@@ -78,13 +83,6 @@ order by fecha_prcrp]]>
 				</textElement>
 				<text><![CDATA[CRONOGRAMA DE  PRODUCCION]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="596" y="14" width="206" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_modulo_prcrp}]]></textFieldExpression>
-			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="44" y="7" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -112,12 +110,19 @@ order by fecha_prcrp]]>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="595" y="13" width="1" height="73"/>
 			</line>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="596" y="60" width="206" height="24"/>
+			<staticText>
+				<reportElement uuid="fb666845-cee2-4263-822b-5b2b41b41a69" x="596" y="13" width="206" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fecha_modulo}]]></textFieldExpression>
+				<text><![CDATA[RP - 11]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="75f7ac4d-caca-4749-9bbf-f3164253f946" x="596" y="61" width="206" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -296,7 +301,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["DEL "+$F{fecha_prcrp}+" AL "+$F{fecha_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["DEL "+$F{fecha_inico}+" AL "+$F{fecha_inico}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="3e44069d-a45b-4525-bad6-17c0b95f3d1e" x="412" y="42" width="63" height="20"/>
@@ -331,7 +336,7 @@ order by fecha_prcrp]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_orden_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{numero_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="04b309ad-18f0-4389-b8d8-c44bacfb2d82" x="192" y="0" width="106" height="14"/>
@@ -345,7 +350,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{producto_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="875ba7fc-f813-491f-b17c-9ceb287a18e7" x="298" y="0" width="57" height="14"/>
@@ -359,7 +364,7 @@ order by fecha_prcrp]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{producto_bueno_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{producto_bueno_prcop}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="1d1a6dc4-1124-4ea5-86ea-03f3a18fda85" x="355" y="0" width="57" height="14"/>
@@ -373,7 +378,7 @@ order by fecha_prcrp]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{producto_malo_prcrp}+" "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{producto_mala_calidad_prcop}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="1c1df15a-a48a-477c-9771-eabc74ef92cb" x="412" y="0" width="63" height="14"/>
@@ -390,20 +395,6 @@ order by fecha_prcrp]]>
 				<textFieldExpression><![CDATA[$V{suma_producto}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="2385866d-6d20-4062-ba32-d818e990a9ec" x="475" y="0" width="47" height="14"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{horas_prcrp}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="a8f4f4bd-c57b-43ae-b2ca-2ecf984bc562" x="522" y="0" width="145" height="14"/>
 				<box>
 					<pen lineWidth="0.5"/>
@@ -415,7 +406,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{cliente_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="aa0c38c7-626a-4cf2-8de5-8d8b084a6cb7" x="667" y="0" width="76" height="14"/>
@@ -429,7 +420,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{fecha_terminacion_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_terminado_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="be9534e6-f012-49a8-aefd-2bbeb5c54eed" x="743" y="0" width="130" height="14"/>
@@ -443,7 +434,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{observacion_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{observacion_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="710e22bc-43b3-4783-89ee-e45bf0917bad" x="1" y="0" width="54" height="14"/>
@@ -457,7 +448,7 @@ order by fecha_prcrp]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{fecha_terminacion_prcrp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_inico}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
