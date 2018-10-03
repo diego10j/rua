@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="913" pageHeight="595" orientation="Landscape" columnWidth="873" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="0.84819523674497"/>
+	<property name="ireport.zoom" value="1.0263162364614138"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
@@ -58,14 +58,14 @@ order by fecha_prcop]]>
 	<field name="detalle_prmaq" class="java.lang.String"/>
 	<field name="numero_prorp" class="java.lang.String"/>
 	<field name="hora_trabajo_prcop" class="java.math.BigDecimal"/>
-	<field name="producto_bueno_prcop" class="java.lang.String"/>
-	<field name="producto_mala_calidad_prcop" class="java.lang.String"/>
+	<field name="producto_bueno_prcop" class="java.math.BigDecimal"/>
+	<field name="producto_mala_calidad_prcop" class="java.math.BigDecimal"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="nom_geper" class="java.lang.String">
 		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
 	</field>
 	<field name="observacion_prorp" class="java.lang.String"/>
-	<variable name="suma_producto" class="java.lang.String" calculation="Sum">
+	<variable name="suma_producto" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{producto_bueno_prcop} + $F{producto_mala_calidad_prcop}]]></variableExpression>
 	</variable>
 	<background>
