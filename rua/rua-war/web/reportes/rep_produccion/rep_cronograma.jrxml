@@ -83,20 +83,6 @@ order by fecha_prcop]]>
 				</textElement>
 				<text><![CDATA[CRONOGRAMA DE  PRODUCCION]]></text>
 			</staticText>
-			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="44" y="7" width="168" height="66"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_empr">
-					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_sucu">
-					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
-			</subreport>
 			<staticText>
 				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="596" y="37" width="206" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -348,7 +334,7 @@ order by fecha_prcop]]>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
@@ -404,7 +390,7 @@ order by fecha_prcop]]>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
@@ -449,6 +435,34 @@ order by fecha_prcop]]>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_inico}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="710e22bc-43b3-4783-89ee-e45bf0917bad" x="55" y="0" width="66" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_prmaq}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="710e22bc-43b3-4783-89ee-e45bf0917bad" x="475" y="0" width="47" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_trabajo_prcop}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
