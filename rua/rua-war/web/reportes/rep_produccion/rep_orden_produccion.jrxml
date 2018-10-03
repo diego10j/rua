@@ -87,6 +87,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	</background>
 	<title>
 		<band height="86" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="0" y="1" width="554" height="85"/>
+			</rectangle>
 			<staticText>
 				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="263" y="0" width="184" height="85"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -302,9 +305,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA["N° "+$F{numero_proforma}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="2" y="-85" width="554" height="85"/>
-			</rectangle>
 		</band>
 	</pageHeader>
 	<columnHeader>
