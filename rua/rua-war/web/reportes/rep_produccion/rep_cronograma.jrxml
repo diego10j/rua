@@ -74,7 +74,7 @@ order by fecha_prcop]]>
 	<title>
 		<band height="89" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="12" width="801" height="74"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="13" width="801" height="74"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="351" y="12" width="244" height="74"/>
@@ -110,6 +110,14 @@ order by fecha_prcop]]>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<subreport isUsingCache="true">
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="17" y="9" width="168" height="66"/>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
