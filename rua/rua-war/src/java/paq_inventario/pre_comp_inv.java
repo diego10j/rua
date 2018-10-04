@@ -15,6 +15,7 @@ import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
 import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
+import paq_produccion.ejb.ServicioProduccion;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
@@ -36,6 +38,7 @@ public class pre_comp_inv extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
+    private Tabla tab_tabla3 = new Tabla();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private SeleccionArbol sel_arbol = new SeleccionArbol();
     private Reporte rep_reporte = new Reporte();
@@ -49,7 +52,10 @@ public class pre_comp_inv extends Pantalla {
     private SeleccionTabla sel_departamento = new SeleccionTabla();
     private SeleccionTabla sel_cabece_compra = new SeleccionTabla();
     private SeleccionTabla sel_detalle_compra = new SeleccionTabla();
+    private SeleccionTabla sel_cabecera_orden_prod = new SeleccionTabla();
+    private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
+    String valor_orden = "";
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -58,6 +64,8 @@ public class pre_comp_inv extends Pantalla {
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    @EJB
+    private final ServicioProduccion ser_produccion= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
     
     public pre_comp_inv() {
         //Recuperar el plan de cuentas activo
@@ -122,12 +130,17 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
+        tab_tabla1.agregarRelacion(tab_tabla3);
         tab_tabla1.setCondicion("ide_incci=-1");
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
+        
+        Tabulador tab_tabulador = new Tabulador();
+        tab_tabulador.setId("tab_tabulador");
 
         tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
@@ -161,9 +174,19 @@ public class pre_comp_inv extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
         
-
+        tab_tabla3.setId("tab_tabla3");
+        tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
+        tab_tabla3.setTabla("inv_produccion_requerimiento", "ide_inpre", 3);  
+        tab_tabla3.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina()); 
+        tab_tabla3.dibujar();
+        PanelTabla pat_panel3 = new PanelTabla();
+        pat_panel3.setPanelTabla(tab_tabla3);
+        
+         tab_tabulador.agregarTab("DETALLE DE COMPRA", pat_panel2);
+         tab_tabulador.agregarTab("ORDEN DE PRODUCCIÓN", pat_panel3);
+        
         Division div_division = new Division();
-        div_division.dividir2(pat_panel1, pat_panel2, "40%", "H");
+        div_division.dividir2(pat_panel1, tab_tabulador, "40%", "H");
         agregarComponente(div_division);
 
         sec_rango_reporte.setId("sec_rango_reporte");
@@ -226,7 +249,55 @@ public class pre_comp_inv extends Pantalla {
         sel_detalle_compra.getBot_aceptar().setMetodo("generarCabecera");
         agregarComponente(sel_detalle_compra);
         
+        Boton bot_busca_orden = new Boton();
+        bot_busca_orden.setValue("BUSCAR ORDEN DE PRODUCIÓN");
+        bot_busca_orden.setIcon("ui-icon-search");
+        bot_busca_orden.setMetodo("dibujaCabeceraOrden");
+        bar_botones.agregarBoton(bot_busca_orden);
+        
+        sel_cabecera_orden_prod.setId("sel_cabecera_orden_prod");
+        sel_cabecera_orden_prod.setTitle("ORDEN DE PRODUCCION");
+        sel_cabecera_orden_prod.setSeleccionTabla(ser_produccion.getOrdenPro(), "ide_prorp");
+        sel_cabecera_orden_prod.setWidth("80%");
+        sel_cabecera_orden_prod.setHeight("70%");
+        sel_cabecera_orden_prod.setRadio();
+        sel_cabecera_orden_prod.getBot_aceptar().setMetodo("dibujaDetalleOrden");
+        agregarComponente(sel_cabecera_orden_prod);
+        
+        sel_detalle_orden_prod.setId("sel_detalle_orden_prod");
+        sel_detalle_orden_prod.setTitle("ORDEN DE PRODUCCION");
+        sel_detalle_orden_prod.setSeleccionTabla(ser_produccion.getSqlDetalleOrdenProd("1", "", ""), "ide_prord");
+        sel_detalle_orden_prod.setWidth("80%");
+        sel_detalle_orden_prod.setHeight("70%");
+        sel_detalle_orden_prod.getBot_aceptar().setMetodo("aceptaDetalleOrden");
+        agregarComponente(sel_detalle_orden_prod);
+        
+        
     }
+    
+    public void dibujaCabeceraOrden(){
+        sel_cabecera_orden_prod.dibujar();
+    }
+    public void dibujaDetalleOrden(){
+        valor_orden = sel_cabecera_orden_prod.getValorSeleccionado();
+        sel_cabecera_orden_prod.cerrar();
+        sel_detalle_orden_prod.getTab_seleccion().setSql(ser_produccion.getSqlDetalleOrdenProd("2", valor_orden, ""));
+        sel_detalle_orden_prod.getTab_seleccion().ejecutarSql();
+        sel_detalle_orden_prod.dibujar();
+    }
+    public void aceptaDetalleOrden(){
+        if (tab_tabla1.isFilaInsertada() == false){
+            tab_tabla1.insertar();
+        }
+        String valor_detalle = sel_detalle_orden_prod.getSeleccionados();
+        TablaGenerica tab_detalle_ordenes = utilitario.consultar(ser_produccion.getSqlDetalleOrdenProd("3", valor_orden, valor_detalle));
+        for (int i=0; i<tab_detalle_ordenes.getTotalFilas(); i++){
+            tab_tabla3.insertar();
+            tab_tabla3.setValor("ide_prord", tab_detalle_ordenes.getValor(i, "ide_prord"));
+        }
+       sel_detalle_orden_prod.cerrar();
+    }
+    
     public void dibujaSolicitud(){
         sel_cabece_compra.dibujar();
     }
@@ -361,6 +432,10 @@ public class pre_comp_inv extends Pantalla {
             tab_tabla2.insertar();
             tab_tabla2.sumarColumnas();
         }
+        else if (tab_tabla3.isFocus()) {
+            tab_tabla3.insertar();
+            tab_tabla3.sumarColumnas();
+        }
     }
 
     @Override
@@ -371,6 +446,9 @@ public class pre_comp_inv extends Pantalla {
             }
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
+                    utilitario.getConexion().guardarPantalla();
+                } 
+                else if (tab_tabla3.guardar()){
                     utilitario.getConexion().guardarPantalla();
                 }
             }
@@ -385,6 +463,9 @@ public class pre_comp_inv extends Pantalla {
         if (tab_tabla2.isFocus()) {
             tab_tabla2.eliminar();
             tab_tabla2.sumarColumnas();
+        }
+        if (tab_tabla3.isFocus()) {
+            tab_tabla3.eliminar();
         }
     }
 
@@ -636,6 +717,30 @@ public class pre_comp_inv extends Pantalla {
 
     public void setSel_detalle_compra(SeleccionTabla sel_detalle_compra) {
         this.sel_detalle_compra = sel_detalle_compra;
+    }
+
+    public Tabla getTab_tabla3() {
+        return tab_tabla3;
+    }
+
+    public void setTab_tabla3(Tabla tab_tabla3) {
+        this.tab_tabla3 = tab_tabla3;
+    }
+
+    public SeleccionTabla getSel_cabecera_orden_prod() {
+        return sel_cabecera_orden_prod;
+    }
+
+    public void setSel_cabecera_orden_prod(SeleccionTabla sel_cabecera_orden_prod) {
+        this.sel_cabecera_orden_prod = sel_cabecera_orden_prod;
+    }
+
+    public SeleccionTabla getSel_detalle_orden_prod() {
+        return sel_detalle_orden_prod;
+    }
+
+    public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
+        this.sel_detalle_orden_prod = sel_detalle_orden_prod;
     }
 
 }
