@@ -68,7 +68,10 @@ public String getColor() {
     }
 public String getOrdenPro() {
         String sql = "";
-        sql = "select ide_prorp, numero_prorp from prod_orden_produccion as orden_produccion order by numero_prorp ";
+        sql = "select ide_prorp, numero_prorp, nom_geper\n" +
+              "from prod_orden_produccion a\n" +
+              "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+              "order by numero_prorp";
         return sql;
     }
 public String getProforma(){
@@ -78,6 +81,15 @@ public String getProforma(){
           "left join gen_persona b on a.ide_geper = b.ide_geper";
     return sql;
 }
+public String getComboProforma(){
+    String sql = "";
+    sql = "select ide_prpro, numero_prpro, nom_geper \n" +
+          "from prod_proforma a\n" +
+          "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+          "order by ide_prpro";
+    return sql;
+}
+
 public String getNumeroSecuencial(String campo_numero, String tabla){
     String sql = "";
     sql="select ((case when max(cast("+campo_numero+" as integer)) is null then  0 else max(cast("+campo_numero+" as integer)) end) + 1) as maximo,\n" +
@@ -92,18 +104,21 @@ public String getNumeroSecuencial(String campo_numero, String tabla){
         "end) as numero from "+tabla+"";
     return sql;
 }
-public String getSqlOrdenesProduccion(String numero_orden, String tipo){
+public String getSqlDetalleOrdenProd(String tipo, String numero_orden, String numero_detalle){
     String sql="";
-    sql = "select c.ide_prord, a.ide_prorp, c.ide_inarti, numero_prorp, nom_geper, fecha_emision_prorp, nombre_inarti, total_prord as cantidad_produccion, total_producion_prorp\n" +
-          "from  prod_orden_produccion a\n" +
-          "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
-          "left join prod_orden_detalle c on a.ide_prorp = c.ide_prorp\n" +
-          "left join inv_articulo d on c.ide_inarti = d.ide_inarti";
+    sql = "select ide_prord, nombre_inuni, nombre_inarti, detalle_prcol, bulto_paquete_prord, unidades_prord, total_prord, total_entregado_prord as por_entregar\n" +
+          "from prod_orden_detalle a\n" +
+          "left join inv_unidad b on a.ide_inuni = b.ide_inuni\n" +
+          "left join inv_articulo c on a.ide_inarti = c.ide_inarti\n" +
+          "left join prod_color d on a.ide_prcol = d.ide_prcol";
       if (tipo.equals("2")){
-          sql += " where c.ide_prord = "+numero_orden+""; 
+          sql += " where ide_prorp = "+numero_orden+""; 
       }
-      sql +=" order by numero_prorp";
+      if (tipo.equals("3")){
+          sql += " where ide_prorp = "+numero_orden+" and ide_prord in ("+numero_detalle+")"; 
+      }
     return sql;
+    
 }
 public String getControlProduccion (String tipo, String control){
     String sql = "";
