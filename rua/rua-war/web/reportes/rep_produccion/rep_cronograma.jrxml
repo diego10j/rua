@@ -37,9 +37,6 @@
 	<parameter name="fecha_fin" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_modulo" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_prcop,fecha_prcop as fecha_inico,fecha_terminado_prorp,detalle_prmaq,numero_prorp,hora_trabajo_prcop,producto_bueno_prcop,producto_mala_calidad_prcop, nombre_inarti, nom_geper, observacion_prorp
 from prod_control_produccion a
@@ -49,7 +46,6 @@ left join inv_articulo b on a.ide_inarti = b.ide_inarti
 left join prod_orden_produccion c on a.ide_prorp = c.ide_prorp
 left join gen_persona d on c.ide_geper = d.ide_geper) c on a.ide_prord = c.ide_prord
 where fecha_prcop between cast( $P{fecha_ini} as date)  AND cast($P{fecha_fin} as date)
-and ide_prcop = $P{pide_modulo}
 order by fecha_prcop]]>
 	</queryString>
 	<field name="ide_prcop" class="java.lang.Long"/>
