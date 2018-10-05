@@ -216,10 +216,30 @@ public class pre_alumno_periodo extends Pantalla{
         }
     }
     public void generarConceptos(){
-        
+         String maximo = "";
+         String maximo_detalle = "";
+
           int l_alumno = tab_tabla1.getTotalFilasVisibles();
           for (int i=0; i<tab_tabla1.getTotalFilasVisibles(); i++){
-//              System.out.println("alum "+alumnos);
+              TablaGenerica cod_max = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "ide_titulo_recval"));
+              maximo = cod_max.getValor("maximo");
+              TablaGenerica tab_concepto = utilitario.consultar("select * from rec_forma_impuesto where ide_concepto_recon ="+com_conceptos.getValue());
+              utilitario.getConexion().ejecutarSql("INSERT INTO rec_valores (ide_titulo_recval, ide_recalp, ide_sucu, ide_empr, ide_geper, gen_ide_geper, ide_recest, fecha_emision_recva, fecha_vence_recva, IDE_CONCEPTO_RECON )\n" +
+                                                   "VALUES ("+maximo+", "+tab_tabla1.getValor(i, "IDE_RECALP")+", "+utilitario.getVariable("ide_sucu")+", "+utilitario.getVariable("ide_empr")+" "
+                                                 + ", "+tab_tabla1.getValor(i, "ide_geper")+","+tab_tabla1.getValor(i, "gen_ide_geper")+", "+"1"+", '"+fechaInicio.getValue()+"', '"+fechaFin.getValue()+"', "+com_conceptos.getValue()+"     );");
+              
+              
+              
+              for (int j=0; j<tab_concepto.getTotalFilas();j++){
+                  TablaGenerica tab_impuesto = utilitario.consultar("select * from rec_impuesto where ide_impuesto_reimp ="+tab_concepto.getValor(j, "ide_impuesto_reimp"));
+                  TablaGenerica cod_max_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "ide_titulo_recval"));
+                                maximo_detalle = cod_max_detalle.getValor("maximo");   
+                  utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad)\n" +
+                                                       "VALUES ("+maximo_detalle+", "+maximo+ ", "+tab_impuesto.getValor(j, "ide_impuesto_reimp")+", "+"1"+", "+tab_impuesto.getValor(j, "valor_reimp")+", "+tab_impuesto.getValor(j, "valor_reimp")+", "+"0"+", "+"0"+", "+"0"+"    );");
+              // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
+              }
+              TablaGenerica tab_suma_valores = utilitario.consultar("select 1 as codigo, sum(total_revad) as suma_total from rec_valor_detalle where IDE_TITULO_RECVAL  = "+maximo+"");
+              utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+" where IDE_TITULO_RECVAL = "+maximo+"");
           }
         
     }

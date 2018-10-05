@@ -177,7 +177,14 @@ public class pre_valores extends Pantalla{
                                                  "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total_revad")+", "+tab_datos_temp.getValor(i, "valor_descuento_revad")+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
                                                          + "'"+tab_datos_temp.getValor(i, "nom_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_repre")+"', '"+tab_datos_temp.getValor(i, "periodo_academico")+"', '"+tab_datos_temp.getValor(i, "correo_repre")+"', '"+tab_datos_temp.getValor(i, "direccion_repre")+"', '"+tab_datos_temp.getValor(i, "telefono_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_alumno")+"', "+tab_datos_temp.getValor(i, "ide_sucu")+", "+tab_datos_temp.getValor(i, "ide_empr")+")");
         }
-        utilitario.getConexion().ejecutarSql(ser_pensiones.generarFacturaElectronica(codig_val));
+        //utilitario.getConexion().ejecutarSql(ser_pensiones.generarFacturaElectronica(codig_val));
+        try{
+           ser_pensiones.generarFacturaElectronica(codig_val);
+           utilitario.agregarMensaje("La factura se ha generado correctamente", "");
+        }
+        catch(Exception e){
+            utilitario.agregarMensajeError("Error al generar la factura", "Verifique datos o consulte con el administrador");
+        }
     }
     
     public void aceptarAlumno(){
@@ -242,9 +249,9 @@ public class pre_valores extends Pantalla{
             String dat_cmb_concep;
             dat_cmb_concep = tab_tabla1.getValor("IDE_CONCEPTO_RECON");
              TablaGenerica tab_concepto = utilitario.consultar("select ide_forma_impuesto_refim, b.ide_impuesto_reimp, b.des_impuesto_reimp, b.valor_reimp\n" +
-                                                          "from rec_forma_impuesto a\n" +
-                                                          "left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n" +
-                                                          "where a.ide_concepto_recon = "+dat_cmb_concep+"");
+                                                               "from rec_forma_impuesto a\n" +
+                                                               "left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n" +
+                                                               "where a.ide_concepto_recon = "+dat_cmb_concep+"");
          for (int i=0;i<tab_concepto.getTotalFilas();i++){
              tab_tabla2.insertar();
              tab_tabla2.setValor("ide_titulo_recval", tab_tabla1.getValor("ide_titulo_recval"));
