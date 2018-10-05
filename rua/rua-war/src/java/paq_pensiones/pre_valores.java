@@ -70,6 +70,7 @@ public class pre_valores extends Pantalla{
         tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("RECAUDADOR");
         tab_tabla1.getColumna("ide_concepto_recon").setCombo("rec_concepto", "ide_concepto_recon", "des_concepto_recon", "");
         tab_tabla1.getColumna("ide_concepto_recon").setRequerida(true);
+        tab_tabla2.getColumna("ide_recest").setCombo("rec_estados", "ide_recest", "descripcion_recest", "");
         tab_tabla1.getColumna("TOTAL_RECVA ").setEtiqueta();
         tab_tabla1.getColumna("TOTAL_RECVA ").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
         tab_tabla1.setTipoFormulario(true);
@@ -206,7 +207,8 @@ public class pre_valores extends Pantalla{
             tab_tabla1.ejecutarSql();*/
           tab_tabla1.setCondicion("ide_geper="+autAlumno.getValor());
           tab_tabla1.ejecutarSql();
-          utilitario.addUpdate("tab_tabla1");
+          tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+          utilitario.addUpdate("tab_tabla1,tab_tabla2");
         } else {
             tab_tabla1.limpiar();
         }
