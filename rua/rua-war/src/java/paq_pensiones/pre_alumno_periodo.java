@@ -234,14 +234,15 @@ public class pre_alumno_periodo extends Pantalla{
                   TablaGenerica tab_impuesto = utilitario.consultar("select * from rec_impuesto where ide_impuesto_reimp ="+tab_concepto.getValor(j, "ide_impuesto_reimp"));
                   TablaGenerica cod_max_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "ide_titulo_recval"));
                                 maximo_detalle = cod_max_detalle.getValor("maximo");   
-                  utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad)\n" +
+                  utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_reimp, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad)\n" +
                                                        "VALUES ("+maximo_detalle+", "+maximo+ ", "+tab_impuesto.getValor(j, "ide_impuesto_reimp")+", "+"1"+", "+tab_impuesto.getValor(j, "valor_reimp")+", "+tab_impuesto.getValor(j, "valor_reimp")+", "+"0"+", "+"0"+", "+"0"+"    );");
               // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
               }
               TablaGenerica tab_suma_valores = utilitario.consultar("select 1 as codigo, sum(total_revad) as suma_total from rec_valor_detalle where IDE_TITULO_RECVAL  = "+maximo+"");
               utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+" where IDE_TITULO_RECVAL = "+maximo+"");
           }
-        
+        dia_emision.cerrar();
+        utilitario.agregarMensaje("Se ha recaudado correctamente", "");
     }
     public void filtroAlumno(){
         String cm_per_aca = "";
