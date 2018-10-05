@@ -537,7 +537,7 @@ public class pre_nota_credito extends Pantalla {
             precio = 0;
         }
         total = cantidad * precio;
-        tab_tabla2.setValor("valor_cpdno", utilitario.getFormatoNumero(total));
+        tab_tabla2.setValor("valor_cpdno", utilitario.getFormatoNumero(utilitario.getFormatoNumero(total, 4)));
         utilitario.addUpdateTabla(tab_tabla2, "valor_cpdno", "");
         calcularTotalFactura();
     }

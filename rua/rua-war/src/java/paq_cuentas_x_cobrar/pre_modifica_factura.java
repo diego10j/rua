@@ -199,7 +199,6 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChange("cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
         tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
-        
 
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(utilitario.getAltoPantalla() - 350);
@@ -587,7 +586,7 @@ public class pre_modifica_factura extends Pantalla {
         }
 
         total = (cantidad * precio) - descuento;
-        tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(total));
+        tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(utilitario.getFormatoNumero(total, 4)));
         utilitario.addUpdateTabla(tab_deta_factura, "total_ccdfa", "");
         calcularTotalFactura();
     }
