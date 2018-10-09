@@ -182,7 +182,9 @@ public class pre_orden extends Pantalla{
       }
       public void abrirProforma(){
           if (aut_ord_produ.getValor() != null){
-              tab_proforma_orden.insertar();
+              if (tab_proforma_orden.isFilaInsertada() == false){
+                  tab_proforma_orden.insertar();
+              }
               tab_proforma_orden.setValor("ide_prorp", aut_ord_produ.getValor());
               sel_tab_proforma.dibujar();
           } else {
@@ -341,11 +343,13 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.setTabla("prod_orden_produccion","ide_prorp",4);
         tab_orden_produccion.setCondicion("ide_prorp=" + aut_ord_produ.getValor());
         tab_orden_produccion.getColumna("ide_gtemp").setCombo(ser_cargoempleado.getSQLEmpleadosActivos());
+        tab_orden_produccion.getColumna("ide_gtemp").setAutoCompletar();
         tab_orden_produccion.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_orden_produccion.getColumna("ide_geper").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
         tab_orden_produccion.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado()); 
         tab_orden_produccion.getColumna("numero_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
         tab_orden_produccion.getColumna("numero_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
+        tab_orden_produccion.getColumna("ide_prtio").setCombo(ser_produccion.getTipoOrden());
         //tab_orden_produccion.getColumna("numero_modulo_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
         //tab_orden_produccion.getColumna("numero_modulo_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
         tab_orden_produccion.setTipoFormulario(true);
@@ -366,6 +370,7 @@ public class pre_orden extends Pantalla{
         
         tab_detalle_orden.setId("tab_detalle_orden");
         tab_detalle_orden.setTabla("prod_orden_detalle","ide_prord",5);
+        tab_detalle_orden.setCondicion("IDE_PRORP  = "+ tab_orden_produccion.getValorSeleccionado());
         tab_detalle_orden.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
         tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_detalle_orden.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
@@ -411,7 +416,7 @@ public class pre_orden extends Pantalla{
         tab_detalle_orden.guardar();
         tab_orden_produccion.guardar();
         guardarPantalla();
-        
+        aut_ord_produ.actualizar();
    }
 @Override
     public void abrirListaReportes() {
@@ -516,10 +521,10 @@ public class pre_orden extends Pantalla{
         if (int_opcion==1) {
        if (tab_orden_produccion.guardar()){
       // utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
- 
           tab_detalle_orden.guardar();
            guardarPantalla();
        }
+       aut_ord_produ.actualizar();
          }
          
           if(int_opcion==2) {
