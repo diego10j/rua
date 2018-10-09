@@ -145,19 +145,9 @@ public String getControlProduccion (String tipo, String control){
             "order by orden";
       return sql;
   }
-  public String getControlProdRecepcionDetalle (String tipo, String ide_control, String ide_detalle_control){
-      String sql = "";
-      sql = "select ide_prdecp, fecha_control_prdecp, detalle_prtur as turno, apellido_paterno_gtemp||' '||primer_nombre_gtemp as operario, producto_bueno_prdecp as total\n" +
-            "from prod_detalle_control_pro a\n" +
-            "left join gth_empleado b on a.ide_gtemp = b.ide_gtemp\n" +
-            "left join prod_turno c on a.ide_prtur = c.ide_prtur";
-       if (tipo.equals("2")){
-           sql +=" where a.ide_prcop = "+ide_control+"";
-       }
-       else if (tipo.equals("3")){
-           sql +=" and ide_prdecp = "+ide_detalle_control+"";
-       }
-       sql +=" order by fecha_control_prdecp";
-      return sql;
+  public String getTipoOrden() {
+        String sql = "";
+        sql = "select ide_prtio, detalle_prtio from prod_tipo_orden order by detalle_prtio";
+        return sql;
   }
 }
