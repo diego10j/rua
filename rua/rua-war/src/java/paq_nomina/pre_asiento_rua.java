@@ -108,6 +108,9 @@ public class pre_asiento_rua extends Pantalla {
         tab_tabla2.getColumna("ide_cndpc").setCombo("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc||' '||nombre_cndpc", "");
         tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
         tab_tabla2.getColumna("ide_cndpc").setLectura(true);
+        tab_tabla2.getColumna("ide_gelua").setLectura(true);
+        tab_tabla2.getColumna("DEBE_NRDEA").setLectura(true);
+        tab_tabla2.getColumna("HABER_NRDEA").setLectura(true);
         tab_tabla2.setColumnaSuma("DEBE_NRDEA,HABER_NRDEA");
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
