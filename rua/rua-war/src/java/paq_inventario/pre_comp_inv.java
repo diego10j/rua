@@ -106,7 +106,7 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("ide_geper").setRequerida(true);
         tab_tabla1.getColumna("ide_inepi").setCombo("inv_est_prev_inve", "ide_inepi", "nombre_inepi", "");
-        tab_tabla1.getColumna("ide_intti").setCombo("select ide_intti,nombre_intti,nombre_intci from inv_tip_tran_inve a\n"
+        tab_tabla1.getColumna("ide_intti").setCombo("select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a\n"
                 + "inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
                 + "order by nombre_intci desc, nombre_intti");
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
@@ -140,7 +140,6 @@ public class pre_comp_inv extends Pantalla {
         tab_tabulador.setId("tab_tabulador");
 
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
@@ -174,19 +173,10 @@ public class pre_comp_inv extends Pantalla {
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
         
-        tab_tabla3.setId("tab_tabla3");
-        tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
-        tab_tabla3.setTabla("inv_produccion_requerimiento", "ide_inpre", 3);  
-        tab_tabla3.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina()); 
-        tab_tabla3.dibujar();
-        PanelTabla pat_panel3 = new PanelTabla();
-        pat_panel3.setPanelTabla(tab_tabla3);
         
-         tab_tabulador.agregarTab("DETALLE DE COMPRA", pat_panel2);
-         tab_tabulador.agregarTab("ORDEN DE PRODUCCIÓN", pat_panel3);
         
         Division div_division = new Division();
-        div_division.dividir2(pat_panel1, tab_tabulador, "40%", "H");
+        div_division.dividir2(pat_panel1, pat_panel2, "50%", "H");
         agregarComponente(div_division);
 
         sec_rango_reporte.setId("sec_rango_reporte");
@@ -253,7 +243,7 @@ public class pre_comp_inv extends Pantalla {
         bot_busca_orden.setValue("BUSCAR ORDEN DE PRODUCIÓN");
         bot_busca_orden.setIcon("ui-icon-search");
         bot_busca_orden.setMetodo("dibujaCabeceraOrden");
-        bar_botones.agregarBoton(bot_busca_orden);
+      //  bar_botones.agregarBoton(bot_busca_orden);
         
         sel_cabecera_orden_prod.setId("sel_cabecera_orden_prod");
         sel_cabecera_orden_prod.setTitle("ORDEN DE PRODUCCION");
