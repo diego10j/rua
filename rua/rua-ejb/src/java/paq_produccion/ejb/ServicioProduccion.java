@@ -6,11 +6,11 @@ import javax.ejb.Stateless;
 import framework.aplicacion.TablaGenerica;
 
 
-import sistema.aplicacion.Utilitario;
+import sistema.aplicacion.*;
 
 @Stateless
 public class ServicioProduccion {
-
+private final Utilitario utilitario = new Utilitario();
 	public String getValidezTiempo() {
         String sql = "";
         sql = "select ide_prvat ,detalle_prvat from prod_validez_tiempo order by detalle_prvat";
@@ -45,15 +45,25 @@ public String getOrdenProduccion() {
 
 public String getSecuencialModulo(String modulo) {
         String sql = "";
-        sql = "select a.ide_gemos, ide_gemod, nom_geani,numero_secuencial_gemos,abreviatura_gemos,aplica_abreviatura_gemos,\n" +
-              "(case when aplica_abreviatura_gemos = true then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
-              "nom_geani||'-'||numero_secuencial_gemos end) as nuevo_secuencial\n" +
-              "from gen_modulo_secuencial a, gen_anio b \n" +
-              "where a.ide_geani= b.ide_geani\n" +
-              "and ide_gemos = "+modulo+"";
+        sql = "select a.ide_gemos, ide_gemod, nom_geani,numero_secuencial_gemos,abreviatura_gemos,aplica_abreviatura_gemos, longitud_secuencial_gemos,\n" +
+                                                                  "(case when aplica_abreviatura_gemos = true then abreviatura_gemos||'-'||nom_geani||'-'||numero_secuencial_gemos else \n" +
+                                                                  "numero_secuencial_gemos||'' end) as nuevo_secuencial, length(numero_secuencial_gemos||'') as tamano\n" +
+                                                                  "from gen_modulo_secuencial a, gen_anio b \n" +
+                                                                  "where a.ide_geani= b.ide_geani\n" +
+                                                                  "and ide_gemos = "+modulo+"";
         //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
-                 }
+     }
+public String getSecuencialNumero(int longitud, int tamaño) {
+        String acum ="";
+        int tamaño_final = longitud - tamaño;
+        for (int i=0; i < tamaño_final ; i++){
+             acum += "0";
+        }
+        
+        String taman = acum + tamaño;
+        return acum;
+       }
 
 
 public String getActualizarSecuencial(String ide_gemos) {
