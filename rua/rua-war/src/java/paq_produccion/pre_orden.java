@@ -227,6 +227,7 @@ public class pre_orden extends Pantalla{
           tab_detalle_orden_control.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
           tab_detalle_orden_control.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
           tab_detalle_orden_control.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+
           tab_detalle_orden_control.agregarRelacion(tab_control_produccion);
           tab_detalle_orden_control.setLectura(true);
           tab_detalle_orden_control.getColumna("ide_prorp").setVisible(false);
@@ -249,21 +250,19 @@ public class pre_orden extends Pantalla{
           tab_control_produccion.setTipoFormulario(true);
           tab_control_produccion.getGrid().setColumns(4);
           //tab_control_produccion.setHeader("CONTROL PRODUCCION");
-          //tab_control_produccion.getColumna("numero_prcop").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
-          //tab_control_produccion.getColumna("numero_prcop").setEtiqueta();
-          tab_control_produccion.agregarRelacion(tab_detalle_control_prod);
+         // tab_control_produccion.agregarRelacion(tab_detalle_control_prod);
           tab_control_produccion.getColumna("PRODUCTO_BUENO_PRCOP").setMetodoChange("calculaTotalProduccion");
           tab_control_produccion.getColumna("PRODUCTO_MALA_CALIDAD_PRCOP").setMetodoChange("calculaTotalProduccion");
          
  //         tab_control_produccion.getColumna("CALCULO_CANTIDAD_PRCOP").setEtiqueta();
           tab_control_produccion.getColumna("ide_prcop").setOrden(0);
-//          tab_control_produccion.getColumna("IDE_PRORP").setOrden(1);
-          tab_control_produccion.getColumna("IDE_PRMAQ").setOrden(2);
-          tab_control_produccion.getColumna("FECHA_PRCOP").setOrden(3);
+//          tab_control_produccion.getColumna("IDE_PRORP").setOrden(1);   
+          tab_control_produccion.getColumna("IDE_PRMAQ").setOrden(1);
+          tab_control_produccion.getColumna("FECHA_PRCOP").setOrden(2);
        //   tab_control_produccion.getColumna("CANTIDAD_PRCOP").setOrden(4);
        //   tab_control_produccion.getColumna("CALCULO_CANTIDAD_PRCOP").setOrden(5);
-          tab_control_produccion.getColumna("PRODUCTO_BUENO_PRCOP").setOrden(6);
-          tab_control_produccion.getColumna("PRODUCTO_MALA_CALIDAD_PRCOP").setOrden(7);
+          tab_control_produccion.getColumna("PRODUCTO_BUENO_PRCOP").setOrden(3);
+          tab_control_produccion.getColumna("PRODUCTO_MALA_CALIDAD_PRCOP").setOrden(4);
           tab_control_produccion.dibujar();
       
           
@@ -382,6 +381,7 @@ public class pre_orden extends Pantalla{
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
         tab_detalle_orden.getColumna("TOTAL_PRORD").setEstilo("font-size:15px;font-weight: bold;color:blue");//Estilo
         tab_detalle_orden.getColumna("total_entregado_prord").setEstilo("font-size:15px;font-weight: bold;color:green");//Estilo
+        tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());     
        // tab_detalle_orden.setTipoFormulario(true);
         //tab_detalle_orden.getGrid().setColumns(4);
         tab_detalle_orden.setHeader("ORDEN  DETALLE");
@@ -503,7 +503,7 @@ public class pre_orden extends Pantalla{
           if(tab_detalle_orden_control.isFocus()){
               tab_detalle_orden_control.insertar();
               //TablaGenerica tab_secuencial=utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_control_produccion")));
-              //tab_control_produccion.setValor("numero_prcop", tab_secuencial.getValor("nuevo_secuencial"));
+              
           } else if(tab_control_produccion.isFocus()){
             tab_control_produccion.insertar();
         }
