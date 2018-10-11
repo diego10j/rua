@@ -442,12 +442,26 @@ public class Parametros {
 
         
         // PRODUCCION = 14
-        
+         //NUMERO SECUENCIALES DE PRODUCCION
           lis_parametros.add(new Parametro("14", "p_prod_numero_proforma", "Indica el numero secuencial para cualquier documento", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
           lis_parametros.add(new Parametro("14", "p_prod_num_sec_orden_producion", "Indica el numero secuencial para cualquier documento de orden de produccion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
           lis_parametros.add(new Parametro("14", "p_prod_num_mod_control_produccion", "Indica el numero secuencial para cualquier documento de control de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
           lis_parametros.add(new Parametro("14", "p_prod_num_mod_cronograma_produccion", "Indica el numero secuencial para cualquier documento del cronograma de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
           lis_parametros.add(new Parametro("14", "p_prod_num_mod_recepcion_mercaderia", "Indica el numero secuencial para cualquier documento de recepcion de mercaderia de produccion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_clientes", "Indica el numero secuencial para cualquier documento de nota de entrega a clientes", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_requeri_materia_prima", "Indica el numero secuencial para cualquier documento de requerimiento de materia prima", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_solicitud_material", "Indica el numero secuencial para cualquier documento de requerimiento de solicitud de material", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_interna", "Indica el numero secuencial para cualquier documento de requerimiento de nota de entrega interna", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_recibido_interno", "Indica el numero secuencial para cualquier documento de requerimiento de nota de recibido interno", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_devolucion", "Indica el numero secuencial para cualquier documento de requerimiento de nota de devolucion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+          //TIPOS DE COMPROBANTES
+          lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_recepcion_mercaderia", "Indica que el tipo de transaccion de recepcion de mercaderia", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_clientes", "Indica que el tipo de transaccion de nota de entrega a clientes", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_solicitud_material", "Indica que el tipo de transaccion de solicitud de material", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_nota_recibido_interno", "Indica que el tipo de transaccion de nota de recibido interno", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         
         return lis_parametros;
     }
