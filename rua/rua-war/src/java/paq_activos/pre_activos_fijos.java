@@ -508,6 +508,7 @@ public class pre_activos_fijos extends Pantalla {
     }
     public void calculaDepreciacion(){
         valor_pendiente_depre = 0;
+        utilitario.getConexion().ejecutarSql("delete from act_depreciacion where ide_acafi="+ide_acafi+" and validado_depre_acdepr=false;");
         TablaGenerica tab_depreciacion = utilitario.consultar("select ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_compra_acdepr, validado_depre_acdepr \n" +
                                                               "from act_depreciacion \n" +
                                                               "where validado_depre_acdepr = true \n" +
@@ -536,13 +537,14 @@ public class pre_activos_fijos extends Pantalla {
             numero_dias = vida_util * dias_año;
             valor_deprecia_dias = valor_total / numero_dias;
             valor_depreciado = valor_deprecia_dias * num_dias;
-            resultado_sub = valor_depreciado + valor_pendiente_depre;
+            resultado_sub =valor_pendiente_depre - valor_depreciado;
             if (resultado_sub >= valor_recidual){
                valor_depreciado_final = valor_depreciado;
             } else {
-                valor_depreciado_final = valor_recidual;
-            }
-           /* System.out.println("valor_recidual "+valor_recidual);
+                valor_depreciado_final =valor_pendiente_depre- valor_recidual;
+            }/*
+            System.out.println("activo "+ide_acafi);
+            System.out.println("valor_recidual "+valor_recidual);
             System.out.println("dias "+num_dias);
             System.out.println("numero_dias "+numero_dias);
             System.out.println("valor_total "+valor_total);
@@ -1205,6 +1207,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla6.setId("tab_tabla6");
         tab_tabla6.setIdCompleto("tab_tabulador:tab_tabla6");
         tab_tabla6.setTabla("ACT_DEPRECIACION", "IDE_ACDEPR", 11);
+        tab_tabla6.setColumnaSuma("valor_acdepr");
+        tab_tabla6.getColumna("ide_acafi").setVisible(false);
        // tab_tabla6.setCampoPrimaria("ide_acdepr");
       //  tab_tabla6.getColumna("ide_acdepr").setVisible(false);
         //tab_tabla6.setLectura(true);
