@@ -313,4 +313,17 @@ public class ServicioPensiones extends ServicioBase {
         sql = "select ide_concepto_recon, des_concepto_recon from rec_concepto order by des_concepto_recon";
         return sql;
     }
+      public String getAlumnosDeuda(String parametro_deuda){
+      String sql="";
+      sql ="select ide_geper, codigo_geper as CODIGO_ALUMNO, ALUMNO,  REPRESENTANTE, sum(VALOR_TOTAL) as valor_total from (\n" +
+           "       select a.ide_titulo_recval,a.ide_geper, b.codigo_geper, b.nom_geper as ALUMNO, c.nom_geper as REPRESENTANTE, d.suma as VALOR_TOTAL\n" +
+           "       from rec_valores a\n" +
+           "       left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+           "       left join gen_persona c on a.gen_ide_geper = c.ide_geper\n" +
+           "       left join (select ide_titulo_recval, sum(total_revad) as suma from rec_valor_detalle group by ide_titulo_recval) d on a.ide_titulo_recval = d.ide_titulo_recval\n" +
+           "       where ide_recest = "+parametro_deuda+"\n" +
+           " ) a \n" +
+           "group by ide_geper,ALUMNO,  REPRESENTANTE, CODIGO_ALUMNO";
+      return sql;
+  }
 }
