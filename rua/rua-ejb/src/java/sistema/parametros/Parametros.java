@@ -463,6 +463,11 @@ public class Parametros {
           lis_parametros.add(new Parametro("14", "p_prod_nota_recibido_interno", "Indica que el tipo de transaccion de nota de recibido interno", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
           lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         
+          // MODULO PENSIONES = 15
+          lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
+          lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
+          lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
+          
         return lis_parametros;
     }
 }
