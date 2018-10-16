@@ -160,4 +160,5 @@ public String getControlProduccion (String tipo, String control){
         sql = "select ide_prtio, detalle_prtio from prod_tipo_orden order by detalle_prtio";
         return sql;
   }
+
 }
