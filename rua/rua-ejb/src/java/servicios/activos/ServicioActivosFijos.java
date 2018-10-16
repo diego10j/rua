@@ -31,7 +31,7 @@ public class ServicioActivosFijos extends ServicioBase {
      */
     public String getSqlListaActivosFijos() {
         return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
-                + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
+                + " ,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
                 + "from act_activo_fijo a \n"
                 + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
                 + "left join gen_persona c on a.ide_geper=c.ide_geper\n"
@@ -325,5 +325,11 @@ public class ServicioActivosFijos extends ServicioBase {
      } catch(Exception e){
      }
     }
-   
+   public String getsqlDepreciadosNoAprobados(String estado){
+       String sql="";
+       sql+="select ide_acdepr,observacion_acafi,fecha_acdepr,valor_acdepr\n" +
+            "from act_depreciacion a, act_activo_fijo b\n" +
+            "where a.ide_acafi= b.ide_acafi and validado_depre_acdepr in ("+estado+") order by observacion_acafi";
+       return sql;
+   }
 }
