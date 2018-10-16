@@ -127,7 +127,8 @@ public class pre_conciliacion_banco extends Pantalla{
                                         valor_pago=valor_pago.trim(); 
 					num_comprobante=num_comprobante.trim(); 
                                         str_fecha_pago = str_fecha_pago.trim(); 
-                                        //SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
+                                        SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd");
+                                        String fecha= formatoDeFecha.format(str_fecha_pago);
                                         //System.out.println(formatoDeFecha.format(utilitario.getFormatoFecha(str_fecha_pago)));
                                         if (tab_alumn_val.equals(str_codigo_alumno) && tab_alumn_valor_deuda.equals(valor_pago)){
                                                TablaGenerica tab_valores_deuda = utilitario.consultar("select * from rec_valores where ide_recest = "+utilitario.getVariable("p_pen_deuda_activa")+" and ide_geper = "+ide_geper+"");
@@ -135,7 +136,7 @@ public class pre_conciliacion_banco extends Pantalla{
                                                 String ide_titulo = tab_valores_deuda.getValor(m, "ide_titulo_recval");
                                                    System.out.println("titulo "+ide_titulo);
                                                 utilitario.getConexion().ejecutarSql("update rec_valores "
-                                                                                   + "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+utilitario.getVariable("p_pen_transferencia_forma_pago")+", num_titulo_recva = "+num_comprobante+", fecha_pago_recva = '"+utilitario.getFormatoFecha(str_fecha_pago)+"' "
+                                                                                   + "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+utilitario.getVariable("p_pen_transferencia_forma_pago")+", num_titulo_recva = "+num_comprobante+", fecha_pago_recva = '"+fecha+"' "
                                                                                    + "where ide_titulo_recval = "+ide_titulo+"");
                                                }
                                         }
