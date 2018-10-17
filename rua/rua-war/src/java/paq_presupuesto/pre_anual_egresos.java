@@ -19,6 +19,7 @@ import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import java.util.HashMap;
 import java.util.Map;
+import org.primefaces.event.NodeSelectEvent;
 import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_presupuesto.ejb.ServicioPresupuesto;
 import servicios.sistema.ServicioSeguridad;
@@ -82,17 +83,22 @@ public class pre_anual_egresos extends Pantalla {
 		
                 arb_arbol.setId("arb_arbol");                
 		arb_arbol.setArbol("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup", "pre_ide_prfup");
-		arb_arbol.onSelect("seleccionar_arbol");	
+		arb_arbol.setCondicion("ide_prfup=-1");
+                arb_arbol.onSelect("seleccionoPrograma");	
 		arb_arbol.dibujar();
                 
                 tab_programa.setId("tab_programa");
 		tab_programa.setTabla("pre_programa", "ide_prpro", 4);
                 tab_programa.setHeader("PROGRAMAS PRESUPUESTARIOS");
+                tab_programa.setCondicion("ide_prpro=-1");
                 tab_programa.getColumna("ide_prcla").setCombo(ser_presupuesto.getCatalogoPresupuestario("true,false"));
                 tab_programa.getColumna("ide_prcla").setLectura(true);
                 tab_programa.getColumna("ide_prcla").setUnico(true);
                 tab_programa.getColumna("ide_prfup").setUnico(true);
+                tab_programa.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "codigo_prfup||' '||detalle_prfup","");
                 tab_programa.getColumna("cod_programa_prpro").setLectura(true);
+                tab_programa.getColumna("ide_prfup").setLectura(true);
+                tab_programa.getColumna("ide_prfup").setAutoCompletar();
                 tab_programa.agregarRelacion(tab_anual);
                 tab_programa.dibujar ();
                 PanelTabla pat_pane3=new PanelTabla();
@@ -162,7 +168,7 @@ public class pre_anual_egresos extends Pantalla {
 		tab_anual.getColumna("valor_inicial_pranu").setRequerida(true);
 		tab_anual.getColumna("activo_pranu").setValorDefecto("true");
 		tab_anual.setTipoFormulario(true);
-		tab_anual.getGrid().setColumns(4);
+		tab_anual.getGrid().setColumns(6);
 		tab_anual.agregarRelacion(tab_mensual);
 		tab_anual.agregarRelacion(tab_reforma);
 		tab_anual.dibujar();
@@ -302,6 +308,23 @@ public class pre_anual_egresos extends Pantalla {
 		agregarComponente(sel_calendario);
 
 	}
+        /**
+	 * Se ejecuta cuando se selecciona algun nodo del arbol
+	 */
+		public void seleccionoPrograma(NodeSelectEvent evt){
+		tab_programa.limpiar();	
+		//Asigna evento al arbol
+		arb_arbol.seleccionarNodo(evt);
+		//Filtra la tabla Padre
+                tab_programa.setCondicion("ide_prfup = "+arb_arbol.getValorSeleccionado()+"");
+		tab_programa.ejecutarSql();
+                //tab_programa.ejecutarValorPadre(arb_arbol.getValorSeleccionado());
+		//Filtra la tabla tab_vigente
+		tab_anual.setCondicion("ide_prpro="+tab_programa.getValorSeleccionado()+" and ide_geani= "+com_anio.getValue());
+                tab_anual.ejecutarSql();
+                tab_anual.imprimirSql();
+                utilitario.addUpdate("tab_programa,tab_anual");
+	  }
 	public void iniciaPoa(){
 		set_poa.setId("set_poa");
 		set_poa.setSeleccionTabla(ser_presupuesto.getPoa("-1","true","false"),"ide_prpoa");
@@ -382,12 +405,18 @@ public class pre_anual_egresos extends Pantalla {
 			utilitario.agregarMensajeInfo("Selecione un Casa","");
 		}    
 		else{
+                    
+                    arb_arbol.setCondicion("ide_prfup in ("+ser_presupuesto.getSubactvidadesFuncionPrograma(com_casas.getValue().toString())+")");
+                    arb_arbol.ejecutarSql();
+                    arb_arbol.setOptimiza(true);
+                    utilitario.addUpdate("arb_arbol");
+                    /* comento todo por la implemnetacion del arbol
                         tab_anual.setCondicion("not ide_prpro is null and ide_geani="+com_anio.getValue()+" and ide_prpro in ("+ser_presupuesto.getSubactvidadesPrograma(com_casas.getValue().toString())+")");
 			tab_anual.ejecutarSql();
 			//tab_mes.ejecutarValorForanea(tab_poa.getValorSeleccionado());
                         tab_mensual.ejecutarValorForanea(tab_anual.getValorSeleccionado());
                        tab_reforma.ejecutarValorForanea(tab_anual.getValorSeleccionado());
-
+                       */
 		}
 	}
 	
