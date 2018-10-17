@@ -11,6 +11,8 @@ package paq_pensiones;
  */
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Upload;
@@ -30,12 +32,22 @@ public class pre_conciliacion_banco extends Pantalla{
     private Upload upl_archivo=new Upload();
     private List<String[]> lis_importa=null; //Guardo los empleados y el valor del rubro
     private Tabla tab_tabla = new Tabla();
+    private Etiqueta eti_cajero = new Etiqueta();
+    private Etiqueta eti_caja = new Etiqueta();
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     public pre_conciliacion_banco (){
+        if (tienePerfilSecretaria() != 0) {
+            
+                eti_cajero.setStyle("font-size:16px;font-weight: bold");
+                eti_cajero.setValue("Cajero:"+empleado);
+                    
+                eti_caja.setStyle("font-size:16px;font-weight: bold");
+                eti_caja.setValue("Caja:"+caja);
+                    
                 upl_archivo.setId("upl_archivo");
 		upl_archivo.setMetodo("validarArchivo");
 
@@ -44,7 +56,14 @@ public class pre_conciliacion_banco extends Pantalla{
 		upl_archivo.setAllowTypes("/(\\.|\\/)(xls)$/");
 		upl_archivo.setUploadLabel("Validar");
 		upl_archivo.setCancelLabel("Cancelar Seleccion");
-		bar_botones.agregarComponente(upl_archivo);
+		//bar_botones.agregarComponente(upl_archivo);
+                Grid grup_titulo = new Grid();
+                grup_titulo.setColumns(1);
+                grup_titulo.setWidth("100%");
+                grup_titulo.setId("grup_titulo");
+                grup_titulo.getChildren().add(eti_cajero);
+                grup_titulo.getChildren().add(eti_caja);
+                grup_titulo.getChildren().add(upl_archivo);
                 
                 tab_tabla.setId("tab_tabla");
                 //tab_tabla.setTabla("rec_valores", "ide_titulo_recval", 1);
@@ -82,8 +101,16 @@ public class pre_conciliacion_banco extends Pantalla{
                 Division div_division = new Division();
                 div_division.setId("div_division");
                 div_division.dividir1(pat_panel);
-                agregarComponente(div_division);
-    }
+                //agregarComponente(div_division);
+                
+                Division div_cabecera=new Division();
+                div_cabecera.setId("div_cabecera");
+                div_cabecera.setFooter(grup_titulo, div_division, "20%");
+                agregarComponente(div_cabecera);
+                } else {
+            utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la recaudación de pensiones. Consulte con el Administrador");
+        }
+    } 
     
     public void validarArchivo(FileUploadEvent evt){	
 			//Leer el archivo
@@ -125,10 +152,28 @@ public class pre_conciliacion_banco extends Pantalla{
 					str_codigo_alumno=str_codigo_alumno.trim(); 
                                        
                                         valor_pago=valor_pago.trim(); 
-					num_comprobante=num_comprobante.trim(); 
-                                        str_fecha_pago = str_fecha_pago.trim(); 
-                                        SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd");
-                                        String fecha= formatoDeFecha.format(str_fecha_pago);
+					num_comprobante=num_comprobante.trim();
+                                        try {
+                    String vecFecha[] = str_fecha_pago.split("/");
+                    String dia = vecFecha[0];
+                    String mes = vecFecha[1];
+                    String ano = vecFecha[2];
+
+                    if (dia.length() == 1) {
+                        dia = "0" + dia;
+                    }
+                    if (mes.length() == 1) {
+                        mes = "0" + mes;
+                    }
+                    if (ano.length() == 2) {
+                        ano = "20" + ano;
+                    }
+                    str_fecha_pago = ano + "-" + mes + "-" + dia;
+                } catch (Exception e) {
+                }
+                                        //str_fecha_pago = str_fecha_pago.trim(); 
+                                        //SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd");
+                                        //String fecha= formatoDeFecha.format(str_fecha_pago);
                                         //System.out.println(formatoDeFecha.format(utilitario.getFormatoFecha(str_fecha_pago)));
                                         if (tab_alumn_val.equals(str_codigo_alumno) && tab_alumn_valor_deuda.equals(valor_pago)){
                                                TablaGenerica tab_valores_deuda = utilitario.consultar("select * from rec_valores where ide_recest = "+utilitario.getVariable("p_pen_deuda_activa")+" and ide_geper = "+ide_geper+"");
@@ -136,7 +181,7 @@ public class pre_conciliacion_banco extends Pantalla{
                                                 String ide_titulo = tab_valores_deuda.getValor(m, "ide_titulo_recval");
                                                    System.out.println("titulo "+ide_titulo);
                                                 utilitario.getConexion().ejecutarSql("update rec_valores "
-                                                                                   + "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+utilitario.getVariable("p_pen_transferencia_forma_pago")+", num_titulo_recva = "+num_comprobante+", fecha_pago_recva = '"+fecha+"' "
+                                                                                   + "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+utilitario.getVariable("p_pen_transferencia_forma_pago")+", num_titulo_recva = "+num_comprobante+", fecha_pago_recva = "+utilitario.getFormatoFechaSQL(str_fecha_pago)+" "
                                                                                    + "where ide_titulo_recval = "+ide_titulo+"");
                                                }
                                         }
@@ -158,14 +203,12 @@ public class pre_conciliacion_banco extends Pantalla{
 					System.out.println("imprimo valro a conciliar "+str_valor);
 					tab_tabla.insertar();
 					tab_tabla.setValor(0, "valor_conciliado_fafac", double_valor_conciliar+"");*/
-                                        
-                                         
-                                        
-
 				}
 				
 				}
-				utilitario.addUpdate("tab_tabla");;
+                                utilitario.agregarMensaje("Se ha conciliado correctamente", "");
+                                tab_tabla.actualizar();
+				utilitario.addUpdate("tab_tabla");
 
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -173,6 +216,30 @@ public class pre_conciliacion_banco extends Pantalla{
 			}	
 			
 	}
+    String empleado = "";
+    String cedula = "";
+    String ide_ademple = "";
+    String caja = "";
+    String emision = "";
+    
+    private int tienePerfilSecretaria() {
+        List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
+
+        if (!sql.isEmpty()) {
+            Object[] fila = (Object[]) sql.get(0);
+            empleado = fila[2].toString();
+            cedula = fila[1].toString();
+            ide_ademple = fila[0].toString();
+            caja = fila[3].toString();
+            emision = fila[4].toString();
+            return 1;
+            
+
+        } else {
+            return 0;
+            
+        }
+    }
     private String getFormatoInformacion(String mensaje){
 		return "<div><font color='#3333ff'><strong>*&nbsp;</strong>"+mensaje+"</font></div>";	
     }
@@ -218,6 +285,22 @@ public class pre_conciliacion_banco extends Pantalla{
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Etiqueta getEti_cajero() {
+        return eti_cajero;
+    }
+
+    public void setEti_cajero(Etiqueta eti_cajero) {
+        this.eti_cajero = eti_cajero;
+    }
+
+    public Etiqueta getEti_caja() {
+        return eti_caja;
+    }
+
+    public void setEti_caja(Etiqueta eti_caja) {
+        this.eti_caja = eti_caja;
     }
     
 }
