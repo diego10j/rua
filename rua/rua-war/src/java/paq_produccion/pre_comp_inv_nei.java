@@ -18,6 +18,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class pre_comp_inv_nei extends Pantalla {
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
     String valor_orden = "";
+    private VisualizarPDF vipdf_nota_entrega_inter = new VisualizarPDF();
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -153,6 +155,8 @@ public class pre_comp_inv_nei extends Pantalla {
         tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("precio_indci").setRequerida(true);
 //        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
+        tab_tabla2.getColumna("precio_indci").setNombreVisual("UNIDADES");//identificar nombre de campo cambio
+
         tab_tabla2.getColumna("valor_indci").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setEtiqueta();
         tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
@@ -260,8 +264,33 @@ public class pre_comp_inv_nei extends Pantalla {
         sel_detalle_orden_prod.getBot_aceptar().setMetodo("aceptaDetalleOrden");
         agregarComponente(sel_detalle_orden_prod);
         
+       
+        vipdf_nota_entrega_inter.setId("vipdf_nota_entrega_inter");
+        vipdf_nota_entrega_inter.setTitle("NOTA DE ENTREGA INTERNA");
+        agregarComponente(vipdf_nota_entrega_inter);
         
+        
+        Boton bot_imprimir_nota = new Boton();
+        bot_imprimir_nota.setValue("IMPRIMIR REPORTE");
+        bot_imprimir_nota.setIcon("ui-icon-print");
+        bot_imprimir_nota.setMetodo("generarPDFnota");
+        bar_botones.agregarBoton(bot_imprimir_nota);
+        
+     }
+    
+    public void generarPDFnota(){
+        if (tab_tabla1.getValorSeleccionado() != null) {
+                        Map parametros = new HashMap();
+                        parametros.put("pide_nota_entrega_interna", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+                        vipdf_nota_entrega_inter.setVisualizarPDF("rep_produccion/rep_nota_entrega_interna.jasper", parametros);
+                        vipdf_nota_entrega_inter.dibujar();
+                        utilitario.addUpdate("vipdf_nota_entrega_inter");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Nota de Entrega Interna", "");
+        }
     }
+     
     
     public void dibujaCabeceraOrden(){
         sel_cabecera_orden_prod.dibujar();
@@ -728,6 +757,22 @@ public class pre_comp_inv_nei extends Pantalla {
 
     public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
         this.sel_detalle_orden_prod = sel_detalle_orden_prod;
+    }
+
+    public VisualizarPDF getVipdf_nota_entrega_inter() {
+        return vipdf_nota_entrega_inter;
+    }
+
+    public void setVipdf_nota_entrega_inter(VisualizarPDF vipdf_nota_entrega_inter) {
+        this.vipdf_nota_entrega_inter = vipdf_nota_entrega_inter;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
     }
 
 }

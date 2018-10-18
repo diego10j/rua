@@ -18,6 +18,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class pre_comp_inv_node extends Pantalla {
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
     String valor_orden = "";
+    private VisualizarPDF vipdf_nota_devolucion = new VisualizarPDF();
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -152,6 +154,8 @@ public class pre_comp_inv_node extends Pantalla {
         tab_tabla2.getColumna("cantidad_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("precio_indci").setRequerida(true);
+        tab_tabla2.getColumna("precio_indci").setNombreVisual("UNIDADES");//identificar nombre de campo cambio
+
 //        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setEtiqueta();
@@ -261,7 +265,34 @@ public class pre_comp_inv_node extends Pantalla {
         agregarComponente(sel_detalle_orden_prod);
         
         
+    
+    
+        vipdf_nota_devolucion.setId("vipdf_nota_devolucion");
+        vipdf_nota_devolucion.setTitle("NOTA DE DEVOLUCION");
+        agregarComponente(vipdf_nota_devolucion);
+        
+        Boton bot_imprimir_nota = new Boton();
+        bot_imprimir_nota.setValue("IMPRIMIR REPORTE");
+        bot_imprimir_nota.setIcon("ui-icon-print");
+        bot_imprimir_nota.setMetodo("generarPDFnota");
+        bar_botones.agregarBoton(bot_imprimir_nota);
+        
     }
+    
+    public void generarPDFnota(){
+        if (tab_tabla1.getValorSeleccionado() != null) {
+                        Map parametros = new HashMap();
+                        parametros.put("pide_nota_devolucion", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+                        vipdf_nota_devolucion.setVisualizarPDF("rep_produccion/rep_nota_de_devolucion.jasper", parametros);
+                        vipdf_nota_devolucion.dibujar();
+                        utilitario.addUpdate("vipdf_nota_devolucion");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Nota de Devolucion", "");
+        }
+    }
+            
+    
     
     public void dibujaCabeceraOrden(){
         sel_cabecera_orden_prod.dibujar();
@@ -728,6 +759,22 @@ public class pre_comp_inv_node extends Pantalla {
 
     public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
         this.sel_detalle_orden_prod = sel_detalle_orden_prod;
+    }
+
+    public VisualizarPDF getVipdf_nota_devolucion() {
+        return vipdf_nota_devolucion;
+    }
+
+    public void setVipdf_nota_devolucion(VisualizarPDF vipdf_nota_devolucion) {
+        this.vipdf_nota_devolucion = vipdf_nota_devolucion;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
     }
 
 }

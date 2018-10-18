@@ -18,6 +18,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import paq_produccion.ejb.ServicioProduccion;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
-
 /**
  *
  * @author user
@@ -57,6 +57,7 @@ public class pre_comp_inv_nec extends Pantalla {
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
     String valor_orden = "";
+    private VisualizarPDF vipdf_nota_entrega_cli = new VisualizarPDF();
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -141,6 +142,8 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
+        tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
         //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
@@ -152,6 +155,7 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla2.getColumna("cantidad_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("precio_indci").setRequerida(true);
+        tab_tabla2.getColumna("precio_indci").setNombreVisual("UNIDADES");//identificar nombre de campo cambio
 //        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setRequerida(true);
         tab_tabla2.getColumna("valor_indci").setEtiqueta();
@@ -260,8 +264,31 @@ public class pre_comp_inv_nec extends Pantalla {
         sel_detalle_orden_prod.getBot_aceptar().setMetodo("aceptaDetalleOrden");
         agregarComponente(sel_detalle_orden_prod);
         
+        vipdf_nota_entrega_cli.setId("vipdf_nota_entrega_cli");
+        vipdf_nota_entrega_cli.setTitle("NOTA DE ENTREGA A CLIENTES");
+        agregarComponente(vipdf_nota_entrega_cli);
+        
+        Boton bot_imprimir_nota = new Boton();
+        bot_imprimir_nota.setValue("IMPRIMIR REPORTE");
+        bot_imprimir_nota.setIcon("ui-icon-print");
+        bot_imprimir_nota.setMetodo("generarPDFnota");
+        bar_botones.agregarBoton(bot_imprimir_nota);
         
     }
+    
+    public void generarPDFnota(){
+        if (tab_tabla1.getValorSeleccionado() != null) {
+                        Map parametros = new HashMap();
+                        parametros.put("pide_nota_entrega_cliente", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+                        vipdf_nota_entrega_cli.setVisualizarPDF("rep_produccion/rep_nota_entrega_clientes.jasper", parametros);
+                        vipdf_nota_entrega_cli.dibujar();
+                        utilitario.addUpdate("vipdf_nota_entrega_cli");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Nota de Entrega", "");
+        }
+    }
+            
     
     public void dibujaCabeceraOrden(){
         sel_cabecera_orden_prod.dibujar();
@@ -728,6 +755,22 @@ public class pre_comp_inv_nec extends Pantalla {
 
     public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
         this.sel_detalle_orden_prod = sel_detalle_orden_prod;
+    }
+
+    public VisualizarPDF getVipdf_nota_entrega_cli() {
+        return vipdf_nota_entrega_cli;
+    }
+
+    public void setVipdf_nota_entrega_cli(VisualizarPDF vipdf_nota_entrega_cli) {
+        this.vipdf_nota_entrega_cli = vipdf_nota_entrega_cli;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
     }
 
 }
