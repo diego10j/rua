@@ -10,11 +10,14 @@ package paq_pensiones;
  * @author ANDRES
  */
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AreaTexto;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import framework.componentes.Upload;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +37,9 @@ public class pre_conciliacion_banco extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Etiqueta eti_cajero = new Etiqueta();
     private Etiqueta eti_caja = new Etiqueta();
+    private Dialogo dia_emision = new Dialogo();
+    private Texto txt_mensaje = new Texto();
+    private AreaTexto area_dialogo = new AreaTexto();
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     
@@ -49,7 +55,8 @@ public class pre_conciliacion_banco extends Pantalla{
                 eti_caja.setValue("Caja:"+caja);
                     
                 upl_archivo.setId("upl_archivo");
-		upl_archivo.setMetodo("validarArchivo");
+		upl_archivo.setMetodo("validarArchivo"); //validarArchivo
+                
 
 	//	upl_archivo.setUpdate("gri_valida");		
 		upl_archivo.setAuto(false);
@@ -101,18 +108,42 @@ public class pre_conciliacion_banco extends Pantalla{
                 Division div_division = new Division();
                 div_division.setId("div_division");
                 div_division.dividir1(pat_panel);
-                //agregarComponente(div_division);
+                 //agregarComponente(div_division);
                 
                 Division div_cabecera=new Division();
                 div_cabecera.setId("div_cabecera");
-                div_cabecera.setFooter(grup_titulo, div_division, "20%");
+                div_cabecera.setFooter(grup_titulo, div_division, "25%");
                 agregarComponente(div_cabecera);
+                
+                dia_emision.setId("dia_emision");
+                dia_emision.setTitle("Seleccion los parámetros");
+                dia_emision.setWidth("39%");
+                dia_emision.setHeight("20%");
+                dia_emision.getBot_aceptar().setMetodoRuta("validarArchivo");
+                dia_emision.setResizable(false);
+                
+                Grid gri3 = new Grid();
+                gri3.setColumns(1);
+                area_dialogo = new AreaTexto();
+                area_dialogo.setCols(90);
+                area_dialogo.setMaxlength(190);
+                area_dialogo.setRows(2);
+                gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+                gri3.getChildren().add(area_dialogo);
+                
+                dia_emision.setDialogo(gri3);
+                agregarComponente(dia_emision);
+                
                 } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la recaudación de pensiones. Consulte con el Administrador");
         }
     } 
     
-    public void validarArchivo(FileUploadEvent evt){	
+    public void dibujaDialogoConciliacion(FileUploadEvent evt){
+        dia_emision.dibujar();
+    }
+    
+    public void validarArchivo(FileUploadEvent evt){	//
 			//Leer el archivo
 			String str_msg_info="";
 			String str_msg_adve="";
@@ -134,6 +165,8 @@ public class pre_conciliacion_banco extends Pantalla{
 				upl_archivo.setNombreReal(evt.getFile().getFileName());
 
 				str_msg_info+=getFormatoInformacion("El archivo "+upl_archivo.getNombreReal()+" contiene "+int_fin+" filas");
+                                String nombre =  upl_archivo.getNombreReal();
+                                System.out.println("nombre arhivo: "+nombre);
                                 
                                 
 				lis_importa=new ArrayList<String[]>();
@@ -179,7 +212,7 @@ public class pre_conciliacion_banco extends Pantalla{
                                                TablaGenerica tab_valores_deuda = utilitario.consultar("select * from rec_valores where ide_recest = "+utilitario.getVariable("p_pen_deuda_activa")+" and ide_geper = "+ide_geper+"");
                                                for (int m=0; m<tab_valores_deuda.getTotalFilas(); m++){
                                                 String ide_titulo = tab_valores_deuda.getValor(m, "ide_titulo_recval");
-                                                   System.out.println("titulo "+ide_titulo);
+                                                  // System.out.println("titulo "+ide_titulo);
                                                 utilitario.getConexion().ejecutarSql("update rec_valores "
                                                                                    + "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+utilitario.getVariable("p_pen_transferencia_forma_pago")+", num_titulo_recva = "+num_comprobante+", fecha_pago_recva = "+utilitario.getFormatoFechaSQL(str_fecha_pago)+" "
                                                                                    + "where ide_titulo_recval = "+ide_titulo+"");
@@ -206,6 +239,7 @@ public class pre_conciliacion_banco extends Pantalla{
 				}
 				
 				}
+                                dia_emision.cerrar();
                                 utilitario.agregarMensaje("Se ha conciliado correctamente", "");
                                 tab_tabla.actualizar();
 				utilitario.addUpdate("tab_tabla");
@@ -301,6 +335,22 @@ public class pre_conciliacion_banco extends Pantalla{
 
     public void setEti_caja(Etiqueta eti_caja) {
         this.eti_caja = eti_caja;
+    }
+
+    public Dialogo getDia_emision() {
+        return dia_emision;
+    }
+
+    public void setDia_emision(Dialogo dia_emision) {
+        this.dia_emision = dia_emision;
+    }
+
+    public AreaTexto getArea_dialogo() {
+        return area_dialogo;
+    }
+
+    public void setArea_dialogo(AreaTexto area_dialogo) {
+        this.area_dialogo = area_dialogo;
     }
     
 }
