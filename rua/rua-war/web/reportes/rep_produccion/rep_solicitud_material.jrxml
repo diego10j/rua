@@ -35,18 +35,18 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detallete_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
+		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
 from prod_orden_produccion a
 left join (select ide_geper, nom_geper, identificac_geper, direccion_geper, telefono_geper, correo_geper from gen_persona) b on a.ide_geper = b.ide_geper
 --detalle de orden
 left join(
-select ide_prord, ide_prorp, a.ide_inuni, b.nombre_inuni, a.ide_inarti, c.nombre_inarti,  a.ide_prcol, d.detallete_prcol, bulto_paquete_prord, unidades_prord, total_prord
+select ide_prord, ide_prorp, a.ide_inuni, b.nombre_inuni, a.ide_inarti, c.nombre_inarti,  a.ide_prcol, d.detalle_prcol, bulto_paquete_prord, unidades_prord, total_prord
 from prod_orden_detalle a
 left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
 left join (select ide_inarti, nombre_inarti from inv_articulo) c on a.ide_inarti = c.ide_inarti
-left join (select ide_prcol, detallete_prcol from prod_color) d on a.ide_prcol = d.ide_prcol
+left join (select ide_prcol, detalle_prcol from prod_color) d on a.ide_prcol = d.ide_prcol
 ) c on a.ide_prorp = c.ide_prorp
-where a.ide_prorp = $P{pide_orden}]]>
+where a.ide_prorp =$P{pide_orden}]]>
 	</queryString>
 	<field name="ide_prorp" class="java.lang.Long"/>
 	<field name="ide_geper" class="java.lang.Long"/>

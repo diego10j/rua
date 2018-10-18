@@ -35,7 +35,8 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
+		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord,observacion_prorp,fecha_terminado_prorp,
+hora_registro_prorp,numeracion_prorp,logo_prorp
 from prod_orden_produccion a
 left join (select ide_geper, nom_geper, identificac_geper, direccion_geper, telefono_geper, correo_geper from gen_persona) b on a.ide_geper = b.ide_geper
 --detalle de orden
@@ -75,9 +76,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="nombre_inuni" class="java.lang.String"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="color" class="java.lang.String"/>
-	<field name="bulto_paquete_prord" class="java.lang.Integer"/>
+	<field name="bulto_paquete_prord" class="java.lang.Long"/>
 	<field name="unidades_prord" class="java.math.BigDecimal"/>
 	<field name="total_prord" class="java.math.BigDecimal"/>
+	<field name="observacion_prorp" class="java.lang.String"/>
+	<field name="hora_registro_prorp" class="java.sql.Time"/>
+	<field name="numeracion_prorp" class="java.lang.String"/>
+	<field name="logo_prorp" class="java.lang.String"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -140,19 +145,19 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="173" splitType="Stretch">
+		<band height="248" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="1" y="24" width="133" height="20"/>
+				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="1" y="43" width="133" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cliente/Razón Social:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="0" y="150" width="555" height="20"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="-8" y="225" width="555" height="20"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="0" y="150" width="124" height="23"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="-1" y="222" width="124" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -166,91 +171,91 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[Fecha de Emisión:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="316" y="24" width="84" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="316" y="43" width="84" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Teléfono:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1a4ce8ed-19d8-453c-91a3-c11354b4dce1" x="0" y="44" width="133" height="20"/>
+				<reportElement uuid="1a4ce8ed-19d8-453c-91a3-c11354b4dce1" x="0" y="63" width="133" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dirección:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d3e44e1f-044d-4a11-b630-1f7ca04211bb" x="0" y="64" width="133" height="20"/>
+				<reportElement uuid="d3e44e1f-044d-4a11-b630-1f7ca04211bb" x="0" y="83" width="133" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Solicitado Por:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2675fce2-2c2b-497f-979f-f51ad3a05e41" x="0" y="84" width="133" height="20"/>
+				<reportElement uuid="2675fce2-2c2b-497f-979f-f51ad3a05e41" x="0" y="103" width="133" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[E-mail:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="126" y="150" width="68" height="23"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="195" y="222" width="68" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e0aa495f-5263-470f-a5d0-2bcd8a91497e" x="0" y="115" width="134" height="18"/>
+				<reportElement uuid="e0aa495f-5263-470f-a5d0-2bcd8a91497e" x="0" y="160" width="134" height="18"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Producción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4009dc86-efc4-461c-866e-898591247219" x="316" y="44" width="84" height="20"/>
+				<reportElement uuid="4009dc86-efc4-461c-866e-898591247219" x="316" y="63" width="84" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ruc:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2e58c001-0e12-421c-92c9-338209f92c9a" x="316" y="64" width="84" height="20"/>
+				<reportElement uuid="2e58c001-0e12-421c-92c9-338209f92c9a" x="316" y="83" width="84" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cargo Solicitado:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8855795e-bdb1-495f-9c9b-351fee6d11ee" x="316" y="117" width="84" height="16"/>
+				<reportElement uuid="8855795e-bdb1-495f-9c9b-351fee6d11ee" x="316" y="162" width="84" height="16"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Prueba]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="196" y="150" width="71" height="23"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="123" y="222" width="71" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Color]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="451b851d-2824-4420-add4-c44e6f9f51ee" x="270" y="150" width="110" height="23"/>
+				<reportElement uuid="451b851d-2824-4420-add4-c44e6f9f51ee" x="269" y="222" width="110" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Bultos/Paquetes]]></text>
+				<text><![CDATA[Cantidad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9541ae33-9f2e-44d8-9dcf-b20c0728320b" x="411" y="150" width="67" height="23"/>
+				<reportElement uuid="9541ae33-9f2e-44d8-9dcf-b20c0728320b" x="410" y="222" width="67" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unidades]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ebb51261-e505-495a-b032-cf9754ae8765" x="473" y="150" width="75" height="23"/>
+				<reportElement uuid="ebb51261-e505-495a-b032-cf9754ae8765" x="472" y="222" width="75" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -262,40 +267,40 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{fecha_emision_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="eda09663-d02f-4ca0-a1de-2e96b68b749e" x="134" y="24" width="100" height="20"/>
+				<reportElement uuid="eda09663-d02f-4ca0-a1de-2e96b68b749e" x="134" y="43" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="313447f5-e7be-4425-80a7-49f3457dca34" x="134" y="44" width="100" height="20"/>
+				<reportElement uuid="313447f5-e7be-4425-80a7-49f3457dca34" x="134" y="63" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{direccion_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="dcc03150-d1e2-4ae0-a744-ef16c58f4559" x="134" y="64" width="100" height="20"/>
+				<reportElement uuid="dcc03150-d1e2-4ae0-a744-ef16c58f4559" x="134" y="83" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{solitado_por_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="867fdc0c-12f0-4936-ba1e-3a6cc31956f2" x="134" y="84" width="100" height="20"/>
+				<reportElement uuid="867fdc0c-12f0-4936-ba1e-3a6cc31956f2" x="134" y="103" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{correo_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="9fca6926-d698-4a87-a893-1d6bf0192dfb" x="400" y="24" width="100" height="20"/>
+				<reportElement uuid="9fca6926-d698-4a87-a893-1d6bf0192dfb" x="400" y="43" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{telefono_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="7c8151a2-0bac-4a12-a841-b8e146ad1dd0" x="400" y="44" width="100" height="20"/>
+				<reportElement uuid="7c8151a2-0bac-4a12-a841-b8e146ad1dd0" x="400" y="63" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="65499ad0-511f-431e-8341-2cf290fece78" x="134" y="117" width="31" height="16"/>
+				<reportElement uuid="65499ad0-511f-431e-8341-2cf290fece78" x="134" y="162" width="31" height="16"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="4e65cc02-333b-44a6-b4ad-76c60f108153" x="400" y="117" width="31" height="16"/>
+				<reportElement uuid="4e65cc02-333b-44a6-b4ad-76c60f108153" x="400" y="162" width="31" height="16"/>
 			</rectangle>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="8820fc15-6045-422b-8261-5aa34ef9fa37" x="429" y="1" width="124" height="20"/>
@@ -304,25 +309,85 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA["N° "+$F{numero_proforma}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="1" y="180" width="132" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7c8151a2-0bac-4a12-a841-b8e146ad1dd0" x="2" y="201" width="545" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_prorp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="0" y="21" width="133" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de terminacion :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="316" y="21" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Registro :]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="eda09663-d02f-4ca0-a1de-2e96b68b749e" x="134" y="21" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_terminado_prorp}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="eda09663-d02f-4ca0-a1de-2e96b68b749e" x="400" y="21" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{hora_registro_prorp}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="867fdc0c-12f0-4936-ba1e-3a6cc31956f2" x="135" y="123" width="128" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numeracion_prorp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2675fce2-2c2b-497f-979f-f51ad3a05e41" x="2" y="123" width="133" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numeración:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2675fce2-2c2b-497f-979f-f51ad3a05e41" x="316" y="103" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Logo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="867fdc0c-12f0-4936-ba1e-3a6cc31956f2" x="400" y="103" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{logo_prorp}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="5fa70ae4-260b-44a4-a2fc-e879304370f9" x="2" y="0" width="120" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="6933c97c-d841-4f99-921c-3dea362f54d8" x="124" y="0" width="68" height="20"/>
+				<reportElement uuid="6933c97c-d841-4f99-921c-3dea362f54d8" x="199" y="0" width="68" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="bdca966d-25f2-4be6-a9c2-4cf44c600204" x="192" y="0" width="71" height="20"/>
+				<reportElement uuid="bdca966d-25f2-4be6-a9c2-4cf44c600204" x="124" y="-1" width="71" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{color}]]></textFieldExpression>
 			</textField>
@@ -376,7 +441,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Firma Solicitante:]]></text>
+				<text><![CDATA[Firma Solicitante OP:]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="21df536f-1493-445b-a4c1-d5b84f153d90" x="205" y="111" width="149" height="1"/>

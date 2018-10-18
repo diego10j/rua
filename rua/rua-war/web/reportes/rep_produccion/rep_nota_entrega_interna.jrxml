@@ -31,17 +31,17 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_requerimiento" class="java.lang.Integer">
+	<parameter name="pide_nota_entrega_interna" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,detalle_prcol
-from inv_cab_comp_inve a,inv_det_comp_inve b,prod_color h,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
+		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni
+from inv_cab_comp_inve a,inv_det_comp_inve b,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
 from inv_articulo a
 left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
 ) c
-where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_prcol=h.ide_prcol
-and a.ide_incci=$P{pide_requerimiento}]]>
+where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti
+and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 	</queryString>
 	<field name="ide_incci" class="java.lang.Long"/>
 	<field name="fecha_trans_incci" class="java.sql.Date"/>
@@ -53,7 +53,6 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
-	<field name="detalle_prcol" class="java.lang.String"/>
 	<variable name="sum_total" class="java.lang.String" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -63,14 +62,14 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<title>
 		<band height="79" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="11" width="682" height="66"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="13" width="682" height="66"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="316" y="12" width="219" height="66"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[REQUERIMIENTO MATERIA PRIMA]]></text>
+				<text><![CDATA[NOTA DE ENTREGA INTERNA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="535" y="37" width="145" height="20"/>
@@ -90,7 +89,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RD - 01]]></text>
+				<text><![CDATA[RD - 03]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement uuid="37a77be3-5003-48af-b0b2-33ceb1ebbd4b" x="536" y="57" width="144" height="20"/>
@@ -100,7 +99,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="10" y="10" width="168" height="66"/>
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="17" y="10" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -125,7 +124,21 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<text><![CDATA[Entregado a:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="374" y="103" width="117" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="51" y="103" width="76" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="312" y="103" width="117" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -139,7 +152,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="104" y="103" width="185" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="127" y="103" width="185" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -160,7 +173,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="488" y="103" width="71" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="426" y="103" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -172,6 +185,34 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="568" y="103" width="84" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="497" y="103" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidades]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="411" y="13" width="59" height="20"/>
@@ -190,20 +231,6 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="289" y="103" width="85" height="20"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Color]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -212,24 +239,29 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField>
-				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="104" y="1" width="185" height="20"/>
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="51" y="1" width="76" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="127" y="1" width="185" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="374" y="1" width="114" height="20"/>
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="312" y="1" width="114" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="491" y="0" width="68" height="20"/>
+				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="429" y="0" width="70" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="289" y="1" width="85" height="20"/>
+				<reportElement uuid="807e9161-b133-41fb-b85e-891859aaed7e" x="571" y="1" width="84" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{detalle_prcol}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{valor_indci}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -240,6 +272,19 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="170" splitType="Stretch"/>
+		<band height="170" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="52" y="-94" width="103" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="155" y="-94" width="354" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_incci}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>

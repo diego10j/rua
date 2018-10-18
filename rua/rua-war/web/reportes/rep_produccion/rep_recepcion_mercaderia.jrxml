@@ -139,23 +139,23 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="100" splitType="Stretch">
+		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="47" y="22" width="90" height="20"/>
+				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="52" y="58" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Operarios:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="47" y="42" width="90" height="20"/>
+				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="52" y="78" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Maquina No:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="51" y="80" width="76" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="51" y="101" width="76" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -169,7 +169,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="255" y="80" width="86" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="255" y="101" width="86" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -183,7 +183,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="127" y="80" width="128" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="127" y="101" width="128" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -197,7 +197,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[Producto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="341" y="80" width="85" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="341" y="101" width="85" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -211,43 +211,43 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[Color]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="46" y="2" width="91" height="20"/>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="51" y="38" width="91" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Recepción:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="362" y="22" width="103" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="58" width="103" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Contabilizado:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="362" y="42" width="103" height="20"/>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="78" width="103" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Contabilizado por:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="137" y="42" width="126" height="20"/>
+				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="142" y="78" width="126" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{maquina_prorem}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="137" y="22" width="225" height="20"/>
+				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="142" y="58" width="225" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{operario_prorem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="137" y="2" width="100" height="20"/>
+				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="142" y="38" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{fecha_recepcion_prorem}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="426" y="80" width="71" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="426" y="101" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -258,20 +258,20 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Bultos]]></text>
+				<text><![CDATA[Cantidad]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="b1c7ec4a-2e38-4e11-997b-c74090b57517" x="465" y="22" width="126" height="20"/>
+				<reportElement uuid="b1c7ec4a-2e38-4e11-997b-c74090b57517" x="470" y="58" width="126" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{fecha_contabilizado_prorem}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="628cc293-8197-4888-83e5-f13c12dc7c16" x="465" y="42" width="126" height="20"/>
+				<reportElement uuid="628cc293-8197-4888-83e5-f13c12dc7c16" x="470" y="78" width="126" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{contabilizado_por}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="568" y="80" width="84" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="568" y="101" width="84" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -285,7 +285,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="497" y="80" width="71" height="20"/>
+				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="497" y="101" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -303,13 +303,20 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["N° "+$F{num_secuencial_prorem}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="38" width="103" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ING.BOD.No:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="0af69fbf-a0b3-49d0-a600-9d64e1d2009e" x="51" y="0" width="76" height="20"/>
 				<textElement textAlignment="Center"/>
