@@ -197,7 +197,7 @@ public class pre_anual_egresos extends Pantalla {
                 
 		//tab_mensual.getColumna("ide_gemes").setCombo("gen_mes", "ide_gemes", "nombre_gemes", "");
                 tab_mensual.getColumna("ide_gemes").setVisible(false);
-
+                tab_mensual.getColumna("ide_prtra").setLectura(true);
 		tab_mensual.getColumna("ide_codem").setLectura(true);
 		//tab_anual.getColumna("ide_prfup").setCombo("pre_funcion_programa", "ide_prfup", "detalle_prfup,", "");
 		//tab_mensual.setTipoFormulario(true);
@@ -322,8 +322,9 @@ public class pre_anual_egresos extends Pantalla {
 		//Filtra la tabla tab_vigente
 		tab_anual.setCondicion("ide_prpro="+tab_programa.getValorSeleccionado()+" and ide_geani= "+com_anio.getValue());
                 tab_anual.ejecutarSql();
-                tab_anual.imprimirSql();
-                utilitario.addUpdate("tab_programa,tab_anual");
+                tab_mensual.ejecutarValorForanea(tab_anual.getValorSeleccionado());
+                tab_reforma.ejecutarValorForanea(tab_anual.getValorSeleccionado());
+                utilitario.addUpdate("tab_programa,tab_anual,tab_mensual,tab_reforma");
 	  }
 	public void iniciaPoa(){
 		set_poa.setId("set_poa");
