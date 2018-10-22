@@ -35,7 +35,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni
+		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,gth_ide_gtemp as Recibe
 from inv_cab_comp_inve a,inv_det_comp_inve b,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
 from inv_articulo a
 left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
@@ -53,6 +53,7 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
+	<field name="recibe" class="java.lang.Long"/>
 	<variable name="sum_total" class="java.lang.String" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -230,6 +231,11 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="470" y="13" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="142" y="33" width="113" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{recibe}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
