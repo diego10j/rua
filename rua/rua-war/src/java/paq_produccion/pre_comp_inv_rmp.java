@@ -4,6 +4,8 @@
  */
 package paq_produccion;
 
+
+
 import paq_inventario.*;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
@@ -18,6 +20,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,8 @@ public class pre_comp_inv_rmp extends Pantalla {
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
     String valor_orden = "";
+    private VisualizarPDF vipdf_r_m_p = new VisualizarPDF();
+
 
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
@@ -265,7 +270,32 @@ public class pre_comp_inv_rmp extends Pantalla {
         agregarComponente(sel_detalle_orden_prod);
         
         
+   
+        vipdf_r_m_p.setId("vipdf_r_m_p");
+        vipdf_r_m_p.setTitle("REQUERIMIENTO MATERIA PRIMA");
+        agregarComponente(vipdf_r_m_p);
+        
+        Boton bot_imprimir_nota = new Boton();
+        bot_imprimir_nota.setValue("IMPRIMIR REPORTE");
+        bot_imprimir_nota.setIcon("ui-icon-print");
+        bot_imprimir_nota.setMetodo("generarPDFnota");
+        bar_botones.agregarBoton(bot_imprimir_nota);
+        
     }
+    
+    public void generarPDFnota(){
+        if (tab_tabla1.getValorSeleccionado() != null) {
+                        Map parametros = new HashMap();
+                        parametros.put("pide_requerimiento", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+                        vipdf_r_m_p.setVisualizarPDF("rep_produccion/rep_requerimiento_materia_prima.jasper", parametros);
+                        vipdf_r_m_p.dibujar();
+                        utilitario.addUpdate("vipdf_r_m_p");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione una Nota de Materia Prima", "");
+        }
+    }
+            
     
     public void dibujaCabeceraOrden(){
         sel_cabecera_orden_prod.dibujar();
@@ -732,6 +762,22 @@ public class pre_comp_inv_rmp extends Pantalla {
 
     public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
         this.sel_detalle_orden_prod = sel_detalle_orden_prod;
+    }
+
+    public VisualizarPDF getVipdf_r_m_p() {
+        return vipdf_r_m_p;
+    }
+
+    public void setVipdf_r_m_p(VisualizarPDF vipdf_r_m_p) {
+        this.vipdf_r_m_p = vipdf_r_m_p;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
     }
 
 }
