@@ -97,6 +97,7 @@ public class pre_activos_fijos extends Pantalla {
     String ide_acafi = "";
     String fecha_compra = "";
     String fecha_depreciacion = "";
+    private int dias_a_depreciar = 0;
     private int vida_util = 0;
     private int dias_año = 365;
     private int numero_dias = 0;
@@ -530,8 +531,10 @@ public class pre_activos_fijos extends Pantalla {
     }
     public void depreciacionIndividual(){
         String activos_seleccionados=tab_tabla.getFilasSeleccionadas();
+        utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(activos_seleccionados));
         //System.out.println("activos seleccionados "+ activos_seleccionados);
-       TablaGenerica tab_depreciaciones_consulta = utilitario.consultar("select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi from act_activo_fijo where ide_acafi in ("+activos_seleccionados+") ");
+       TablaGenerica tab_depreciaciones_consulta = utilitario.consultar("select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_acafi in ("+activos_seleccionados+") ");
+       
        try{
             for (int i=0; i<tab_depreciaciones_consulta.getTotalFilas() ; i++){
             ide_acafi = tab_depreciaciones_consulta.getValor(i,"ide_acafi");
@@ -540,7 +543,9 @@ public class pre_activos_fijos extends Pantalla {
             valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
             valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
             valor_total = valor_compra + valor_reposicion;
-            ser_activos.calcularTotalResidual(valor_total, p_con_por_valor_residual, ide_acafi);
+            utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(ide_acafi));
+            TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
+            ser_activos.calcularTotalResidual(valor_total,tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
             valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
             calculaDepreciacion();
         }
@@ -552,18 +557,24 @@ public class pre_activos_fijos extends Pantalla {
     }
     public void calcularValorGrupal(){
         String valores_seleccionados = sel_clase_activos.getSeleccionados();
-        TablaGenerica tab_depreciaciones_consulta = utilitario.consultar("select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi from act_activo_fijo where ide_accla in ("+valores_seleccionados+") "
-                                                                       + "and ide_aceaf in("+utilitario.getVariable("p_act_estado_activo_valora_deprec")+") and deprecia_acafi = false ");
+        utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(" select ide_acafi from act_activo_fijo where ide_accla in ("+valores_seleccionados+")and ide_aceaf in("+utilitario.getVariable("p_act_estado_activo_valora_deprec")+")"));
+        String sql="select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_accla in ("+valores_seleccionados+") "
+                                                                       + "and ide_aceaf in("+utilitario.getVariable("p_act_estado_activo_valora_deprec")+") and deprecia_acafi = false ";
+        //System.out.println("calcular valor grupal "+sql);
+        TablaGenerica tab_depreciaciones_consulta = utilitario.consultar(sql);
         
         try{
             for (int i=0; i<tab_depreciaciones_consulta.getTotalFilas() ; i++){
             ide_acafi = tab_depreciaciones_consulta.getValor(i,"ide_acafi");
             fecha_compra = tab_depreciaciones_consulta.getValor(i, "fecha_compra_acafi");
             vida_util = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "vida_util_acafi"));
+            dias_a_depreciar = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "dias_depreciar_acafi"));
             valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
             valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
             valor_total = valor_compra + valor_reposicion;
-            ser_activos.calcularTotalResidual(valor_total, p_con_por_valor_residual, ide_acafi);
+            
+            TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
+            ser_activos.calcularTotalResidual(valor_total, tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
             valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
             calculaDepreciacion();
         }
@@ -578,41 +589,53 @@ public class pre_activos_fijos extends Pantalla {
         valor_pendiente_depre = 0;
         boolean finalizado_depre=false;
         utilitario.getConexion().ejecutarSql("delete from act_depreciacion where ide_acafi="+ide_acafi+" and validado_depre_acdepr=false;");
-        TablaGenerica tab_depreciacion = utilitario.consultar("select ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_compra_acdepr, validado_depre_acdepr \n" +
+        TablaGenerica tab_depreciacion = utilitario.consultar("select ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr \n" +
                                                               "from act_depreciacion \n" +
                                                               "where validado_depre_acdepr = true \n" +
                                                               "and ide_acafi in ("+ide_acafi+")");
         TablaGenerica tab_fecha = utilitario.consultar("select ide_acafi, max(fecha_acdepr) as fecha_maxima from act_depreciacion "
                                                         + "where ide_acafi = "+ide_acafi+" group by ide_acafi");
         TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("act_depreciacion", "ide_acdepr"));
+        TablaGenerica tab_dias_depreciado=utilitario.consultar(ser_activos.getDiasDepreciado(ide_acafi));
+        int dias_depreciado=0;
+        if(tab_dias_depreciado.getTotalFilas()>0){
+            dias_depreciado=Integer.parseInt(tab_dias_depreciado.getValor("dias_depre"));
+        }
         String maximo = codigo_maximo.getValor("maximo");
         String fecha_maxima = tab_fecha.getValor("fecha_maxima");
        // if (tab_depreciacion.getTotalFilas() > 0){
         String valor_acdepr = tab_depreciacion.getValor("valor_acdepr");
         String fecha_deprecia = tab_depreciacion.getValor("fecha_acdepr");
-        if (valor_acdepr == null){
-            valor_total_depre = 0;
-        } else {
-            valor_total_depre = Double.parseDouble(valor_acdepr);
-        }
+         
         if (fecha_deprecia == null){
             fecha_depreciacion = fecha_compra;
         } else {
             fecha_depreciacion = fecha_maxima;   
         }
         try{
-            valor_pendiente_depre = valor_total - valor_total_depre;
             int num_dias = utilitario.getDiferenciasDeFechas(utilitario.getFecha(fecha_depreciacion), utilitario.getFecha(cal_fecha_depreciacion.getFecha()));
-            numero_dias = vida_util * dias_año;
-            valor_deprecia_dias = valor_total / numero_dias;
+            
+            valor_deprecia_dias = (valor_total-valor_recidual) / dias_a_depreciar;
             valor_depreciado = valor_deprecia_dias * num_dias;
-            resultado_sub =valor_pendiente_depre - valor_depreciado;
-            if (resultado_sub >= valor_recidual){
-               valor_depreciado_final = valor_depreciado;
-            } else {
-                valor_depreciado_final =valor_pendiente_depre- valor_recidual;
-                finalizado_depre=true;  // Sirve para actualizar la tabla de activos fijos cuando ya el bien se termino de depreciar.
-            }/*
+            int resultado=0;
+            if(dias_depreciado<dias_a_depreciar){
+                resultado = dias_a_depreciar-dias_depreciado;
+                if(num_dias<=resultado){
+                    numero_dias=num_dias;
+                }
+                else
+                    numero_dias=resultado;
+            }
+            else{
+                numero_dias=0;
+            }
+            if(numero_dias>0){
+                valor_depreciado = valor_deprecia_dias * numero_dias;
+                utilitario.getConexion().ejecutarSql("INSERT INTO act_depreciacion (ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_reposicion_acdepr, valor_residual_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr)\n" +
+                "VALUES ("+maximo+", "+ide_acafi+", '"+cal_fecha_depreciacion.getFecha()+"', "+valor_depreciado+", "+valor_reposicion+", "+valor_recidual+", "+valor_compra+", false,"+numero_dias+" );");
+
+            }
+            /*
             System.out.println("activo "+ide_acafi);
             System.out.println("valor_recidual "+valor_recidual);
             System.out.println("dias "+num_dias);
@@ -622,19 +645,12 @@ public class pre_activos_fijos extends Pantalla {
             System.out.println("valor_depreciado "+valor_depreciado);
             System.out.println("resultado "+resultado_sub);
             System.out.println("valor_depreciado_final "+valor_depreciado_final);
-            System.out.println("cal_fecha_depreciacion "+fecha_depreciacion);*/
-            utilitario.getConexion().ejecutarSql("INSERT INTO act_depreciacion (ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_reposicion_acdepr, valor_residual_acdepr, valor_compra_acdepr, validado_depre_acdepr)\n" +
-                                                 "VALUES ("+maximo+", "+ide_acafi+", '"+cal_fecha_depreciacion.getFecha()+"', "+valor_depreciado_final+", "+valor_reposicion+", "+valor_recidual+", "+valor_compra+", false );");
-        } catch(Exception e){
+            System.out.println("cal_fecha_depreciacion "+fecha_depreciacion);
+            */
+            } catch(Exception e){
+                System.out.println("Error metodo depreciar "+e);
         }
-        /*System.out.println("valor_depreciacion "+valor_total_depre);
-        System.out.println("fecha_depreciacion "+fecha_depreciacion);
-        System.out.println("valor_pendiente_depre "+valor_pendiente_depre);
-        System.out.println("fecha_compra "+fecha_compra);
-        System.out.println("fecha_maxima "+fecha_maxima);*/
-      /*  } else{
-            
-        }*/
+
     }
     public void dibujarSeleccionClaseActivos(){
         sel_clase_activos.dibujar();
@@ -1282,10 +1298,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla6.setTabla("ACT_DEPRECIACION", "IDE_ACDEPR", 11);
         tab_tabla6.setColumnaSuma("valor_acdepr");
         tab_tabla6.getColumna("ide_acafi").setVisible(false);
-       // tab_tabla6.setCampoPrimaria("ide_acdepr");
-      //  tab_tabla6.getColumna("ide_acdepr").setVisible(false);
-        //tab_tabla6.setLectura(true);
-        //tab_tabla6.setRows(10);
+        tab_tabla6.getColumna("observacion_acdepr").setVisible(false);
         tab_tabla6.setLectura(true);
         tab_tabla6.dibujar();
 
