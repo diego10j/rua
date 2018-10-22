@@ -644,7 +644,10 @@ public class ServicioInventario {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
     }
     
-    
+     public String getSqlConsultaInventario() {
+        return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
+    }
+       
 
     /**
      * Retorna el numero de decimales para manejar cantidad
