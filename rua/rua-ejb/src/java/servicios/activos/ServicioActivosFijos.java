@@ -332,4 +332,19 @@ public class ServicioActivosFijos extends ServicioBase {
             "where a.ide_acafi= b.ide_acafi and validado_depre_acdepr in ("+estado+") order by observacion_acafi";
        return sql;
    }
+   public String getPorcentajeResidual(String codigo){
+       String sql="";
+       sql+="select * from act_clase_activo where ide_accla in ("+codigo+")";
+       return sql;
+   }
+      public String updateDiasDeprecia(String codigo){
+       String sql="";
+       sql+="update act_activo_fijo set dias_depreciar_acafi =vida_util_acafi*365 where ide_acafi in ("+codigo+")";
+       return sql;
+   }
+          public String getDiasDepreciado(String codigo){
+       String sql="";
+       sql+="select ide_acafi,(case when sum(dias_depreciado_acdepr) is null then 0 else sum(dias_depreciado_acdepr) end) as dias_depre from act_depreciacion where ide_acafi="+codigo+" group by ide_acafi";
+       return sql;
+   }  
 }
