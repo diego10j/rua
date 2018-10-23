@@ -72,6 +72,8 @@ public class pre_comp_inv_rmp extends Pantalla {
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     @EJB
     private final ServicioProduccion ser_produccion= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
+     @EJB
+    private final ServiciosAdquisiones ser_persona= (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class); 
     
     public pre_comp_inv_rmp() {
         //Recuperar el plan de cuentas activo
@@ -116,6 +118,9 @@ public class pre_comp_inv_rmp extends Pantalla {
                 + "inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
                 + "order by nombre_intci desc, nombre_intti");
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
+        tab_tabla1.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
+        tab_tabla1.getColumna("gth_ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
+        tab_tabla1.getColumna("gth_ide_gtemp2").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
         tab_tabla1.getColumna("ide_inbod").setRequerida(true);
@@ -379,7 +384,7 @@ public class pre_comp_inv_rmp extends Pantalla {
 
     public void buscarTransaccion() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
-            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             ////tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
@@ -394,7 +399,7 @@ public class pre_comp_inv_rmp extends Pantalla {
     public void buscarnombTransaccion() {
         String val_text = tex_nomb_transaccion.getValue().toString();
         if (tex_nomb_transaccion.getValue() != null) {
-            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla1,tab_tabla2");
