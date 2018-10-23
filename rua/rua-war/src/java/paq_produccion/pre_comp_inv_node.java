@@ -376,7 +376,7 @@ public class pre_comp_inv_node extends Pantalla {
 
     public void buscarTransaccion() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
-            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_nota_devolucion"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             ////tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
@@ -391,7 +391,7 @@ public class pre_comp_inv_node extends Pantalla {
     public void buscarnombTransaccion() {
         String val_text = tex_nomb_transaccion.getValue().toString();
         if (tex_nomb_transaccion.getValue() != null) {
-            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_nota_devolucion"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla1,tab_tabla2");

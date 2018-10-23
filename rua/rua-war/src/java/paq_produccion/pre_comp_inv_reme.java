@@ -124,19 +124,24 @@ public class pre_comp_inv_reme extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("numero_incci").setLectura(true);
         tab_tabla1.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
-        tab_tabla1.getColumna("observacion_incci").setRequerida(true);
+        //tab_tabla1.getColumna("observacion_incci").setRequerida(true);
         tab_tabla1.getColumna("observacion_incci").setControl("AreaTexto");
         tab_tabla1.getColumna("sis_ide_usua").setVisible(false);
         tab_tabla1.getColumna("fecha_siste_incci").setVisible(false);
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp2").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp3").setVisible(false);
+        tab_tabla1.getColumna("referencia_incci").setVisible(false);
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.setCondicion("ide_intti= "+ utilitario.getVariable("p_prod_recepcion_mercaderia"));
+        tab_tabla1.getColumna("ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -164,6 +169,8 @@ public class pre_comp_inv_reme extends Pantalla {
         tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
+        tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+        tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
@@ -172,7 +179,8 @@ public class pre_comp_inv_reme extends Pantalla {
         tab_tabla2.getColumna("precio_promedio_indci").setVisible(false);
 
         tab_tabla2.getColumna("ide_cccfa").setVisible(false);
-        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.getColumna("secuencial_indci").setVisible(false);
+        tab_tabla2.getColumna("observacion_indci").setVisible(false);
 
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
@@ -279,13 +287,13 @@ public class pre_comp_inv_reme extends Pantalla {
     public void generarPDFnota(){
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
-                        parametros.put("pide_requerimiento", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        parametros.put("pide_recepcion", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
-                        vipdf_requerimiento_m_p.setVisualizarPDF("rep_produccion/rep_requerimeinto_materia_prima.jasper", parametros);
+                        vipdf_requerimiento_m_p.setVisualizarPDF("rep_produccion/rep_recepcion_mercaderia.jasper", parametros);
                         vipdf_requerimiento_m_p.dibujar();
                         utilitario.addUpdate("vipdf_requerimiento_m_p");
         } else {
-            utilitario.agregarMensajeInfo("Seleccione un Requerimiento", "");
+            utilitario.agregarMensajeInfo("Seleccione un Registro de Recepcion de Mercaderia", "");
         }
         
     }
@@ -371,7 +379,7 @@ public class pre_comp_inv_reme extends Pantalla {
 
     public void buscarTransaccion() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
-            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("ide_incci=" + tex_num_transaccion.getValue() +" and ide_intti ="+ utilitario.getVariable("p_prod_recepcion_mercaderia"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             ////tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=" + tab_tabla2.getValor("ide_cpcfa"));
@@ -386,7 +394,7 @@ public class pre_comp_inv_reme extends Pantalla {
     public void buscarnombTransaccion() {
         String val_text = tex_nomb_transaccion.getValue().toString();
         if (tex_nomb_transaccion.getValue() != null) {
-            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_nota_entrega_clientes"));
+            tab_tabla1.setCondicion("observacion_incci ilike '%" + tex_nomb_transaccion.getValue()+"%'" + " and ide_intti ="+ utilitario.getVariable("p_prod_recepcion_mercaderia"));
             tab_tabla1.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla1,tab_tabla2");
