@@ -137,6 +137,8 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
+        tab_tabla1.getColumna("REFERENCIA_INCCI").setVisible(false);
+
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);

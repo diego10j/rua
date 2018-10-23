@@ -31,6 +31,7 @@ public class pre_proforma extends Pantalla {
      private Tabla tab_proforma=new Tabla();
      private Tabla tab_detalle_proforma=new Tabla();
      
+     
      // Servicios//
    @EJB
     private final ServicioCuentasCxP ser_cuentascxp= (ServicioCuentasCxP) utilitario.instanciarEJB(ServicioCuentasCxP.class); 
@@ -45,7 +46,8 @@ public class pre_proforma extends Pantalla {
     
        private VisualizarPDF vipdf_proforma = new VisualizarPDF();   
 
-   
+  
+       
     public  pre_proforma (){
         tab_proforma.setId("tab_proforma");
         tab_proforma.setTabla("prod_proforma","ide_prpro",1);

@@ -4,6 +4,7 @@
  */
 package paq_produccion;
 
+
 import paq_inventario.*;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
@@ -69,6 +70,8 @@ public class pre_comp_inv_nei extends Pantalla {
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     @EJB
     private final ServicioProduccion ser_produccion= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
+     @EJB
+    private final ServiciosAdquisiones ser_persona= (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class); 
     
     public pre_comp_inv_nei() {
         //Recuperar el plan de cuentas activo
@@ -96,7 +99,7 @@ public class pre_comp_inv_nei extends Pantalla {
         
         bar_botones.agregarBoton(bot_buscar_transacciones);
       
-
+         
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
@@ -104,6 +107,8 @@ public class pre_comp_inv_nei extends Pantalla {
         tab_tabla1.getColumna("referencia_incci").setVisible(true);
         tab_tabla1.getColumna("referencia_incci").setUnico(true);
         //tab_tabla1.getColumna("ide_georg").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
+
         tab_tabla1.getColumna("ide_usua").setVisible(false);
         tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
@@ -129,6 +134,13 @@ public class pre_comp_inv_nei extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
+        tab_tabla1.getColumna("IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP2").setVisible(false);
+        tab_tabla1.getColumna("REFERENCIA_INCCI").setVisible(false);
+        
+
+        
+
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
@@ -171,6 +183,8 @@ public class pre_comp_inv_nei extends Pantalla {
 
         tab_tabla2.getColumna("ide_cccfa").setVisible(false);
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.getColumna("IDE_PRCOL").setVisible(false);
+
 
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
