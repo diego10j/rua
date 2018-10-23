@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="740" pageHeight="595" orientation="Landscape" columnWidth="700" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
@@ -35,12 +35,12 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,gth_ide_gtemp as Recibe
-from inv_cab_comp_inve a,inv_det_comp_inve b,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
+		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,f.primer_nombre_gtemp||' '||f.apellido_paterno_gtemp as entregado
+from inv_cab_comp_inve a,inv_det_comp_inve b,gth_empleado f,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
 from inv_articulo a
 left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
 ) c
-where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti
+where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and a.gth_ide_gtemp = f.ide_gtemp
 and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 	</queryString>
 	<field name="ide_incci" class="java.lang.Long"/>
@@ -53,7 +53,7 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
-	<field name="recibe" class="java.lang.Long"/>
+	<field name="entregado" class="java.lang.String"/>
 	<variable name="sum_total" class="java.lang.String" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -92,15 +92,8 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 				</textElement>
 				<text><![CDATA[RD - 03]]></text>
 			</staticText>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="37a77be3-5003-48af-b0b2-33ceb1ebbd4b" x="536" y="57" width="144" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
 			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="17" y="10" width="168" height="66"/>
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="9" y="10" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -113,6 +106,13 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="37a77be3-5003-48af-b0b2-33ceb1ebbd4b" x="537" y="57" width="144" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -232,10 +232,10 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="142" y="33" width="113" height="20"/>
+			<textField>
+				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="142" y="33" width="185" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{recibe}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{entregado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -266,6 +266,11 @@ and a.ide_incci=$P{pide_nota_entrega_interna}]]>
 			</textField>
 			<textField>
 				<reportElement uuid="807e9161-b133-41fb-b85e-891859aaed7e" x="571" y="1" width="84" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_indci}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="498" y="0" width="73" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{valor_indci}]]></textFieldExpression>
 			</textField>
