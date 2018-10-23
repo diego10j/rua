@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="740" pageHeight="595" orientation="Landscape" columnWidth="700" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="37"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -31,54 +31,34 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_control" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="pide_modulo" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<parameter name="pide_recepcion" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select IDE_PROREM,NUM_MODULO_PROREM, a.IDE_PRCOP, apellido_paterno_gtemp||' '||primer_nombre_gtemp as contabilizado_por, NUM_SECUENCIAL_PROREM, FECHA_RECEPCION_PROREM,
-OPERARIO_PROREM, FECHA_CONTABILIZADO_PROREM, MAQUINA_PROREM , NUM_ORDEN_PROREM, PRODUCTO_PROREM, codigo_inarti, nombre_inuni, detalle_prcol, BULTOS_PROREM,
-UNIDADES_PROREM, TOTAL_PROREM, (select fecha_registro_gemos from gen_modulo_secuencial where activo_gemos = true  and ide_gemod = $P{pide_modulo}) as fecha_modulo
-from prod_recepcion_mercaderia a
-left join (
-          select ide_prcop, a.ide_prorp, codigo_inarti, nombre_inarti, nombre_inuni, detalle_prcol from prod_control_produccion a
-          left join (
-          select a.ide_prorp, numero_prorp, nombre_inuni, detalle_prcol
-          from prod_orden_produccion a
-          left join prod_orden_detalle b on a.ide_prorp = b.ide_prorp
-          left join inv_unidad c on b.ide_inuni = c.ide_inuni
-          left join prod_color d on b.ide_prcol = d.ide_prcol
-          ) b on a.ide_prorp = b.ide_prorp
-          left join inv_articulo c on a.ide_inarti = c.ide_inarti where ide_prcop = $P{pide_control}
-) b on a.ide_prcop = b.ide_prcop
-left join gth_empleado c on a.ide_gtemp = c.ide_gtemp
-where IDE_PROREM = $P{pide_recepcion}]]>
+		<![CDATA[SELECT a.IDE_INCCI, FECHA_TRANS_INCCI , numero_incci, maquina_incci, codigo_documento_incci, cantidad_indci, unidades, total, nombre_inuni, detalle_prcol, nombre_empleado, nombre_inarti, codigo_inarti
+FROM inv_cab_comp_inve a
+LEFT JOIN (select ide_incci, a.ide_inarti, cantidad_indci, precio_indci as unidades, valor_indci as total, nombre_inuni, detalle_prcol, nombre_inarti, codigo_inarti from inv_det_comp_inve a
+           left join prod_color b on a.ide_prcol = b.ide_prcol
+           left join inv_unidad c on a.ide_inuni = c.ide_inuni
+           left join inv_articulo d on a.ide_inarti = d.ide_inarti) b on a.ide_incci = b.ide_incci
+LEFT JOIN (select ide_gtemp, primer_nombre_gtemp||' '||apellido_paterno_gtemp as nombre_empleado from gth_empleado) c on a.ide_gtemp = c.ide_gtemp
+WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 	</queryString>
-	<field name="ide_prorem" class="java.lang.Long"/>
-	<field name="num_modulo_prorem" class="java.lang.String"/>
-	<field name="ide_prcop" class="java.lang.Long"/>
-	<field name="contabilizado_por" class="java.lang.String"/>
-	<field name="num_secuencial_prorem" class="java.lang.String"/>
-	<field name="fecha_recepcion_prorem" class="java.sql.Date"/>
-	<field name="operario_prorem" class="java.lang.String"/>
-	<field name="fecha_contabilizado_prorem" class="java.sql.Date"/>
-	<field name="maquina_prorem" class="java.lang.String"/>
-	<field name="num_orden_prorem" class="java.lang.String"/>
-	<field name="producto_prorem" class="java.lang.String"/>
-	<field name="codigo_inarti" class="java.lang.String"/>
+	<field name="ide_incci" class="java.lang.Long"/>
+	<field name="fecha_trans_incci" class="java.sql.Date"/>
+	<field name="numero_incci" class="java.lang.String"/>
+	<field name="maquina_incci" class="java.lang.String"/>
+	<field name="codigo_documento_incci" class="java.lang.String"/>
+	<field name="cantidad_indci" class="java.math.BigDecimal"/>
+	<field name="unidades" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
 	<field name="detalle_prcol" class="java.lang.String"/>
-	<field name="bultos_prorem" class="java.lang.Long"/>
-	<field name="unidades_prorem" class="java.lang.Long"/>
-	<field name="total_prorem" class="java.math.BigDecimal"/>
-	<field name="fecha_modulo" class="java.sql.Date"/>
-	<variable name="sum_total" class="java.lang.String" calculation="Sum">
-		<variableExpression><![CDATA[$F{total_prorem}]]></variableExpression>
+	<field name="nombre_empleado" class="java.lang.String"/>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="codigo_inarti" class="java.lang.String"/>
+	<variable name="sum_tot" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -95,13 +75,6 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				</textElement>
 				<text><![CDATA[RECEPCIÓN DE MERCADERÍA Producción a Bodega]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="056c4973-1478-4964-8f98-d8c38f39bb15" x="535" y="12" width="145" height="26"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{num_modulo_prorem}]]></textFieldExpression>
-			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="7" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -117,7 +90,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="535" y="37" width="145" height="20"/>
+				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="537" y="37" width="145" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -129,12 +102,19 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="535" y="13" width="1" height="65"/>
 			</line>
-			<textField>
-				<reportElement uuid="5dc4efae-b788-4d25-8883-ecc19a42ac15" x="535" y="57" width="145" height="20"/>
+			<staticText>
+				<reportElement uuid="49d8f23b-1192-4302-a08e-f9710f971d15" x="537" y="17" width="145" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fecha_modulo}]]></textFieldExpression>
+				<text><![CDATA[RD - 02]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="5b207ae3-bfa5-4c62-85bd-296b72ecd7eb" x="537" y="58" width="145" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -217,34 +197,20 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				</textElement>
 				<text><![CDATA[Fecha Recepción:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="58" width="103" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fecha Contabilizado:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="78" width="103" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Contabilizado por:]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="142" y="78" width="126" height="20"/>
+				<reportElement uuid="17bae008-c859-4649-887c-4251a527b70f" x="142" y="78" width="184" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{maquina_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{maquina_incci}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="142" y="58" width="225" height="20"/>
+				<reportElement uuid="442326f0-9147-44f5-a629-90df292fb5d8" x="142" y="58" width="184" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{operario_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombre_empleado}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="142" y="38" width="100" height="20"/>
+				<reportElement uuid="33773f3d-4ac0-4689-b83c-adfc24c53899" x="142" y="38" width="184" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{fecha_recepcion_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="426" y="101" width="71" height="20"/>
@@ -260,16 +226,6 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				</textElement>
 				<text><![CDATA[Cantidad]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="b1c7ec4a-2e38-4e11-997b-c74090b57517" x="470" y="58" width="126" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{fecha_contabilizado_prorem}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="628cc293-8197-4888-83e5-f13c12dc7c16" x="470" y="78" width="126" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{contabilizado_por}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="568" y="101" width="84" height="20"/>
 				<box>
@@ -299,17 +255,24 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<text><![CDATA[Unidades]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="857042e9-33f3-4ac5-90d5-910ab2eec004" x="544" y="2" width="139" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["N° "+$F{num_secuencial_prorem}]]></textFieldExpression>
+				<reportElement uuid="857042e9-33f3-4ac5-90d5-910ab2eec004" x="538" y="4" width="139" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["N° "+$F{numero_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="367" y="38" width="103" height="20"/>
+				<reportElement uuid="519d5c80-b7ee-47d7-82bf-7439e32b7473" x="355" y="78" width="90" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ING.BOD.No:]]></text>
+				<text><![CDATA[RP - 01:]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3c42b7a5-664d-4330-849a-bdd34890f136" x="445" y="78" width="184" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{codigo_documento_incci}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -319,38 +282,38 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 		<band height="21" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="0af69fbf-a0b3-49d0-a600-9d64e1d2009e" x="51" y="0" width="76" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="127" y="0" width="128" height="20"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{producto_prorem}]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="e8e6fd9b-3a36-4be5-89a7-3d640b5dc5fe" x="255" y="0" width="86" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="c1b2d4e8-6b2b-4606-a9ad-fdc82cb8579c" x="341" y="0" width="85" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{detalle_prcol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="dad50d44-29e2-4b78-822f-8f76640a0f96" x="426" y="0" width="71" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{bultos_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="4b279a51-572e-4024-912b-0ef9caf7333d" x="497" y="0" width="71" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{unidades_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{unidades}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="6ab728ab-9dd1-4982-a214-be62748732dd" x="568" y="0" width="84" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{total_prorem}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -391,7 +354,7 @@ where IDE_PROREM = $P{pide_recepcion}]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{sum_total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{sum_tot}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="164" y="142" width="146" height="20"/>
