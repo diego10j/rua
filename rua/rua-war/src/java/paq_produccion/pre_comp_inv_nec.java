@@ -113,6 +113,9 @@ public class pre_comp_inv_nec extends Pantalla {
                 + "order by nombre_intci desc, nombre_intti");
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
+        tab_tabla1.getColumna("ide_intti").setAutoCompletar();
+        tab_tabla1.getColumna("ide_intti").setNombreVisual("DOCUMENTO");
+        tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
         tab_tabla1.getColumna("ide_inbod").setRequerida(true);
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
@@ -128,7 +131,16 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
-        tab_tabla1.getColumna("ide_intti").setLectura(true);
+        tab_tabla1.getColumna("REFERENCIA_INCCI ").setVisible(false);
+        tab_tabla1.getColumna("IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP2").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP3").setVisible(false);
+        tab_tabla1.getColumna("MAQUINA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("IDE_GEORG").setVisible(false);
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO_INCCI").setNombreVisual("N° ORDEN PRODUCCIÓN");
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("FACT. N°");
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
@@ -162,6 +174,9 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
+        tab_tabla2.getColumna("observacion_indci").setVisible(false);
+        tab_tabla2.getColumna("secuencial_indci").setVisible(false);
+        tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
