@@ -34,6 +34,7 @@ import paq_produccion.ejb.ServicioProduccion;
 import pkg_contabilidad.cls_contabilidad;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
+import sun.misc.FloatingDecimal;
 
 /**
  *
@@ -66,6 +67,8 @@ public class pre_orden extends Pantalla{
     private SeleccionCalendario sel_fechas= new SeleccionCalendario();
     String fechai="";
     String fechaf="";
+    double valor_bultos;
+    double valor_unidades;
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
   
@@ -406,11 +409,13 @@ public class pre_orden extends Pantalla{
    
    public void calculaTotalBultos(AjaxBehaviorEvent evt){
        tab_detalle_orden.modificar(evt); 
-        double valor_bultos=0;
-        double valor_unidades=0;
-        valor_bultos= Double.parseDouble(tab_detalle_orden.getValor("BULTO_PAQUETE_PRORD"));
-        valor_unidades=Double.parseDouble(tab_detalle_orden.getValor("UNIDADES_PRORD"));
-        dou_base_calculada = valor_bultos * valor_unidades;
+        
+        valor_bultos = Float.parseFloat(tab_detalle_orden.getValor("BULTO_PAQUETE_PRORD"));
+        valor_unidades = Float.parseFloat(tab_detalle_orden.getValor("UNIDADES_PRORD"));
+        //valor_bultos= tab_detalle_orden.getValor("BULTO_PAQUETE_PRORD");
+        //valor_unidades = tab_detalle_orden.getValor("UNIDADES_PRORD");
+         
+        dou_base_calculada = valor_unidades * valor_bultos;
         tab_detalle_orden.setValor("TOTAL_PRORD", utilitario.getFormatoNumero(dou_base_calculada, 2));
         tab_detalle_orden.setValor("total_entregado_prord", utilitario.getFormatoNumero(dou_base_calculada, 2));
         tab_detalle_orden.modificar(tab_detalle_orden.getFilaActual());       
