@@ -581,7 +581,8 @@ public class pre_orden extends Pantalla{
               tab_solicitud.insertar();
               tab_solicitud.setValor("ide_prorp", aut_ord_produ.getValor());
               TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_solicitud_material")));           
-              tab_solicitud.setValor("numero_secuencial_prsol", ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
+              String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+              tab_solicitud.setValor("numero_secuencial_prsol", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
           } else if (tab_detalle_solicitud.isFocus()){
               tab_detalle_solicitud.insertar();
           }

@@ -460,8 +460,8 @@ public class pre_comp_inv_nec extends Pantalla {
             tab_tabla1.insertar();
             TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_nota_entrega_clientes")));
            // ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")));
-           
-            tab_tabla1.setValor("numero_incci", ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+            tab_tabla1.setValor("numero_incci", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
             tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_prod_nota_entrega_clientes"));
             
         } else if (tab_tabla2.isFocus()) {

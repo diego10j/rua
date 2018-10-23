@@ -58,6 +58,7 @@ public class pre_comp_inv_node extends Pantalla {
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     String factura ="";
     String valor_orden = "";
+    String cantidad_facturada = "";
     private VisualizarPDF vipdf_nota_devolucion = new VisualizarPDF();
 
     @EJB
@@ -114,6 +115,7 @@ public class pre_comp_inv_node extends Pantalla {
                 + "order by nombre_intci desc, nombre_intti");
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
+        tab_tabla1.getColumna("ide_intti").setAutoCompletar();
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
         tab_tabla1.getColumna("ide_inbod").setRequerida(true);
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
@@ -129,6 +131,15 @@ public class pre_comp_inv_node extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
+        tab_tabla1.getColumna("IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP2").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP3").setVisible(false);
+        tab_tabla1.getColumna("MAQUINA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("REFERENCIA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("OBSERVACION_INCCI").setNombreVisual("RAZON DEVOLUCION");
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO_INCCI").setNombreVisual("N° FACTURA");
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RD-07#");
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
@@ -162,13 +173,16 @@ public class pre_comp_inv_node extends Pantalla {
         tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
+        tab_tabla2.getColumna("secuencial_indci").setVisible(false);
+        tab_tabla2.getColumna("observacion_indci").setVisible(false);
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
 ////        tab_tabla2.getColumna("ide_cccfa").setCombo("cxc_cabece_factura", "ide_cccfa", "secuencial_cccfa", "ide_cccfa=-1");
 ////        tab_tabla2.getColumna("ide_cccfa").setLectura(true);
         tab_tabla2.getColumna("precio_promedio_indci").setVisible(false);
-
+        tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+        tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
         tab_tabla2.getColumna("ide_cccfa").setVisible(false);
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
 
@@ -215,20 +229,17 @@ public class pre_comp_inv_node extends Pantalla {
         bot_busca_solici.setValue("BUSCAR FACTURA");
         bot_busca_solici.setIcon("ui-icon-search");
         bot_busca_solici.setMetodo("dibujaSolicitud");
-        //bar_botones.agregarBoton(bot_busca_solici);  
+        bar_botones.agregarBoton(bot_busca_solici);  
         
         sel_cabece_compra.setId("sel_cabece_compra");
         sel_cabece_compra.setTitle("SELECCIONE UNA FACTURA");
-        sel_cabece_compra.setSeleccionTabla("select ide_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n" +
-                                            "from cxp_cabece_factur a\n" +
-                                            "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
-                                            "left join adq_compra c on a.ide_adcomp = c.ide_adcomp\n" +
-                                            "where a.ide_adcomp = c.ide_adcomp\n" +
-                                            "and recibido_compra_cpcfa = false\n" +
-                                            "and c.ingreso_adcomp = 1", "ide_cpcfa");
+        sel_cabece_compra.setSeleccionTabla(ser_produccion.getFacturaProduccion("1", ""), "ide_cccfa");
         sel_cabece_compra.setWidth("80%");
         sel_cabece_compra.setHeight("70%");
         sel_cabece_compra.setRadio();
+        sel_cabece_compra.getTab_seleccion().getColumna("secuencial_cccfa").setFiltroContenido();
+        sel_cabece_compra.getTab_seleccion().getColumna("fecha_emisi_cccfa").setFiltroContenido();
+        sel_cabece_compra.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
         sel_cabece_compra.getBot_aceptar().setMetodo("aceptarSolicitud");
         agregarComponente(sel_cabece_compra);
         
@@ -283,6 +294,7 @@ public class pre_comp_inv_node extends Pantalla {
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
                         parametros.put("pide_nota_devolucion", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        parametros.put("p_cantidad_facturada", cantidad_facturada);
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
                         vipdf_nota_devolucion.setVisualizarPDF("rep_produccion/rep_nota_de_devolucion.jasper", parametros);
                         vipdf_nota_devolucion.dibujar();
@@ -318,14 +330,28 @@ public class pre_comp_inv_node extends Pantalla {
     }
     
     public void dibujaSolicitud(){
+        if (tab_tabla1.isFilaInsertada() == false){
+            tab_tabla1.insertar();
+            TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_nota_devolucion")));
+           // ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+            tab_tabla1.setValor("numero_incci", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
+            tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_prod_nota_devolucion"));
+        }
         sel_cabece_compra.dibujar();
     }
     public void aceptarSolicitud(){
         factura = sel_cabece_compra.getValorSeleccionado();
+        TablaGenerica tab_factura = utilitario.consultar(ser_produccion.getFacturaProduccion("2", factura));
+        TablaGenerica tab_suma = utilitario.consultar("select 1 AS codigo, sum(cantidad_ccdfa) AS suma FROM cxc_deta_factura WHERE ide_cccfa = "+factura+"");
+        tab_tabla1.setValor("codigo_documento_incci", tab_factura.getValor("secuencial_cccfa"));
+        cantidad_facturada = tab_suma.getValor("suma");
+        tab_tabla1.modificar(tab_tabla1.getFilaActual());
+        utilitario.addUpdateTabla(tab_tabla1, "codigo_documento_incci","");	
         sel_cabece_compra.cerrar();
-        sel_detalle_compra.getTab_seleccion().setSql(ser_adquisiciones.getdetalleFacturaCompra("2", factura));
+        /*sel_detalle_compra.getTab_seleccion().setSql(ser_adquisiciones.getdetalleFacturaCompra("2", factura));
         sel_detalle_compra.getTab_seleccion().ejecutarSql();   
-        sel_detalle_compra.dibujar();
+        sel_detalle_compra.dibujar();*/
     }
     
      public void generarCabecera(){
@@ -449,8 +475,9 @@ public class pre_comp_inv_node extends Pantalla {
             tab_tabla1.insertar();
             TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_nota_devolucion")));
            // ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")));
-           
-            tab_tabla1.setValor("numero_incci", ser_produccion.getSecuencialNumero(Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+            //System.out.println("true o false = "+tipo_aplica);
+            tab_tabla1.setValor("numero_incci", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
             tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_prod_nota_devolucion"));
             
         } else if (tab_tabla2.isFocus()) {
