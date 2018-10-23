@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="740" pageHeight="595" orientation="Landscape" columnWidth="700" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="42"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -35,17 +35,19 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,detalle_prcol
-from inv_cab_comp_inve a,inv_det_comp_inve b,prod_color h,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
+		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,codigo_documento_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,detalle_prcol,e.primer_nombre_gtemp||' '||e.apellido_paterno_gtemp as solicitado,f.primer_nombre_gtemp||' '||f.apellido_paterno_gtemp as entregado,g.primer_nombre_gtemp||' '||g.apellido_paterno_gtemp as recibido
+from inv_cab_comp_inve a,inv_det_comp_inve b,prod_color h,gth_empleado e,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
 from inv_articulo a
 left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
-) c
-where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_prcol=h.ide_prcol
+) c, gth_empleado f,gth_empleado g
+where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_prcol=h.ide_prcol and a.ide_gtemp = e.ide_gtemp and a.gth_ide_gtemp = f.ide_gtemp and
+a.gth_ide_gtemp2= g.ide_gtemp
 and a.ide_incci=$P{pide_requerimiento}]]>
 	</queryString>
 	<field name="ide_incci" class="java.lang.Long"/>
 	<field name="fecha_trans_incci" class="java.sql.Date"/>
 	<field name="numero_incci" class="java.lang.String"/>
+	<field name="codigo_documento_incci" class="java.lang.Object"/>
 	<field name="observacion_incci" class="java.lang.String"/>
 	<field name="cantidad_indci" class="java.math.BigDecimal"/>
 	<field name="precio_indci" class="java.math.BigDecimal"/>
@@ -54,6 +56,9 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
 	<field name="detalle_prcol" class="java.lang.String"/>
+	<field name="solicitado" class="java.lang.String"/>
+	<field name="entregado" class="java.lang.String"/>
+	<field name="recibido" class="java.lang.String"/>
 	<variable name="sum_total" class="java.lang.String" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -63,7 +68,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<title>
 		<band height="79" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="11" width="682" height="66"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="1" y="12" width="682" height="66"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="316" y="12" width="219" height="66"/>
@@ -100,7 +105,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="10" y="10" width="168" height="66"/>
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="1" y="10" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -116,16 +121,9 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="125" splitType="Stretch">
+		<band height="159" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="52" y="33" width="90" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Entregado a:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="374" y="103" width="117" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="374" y="138" width="117" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -139,7 +137,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="104" y="103" width="185" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="51" y="138" width="238" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -150,7 +148,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Producto]]></text>
+				<text><![CDATA[MATERIA PRIMA SOLICITADO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="51" y="13" width="91" height="20"/>
@@ -160,7 +158,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="488" y="103" width="71" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="489" y="138" width="121" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -171,7 +169,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Cantidad]]></text>
+				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="411" y="13" width="59" height="20"/>
@@ -186,12 +184,12 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="470" y="13" width="100" height="20"/>
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="470" y="13" width="160" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="289" y="103" width="85" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="289" y="138" width="85" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -202,8 +200,62 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Color]]></text>
+				<text><![CDATA[COLOR]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="51" y="31" width="90" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produccion de :]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="142" y="31" width="113" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="411" y="33" width="59" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RP - 02 No:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ad9d1aa-6699-48e6-b355-97c212818db3" x="51" y="53" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Solictado Por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ad9d1aa-6699-48e6-b355-97c212818db3" x="51" y="73" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Entregado Por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ad9d1aa-6699-48e6-b355-97c212818db3" x="51" y="93" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Recibido Por:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ab68e8a8-29f0-4fc1-a589-17efee755df7" x="151" y="53" width="198" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{solicitado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ab68e8a8-29f0-4fc1-a589-17efee755df7" x="151" y="73" width="198" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{entregado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ab68e8a8-29f0-4fc1-a589-17efee755df7" x="151" y="93" width="198" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{recibido}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6aa3d940-c018-48a0-963e-df6be6b8bf18" x="470" y="33" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -212,9 +264,9 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField>
-				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="104" y="1" width="185" height="20"/>
+				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="51" y="1" width="238" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="374" y="1" width="114" height="20"/>
@@ -222,7 +274,7 @@ and a.ide_incci=$P{pide_requerimiento}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="491" y="0" width="68" height="20"/>
+				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="491" y="0" width="119" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
