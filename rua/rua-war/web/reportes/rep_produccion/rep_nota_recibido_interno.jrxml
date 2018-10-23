@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="740" pageHeight="595" orientation="Landscape" columnWidth="700" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="36"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -35,30 +35,32 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_incci,fecha_trans_incci,numero_incci,observacion_incci,cantidad_indci,precio_indci,valor_indci,nombre_inarti,codigo_inarti,nombre_inuni,detalle_prcol,nom_geper
-from inv_cab_comp_inve a,inv_det_comp_inve b,prod_color h,gen_persona i,( select a.ide_inarti,b.ide_inuni,nombre_inarti,codigo_inarti,nombre_inuni
-from inv_articulo a
-left join (select ide_inuni, nombre_inuni from inv_unidad) b on a.ide_inuni = b.ide_inuni
-) c
-where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_prcol=h.ide_prcol and a.ide_geper=i.ide_geper
-and a.ide_incci=$P{pide_nota_recibido_interno}]]>
+		<![CDATA[SELECT a.ide_incci, fecha_trans_incci, numero_incci, codigo_documento_incci,  codigo_documento2_incci, observacion_incci, cantidad_indci, unidades,
+total, nombre_inuni, detalle_prcol, nombre_inarti, codigo_inarti, nombre_empleado
+FROM inv_cab_comp_inve a
+LEFT JOIN (select ide_incci, a.ide_inarti, cantidad_indci, precio_indci as unidades, valor_indci as total, nombre_inuni, detalle_prcol, nombre_inarti, codigo_inarti from inv_det_comp_inve a
+           left join prod_color b on a.ide_prcol = b.ide_prcol
+           left join inv_unidad c on a.ide_inuni = c.ide_inuni
+           left join inv_articulo d on a.ide_inarti = d.ide_inarti) b on a.ide_incci = b.ide_incci
+LEFT JOIN (select ide_gtemp, primer_nombre_gtemp||' '||apellido_paterno_gtemp as nombre_empleado from gth_empleado) c on a.ide_gtemp = c.ide_gtemp
+WHERE a.IDE_INCCI = $P{pide_nota_recibido_interno}]]>
 	</queryString>
 	<field name="ide_incci" class="java.lang.Long"/>
 	<field name="fecha_trans_incci" class="java.sql.Date"/>
 	<field name="numero_incci" class="java.lang.String"/>
+	<field name="codigo_documento_incci" class="java.lang.String"/>
+	<field name="codigo_documento2_incci" class="java.lang.String"/>
 	<field name="observacion_incci" class="java.lang.String"/>
 	<field name="cantidad_indci" class="java.math.BigDecimal"/>
-	<field name="precio_indci" class="java.math.BigDecimal"/>
-	<field name="valor_indci" class="java.math.BigDecimal"/>
-	<field name="nombre_inarti" class="java.lang.String"/>
-	<field name="codigo_inarti" class="java.lang.String"/>
+	<field name="unidades" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
 	<field name="nombre_inuni" class="java.lang.String"/>
 	<field name="detalle_prcol" class="java.lang.String"/>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
+	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="codigo_inarti" class="java.lang.String"/>
+	<field name="nombre_empleado" class="java.lang.String"/>
 	<variable name="sum_total" class="java.lang.String" calculation="Sum">
-		<variableExpression><![CDATA[]]></variableExpression>
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -126,17 +128,17 @@ and a.ide_incci=$P{pide_nota_recibido_interno}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="125" splitType="Stretch">
+		<band height="123" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="52" y="33" width="90" height="20"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Recibido por:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="52" y="53" width="90" height="20"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[RP - 09 No. :]]></text>
@@ -185,7 +187,7 @@ and a.ide_incci=$P{pide_nota_recibido_interno}]]>
 			</staticText>
 			<staticText>
 				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="51" y="13" width="91" height="20"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha :]]></text>
@@ -233,60 +235,96 @@ and a.ide_incci=$P{pide_nota_recibido_interno}]]>
 				<text><![CDATA[Unidades]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="393" y="13" width="77" height="20"/>
-				<textElement>
+				<reportElement uuid="1aa684b9-2cbd-4718-8d80-59cb6a84acf4" x="360" y="13" width="77" height="20"/>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[ING.BOD.No.:]]></text>
 			</staticText>
-			<textField pattern="dd/MM/yyyy">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="142" y="13" width="113" height="20"/>
-				<textElement/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="470" y="13" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="470" y="13" width="185" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["N° "+$F{numero_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="275" y="53" width="65" height="20"/>
-				<textElement>
+				<reportElement uuid="57a666ec-9559-4e60-ad66-501eec526c7e" x="360" y="53" width="65" height="20"/>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[RD - 03 No. :]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="461b1232-62cf-4265-b8d2-e51b5f1c86a8" x="142" y="33" width="198" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_empleado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d1cf9374-cf0e-43a9-b2d8-e32e6df8d74f" x="142" y="53" width="197" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codigo_documento_incci}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="160f6218-024e-42e4-b0fa-027ed191a2df" x="425" y="53" width="197" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codigo_documento2_incci}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="51" y="73" width="103" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="157" y="73" width="498" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_incci}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="24" splitType="Stretch">
-			<textField>
+		<band height="21" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="51" y="1" width="76" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="d8399529-5592-4147-85e0-414898cff4ef" x="127" y="1" width="212" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="339" y="1" width="86" height="20"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="339" y="1" width="87" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="429" y="0" width="70" height="20"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d32562af-ffbd-4121-a957-229ac1d63238" x="426" y="0" width="73" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="807e9161-b133-41fb-b85e-891859aaed7e" x="571" y="1" width="84" height="20"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="807e9161-b133-41fb-b85e-891859aaed7e" x="568" y="1" width="87" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{valor_indci}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0debc418-10b1-4003-b8dc-59321478fca8" x="499" y="1" width="69" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{unidades}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -318,18 +356,6 @@ and a.ide_incci=$P{pide_nota_recibido_interno}]]>
 				</textElement>
 				<text><![CDATA[Firma Bodega]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="51" y="-73" width="103" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Observaciones :]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="158d3c90-a204-4543-8ad7-fce011364aaf" x="154" y="-72" width="354" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{observacion_incci}]]></textFieldExpression>
-			</textField>
 		</band>
 	</summary>
 </jasperReport>
