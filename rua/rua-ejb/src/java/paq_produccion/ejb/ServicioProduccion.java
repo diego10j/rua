@@ -58,14 +58,16 @@ public String getSecuencialModulo(String modulo) {
         //System.out.printf("IMPRIMIENDO SECUENCIAL OOOOOOOOOOOO11111111000111" +sql);
         return sql;
      }
-public String getSecuencialNumero(int longitud, int tamaño) {
+public String getSecuencialNumero(String tipo, int longitud, int tamaño) {
         String acum ="";
+        if (tipo.equals("false")){
         int tamaño_final = longitud - tamaño;
         for (int i=0; i < tamaño_final ; i++){
              acum += "0";
         }
         
         String taman = acum + tamaño;
+        }
         return acum;
        }
 
@@ -162,6 +164,17 @@ public String getControlProduccion (String tipo, String control){
   public String getTipoOrden() {
         String sql = "";
         sql = "select ide_prtio, detalle_prtio from prod_tipo_orden order by detalle_prtio";
+        return sql;
+  }
+  public String getFacturaProduccion(String tipo, String factura) {
+        String sql = "";
+        sql = "select ide_cccfa, secuencial_cccfa, fecha_emisi_cccfa, b.identificac_geper, b.nom_geper, total_cccfa\n" +
+              "from cxc_cabece_factura a\n" +
+              "left join gen_persona b on a.ide_geper = b.ide_geper";
+        if (tipo.equals("2")){
+            sql +=" where ide_cccfa = "+factura+"";
+        }
+        sql += " order by fecha_emisi_cccfa desc";
         return sql;
   }
 
