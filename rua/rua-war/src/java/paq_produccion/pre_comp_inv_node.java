@@ -117,7 +117,8 @@ public class pre_comp_inv_node extends Pantalla {
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
         tab_tabla1.getColumna("ide_intti").setAutoCompletar();
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
-        tab_tabla1.getColumna("ide_inbod").setRequerida(true);
+        //tab_tabla1.getColumna("ide_inbod").setRequerida(false);
+        tab_tabla1.getColumna("ide_inbod").setVisible(false); 
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
@@ -140,6 +141,10 @@ public class pre_comp_inv_node extends Pantalla {
         tab_tabla1.getColumna("OBSERVACION_INCCI").setNombreVisual("RAZON DEVOLUCION");
         tab_tabla1.getColumna("CODIGO_DOCUMENTO_INCCI").setNombreVisual("N° FACTURA");
         tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RD-07#");
+        tab_tabla1.getColumna("IDE_GEPER").setNombreVisual("CLIENTE");
+        tab_tabla1.getColumna("IDE_INTTI").setNombreVisual("DOCUMENTO");
+        tab_tabla1.getColumna("IDE_INEPI").setVisible(false);
+        tab_tabla1.getColumna("IDE_GEORG").setVisible(false);
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
@@ -488,7 +493,7 @@ public class pre_comp_inv_node extends Pantalla {
 
     @Override
     public void guardar() {
-        if (validar()) {
+       // if (validar()) {
             if (tab_tabla1.isFilaInsertada()) {
                 utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_mod_nota_devolucion")));
                // tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
@@ -500,7 +505,7 @@ public class pre_comp_inv_node extends Pantalla {
                     utilitario.getConexion().guardarPantalla();
                 } 
             }
-        }
+       // }
     }
 
     @Override

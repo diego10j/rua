@@ -105,14 +105,16 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
         tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
-        tab_tabla1.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
-        tab_tabla1.getColumna("referencia_incci").setVisible(true);
+        //tab_tabla1.getColumna("ide_georg").setCombo("gen_organigrama", "ide_georg", "nombre_georg", "");
+        tab_tabla1.getColumna("referencia_incci").setVisible(false);
+        tab_tabla1.getColumna("ide_georg").setVisible(false);
         tab_tabla1.getColumna("referencia_incci").setUnico(true);
-        //tab_tabla1.getColumna("ide_georg").setVisible(false);
+        tab_tabla1.getColumna("ide_georg").setVisible(false);
         tab_tabla1.getColumna("ide_usua").setVisible(false);
-        tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
+        //tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "nivel_geper='HIJO'");
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
-        tab_tabla1.getColumna("ide_geper").setRequerida(true);
+        tab_tabla1.getColumna("ide_geper").setRequerida(false);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
         tab_tabla1.getColumna("ide_inepi").setCombo("inv_est_prev_inve", "ide_inepi", "nombre_inepi", "");
         tab_tabla1.getColumna("ide_intti").setCombo("select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a\n"
                 + "inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
@@ -123,14 +125,14 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("gth_ide_gtemp2").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
-        tab_tabla1.getColumna("ide_inbod").setRequerida(true);
+        tab_tabla1.getColumna("ide_inbod").setVisible(false);
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("numero_incci").setLectura(true);
         tab_tabla1.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
-        tab_tabla1.getColumna("observacion_incci").setRequerida(true);
+        tab_tabla1.getColumna("observacion_incci").setRequerida(false);
         tab_tabla1.getColumna("observacion_incci").setControl("AreaTexto");
         tab_tabla1.getColumna("sis_ide_usua").setVisible(false);
         tab_tabla1.getColumna("fecha_siste_incci").setVisible(false);
@@ -138,6 +140,18 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
         tab_tabla1.getColumna("REFERENCIA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("GTH_IDE_GTEMP3").setVisible(false);
+        tab_tabla1.getColumna("MAQUINA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("SOLICITADO POR");
+        tab_tabla1.getColumna("IDE_GTEMP").setAutoCompletar();
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("ENTREGADO POR");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setAutoCompletar();
+        tab_tabla1.getColumna("GTH_IDE_GTEMP2").setNombreVisual("RECIBIDO POR");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP2").setAutoCompletar();
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO_INCCI").setNombreVisual("PRODUCCIÓN DE");
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RP-02 N°");
+        tab_tabla1.getColumna("IDE_INTTI").setNombreVisual("DOCUMENTO");
+        tab_tabla1.getColumna("IDE_INTTI").setAutoCompletar();
 
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
@@ -165,15 +179,18 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla2.getColumna("cantidad_indci").setRequerida(true);
         tab_tabla2.getColumna("cantidad_indci").setFormatoNumero(3);
         tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
-        tab_tabla2.getColumna("precio_indci").setRequerida(true);
-        tab_tabla2.getColumna("precio_indci").setNombreVisual("UNIDADES");//identificar nombre de campo cambio
+        tab_tabla2.getColumna("precio_indci").setRequerida(false);
+        tab_tabla2.getColumna("precio_indci").setVisible(false);//identificar nombre de campo cambio
 
 //        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
-        tab_tabla2.getColumna("valor_indci").setRequerida(true);
-        tab_tabla2.getColumna("valor_indci").setEtiqueta();
-        tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla2.getColumna("valor_indci").setRequerida(false);
+        //tab_tabla2.getColumna("valor_indci").setEtiqueta();
+        //tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla2.getColumna("valor_indci").setVisible(false);
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
+        tab_tabla2.getColumna("secuencial_indci").setVisible(false);
+        tab_tabla2.getColumna("observacion_indci").setVisible(false);
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
@@ -183,6 +200,7 @@ public class pre_comp_inv_rmp extends Pantalla {
 
         tab_tabla2.getColumna("ide_cccfa").setVisible(false);
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
 
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
@@ -471,7 +489,7 @@ public class pre_comp_inv_rmp extends Pantalla {
 
     @Override
     public void guardar() {
-        if (validar()) {
+        //if (validar()) {
             if (tab_tabla1.isFilaInsertada()) {
                 utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_mod_requeri_materia_prima")));
                // tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
@@ -483,7 +501,7 @@ public class pre_comp_inv_rmp extends Pantalla {
                     utilitario.getConexion().guardarPantalla();
                 } 
             }
-        }
+       // }
     }
 
     @Override
