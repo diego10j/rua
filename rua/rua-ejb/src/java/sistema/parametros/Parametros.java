@@ -52,6 +52,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_tipo_transaccion_reversa_mas", "Indica que el tipo de transaccion inversa(cuando existe una anulacion)  ", "12", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_transaccion_reversa_menos", "Indica que el tipo de transaccion inversa(cuando existe una anulacion)  ", "13", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_transaccion_consumo", "Indica que el tipo de transaccion de consumo ", "27", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("1", "p_inv_bodega_defecto", "Indica el tipo de bodega por defecto para la recepcion de los articulos", "27", "inv_bodega", "ide_inbod", "nombre_inbod"));
 
 
         /*
