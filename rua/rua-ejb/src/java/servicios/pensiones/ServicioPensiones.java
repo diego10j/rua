@@ -326,4 +326,14 @@ public class ServicioPensiones extends ServicioBase {
            "group by ide_geper,ALUMNO,  REPRESENTANTE, CODIGO_ALUMNO";
       return sql;
   }
+      public String getAlumnosDeudaConsulta(String parametro){
+          String sql="";
+          sql = "select a.ide_titulo_recval, b.nom_geper as REPRESENTANTE,  descripcion_recest as ESTADO,nombre_gemes as MES, total_recva as VALOR_TOTAL\n" +
+                "from rec_valores a\n" +
+                "left join gen_persona b on a.gen_ide_geper = b.ide_geper\n" +
+                "left join rec_estados c on a.ide_recest = c.ide_recest\n" +
+                "left join gen_mes d on a.ide_gemes = d.ide_gemes\n" +
+                "where a.ide_recest = "+parametro+"";
+          return sql;
+      }
 }
