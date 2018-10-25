@@ -275,7 +275,7 @@ public class pre_alumno_periodo extends Pantalla{
         
         sel_periodo_academico.setId("sel_periodo_academico");
         sel_periodo_academico.setSeleccionTabla(ser_pensiones.getPeriodoAcademico("true, false"), "ide_repea");
-        sel_periodo_academico.setWidth("40%");
+        sel_periodo_academico.setWidth("60%");
         sel_periodo_academico.setHeight("40%");
         sel_periodo_academico.setRadio();
         sel_periodo_academico.getBot_aceptar().setMetodo("aceptarReporte");
@@ -561,7 +561,7 @@ public class pre_alumno_periodo extends Pantalla{
                 parametro.put("pide_periodo", periodo_academico);
                 parametro.put("nombre", utilitario.getVariable("NICK"));
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                sel_cursos.cerrar();
+                sel_paralelos.cerrar();
                 sel_rep.dibujar();
                 utilitario.addUpdate("sel_rep");
                 
