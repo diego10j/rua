@@ -11,6 +11,7 @@ package paq_pensiones;
 
 import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
@@ -21,11 +22,15 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.pensiones.ServicioPensiones;
@@ -40,11 +45,25 @@ public class pre_alumno_periodo extends Pantalla{
     private Combo com_especialidad = new Combo();
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
     private SeleccionTabla sel_tab_representante = new SeleccionTabla();
-    String titulo_alumno="";
+    private SeleccionTabla sel_periodo_academico = new SeleccionTabla();
+    private SeleccionTabla sel_especialidades = new SeleccionTabla();
+    private SeleccionTabla sel_cursos = new SeleccionTabla();
+    private SeleccionTabla sel_paralelos = new SeleccionTabla();
     private Dialogo dia_emision = new Dialogo();
     private Calendario fechaInicio = new Calendario();
     private Calendario fechaFin = new Calendario();
     private Combo com_conceptos = new Combo();
+    private AreaTexto area_dialogo = new AreaTexto();
+    private Dialogo dia_retiro = new Dialogo();
+    private Calendario fecha_retiro = new Calendario();
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private Map parametro = new HashMap();
+    String titulo_alumno="";
+    String periodo_academico="";
+    String especialidad = "";
+    String curso = "";
+    String paralelo = "";
     
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
@@ -53,7 +72,13 @@ public class pre_alumno_periodo extends Pantalla{
     
     public pre_alumno_periodo(){
         
-        
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(rep_reporte);
+        bar_botones.agregarReporte();
+        sel_rep.setId("sel_rep");
+        agregarComponente(sel_rep);
+        agregarComponente(rep_reporte);
         
         com_periodo_academico.setId("cmb_periodo_academico");
         com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
@@ -95,7 +120,10 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_recur").setLectura(true);
         tab_tabla1.getColumna("ide_reces").setLectura(true);
         tab_tabla1.getColumna("ide_geper").setLectura(true);
-        tab_tabla1.getColumna("gen_ide_geper").setLectura(true);
+        tab_tabla1.getColumna("retirado_recalp").setLectura(true);
+        tab_tabla1.getColumna("retirado_recalp").setLectura(true);
+        tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
+        tab_tabla1.getColumna("fecha_retiro_recalp").setLectura(true);
         tab_tabla1.getColumna("ide_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
@@ -104,6 +132,7 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_repar").setAncho(20);
         tab_tabla1.getColumna("ide_geper").setEstilo("width:20 px");
         tab_tabla1.setCondicion("IDE_RECALP = -1");
+        tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
@@ -205,8 +234,103 @@ public class pre_alumno_periodo extends Pantalla{
         
         dia_emision.setDialogo(gru_cuerpo);
         agregarComponente(dia_emision);
+        
+        Boton bot_retiro_alumno = new Boton();
+        bot_retiro_alumno.setIcon("ui-icon-person");
+        bot_retiro_alumno.setValue("RETIRAR ALUMNO");
+        bot_retiro_alumno.setMetodo("abrirDialogoRetiro");
+        bar_botones.agregarBoton(bot_retiro_alumno);
+        
+        dia_retiro.setId("dia_retiro");
+        dia_retiro.setTitle("Ingrese la información");
+        dia_retiro.setWidth("39%");
+        dia_retiro.setHeight("24%");
+        dia_retiro.getBot_aceptar().setMetodo("aceptarRetiroAlumno");
+        dia_retiro.setResizable(false);
+                
+        Grid gri3 = new Grid();
+        gri3.setColumns(1);
+        Grid gri4 = new Grid();
+        gri4.setColumns(2);
+        //Etiqueta eti_fecha = new Etiqueta();
+        //eti_fecha.setValue("FECHA DE RETIRO:                                             ");
+        //eti_fecha.setStyle("font-size: 11px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+        gri4.getChildren().add(new Etiqueta("<strong>FECHA DE RETIRO: </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        fecha_retiro.setId("fecha_retiro");
+        fecha_retiro.setFechaActual();
+        fecha_retiro.setTipoBoton(true); 
+        //gri4.getChildren().add(eti_fecha);
+        gri4.getChildren().add(fecha_retiro);
+        gri3.getChildren().add(gri4);
+        
+        area_dialogo = new AreaTexto();
+        area_dialogo.setCols(90);
+        area_dialogo.setMaxlength(190);
+        area_dialogo.setRows(2);
+        gri3.getChildren().add(new Etiqueta("<strong>MOTIVO DE RETIRO DEL ALUMNO: </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri3.getChildren().add(area_dialogo);
+              
+        dia_retiro.setDialogo(gri3);
+        agregarComponente(dia_retiro);
+        
+        sel_periodo_academico.setId("sel_periodo_academico");
+        sel_periodo_academico.setSeleccionTabla(ser_pensiones.getPeriodoAcademico("true, false"), "ide_repea");
+        sel_periodo_academico.setWidth("40%");
+        sel_periodo_academico.setHeight("40%");
+        sel_periodo_academico.setRadio();
+        sel_periodo_academico.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_periodo_academico);
+        
+        sel_especialidades.setId("sel_especialidades");
+        sel_especialidades.setSeleccionTabla(ser_pensiones.getEspecialidad("true, false"), "ide_reces");
+        sel_especialidades.setWidth("40%");
+        sel_especialidades.setHeight("40%");
+        sel_especialidades.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_especialidades);
+        
+        sel_cursos.setId("sel_cursos");
+        sel_cursos.setSeleccionTabla(ser_pensiones.getCursos("true, false"), "ide_recur");
+        sel_cursos.setWidth("40%");
+        sel_cursos.setHeight("40%");
+        sel_cursos.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_cursos);
+        
+        sel_paralelos.setId("sel_paralelos");
+        sel_paralelos.setSeleccionTabla(ser_pensiones.getParalelos("true, false"), "ide_repar");
+        sel_paralelos.setWidth("40%");
+        sel_paralelos.setHeight("40%");
+        sel_paralelos.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_paralelos);
     
     }
+    public void abrirDialogoRetiro(){
+        if(tab_tabla1.getTotalFilas() > 0){
+            if (tab_tabla1.getValorSeleccionado().isEmpty()){
+                utilitario.agregarMensajeError("Debe seleccionar al menos un estudiante para continuar", "");
+            } else {
+                dia_retiro.dibujar();
+            }
+        }
+        else{
+            utilitario.agregarMensajeError("Debe consultar los alumnos para continuar", "");
+        }
+    }
+    public void aceptarRetiroAlumno(){
+        try{
+       String alumno_selec = tab_tabla1.getValorSeleccionado();
+       utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n" +
+                                            "set retirado_recalp = true, detalle_retiro_recalp = '"+area_dialogo.getValue()+"', fecha_retiro_recalp = '"+fecha_retiro.getValue()+"'\n" +
+                                            "where ide_recalp = "+alumno_selec+"");
+       dia_retiro.cerrar();
+       utilitario.agregarMensaje("Se ha guardado correctamente", "");
+       tab_tabla1.actualizar();
+       area_dialogo.limpiar();
+       utilitario.addUpdate("tab_tabla1");
+        }catch (Exception e){
+            
+        }
+    }
+    
     public void abrirDialogoConcepto(){
         if (tab_tabla1.getValorSeleccionado() != null){
         dia_emision.dibujar();
@@ -401,6 +525,56 @@ public class pre_alumno_periodo extends Pantalla{
        tab_tabla1.eliminar();
     }
 
+    @Override
+    public void abrirListaReportes() {
+//Se ejecuta cuando da click en el boton de Reportes de la Barra 
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Listado de Alumnos")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sel_periodo_academico.dibujar();
+            }
+            else if (sel_periodo_academico.isVisible()){
+                periodo_academico = sel_periodo_academico.getValorSeleccionado()+"";
+                sel_periodo_academico.cerrar();
+                sel_especialidades.dibujar();
+            } else if (sel_especialidades.isVisible()){
+                especialidad = sel_especialidades.getSeleccionados()+"";
+                sel_especialidades.cerrar();
+                sel_cursos.dibujar();
+            } else if (sel_cursos.isVisible()){
+                curso = sel_cursos.getSeleccionados()+"";
+                sel_cursos.cerrar();
+                sel_paralelos.dibujar();
+            }
+            else if (sel_paralelos.isVisible()){
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+                parametro.put("pide_especialidad", especialidad);
+                parametro.put("pide_paralelo", sel_paralelos.getSeleccionados()+"");
+                parametro.put("pide_curso", curso);
+                parametro.put("pide_periodo", periodo_academico);
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                System.out.println("periodo academico: "+periodo_academico);
+                System.out.println("pide_especialidad: "+especialidad);
+                System.out.println("pide_curso: "+curso);
+                System.out.println("pide_paralelo: "+sel_paralelos.getSeleccionados()+"");
+                System.out.println("nombre: "+utilitario.getVariable("NICK"));
+                sel_cursos.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+                
+            }
+        } else{
+            utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
+        }
+    }
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
@@ -496,6 +670,135 @@ public class pre_alumno_periodo extends Pantalla{
     public void setCom_conceptos(Combo com_conceptos) {
         this.com_conceptos = com_conceptos;
     }
+
+    public AreaTexto getArea_dialogo() {
+        return area_dialogo;
+    }
+
+    public void setArea_dialogo(AreaTexto area_dialogo) {
+        this.area_dialogo = area_dialogo;
+    }
+
+    public Dialogo getDia_retiro() {
+        return dia_retiro;
+    }
+
+    public void setDia_retiro(Dialogo dia_retiro) {
+        this.dia_retiro = dia_retiro;
+    }
+
+    public Calendario getFecha_retiro() {
+        return fecha_retiro;
+    }
+
+    public void setFecha_retiro(Calendario fecha_retiro) {
+        this.fecha_retiro = fecha_retiro;
+    }
+
+    public SeleccionTabla getSel_periodo_academico() {
+        return sel_periodo_academico;
+    }
+
+    public void setSel_periodo_academico(SeleccionTabla sel_periodo_academico) {
+        this.sel_periodo_academico = sel_periodo_academico;
+    }
+
+    public SeleccionTabla getSel_especialidades() {
+        return sel_especialidades;
+    }
+
+    public void setSel_especialidades(SeleccionTabla sel_especialidades) {
+        this.sel_especialidades = sel_especialidades;
+    }
+
+    public SeleccionTabla getSel_cursos() {
+        return sel_cursos;
+    }
+
+    public void setSel_cursos(SeleccionTabla sel_cursos) {
+        this.sel_cursos = sel_cursos;
+    }
+
+    public SeleccionTabla getSel_paralelos() {
+        return sel_paralelos;
+    }
+
+    public void setSel_paralelos(SeleccionTabla sel_paralelos) {
+        this.sel_paralelos = sel_paralelos;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
+    }
+
+    public String getTitulo_alumno() {
+        return titulo_alumno;
+    }
+
+    public void setTitulo_alumno(String titulo_alumno) {
+        this.titulo_alumno = titulo_alumno;
+    }
+
+    public String getPeriodo_academico() {
+        return periodo_academico;
+    }
+
+    public void setPeriodo_academico(String periodo_academico) {
+        this.periodo_academico = periodo_academico;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public String getCurso() {
+        return curso;
+    }
+
+    public void setCurso(String curso) {
+        this.curso = curso;
+    }
+
+    public String getParalelo() {
+        return paralelo;
+    }
+
+    public void setParalelo(String paralelo) {
+        this.paralelo = paralelo;
+    }
+
+    public ServiciosAdquisiones getSer_adqusiiones() {
+        return ser_adqusiiones;
+    }
+
+    public void setSer_adqusiiones(ServiciosAdquisiones ser_adqusiiones) {
+        this.ser_adqusiiones = ser_adqusiiones;
+    }
+
 
 
     

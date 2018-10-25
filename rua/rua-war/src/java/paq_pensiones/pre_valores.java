@@ -74,6 +74,8 @@ public class pre_valores extends Pantalla{
         tab_tabla1.getColumna("TOTAL_RECVA").setEtiqueta();
         tab_tabla1.getColumna("TOTAL_RECVA").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
         tab_tabla1.getColumna("IDE_CNDFP").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "");
+        tab_tabla1.getColumna("ide_gemes").setCombo("select ide_gemes, nombre_gemes from gen_mes order by ide_gemes");
+        tab_tabla1.getColumna("ide_recest").setRequerida(true);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(6);
         tab_tabla1.dibujar();
