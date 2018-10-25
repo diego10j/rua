@@ -561,11 +561,6 @@ public class pre_alumno_periodo extends Pantalla{
                 parametro.put("pide_periodo", periodo_academico);
                 parametro.put("nombre", utilitario.getVariable("NICK"));
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                System.out.println("periodo academico: "+periodo_academico);
-                System.out.println("pide_especialidad: "+especialidad);
-                System.out.println("pide_curso: "+curso);
-                System.out.println("pide_paralelo: "+sel_paralelos.getSeleccionados()+"");
-                System.out.println("nombre: "+utilitario.getVariable("NICK"));
                 sel_cursos.cerrar();
                 sel_rep.dibujar();
                 utilitario.addUpdate("sel_rep");
