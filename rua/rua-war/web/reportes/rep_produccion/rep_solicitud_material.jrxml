@@ -35,8 +35,10 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT a.ide_prsol, numero_secuencial_prsol, fecha_prsol, hora_prsol, producto_elaborado_prsol, total_inyector_prsol, peso_pieza_prsol, peso_unidad_prsol,
-maquina_prsol, numero_cavidades, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes, nombre_empleados, numero_prorp as orden_produccion
+		<![CDATA[
+
+SELECT a.ide_prsol, numero_secuencial_prsol, fecha_prsol, hora_prsol, producto_elaborado_prsol, total_inyector_prsol, peso_pieza_prsol, peso_unidad_prsol,
+maquina_prsol, numero_cavidades_prsol, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes, nombre_empleados, numero_prorp as orden_produccion,total_producion_prorp
 FROM prod_solicitud a
 LEFT JOIN (select ide_prdes, ide_prsol, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes from prod_detalle_solicitud a
            left join prod_color b on a.ide_prcol = b.ide_prcol
@@ -44,7 +46,7 @@ LEFT JOIN (select ide_prdes, ide_prsol, codigo_inarti, nombre_inarti, detalle_pr
            left join inv_unidad d on a.ide_inuni = d.ide_inuni) b on a.ide_prsol = b.ide_prsol
 LEFT JOIN (select ide_gtemp, primer_nombre_gtemp||' '||apellido_paterno_gtemp as nombre_empleados from gth_empleado) c on a.ide_gtemp = c.ide_gtemp
 LEFT JOIN prod_orden_produccion d on a.ide_prorp = d.ide_prorp
-WHERE a.ide_prsol = $P{pide_solicitud}]]>
+WHERE a.ide_prsol =$P{pide_solicitud}]]>
 	</queryString>
 	<field name="ide_prsol" class="java.lang.Long"/>
 	<field name="numero_secuencial_prsol" class="java.lang.String"/>
@@ -55,7 +57,7 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 	<field name="peso_pieza_prsol" class="java.lang.String"/>
 	<field name="peso_unidad_prsol" class="java.lang.String"/>
 	<field name="maquina_prsol" class="java.lang.String"/>
-	<field name="numero_cavidades" class="java.lang.String"/>
+	<field name="numero_cavidades_prsol" class="java.lang.String"/>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="detalle_prcol" class="java.lang.String"/>
@@ -63,6 +65,7 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 	<field name="cantidad_prdes" class="java.lang.String"/>
 	<field name="nombre_empleados" class="java.lang.String"/>
 	<field name="orden_produccion" class="java.lang.String"/>
+	<field name="total_producion_prorp" class="java.math.BigDecimal"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -81,20 +84,6 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 				</textElement>
 				<text><![CDATA[SOLICITUD DE MATERIAL]]></text>
 			</staticText>
-			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="2" y="1" width="231" height="85"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_empr">
-					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_sucu">
-					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
-			</subreport>
 			<staticText>
 				<reportElement uuid="c72a1a3a-35a0-4a2e-8256-4d75637047b7" x="435" y="1" width="120" height="29"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -116,6 +105,26 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<subreport isUsingCache="true">
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="16" y="12" width="174" height="66"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="238" y="1" width="1" height="84"/>
+			</line>
+			<line>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="434" y="0" width="1" height="84"/>
+			</line>
 		</band>
 	</title>
 	<pageHeader>
@@ -320,51 +329,51 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 				<reportElement uuid="17297500-1f9e-4231-87f8-c2eb4436386d" x="386" y="246" width="149" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="f4a000ce-1775-4cfe-a05a-77b04fbc7ab3" x="24" y="16" width="209" height="20"/>
+				<reportElement uuid="f4a000ce-1775-4cfe-a05a-77b04fbc7ab3" x="24" y="16" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[TOTAL MATERIA PRIMA A INYECTAR:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="56b038a4-741f-469e-a5a9-4607326fa250" x="25" y="36" width="209" height="20"/>
+				<reportElement uuid="56b038a4-741f-469e-a5a9-4607326fa250" x="25" y="36" width="151" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[TOTAL EN UNIDADES:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3c5eef02-3d39-4e23-8ccd-71f53303326e" x="24" y="75" width="209" height="20"/>
+				<reportElement uuid="3c5eef02-3d39-4e23-8ccd-71f53303326e" x="24" y="57" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INFORMACIÓN DE PRODUCCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="eca3113d-2bc5-4a83-964c-f316b87f313b" x="24" y="95" width="209" height="20"/>
+				<reportElement uuid="eca3113d-2bc5-4a83-964c-f316b87f313b" x="24" y="77" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[PESO POR PIEZA/GOLPE:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="207ca9c2-ae89-47a5-acf6-94fa65595c80" x="24" y="115" width="209" height="20"/>
+				<reportElement uuid="207ca9c2-ae89-47a5-acf6-94fa65595c80" x="24" y="97" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[PESO POR UNIDAD:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="304fa597-d51f-47f7-84ed-8065c3f6157a" x="24" y="135" width="209" height="20"/>
+				<reportElement uuid="304fa597-d51f-47f7-84ed-8065c3f6157a" x="24" y="117" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[MAQUINA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="24268ba6-2274-4419-bfda-2c081e8fe53a" x="24" y="155" width="209" height="20"/>
+				<reportElement uuid="24268ba6-2274-4419-bfda-2c081e8fe53a" x="24" y="137" width="152" height="20"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[No. CAVIDADES:]]></text>
 			</staticText>
@@ -376,29 +385,46 @@ WHERE a.ide_prsol = $P{pide_solicitud}]]>
 				<text><![CDATA[Contabilidad]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a6365b85-5854-4a0d-ba12-9c0fbd3ff105" x="234" y="16" width="202" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement uuid="a6365b85-5854-4a0d-ba12-9c0fbd3ff105" x="177" y="16" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{total_inyector_prsol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="59cb6d8d-7179-4818-a03b-b07132839f79" x="233" y="95" width="202" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement uuid="59cb6d8d-7179-4818-a03b-b07132839f79" x="178" y="77" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{peso_pieza_prsol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="6e2c6f50-5ca0-4279-98d6-32e7e2cf1137" x="233" y="115" width="202" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement uuid="6e2c6f50-5ca0-4279-98d6-32e7e2cf1137" x="178" y="97" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{peso_unidad_prsol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="435c4928-aa3c-4c2f-bd99-08256ac46162" x="233" y="135" width="202" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement uuid="435c4928-aa3c-4c2f-bd99-08256ac46162" x="178" y="117" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{maquina_prsol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9f2d9022-de54-46f4-909f-b1ea45f86da7" x="233" y="155" width="202" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement uuid="9f2d9022-de54-46f4-909f-b1ea45f86da7" x="178" y="137" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_cavidades}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a6365b85-5854-4a0d-ba12-9c0fbd3ff105" x="176" y="37" width="202" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_producion_prorp}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
