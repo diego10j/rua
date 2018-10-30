@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_lista_alumnos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.3636363636363635"/>
-	<property name="ireport.x" value="103"/>
+	<property name="ireport.x" value="67"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
@@ -151,9 +151,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<title>
 		<band height="73" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="225" y="0" width="330" height="52"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="267" y="7" width="288" height="32"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="19" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					<font size="17" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[LISTADO DE ALUMNOS GENERAL]]></text>
 			</staticText>
@@ -172,9 +172,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="252" y="42" width="288" height="24"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="267" y="39" width="288" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="17" isBold="true"/>
+					<font size="15" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geani}+"-"+$F{descripcion_repea}]]></textFieldExpression>
 			</textField>
