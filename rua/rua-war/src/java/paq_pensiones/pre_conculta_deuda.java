@@ -38,7 +38,7 @@ public class pre_conculta_deuda extends Pantalla{
         
         com_estados.setId("com_estados");
         com_estados.setCombo("select * from rec_estados");
-        com_estados.setMetodo("actualizar deuda");
+        //com_estados.setMetodo("actualizar deuda");
         //bar_botones.agregarComponente(com_estados);
         
         Boton bot_convenio = new Boton();
@@ -80,9 +80,12 @@ public class pre_conculta_deuda extends Pantalla{
         
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsultaTotal("1"));
-        tab_tabla1.getTipoSeleccion();
+        tab_tabla1.setCampoPrimaria("ide_titulo_recval");
         tab_tabla1.getColumna("alumno").setFiltro(true);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
         tab_tabla1.dibujar();
+        tab_tabla1.setRows(20);
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
         pat_tabla1.setPanelTabla(tab_tabla1);
@@ -93,8 +96,10 @@ public class pre_conculta_deuda extends Pantalla{
     }
     public void generarConvenio(){
         String titulos_seleccionados=tab_tabla1.getFilasSeleccionadas();
-        utilitario.getConexion().ejecutarSql("update rec_valores set aplica_convenio_recva=true, fecha_iniconve_recva='"+fechaInicio.getFecha()+"', fecha_finconve_recva='"+fechaFin.getFecha()+"' where ide_titulo_recva in ("+titulos_seleccionados+")");
+        utilitario.getConexion().ejecutarSql("update rec_valores set aplica_convenio_recva=true, fecha_iniconve_recva='"+fechaInicio.getFecha()+"', fecha_finconve_recva='"+fechaFin.getFecha()+"' where ide_titulo_recval in ("+titulos_seleccionados+")");
         dia_emision.cerrar();
+        utilitario.agregarMensaje("Se ha realizado con exito", "Registrado convenio con exito");
+        utilitario.addUpdate("tab_tabla1");
     }
     public void abrirDialogoConcepto(){
         if (tab_tabla1.getValorSeleccionado() != null){
