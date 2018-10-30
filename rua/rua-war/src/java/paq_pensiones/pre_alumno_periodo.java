@@ -27,12 +27,14 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
+import paq_contabilidad.ejb.ServicioContabilidad;
 import servicios.pensiones.ServicioPensiones;
 
 import sistema.aplicacion.Pantalla;
@@ -43,6 +45,7 @@ public class pre_alumno_periodo extends Pantalla{
     private Combo com_cursos = new Combo();
     private Combo com_paralelos = new Combo();
     private Combo com_especialidad = new Combo();
+    private Combo com_mes = new Combo();
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
     private SeleccionTabla sel_tab_representante = new SeleccionTabla();
     private SeleccionTabla sel_periodo_academico = new SeleccionTabla();
@@ -58,6 +61,7 @@ public class pre_alumno_periodo extends Pantalla{
     private Calendario fecha_retiro = new Calendario();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private VisualizarPDF vipdf_alumnos_matriculados = new VisualizarPDF();   
     private Map parametro = new HashMap();
     String titulo_alumno="";
     String periodo_academico="";
@@ -69,6 +73,8 @@ public class pre_alumno_periodo extends Pantalla{
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private ServiciosAdquisiones ser_adqusiiones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    @EJB
+    private ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
     
     public pre_alumno_periodo(){
         
@@ -79,6 +85,14 @@ public class pre_alumno_periodo extends Pantalla{
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
         agregarComponente(rep_reporte);
+        
+        Boton bot_al_matri = new Boton();
+        bot_al_matri.setIcon("ui-icon-print");
+        bot_al_matri.setValue("IMPRIMIR ALUMNOS MATRICULADOS");
+        bot_al_matri.setMetodo("generarPDF");
+        //bot_fac_elec.setMetodo(ser_pensiones.generarFacturaElectronica("-1"));
+        agregarComponente(bot_al_matri);
+        bar_botones.agregarBoton(bot_al_matri);
         
         com_periodo_academico.setId("cmb_periodo_academico");
         com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
@@ -122,6 +136,7 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_geper").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
+        tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
         tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
         tab_tabla1.getColumna("fecha_retiro_recalp").setLectura(true);
         tab_tabla1.getColumna("ide_geper").setFiltroContenido();
@@ -206,18 +221,28 @@ public class pre_alumno_periodo extends Pantalla{
         
         com_conceptos.setId("com_conceptos");
         com_conceptos.setCombo(ser_pensiones.getSqlConceptos());
-    
+     
+        //select ide_gemes, nombre_gemes from gen_mes order by ide_gemes
+        com_mes.setId("com_mes");
+        com_mes.setCombo(ser_contabilidad.getMes("true, false"));
         
         Grid gru_cuerpo = new Grid();
         gru_cuerpo.setColumns(2);
-        Etiqueta eti_mensaje = new Etiqueta();
-        eti_mensaje.setValue("Seleccione el concepto                                             ");
-        eti_mensaje.setStyle("font-size: 13px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
         
-        gru_cuerpo.getChildren().add(eti_mensaje);
+        Etiqueta eti_concepto = new Etiqueta();
+        eti_concepto.setValue("Seleccione el concepto                                             ");
+        eti_concepto.setStyle("font-size: 13px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+        
+        gru_cuerpo.getChildren().add(eti_concepto);
         gru_cuerpo.getChildren().add(com_conceptos);
         
+        Etiqueta eti_mes = new Etiqueta();
+        eti_mes.setValue("Seleccione el mes                                             ");
+        eti_mes.setStyle("font-size: 13px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
         
+        gru_cuerpo.getChildren().add(eti_mes);
+        gru_cuerpo.getChildren().add(com_mes);
+            
         gru_cuerpo.getChildren().add(new Etiqueta("FECHA INICIAL: "));
         fechaInicio.setId("fechaInicio");
         fechaInicio.setFechaActual();
@@ -301,6 +326,10 @@ public class pre_alumno_periodo extends Pantalla{
         sel_paralelos.setHeight("40%");
         sel_paralelos.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sel_paralelos);
+        
+        vipdf_alumnos_matriculados.setId("vipdf_alumnos_matriculados");
+        vipdf_alumnos_matriculados.setTitle("ALUMNOS MATRICULADOS");
+        agregarComponente(vipdf_alumnos_matriculados);
     
     }
     public void abrirDialogoRetiro(){
@@ -348,9 +377,11 @@ public class pre_alumno_periodo extends Pantalla{
               TablaGenerica cod_max = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "ide_titulo_recval"));
               maximo = cod_max.getValor("maximo");
               TablaGenerica tab_concepto = utilitario.consultar("select * from rec_forma_impuesto where ide_concepto_recon ="+com_conceptos.getValue());
-              utilitario.getConexion().ejecutarSql("INSERT INTO rec_valores (ide_titulo_recval, ide_recalp, ide_sucu, ide_empr, ide_geper, gen_ide_geper, ide_recest, fecha_emision_recva, fecha_vence_recva, IDE_CONCEPTO_RECON )\n" +
+              utilitario.getConexion().ejecutarSql("INSERT INTO rec_valores (ide_titulo_recval, ide_recalp, ide_sucu, ide_empr, ide_geper, gen_ide_geper, ide_recest, fecha_emision_recva, fecha_vence_recva, IDE_CONCEPTO_RECON"
+                      + "                           , ide_gemes, valor_imponible_recva )\n" +
                                                    "VALUES ("+maximo+", "+tab_tabla1.getValor(i, "IDE_RECALP")+", "+utilitario.getVariable("ide_sucu")+", "+utilitario.getVariable("ide_empr")+" "
-                                                 + ", "+tab_tabla1.getValor(i, "ide_geper")+","+tab_tabla1.getValor(i, "gen_ide_geper")+", "+utilitario.getVariable("p_pen_deuda_activa")+", '"+fechaInicio.getValue()+"', '"+fechaFin.getValue()+"', "+com_conceptos.getValue()+"     );");
+                                                 + ", "+tab_tabla1.getValor(i, "ide_geper")+","+tab_tabla1.getValor(i, "gen_ide_geper")+", "+utilitario.getVariable("p_pen_deuda_activa")+", '"+fechaInicio.getValue()+"', '"+fechaFin.getValue()+"', "+com_conceptos.getValue()+",   "
+                                                       + " "+com_mes.getValue()+", 0  );");
               
               
               
@@ -364,7 +395,7 @@ public class pre_alumno_periodo extends Pantalla{
               // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
               }
               TablaGenerica tab_suma_valores = utilitario.consultar("select 1 as codigo, sum(total_revad) as suma_total from rec_valor_detalle where IDE_TITULO_RECVAL  = "+maximo+"");
-              utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+" where IDE_TITULO_RECVAL = "+maximo+"");
+              utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+", valor_imponible_recva = "+tab_suma_valores.getValor("suma_total")+" where IDE_TITULO_RECVAL = "+maximo+"");
           }
         dia_emision.cerrar();
         utilitario.agregarMensaje("Se ha recaudado correctamente", "");
@@ -600,8 +631,90 @@ public class pre_alumno_periodo extends Pantalla{
                 
             }
         } 
+        else if (rep_reporte.getReporteSelecionado().equals("Listado de Becados")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sel_periodo_academico.dibujar();
+            }
+            else if (sel_periodo_academico.isVisible()){
+                periodo_academico = sel_periodo_academico.getValorSeleccionado()+"";
+                sel_periodo_academico.cerrar();
+                sel_especialidades.dibujar();
+            } else if (sel_especialidades.isVisible()){
+                especialidad = sel_especialidades.getSeleccionados()+"";
+                sel_especialidades.cerrar();
+                sel_cursos.dibujar();
+            } else if (sel_cursos.isVisible()){
+                curso = sel_cursos.getSeleccionados()+"";
+                sel_cursos.cerrar();
+                sel_paralelos.dibujar();
+            }
+            else if (sel_paralelos.isVisible()){
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+                parametro.put("pide_especialidad", especialidad);
+                parametro.put("pide_paralelo", sel_paralelos.getSeleccionados()+"");
+                parametro.put("pide_curso", curso);
+                parametro.put("pide_periodo", periodo_academico);
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_paralelos.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+                
+            }
+            
+        }
+        else if (rep_reporte.getReporteSelecionado().equals("Numero de Alumnos Matriculados")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sel_periodo_academico.dibujar();
+            }
+            else if (sel_periodo_academico.isVisible()){
+                periodo_academico = sel_periodo_academico.getValorSeleccionado()+"";
+                sel_periodo_academico.cerrar();
+                sel_especialidades.dibujar();
+            } else if (sel_especialidades.isVisible()){
+                especialidad = sel_especialidades.getSeleccionados()+"";
+                sel_especialidades.cerrar();
+                sel_cursos.dibujar();
+            } else if (sel_cursos.isVisible()){
+                curso = sel_cursos.getSeleccionados()+"";
+                sel_cursos.cerrar();
+                sel_paralelos.dibujar();
+            }
+            else if (sel_paralelos.isVisible()){
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+                parametro.put("pide_especialidad", especialidad);
+                parametro.put("pide_paralelo", sel_paralelos.getSeleccionados()+"");
+                parametro.put("pide_curso", curso);
+                parametro.put("pide_periodo", periodo_academico);
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_paralelos.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+                
+            }
+        }
         else{
             utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
+        }
+    }
+    public void generarPDF() {
+        if (com_periodo_academico.getValue() != null) {
+                        ///////////AQUI ABRE EL REPORTE
+                        Map parametros = new HashMap();
+                        parametros.put("pide_periodo", com_periodo_academico.getValue()+"");
+                        parametros.put("nombre", utilitario.getVariable("NICK"));
+
+                        //System.out.println(" " + str_titulos);
+                        vipdf_alumnos_matriculados.setVisualizarPDF("rep_escuela_colegio/rep_lista_alumnos_total.jasper", parametros);
+                        vipdf_alumnos_matriculados.dibujar();
+                        utilitario.addUpdate("vipdf_alumnos_matriculados");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione el periodo académico", "");
         }
     }
     public Tabla getTab_tabla1() {
@@ -828,7 +941,28 @@ public class pre_alumno_periodo extends Pantalla{
         this.ser_adqusiiones = ser_adqusiiones;
     }
 
+    public Combo getCom_mes() {
+        return com_mes;
+    }
 
+    public void setCom_mes(Combo com_mes) {
+        this.com_mes = com_mes;
+    }
 
+    public ServicioContabilidad getSer_contabilidad() {
+        return ser_contabilidad;
+    }
+
+    public void setSer_contabilidad(ServicioContabilidad ser_contabilidad) {
+        this.ser_contabilidad = ser_contabilidad;
+    }
+
+    public VisualizarPDF getVipdf_alumnos_matriculados() {
+        return vipdf_alumnos_matriculados;
+    }
+
+    public void setVipdf_alumnos_matriculados(VisualizarPDF vipdf_alumnos_matriculados) {
+        this.vipdf_alumnos_matriculados = vipdf_alumnos_matriculados;
+    }
     
 }
