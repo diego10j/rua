@@ -336,4 +336,34 @@ public class ServicioPensiones extends ServicioBase {
                 "where a.ide_recest = "+parametro+"";
           return sql;
       }
+      
+      public String getAlumnosDeudaConsultaTotal(String parametro){
+          String sql="";
+          sql = "select a.ide_titulo_recval,REPRESENTANTE,ESTADO,des_concepto_recon,MES,VALOR_TOTAL,\n" +
+"nom_geper as alumno,identificac_geper as cd_alumno,codigo_geper as codigo,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp\n" +
+"from (\n" +
+"select a.ide_titulo_recval,a.ide_recalp, b.nom_geper as REPRESENTANTE,  descripcion_recest as ESTADO,des_concepto_recon,nombre_gemes as MES, total_recva as VALOR_TOTAL\n" +
+"                from rec_valores a\n" +
+"                left join gen_persona b on a.gen_ide_geper = b.ide_geper\n" +
+"                left join rec_estados c on a.ide_recest = c.ide_recest\n" +
+"                left join gen_mes d on a.ide_gemes = d.ide_gemes\n" +
+"                left join rec_concepto e on a.ide_concepto_recon= e.ide_concepto_recon\n" +
+"                where a.ide_recest=2\n" +
+") a\n" +
+"left join (              \n" +
+"\n" +
+"select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,\n" +
+"retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,a.ide_recalp\n" +
+"from rec_alumno_periodo a, gen_persona b,rec_periodo_academico c,gen_anio d,rec_paralelos g,rec_curso e, rec_especialidad f\n" +
+"where a.ide_geper= b.ide_geper\n" +
+"and a.ide_repea = c.ide_repea\n" +
+"and c.ide_geani= d.ide_geani\n" +
+"and a.ide_repar = g.ide_repar\n" +
+"and a.ide_recur = e.ide_recur\n" +
+"and a.ide_reces = f.ide_reces\n" +
+"order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper\n" +
+"\n" +
+") b on a.ide_recalp = b.ide_recalp";
+          return sql;
+      }
 }
