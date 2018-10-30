@@ -566,7 +566,41 @@ public class pre_alumno_periodo extends Pantalla{
                 utilitario.addUpdate("sel_rep");
                 
             }
-        } else{
+        }
+        else if (rep_reporte.getReporteSelecionado().equals("Listado de Alumnos Retirados")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sel_periodo_academico.dibujar();
+            }
+            else if (sel_periodo_academico.isVisible()){
+                periodo_academico = sel_periodo_academico.getValorSeleccionado()+"";
+                sel_periodo_academico.cerrar();
+                sel_especialidades.dibujar();
+            } else if (sel_especialidades.isVisible()){
+                especialidad = sel_especialidades.getSeleccionados()+"";
+                sel_especialidades.cerrar();
+                sel_cursos.dibujar();
+            } else if (sel_cursos.isVisible()){
+                curso = sel_cursos.getSeleccionados()+"";
+                sel_cursos.cerrar();
+                sel_paralelos.dibujar();
+            }
+            else if (sel_paralelos.isVisible()){
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+                parametro.put("pide_especialidad", especialidad);
+                parametro.put("pide_paralelo", sel_paralelos.getSeleccionados()+"");
+                parametro.put("pide_curso", curso);
+                parametro.put("pide_periodo", periodo_academico);
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_paralelos.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+                
+            }
+        } 
+        else{
             utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
         }
     }
