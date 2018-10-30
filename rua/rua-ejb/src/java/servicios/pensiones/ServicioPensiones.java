@@ -93,7 +93,7 @@ public class ServicioPensiones extends ServicioBase {
             tab_cab_fac.setValor("telefono_cccfa", tag.getValor("telefono_petlf"));
             tab_cab_fac.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
 
-            TablaGenerica tag_con_detalle = utilitario.consultar("        select ide_valdet_revad,IDE_TITULO_RECVAL, detalle_revad, cantidad_revad, precio_revad, total_revad, valor_descuento_revad, c.iva_inarti, c.ide_inarti\n"
+            TablaGenerica tag_con_detalle = utilitario.consultar("        select ide_valdet_revad,IDE_TITULO_RECVA, detalle_revad, cantidad_revad, precio_revad, total_revad, valor_descuento_revad, c.iva_inarti, c.ide_inarti\n"
                     + "        from rec_valor_detalle  a\n"
                     + "        left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n"
                     + "        left join inv_articulo c on b.ide_inarti = c.ide_inarti\n"
@@ -340,9 +340,9 @@ public class ServicioPensiones extends ServicioBase {
       public String getAlumnosDeudaConsultaTotal(String parametro){
           String sql="";
           sql = "select a.ide_titulo_recval,REPRESENTANTE,ESTADO,des_concepto_recon,MES,VALOR_TOTAL,\n" +
-"nom_geper as alumno,identificac_geper as cd_alumno,codigo_geper as codigo,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp\n" +
+"nom_geper as alumno,identificac_geper as cd_alumno,codigo_geper as codigo,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,aplica_convenio_recva,fecha_iniconve_recva,fecha_finconve_recva\n" +
 "from (\n" +
-"select a.ide_titulo_recval,a.ide_recalp, b.nom_geper as REPRESENTANTE,  descripcion_recest as ESTADO,des_concepto_recon,nombre_gemes as MES, total_recva as VALOR_TOTAL\n" +
+"select a.ide_titulo_recval,a.ide_recalp, b.nom_geper as REPRESENTANTE,  descripcion_recest as ESTADO,des_concepto_recon,nombre_gemes as MES, total_recva as VALOR_TOTAL,aplica_convenio_recva,fecha_iniconve_recva,fecha_finconve_recva \n" +
 "                from rec_valores a\n" +
 "                left join gen_persona b on a.gen_ide_geper = b.ide_geper\n" +
 "                left join rec_estados c on a.ide_recest = c.ide_recest\n" +
