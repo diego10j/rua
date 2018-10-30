@@ -37,7 +37,8 @@
 	<parameter name="pide_curso" class="java.lang.String"/>
 	<parameter name="pide_paralelo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces
+		<![CDATA[select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,
+retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp
 from rec_alumno_periodo a, gen_persona b,rec_periodo_academico c,gen_anio d,rec_paralelos g,rec_curso e, rec_especialidad f
 where a.ide_geper= b.ide_geper
 and a.ide_repea = c.ide_repea
@@ -45,8 +46,7 @@ and c.ide_geani= d.ide_geani
 and a.ide_repar = g.ide_repar
 and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
-and activo_recalp = true
-and retirado_recalp =false
+and retirado_recalp = true
 and a.ide_reces in ($P!{pide_especialidad})
 and a.ide_repar in ($P!{pide_paralelo})
 and a.ide_recur in ($P!{pide_curso})
@@ -79,6 +79,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<fieldDescription><![CDATA[Este campo es la clave principal de la tabla yavirac_alum_registro_academico]]></fieldDescription>
 	</field>
 	<field name="ide_reces" class="java.lang.Long"/>
+	<field name="retirado_recalp" class="java.lang.Boolean"/>
+	<field name="fecha_retiro_recalp" class="java.sql.Date"/>
+	<field name="detalle_retiro_recalp" class="java.lang.String"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -115,32 +118,39 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textFieldExpression><![CDATA[$F{descripcion_reces}+"  "+$F{descripcion_recur}+"  "+$F{descripcion_repar}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="86" y="15" width="35" height="14"/>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="45" y="15" width="35" height="14"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Ord.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="275" y="15" width="176" height="14"/>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="150" y="15" width="176" height="14"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Apellidos y Nombres]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="175" y="15" width="100" height="14"/>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="80" y="15" width="100" height="14"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[C.I.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="124" y="15" width="51" height="14"/>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="296" y="15" width="65" height="14"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Código]]></text>
+					<text><![CDATA[Fec. Retiro]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="363" y="15" width="65" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Motivo]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -154,11 +164,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<title>
 		<band height="73" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="267" y="0" width="288" height="52"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="296" y="0" width="259" height="52"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="19" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[LISTADO DE ALUMNOS]]></text>
+				<text><![CDATA[LISTADO DE ALUMNOS RETIRADOS]]></text>
 			</staticText>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="7" width="168" height="66"/>
@@ -175,7 +185,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="267" y="42" width="288" height="24"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="267" y="45" width="288" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="17" isBold="true"/>
 				</textElement>
@@ -192,32 +202,39 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="124" y="0" width="51" height="12"/>
-				<textElement>
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{codigo_geper}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="06be60ca-e13f-4dc1-82e4-977aab486c67" x="175" y="0" width="100" height="12"/>
+				<reportElement uuid="06be60ca-e13f-4dc1-82e4-977aab486c67" x="80" y="0" width="70" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="275" y="0" width="248" height="12"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="150" y="0" width="146" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="88" y="0" width="35" height="12"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="47" y="0" width="35" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="296" y="0" width="67" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_retiro_recalp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="363" y="0" width="192" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_retiro_recalp}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
