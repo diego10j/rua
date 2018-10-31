@@ -35,10 +35,8 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[
-
-SELECT a.ide_prsol, numero_secuencial_prsol, fecha_prsol, hora_prsol, producto_elaborado_prsol, total_inyector_prsol, peso_pieza_prsol, peso_unidad_prsol,
-maquina_prsol, numero_cavidades_prsol, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes, nombre_empleados, numero_prorp as orden_produccion,total_producion_prorp
+		<![CDATA[SELECT a.ide_prsol, numero_secuencial_prsol, fecha_prsol, hora_prsol, producto_elaborado_prsol, total_inyector_prsol, peso_pieza_prsol, peso_unidad_prsol,
+maquina_prsol, numero_cavidades, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes, nombre_empleados, numero_prorp as orden_produccion,total_producion_prorp
 FROM prod_solicitud a
 LEFT JOIN (select ide_prdes, ide_prsol, codigo_inarti, nombre_inarti, detalle_prcol, nombre_inuni, cantidad_prdes from prod_detalle_solicitud a
            left join prod_color b on a.ide_prcol = b.ide_prcol
@@ -57,7 +55,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 	<field name="peso_pieza_prsol" class="java.lang.String"/>
 	<field name="peso_unidad_prsol" class="java.lang.String"/>
 	<field name="maquina_prsol" class="java.lang.String"/>
-	<field name="numero_cavidades_prsol" class="java.lang.String"/>
+	<field name="numero_cavidades" class="java.lang.String"/>
 	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="detalle_prcol" class="java.lang.String"/>
@@ -78,9 +76,9 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<reportElement uuid="7ae7935d-939f-459d-bbdd-b222e2a05f07" x="2" y="0" width="553" height="85"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="238" y="1" width="197" height="85"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="261" y="1" width="174" height="85"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
+					<font size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SOLICITUD DE MATERIAL]]></text>
 			</staticText>
@@ -106,7 +104,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="16" y="12" width="174" height="66"/>
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="4" y="1" width="174" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -120,7 +118,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="238" y="1" width="1" height="84"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="260" y="1" width="1" height="84"/>
 			</line>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="434" y="0" width="1" height="84"/>
