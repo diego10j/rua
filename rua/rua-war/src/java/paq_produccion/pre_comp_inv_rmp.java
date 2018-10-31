@@ -152,13 +152,13 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RP-02 N°");
         tab_tabla1.getColumna("IDE_INTTI").setNombreVisual("DOCUMENTO");
         tab_tabla1.getColumna("IDE_INTTI").setAutoCompletar();
-
+        tab_tabla1.setCondicion("ide_intti= "+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
-        tab_tabla1.setCondicion("ide_intti= "+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
+        
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);

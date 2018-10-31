@@ -242,10 +242,11 @@ public class pre_proforma extends Pantalla {
     public void insertar() {
         if(tab_proforma.isFocus()){
         tab_proforma.insertar();
-            TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_numero_proforma")));
-            tab_proforma.setValor("numero_prpro", tab_secuencial.getValor("nuevo_secuencial"));
-                                   
-
+            //TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_numero_proforma")));
+            //tab_proforma.setValor("numero_prpro", tab_secuencial.getValor("nuevo_secuencial"));
+            TablaGenerica tab_secuen = utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_recepcion_mercaderia")));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");                     
+            tab_proforma.setValor("numero_prpro", ser_valtiempo.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
         }
         else if(tab_detalle_proforma.isFocus()){
             tab_detalle_proforma.insertar();

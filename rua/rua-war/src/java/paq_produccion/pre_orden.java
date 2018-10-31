@@ -232,6 +232,7 @@ public class pre_orden extends Pantalla{
           tab_detalle_orden_control.setCondicion("ide_prorp="+aut_ord_produ.getValor());
           tab_detalle_orden_control.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
           tab_detalle_orden_control.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+          tab_detalle_orden_control.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina()); 
           tab_detalle_orden_control.getColumna("ide_inarti").setAutoCompletar();
           tab_detalle_orden_control.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
 
@@ -364,6 +365,7 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.setHeader("ORDEN PRODUCCION");
         tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEtiqueta();//etiqueta
         tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//EstilO
+        tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setValorDefecto("0");
         tab_orden_produccion.getColumna("fecha_terminado_prorp").setVisible(false);
         tab_orden_produccion.getColumna("hora_terminado_prorp").setVisible(false);
         tab_orden_produccion.dibujar();
@@ -389,7 +391,11 @@ public class pre_orden extends Pantalla{
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
         tab_detalle_orden.getColumna("TOTAL_PRORD").setEstilo("font-size:15px;font-weight: bold;color:blue");//Estilo
         tab_detalle_orden.getColumna("total_entregado_prord").setEstilo("font-size:15px;font-weight: bold;color:green");//Estilo
-        tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());     
+        tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());
+        tab_detalle_orden.getColumna("bulto_paquete_prord").setValorDefecto("0");
+        tab_detalle_orden.getColumna("unidades_prord").setValorDefecto("0.00");
+        tab_detalle_orden.getColumna("total_prord").setValorDefecto("0.00");
+        tab_detalle_orden.getColumna("total_entregado_prord").setValorDefecto("0.00");
        // tab_detalle_orden.setTipoFormulario(true);
         //tab_detalle_orden.getGrid().setColumns(4);
         tab_detalle_orden.setHeader("ORDEN  DETALLE");
@@ -423,10 +429,10 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.modificar(tab_orden_produccion.getFilaActual());    
         utilitario.addUpdate("tab_detalle_orden");
         utilitario.addUpdate("tab_orden_produccion");
-        tab_detalle_orden.guardar();
-        tab_orden_produccion.guardar();
-        guardarPantalla();
-        aut_ord_produ.actualizar();
+        //tab_detalle_orden.guardar();
+        //tab_orden_produccion.guardar();
+        //guardarPantalla();
+        
    }
     public void dibujaSolicitud(){
         if (aut_ord_produ != null){
@@ -595,6 +601,7 @@ public class pre_orden extends Pantalla{
        if (tab_orden_produccion.guardar()){
       // utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
           tab_detalle_orden.guardar();
+          aut_ord_produ.actualizar();
            guardarPantalla();
        }
        aut_ord_produ.actualizar();
