@@ -4,6 +4,8 @@
  */
 package paq_produccion;
 
+
+
 import paq_inventario.*;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
