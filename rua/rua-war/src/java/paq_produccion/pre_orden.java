@@ -69,6 +69,11 @@ public class pre_orden extends Pantalla{
     String fechaf="";
     double valor_bultos;
     double valor_unidades;
+    String valor_producir = "";
+    double dou_valor_producir = 0;
+    double total_inyectar = 0;
+    double peso_x_pieza = 0;
+    double num_cavidades = 0;
     @EJB
     private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
   
@@ -232,7 +237,6 @@ public class pre_orden extends Pantalla{
           tab_detalle_orden_control.setCondicion("ide_prorp="+aut_ord_produ.getValor());
           tab_detalle_orden_control.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
           tab_detalle_orden_control.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
-          tab_detalle_orden_control.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina()); 
           tab_detalle_orden_control.getColumna("ide_inarti").setAutoCompletar();
           tab_detalle_orden_control.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
 
@@ -357,6 +361,8 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.getColumna("numero_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
         tab_orden_produccion.getColumna("numero_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
         tab_orden_produccion.getColumna("ide_prtio").setCombo(ser_produccion.getTipoOrden());
+        tab_orden_produccion.getColumna("fecha_emision_prorp").setValorDefecto(utilitario.getFechaActual());
+        tab_orden_produccion.getColumna("hora_registro_prorp").setValorDefecto(utilitario.getHoraActual());
         //tab_orden_produccion.getColumna("numero_modulo_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
         //tab_orden_produccion.getColumna("numero_modulo_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
         tab_orden_produccion.setTipoFormulario(true);
@@ -365,7 +371,6 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.setHeader("ORDEN PRODUCCION");
         tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEtiqueta();//etiqueta
         tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//EstilO
-        tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setValorDefecto("0");
         tab_orden_produccion.getColumna("fecha_terminado_prorp").setVisible(false);
         tab_orden_produccion.getColumna("hora_terminado_prorp").setVisible(false);
         tab_orden_produccion.dibujar();
@@ -391,11 +396,7 @@ public class pre_orden extends Pantalla{
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
         tab_detalle_orden.getColumna("TOTAL_PRORD").setEstilo("font-size:15px;font-weight: bold;color:blue");//Estilo
         tab_detalle_orden.getColumna("total_entregado_prord").setEstilo("font-size:15px;font-weight: bold;color:green");//Estilo
-        tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());
-        tab_detalle_orden.getColumna("bulto_paquete_prord").setValorDefecto("0");
-        tab_detalle_orden.getColumna("unidades_prord").setValorDefecto("0.00");
-        tab_detalle_orden.getColumna("total_prord").setValorDefecto("0.00");
-        tab_detalle_orden.getColumna("total_entregado_prord").setValorDefecto("0.00");
+        tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());     
        // tab_detalle_orden.setTipoFormulario(true);
         //tab_detalle_orden.getGrid().setColumns(4);
         tab_detalle_orden.setHeader("ORDEN  DETALLE");
@@ -429,13 +430,15 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.modificar(tab_orden_produccion.getFilaActual());    
         utilitario.addUpdate("tab_detalle_orden");
         utilitario.addUpdate("tab_orden_produccion");
-        //tab_detalle_orden.guardar();
-        //tab_orden_produccion.guardar();
-        //guardarPantalla();
-        
+        tab_detalle_orden.guardar();
+        tab_orden_produccion.guardar();
+        guardarPantalla();
+        aut_ord_produ.actualizar();
    }
     public void dibujaSolicitud(){
-        if (aut_ord_produ != null){
+       if (aut_ord_produ != null){
+       TablaGenerica tab_datos_produccion = utilitario.consultar("SELECT ide_prorp, total_producion_prorp FROM prod_orden_produccion WHERE ide_prorp = "+aut_ord_produ.getValor()+"");
+       valor_producir = tab_datos_produccion.getValor("total_producion_prorp");
        int_opcion=4;
        tab_solicitud.setId("tab_solicitud");
        tab_solicitud.setTabla("prod_solicitud","ide_prsol",6);
@@ -444,6 +447,21 @@ public class pre_orden extends Pantalla{
        tab_solicitud.getColumna("ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
        tab_solicitud.getColumna("numero_secuencial_prsol").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
        tab_solicitud.getColumna("numero_secuencial_prsol").setEtiqueta();//etiqueta
+       tab_solicitud.getColumna("fecha_prsol").setValorDefecto(utilitario.getFechaActual());
+       tab_solicitud.getColumna("hora_prsol").setValorDefecto(utilitario.getHoraActual());
+       tab_solicitud.getColumna("total_inyector_prsol").setValorDefecto("0.00");
+       tab_solicitud.getColumna("total_inyector_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+       tab_solicitud.getColumna("total_inyector_prsol").setEtiqueta();//etiqueta
+       tab_solicitud.getColumna("peso_pieza_prsol").setValorDefecto("0");
+       tab_solicitud.getColumna("peso_pieza_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+       tab_solicitud.getColumna("peso_unidad_prsol").setValorDefecto("0");
+       tab_solicitud.getColumna("peso_unidad_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+       tab_solicitud.getColumna("numero_cavidades").setValorDefecto("0");
+       tab_solicitud.getColumna("numero_cavidades").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+       tab_solicitud.getColumna("numero_cavidades").setMetodoChange("calculaValoreSolicitud");
+       tab_solicitud.getColumna("fecha_prsol").setLectura(true);
+       tab_solicitud.getColumna("hora_prsol").setLectura(true);
+       tab_solicitud.setHeader("TOTAL A PRODUCIR: "+valor_producir);
        tab_solicitud.setTipoFormulario(true);
        tab_solicitud.getGrid().setColumns(4);
        tab_solicitud.agregarRelacion(tab_detalle_solicitud);
@@ -474,6 +492,19 @@ public class pre_orden extends Pantalla{
         }
        
     }
+    public void calculaValoreSolicitud(AjaxBehaviorEvent evt){
+        tab_solicitud.modificar(evt);
+        try{
+        peso_x_pieza = Double.parseDouble(tab_solicitud.getValor("peso_pieza_prsol"));
+        num_cavidades = Double.parseDouble(tab_solicitud.getValor("numero_cavidades"));
+        dou_valor_producir = Double.parseDouble(valor_producir);
+        total_inyectar = (peso_x_pieza * dou_valor_producir) / num_cavidades;
+        tab_solicitud.setValor("total_inyector_prsol", utilitario.getFormatoNumero(total_inyectar, 2));//cuado quiera sumar las columnas solo getsumacolum
+        tab_solicitud.modificar(tab_solicitud.getFilaActual());    
+        utilitario.addUpdate("tab_solicitud");
+        } catch (Exception e){
+        }
+    }
 @Override
     public void abrirListaReportes() {
 //Se ejecuta cuando da click en el boton de Reportes de la Barra 
@@ -492,6 +523,8 @@ public class pre_orden extends Pantalla{
                         parametro = new HashMap();
                         rep_reporte.cerrar();
                         parametro.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
+                        parametro.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametro.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                         sel_rep.dibujar();
                         utilitario.addUpdate("sel_rep");     
@@ -511,6 +544,8 @@ public class pre_orden extends Pantalla{
                          parametro = new HashMap();
                          parametro.put("fecha_ini",fechai );
                          parametro.put("fecha_fin", fechaf);
+                         parametro.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                         parametro.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                          sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                          sel_rep.dibujar(); 
                 }
@@ -522,6 +557,8 @@ public class pre_orden extends Pantalla{
                         parametro = new HashMap();
                         rep_reporte.cerrar();
                         parametro.put("ide_prcop", Integer.parseInt(tab_control_produccion.getValorSeleccionado()));
+                        parametro.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametro.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                         sel_rep.dibujar();
                         utilitario.addUpdate("sel_rep");
@@ -534,6 +571,8 @@ public class pre_orden extends Pantalla{
                         parametro = new HashMap();
                         rep_reporte.cerrar();
                         parametro.put("pide_solicitud", Integer.parseInt(tab_solicitud.getValorSeleccionado()));
+                        parametro.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametro.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                         sel_rep.dibujar();
                         utilitario.addUpdate("sel_rep");
@@ -601,7 +640,6 @@ public class pre_orden extends Pantalla{
        if (tab_orden_produccion.guardar()){
       // utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
           tab_detalle_orden.guardar();
-          aut_ord_produ.actualizar();
            guardarPantalla();
        }
        aut_ord_produ.actualizar();

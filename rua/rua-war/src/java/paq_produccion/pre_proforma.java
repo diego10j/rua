@@ -155,6 +155,8 @@ public class pre_proforma extends Pantalla {
                         ///////////AQUI ABRE EL REPORTE
                         Map parametros = new HashMap();
                         parametros.put("ide_prpro", Integer.parseInt(tab_proforma.getValor("ide_prpro")));
+                        parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("pide_modulo", Integer.parseInt(utilitario.getVariable("p_prod_numero_proforma")));
 
                         //System.out.println(" " + str_titulos);
@@ -242,11 +244,10 @@ public class pre_proforma extends Pantalla {
     public void insertar() {
         if(tab_proforma.isFocus()){
         tab_proforma.insertar();
-            //TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_numero_proforma")));
-            //tab_proforma.setValor("numero_prpro", tab_secuencial.getValor("nuevo_secuencial"));
-            TablaGenerica tab_secuen = utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_recepcion_mercaderia")));
-            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");                     
-            tab_proforma.setValor("numero_prpro", ser_valtiempo.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano")))+tab_secuen.getValor("nuevo_secuencial"));
+            TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(utilitario.getVariable("p_prod_numero_proforma")));
+            tab_proforma.setValor("numero_prpro", tab_secuencial.getValor("nuevo_secuencial"));
+                                   
+
         }
         else if(tab_detalle_proforma.isFocus()){
             tab_detalle_proforma.insertar();
