@@ -34,6 +34,12 @@
 	<parameter name="ide_prpro" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pide_version" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_fecha" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_prpro,nombre_cndfp,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
 g.detalle_prvat as validez,numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo
@@ -107,13 +113,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<text><![CDATA[PROFORMA]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="ef09c108-c26f-4c92-806f-6b8fccb5f166" x="408" y="37" width="145" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Versión 2]]></text>
-			</staticText>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="271" y="13" width="1" height="65"/>
 			</line>
@@ -127,13 +126,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_prpro}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="9a3e7179-7857-44ac-9a07-2d229a8a54e1" x="409" y="17" width="144" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RAC - 01]]></text>
-			</staticText>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="11" y="11" width="168" height="66"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -148,10 +140,24 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement uuid="4c2f33f9-7dba-4321-ab98-eecce671f8d0" x="411" y="37" width="144" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51e4a4fd-76a9-4146-abe1-328cc067ae5c" x="411" y="15" width="144" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_version}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="124" splitType="Stretch">
+		<band height="123" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="61d9d5ac-c1ca-4b7a-8171-e3e2a313ba49" x="1" y="22" width="76" height="20"/>
 				<textElement>
@@ -169,13 +175,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<staticText>
 				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="478" y="103" width="77" height="20"/>
 				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Valor Total]]></text>
@@ -183,11 +189,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<staticText>
 				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="1" y="103" width="101" height="20"/>
 				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
@@ -197,11 +203,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<staticText>
 				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="197" y="103" width="176" height="20"/>
 				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
@@ -211,11 +217,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<staticText>
 				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="102" y="103" width="95" height="20"/>
 				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
@@ -232,11 +238,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<staticText>
 				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="373" y="103" width="105" height="20"/>
 				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
