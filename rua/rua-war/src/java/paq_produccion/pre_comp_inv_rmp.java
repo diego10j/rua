@@ -54,11 +54,11 @@ public class pre_comp_inv_rmp extends Pantalla {
     private final Boton bot_buscar_transacciones = new Boton();
     private SeleccionTabla sel_empleado = new SeleccionTabla();
     private SeleccionTabla sel_departamento = new SeleccionTabla();
-    private SeleccionTabla sel_cabece_compra = new SeleccionTabla();
+    private SeleccionTabla sel_tab_solicitud = new SeleccionTabla();
     private SeleccionTabla sel_detalle_compra = new SeleccionTabla();
     private SeleccionTabla sel_cabecera_orden_prod = new SeleccionTabla();
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
-    String factura ="";
+    String solicitud ="";
     String valor_orden = "";
     private VisualizarPDF vipdf_r_m_p = new VisualizarPDF();
 
@@ -152,13 +152,13 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RP-02 N°");
         tab_tabla1.getColumna("IDE_INTTI").setNombreVisual("DOCUMENTO");
         tab_tabla1.getColumna("IDE_INTTI").setAutoCompletar();
-        tab_tabla1.setCondicion("ide_intti= "+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
+
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         tab_tabla1.getColumna("ide_cnccc").setLink();
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
-        
+        tab_tabla1.setCondicion("ide_intti= "+ utilitario.getVariable("p_prod_requerimiento_materia_prima"));
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -242,27 +242,21 @@ public class pre_comp_inv_rmp extends Pantalla {
         sel_departamento.getBot_aceptar().setMetodo("aceptarReporte");
         
         Boton bot_busca_solici = new Boton();
-        bot_busca_solici.setValue("BUSCAR FACTURA");
+        bot_busca_solici.setValue("BUSCAR SOLICITUD MATERIAL");
         bot_busca_solici.setIcon("ui-icon-search");
         bot_busca_solici.setMetodo("dibujaSolicitud");
-        //bar_botones.agregarBoton(bot_busca_solici);  
+        bar_botones.agregarBoton(bot_busca_solici);  
         
-        sel_cabece_compra.setId("sel_cabece_compra");
-        sel_cabece_compra.setTitle("SELECCIONE UNA FACTURA");
-        sel_cabece_compra.setSeleccionTabla("select ide_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n" +
-                                            "from cxp_cabece_factur a\n" +
-                                            "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
-                                            "left join adq_compra c on a.ide_adcomp = c.ide_adcomp\n" +
-                                            "where a.ide_adcomp = c.ide_adcomp\n" +
-                                            "and recibido_compra_cpcfa = false\n" +
-                                            "and c.ingreso_adcomp = 1", "ide_cpcfa");
-        sel_cabece_compra.setWidth("80%");
-        sel_cabece_compra.setHeight("70%");
-        sel_cabece_compra.setRadio();
-        sel_cabece_compra.getBot_aceptar().setMetodo("aceptarSolicitud");
-        agregarComponente(sel_cabece_compra);
+        sel_tab_solicitud.setId("sel_cabece_compra");
+        sel_tab_solicitud.setTitle("SELECCIONE UNA SOLICITUD DE MATERIAL");
+        sel_tab_solicitud.setSeleccionTabla(ser_produccion.getSolicitudMaterial("1", ""), "ide_prsol");
+        sel_tab_solicitud.setWidth("80%");
+        sel_tab_solicitud.setHeight("70%");
+        sel_tab_solicitud.setRadio();
+        sel_tab_solicitud.getBot_aceptar().setMetodo("aceptarSolicitud");
+        agregarComponente(sel_tab_solicitud);
         
-        sel_detalle_compra.setId("sel_detalle_compra");
+      /*  sel_detalle_compra.setId("sel_detalle_compra");
         sel_detalle_compra.setTitle("SELECCIONA EL DETALLE DE LA FACTURA");
         sel_detalle_compra.setSeleccionTabla(ser_adquisiciones.getdetalleFacturaCompra("1", ""), "ide_cpdfa");
         sel_detalle_compra.setWidth("80%");
@@ -292,7 +286,7 @@ public class pre_comp_inv_rmp extends Pantalla {
         sel_detalle_orden_prod.setWidth("80%");
         sel_detalle_orden_prod.setHeight("70%");
         sel_detalle_orden_prod.getBot_aceptar().setMetodo("aceptaDetalleOrden");
-        agregarComponente(sel_detalle_orden_prod);
+        agregarComponente(sel_detalle_orden_prod);*/
         
         
    
@@ -312,6 +306,8 @@ public class pre_comp_inv_rmp extends Pantalla {
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
                         parametros.put("pide_requerimiento", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
                         vipdf_r_m_p.setVisualizarPDF("rep_produccion/rep_requerimiento_materia_prima.jasper", parametros);
                         vipdf_r_m_p.dibujar();
@@ -346,17 +342,24 @@ public class pre_comp_inv_rmp extends Pantalla {
     }
     
     public void dibujaSolicitud(){
-        sel_cabece_compra.dibujar();
+        if (tab_tabla1.isFilaInsertada() == true){
+            sel_tab_solicitud.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar al menos un valor", "");
+        }
     }
     public void aceptarSolicitud(){
-        factura = sel_cabece_compra.getValorSeleccionado();
-        sel_cabece_compra.cerrar();
-        sel_detalle_compra.getTab_seleccion().setSql(ser_adquisiciones.getdetalleFacturaCompra("2", factura));
+        solicitud = sel_tab_solicitud.getValorSeleccionado();
+        TablaGenerica tab_solicitud = utilitario.consultar(ser_produccion.getSolicitudMaterial("2", solicitud));
+        tab_tabla1.setValor("CODIGO_DOCUMENTO2_INCCI", tab_solicitud.getValor("SECUENCIAL"));
+        utilitario.addUpdate("tab_tabla1");
+        sel_tab_solicitud.cerrar();
+        /*sel_detalle_compra.getTab_seleccion().setSql(ser_adquisiciones.getdetalleFacturaCompra("2", factura));
         sel_detalle_compra.getTab_seleccion().ejecutarSql();   
-        sel_detalle_compra.dibujar();
+        sel_detalle_compra.dibujar();*/
     }
     
-     public void generarCabecera(){
+   /*  public void generarCabecera(){
          TablaGenerica tab_fact_cabera = utilitario.consultar("select ide_cpcfa, a.ide_geper, nom_geper from cxp_cabece_factur a\n" +
                                                               "left join gen_persona b on a.ide_geper = b.ide_geper \n" +
                                                               "where ide_cpcfa = "+factura+"");
@@ -371,9 +374,9 @@ public class pre_comp_inv_rmp extends Pantalla {
            sel_detalle_compra.cerrar();
 	   utilitario.addUpdate("tab_tabla1");
            generaDetalle();
-     }
+     }*/
      
-     public void generaDetalle(){
+    /* public void generaDetalle(){
          String selec_productos = sel_detalle_compra.getSeleccionados();
          TablaGenerica tab_detalle_fac = utilitario.consultar("select a.ide_cpdfa, b.ide_inarti, nombre_inarti, cantidad_cpdfa, precio_cpdfa, valor_cpdfa\n" +
                                                               "from cxp_detall_factur a\n" +
@@ -400,7 +403,7 @@ public class pre_comp_inv_rmp extends Pantalla {
         // tab_tabla2.guardar();
         // guardarPantalla();
         utilitario.addUpdate("tab_tabla2");
-     }
+     }*/
 
     public void buscarTransaccion() {
         if (tex_num_transaccion.getValue() != null && !tex_num_transaccion.getValue().toString().isEmpty()) {
@@ -749,14 +752,6 @@ public class pre_comp_inv_rmp extends Pantalla {
         this.sel_departamento = sel_departamento;
     }
 
-    public SeleccionTabla getSel_cabece_compra() {
-        return sel_cabece_compra;
-    }
-
-    public void setSel_cabece_compra(SeleccionTabla sel_cabece_compra) {
-        this.sel_cabece_compra = sel_cabece_compra;
-    }
-
     public SeleccionTabla getSel_detalle_compra() {
         return sel_detalle_compra;
     }
@@ -803,6 +798,14 @@ public class pre_comp_inv_rmp extends Pantalla {
 
     public void setParametro(Map parametro) {
         this.parametro = parametro;
+    }
+
+    public SeleccionTabla getSel_tab_solicitud() {
+        return sel_tab_solicitud;
+    }
+
+    public void setSel_tab_solicitud(SeleccionTabla sel_tab_solicitud) {
+        this.sel_tab_solicitud = sel_tab_solicitud;
     }
 
 }

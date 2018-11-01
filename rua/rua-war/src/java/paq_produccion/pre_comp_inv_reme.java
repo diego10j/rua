@@ -298,6 +298,8 @@ public class pre_comp_inv_reme extends Pantalla {
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
                         parametros.put("pide_recepcion", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
                         vipdf_requerimiento_m_p.setVisualizarPDF("rep_produccion/rep_recepcion_mercaderia.jasper", parametros);
                         vipdf_requerimiento_m_p.dibujar();

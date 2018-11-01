@@ -4,8 +4,6 @@
  */
 package paq_produccion;
 
-
-
 import paq_inventario.*;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
@@ -297,6 +295,8 @@ public class pre_comp_inv_nec extends Pantalla {
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
                         parametros.put("pide_nota_entrega_cliente", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                        parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
                         vipdf_nota_entrega_cli.setVisualizarPDF("rep_produccion/rep_nota_entrega_clientes.jasper", parametros);
                         vipdf_nota_entrega_cli.dibujar();

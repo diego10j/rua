@@ -300,6 +300,8 @@ public class pre_comp_inv_node extends Pantalla {
                         Map parametros = new HashMap();
                         parametros.put("pide_nota_devolucion", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
                         parametros.put("p_cantidad_facturada", cantidad_facturada);
+                        parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+                        parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
                         vipdf_nota_devolucion.setVisualizarPDF("rep_produccion/rep_nota_de_devolucion.jasper", parametros);
                         vipdf_nota_devolucion.dibujar();
