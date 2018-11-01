@@ -463,6 +463,8 @@ public class Parametros {
           lis_parametros.add(new Parametro("14", "p_prod_solicitud_material", "Indica que el tipo de transaccion de solicitud de material", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
           lis_parametros.add(new Parametro("14", "p_prod_nota_recibido_interno", "Indica que el tipo de transaccion de nota de recibido interno", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
           lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+          lis_parametros.add(new Parametro("14", "p_prod_version_documento", "Indica la version en la que se encuentran los documentos", "Version 1"));
+          lis_parametros.add(new Parametro("14", "p_prod_fecha_documento", "Indica la fecha de registro en la que se encuentran los documentos", "2018-10-31"));
         
           // MODULO PENSIONES = 15
           lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
