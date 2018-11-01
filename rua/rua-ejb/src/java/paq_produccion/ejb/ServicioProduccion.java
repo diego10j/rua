@@ -177,5 +177,15 @@ public String getControlProduccion (String tipo, String control){
         sql += " order by fecha_emisi_cccfa desc";
         return sql;
   }
-
+  public String getSolicitudMaterial(String tipo, String solicitud) {
+        String sql = "";
+        sql = "select ide_prsol, numero_secuencial_prsol as SECUENCIAL, numero_prorp as ORDEN_PRODUCCION, fecha_prsol as FECHA_EMISION, \n" +
+              "producto_elaborado_prsol AS PRODUCTO_A_ELABORAR, total_inyector_prsol AS TOTAL_INYECTAR from prod_solicitud a\n" +
+              "left join prod_orden_produccion b on a.ide_prorp = b.ide_prorp";
+        if (tipo.equals("2")){
+            sql +=" where ide_prsol = "+solicitud+"";
+        }
+        sql += " order by numero_secuencial_prsol desc";
+        return sql;
+  }
 }
