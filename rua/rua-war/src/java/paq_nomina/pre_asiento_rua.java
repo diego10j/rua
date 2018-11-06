@@ -57,7 +57,7 @@ public class pre_asiento_rua extends Pantalla {
 		agregarComponente(sef_reporte);
         
         com_periodo.setCombo(ser_nomina.getSqlComboPeriodoRol());
-	//com_periodo.setMetodo("cambioPeriodo");		 
+	com_periodo.setMetodo("cambioPeriodo");		 
 	bar_botones.agregarComponente(new Etiqueta("Periodo Rol:"));
 	bar_botones.agregarComponente(com_periodo);
         
@@ -88,11 +88,13 @@ public class pre_asiento_rua extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("NRH_CABECERA_ASIENTO", "IDE_NRCAA", 1);
         tab_tabla.getColumna("ide_gepro").setCombo(ser_nomina.getSqlComboPeriodoRol());
+        tab_tabla.setCondicion("ide_gepro=-1");
         tab_tabla.getColumna("ide_gepro").setAutoCompletar();
-        tab_tabla.getColumna("ide_gepro").setLectura(true);
+        tab_tabla.getColumna("ide_gepro").setVisible(false);
         tab_tabla.getColumna("estado_nrcaa").setLectura(true);
         tab_tabla.getColumna("traspaso_nrcaa").setLectura(true);
         tab_tabla.getColumna("ide_asiento_rua").setLectura(true);
+        tab_tabla.getColumna("ide_nrrol").setLectura(true);
         tab_tabla.getColumna("estado_nrcaa").setValorDefecto("false");
         tab_tabla.getColumna("traspaso_nrcaa").setValorDefecto("false");
         tab_tabla.setTipoFormulario(true);
@@ -167,10 +169,17 @@ public class pre_asiento_rua extends Pantalla {
                 + "and debe != haber "
                 + "order by apellido_paterno_gtemp","ide_gtemp");
 
-        //sel_tab_tipo_nomina.setRadio();
+        sel_tab_tipo_nomina.setRadio();
         gru_pantalla.getChildren().add(sel_tab_consuta_descuadre);
         sel_tab_consuta_descuadre.getBot_aceptar().setRendered(false);
         agregarComponente(sel_tab_consuta_descuadre);
+    }
+    public void cambioPeriodo(){
+        tab_tabla.setCondicion("ide_gepro="+com_periodo.getValue());
+        tab_tabla.ejecutarSql();
+        tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
+        
+        utilitario.addUpdate("tab_tabla,tab_tabla2");
     }
 public void consultaDescuadre(){
     if(com_periodo.getValue()!=null){
@@ -220,10 +229,10 @@ public void consultaDescuadre(){
        maximo_cabecera = codigo_maximo_cabecera.getValor("maximo");
        
        try{
-       utilitario.getConexion().ejecutarSql("INSERT INTO con_cab_comp_cont(ide_cnccc, ide_usua, fecha_trans_cnccc, observacion_cnccc, ide_sucu, ide_empr, ide_cntcm, ide_cneco, fecha_siste_cnccc, hora_sistem_cnccc, usuario_ingre, numero_cnccc )\n" +
+       utilitario.getConexion().ejecutarSql("INSERT INTO con_cab_comp_cont(ide_cnccc, ide_usua, fecha_trans_cnccc, observacion_cnccc, ide_sucu, ide_empr, ide_cntcm, ide_cneco, fecha_siste_cnccc, hora_sistem_cnccc, usuario_ingre, numero_cnccc,ide_modu,ide_geper )\n" +
                                             "VALUES ("+maximo_cabecera+", "+utilitario.getVariable("IDE_USUA")+", '"+tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA")+"', '"+tab_cabecera_asiento.getValor("OBSERVACION_NRCAA")+"'"
                                                       + " , "+utilitario.getVariable("ide_sucu")+",  "+utilitario.getVariable("ide_empr")+", "+utilitario.getVariable("p_reh_tipo_comprobante_nomina")+", "+utilitario.getVariable("p_reh_estado_comprobante_nomina")+" "
-                                                      + " ,'"+utilitario.getFechaActual()+"', '"+utilitario.getHoraActual()+"', '"+utilitario.getVariable("NICK")+"', '"+ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina"))+"'  )");
+                                                      + " ,'"+utilitario.getFechaActual()+"', '"+utilitario.getHoraActual()+"', '"+utilitario.getVariable("NICK")+"', '"+ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina"))+"',"+utilitario.getVariable("p_nrh_mod_asiento_nomina")+","+utilitario.getVariable("p_nrh_persona_asiento_nomina")+"  )");
        TablaGenerica tab_consulta_cabecera = utilitario.consultar("select 1 as codigo, max(ide_cnccc) as maximo from con_cab_comp_cont");
       // int numero_ultimo = Integer.parseInt(tab_consulta_cabecera.getValor("maximo"));
              
@@ -314,11 +323,17 @@ public void consultaDescuadre(){
         }
     }
     public void aceptarAsiento (){
-        		String str_seleccionado = sel_tab_tipo_nomina.getSeleccionados();
+        String str_seleccionado = sel_tab_tipo_nomina.getValorSeleccionado();
+        
+        TablaGenerica tab_consulta_generados=utilitario.consultar("select ide_nrcaa,ide_nrrol from nrh_cabecera_asiento where ide_nrrol="+str_seleccionado);
+        if(tab_consulta_generados.getTotalFilas()>0){
+            utilitario.agregarMensajeInfo("Registro ya generado", "La nomina que desea contabilizar ya se encuentra generada si desdesa generar nuevamante elimine la existente");
+        }
+        else{
 		if (str_seleccionado!=null){
                         TablaGenerica  tab_resultado = utilitario.consultar(ser_nomina.contabilizaNominaRua(str_seleccionado));
-			
                         tab_tabla.setValor("ide_gepro", com_periodo.getValue().toString());
+                        tab_tabla.setValor("ide_nrrol", str_seleccionado);
                         for(int i=0;i < tab_resultado.getTotalFilas();i++){
                             tab_tabla2.insertar();
                             tab_tabla2.setValor("ide_gelua", tab_resultado.getValor(i, "ide_gelua"));
@@ -341,6 +356,7 @@ public void consultaDescuadre(){
 		else {
 			utilitario.agregarMensajeInfo("SELECCIONE OPCION", "Seleccione un registro");
 		    }
+        }       
     }
 public void generarAsiento(){		
         if(tab_tabla.getValor("IDE_NRCAA") == null){
