@@ -53,6 +53,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_tipo_transaccion_reversa_menos", "Indica que el tipo de transaccion inversa(cuando existe una anulacion)  ", "13", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_transaccion_consumo", "Indica que el tipo de transaccion de consumo ", "27", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("1", "p_inv_bodega_defecto", "Indica el tipo de bodega por defecto para la recepcion de los articulos", "27", "inv_bodega", "ide_inbod", "nombre_inbod"));
+        lis_parametros.add(new Parametro("1", "p_inv_tipo_ingreso", "Permite conocer si es de tipo ingreso para ejecutar el kardex", "0", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
+        lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
 
 
         /*
@@ -121,6 +123,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("6", "p_reh_estado_cerrada", "Indica el estado cerrado del rol ", "2", "reh_estado_rol", "ide_rhero", "nombre_rhero"));
         lis_parametros.add(new Parametro("6", "p_reh_tipo_comprobante_nomina", "Indica el tipo de comprobante de nominas ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
         lis_parametros.add(new Parametro("6", "p_reh_estado_comprobante_nomina", "Indica el estado de comprobante ", "0", "con_estado_compro", "ide_cneco", "nombre_cneco"));
+        lis_parametros.add(new Parametro("6", "p_nrh_mod_asiento_nomina", "Indica el modulo al que pertenece el asiento de nomina", "0", "sis_modulo", "ide_modu", "nom_modu"));
+        lis_parametros.add(new Parametro("6", "p_nrh_persona_asiento_nomina", "Indica la persona que pertenece el asiento de nomina puede ser el responsable", "0", "gen_persona", "ide_geper", "nom_geper"));
+
 // luis toapanta pamatros nuevos nomina desde aqui
         lis_parametros.add(new Parametro("6", "p_nrh_tipo_garante_empl_biess", "Indica el tipo de garante Empleado del Biess ", "1", "NRH_TIPO_GARANTE", "IDE_NRTIG", "DETALLE_NRTIG"));
         lis_parametros.add(new Parametro("6", "p_nrh_tipo_nomina_escenario", "Indica el tipo de nomina NORMAL ", "5", "NRH_TIPO_NOMINA", "IDE_NRTIN", "DETALLE_NRTIN"));
