@@ -1624,7 +1624,8 @@ public class DocumentoCxP extends Dialogo {
             }
             //valida total factura con total reembolso
             if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
-                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso");
+
+                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso : " + tab_cab_documento.getSumaColumna("total_cpcfa") + " es diferente que " + tab_com_reembolso.getSumaColumna("total_cpcfa"));
                 return false;
             }
 
