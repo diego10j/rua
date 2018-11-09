@@ -706,7 +706,96 @@ public class ServicioTesoreria {
 
     public void anularMovimiento(String ide_teclb) {
         //Anula Movimiento 
-        utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set ide_teelb =1, ide_cnccc=null where ide_teclb=" + ide_teclb);
+        utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set ide_teelb =1, usuario_actua='" + utilitario.getVariable("NICK") + "',fecha_actua='" + utilitario.getFechaActual() + "',hora_actua='" + utilitario.getHoraActual() + "'  where ide_teclb=" + ide_teclb);
+        //Cambia a depositado = false si es enviado a banco
+        //**** utilitario.getConexion().agregarSqlPantalla("update tes_cab_libr_banc set depositado_teclb =false, devuelto_teclb= false where tes_ide_teclb=" + ide_teclb);
+        //Anula Asiento
+        TablaGenerica tab_busca = utilitario.consultar("SELECT * FROM con_cab_comp_cont where ide_cnccc = (select ide_cnccc from tes_cab_libr_banc where ide_teclb=" + ide_teclb + ")");
+        String p_con_estado_comprobante_anulado = utilitario.getVariable("p_con_estado_comprobante_anulado");
+        if (tab_busca.getTotalFilas() > 0) {
+            utilitario.getConexion().agregarSqlPantalla("update con_cab_comp_cont set ide_cneco=" + p_con_estado_comprobante_anulado + " where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+            utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+        }
+        //eliminar pago y cobro sea el caso
+        utilitario.getConexion().agregarSqlPantalla("delete from cxc_detall_transa where ide_teclb=" + ide_teclb + " and numero_pago_ccdtr >0 ");
+        utilitario.getConexion().agregarSqlPantalla("delete from cxp_detall_transa where ide_teclb=" + ide_teclb + " and numero_pago_cpdtr >0 ");
+
+    }
+
+    /**
+     *
+     * @param ide_tecba
+     * @param fecha
+     * @return
+     */
+    public double getSaldoInicialConciliadoCuenta(String ide_tecba, String fecha) {
+        double saldo = 0;
+        String sql = "select ide_tecba,sum(valor_teclb * signo_tettb) as valor "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and fecha_trans_teclb  <= '" + fecha + "' " //fecha_trans_teclb antes  26/10/2018
+                + "and conciliado_teclb=true "
+                + "and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "group by ide_tecba";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor("valor") != null) {
+                try {
+                    saldo = Double.parseDouble(tab_saldo.getValor("valor"));
+                } catch (Exception e) {
+                }
+            }
+        }
+        return saldo;
+    }
+
+    /**
+     *
+     * @param ide_tecba
+     * @param fecha
+     * @return
+     */
+    public double getSaldoInicialEstadoCuenta(String ide_tecba, String fecha) {
+        double saldo_con_mes = 0;
+        String sql = "select ide_tecba,sum(valor_teclb * signo_tettb) as valor "
+                + "from tes_cab_libr_banc a "
+                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+                + "where ide_tecba=" + ide_tecba + " "
+                + "and fecha_concilia_teclb  <= '" + fecha + "'  " //no considera cheques posfechados  AND  a.ide_tettb <>14  //antes fecha_trans_teclb 26/10/2018
+                + "and conciliado_teclb=true  "
+                + "and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+                + "group by ide_tecba";
+        TablaGenerica tab_saldo = utilitario.consultar(sql);
+        if (tab_saldo.getTotalFilas() > 0) {
+            if (tab_saldo.getValor("valor") != null) {
+                try {
+                    saldo_con_mes = Double.parseDouble(tab_saldo.getValor("valor"));
+                } catch (Exception e) {
+                }
+            }
+        }
+
+//        double saldo_ch_pos = 0;
+//        sql = "select ide_tecba,sum(valor_teclb * signo_tettb) as valor "
+//                + "from tes_cab_libr_banc a "
+//                + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb "
+//                + "where ide_tecba=" + ide_tecba + " "
+//                + "and fec_cam_est_teclb <= '" + fecha + "' AND  a.ide_tettb =14 " // considera cheques posfechados 
+//                + "and conciliado_teclb=true  "
+//                + "and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + " "
+//                + "group by ide_tecba";
+//        TablaGenerica tab_saldo_c = utilitario.consultar(sql);
+//        if (tab_saldo_c.getTotalFilas() > 0) {
+//            if (tab_saldo_c.getValor("valor") != null) {
+//                try {
+//                    saldo_ch_pos = Double.parseDouble(tab_saldo_c.getValor("valor"));
+//                } catch (Exception e) {
+//                }
+//            }
+//        }
+//        double saldo = saldo_con_mes + saldo_ch_pos;
+        return saldo_con_mes;
     }
 
 }

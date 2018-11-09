@@ -63,6 +63,8 @@ public class DocumentoCxP extends Dialogo {
     private final Texto tex_valor_descuento = new Texto();
     private final Texto tex_porc_descuento = new Texto();
     private final Texto tex_ice = new Texto();
+    private final Texto tex_otros = new Texto();
+
     private boolean haceKardex = false;
 
     private int tabActiva = 0;
@@ -200,6 +202,7 @@ public class DocumentoCxP extends Dialogo {
         this.setTitle("NUEVO DOCUMENTO POR PAGAR");
         ate_observacion.setDisabled(false);
         tex_ice.setDisabled(false);
+        tex_otros.setDisabled(false);
         tex_valor_descuento.setDisabled(false);
         ate_observacion.setValue("");
         tab_documenoCxP.getTab(0).getChildren().clear();
@@ -276,6 +279,7 @@ public class DocumentoCxP extends Dialogo {
         }
         ate_observacion.setDisabled(true);
         tex_ice.setDisabled(true);
+        tex_otros.setDisabled(true);
         tex_valor_descuento.setDisabled(true);
         com_tipo_documento.setDisabled(true);
 
@@ -1015,6 +1019,13 @@ public class DocumentoCxP extends Dialogo {
         tex_iva.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_iva.setValue(utilitario.getFormatoNumero("0"));
         gri_valores.getChildren().add(tex_iva);
+
+        gri_valores.getChildren().add(new Etiqueta("<strong> OTROS VALORES :</strong>"));
+        tex_otros.setStyle("font-size: 14px;text-align: right;width:110px");
+        tex_otros.setMetodoChangeRuta(tab_det_documento.getRuta() + ".calcularTotalDocumento");
+        tex_otros.setValue(utilitario.getFormatoNumero("0"));
+        gri_valores.getChildren().add(tex_otros);
+
         gri_valores.getChildren().add(new Etiqueta("<strong>TOTAL :</strong>"));
         tex_total.setDisabled(true);
         tex_total.setStyle("font-size: 14px;font-weight: bold;text-align: right;width:110px");
@@ -1266,6 +1277,7 @@ public class DocumentoCxP extends Dialogo {
 
             tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
             tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(tex_ice.getValue()));
+            tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros.getValue()));
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
             tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
 
@@ -1385,6 +1397,7 @@ public class DocumentoCxP extends Dialogo {
 
         double descuento = 0;
         double valor_ice = 0;
+        double valor_otros = 0;
 
         if (tex_valor_descuento.getValue() != null) {
             try {
@@ -1398,6 +1411,14 @@ public class DocumentoCxP extends Dialogo {
             } catch (Exception e) {
             }
         }
+
+        if (tex_otros.getValue() != null) {
+            try {
+                valor_otros = Double.parseDouble(utilitario.getFormatoNumero(tex_otros.getValue()));
+            } catch (Exception e) {
+            }
+        }
+
         //base_grabada = base_grabada - descuento;
         valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
         if (valor_ice > 0) {
@@ -1416,7 +1437,7 @@ public class DocumentoCxP extends Dialogo {
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice +valor_otros));
         utilitario.addUpdate("tab_documenoCxP:0:gri_valores");
     }
 

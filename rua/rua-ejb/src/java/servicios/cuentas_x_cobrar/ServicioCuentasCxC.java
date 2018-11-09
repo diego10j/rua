@@ -1311,4 +1311,43 @@ public class ServicioCuentasCxC extends ServicioBase {
         }
         return numDecimales;
     }
+
+    public String generarTransaccionAnticipo(String ide_geper, TablaGenerica tab_libro_banco) {
+        String ide_ccctr = "-1";
+        if (tab_libro_banco != null) {
+            TablaGenerica tab_cab_tran_cxp = new TablaGenerica();
+            tab_cab_tran_cxp.setTabla("cxc_cabece_transa", "ide_ccctr");
+            tab_cab_tran_cxp.getColumna("ide_ccctr").setExterna(false);
+            tab_cab_tran_cxp.setCondicion("ide_ccctr=-1");
+            tab_cab_tran_cxp.ejecutarSql();
+            TablaGenerica tab_det_tran_cxp = new TablaGenerica();
+            tab_det_tran_cxp.setTabla("cxc_detall_transa", "ide_ccdtr");
+            tab_det_tran_cxp.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxp.setCondicion("ide_ccdtr=-1");
+            tab_det_tran_cxp.ejecutarSql();
+            tab_cab_tran_cxp.insertar();
+            tab_cab_tran_cxp.setValor("ide_ccttr", "5");//Tipo transaccion Anticipo       
+            tab_cab_tran_cxp.setValor("ide_geper", ide_geper);
+            tab_cab_tran_cxp.setValor("fecha_trans_ccctr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_cab_tran_cxp.setValor("observacion_ccctr", tab_libro_banco.getValor("observacion_teclb"));
+            tab_cab_tran_cxp.guardar();
+            tab_det_tran_cxp.insertar();
+            tab_det_tran_cxp.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
+            tab_det_tran_cxp.setValor("ide_ccctr", tab_cab_tran_cxp.getValor("ide_ccctr"));
+            tab_det_tran_cxp.setValor("ide_ccttr", "5");//Tipo transaccion Anticipo     
+
+            tab_det_tran_cxp.setValor("fecha_trans_ccdtr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_det_tran_cxp.setValor("valor_ccdtr", utilitario.getFormatoNumero(tab_libro_banco.getValor("valor_teclb")));
+            tab_det_tran_cxp.setValor("observacion_ccdtr", tab_libro_banco.getValor("observacion_teclb"));
+            tab_det_tran_cxp.setValor("numero_pago_ccdtr", "1");
+            tab_det_tran_cxp.setValor("fecha_venci_ccdtr", tab_libro_banco.getValor("fecha_trans_teclb"));
+            tab_det_tran_cxp.setValor("docum_relac_ccdtr", tab_libro_banco.getValor("numero_teclb"));
+            tab_det_tran_cxp.setValor("ide_cnccc", tab_libro_banco.getValor("ide_cnccc"));
+            tab_det_tran_cxp.setValor("ide_teclb", tab_libro_banco.getValor("ide_teclb"));
+            tab_det_tran_cxp.guardar();
+            ide_ccctr = tab_cab_tran_cxp.getValor("ide_ccctr");
+        }
+        return ide_ccctr;
+    }
+
 }
