@@ -2,10 +2,16 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01d31a08-32f1-407c-9b06-0b427192c894">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="59"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
 	<parameter name="p_patrimonio" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="sucursal" class="java.lang.String"/>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="telefono" class="java.lang.String"/>
+	<parameter name="ruc" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="p_tot_activo" class="java.lang.Double"/>
 	<parameter name="p_total" class="java.lang.Double"/>
@@ -15,12 +21,6 @@
 	<parameter name="fecha_inicio" class="java.lang.String"/>
 	<parameter name="fecha_fin" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
-	<parameter name="ide_sucu" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="ide_empr" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -39,35 +39,32 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="88" splitType="Stretch">
+		<band height="55" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="f88affe5-6d44-41e1-8a58-54f0df56fc8e" x="0" y="0" width="555" height="16" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank">
+				<reportElement uuid="07d4f714-b7b0-4aa9-99a3-d85ad7bcade1" x="0" y="0" width="58" height="40"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
+			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="1e5ee415-5516-4010-8aca-2c232bf55a8b" x="227" y="46" width="328" height="15"/>
+				<reportElement uuid="1e5ee415-5516-4010-8aca-2c232bf55a8b" x="0" y="32" width="555" height="15"/>
 				<textElement textAlignment="Center">
-					<font size="9" isBold="true" isItalic="true"/>
+					<font isBold="true" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Del    "+$P{fecha_inicio}+"    Al    "+$P{fecha_fin}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e2473047-3224-4176-80e0-b5a0e62dd797" x="227" y="30" width="328" height="16"/>
+				<reportElement uuid="e2473047-3224-4176-80e0-b5a0e62dd797" x="0" y="16" width="555" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
 			</textField>
-			<subreport isUsingCache="true">
-				<reportElement uuid="4f8e7271-8ca7-4698-b6b4-7a59c17718d2" key="subreport-1" x="3" y="3" width="180" height="85"/>
-				<subreportParameter name="ide_empr">
-					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_sucu">
-					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
-			</subreport>
 		</band>
 	</title>
 	<pageHeader>
@@ -258,20 +255,20 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<reportElement uuid="eb2b619c-d365-4673-a824-35da6bc532e2" x="334" y="129" width="155" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="d4382724-3800-46d7-8e78-ce904b4e7b7b" x="58" y="134" width="169" height="15"/>
+				<reportElement uuid="d4382724-3800-46d7-8e78-ce904b4e7b7b" x="74" y="134" width="145" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ECÓNOMO INSPECTORIAL]]></text>
+				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="19850d85-6ac5-43b5-aff1-40f97c8973a9" x="323" y="132" width="166" height="15"/>
+				<reportElement uuid="19850d85-6ac5-43b5-aff1-40f97c8973a9" x="335" y="132" width="145" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[CONTADOR GENERAL]]></text>
+				<text><![CDATA[CONTADOR]]></text>
 			</staticText>
 		</band>
 	</summary>
