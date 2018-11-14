@@ -959,8 +959,8 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_patrimonio", (tot_patrimonio));
                     }
                     sel_tab_nivel.cerrar();
-                   // ReporteDataSource data = new ReporteDataSource(tab_balance);
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(),data);
                     sel_rep.dibujar();
 
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
@@ -1026,8 +1026,8 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_patrimonio", (tot_patrimonio));
                     }
                     sel_tab_nivel.cerrar();
-                //    ReporteDataSource data = new ReporteDataSource(tab_balance);
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    ReporteDataSource data = new ReporteDataSource(tab_balance);
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(),data);
                     sel_rep.dibujar();
 
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
@@ -1088,9 +1088,9 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_utilidad", utilidad_perdida);
                     }
                     parametro.put("titulo", "ESTADO DE RESULTADOS CONSOLIDADO");
-               //     ReporteDataSource data = new ReporteDataSource(tab_estado);
+                    ReporteDataSource data = new ReporteDataSource(tab_estado);
                     sel_tab_nivel.cerrar();
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(),data);
                     sel_rep.dibujar();
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
                 }
@@ -1150,10 +1150,10 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_costos", tot_costos);
                         parametro.put("p_utilidad", utilidad_perdida);
                     }
-                   // ReporteDataSource data = new ReporteDataSource(tab_estado);
+                    ReporteDataSource data = new ReporteDataSource(tab_estado);
                     parametro.put("titulo", "ESTADO DE RESULTADOS");
                     sel_tab_nivel.cerrar();
-                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                    sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(),data);
                     sel_rep.dibujar();
                     utilitario.addUpdate("sel_rep,sel_tab_nivel");
                 }
@@ -1254,8 +1254,8 @@ public class pre_contabilidad extends Pantalla {
                             parametro.put("tot_haber", suma_haber);
                             parametro.put("tot_deudor", suma_deudor);
                             parametro.put("tot_acreedor", suma_acreedor);
-                          //  ReporteDataSource data = new ReporteDataSource(tab_bal);
-                            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                            ReporteDataSource data = new ReporteDataSource(tab_bal);
+                            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(),data);
                             sel_rep.dibujar();
                             utilitario.addUpdate("sel_rep,sec_rango_reporte");
                         }
