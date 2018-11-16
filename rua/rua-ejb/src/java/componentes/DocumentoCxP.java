@@ -274,6 +274,10 @@ public class DocumentoCxP extends Dialogo {
         tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("base_grabada_cpcfa")));
         tex_total.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("total_cpcfa")));
         ate_observacion.setValue(tab_cab_documento.getValor("observacion_cpcfa"));
+        
+        tex_ice.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_ice_cpcfa")));
+        tex_otros.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("otros_cpcfa")));
+        
         if (tab_cab_documento.getFilaSeleccionada() != null) {
             tab_cab_documento.getFilaSeleccionada().setLectura(true);
         }
@@ -1427,12 +1431,14 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
         tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(valor_ice));
+        
+        tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(valor_otros));
 
         tab_cab_documento.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice +valor_otros));
 
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
