@@ -26,7 +26,6 @@ inner join con_cabece_impues d on a.ide_cncim=d.ide_cncim
 inner join gen_persona e on c.ide_geper=e.ide_geper
 where fecha_emisi_cncre  BETWEEN $P{fecha_inicio} and $P{fecha_fin}
 and b.ide_cnere=0
-and b.ide_sucu=$P{ide_sucu}
 order by ide_cnimp,casillero_cncim,fecha_emisi_cncre]]>
 	</queryString>
 	<field name="ide_cndre" class="java.lang.Long"/>
@@ -34,13 +33,8 @@ order by ide_cnimp,casillero_cncim,fecha_emisi_cncre]]>
 	<field name="casillero_cncim" class="java.lang.String"/>
 	<field name="fecha_emisi_cncre" class="java.sql.Date"/>
 	<field name="numero_cncre" class="java.lang.String"/>
-	<field name="identificac_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[empleado
-este campo es para guardar la cedula del empleado]]></fieldDescription>
-	</field>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
+	<field name="identificac_geper" class="java.lang.String"/>
+	<field name="nom_geper" class="java.lang.String"/>
 	<field name="numero_cpcfa" class="java.lang.String"/>
 	<field name="base_cndre" class="java.math.BigDecimal"/>
 	<field name="porcentaje_cndre" class="java.math.BigDecimal"/>
