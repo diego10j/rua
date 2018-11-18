@@ -510,7 +510,7 @@ public class ServicioCliente extends ServicioBase {
     
     public String getSqlChequesPosfechadosCliente(String ide_geper) {
         return "select distinct a.ide_teclb,fec_cam_est_teclb,nombre_tettb as TRANSACCION,numero_teclb as NUMERO,beneficiari_teclb as BENEFICIARIO,\n"
-                + "valor_teclb as VALOR,fecha_trans_teclb as FECHA_TRANSACCION,num_comprobante_teclb as NUM_CUENTA_CHEQUE,(SELECT nombre_teban FROM tes_banco where a.ide_teban=ide_teban)as BANCO_CHEQUE,observacion_teclb as OBSERVACION\n"
+                + "valor_teclb as VALOR,fecha_trans_teclb as FECHA_TRANSACCION,'' as NUM_CUENTA_CHEQUE,(SELECT nombre_teban FROM tes_banco where a.ide_teban=ide_teban)as BANCO_CHEQUE,observacion_teclb as OBSERVACION\n"
                 + "from tes_cab_libr_banc a\n"
                 + "inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb and ide_teelb =0\n"
                 + "inner join cxc_detall_transa c on a.ide_teclb=c.ide_teclb and ide_ccttr=10\n" //CH POSFECHADO

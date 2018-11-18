@@ -712,6 +712,8 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("pagado_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("pagado_cpcfa").setValorDefecto("False");
         tab_cab_documento.getColumna("total_cpcfa").setVisible(false);
+        tab_cab_documento.getColumna("IDE_ADCOMP").setVisible(false);  //CAMPO LUIS
+        
         tab_cab_documento.getColumna("total_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("numero_cpcfa").setEstilo("font-size: 12px;font-weight: bold");
         tab_cab_documento.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");

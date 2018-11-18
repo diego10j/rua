@@ -953,10 +953,12 @@ public class AsientoContable extends Dialogo {
         this.tipo = TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo();
         //Consulta las facturas
         TablaGenerica tab_fac = utilitario.consultar("SELECT a.ide_cpcfa,ide_geper,numero_cpcfa,fecha_emisi_cpcfa,ide_cntdo,\n"
-                + "total_cpcfa,base_grabada_cpcfa,base_tarifa0_cpcfa,valor_iva_cpcfa ,ide_cnimp,b.ide_cncim,valor_cndre\n"
-                + "FROM cxp_cabece_factur a \n"
-                + "left join con_detall_retenc b on a.ide_cncre=b.ide_cncre\n"
-                + "left join con_cabece_impues c on b.ide_cncim=c.ide_cncim "
+                + "total_cpcfa,base_grabada_cpcfa,base_tarifa0_cpcfa,valor_iva_cpcfa \n"
+                + ",(select d.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as ide_cncimRenta\n"
+                + ",(select d.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as ide_cncimIva\n"
+                + ",(select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as valor_cndreRenta\n"
+                + ",(select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as valor_cndreIva\n"
+                + "FROM cxp_cabece_factur a  "
                 + "WHERE a.ide_cpcfa in (" + ide_cpcfa + ")"); ////INER JOIN A RETENCION        
         if (tab_fac.isEmpty() == false) {
             if (tab_fac.getTotalFilas() == 1) {
@@ -1045,16 +1047,13 @@ public class AsientoContable extends Dialogo {
                 double retRentaVenta = 0; //acumula ret iva
                 double retIvaVenta = 0; //acumula ret renta
                 for (int j = 0; j < tab_fac.getTotalFilas(); j++) {
-                    if (tab_fac.getValor(j, "ide_cnimp") == null) {
-                        continue;
-                    }
 
-                    if (tab_fac.getValor(j, "ide_cnimp").equals("1")) {  //renta
+                    if (tab_fac.getValor(j, "ide_cncimRenta") != null) {  //renta
 
-                        String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncim"), null, null, null); //RETENCION renta
+                        String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncimRenta"), null, null, null); //RETENCION renta
                         double retActual = 0;
                         try {
-                            retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndre"));
+                            retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndreRenta"));
                         } catch (Exception e) {
                         }
                         retRentaVenta += retActual;
@@ -1067,12 +1066,13 @@ public class AsientoContable extends Dialogo {
                                 tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION RENTA POR PAGAR");
                             }
                         }
-                    } else { //iva
+                    }
+                    if (tab_fac.getValor(j, "ide_cncimIva") != null) {  //renta
 
-                        String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION IVA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncim"), null, null, null); //RETENCION iva
+                        String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION IVA POR PAGAR", null, null, tab_fac.getValor(j, "ide_cncimIva"), null, null, null); //RETENCION iva
                         double retActual = 0;
                         try {
-                            retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndre"));
+                            retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndreIva"));
                         } catch (Exception e) {
                         }
                         retIvaVenta += retActual;
