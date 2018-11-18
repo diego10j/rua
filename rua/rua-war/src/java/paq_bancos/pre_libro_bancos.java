@@ -2561,7 +2561,7 @@ public class pre_libro_bancos extends Pantalla {
         gri1.getChildren().add(aut_cuenta);
         com_tip_tran = new Combo();
         com_tip_tran.setMetodo("cambioTipoTransBanco");
-        com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionNegativo());
+        com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionPositivo());
         gri1.getChildren().add(com_tip_tran);
         tex_num = new Texto();
         tex_num.setId("tex_num");
