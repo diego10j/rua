@@ -403,14 +403,14 @@ public class cls_anexo_transaccional {
                             + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
                             + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
                             + "where es_venta_cncre =TRUE\n"
-                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 )\n"
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 )\n" //antes 1
                             + "and a.ide_cncre=cab.ide_cncre\n"
                             + "),\n"
                             + "ret_fuente_cccfa = (\n"
                             + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
                             + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
                             + "where es_venta_cncre =TRUE\n"
-                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 )\n"
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 )\n" //antes 0
                             + "and a.ide_cncre=cab.ide_cncre\n"
                             + ")\n"
                             + "where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
