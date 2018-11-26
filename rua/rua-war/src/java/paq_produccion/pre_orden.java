@@ -6,23 +6,18 @@
 package paq_produccion;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Arbol;
 import framework.componentes.AutoCompletar;
-import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
-import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
-import framework.componentes.SeleccionArbol;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Tabulador;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -31,10 +26,8 @@ import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import paq_gestion.ejb.ServicioEmpleado;
 import paq_produccion.ejb.ServicioProduccion;
-import pkg_contabilidad.cls_contabilidad;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
-import sun.misc.FloatingDecimal;
 
 /**
  *
