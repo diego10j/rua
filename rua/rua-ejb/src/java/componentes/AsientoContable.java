@@ -954,10 +954,10 @@ public class AsientoContable extends Dialogo {
         //Consulta las facturas
         TablaGenerica tab_fac = utilitario.consultar("SELECT a.ide_cpcfa,ide_geper,numero_cpcfa,fecha_emisi_cpcfa,ide_cntdo,\n"
                 + "total_cpcfa,base_grabada_cpcfa,base_tarifa0_cpcfa,valor_iva_cpcfa \n"
-                + ",(select d.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as ide_cncimRenta\n"
-                + ",(select d.ide_cncim from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as ide_cncimIva\n"
-                + ",(select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as valor_cndreRenta\n"
-                + ",(select valor_cndre from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as valor_cndreIva\n"
+                + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as ide_cncimRenta\n"
+                + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as ide_cncimIva\n"
+                + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as valor_cndreRenta\n"
+                + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as valor_cndreIva\n"
                 + "FROM cxp_cabece_factur a  "
                 + "WHERE a.ide_cpcfa in (" + ide_cpcfa + ")"); ////INER JOIN A RETENCION        
         if (tab_fac.isEmpty() == false) {
