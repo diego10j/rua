@@ -100,6 +100,13 @@ public class Parametros {
         lis_parametros.add(new Parametro("4", "p_act_estado_activo_valora_deprec", "Indica el los estados que tienen los activos para valorar la depreciacion de los mismos. ", "0", "act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf"));
         lis_parametros.add(new Parametro("4", "p_act_activo_fijo", "Indica si es activo fijo o bien", "1", "act_clasificacion", "ide_accls", "nombre_accls"));
         lis_parametros.add(new Parametro("4", "p_act_porcen_valor_residual", "Porcentaje de valoracion de activos fijos", "30"));
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_entrega_recepcion", "Indica el numero secuencial el acta entrega recepcion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_constatacion", "Indica el numero secuencial el acta constacion fisica", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_baja", "Indica el numero secuencial el acta de bajas", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
+        lis_parametros.add(new Parametro("4", "p_act_acta_entrega_recep", "Indica el codigo de tipo acta entrega recepcion", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
+        lis_parametros.add(new Parametro("4", "p_act_acta_constatacion", "Indica el codigo de tipo acta constatacion fisica", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
+        lis_parametros.add(new Parametro("4", "p_act_acta_baja", "Indica el codigo de tipo acta de baja", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
+
         /*
          * COMPRAS MODULO =5
          *
