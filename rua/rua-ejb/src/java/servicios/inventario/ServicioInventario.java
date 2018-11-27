@@ -688,5 +688,11 @@ public class ServicioInventario {
         }
         return numDecimales;
     }
-
+ public String saldosArticulos(String articulos){
+     String sql="";
+     sql+="select ide_boart,ingreso_material_boart,existencia_inicial_boart,egreso_material_boart,costo_actual_boart,precio_venta_boart, " +
+        "(ingreso_material_boart+existencia_inicial_boart) - egreso_material_boart as saldo_existencia " +
+        "from bodt_articulos where ide_boart in ("+articulos+")";
+     return sql;
+ }
 }
