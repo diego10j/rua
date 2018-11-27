@@ -29,9 +29,9 @@ public class ServicioActivosFijos extends ServicioBase {
      *
      * @return
      */
-    public String getSqlListaActivosFijos() {
-        return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
-                + " ,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
+    public String getSqlListaActivosFijos(String tipo_persona,String persona,String tipo_estado,String estado,String ide_accls) {
+        String sql="select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
+                + " ,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi,a.ide_aceaf\n"
                 + "from act_activo_fijo a \n"
                 + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
                 + "left join gen_persona c on a.ide_geper=c.ide_geper\n"
@@ -40,8 +40,16 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
                 + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
                 + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
-                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls=1 "//ACTIVO FIJO
-                + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls in ("+ide_accls+")";//ACTIVO FIJO
+                if(tipo_persona.equals("1")){
+                 sql+=" and a.ide_geper in ("+persona+")";
+                }
+                if(tipo_estado.equals("1")){
+                 sql+=" and a.ide_aceaf in ("+estado+")";
+                }
+                sql+= "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+        
+        return sql;
     }
 
     public String getSqlListaActivosFijosDarBaja() {
@@ -347,4 +355,34 @@ public class ServicioActivosFijos extends ServicioBase {
        sql+="select ide_acafi,(case when sum(dias_depreciado_acdepr) is null then 0 else sum(dias_depreciado_acdepr) end) as dias_depre from act_depreciacion where ide_acafi="+codigo+" group by ide_acafi";
        return sql;
    }  
+          public String getTipoActa(){
+       String sql="";
+       sql+="select ide_actia,detalle_actia from act_tipo_acta ";
+       return sql;
+   }
+    public String getCasa(){
+       String sql="";
+       sql+="select ide_gecas,nombre_gecas,codigo_gecas from gen_casa order by codigo_gecas";
+       return sql;
+   }            
+       public String getObras(){
+       String sql="";
+       sql+="select ide_geobr,nombre_geobr,codigo_geobr from  gen_obra order by codigo_geobr";
+       return sql;
+   }  
+    public String getUbicacionActivo(){
+       String sql="";
+       sql+="select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba";
+       return sql;
+   }
+    public String getEstadoActivo(){
+       String sql="";
+       sql+="select ide_aceaf,nombre_aceaf from act_estado_activo_fijo ";
+       return sql;
+   }    
+        public String getDatoActivoBasico(){
+       String sql="";
+       sql+="select ide_acafi,observacion_acafi,codigo_barras_acafi   from act_activo_fijo order by  observacion_acafi";
+       return sql;
+   }
 }
