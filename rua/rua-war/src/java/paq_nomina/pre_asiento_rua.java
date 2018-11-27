@@ -20,6 +20,7 @@ import paq_nomina.ejb.ServicioNomina;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import java.util.Map;
+import paq_contabilidad.ejb.ServicioContabilidad;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.pensiones.ServicioPensiones;
 
@@ -45,6 +46,9 @@ public class pre_asiento_rua extends Pantalla {
         
         @EJB
         private final ServicioComprobanteContabilidad ser_comprobante = (ServicioComprobanteContabilidad) utilitario.instanciarEJB(ServicioComprobanteContabilidad.class);
+        
+        @EJB
+        private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
 
     public pre_asiento_rua() {    
         
@@ -259,6 +263,8 @@ public void consultaDescuadre(){
             utilitario.addUpdate("tab_tabla");
             tab_tabla.guardar();
             guardarPantalla();
+            ser_contabilidad.limpiarAcceso("con_cab_comp_cont");
+            ser_contabilidad.limpiarAcceso("con_det_comp_cont");
             utilitario.agregarMensaje("Se ha transferido correctamente", "");
          } catch(Exception e){
            utilitario.agregarMensajeError("Atencion", "No se pudo guardar " +e );
