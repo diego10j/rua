@@ -68,7 +68,7 @@ public class pre_activos_fijos extends Pantalla {
     private Tabla tab_tabla5;
     private Tabla tab_tabla6;
     private AutoCompletar aut_custodio;
-
+    private AutoCompletar aut_custodio_nuevo;
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private SeleccionArbol sel_arb = new SeleccionArbol();
@@ -284,28 +284,88 @@ public class pre_activos_fijos extends Pantalla {
     public void dibujarActa() {
         Grid gru = new Grid();
         Grid gr = new Grid();
-        gr.setColumns(2);
-        gr.getChildren().add(new Etiqueta("<strong>CUSTODIO :</strong>"));
+        gr.setColumns(4);
+        gr.getChildren().add(new Etiqueta("<strong>CUSTODIO ACTUAL:</strong>"));
         aut_custodio = new AutoCompletar();
         aut_custodio.setId("aut_custodio");
         aut_custodio.setAutoCompletar("select ide_geper, nom_geper,identificac_geper from gen_persona where es_empleado_geper=true and ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_custodio.setAutocompletarContenido();
+        aut_custodio.setMetodoChange("actualizarCustodio");
         aut_custodio.setSize(70);
-
         gr.getChildren().add(aut_custodio);
+
+        gr.getChildren().add(new Etiqueta("<strong>CUSTODIO NUEVO:</strong>"));
+        aut_custodio_nuevo= new AutoCompletar();
+        aut_custodio_nuevo.setId("aut_custodio_nuevo");
+        aut_custodio_nuevo.setAutoCompletar("select ide_geper, nom_geper,identificac_geper from gen_persona where es_empleado_geper=true and ide_empr=" + utilitario.getVariable("ide_empr"));
+        aut_custodio_nuevo.setAutocompletarContenido();
+        aut_custodio_nuevo.setSize(70);
+        gr.getChildren().add(aut_custodio_nuevo);
+
         cal_fecha.setFechaActual();
         gr.getChildren().add(new Etiqueta("<strong>FECHA DEL ACTA :</strong>"));
         gr.getChildren().add(cal_fecha);
-        gru.getChildren().add(gr);
 
         Boton bot_generar = new Boton();
         bot_generar.setValue("Generar Acta");
         bot_generar.setIcon("ui-icon-print");
         bot_generar.setMetodo("generarActa");
-        gru.setFooter(bot_generar);
-        mep_menu.dibujar(9, "ACTA DE ENTREGA - RECEPCIÓN", gru);
-    }
+        gr.getChildren().add(bot_generar);
+        
+        gru.getChildren().add(gr);
 
+        /*cargo listado de activos fijos
+        
+        */
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1","-1","1","-1","1"));
+        tab_tabla.setCampoPrimaria("ide_acafi");
+        tab_tabla.getColumna("ide_acafi").setVisible(true);
+        tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("ide_acafi").setFiltro(true);
+        tab_tabla.getColumna("act_ide_acafi").setVisible(false);
+        tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_barras_acafi").setFiltroContenido();
+        tab_tabla.getColumna("nom_geper").setNombreVisual("CUSTODIO");
+        tab_tabla.getColumna("TIPO_ACTIVO").setFiltroContenido();
+        tab_tabla.getColumna("ESTADO").setFiltroContenido();
+        tab_tabla.getColumna("CASA").setFiltroContenido();
+        tab_tabla.getColumna("OBRA").setFiltroContenido();
+        tab_tabla.getColumna("CLASE").setFiltroContenido();
+        tab_tabla.getColumna("AREA_UBICACION").setFiltroContenido();
+        tab_tabla.getColumna("SECUENCIAL").setFiltro(true);
+        tab_tabla.getColumna("SECUENCIAL").setAncho(2);
+        tab_tabla.getColumna("SECUENCIAL").setLongitud(2);
+        tab_tabla.getColumna("anos_uso_acafi").alinearDerecha();
+        tab_tabla.getColumna("anos_uso_acafi").setNombreVisual("AÑOS DE USO");
+        tab_tabla.getColumna("vida_util_acafi").alinearDerecha();
+        tab_tabla.getColumna("cantidad").alinearDerecha();
+        tab_tabla.getColumna("vida_util_acafi").setNombreVisual("VIDA UTIL");
+        tab_tabla.getColumna("valor_compra_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
+        tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
+        tab_tabla.setLectura(true);
+        
+        tab_tabla.setRows(18);
+        tab_tabla.setTipoSeleccion(true);
+
+        //COLOR verde cantidad diferente de  1
+       // tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
+        gru.getChildren().add(pat_panel);
+        
+        mep_menu.dibujar(9, "ACTA DE ENTREGA - RECEPCIÓN", gru);
+        
+    }
+public void actualizarCustodio(){
+    tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1",aut_custodio.getValor(),"1",utilitario.getVariable("p_act_estado_activo_valora_deprec"),"1"));
+    tab_tabla.ejecutarSql();
+    utilitario.addUpdate("tab_tabla");
+}
     public void generarActa() {
         if (cal_fecha.getValue() == null) {
             utilitario.agregarMensajeInfo("Seleccione una fecha para generar el Acta", "");
@@ -456,7 +516,7 @@ public class pre_activos_fijos extends Pantalla {
         
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0","-1","0","-1","1"));
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.setCondicion("deprecia_acafi=false");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
@@ -1042,7 +1102,7 @@ public class pre_activos_fijos extends Pantalla {
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos());
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0","-1","0","-1","1"));
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
@@ -1847,6 +1907,14 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setSel_activos_no_aprobados(SeleccionTabla sel_activos_no_aprobados) {
         this.sel_activos_no_aprobados = sel_activos_no_aprobados;
+    }
+
+    public AutoCompletar getAut_custodio_nuevo() {
+        return aut_custodio_nuevo;
+    }
+
+    public void setAut_custodio_nuevo(AutoCompletar aut_custodio_nuevo) {
+        this.aut_custodio_nuevo = aut_custodio_nuevo;
     }
 
 }
