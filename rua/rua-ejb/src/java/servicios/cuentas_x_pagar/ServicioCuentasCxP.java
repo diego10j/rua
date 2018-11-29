@@ -227,7 +227,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         return ide_cpctr;
     }
 
-    /**
+   /**
      * Registra la Factura en una transaccion cxp
      *
      * @param tab_cab_factura
@@ -397,7 +397,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         return ide_cpctr;
     }
 
-    /**
+       /**
      * Registra la Factura en una transaccion cxp
      *
      * @param ide_cpcfa
@@ -424,7 +424,7 @@ public class ServicioCuentasCxP extends ServicioBase {
             tab_det_tran_cxp.setValor("ide_cpttr", utilitario.getVariable("p_cxp_tipo_trans_retencion"));
             tab_det_tran_cxp.setValor("fecha_trans_cpdtr", tab_cab_factura.getValor("fecha_trans_cpcfa"));
             tab_det_tran_cxp.setValor("valor_cpdtr", utilitario.getFormatoNumero(valorRetencion));
-            tab_det_tran_cxp.setValor("observacion_cpdtr", tab_cab_factura.getValor("observacion_cpcfa"));
+            tab_det_tran_cxp.setValor("observacion_cpdtr", "V/. RETENCIÓN FACTURA N. "+tab_cab_factura.getValor("numero_cpcfa"));
             tab_det_tran_cxp.setValor("numero_pago_cpdtr", "0");
             tab_det_tran_cxp.setValor("docum_relac_cpdtr", tab_cab_factura.getValor("numero_cpcfa"));
             tab_det_tran_cxp.setValor("ide_cnccc", tab_cab_factura.getValor("ide_cnccc"));
@@ -435,7 +435,7 @@ public class ServicioCuentasCxP extends ServicioBase {
         return ide_cpctr;
     }
 
-    /**
+   /**
      * Registra la Factura en una transaccion cxp
      *
      * @param ide_cpcfa
