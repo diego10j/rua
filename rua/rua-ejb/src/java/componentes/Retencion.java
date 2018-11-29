@@ -978,13 +978,13 @@ public class Retencion extends Dialogo {
             if (tab_dt_retencion.getValor("base_cndre") == null || tab_dt_retencion.getValor("base_cndre").isEmpty()) {
                 if (ser_retencion.isImpuestoRenta(tab_dt_retencion.getValor("ide_cncim"))) {
                     if (douBaseImponibleRentaTotal > 0) {
-                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
+                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
                     }
                 } else {
                     if (douBaseImponibleIvaTotal > 0) {
-                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
-                    }
+                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
                 }
+            }
             }
             utilitario.addUpdateTabla(tab_dt_retencion, "base_cndre", "");
         }
@@ -1013,6 +1013,7 @@ public class Retencion extends Dialogo {
         try {
             dou_por_ret = Double.parseDouble(tab_dt_retencion.getValor("porcentaje_cndre"));
             dou_por_ret = dou_por_ret / 100;
+            dou_por_ret = Double.parseDouble(utilitario.getFormatoNumero(dou_por_ret));
         } catch (Exception e) {
         }
         try {
@@ -1047,7 +1048,7 @@ public class Retencion extends Dialogo {
 //            return false;
 //        }
         return ser_retencion.isElectronica();
-    }
+        }
 
     public Tabla getTab_cb_retencion() {
         return tab_cb_retencion;
