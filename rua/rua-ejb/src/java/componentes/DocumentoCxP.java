@@ -703,6 +703,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("ide_geper").setMetodoChangeRuta("pre_index.clase." + getId() + ".seleccionarProveedor");
         tab_cab_documento.getColumna("ide_geper").setOrden(3);
         tab_cab_documento.getColumna("autorizacio_cpcfa").setRequerida(true);
+        tab_cab_documento.getColumna("ide_srtst").setRequerida(true);
         tab_cab_documento.getColumna("autorizacio_cpcfa").setOrden(5);
         tab_cab_documento.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
         tab_cab_documento.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");

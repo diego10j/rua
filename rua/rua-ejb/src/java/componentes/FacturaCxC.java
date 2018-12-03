@@ -860,8 +860,8 @@ public class FacturaCxC extends Dialogo {
 
         if (isFacturaElectronica()) {
             tab_cab_factura.getColumna("secuencial_cccfa").setLectura(true);
-            tab_cab_factura.getColumna("secuencial_cccfa").setRequerida(false);
-            tab_cab_factura.getColumna("secuencial_cccfa").setVisible(false);
+            //tab_cab_factura.getColumna("secuencial_cccfa").setRequerida(false);
+            //tab_cab_factura.getColumna("secuencial_cccfa").setVisible(false);
         } else {
             tab_cab_factura.getColumna("secuencial_cccfa").setRequerida(true);
             tab_cab_factura.getColumna("correo_cccfa").setVisible(false);
