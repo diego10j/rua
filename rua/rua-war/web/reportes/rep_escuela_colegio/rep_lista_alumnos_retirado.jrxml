@@ -106,7 +106,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<band/>
 		</groupFooter>
 	</group>
-	<group name="paralelos" isStartNewPage="true">
+	<group name="paralelos">
 		<groupExpression><![CDATA[$F{ide_repar}]]></groupExpression>
 		<groupHeader>
 			<band height="29">
