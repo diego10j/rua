@@ -6,6 +6,8 @@
 package servicios.pensiones;
 
 import framework.aplicacion.TablaGenerica;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
@@ -93,7 +95,7 @@ public class ServicioPensiones extends ServicioBase {
             tab_cab_fac.setValor("telefono_cccfa", tag.getValor("telefono_petlf"));
             tab_cab_fac.setValor("tarifa_iva_cccfa", utilitario.getFormatoNumero((tarifaIVA * 100)));
 
-            TablaGenerica tag_con_detalle = utilitario.consultar("        select ide_valdet_revad,IDE_TITULO_RECVA, detalle_revad, cantidad_revad, precio_revad, total_revad, valor_descuento_revad, c.iva_inarti, c.ide_inarti\n"
+            TablaGenerica tag_con_detalle = utilitario.consultar("        select ide_valdet_revad,IDE_TITULO_RECVAl, detalle_revad, cantidad_revad, precio_revad, total_revad, valor_descuento_revad, c.iva_inarti, c.ide_inarti\n"
                     + "        from rec_valor_detalle  a\n"
                     + "        left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n"
                     + "        left join inv_articulo c on b.ide_inarti = c.ide_inarti\n"
@@ -266,14 +268,14 @@ public class ServicioPensiones extends ServicioBase {
 
     public String selectPenTemp(String codigo) {
         return "select a.IDE_TITULO_RECVAL as codigo_fac, b.ide_geper, b.codigo_geper as codigo_alumno, b.identificac_geper as cedula_alumno, b.nom_geper as nombres_alumno,\n" +
-"               c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, c.correo_geper as correo_repre,\n" +
+"               c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, correo_recalp as correo_repre,\n" +
 "               d.periodo_lectivo as periodo_academico, d.paralelo_alumno as paralelo, a.TOTAL_RECVA as total, des_concepto_recon as concepto, a.FECHA_EMISION_RECVA as fecha, a.ide_sucu as ide_sucu, a.ide_empr as ide_empr, \n" +
 "               f.detalle_revad, f.cantidad_revad, f.precio_revad, f.total_revad, f.valor_descuento_revad, f.iva_inarti\n" +
 "               from rec_valores a \n" +
 "               left join gen_persona b on a.ide_geper = b.ide_geper and b.ide_vgtcl=1 and b.nivel_geper='HIJO'\n" +
 "			   left join gen_persona c on a.gen_ide_geper = c.ide_geper and c.nivel_geper='HIJO' and c.ide_vgtcl=0\n" +
 "			   left join  (select ide_recalp, c.nom_geani||' '||b.descripcion_repea as periodo_lectivo,\n" +
-"			               d.descripcion_recur||' '||descripcion_repar as paralelo_alumno from rec_alumno_periodo a \n" +
+"			               d.descripcion_recur||' '||descripcion_repar as paralelo_alumno,correo_recalp from rec_alumno_periodo a \n" +
 "			               inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n" +
 "			               inner join gen_anio c on b.ide_geani = c.ide_geani\n" +
 "			               inner join rec_curso d on a.ide_recur = d.ide_recur\n" +
@@ -365,5 +367,20 @@ public class ServicioPensiones extends ServicioBase {
 "\n" +
 ") b on a.ide_recalp = b.ide_recalp";
           return sql;
+      }
+      public List estado_estudiante(){
+          List lista=new ArrayList();
+		Object fila1[] = {
+				"1","Activos"
+		};
+		
+		Object fila2[] = {
+				"2","Retirados"
+					
+		};
+                lista.add(fila1);
+		lista.add(fila2);
+		return lista;
+          
       }
 }
