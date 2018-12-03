@@ -41,7 +41,7 @@ public class pre_alumnos extends Pantalla {
         tab_tabla.getColumna("nom_geper").setVisible(true);
         tab_tabla.getColumna("nom_geper").setRequerida(true);
         tab_tabla.getColumna("rep_ide_geper").setVisible(true);
-        tab_tabla.getColumna("rep_ide_geper").setRequerida(true);
+        //tab_tabla.getColumna("rep_ide_geper").setRequerida(true);
         tab_tabla.getColumna("direccion_geper").setVisible(true);
         tab_tabla.getColumna("ide_getid").setVisible(true);
         tab_tabla.getColumna("telefono_geper").setVisible(true);
@@ -52,7 +52,7 @@ public class pre_alumnos extends Pantalla {
         tab_tabla.getColumna("gen_ide_geper").setValorDefecto("3");//3 = ALUMNOS  
         tab_tabla.getColumna("ide_cntco").setValorDefecto("2");// PERSONA NATURAL
         tab_tabla.getColumna("ide_vgtcl").setValorDefecto("1"); // ALUMNOS           
-        tab_tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "ide_getid=0");
+        tab_tabla.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "ide_getid in (0,2)");
         tab_tabla.getColumna("ide_getid").setPermitirNullCombo(false);
         tab_tabla.getColumna("repre_legal_geper").setLectura(true);
         tab_tabla.getColumna("nivel_geper").setValorDefecto("HIJO");

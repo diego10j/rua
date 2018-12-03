@@ -52,6 +52,7 @@ public class pre_valores extends Pantalla{
         tab_tabla1.setTabla("rec_valores", "ide_titulo_recval", 1);
         tab_tabla1.setCondicion("ide_titulo_recval = -1");
         tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.getColumna("ide_cccfa").setLectura(true);
         tab_tabla1.getColumna("ide_recalp").setCombo("select ide_recalp, c.nom_geani, b.descripcion_repea, b.fecha_inicial_repea, b.fecha_final_repea\n" +
                                                      "from rec_alumno_periodo a\n" +
                                                      "inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n" +
@@ -86,6 +87,10 @@ public class pre_valores extends Pantalla{
         
         tab_tabla2.setId("tab_tabla2");   //identificador
         tab_tabla2.setTabla("rec_valor_detalle", "ide_valdet_revad", 2);
+        tab_tabla2.getColumna("ide_impuesto_reimp").setVisible(false);
+        tab_tabla2.getColumna("total_revad").setEtiqueta();
+        tab_tabla2.getColumna("total_revad").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+
         tab_tabla2.dibujar();
         PanelTabla pat_tabla2 = new PanelTabla();
         pat_tabla2.setId("pat_tabla2");
@@ -168,6 +173,10 @@ public class pre_valores extends Pantalla{
         utilitario.addUpdate("tab_tabla2");
     }
     public void generarFactura(){
+        if(tab_tabla1.getValor("generado_fact_recva").equals("true")){
+            utilitario.agregarNotificacionInfo("Ya se encuentra Generada la factura", "No se puede generar ya se encuentra generado la factura");
+        }
+        else {
         String maximo = "";
        // String defecto = 0;
         //ser_pensiones.generarFacturaElectronica(alumno);
@@ -177,17 +186,21 @@ public class pre_valores extends Pantalla{
         TablaGenerica tab_datos_temp = utilitario.consultar(ser_pensiones.selectPenTemp(codig_val));
         for (int i=0;i<tab_datos_temp.getTotalFilas();i++){
             utilitario.getConexion().ejecutarSql("INSERT INTO pen_tmp_lista_fact (ide_petlf, codigo_alumno_petlf, nombre_alumno_petlf, paralelo_petlf, subtotal_petlf, rebaja_petlf, total_petlf, cod_factura_petlf, fecha_petlf, concepto_petlf, representante_petlf, cedula_petlf, periodo_lectivo_petlf, correo_petlf, direccion_petlf, telefono_petlf, cedula_alumno_petlf, ide_sucu, ide_empr)\n" +
-                                                 "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total_revad")+", "+tab_datos_temp.getValor(i, "valor_descuento_revad")+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
+                                                 "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "valor_descuento_revad")+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
                                                          + "'"+tab_datos_temp.getValor(i, "nom_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_repre")+"', '"+tab_datos_temp.getValor(i, "periodo_academico")+"', '"+tab_datos_temp.getValor(i, "correo_repre")+"', '"+tab_datos_temp.getValor(i, "direccion_repre")+"', '"+tab_datos_temp.getValor(i, "telefono_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_alumno")+"', "+tab_datos_temp.getValor(i, "ide_sucu")+", "+tab_datos_temp.getValor(i, "ide_empr")+")");
         }
         //utilitario.getConexion().ejecutarSql(ser_pensiones.generarFacturaElectronica(codig_val));
         try{
-           ser_pensiones.generarFacturaElectronica(codig_val);
+           String ide_ccfa=ser_pensiones.generarFacturaElectronica(codig_val);
+           utilitario.getConexion().ejecutarSql("update rec_valores set ide_cccfa="+ide_ccfa+",generado_fact_recva=true where IDE_TITULO_RECVAL="+codig_val);
+           tab_tabla1.ejecutarSql();
+           tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
            utilitario.agregarMensaje("La factura se ha generado correctamente", "");
         }
-        catch(Exception e){
-            utilitario.agregarMensajeError("Error al generar la factura", "Verifique datos o consulte con el administrador");
-        }
+            catch(Exception e){
+                utilitario.agregarMensajeError("Error al generar la factura", "Verifique datos o consulte con el administrador");
+            }
+        } 
     }
     
     public void aceptarAlumno(){

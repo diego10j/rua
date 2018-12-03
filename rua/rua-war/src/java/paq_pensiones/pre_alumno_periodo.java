@@ -46,6 +46,7 @@ public class pre_alumno_periodo extends Pantalla{
     private Combo com_paralelos = new Combo();
     private Combo com_especialidad = new Combo();
     private Combo com_mes = new Combo();
+    private Combo com_estado = new Combo();
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
     private SeleccionTabla sel_tab_representante = new SeleccionTabla();
     private SeleccionTabla sel_periodo_academico = new SeleccionTabla();
@@ -91,8 +92,7 @@ public class pre_alumno_periodo extends Pantalla{
         bot_al_matri.setValue("IMPRIMIR ALUMNOS MATRICULADOS");
         bot_al_matri.setMetodo("generarPDF");
         //bot_fac_elec.setMetodo(ser_pensiones.generarFacturaElectronica("-1"));
-        agregarComponente(bot_al_matri);
-        bar_botones.agregarBoton(bot_al_matri);
+        
         
         com_periodo_academico.setId("cmb_periodo_academico");
         com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
@@ -107,8 +107,11 @@ public class pre_alumno_periodo extends Pantalla{
         com_especialidad.setId("com_especialidad");
         com_especialidad.setCombo(ser_pensiones.getEspecialidad("true"));
         
+        com_estado.setId("com_estado");
+        com_estado.setCombo(ser_pensiones.estado_estudiante());
+        
         Grid grup_titulo = new Grid();
-        grup_titulo.setColumns(8);
+        grup_titulo.setColumns(10);
         grup_titulo.setWidth("100%");
         grup_titulo.setId("grup_titulo");
         grup_titulo.getChildren().add(new Etiqueta("Periódo Académico"));
@@ -119,6 +122,8 @@ public class pre_alumno_periodo extends Pantalla{
         grup_titulo.getChildren().add(com_paralelos);    
         grup_titulo.getChildren().add(new Etiqueta("Especialidad"));
         grup_titulo.getChildren().add(com_especialidad);
+        grup_titulo.getChildren().add(new Etiqueta("Estado"));
+        grup_titulo.getChildren().add(com_estado);
         
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("REC_ALUMNO_PERIODO", "IDE_RECALP", 1);
@@ -127,9 +132,9 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_repar").setCombo(ser_pensiones.getParalelos("true,false"));
         tab_tabla1.getColumna("ide_recur").setCombo(ser_pensiones.getCursos("true,false"));
         tab_tabla1.getColumna("ide_reces").setCombo(ser_pensiones.getEspecialidad("true,false"));
-        tab_tabla1.getColumna("ide_repar").setAutoCompletar();
-        tab_tabla1.getColumna("ide_recur").setAutoCompletar();
-        tab_tabla1.getColumna("ide_reces").setAutoCompletar();
+        //tab_tabla1.getColumna("ide_repar").setAutoCompletar();
+        //tab_tabla1.getColumna("ide_recur").setAutoCompletar();
+        //tab_tabla1.getColumna("ide_reces").setAutoCompletar();
         tab_tabla1.getColumna("ide_repar").setLectura(true);
         tab_tabla1.getColumna("ide_recur").setLectura(true);
         tab_tabla1.getColumna("ide_reces").setLectura(true);
@@ -137,8 +142,11 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
+        tab_tabla1.getColumna("activo_recalp").setValorDefecto("true");
+        tab_tabla1.getColumna("activo_recalp").setLectura(true);
         tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
         tab_tabla1.getColumna("fecha_retiro_recalp").setLectura(true);
+        tab_tabla1.getColumna("valor_descuento_recalp").setValorDefecto("0");
         tab_tabla1.getColumna("ide_geper").setFiltroContenido();
         tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2",""));
@@ -147,7 +155,6 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_repar").setAncho(20);
         tab_tabla1.getColumna("ide_geper").setEstilo("width:20 px");
         tab_tabla1.setCondicion("IDE_RECALP = -1");
-        tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
@@ -166,6 +173,8 @@ public class pre_alumno_periodo extends Pantalla{
         bot_filtro_consulta.setValue("CONSULTAR ALUMNOS");
         bot_filtro_consulta.setMetodo("filtroAlumno");
         bar_botones.agregarBoton(bot_filtro_consulta);
+        
+        bar_botones.agregarBoton(bot_al_matri);
         
 
    //     bar_botones.agregarBoton(bot_filtro_alumno);
@@ -333,6 +342,9 @@ public class pre_alumno_periodo extends Pantalla{
     
     }
     public void abrirDialogoRetiro(){
+        //if(tab_tabla1.){
+            
+        //}
         if(tab_tabla1.getTotalFilas() > 0){
             if (tab_tabla1.getValorSeleccionado().isEmpty()){
                 utilitario.agregarMensajeError("Debe seleccionar al menos un estudiante para continuar", "");
@@ -348,7 +360,7 @@ public class pre_alumno_periodo extends Pantalla{
         try{
        String alumno_selec = tab_tabla1.getValorSeleccionado();
        utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n" +
-                                            "set retirado_recalp = true, detalle_retiro_recalp = '"+area_dialogo.getValue()+"', fecha_retiro_recalp = '"+fecha_retiro.getValue()+"'\n" +
+                                            "set retirado_recalp = true, detalle_retiro_recalp = '"+area_dialogo.getValue()+"',activo_recalp = false, fecha_retiro_recalp = '"+fecha_retiro.getValue()+"'\n" +
                                             "where ide_recalp = "+alumno_selec+"");
        dia_retiro.cerrar();
        utilitario.agregarMensaje("Se ha guardado correctamente", "");
@@ -378,10 +390,10 @@ public class pre_alumno_periodo extends Pantalla{
               maximo = cod_max.getValor("maximo");
               TablaGenerica tab_concepto = utilitario.consultar("select * from rec_forma_impuesto where ide_concepto_recon ="+com_conceptos.getValue());
               utilitario.getConexion().ejecutarSql("INSERT INTO rec_valores (ide_titulo_recval, ide_recalp, ide_sucu, ide_empr, ide_geper, gen_ide_geper, ide_recest, fecha_emision_recva, fecha_vence_recva, IDE_CONCEPTO_RECON"
-                      + "                           , ide_gemes, valor_imponible_recva )\n" +
+                      + "                           , ide_gemes, valor_imponible_recva,valor_descuento_recva,aplica_total_descuento_recva,generado_fact_recva )\n" +
                                                    "VALUES ("+maximo+", "+tab_tabla1.getValor(i, "IDE_RECALP")+", "+utilitario.getVariable("ide_sucu")+", "+utilitario.getVariable("ide_empr")+" "
                                                  + ", "+tab_tabla1.getValor(i, "ide_geper")+","+tab_tabla1.getValor(i, "gen_ide_geper")+", "+utilitario.getVariable("p_pen_deuda_activa")+", '"+fechaInicio.getValue()+"', '"+fechaFin.getValue()+"', "+com_conceptos.getValue()+",   "
-                                                       + " "+com_mes.getValue()+", 0  );");
+                                                       + " "+com_mes.getValue()+", 0,"+tab_tabla1.getValor(i,"valor_descuento_recalp")+","+tab_tabla1.getValor(i,"descuento_recalp")+",false  );");
               
               
               
@@ -390,12 +402,13 @@ public class pre_alumno_periodo extends Pantalla{
                   String valor_ide = tab_concepto.getValor(j, "ide_impuesto_reimp");
                   TablaGenerica cod_max_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valor_detalle", "ide_valdet_revad"));
                                 maximo_detalle = cod_max_detalle.getValor("maximo");   
-                  utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_reimp, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad)\n" +
-                                                       "VALUES ("+maximo_detalle+", "+maximo+ ", "+tab_impuesto.getValor("ide_impuesto_reimp")+", "+"1"+", "+tab_impuesto.getValor("valor_reimp")+", "+tab_impuesto.getValor("valor_reimp")+", "+"0"+", "+"0"+", "+"0"+"    );");
+                  utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_reimp, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad,detalle_revad)\n" +
+                                                       "VALUES ("+maximo_detalle+", "+maximo+ ", "+tab_impuesto.getValor("ide_impuesto_reimp")+", "+"1"+", "+tab_impuesto.getValor("valor_reimp")+", "+tab_impuesto.getValor("valor_reimp")+"-"+tab_tabla1.getValor(i,"valor_descuento_recalp")+", "+"0"+","+tab_tabla1.getValor(i,"valor_descuento_recalp")+", "+"0"+",'"+tab_impuesto.getValor("des_impuesto_reimp")+"'    );");
               // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
+              
               }
               TablaGenerica tab_suma_valores = utilitario.consultar("select 1 as codigo, sum(total_revad) as suma_total from rec_valor_detalle where IDE_TITULO_RECVAL  = "+maximo+"");
-              utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+", valor_imponible_recva = "+tab_suma_valores.getValor("suma_total")+" where IDE_TITULO_RECVAL = "+maximo+"");
+              utilitario.getConexion().ejecutarSql("update rec_valores set TOTAL_RECVA = "+tab_suma_valores.getValor("suma_total")+", valor_imponible_recva = "+tab_suma_valores.getValor("suma_total")+",base_no_objeto_iva_recva=0,base_tarifa0_recva="+tab_suma_valores.getValor("suma_total")+",base_grabada_recva=0,valor_iva_recva=0,tarifa_iva_recva=12  where IDE_TITULO_RECVAL = "+maximo+"");
           }
         dia_emision.cerrar();
         utilitario.agregarMensaje("Se ha recaudado correctamente", "");
@@ -405,7 +418,8 @@ public class pre_alumno_periodo extends Pantalla{
         String cm_cur = com_cursos.getValue()+"";
         String cm_par = com_paralelos.getValue()+"";
         String cm_esp = com_especialidad.getValue()+"";
-        
+        String cm_est = com_estado.getValue()+"";
+        System.out.println("entre al filtro del alumno");
         String condicion="";
         if(com_periodo_academico.getValue()==null){
                        utilitario.agregarMensajeError("Seleccione Registro", "Para consultar listado de alumnos debe seleccionar un periodo academico");
@@ -422,8 +436,17 @@ public class pre_alumno_periodo extends Pantalla{
            if(!cm_esp.equals("null")) {
                condicion+=" and ide_reces= "+cm_esp;
            }
+           if(!cm_est.equals("null")) {
+               if(cm_est.equals("1")){
+                   condicion+=" and activo_recalp=true ";
+               }
+               else if(cm_est.equals("2")){
+                   condicion+=" and retirado_recalp=true ";
+               }               
+           }
            tab_tabla1.setCondicion(condicion);
            tab_tabla1.ejecutarSql();
+           tab_tabla1.imprimirSql();
            utilitario.addUpdate("tab_tabla1");
         }
     }
@@ -508,10 +531,8 @@ public class pre_alumno_periodo extends Pantalla{
              tab_tabla1.setValor("ide_recur", com_cursos.getValue().toString());
              tab_tabla1.setValor("ide_repar", com_paralelos.getValue().toString());
              tab_tabla1.setValor("ide_reces", com_especialidad.getValue().toString());
-             utilitario.addUpdateTabla(tab_tabla1, "ide_repea", "");
-             utilitario.addUpdateTabla(tab_tabla1, "ide_recur", "");
-             utilitario.addUpdateTabla(tab_tabla1, "ide_repar", "");
-             utilitario.addUpdateTabla(tab_tabla1, "ide_reces", "");
+             utilitario.addUpdateTabla(tab_tabla1, "ide_repea,ide_recur,ide_repar,ide_reces", "");
+
              sel_tab_alumno.cerrar();
 	     utilitario.addUpdate("tab_tabla1");
     }
