@@ -62,7 +62,7 @@ public class pre_articulos extends Pantalla {
         tab_tabla.getColumna("costo_inicial_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_anterior_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_actual_boart").setValorDefecto("0");
-
+        tab_tabla.getColumna("precio_venta_boart").setValorDefecto("0");
         tab_tabla.getColumna("ingreso_material_boart").setRequerida(true);
         tab_tabla.getColumna("egreso_material_boart").setRequerida(true);
         tab_tabla.getColumna("existencia_inicial_boart").setRequerida(true);
