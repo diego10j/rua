@@ -204,6 +204,23 @@ public final class Comprobante implements Serializable {
 
             if (this.coddoc.equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
 
+                cliente.setCorreo(resultado.getString("correo_srcom")); //correo de la factura
+                //Datos cliente de la factura 
+                try {
+                    Statement sentensia = con.getConnection().createStatement();
+                    String sql = "SELECT telefono_cccfa,direccion_cccfa from cxc_cabece_factura"
+                            + " where ide_srcom=" + this.codigocomprobante;
+                    ResultSet res = sentensia.executeQuery(sql);
+                    if (res.next()) {
+                        cliente.setDireccion(res.getString("direccion_cccfa"));
+                        cliente.setTelefono(res.getString("telefono_cccfa"));
+                    }
+                    sentensia.close();
+                    res.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 //busca InfoAdicional
                 infoAdicional = new ArrayList<>();
                 try {
