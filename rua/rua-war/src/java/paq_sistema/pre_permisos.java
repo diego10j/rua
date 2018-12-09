@@ -83,7 +83,7 @@ public class pre_permisos extends Pantalla {
         tab_tabla4.setId("tab_tabla4");
         tab_tabla4.setIdCompleto("tab_tabulador:tab_tabla4");
         tab_tabla4.setTabla("SIS_PERFIL_OBJETO", "IDE_PEOB", 4);
-        tab_tabla4.getColumna("IDE_OBOP").setCombo("SELECT IDE_OBOP,NOM_OBOP || ' '|| ID_OBOP,NOM_OPCI FROM SIS_OBJETO_OPCION,SIS_OPCION WHERE SIS_OPCION.IDE_OPCI = SIS_OBJETO_OPCION.IDE_OPCI ORDER BY NOM_OPCI,NOM_OBOP");
+        tab_tabla4.getColumna("IDE_OBOP").setCombo("SELECT IDE_OBOP,NOM_OBOP , ID_OBOP,NOM_OPCI FROM SIS_OBJETO_OPCION,SIS_OPCION WHERE SIS_OPCION.IDE_OPCI = SIS_OBJETO_OPCION.IDE_OPCI ORDER BY NOM_OPCI,NOM_OBOP");
         tab_tabla4.getColumna("IDE_OBOP").setAutoCompletar();
         tab_tabla4.getColumna("VISIBLE_PEOB").setCheck();
         tab_tabla4.getColumna("LECTURA_PEOB").setCheck();
