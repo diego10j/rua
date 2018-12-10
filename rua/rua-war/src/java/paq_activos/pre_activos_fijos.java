@@ -1095,6 +1095,7 @@ public void actualizarCustodio(){
         bar_menu.agregarComponente(bot_ver);
         bar_menu.agregarSeparador();
         Boton bot_elimina = new Boton();
+        bot_elimina.setId("bot_elimina");
         bot_elimina.setValue("Eliminar Activo Fijo");
         bot_elimina.setIcon("ui-icon-cancel");
         bot_elimina.setMetodo("abrirEliminarActivoFijo");
@@ -1142,6 +1143,7 @@ public void actualizarCustodio(){
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "LISTADO DE ACTIVOS FIJOS", gru);
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarActivoFijo() {
