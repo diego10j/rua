@@ -773,6 +773,8 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(1, "LISTADO DE DOCUMENTOS POR PAGAR", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarDocumentosNoContabilizadas() {
@@ -822,6 +824,8 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(pat_panel);
 
         mep_menu.dibujar(2, "DOCUMENTOS POR PAGAR SIN COMPROBANTE CONTABLE", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void sumarSeleccionNoConta() {
@@ -905,6 +909,8 @@ public class pre_documentosCxP extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(3, "DOCUMENTOS POR PAGAR SIN COMPROBANTE DE RETENCION", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarDocumentosAnulados() {
