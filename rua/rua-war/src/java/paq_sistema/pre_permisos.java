@@ -88,7 +88,7 @@ public class pre_permisos extends Pantalla {
         tab_tabla4.getColumna("VISIBLE_PEOB").setCheck();
         tab_tabla4.getColumna("LECTURA_PEOB").setCheck();
         tab_tabla4.getColumna("VISIBLE_PEOB").setValorDefecto("true");
-        tab_tabla4.getColumna("IDE_PEOB").setUnico(true);
+        tab_tabla4.getColumna("IDE_OBOP").setUnico(true);
         tab_tabla4.getColumna("IDE_PERF").setUnico(true);
         tab_tabla4.setRows(20);
         tab_tabla4.dibujar();
