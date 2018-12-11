@@ -117,11 +117,12 @@ public class pre_activos_fijos extends Pantalla {
         mep_menu.agregarItem("Listado Bienes de Control", "dibujarListadosBienesC", "ui-icon-note");//1       
 
         mep_menu.agregarItem("Depreciar Activos", "dibujarDepreciar", "ui-icon-clock");//6
-        mep_menu.agregarItem("Dar de Baja Activos", "dibujarDardeBaja", "ui-icon-cancel");//7
+        //mep_menu.agregarItem("Dar de Baja Activos", "dibujarDardeBaja", "ui-icon-cancel");//7
+      
         mep_menu.agregarSubMenu("ACTAS");
-        mep_menu.agregarItem("Nueva Acta Constatación Física", "dibujarAsignarActivos", "ui-icon-document");//5
+       // mep_menu.agregarItem("Nueva Acta Constatación Física", "dibujarAsignarActivos", "ui-icon-document");//5
         mep_menu.agregarItem("Listado Actas Constatación Física", "dibujarListadoActasConstata", "ui-icon-note");//10
-        mep_menu.agregarItem("Acta Entrega Recepción", "dibujarActa", "ui-icon-note");//9
+       // mep_menu.agregarItem("Acta Entrega Recepción", "dibujarActa", "ui-icon-note");//9
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Consultar por Código de Barras", "dibujarConsultarPorCodigoB", "ui-icon-contact");//11
         mep_menu.agregarItem("Consultar Activos Asignados", "dibujarConsultarAsignados", "ui-icon-contact");//3
@@ -564,6 +565,8 @@ public void actualizarCustodio(){
         gru_grupo.getChildren().add(pat_panel);
 
         mep_menu.dibujar(6, "DEPRECIAR ACTIVOS FIJOS", gru_grupo);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
     public void aprobarActivos(){
         String valores_seleccionados = sel_activos_no_aprobados.getSeleccionados();
@@ -1081,6 +1084,8 @@ public void actualizarCustodio(){
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(20, "LISTADO BIENES DE CONTROL", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarListadosActivos() {
@@ -1143,6 +1148,7 @@ public void actualizarCustodio(){
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(4, "LISTADO DE ACTIVOS FIJOS", gru);
+        //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
 
