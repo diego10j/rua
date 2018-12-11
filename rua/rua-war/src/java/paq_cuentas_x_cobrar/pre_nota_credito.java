@@ -195,6 +195,8 @@ public class pre_nota_credito extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "NOTAS DE CRÉDITO NO CONTABILIZADAS", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void abrirGeneraAsiento() {
@@ -676,6 +678,8 @@ public class pre_nota_credito extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "LISTADO DE NOTAS DE CRÉDITO", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void reenviarNota() {
