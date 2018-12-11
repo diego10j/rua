@@ -13,8 +13,15 @@ import sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
+import framework.componentes.Radio;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import paq_produccion.ejb.ServicioProduccion;
@@ -28,10 +35,14 @@ public class pre_actas extends Pantalla {
     
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
+    private Tabla tab_acta_entrega = new Tabla();
     private Combo com_tipo_acta=new Combo();
     private Dialogo dia_activos= new Dialogo();
     private SeleccionTabla set_activos=new SeleccionTabla();
     private SeleccionTabla set_tipo_acta=new SeleccionTabla();
+    private Dialogo dia_actas = new Dialogo();
+    private Dialogo dia_radio = new Dialogo();
+    private Radio rad_bloqueado= new Radio();
     @EJB
     private ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
     @EJB
@@ -39,8 +50,21 @@ public class pre_actas extends Pantalla {
     @EJB
     private final ServicioProduccion ser_valtiempo= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
     String condicion="";
+    
+            	///reporte
+	private Map p_parametros = new HashMap();
+	private Reporte rep_reporte = new Reporte();
+	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
 
     public pre_actas() { 
+        
+        ///reporte
+		rep_reporte.setId("rep_reporte"); //id
+		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+		agregarComponente(rep_reporte);//agrega el componente a la pantalla
+		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+		self_reporte.setId("self_reporte"); //id
+		agregarComponente(self_reporte);
         
         com_tipo_acta.setCombo(ser_activos.getTipoActa());
         com_tipo_acta.setMetodo("seleccionarTipoActa");
@@ -63,6 +87,7 @@ public class pre_actas extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_acta_constata","ide_acact", 1);
         tab_tabla.setCondicion("ide_actia=-1");
+        tab_tabla.setCampoOrden("ide_acact desc");
         tab_tabla.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
         tab_tabla.getColumna("ide_geobr").setCombo(ser_activos.getObras());
         tab_tabla.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
@@ -84,6 +109,7 @@ public class pre_actas extends Pantalla {
         tab_tabla.agregarRelacion(tab_tabla2);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(6);
+        tab_tabla.setLectura(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
@@ -94,6 +120,7 @@ public class pre_actas extends Pantalla {
         tab_tabla2.getColumna("ide_acafi").setCombo(ser_activos.getDatoActivoBasico());
         tab_tabla2.getColumna("ide_aceaf").setAutoCompletar();
         tab_tabla2.getColumna("ide_acafi").setAutoCompletar();
+        
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -112,6 +139,121 @@ public class pre_actas extends Pantalla {
 	set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setOrden(2);
 	set_activos.getBot_aceptar().setMetodo("aceptarActivo");
         agregarComponente(set_activos);
+        
+        dia_actas = new Dialogo();
+        dia_actas.setTitle("DATOS PARA EL ACTA");
+        dia_actas.setId("dia_actas");
+        dia_actas.setHeight("45%");
+        dia_actas.setWidth("80%");
+        dia_actas.getBot_aceptar().setMetodo("guardarDialogo");
+        agregarComponente(dia_actas);
+        
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "1", "Bloquear Actas"
+        };
+        Object fila2[] = {
+            "2", "Previsualizar"
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        rad_bloqueado = new Radio();
+        rad_bloqueado.setRadio(lista);
+        rad_bloqueado.setValue("2"); //Por defecto beneficiario
+        
+        dia_radio = new Dialogo();
+        dia_radio.setTitle("SELECCIONE LA OPCION PARA IMPRIMIR EL ACTA");
+        dia_radio.setId("dia_radio");
+        dia_radio.setHeight("25%");
+        dia_radio.setWidth("25%");
+        dia_radio.setDialogo(dia_radio);
+        dia_radio.getBot_aceptar().setMetodo("guardarDialogo");
+        agregarComponente(dia_radio);
+        
+        
+    }
+    public void actaEntregaRecepcion(){
+        
+        if(com_tipo_acta.getValue()==null){
+            utilitario.agregarMensajeError("No se puede insertar", "Debe Seleccionar un tipo de acta");
+            return;
+		
+	}
+        tab_acta_entrega.limpiar();
+         dia_actas.getGri_cuerpo().getChildren().clear();
+         valor_combo=com_tipo_acta.getValue().toString();
+
+            if(valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))){
+                sec_modulo=utilitario.getVariable("p_act_secuecial_entrega_recepcion");
+            }
+            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
+                sec_modulo=utilitario.getVariable("p_act_secuecial_constatacion");
+            }
+            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
+                sec_modulo=utilitario.getVariable("p_act_secuecial_baja");
+            }
+            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))){
+                sec_modulo=utilitario.getVariable("p_act_secuecial_cambio");
+            }
+            TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(sec_modulo));
+            
+        
+        tab_acta_entrega = new Tabla();
+        tab_acta_entrega.setId("tab_acta_entrega");
+        tab_acta_entrega.setTabla("act_acta_constata","ide_acact", 1);
+        tab_acta_entrega.setCondicion("ide_actia=-1");
+        tab_acta_entrega.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
+        tab_acta_entrega.getColumna("ide_geobr").setCombo(ser_activos.getObras());
+        tab_acta_entrega.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
+        tab_acta_entrega.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
+        tab_acta_entrega.getColumna("gen_ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
+        tab_acta_entrega.getColumna("ide_gecas").setAutoCompletar();
+        tab_acta_entrega.getColumna("ide_geobr").setAutoCompletar();
+        tab_acta_entrega.getColumna("ide_acuba").setAutoCompletar();
+        tab_acta_entrega.getColumna("ide_geper").setAutoCompletar();
+        tab_acta_entrega.getColumna("gen_ide_geper").setAutoCompletar();
+        if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
+                tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
+                tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
+                tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+                tab_acta_entrega.getColumna("ide_geper").setVisible(false);
+                tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
+                tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
+        }
+        if(valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))|| valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
+                tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
+                tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
+                tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+        }
+        tab_acta_entrega.getColumna("ide_geper").setRequerida(true);       
+        tab_acta_entrega.getColumna("secuencial_acact").setRequerida(true);
+        tab_acta_entrega.getColumna("secuencial_acact").setValorDefecto(tab_secuencial.getValor("nuevo_secuencial"));
+        tab_acta_entrega.getColumna("bloqueado_acact").setLectura(true);
+        tab_acta_entrega.getColumna("bloqueado_acact").setValorDefecto("false");
+        tab_acta_entrega.getColumna("secuencial_acact").setEtiqueta();
+        tab_acta_entrega.getColumna("secuencial_acact").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");
+        tab_acta_entrega.getColumna("ide_actia").setVisible(false);
+        tab_acta_entrega.getColumna("bloqueado_acact").setVisible(false);
+        tab_acta_entrega.setTipoFormulario(true);
+        tab_acta_entrega.getGrid().setColumns(4);
+        tab_acta_entrega.dibujar();
+        tab_acta_entrega.insertar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_acta_entrega);
+        pat_panel.getMenuTabla().setRendered(false);
+        pat_panel.setStyle("overflow:auto");
+        
+       
+        dia_actas.setDialogo(pat_panel);
+        dia_actas.dibujar();
+        
+        
+    }
+    public void guardarDialogo(){
+        tab_acta_entrega.guardar();
+        guardarPantalla();
+        dia_actas.cerrar();
+        tab_tabla.ejecutarSql();
     }
     public void importarActivos(){
         if(com_tipo_acta.getValue()==null){
@@ -172,7 +314,8 @@ public class pre_actas extends Pantalla {
 	}
     public void seleccionarTipoActa(){
 		if(com_tipo_acta.getValue()!=null){
-                        actualizarCampos();
+                      tab_tabla.getColumna("observacion_acact").setVisible(true);  
+                    //actualizarCampos();
 			tab_tabla.setCondicion("ide_actia="+com_tipo_acta.getValue());
                		tab_tabla.ejecutarSql();
                         tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
@@ -183,6 +326,7 @@ public class pre_actas extends Pantalla {
 			tab_tabla.setCondicion("ide_actia=-1");
 			tab_tabla.ejecutarSql();
 		}
+                utilitario.addUpdate("tab_tabla");
 	}
     public void actualizarCampos(){
         tab_tabla.getColumna("observacion_acact").setLectura(true);
@@ -198,7 +342,7 @@ public class pre_actas extends Pantalla {
     @Override
     public void insertar() {
    
-        
+        actaEntregaRecepcion();/*
         if(com_tipo_acta.getValue()==null){
             utilitario.agregarMensajeError("No se puede insertar", "Debe Seleccionar un tipo de acta");
             return;
@@ -224,7 +368,94 @@ public class pre_actas extends Pantalla {
         else if(tab_tabla2.isFocus()){
             tab_tabla2.insertar();
         }
+*/
     }
+        //reporte
+public void abrirListaReportes() {
+    
+        if(com_tipo_acta.getValue() == null){
+            utilitario.agregarMensajeInfo("Seleccione el Año", "Seleccione el Año para poder continuar");
+	
+        }
+        else {
+	// TODO Auto-generated method stub
+	rep_reporte.dibujar();
+         }
+}
+public void aceptarReporte(){
+    if(tab_tabla.getValor("dia_radio").equals("false")){
+        dia_radio.dibujar();
+    }
+    else {
+            if(rep_reporte.getReporteSelecionado().equals("Acta Entrega Recepcion")){
+		if (rep_reporte.isVisible()){
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
+			p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
+                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+		
+		}
+		else{
+			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+		}
+	}
+        else if(rep_reporte.getReporteSelecionado().equals("Acta Constacion Fisica")){
+                if (rep_reporte.isVisible()){
+                    
+              
+                    rep_reporte.cerrar();
+                    
+		
+                	p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
+                        //System.out.println("paso parametrios "+p_parametros);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }
+else if(rep_reporte.getReporteSelecionado().equals("Acta de Bajas")){
+                if (rep_reporte.isVisible()){
+                    
+              
+                    rep_reporte.cerrar();
+                    
+		
+                	p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
+                        //System.out.println("paso parametrios "+p_parametros);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }
+else if(rep_reporte.getReporteSelecionado().equals("Acta Cambio de Custodio")){
+                if (rep_reporte.isVisible()){
+                    
+              
+                    rep_reporte.cerrar();
+                    
+		
+                	p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
+                        //System.out.println("paso parametrios "+p_parametros);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }            
+    }	
+}
 
     @Override
     public void guardar() {
@@ -297,6 +528,46 @@ public class pre_actas extends Pantalla {
 
     public void setSet_tipo_acta(SeleccionTabla set_tipo_acta) {
         this.set_tipo_acta = set_tipo_acta;
+    }
+
+    public Tabla getTab_acta_entrega() {
+        return tab_acta_entrega;
+    }
+
+    public void setTab_acta_entrega(Tabla tab_acta_entrega) {
+        this.tab_acta_entrega = tab_acta_entrega;
+    }
+
+    public Dialogo getDia_actas() {
+        return dia_actas;
+    }
+
+    public void setDia_actas(Dialogo dia_actas) {
+        this.dia_actas = dia_actas;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSelf_reporte() {
+        return self_reporte;
+    }
+
+    public void setSelf_reporte(SeleccionFormatoReporte self_reporte) {
+        this.self_reporte = self_reporte;
+    }
+
+    public Dialogo getDia_radio() {
+        return dia_radio;
+    }
+
+    public void setDia_radio(Dialogo dia_radio) {
+        this.dia_radio = dia_radio;
     }
     
 }
