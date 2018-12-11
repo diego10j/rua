@@ -410,6 +410,8 @@ public class pre_documentosCxP extends Pantalla {
         gri.setFooter(bot_aceptar);
 
         mep_menu.dibujar(8, "SALDAR DOCUMENTOS CXP", gri_contenido);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
 
     }
 
