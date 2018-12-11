@@ -13,6 +13,7 @@ import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
+import framework.componentes.BotonesCombo;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
@@ -21,6 +22,7 @@ import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.ItemMenu;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
@@ -125,6 +127,28 @@ public class pre_alumno_periodo extends Pantalla{
         grup_titulo.getChildren().add(new Etiqueta("Estado"));
         grup_titulo.getChildren().add(com_estado);
         
+         // boton seleccion inversa
+            BotonesCombo boc_seleccion_inversa = new BotonesCombo();
+            ItemMenu itm_todas = new ItemMenu();
+            ItemMenu itm_niguna = new ItemMenu();
+
+
+            boc_seleccion_inversa.setValue("Selección Inversa");
+            boc_seleccion_inversa.setIcon("ui-icon-circle-check");
+            boc_seleccion_inversa.setMetodo("seleccinarInversa");
+            boc_seleccion_inversa.setUpdate("tab_tabla1");
+            itm_todas.setValue("Seleccionar Todo");
+            itm_todas.setIcon("ui-icon-check");
+            itm_todas.setMetodo("seleccionarTodas");
+            itm_todas.setUpdate("tab_tabla1");
+            boc_seleccion_inversa.agregarBoton(itm_todas);
+            itm_niguna.setValue("Seleccionar Ninguna");
+            itm_niguna.setIcon("ui-icon-minus");
+            itm_niguna.setMetodo("seleccionarNinguna");
+            itm_niguna.setUpdate("tab_tabla1");
+            boc_seleccion_inversa.agregarBoton(itm_niguna);
+
+        
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("REC_ALUMNO_PERIODO", "IDE_RECALP", 1);
         tab_tabla1.getColumna("descripcion_recalp").setVisible(false);
@@ -155,9 +179,11 @@ public class pre_alumno_periodo extends Pantalla{
         tab_tabla1.getColumna("ide_repar").setAncho(20);
         tab_tabla1.getColumna("ide_geper").setEstilo("width:20 px");
         tab_tabla1.setCondicion("IDE_RECALP = -1");
+        tab_tabla1.setTipoSeleccion(true);
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
+        pat_tabla1.getChildren().add(boc_seleccion_inversa);
         pat_tabla1.setPanelTabla(tab_tabla1);
         Division div_tabla1 = new Division();
         div_tabla1.setId("div_tabla1");
@@ -738,6 +764,50 @@ public class pre_alumno_periodo extends Pantalla{
             utilitario.agregarMensajeInfo("Seleccione el periodo académico", "");
         }
     }
+    
+    public void seleccionarTodas() {
+        tab_tabla1.setSeleccionados(null);
+        Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas()];
+        for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+            seleccionados[i] = tab_tabla1.getFilas().get(i);
+        }
+        tab_tabla1.setSeleccionados(seleccionados);
+        //calculoTotal();
+
+    }
+
+    public void seleccinarInversa() {
+        if (tab_tabla1.getSeleccionados() == null) {
+            seleccionarTodas();
+        } else if (tab_tabla1.getSeleccionados().length == tab_tabla1.getTotalFilas()) {
+            seleccionarNinguna();
+        } else {
+            Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas() - tab_tabla1.getSeleccionados().length];
+            int cont = 0;
+            for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+                boolean boo_selecionado = false;
+                for (int j = 0; j < tab_tabla1.getSeleccionados().length; j++) {
+                    if (tab_tabla1.getSeleccionados()[j].equals(tab_tabla1.getFilas().get(i))) {
+                        boo_selecionado = true;
+                        break;
+                    }
+                }
+                if (boo_selecionado == false) {
+                    seleccionados[cont] = tab_tabla1.getFilas().get(i);
+                    cont++;
+                }
+            }
+            tab_tabla1.setSeleccionados(seleccionados);
+        }
+        //calculoTotal();
+    }
+
+    public void seleccionarNinguna() {
+        tab_tabla1.setSeleccionados(null);
+
+    }
+
+    
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
