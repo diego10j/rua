@@ -475,6 +475,8 @@ public class pre_facturasCxC extends Pantalla {
             bot_reenviar.setMetodo("reenviarFactura");
             bot_reenviar.setIcon("ui-icon-mail-closed");
             bar_menu.agregarBoton(bot_reenviar);
+         
+        
 
         }
 
@@ -547,6 +549,8 @@ public class pre_facturasCxC extends Pantalla {
         gru.getChildren().add(pat_panel);
 
         mep_menu.dibujar(1, "LISTADO DE FACTURAS", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void abrirModificarVendedor() {
@@ -753,6 +757,8 @@ public class pre_facturasCxC extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "FACTURAS NO CONTABILIZADAS", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void sumarSeleccionNoConta() {
@@ -892,6 +898,8 @@ public class pre_facturasCxC extends Pantalla {
         grupo.getChildren().add(pat_panel);
 
         mep_menu.dibujar(4, "fa fa-clock-o", "Cuentas por Cobrar", grupo, true);
+            //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarGraficoVentas() {
