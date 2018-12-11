@@ -172,6 +172,8 @@ public class pre_prestamos extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(5, "CUOTAS PAGADAS NO CONTABILIZADAS", gru);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarTransacciones() {
@@ -586,6 +588,8 @@ public class pre_prestamos extends Pantalla {
             gru_grupo.getChildren().add(new Etiqueta("</div>"));
         }
         mep_menu.dibujar(4, "PAGAR PRESTAMO", gru_grupo);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     /**
