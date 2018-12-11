@@ -308,6 +308,8 @@ public class pre_inversiones extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(12, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES BANCARIAS", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
 
     }
 
@@ -356,6 +358,8 @@ public class pre_inversiones extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(17, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES CASAS - OBRAS", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
 
     }
 
@@ -402,6 +406,8 @@ public class pre_inversiones extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(19, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN INVERSIONES FONDO DE DESVINCULACIÓN", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
 
     }
 
@@ -502,6 +508,8 @@ public class pre_inversiones extends Pantalla {
         grupo.getChildren().add(pat_panel1);
 
         mep_menu.dibujar(7, "RENOVACIONES DE INVERSIONES CASAS - OBRAS", grupo);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarRenovacionesBanco() {
@@ -594,6 +602,8 @@ public class pre_inversiones extends Pantalla {
         grupo.getChildren().add(pat_panel1);
 
         mep_menu.dibujar(21, "RENOVACIONES DE INVERSIONES BANCOS", grupo);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void seleccionarCertifcadoRenova(SelectEvent evt) {

@@ -314,6 +314,8 @@ public class pre_certificados extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
         
     }
     
@@ -371,6 +373,8 @@ public class pre_certificados extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE DEL INTERES", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
         
     }
     
@@ -428,6 +432,8 @@ public class pre_certificados extends Pantalla {
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
         mep_menu.dibujar(2, "GENERAR ASIENTO CONTABLE DE TERMINACIÓN", gru);
+        // metodo of mauriicio
+        utilitario.buscarPermisosObjetos();
         
     }
     
