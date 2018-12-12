@@ -374,7 +374,7 @@ public class pre_actas extends Pantalla {
 public void abrirListaReportes() {
     
         if(com_tipo_acta.getValue() == null){
-            utilitario.agregarMensajeInfo("Seleccione el Año", "Seleccione el Año para poder continuar");
+            utilitario.agregarMensajeInfo("Seleccione el Tipo de Acta", "Seleccione el Año para poder continuar");
 	
         }
         else {
