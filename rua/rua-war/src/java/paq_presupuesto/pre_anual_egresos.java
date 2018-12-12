@@ -35,6 +35,7 @@ public class pre_anual_egresos extends Pantalla {
         private SeleccionTabla sel_programas = new SeleccionTabla();
 	private SeleccionTabla set_programa = new SeleccionTabla();
         private SeleccionTabla set_actividad = new SeleccionTabla();
+        private SeleccionTabla set_producto = new SeleccionTabla();
 	private SeleccionTabla set_poa=new SeleccionTabla();
         private Dialogo dia_por_devengar = new Dialogo();
         private SeleccionTabla set_por_devengar = new SeleccionTabla();
@@ -306,6 +307,13 @@ public class pre_anual_egresos extends Pantalla {
 		sel_calendario.setId("sel_calendario");
 		sel_calendario.getBot_aceptar().setMetodo("aceptarReporte");
 		agregarComponente(sel_calendario);
+                // sl producto
+                set_producto.setId("set_producto");
+		set_producto.setSeleccionTabla(ser_presupuesto.getProducto("-1"),"ide_prfup");
+                set_producto.getTab_seleccion().getColumna("detalle_prfup").setFiltro(true);
+		set_producto.setTitle("Seleccione el Producto");
+		set_producto.getBot_aceptar().setMetodo("aceptarReporte");
+		agregarComponente(set_producto);
 
 	}
         /**
@@ -664,6 +672,48 @@ public void aceptarReporte(){
                         self_reporte.dibujar();
                     }
         }
+        else if(rep_reporte.getReporteSelecionado().equals("Ejecución Presupuestaria")){
+                if (rep_reporte.isVisible()){
+                    
+                    sel_programas.getTab_seleccion().setSql(ser_presupuesto.getFuncionPrograma("1"));
+                    sel_programas.getTab_seleccion().ejecutarSql();
+                    sel_programas.dibujar();               
+                    rep_reporte.cerrar();
+                    
+		}
+                else if(sel_programas.isVisible()){
+                    seleccionados=sel_programas.getSeleccionados();
+                    sel_programas.cerrar();
+                    set_producto.getTab_seleccion().setSql(ser_presupuesto.getProducto(seleccionados));
+                    set_producto.getTab_seleccion().ejecutarSql();
+                    set_producto.dibujar(); 
+
+                    }
+                else if(set_producto.isVisible()){
+                    actividades=set_producto.getSeleccionados();
+                    set_producto.cerrar();
+                    sel_calendario.setFecha1(null);
+                    sel_calendario.setFecha2(null);					
+                    sel_calendario.dibujar();
+                    }
+                else if(sel_calendario.isVisible()){
+                    
+                    sel_calendario.cerrar();
+			p_parametros=new HashMap();		
+			rep_reporte.cerrar();	
+			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
+			p_parametros.put("panio",Integer.parseInt(com_anio.getValue().toString()));
+                        p_parametros.put("nombre",utilitario.getVariable("NICK"));
+                        p_parametros.put("pprograma",seleccionados);
+                        p_parametros.put("pactividad",actividades);
+                        p_parametros.put("pfecha_inicial",sel_calendario.getFecha1String());
+                        p_parametros.put("pfecha_final",sel_calendario.getFecha2String());
+                        //System.out.println("paso parametrios "+p_parametros);
+			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
+                        self_reporte.dibujar();
+                    }
+        }
+        
 		else{
 			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
 
@@ -844,6 +894,14 @@ public void aceptarReporte(){
 
     public void setTab_programa(Tabla tab_programa) {
         this.tab_programa = tab_programa;
+    }
+
+    public SeleccionTabla getSet_producto() {
+        return set_producto;
+    }
+
+    public void setSet_producto(SeleccionTabla set_producto) {
+        this.set_producto = set_producto;
     }
 
 
