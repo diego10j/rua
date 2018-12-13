@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_compromiso" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="231c2868-b028-4538-b501-b71df16fa373">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="125"/>
+	<property name="ireport.x" value="35"/>
+	<property name="ireport.y" value="0"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -272,7 +272,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 					</textElement>
-					<text><![CDATA[Sub-Actividad]]></text>
+					<text><![CDATA[SUB-ACTIVIDAD]]></text>
 				</staticText>
 				<staticText>
 					<reportElement uuid="3ac16b5e-8565-4645-8ca0-79602d02fa3a" key="staticText" x="407" y="27" width="89" height="15"/>
@@ -339,7 +339,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PROYECTOS PRESUPUESTARIOS]]></text>
+				<text><![CDATA[EJECUCIÓN PRESUPUESTARIA]]></text>
 			</staticText>
 			<subreport isUsingCache="true">
 				<reportElement uuid="8338ed34-b87c-4f12-a34b-1a39d5556241" key="subreport" x="0" y="0" width="175" height="85"/>
