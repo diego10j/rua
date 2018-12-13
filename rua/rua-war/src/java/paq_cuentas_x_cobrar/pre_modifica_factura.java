@@ -510,7 +510,8 @@ public class pre_modifica_factura extends Pantalla {
                 tab_cab_factura.setValor("ide_geper", ide_geper);
                 tab_cab_factura.setValor("direccion_cccfa", tag_cliente.getValor("direccion_geper"));
                 tab_cab_factura.setValor("telefono_cccfa", tag_cliente.getValor("telefono_geper"));
-                utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa", "");
+                tab_cab_factura.setValor("correo_cccfa", tag_cliente.getValor("correo_geper"));
+                utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa,correo_cccfa", "");
             }
         }
     }
