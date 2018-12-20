@@ -256,6 +256,7 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.setId("tab_acta_entrega");
         tab_acta_entrega.setTabla("act_acta_constata", "ide_acact", 3);
         tab_acta_entrega.setCondicion("ide_acact=-1");
+        tab_acta_entrega.getColumna("ide_acact").setVisible(false);
         tab_acta_entrega.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
         tab_acta_entrega.getColumna("ide_geobr").setCombo(ser_activos.getObras());
         tab_acta_entrega.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
@@ -280,7 +281,7 @@ public class pre_actas extends Pantalla {
             tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
             tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
         }
-        if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+        else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
             tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
             tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
             tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
@@ -453,13 +454,16 @@ public class pre_actas extends Pantalla {
 
     public void generarPDF() {
         valor_combo = com_tipo_acta.getValue().toString();
+        
         if (com_tipo_acta.getValue() != null) {
+            
+            TablaGenerica tab_empleado= utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper ="+utilitario.getVariable("p_act_custodio"));
             ///////////AQUI ABRE EL REPORTE
             Map parametros = new HashMap();
             p_parametros.put("titulo", "CERTIFICACION PRESUPUESTARIA");
             p_parametros.put("ide_acact", Integer.parseInt(tab_tabla.getValor("ide_acact")));
             p_parametros.put("nombre", utilitario.getVariable("NICK"));
-            p_parametros.put("pres_activos", utilitario.getVariable("p_act_custodio"));
+            p_parametros.put("pres_activos", tab_empleado.getValor("nom_geper"));
             String reporte = "";
 
             if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
