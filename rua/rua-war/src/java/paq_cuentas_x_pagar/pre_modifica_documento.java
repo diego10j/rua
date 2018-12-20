@@ -362,7 +362,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setLongitud(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("RUC");
-        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("99999999999999");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
         ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChange("validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
