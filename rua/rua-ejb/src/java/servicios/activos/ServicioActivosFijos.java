@@ -48,6 +48,8 @@ public class ServicioActivosFijos extends ServicioBase {
                  sql+=" and a.ide_aceaf in ("+estado+")";
                 }
                 sql+= "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+                
+                System.out.println("sql "+sql);
         
         return sql;
     }
