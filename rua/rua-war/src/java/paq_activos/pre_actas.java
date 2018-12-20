@@ -18,6 +18,7 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.VisualizarPDF;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,60 +33,79 @@ import servicios.activos.ServicioActivosFijos;
  */
 public class pre_actas extends Pantalla {
 
-    
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private Tabla tab_acta_entrega = new Tabla();
-    private Combo com_tipo_acta=new Combo();
-    private Dialogo dia_activos= new Dialogo();
-    private SeleccionTabla set_activos=new SeleccionTabla();
-    private SeleccionTabla set_tipo_acta=new SeleccionTabla();
+    private Combo com_tipo_acta = new Combo();
+    private Dialogo dia_activos = new Dialogo();
+    private SeleccionTabla set_activos = new SeleccionTabla();
+    private SeleccionTabla set_tipo_acta = new SeleccionTabla();
     private Dialogo dia_actas = new Dialogo();
     private Dialogo dia_radio = new Dialogo();
-    private Radio rad_bloqueado= new Radio();
+    private Radio rad_bloqueado = new Radio();
+    private VisualizarPDF vipdf_actas = new VisualizarPDF();
+
     @EJB
     private ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
     @EJB
     private ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     @EJB
-    private final ServicioProduccion ser_valtiempo= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
-    String condicion="";
-    
-            	///reporte
-	private Map p_parametros = new HashMap();
-	private Reporte rep_reporte = new Reporte();
-	private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+    private final ServicioProduccion ser_valtiempo = (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class);
 
-    public pre_actas() { 
-        
+    String condicion = "";
+
+    ///reporte
+    private Map p_parametros = new HashMap();
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte self_reporte = new SeleccionFormatoReporte();
+
+    public pre_actas() {
+
         ///reporte
-		rep_reporte.setId("rep_reporte"); //id
-		rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
-		agregarComponente(rep_reporte);//agrega el componente a la pantalla
-		bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
-		self_reporte.setId("self_reporte"); //id
-		agregarComponente(self_reporte);
-        
+        rep_reporte.setId("rep_reporte"); //id
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");//ejecuta el metodo al aceptar reporte
+        agregarComponente(rep_reporte);//agrega el componente a la pantalla
+        //bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
+        self_reporte.setId("self_reporte"); //id
+        //agregarComponente(self_reporte);
+
         com_tipo_acta.setCombo(ser_activos.getTipoActa());
         com_tipo_acta.setMetodo("seleccionarTipoActa");
-	bar_botones.agregarComponente(new Etiqueta("Seleccione El Tipo de Acta:"));
-	bar_botones.agregarComponente(com_tipo_acta);
-        
+        bar_botones.agregarComponente(new Etiqueta("Seleccione El Tipo de Acta:"));
+        bar_botones.agregarComponente(com_tipo_acta);
+
         Boton bot_clean = new Boton();
         bot_clean.setIcon("ui-icon-cancel");
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
-        
-        Boton bot_agrega_activo= new Boton();
+
+        Boton bot_agrega_activo = new Boton();
         bot_agrega_activo.setIcon("ui-icon-search");
-	bot_agrega_activo.setValue("BUSCAR ACTIVOS");
-	bot_agrega_activo.setMetodo("importarActivos");
-	bar_botones.agregarBoton(bot_agrega_activo);
-            
-        
+        bot_agrega_activo.setValue("BUSCAR ACTIVOS");
+        bot_agrega_activo.setMetodo("importarActivos");
+        bar_botones.agregarBoton(bot_agrega_activo);
+
+        Boton bot_aprobar_activo = new Boton();
+        bot_aprobar_activo.setIcon("ui-icon-search");
+        bot_aprobar_activo.setValue("APROBAR ACTA");
+        bot_aprobar_activo.setMetodo("aprobarActa");
+        bar_botones.agregarBoton(bot_aprobar_activo);
+
+        Boton bot_anular_activo = new Boton();
+        bot_anular_activo.setIcon("ui-icon-search");
+        bot_anular_activo.setValue("ANULAR ACTA");
+        bot_anular_activo.setMetodo("anularActa");
+        bar_botones.agregarBoton(bot_anular_activo);
+
+        Boton bot_imprime_acta = new Boton();
+        bot_imprime_acta.setIcon("ui-icon-print");
+        bot_imprime_acta.setValue("IMPRIMIR ACTAS");
+        bot_imprime_acta.setMetodo("generarPDF");
+        bar_botones.agregarBoton(bot_imprime_acta);
+
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("act_acta_constata","ide_acact", 1);
+        tab_tabla.setTabla("act_acta_constata", "ide_acact", 1);
         tab_tabla.setCondicion("ide_actia=-1");
         tab_tabla.setCampoOrden("ide_acact desc");
         tab_tabla.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
@@ -98,9 +118,9 @@ public class pre_actas extends Pantalla {
         tab_tabla.getColumna("ide_acuba").setAutoCompletar();
         tab_tabla.getColumna("ide_geper").setAutoCompletar();
         tab_tabla.getColumna("gen_ide_geper").setAutoCompletar();
-        tab_tabla.getColumna("ide_geper").setRequerida(true);       
+        tab_tabla.getColumna("ide_geper").setRequerida(true);
         tab_tabla.getColumna("secuencial_acact").setRequerida(true);
-   
+        tab_tabla.getColumna("anulado_acact").setLectura(true);
         tab_tabla.getColumna("bloqueado_acact").setLectura(true);
         tab_tabla.getColumna("bloqueado_acact").setValorDefecto("false");
         tab_tabla.getColumna("secuencial_acact").setEtiqueta();
@@ -113,33 +133,34 @@ public class pre_actas extends Pantalla {
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
-        
+
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setTabla("act_movimiento","ide_acmov", 2);
+        tab_tabla2.setTabla("act_movimiento", "ide_acmov", 2);
         tab_tabla2.getColumna("ide_aceaf").setCombo(ser_activos.getEstadoActivo());
         tab_tabla2.getColumna("ide_acafi").setCombo(ser_activos.getDatoActivoBasico());
         tab_tabla2.getColumna("ide_aceaf").setAutoCompletar();
         tab_tabla2.getColumna("ide_acafi").setAutoCompletar();
-        
+
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
 
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pat_panel,pat_panel2,"30%","H");
+        div_division.dividir2(pat_panel, pat_panel2, "30%", "H");
         agregarComponente(div_division);
-        
+
         set_activos.setId("set_activos");
-	set_activos.setTitle("SELECCIONE LOS ACTIVOS FIJOS");
-	set_activos.setSeleccionTabla(ser_activos.getSqlListaActivosFijos("1","-1","0","-1","1"),"ide_acafi");
-	set_activos.getTab_seleccion().getColumna("observacion_acafi").setFiltro(true);
-	set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setFiltro(true);
+        set_activos.setTitle("SELECCIONE LOS ACTIVOS FIJOS");
+        set_activos.setSeleccionTabla(ser_activos.getSqlListaActivosFijos("1", "-1", "0", "-1", "1"), "ide_acafi");
+        set_activos.getTab_seleccion().getColumna("observacion_acafi").setFiltro(true);
+        set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setFiltro(true);
+        set_activos.getTab_seleccion().getColumna("SECUENCIAL").setFiltro(true);
         set_activos.getTab_seleccion().getColumna("observacion_acafi").setOrden(1);
-	set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setOrden(2);
-	set_activos.getBot_aceptar().setMetodo("aceptarActivo");
+        set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setOrden(2);
+        set_activos.getBot_aceptar().setMetodo("aceptarActivo");
         agregarComponente(set_activos);
-        
+
         dia_actas = new Dialogo();
         dia_actas.setTitle("DATOS PARA EL ACTA");
         dia_actas.setId("dia_actas");
@@ -147,7 +168,7 @@ public class pre_actas extends Pantalla {
         dia_actas.setWidth("80%");
         dia_actas.getBot_aceptar().setMetodo("guardarDialogo");
         agregarComponente(dia_actas);
-        
+
         List lista = new ArrayList();
         Object fila1[] = {
             "1", "Bloquear Actas"
@@ -160,48 +181,81 @@ public class pre_actas extends Pantalla {
         rad_bloqueado = new Radio();
         rad_bloqueado.setRadio(lista);
         rad_bloqueado.setValue("2"); //Por defecto beneficiario
-        
+
         dia_radio = new Dialogo();
         dia_radio.setTitle("SELECCIONE LA OPCION PARA IMPRIMIR EL ACTA");
         dia_radio.setId("dia_radio");
         dia_radio.setHeight("25%");
         dia_radio.setWidth("25%");
-        dia_radio.setDialogo(dia_radio);
-        dia_radio.getBot_aceptar().setMetodo("guardarDialogo");
+        dia_radio.setDialogo(rad_bloqueado);
+        dia_radio.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(dia_radio);
-        
-        
+
+        vipdf_actas.setId("vipdf_actas");
+        vipdf_actas.setTitle("REPORTE DE ACTAS");
+        agregarComponente(vipdf_actas);
     }
-    public void actaEntregaRecepcion(){
-        
-        if(com_tipo_acta.getValue()==null){
+
+    public void aprobarActa() {
+        utilitario.getConexion().ejecutarSql("update act_acta_constata set bloqueado_acact=true where ide_acact=" + tab_tabla.getValor("ide_acact"));
+        TablaGenerica tab_detalle_activo = utilitario.consultar("select ide_acmov,ide_acafi from act_movimiento where ide_acact=" + tab_tabla.getValor("ide_acact"));
+
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep")) || valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+
+            if (tab_detalle_activo.getTotalFilas() > 0) {
+                for (int i = 0; i < tab_detalle_activo.getTotalFilas(); i++) {
+                    utilitario.getConexion().ejecutarSql("update act_activo_fijo set ide_geper =" + tab_tabla.getValor("gen_ide_geper") + " where ide_acafi =" + tab_detalle_activo.getValor(i, "ide_acafi"));
+                }
+            }
+        }
+
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+            if (tab_detalle_activo.getTotalFilas() > 0) {
+                for (int i = 0; i < tab_detalle_activo.getTotalFilas(); i++) {
+                    utilitario.getConexion().agregarSql("UPDATE act_activo_fijo set ide_aceaf=" + utilitario.getVariable("p_act_estado_dado_de_baja") + " where ide_acafi=" + tab_detalle_activo.getValor(i, "ide_acafi"));
+                }
+
+            }
+        }
+            tab_tabla.ejecutarSql();
+            tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
+
+        }
+    
+
+    public void anularActa() {
+        utilitario.getConexion().ejecutarSql("update act_acta_constata set anulado_acact=true where ide_acact=" + tab_tabla.getValor("ide_acact"));
+        tab_tabla.ejecutarSql();
+        tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
+
+    }
+
+    public void actaEntregaRecepcion() {
+
+        if (com_tipo_acta.getValue() == null) {
             utilitario.agregarMensajeError("No se puede insertar", "Debe Seleccionar un tipo de acta");
             return;
-		
-	}
-        tab_acta_entrega.limpiar();
-         dia_actas.getGri_cuerpo().getChildren().clear();
-         valor_combo=com_tipo_acta.getValue().toString();
 
-            if(valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_entrega_recepcion");
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_constatacion");
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_baja");
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_cambio");
-            }
-            TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(sec_modulo));
-            
-        
+        }
+        tab_acta_entrega.limpiar();
+        dia_actas.getGri_cuerpo().getChildren().clear();
+        valor_combo = com_tipo_acta.getValue().toString();
+
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_entrega_recepcion");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_constatacion");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_baja");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_cambio");
+        }
+        TablaGenerica tab_secuencial = utilitario.consultar(ser_valtiempo.getSecuencialModulo(sec_modulo));
+
         tab_acta_entrega = new Tabla();
         tab_acta_entrega.setId("tab_acta_entrega");
-        tab_acta_entrega.setTabla("act_acta_constata","ide_acact", 1);
-        tab_acta_entrega.setCondicion("ide_actia=-1");
+        tab_acta_entrega.setTabla("act_acta_constata", "ide_acact", 3);
+        tab_acta_entrega.setCondicion("ide_acact=-1");
         tab_acta_entrega.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
         tab_acta_entrega.getColumna("ide_geobr").setCombo(ser_activos.getObras());
         tab_acta_entrega.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
@@ -212,20 +266,32 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("ide_acuba").setAutoCompletar();
         tab_acta_entrega.getColumna("ide_geper").setAutoCompletar();
         tab_acta_entrega.getColumna("gen_ide_geper").setAutoCompletar();
-        if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
-                tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
-                tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
-                tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
-                tab_acta_entrega.getColumna("ide_geper").setVisible(false);
-                tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
-                tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
+        tab_acta_entrega.getColumna("ide_gecas").setNombreVisual("CASA");
+        tab_acta_entrega.getColumna("ide_geobr").setNombreVisual("OBRA");
+        tab_acta_entrega.getColumna("ide_acuba").setNombreVisual("UBICACION");
+        tab_acta_entrega.getColumna("ide_geper").setNombreVisual("CUSTODIO ACTUAL");
+        tab_acta_entrega.getColumna("observacion_acact").setNombreVisual("OBSERVACIONES");
+        tab_acta_entrega.getColumna("fecha_asigna_acact").setNombreVisual("FECHA ACTA");
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+            tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
+            tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
+            tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+            tab_acta_entrega.getColumna("ide_geper").setVisible(false);
+            tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
+            tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
         }
-        if(valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))|| valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
-                tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
-                tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
-                tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+            tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
+            tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
+            tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+            tab_acta_entrega.getColumna("ide_geper").setVisible(false);
+            tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
+            tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
         }
-        tab_acta_entrega.getColumna("ide_geper").setRequerida(true);       
+        else{
+            tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO NUEVO");
+        }
+        tab_acta_entrega.getColumna("ide_geper").setRequerida(true);
         tab_acta_entrega.getColumna("secuencial_acact").setRequerida(true);
         tab_acta_entrega.getColumna("secuencial_acact").setValorDefecto(tab_secuencial.getValor("nuevo_secuencial"));
         tab_acta_entrega.getColumna("bloqueado_acact").setLectura(true);
@@ -233,256 +299,288 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("secuencial_acact").setEtiqueta();
         tab_acta_entrega.getColumna("secuencial_acact").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");
         tab_acta_entrega.getColumna("ide_actia").setVisible(false);
+        tab_acta_entrega.getColumna("ide_actia").setValorDefecto(com_tipo_acta.getValue().toString());
         tab_acta_entrega.getColumna("bloqueado_acact").setVisible(false);
+        tab_acta_entrega.getColumna("anulado_acact").setValorDefecto("false");
+        tab_acta_entrega.getColumna("anulado_acact").setVisible(false);
         tab_acta_entrega.setTipoFormulario(true);
         tab_acta_entrega.getGrid().setColumns(4);
         tab_acta_entrega.dibujar();
         tab_acta_entrega.insertar();
-        PanelTabla pat_panel = new PanelTabla();
-        pat_panel.setPanelTabla(tab_acta_entrega);
-        pat_panel.getMenuTabla().setRendered(false);
-        pat_panel.setStyle("overflow:auto");
-        
-       
-        dia_actas.setDialogo(pat_panel);
+        PanelTabla pat_panel3 = new PanelTabla();
+        pat_panel3.setPanelTabla(tab_acta_entrega);
+        pat_panel3.getMenuTabla().setRendered(false);
+        pat_panel3.setStyle("overflow:auto");
+
+        dia_actas.setDialogo(pat_panel3);
         dia_actas.dibujar();
-        
-        
+
     }
-    public void guardarDialogo(){
+
+    public void guardarDialogo() {
         tab_acta_entrega.guardar();
         guardarPantalla();
+         valor_combo = com_tipo_acta.getValue().toString();
+
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_entrega_recepcion");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_constatacion");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_baja");
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+            sec_modulo = utilitario.getVariable("p_act_secuecial_cambio");
+        }
+        utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(sec_modulo));
         dia_actas.cerrar();
         tab_tabla.ejecutarSql();
+        tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
     }
-    public void importarActivos(){
-        if(com_tipo_acta.getValue()==null){
+    public boolean validaActas(){
+        boolean val=false;
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
+
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+
+        }
+        return val;
+    }
+    public void importarActivos() {
+        if (com_tipo_acta.getValue() == null) {
             utilitario.agregarMensajeError("No se puede insertar", "Debe Seleccionar un tipo de acta");
             return;
-		
-	}
-        String custodio_actual=tab_tabla.getValor("ide_geper");
-        String estado_activo=utilitario.getVariable("p_act_estado_activo_valora_deprec");
-        String clase_activo="1,2"; //indica los tipo de ACTIVO FIJO, Y BIENES DE CONTROL sie n la tabla cambian los codigos o generan nuevos se debe agregar aqui
-        valor_combo=com_tipo_acta.getValue().toString();            
-            if(valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))){
-                       set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1",custodio_actual,"1",estado_activo,clase_activo));
-                       set_activos.getTab_seleccion().ejecutarSql();
-                       set_activos.dibujar(); 
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
-                TablaGenerica tab_activos_custodio =utilitario.consultar(ser_activos.getSqlListaActivosFijos("1",custodio_actual,"1",estado_activo,clase_activo));
-                if(tab_activos_custodio.getTotalFilas()>0){
-                    for(int i=0; i<tab_activos_custodio.getTotalFilas();i++){
-                        tab_tabla2.insertar();
-                        tab_tabla2.setValor(i, "ide_acafi", tab_activos_custodio.getValor(i, "ide_acafi"));
-                        tab_tabla2.setValor(i, "ide_aceaf", tab_activos_custodio.getValor(i, "ide_aceaf"));
-                    }
-                    utilitario.addUpdate("tab_tabla2");
+
+        }
+        String custodio_actual = tab_tabla.getValor("ide_geper");
+        String custodio_constatacion = tab_tabla.getValor("gen_ide_geper");
+        String estado_activo = utilitario.getVariable("p_act_estado_activo_valora_deprec");
+        String clase_activo = "1,2"; //indica los tipo de ACTIVO FIJO, Y BIENES DE CONTROL sie n la tabla cambian los codigos o generan nuevos se debe agregar aqui
+        valor_combo = com_tipo_acta.getValue().toString();
+                    System.out.println("valorr "+valor_combo);
+
+        if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
+            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_actual, "1", estado_activo, clase_activo));
+            set_activos.getTab_seleccion().ejecutarSql();
+            set_activos.dibujar();
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+            TablaGenerica tab_activos_custodio = utilitario.consultar(ser_activos.getSqlListaActivosFijos("1", custodio_constatacion, "1", estado_activo, clase_activo));
+            if (tab_activos_custodio.getTotalFilas() > 0) {
+                for (int i = 0; i < tab_activos_custodio.getTotalFilas(); i++) {
+                    tab_tabla2.insertar();
+                    tab_tabla2.setValor(i, "ide_acafi", tab_activos_custodio.getValor(i, "ide_acafi"));
+                    tab_tabla2.setValor(i, "ide_aceaf", tab_activos_custodio.getValor(i, "ide_aceaf"));
                 }
-                else{
-                    utilitario.agregarMensajeInfo("No Registra Activos", "El custodio consultado no registra bienes a su cargo revise por favor");
-                }
+                utilitario.addUpdate("tab_tabla2");
+            } else {
+                utilitario.agregarMensajeInfo("No Registra Activos", "El custodio consultado no registra bienes a su cargo revise por favor");
             }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
-                       set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1",custodio_actual,"1",estado_activo,clase_activo));
-                       set_activos.getTab_seleccion().ejecutarSql();
-                       set_activos.dibujar();
-                
-            }
+        } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+            //System.out.println("etre a imprimir el acta de baja");
+            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_actual, "1", estado_activo, clase_activo));
+            set_activos.getTab_seleccion().ejecutarSql();
+            set_activos.dibujar();
+
+        }
+        else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+            //System.out.println("etre a imprimir el acta de baja");
+            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_constatacion, "1", estado_activo, clase_activo));
+            set_activos.getTab_seleccion().ejecutarSql();
+            set_activos.dibujar();
+
+        }
 
     }
-    
-    	public void aceptarActivo(){
 
-		String str_seleccionado = set_activos.getSeleccionados();
-                TablaGenerica tabla_activos=utilitario.consultar("select * from act_activo_fijo where ide_acafi in ("+str_seleccionado+")");
-		if (str_seleccionado!=null){
-                        
-                        for(int i=0; i<tabla_activos.getTotalFilas();i++){
-                        tab_tabla2.insertar();
-                        tab_tabla2.setValor(i, "ide_acafi", tabla_activos.getValor(i, "ide_acafi"));
-                        tab_tabla2.setValor(i, "ide_aceaf", tabla_activos.getValor(i, "ide_aceaf"));
-                        }
-			utilitario.addUpdate("tab_tabla2");
-				
-		}
-		else {
-			utilitario.agregarMensajeInfo("SELECCIONE OPCION", "Seleccione un registro");
-		    }
-		
-	}
-    public void seleccionarTipoActa(){
-		if(com_tipo_acta.getValue()!=null){
-                      tab_tabla.getColumna("observacion_acact").setVisible(true);  
-                    //actualizarCampos();
-			tab_tabla.setCondicion("ide_actia="+com_tipo_acta.getValue());
-               		tab_tabla.ejecutarSql();
-                        tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
-                        
-                        //tab_tabla2.ejecutarSql();
-		}
-		else{
-			tab_tabla.setCondicion("ide_actia=-1");
-			tab_tabla.ejecutarSql();
-		}
-                utilitario.addUpdate("tab_tabla");
-	}
-    public void actualizarCampos(){
+    public void aceptarActivo() {
+
+        String str_seleccionado = set_activos.getSeleccionados();
+        if (str_seleccionado != null) {
+        TablaGenerica tabla_activos = utilitario.consultar("select * from act_activo_fijo where ide_acafi in (" + str_seleccionado + ")");
+
+            for (int i = 0; i < tabla_activos.getTotalFilas(); i++) {
+                tab_tabla2.insertar();
+                tab_tabla2.setValor(i, "ide_acafi", tabla_activos.getValor(i, "ide_acafi"));
+                tab_tabla2.setValor(i, "ide_aceaf", tabla_activos.getValor(i, "ide_aceaf"));
+            }
+            utilitario.addUpdate("tab_tabla2");
+
+        } else {
+            utilitario.agregarMensajeInfo("SELECCIONE OPCION", "Seleccione un registro");
+        }
+
+    }
+
+    public void seleccionarTipoActa() {
+        if (com_tipo_acta.getValue() != null) {
+            tab_tabla.getColumna("observacion_acact").setVisible(true);
+            //actualizarCampos();
+            tab_tabla.setCondicion("ide_actia=" + com_tipo_acta.getValue());
+            tab_tabla.ejecutarSql();
+            tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
+
+            //tab_tabla2.ejecutarSql();
+        } else {
+            tab_tabla.setCondicion("ide_actia=-1");
+            tab_tabla.ejecutarSql();
+        }
+        utilitario.addUpdate("tab_tabla");
+    }
+
+    public void actualizarCampos() {
         tab_tabla.getColumna("observacion_acact").setLectura(true);
         utilitario.addUpdate("tab_tabla");
     }
+
     public void limpiar() {
         com_tipo_acta.limpiar();
-        tab_tabla.limpiar();   
+        tab_tabla.limpiar();
         tab_tabla2.limpiar();
     }
-    String valor_combo="";
-    String sec_modulo="";
+    String valor_combo = "";
+    String sec_modulo = "";
+
     @Override
     public void insertar() {
-   
-        actaEntregaRecepcion();/*
-        if(com_tipo_acta.getValue()==null){
-            utilitario.agregarMensajeError("No se puede insertar", "Debe Seleccionar un tipo de acta");
-            return;
-		
-	}
-        if(tab_tabla.isFocus()){
-            valor_combo=com_tipo_acta.getValue().toString();
-            tab_tabla.insertar();
-            tab_tabla.setValor("ide_actia",valor_combo);
-            if(valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_entrega_recepcion");
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_constatacion");
-            }
-            else if(valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
-                sec_modulo=utilitario.getVariable("p_act_secuecial_baja");
-            }
-            TablaGenerica tab_secuencial=utilitario.consultar(ser_valtiempo.getSecuencialModulo(sec_modulo));
-            tab_tabla.setValor("secuencial_acact", tab_secuencial.getValor("nuevo_secuencial"));
-            utilitario.addUpdate("tab_tabla");
-        }
-        else if(tab_tabla2.isFocus()){
-            tab_tabla2.insertar();
-        }
-*/
+
+        actaEntregaRecepcion();
+
     }
-        //reporte
-public void abrirListaReportes() {
-    
-        if(com_tipo_acta.getValue() == null){
-            utilitario.agregarMensajeInfo("Seleccione el Tipo de Acta", "Seleccione el Año para poder continuar");
-	
+    //reporte
+
+    public void generarPDF() {
+        valor_combo = com_tipo_acta.getValue().toString();
+        if (com_tipo_acta.getValue() != null) {
+            ///////////AQUI ABRE EL REPORTE
+            Map parametros = new HashMap();
+            p_parametros.put("titulo", "CERTIFICACION PRESUPUESTARIA");
+            p_parametros.put("ide_acact", Integer.parseInt(tab_tabla.getValor("ide_acact")));
+            p_parametros.put("nombre", utilitario.getVariable("NICK"));
+            p_parametros.put("pres_activos", utilitario.getVariable("p_act_custodio"));
+            String reporte = "";
+
+            if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
+                reporte = "rep_activos/rep_acta_entrega.jasper";
+            } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
+                reporte = "rep_activos/rep_acta_constata.jasper";
+            } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
+                reporte = "rep_activos/rep_acta_baja.jasper";
+            } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
+                reporte = "rep_activos/rep_acta_cambio.jasper";
+            }
+
+            System.out.println(" " + p_parametros + " reportes " + reporte);
+            vipdf_actas.setVisualizarPDF(reporte, p_parametros);
+            vipdf_actas.dibujar();
+            utilitario.addUpdate("vipdf_actas");
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione el Tipo de Acta", "Seleccione el Tipo de Acta para poder continuar");
+        }
+    }
+
+    public void abrirListaReportes() {
+
+        if (com_tipo_acta.getValue() == null) {
+            utilitario.agregarMensajeInfo("Seleccione el Tipo de Acta", "Seleccione el Tipo de Acta para poder continuar");
+
+        } else {
+            // TODO Auto-generated method stub
+            /*
+        if(tab_tabla.getValor("bloqueado_acact").equals("false")){
+            dia_radio.dibujar();
         }
         else {
-	// TODO Auto-generated method stub
-	rep_reporte.dibujar();
-         }
-}
-public void aceptarReporte(){
-    if(tab_tabla.getValor("dia_radio").equals("false")){
-        dia_radio.dibujar();
+                if(dia_radio.isVisible())
+                {
+                    if(rad_bloqueado.getValue().equals("1")){  //cerrar actas
+                        tab_tabla.setValor("bloqueado_acact", "true");
+                        utilitario.addUpdateTabla(tab_tabla, "bloqueado_acact", "");
+                        guardar();
+                    }
+                    dia_radio.cerrar();
+                }*/
+            rep_reporte.dibujar();
+            //}
+        }
     }
-    else {
-            if(rep_reporte.getReporteSelecionado().equals("Acta Entrega Recepcion")){
-		if (rep_reporte.isVisible()){
-			p_parametros=new HashMap();		
-			rep_reporte.cerrar();	
-			p_parametros.put("titulo","CERTIFICACION PRESUPUESTARIA");
-			p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
-                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
-			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
-                        self_reporte.dibujar();
-		
-		}
-		else{
-			utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
 
-		}
-	}
-        else if(rep_reporte.getReporteSelecionado().equals("Acta Constacion Fisica")){
-                if (rep_reporte.isVisible()){
-                    
-              
-                    rep_reporte.cerrar();
-                    
-		
-                	p_parametros=new HashMap();		
-			rep_reporte.cerrar();	
-			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
-                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
-                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
-                        //System.out.println("paso parametrios "+p_parametros);
-			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
-                        self_reporte.dibujar();
-                    }
+    public void aceptarReporte() {
+
+        if (rep_reporte.getReporteSelecionado().equals("Acta Entrega Recepcion")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "CERTIFICACION PRESUPUESTARIA");
+                p_parametros.put("ide_acact", tab_tabla.getValor("ide_acact"));
+                p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                self_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                self_reporte.dibujar();
+
+            } else {
+                utilitario.agregarMensajeInfo("No se puede continuar", "No ha Seleccionado Ningun Registro");
+
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Acta Constatacion Fisica")) {
+            if (rep_reporte.isVisible()) {
+
+                rep_reporte.cerrar();
+
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "COMPROMISO PRESUPUESTARIA");
+                p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                p_parametros.put("ide_acact", tab_tabla.getValor("ide_acact"));
+                System.out.println("paso parametrios " + p_parametros);
+                self_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                self_reporte.dibujar();
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Acta de Bajas")) {
+            if (rep_reporte.isVisible()) {
+
+                rep_reporte.cerrar();
+
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "COMPROMISO PRESUPUESTARIA");
+                p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                p_parametros.put("ide_acact", tab_tabla.getValor("ide_acact"));
+                //System.out.println("paso parametrios "+p_parametros);
+                self_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                self_reporte.dibujar();
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Acta Cambio de Custodio")) {
+            if (rep_reporte.isVisible()) {
+
+                rep_reporte.cerrar();
+
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "COMPROMISO PRESUPUESTARIA");
+                p_parametros.put("nombre", utilitario.getVariable("NICK"));
+                p_parametros.put("ide_acact", tab_tabla.getValor("ide_acact"));
+                p_parametros.put("pres_activos", utilitario.getVariable("p_act_custodio"));
+                //System.out.println("paso parametrios "+p_parametros);
+                self_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                self_reporte.dibujar();
+            }
         }
-else if(rep_reporte.getReporteSelecionado().equals("Acta de Bajas")){
-                if (rep_reporte.isVisible()){
-                    
-              
-                    rep_reporte.cerrar();
-                    
-		
-                	p_parametros=new HashMap();		
-			rep_reporte.cerrar();	
-			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
-                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
-                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
-                        //System.out.println("paso parametrios "+p_parametros);
-			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
-                        self_reporte.dibujar();
-                    }
-        }
-else if(rep_reporte.getReporteSelecionado().equals("Acta Cambio de Custodio")){
-                if (rep_reporte.isVisible()){
-                    
-              
-                    rep_reporte.cerrar();
-                    
-		
-                	p_parametros=new HashMap();		
-			rep_reporte.cerrar();	
-			p_parametros.put("titulo","COMPROMISO PRESUPUESTARIA");
-                        p_parametros.put("nombre", utilitario.getVariable("NICK"));
-                        p_parametros.put("ide_acact",tab_acta_entrega.getValor("ide_acact"));
-                        //System.out.println("paso parametrios "+p_parametros);
-			self_reporte.setSeleccionFormatoReporte(p_parametros,rep_reporte.getPath());
-                        self_reporte.dibujar();
-                    }
-        }            
-    }	
-}
+
+    }
 
     @Override
     public void guardar() {
-        
-        if(tab_tabla.guardar()){
-            
-            valor_combo=com_tipo_acta.getValue().toString();
-            if (tab_tabla.isFilaInsertada()){
-                
-                if(valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))){
-                    sec_modulo=utilitario.getVariable("p_act_secuecial_entrega_recepcion");
+        if (tab_tabla.getValor("bloqueado_acact").equals("true") || tab_tabla.getValor("anulado_acact").equals("true")) {
+            utilitario.agregarMensajeError("No se puede guardar", "El acta se encuentra validado y bloqueado, no se puede proceder con la modificación");
+        } else {
+            if (tab_tabla.guardar()) {
+                if (tab_tabla2.guardar()) {
+                    guardarPantalla();
                 }
-                else if(valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))){
-                    sec_modulo=utilitario.getVariable("p_act_secuecial_constatacion");
-                }
-                 else if(valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))){
-                 sec_modulo=utilitario.getVariable("p_act_secuecial_baja");
-                 }
-                    utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(sec_modulo));
-            
-                }
-            
-            if(tab_tabla2.guardar()){
-                guardarPantalla();
             }
         }
-        
     }
 
     @Override
@@ -569,5 +667,13 @@ else if(rep_reporte.getReporteSelecionado().equals("Acta Cambio de Custodio")){
     public void setDia_radio(Dialogo dia_radio) {
         this.dia_radio = dia_radio;
     }
-    
+
+    public VisualizarPDF getVipdf_actas() {
+        return vipdf_actas;
+    }
+
+    public void setVipdf_actas(VisualizarPDF vipdf_actas) {
+        this.vipdf_actas = vipdf_actas;
+    }
+
 }
