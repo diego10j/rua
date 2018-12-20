@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="68"/>
-	<property name="ireport.y" value="270"/>
-	<parameter name="ide_acact" class="java.lang.Long">
+	<property name="ireport.x" value="6"/>
+	<property name="ireport.y" value="249"/>
+	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
@@ -31,7 +31,8 @@ when extract(month from fecha_asigna_acact) =10 then 'Octubre'
 when extract(month from fecha_asigna_acact) =11 then 'Noviembre'
 when extract(month from fecha_asigna_acact) =12 then 'Diciembre' end) as mes,
 cast((extract(day from fecha_asigna_acact)) as integer) as dia,
-cast((extract (year from fecha_asigna_acact)) as integer) as anio
+cast((extract (year from fecha_asigna_acact)) as integer) as anio,g.denominacion_geper as denom_custodio,
+k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado
 from act_acta_constata a
 inner join act_movimiento j on a.ide_acact = j.ide_acact
 inner join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
@@ -69,6 +70,9 @@ order by nombre_inarti,a.ide_acact]]>
 	<field name="mes" class="java.lang.String"/>
 	<field name="dia" class="java.lang.Integer"/>
 	<field name="anio" class="java.lang.Integer"/>
+	<field name="denom_custodio" class="java.lang.String"/>
+	<field name="denom_nuevo_custodio" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -126,7 +130,7 @@ order by nombre_inarti,a.ide_acact]]>
 			<textField>
 				<reportElement uuid="434e1b67-7c56-4177-97d5-2bd931904612" x="0" y="108" width="555" height="73"/>
 				<textElement textAlignment="Justified"/>
-				<textFieldExpression><![CDATA["… En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{anio}+" del año "+$F{anio}+", se reunieron, el/la Sr(ra) "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la Sr(ra) "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["… En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{anio}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="896b3ebf-41cb-49a6-8967-5290cb280520" x="0" y="181" width="555" height="17"/>
@@ -479,21 +483,28 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="185" y="112" width="181" height="14"/>
+				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="199" y="112" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{pres_activos}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="206" y="97" width="129" height="1"/>
+				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="220" y="97" width="129" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="206" y="98" width="129" height="13"/>
+				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="220" y="98" width="129" height="13"/>
 				<box topPadding="0"/>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[ACTIVOS FIJOS]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="360575e8-092d-49c0-bc6d-68b1571318d1" x="0" y="20" width="555" height="38" forecolor="#FF3333"/>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>
