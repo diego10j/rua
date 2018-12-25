@@ -40,17 +40,17 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
                 + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
                 + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
-                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls in (" + ide_accls + ")";//ACTIVO FIJO
-        if (tipo_persona.equals("1")) {
-            sql += " and a.ide_geper in (" + persona + ")";
-        }
-        if (tipo_estado.equals("1")) {
-            sql += " and a.ide_aceaf in (" + estado + ")";
-        }
-        sql += "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
-
-        System.out.println("sql " + sql);
-
+                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls in ("+ide_accls+")";//ACTIVO FIJO
+                if(tipo_persona.equals("1")){
+                 sql+=" and a.ide_geper in ("+persona+")";
+                }
+                if(tipo_estado.equals("1")){
+                 sql+=" and a.ide_aceaf in ("+estado+")";
+                }
+                sql+= "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+                
+                //System.out.println("sql "+sql);
+        
         return sql;
     }
 
