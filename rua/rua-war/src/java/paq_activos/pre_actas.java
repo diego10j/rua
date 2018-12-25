@@ -5,13 +5,17 @@
 package paq_activos;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Combo;
+import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
 import paq_nomina.*;
 import sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Reporte;
@@ -41,9 +45,14 @@ public class pre_actas extends Pantalla {
     private SeleccionTabla set_activos = new SeleccionTabla();
     private SeleccionTabla set_tipo_acta = new SeleccionTabla();
     private Dialogo dia_actas = new Dialogo();
+    private Dialogo dia_anulado = new Dialogo();
     private Dialogo dia_radio = new Dialogo();
     private Radio rad_bloqueado = new Radio();
     private VisualizarPDF vipdf_actas = new VisualizarPDF();
+    private Confirmar con_confirma = new Confirmar();
+    private Etiqueta eti_acta = new Etiqueta();
+    private Calendario cal_baja= new Calendario();
+    private AreaTexto are_baja = new AreaTexto();
 
     @EJB
     private ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
@@ -89,13 +98,13 @@ public class pre_actas extends Pantalla {
         Boton bot_aprobar_activo = new Boton();
         bot_aprobar_activo.setIcon("ui-icon-search");
         bot_aprobar_activo.setValue("APROBAR ACTA");
-        bot_aprobar_activo.setMetodo("aprobarActa");
+        bot_aprobar_activo.setMetodo("dibujarConfirm");
         bar_botones.agregarBoton(bot_aprobar_activo);
 
         Boton bot_anular_activo = new Boton();
         bot_anular_activo.setIcon("ui-icon-search");
         bot_anular_activo.setValue("ANULAR ACTA");
-        bot_anular_activo.setMetodo("anularActa");
+        bot_anular_activo.setMetodo("abrirDialogoAnular");
         bar_botones.agregarBoton(bot_anular_activo);
 
         Boton bot_imprime_acta = new Boton();
@@ -103,6 +112,15 @@ public class pre_actas extends Pantalla {
         bot_imprime_acta.setValue("IMPRIMIR ACTAS");
         bot_imprime_acta.setMetodo("generarPDF");
         bar_botones.agregarBoton(bot_imprime_acta);
+        
+        eti_acta.setId("eti_acta");
+        
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro que desea aprobar el acta: "+eti_acta);
+        con_confirma.setTitle("APROBAR ACTA");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma);        
 
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_acta_constata", "ide_acact", 1);
@@ -194,8 +212,37 @@ public class pre_actas extends Pantalla {
         vipdf_actas.setId("vipdf_actas");
         vipdf_actas.setTitle("REPORTE DE ACTAS");
         agregarComponente(vipdf_actas);
+        
+        // dialogo para anulacion
+        dia_anulado = new Dialogo();
+        dia_anulado.setTitle("DATOS PARA EL ACTA");
+        dia_anulado.setId("dia_anulado");
+        dia_anulado.setHeight("45%");
+        dia_anulado.setWidth("40%");
+        dia_anulado.getBot_aceptar().setMetodo("anularActa");
+        Grid  grid_anulacion= new Grid();
+        grid_anulacion.setColumns(2);
+        cal_baja.setId("cal_baja");
+        cal_baja.setFechaActual();
+        are_baja.setId("are_baja");
+        are_baja.setAutoResize(true);
+        grid_anulacion.getChildren().add(new Etiqueta("Fecha Anulación"));
+        grid_anulacion.getChildren().add(cal_baja);
+        grid_anulacion.getChildren().add(new Etiqueta("Razón Anulación"));
+        grid_anulacion.getChildren().add(are_baja);
+        dia_anulado.setDialogo(grid_anulacion);
+        agregarComponente(dia_anulado);
     }
-
+    public void dibujarConfirm(){
+        if (tab_tabla.getValor("ide_acact") != null) {
+            eti_acta.setValue(tab_tabla.getValor("secuencial_acact"));            
+            con_confirma.getBot_aceptar().setMetodo("aprobarActa");
+            utilitario.addUpdate("eti_acta,con_confirma");
+            con_confirma.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Acta", "");
+        }
+    }
     public void aprobarActa() {
         utilitario.getConexion().ejecutarSql("update act_acta_constata set bloqueado_acact=true where ide_acact=" + tab_tabla.getValor("ide_acact"));
         TablaGenerica tab_detalle_activo = utilitario.consultar("select ide_acmov,ide_acafi from act_movimiento where ide_acact=" + tab_tabla.getValor("ide_acact"));
@@ -217,14 +264,23 @@ public class pre_actas extends Pantalla {
 
             }
         }
+            con_confirma.cerrar();
             tab_tabla.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
 
         }
     
+    public void abrirDialogoAnular(){
+        if (tab_tabla.getValor("ide_acact") != null) {
 
+            dia_anulado.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Acta", "");
+        }
+    }
     public void anularActa() {
-        utilitario.getConexion().ejecutarSql("update act_acta_constata set anulado_acact=true where ide_acact=" + tab_tabla.getValor("ide_acact"));
+        utilitario.getConexion().ejecutarSql("update act_acta_constata set anulado_acact=true,fecha_anulado_acact= '"+cal_baja.getFecha()+"' ,razon_anulado_acact='"+are_baja.getValue()+"' where ide_acact=" + tab_tabla.getValor("ide_acact"));
+        dia_anulado.cerrar();
         tab_tabla.ejecutarSql();
         tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
 
@@ -273,6 +329,8 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("ide_geper").setNombreVisual("CUSTODIO ACTUAL");
         tab_acta_entrega.getColumna("observacion_acact").setNombreVisual("OBSERVACIONES");
         tab_acta_entrega.getColumna("fecha_asigna_acact").setNombreVisual("FECHA ACTA");
+        tab_acta_entrega.getColumna("razon_anulado_acact").setVisible(false);
+        tab_acta_entrega.getColumna("fecha_anulado_acact").setVisible(false);
         if (valor_combo.equals(utilitario.getVariable("p_act_acta_constatacion"))) {
             tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
             tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
@@ -288,6 +346,7 @@ public class pre_actas extends Pantalla {
             tab_acta_entrega.getColumna("ide_geper").setVisible(false);
             tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
             tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
+
         }
         else{
             tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO NUEVO");
@@ -356,6 +415,7 @@ public class pre_actas extends Pantalla {
             return;
 
         }
+        set_activos.limpiarSeleccionados();
         String custodio_actual = tab_tabla.getValor("ide_geper");
         String custodio_constatacion = tab_tabla.getValor("gen_ide_geper");
         String estado_activo = utilitario.getVariable("p_act_estado_activo_valora_deprec");
@@ -678,6 +738,22 @@ public class pre_actas extends Pantalla {
 
     public void setVipdf_actas(VisualizarPDF vipdf_actas) {
         this.vipdf_actas = vipdf_actas;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
+    }
+
+    public Dialogo getDia_anulado() {
+        return dia_anulado;
+    }
+
+    public void setDia_anulado(Dialogo dia_anulado) {
+        this.dia_anulado = dia_anulado;
     }
 
 }

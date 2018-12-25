@@ -1160,7 +1160,7 @@ public void actualizarCustodio(){
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
         tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
-        tab_tabla.getColumna("gen_ide_geper").setVisible(false);
+        tab_tabla.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
         tab_tabla.getColumna("ide_rheor").setVisible(false);
         tab_tabla.getColumna("alterno_acafi").setVisible(false);
         tab_tabla.getColumna("fo_acafi").setVisible(false);
@@ -1172,7 +1172,7 @@ public void actualizarCustodio(){
         // tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
         //tab_tabla.getColumna("ide_geper").setLectura(true);
         //tab_tabla.getColumna("ide_geper").setAutoCompletar();
-        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.getColumna("gen_ide_geper").setVisible(false);
         tab_tabla.getColumna("valor_depreciado_acafi").setValorDefecto("0");
         tab_tabla.getColumna("valor_depreciado_acafi").setEtiqueta();
         tab_tabla.getColumna("valor_depreciado_acafi").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");
@@ -1326,21 +1326,7 @@ public void actualizarCustodio(){
         pat_panel2.setPanelTabla(tab_tabla2);
         tab_tabulador.agregarTab("HISTORIAL ASIGNACIONES", pat_panel2);
 
-        tab_tabla3 = new Tabla();
-        tab_tabla3.setId("tab_tabla3");
-        tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
-        tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo("-1"));
-        tab_tabla3.setCampoPrimaria("ide_actra");
-        tab_tabla3.getColumna("ide_actra").setVisible(false);
-        tab_tabla3.setLectura(true);
-        tab_tabla3.setRows(10);
-        tab_tabla3.setRendered(false);
-        tab_tabla3.dibujar();
-
-        PanelTabla pat_panel5 = new PanelTabla();
-        pat_panel5.setPanelTabla(tab_tabla3);
-        tab_tabulador.agregarTab("TRANSACCIONES", pat_panel5);
-        
+    
         
 
         tab_tabla5 = new Tabla();
