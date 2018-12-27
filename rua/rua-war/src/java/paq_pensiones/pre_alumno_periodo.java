@@ -59,6 +59,7 @@ public class pre_alumno_periodo extends Pantalla {
     private Dialogo dia_emision = new Dialogo();
     private Calendario fechaInicio = new Calendario();
     private Calendario fechaFin = new Calendario();
+    private Calendario fechaDescuento = new Calendario();
     private Combo com_conceptos = new Combo();
     private AreaTexto area_dialogo = new AreaTexto();
     private Dialogo dia_retiro = new Dialogo();
@@ -70,6 +71,8 @@ public class pre_alumno_periodo extends Pantalla {
     private Radio rad_descuento = new Radio();
     private Dialogo dia_descuento= new Dialogo();
     private Texto txt_val_descuento=new Texto();
+    private Dialogo dia_email= new Dialogo();
+    private Texto txt_email=new Texto();
     String titulo_alumno = "";
     String periodo_academico = "";
     String especialidad = "";
@@ -166,6 +169,7 @@ public class pre_alumno_periodo extends Pantalla {
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
+        tab_tabla1.getColumna("descuento_recalp").setValorDefecto("false");
         tab_tabla1.getColumna("activo_recalp").setValorDefecto("true");
         tab_tabla1.getColumna("activo_recalp").setLectura(true);
         tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
@@ -296,8 +300,10 @@ public class pre_alumno_periodo extends Pantalla {
 
         gru_cuerpo.getChildren().add(new Etiqueta("Aplicar Descuento: "));
         rad_descuento.setId("rad_descuento");
-        rad_descuento.setRadio(lista);
+        rad_descuento.setLocalValueSet(true);
         rad_descuento.setValue("1");
+        rad_descuento.setRadio(lista);
+
         gru_cuerpo.getChildren().add(rad_descuento);
 
         dia_emision.setDialogo(gru_cuerpo);
@@ -363,9 +369,38 @@ public class pre_alumno_periodo extends Pantalla {
          txt_val_descuento.setId("txt_val_descuento");
          txt_val_descuento.setSoloNumeros();
         gri5.getChildren().add(txt_val_descuento);
+        
+        fechaDescuento.setId("fechaDescuento");
+        fechaDescuento.setFechaActual();
+        fechaDescuento.setTipoBoton(true);
+         gri5.getChildren().add(new Etiqueta("<strong>Fecha Descuento: </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri5.getChildren().add(fechaDescuento);
 
         dia_descuento.setDialogo(gri5);
         agregarComponente(dia_descuento);
+        
+        // dialogo para modificar email
+        Boton bot_email = new Boton();
+        bot_email.setIcon("ui-icon-person");
+        bot_email.setValue("ACTUALIZAR CORREO");
+        bot_email.setMetodo("abrirDialogoEmail");
+        bar_botones.agregarBoton(bot_email);
+        
+        dia_email.setId("dia_email");
+        dia_email.setTitle("Ingrese el EMAIL");
+        dia_email.setWidth("39%");
+        dia_email.setHeight("24%");
+        dia_email.getBot_aceptar().setMetodo("aceptarDialogoEmail");
+        dia_email.setResizable(false);
+
+        Grid gri6 = new Grid();
+        gri6.setColumns(2);
+        gri6.getChildren().add(new Etiqueta("<strong>Email: </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        txt_email.setId("txt_email");
+        gri6.getChildren().add(txt_email);
+        
+        dia_email.setDialogo(gri6);
+        agregarComponente(dia_email);
 
         
         sel_periodo_academico.setId("sel_periodo_academico");
@@ -433,12 +468,26 @@ public class pre_alumno_periodo extends Pantalla {
 
         }
     }
-    
+        public void aceptarDialogoEmail() {
+        try {
+            String alumno_selec = tab_tabla1.getFilasSeleccionadas();
+            utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n"
+                    + "set correo_recalp = '"+txt_email.getValue()+"' \n"
+                    + "where ide_recalp in (" + alumno_selec + ")");
+            dia_email.cerrar();
+            utilitario.agregarMensaje("Se ha guardado correctamente", "");
+            tab_tabla1.actualizar();
+            txt_email.limpiar();
+            utilitario.addUpdate("tab_tabla1");
+        } catch (Exception e) {
+
+        }
+    }    
         public void aceptarDialogoDescuento() {
         try {
             String alumno_selec = tab_tabla1.getFilasSeleccionadas();
             utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n"
-                    + "set descuento_recalp = true, valor_descuento_recalp = " + txt_val_descuento.getValue() + " \n"
+                    + "set descuento_recalp = true, valor_descuento_recalp = " + txt_val_descuento.getValue() + ", fecha_descuento_recalp='"+fechaDescuento.getFecha()+"' \n"
                     + "where ide_recalp in (" + alumno_selec + ")");
             dia_descuento.cerrar();
             utilitario.agregarMensaje("Se ha guardado correctamente", "");
@@ -471,16 +520,42 @@ public class pre_alumno_periodo extends Pantalla {
         String maximo_detalle = "";
         String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
         TablaGenerica tab_cons_alumperiodo = utilitario.consultar("select * from rec_alumno_periodo where ide_recalp in (" + alumnos_seleccionados + ")");
+        TablaGenerica tab_mes=utilitario.consultar("select ide_gemes,nombre_gemes from gen_mes where ide_gemes ="+com_mes.getValue());
+        TablaGenerica tab_anio=utilitario.consultar("select ide_repea,nom_geani from rec_periodo_academico a,gen_anio b where a.ide_geani = b.ide_geani and ide_repea="+com_periodo_academico.getValue());
+        TablaGenerica tab_detalle_concepto=utilitario.consultar("select ide_concepto_recon,des_concepto_recon from rec_concepto where ide_concepto_recon="+com_conceptos.getValue());        
+        String opcion_descuento = rad_descuento.getValue().toString();
+        String valor_descuento="0";
+        String fecha_descuento;
+        String aplica_descuento;
 
+        
         for (int i = 0; i < tab_cons_alumperiodo.getTotalFilas(); i++) {
             TablaGenerica cod_max = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "ide_titulo_recval"));
             maximo = cod_max.getValor("maximo");
             TablaGenerica tab_concepto = utilitario.consultar("select * from rec_forma_impuesto where ide_concepto_recon =" + com_conceptos.getValue());
+                    if(opcion_descuento.equals("1")){
+                        if(tab_cons_alumperiodo.getValor(i, "descuento_recalp").equals("true")){
+                        valor_descuento=tab_cons_alumperiodo.getValor(i, "valor_descuento_recalp");
+                        fecha_descuento="'"+tab_cons_alumperiodo.getValor(i, "fecha_descuento_recalp")+"'";
+                        aplica_descuento=tab_cons_alumperiodo.getValor(i, "descuento_recalp");
+                        }
+                        else{
+                           valor_descuento="0";
+                        fecha_descuento="null";
+                        aplica_descuento="false"; 
+                        }
+                    }
+                    else{
+                        valor_descuento="0";
+                        fecha_descuento="null";
+                        aplica_descuento="false";
+                    }
+            
             utilitario.getConexion().ejecutarSql("INSERT INTO rec_valores (ide_titulo_recval, ide_recalp, ide_sucu, ide_empr, ide_geper, gen_ide_geper, ide_recest, fecha_emision_recva, fecha_vence_recva, IDE_CONCEPTO_RECON"
-                    + "                           , ide_gemes, valor_imponible_recva,valor_descuento_recva,aplica_total_descuento_recva,generado_fact_recva )\n"
+                    + "                           , ide_gemes, valor_imponible_recva,valor_descuento_recva,aplica_total_descuento_recva,generado_fact_recva,detalle_recva,fecha_descuento_recva )\n"
                     + "VALUES (" + maximo + ", " + tab_cons_alumperiodo.getValor(i, "IDE_RECALP") + ", " + utilitario.getVariable("ide_sucu") + ", " + utilitario.getVariable("ide_empr") + " "
-                    + ", " + tab_cons_alumperiodo.getValor(i, "ide_geper") + "," + tab_cons_alumperiodo.getValor(i, "gen_ide_geper") + ", " + utilitario.getVariable("p_pen_deuda_activa") + ", '" + fechaInicio.getValue() + "', '" + fechaFin.getValue() + "', " + com_conceptos.getValue() + ",   "
-                    + " " + com_mes.getValue() + ", 0," + tab_cons_alumperiodo.getValor(i, "valor_descuento_recalp") + "," + tab_cons_alumperiodo.getValor(i, "descuento_recalp") + ",false  );");
+                    + ", " + tab_cons_alumperiodo.getValor(i, "ide_geper") + "," + tab_cons_alumperiodo.getValor(i, "gen_ide_geper") + ", " + utilitario.getVariable("p_pen_deuda_activa") + ", '" + fechaInicio.getFecha() + "', '" + fechaFin.getFecha()+ "', " + com_conceptos.getValue() + ",   "
+                    + " " + com_mes.getValue() + ", 0," + valor_descuento + "," + aplica_descuento + ",false ,'"+tab_detalle_concepto.getValor("des_concepto_recon")+" CORRESPONDIENTE AL MES: "+tab_mes.getValor("nombre_gemes")+" DEL "+tab_anio.getValor("nom_geani")+"',"+fecha_descuento+" );");
 
             for (int j = 0; j < tab_concepto.getTotalFilas(); j++) {
                 TablaGenerica tab_impuesto = utilitario.consultar("select * from rec_impuesto where ide_impuesto_reimp = " + tab_concepto.getValor(j, "ide_impuesto_reimp") + "");
@@ -488,7 +563,7 @@ public class pre_alumno_periodo extends Pantalla {
                 TablaGenerica cod_max_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valor_detalle", "ide_valdet_revad"));
                 maximo_detalle = cod_max_detalle.getValor("maximo");
                 utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_reimp, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad,detalle_revad)\n"
-                        + "VALUES (" + maximo_detalle + ", " + maximo + ", " + tab_impuesto.getValor("ide_impuesto_reimp") + ", " + "1" + ", " + tab_impuesto.getValor("valor_reimp") + ", " + tab_impuesto.getValor("valor_reimp") + "-" + tab_cons_alumperiodo.getValor(i, "valor_descuento_recalp") + ", " + "0" + "," + tab_cons_alumperiodo.getValor(i, "valor_descuento_recalp") + ", " + "0" + ",'" + tab_impuesto.getValor("des_impuesto_reimp") + "'    );");
+                        + "VALUES (" + maximo_detalle + ", " + maximo + ", " + tab_impuesto.getValor("ide_impuesto_reimp") + ", " + "1" + ", " + tab_impuesto.getValor("valor_reimp") + ", " + tab_impuesto.getValor("valor_reimp") + "-" + valor_descuento + ", " + "0" + "," + valor_descuento + ", " + "0" + ",'" + tab_impuesto.getValor("des_impuesto_reimp") + "'    );");
                 // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
 
             }
@@ -576,11 +651,34 @@ public class pre_alumno_periodo extends Pantalla {
         }
 
     }
-    public void abrirDialogoDescuento() {
-        if (tab_tabla1.getTotalFilas() > 0) {
-            dia_descuento.dibujar();
+        public void abrirDialogoEmail() {
+        if (tab_tabla1.getFilasSeleccionadas() != "") {
+            
+            String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
+            TablaGenerica tab_cons_alumperiodo = utilitario.consultar("select * from rec_alumno_periodo where ide_recalp in (" + alumnos_seleccionados + ")");
+            if (!tab_cons_alumperiodo.getValor("retirado_recalp").equals("true")) {
+                dia_email.dibujar();
+            } else {
+                utilitario.agregarMensajeError("No se puede continuar", "Existen alumnos retirados seleccionados, realice el filtro solo estudiantes activos");
+            }
+       
         } else {
-            utilitario.agregarMensajeError("No existen registros", "No existen registros de alumnos para asignar un representante");
+            utilitario.agregarMensajeError("No se puede continuar", "Debe seleccionar al menos un registro para generar los rubros");
+        }
+
+    }
+    public void abrirDialogoDescuento() {
+        if (tab_tabla1.getFilasSeleccionadas() != "") {
+            String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
+            TablaGenerica tab_cons_alumperiodo = utilitario.consultar("select * from rec_alumno_periodo where ide_recalp in (" + alumnos_seleccionados + ")");
+            if (!tab_cons_alumperiodo.getValor("retirado_recalp").equals("true")) {
+                dia_descuento.dibujar();
+            } else {
+                utilitario.agregarMensajeError("No se puede continuar", "Existen alumnos retirados seleccionados, realice el filtro solo estudiantes activos");
+            }
+       
+        } else {
+            utilitario.agregarMensajeError("No se puede continuar", "Debe seleccionar al menos un registro para generar los rubros");
         }
 
     }
@@ -600,13 +698,16 @@ public class pre_alumno_periodo extends Pantalla {
     }
 
     public void aceptarRepresentante() {
-        String str_repre = sel_tab_representante.getValorSeleccionado();
-        System.out.println("repre " + str_repre);
-        tab_tabla1.setValor("gen_ide_geper", str_repre);
+        
+                    String alumno_selec = tab_tabla1.getFilasSeleccionadas();
+                     String str_repre = sel_tab_representante.getValorSeleccionado();
+
+            utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n"
+                    + "set gen_ide_geper = " + str_repre + " \n"
+                    + "where ide_recalp in (" + alumno_selec + ")");
+
         sel_tab_representante.cerrar();
-        tab_tabla1.modificar(tab_tabla1.getFilaActual());
-        tab_tabla1.guardar();
-        guardarPantalla();
+        tab_tabla1.actualizar();
         utilitario.addUpdate("tab_tabla1");
     }
 
@@ -1112,6 +1213,22 @@ public class pre_alumno_periodo extends Pantalla {
 
     public void setDia_descuento(Dialogo dia_descuento) {
         this.dia_descuento = dia_descuento;
+    }
+
+    public Calendario getFechaDescuento() {
+        return fechaDescuento;
+    }
+
+    public void setFechaDescuento(Calendario fechaDescuento) {
+        this.fechaDescuento = fechaDescuento;
+    }
+
+    public Dialogo getDia_email() {
+        return dia_email;
+    }
+
+    public void setDia_email(Dialogo dia_email) {
+        this.dia_email = dia_email;
     }
 
 }

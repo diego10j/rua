@@ -5,10 +5,6 @@
  */
 package paq_pensiones;
 
-/**
- *
- * @author ANDRES REDROBAN
- */
 
 import framework.componentes.Boton;
 import framework.componentes.Calendario;

@@ -65,10 +65,10 @@ public class pre_valores extends Pantalla{
         tab_tabla1.getColumna("gen_ide_geper").setNombreVisual("REPRESENTANTE");
         tab_tabla1.getColumna("IDE_GTEMP").setCombo("gth_empleado", "ide_gtemp", "documento_identidad_gtemp,apellido_paterno_gtemp,primer_nombre_gtemp", "");
         tab_tabla1.getColumna("IDE_GTEMP").setAutoCompletar();
-        tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("REGISTRADORR");
+        tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("RESPONSABLE");
         tab_tabla1.getColumna("GTH_IDE_GTEMP").setCombo("gth_empleado", "ide_gtemp", "documento_identidad_gtemp,apellido_paterno_gtemp,primer_nombre_gtemp", "");
         tab_tabla1.getColumna("GTH_IDE_GTEMP").setAutoCompletar();
-        tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("RECAUDADOR");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("CAJERO");
         tab_tabla1.getColumna("ide_concepto_recon").setCombo("rec_concepto", "ide_concepto_recon", "des_concepto_recon", "");
         tab_tabla1.getColumna("ide_concepto_recon").setRequerida(true);
         tab_tabla1.getColumna("ide_recest").setCombo("rec_estados", "ide_recest", "descripcion_recest", "");
@@ -77,6 +77,13 @@ public class pre_valores extends Pantalla{
         tab_tabla1.getColumna("IDE_CNDFP").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "");
         tab_tabla1.getColumna("ide_gemes").setCombo("select ide_gemes, nombre_gemes from gen_mes order by ide_gemes");
         tab_tabla1.getColumna("ide_recest").setRequerida(true);
+        tab_tabla1.getColumna("valor_iva_recva").setEtiqueta();
+        tab_tabla1.getColumna("valor_iva_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_tabla1.getColumna("tarifa_iva_recva").setEtiqueta();
+        tab_tabla1.getColumna("tarifa_iva_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_tabla1.getColumna("base_tarifa0_recva").setEtiqueta();
+        tab_tabla1.getColumna("base_tarifa0_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(6);
         tab_tabla1.dibujar();
