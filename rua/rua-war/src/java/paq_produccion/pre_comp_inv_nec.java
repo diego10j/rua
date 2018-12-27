@@ -70,6 +70,7 @@ public class pre_comp_inv_nec extends Pantalla {
     private final ServicioProduccion ser_produccion= (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class); 
     
     public pre_comp_inv_nec() {
+        tab_tabla1.clearInitialState();
         //Recuperar el plan de cuentas activo
 
         bar_botones.quitarBotonsNavegacion();

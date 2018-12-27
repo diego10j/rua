@@ -74,6 +74,7 @@ public class pre_comp_inv_nei extends Pantalla {
     private final ServiciosAdquisiones ser_persona= (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class); 
     
     public pre_comp_inv_nei() {
+         tab_tabla1.clearInitialState();
         //Recuperar el plan de cuentas activo
 
         bar_botones.quitarBotonsNavegacion();
