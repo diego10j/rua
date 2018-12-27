@@ -688,11 +688,24 @@ public class ServicioInventario {
         }
         return numDecimales;
     }
+        /**
+     * Retorna las existencias del articulo, a su vez los valores costo
+     *
+     * @return
+     */
  public String saldosArticulos(String articulos){
      String sql="";
      sql+="select ide_boart,ingreso_material_boart,existencia_inicial_boart,egreso_material_boart,costo_actual_boart,precio_venta_boart, " +
         "(ingreso_material_boart+existencia_inicial_boart) - egreso_material_boart as saldo_existencia " +
         "from bodt_articulos where ide_boart in ("+articulos+")";
+     return sql;
+ }
+ public String bodegasProductos(String articulos){
+     return "completar para pruebas de buscar bodega";
+ }
+ public String getTipoTransaccion(){
+     String sql="";
+     sql+="select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci order by nombre_intci desc, nombre_intti";
      return sql;
  }
 }
