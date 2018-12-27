@@ -480,9 +480,7 @@ public class Parametros {
           lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
           lis_parametros.add(new Parametro("14", "p_prod_version_documento", "Indica la version en la que se encuentran los documentos", "Version 1"));
           lis_parametros.add(new Parametro("14", "p_prod_fecha_documento", "Indica la fecha de registro en la que se encuentran los documentos", "2018-10-31"));
-          lis_parametros.add(new Parametro("14", "p_prod_cod_version", "Especicfica el numero de la version normas ISO mecanplast", "V.2"));        
-          lis_parametros.add(new Parametro("14", "p_prod_fecha_version", "Especifica la fecha de la version de los reportes", "2019-01-01"));
-// MODULO PENSIONES = 15
+ // MODULO PENSIONES = 15
           lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
           lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
           lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
