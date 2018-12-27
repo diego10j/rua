@@ -129,6 +129,7 @@ public class pre_actas extends Pantalla {
         tab_tabla.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
         tab_tabla.getColumna("ide_geobr").setCombo(ser_activos.getObras());
         tab_tabla.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
+        tab_tabla.getColumna("act_ide_acuba").setCombo(ser_activos.getUbicacionActivo());
         tab_tabla.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_tabla.getColumna("gen_ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_tabla.getColumna("ide_gecas").setAutoCompletar();
@@ -251,7 +252,7 @@ public class pre_actas extends Pantalla {
 
             if (tab_detalle_activo.getTotalFilas() > 0) {
                 for (int i = 0; i < tab_detalle_activo.getTotalFilas(); i++) {
-                    utilitario.getConexion().ejecutarSql("update act_activo_fijo set ide_geper =" + tab_tabla.getValor("gen_ide_geper") + " where ide_acafi =" + tab_detalle_activo.getValor(i, "ide_acafi"));
+                    utilitario.getConexion().ejecutarSql("update act_activo_fijo set ide_geper =" + tab_tabla.getValor("gen_ide_geper") + ", ide_acact="+tab_tabla.getValor("ide_acact")+",ide_gecas = "+tab_tabla.getValor("ide_gecas")+" ,ide_geobr="+tab_tabla.getValor("ide_geobr")+" ,ide_acuba= "+tab_tabla.getValor("ide_acuba")+", act_ide_acuba="+tab_tabla.getValor("act_ide_acuba")+" where ide_acafi =" + tab_detalle_activo.getValor(i, "ide_acafi"));
                 }
             }
         }
@@ -316,6 +317,7 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("ide_gecas").setCombo(ser_activos.getCasa());
         tab_acta_entrega.getColumna("ide_geobr").setCombo(ser_activos.getObras());
         tab_acta_entrega.getColumna("ide_acuba").setCombo(ser_activos.getUbicacionActivo());
+        tab_acta_entrega.getColumna("act_ide_acuba").setCombo(ser_activos.getUbicacionActivo());
         tab_acta_entrega.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_acta_entrega.getColumna("gen_ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_acta_entrega.getColumna("ide_gecas").setAutoCompletar();
@@ -325,7 +327,8 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("gen_ide_geper").setAutoCompletar();
         tab_acta_entrega.getColumna("ide_gecas").setNombreVisual("CASA");
         tab_acta_entrega.getColumna("ide_geobr").setNombreVisual("OBRA");
-        tab_acta_entrega.getColumna("ide_acuba").setNombreVisual("UBICACION");
+        tab_acta_entrega.getColumna("ide_acuba").setNombreVisual("AREA");
+        tab_acta_entrega.getColumna("act_ide_acuba").setNombreVisual("DEPARTAMENTO");
         tab_acta_entrega.getColumna("ide_geper").setNombreVisual("CUSTODIO ACTUAL");
         tab_acta_entrega.getColumna("observacion_acact").setNombreVisual("OBSERVACIONES");
         tab_acta_entrega.getColumna("fecha_asigna_acact").setNombreVisual("FECHA ACTA");
@@ -335,6 +338,7 @@ public class pre_actas extends Pantalla {
             tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
             tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
             tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+            tab_acta_entrega.getColumna("act_ide_acuba").setVisible(false);
             tab_acta_entrega.getColumna("ide_geper").setVisible(false);
             tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
             tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
@@ -343,6 +347,7 @@ public class pre_actas extends Pantalla {
             tab_acta_entrega.getColumna("ide_geobr").setVisible(false);
             tab_acta_entrega.getColumna("ide_gecas").setVisible(false);
             tab_acta_entrega.getColumna("ide_acuba").setVisible(false);
+            tab_acta_entrega.getColumna("act_ide_acuba").setVisible(false);
             tab_acta_entrega.getColumna("ide_geper").setVisible(false);
             tab_acta_entrega.getColumna("ide_geper").setValorDefecto(utilitario.getVariable("p_act_custodio"));
             tab_acta_entrega.getColumna("gen_ide_geper").setNombreVisual("CUSTODIO");
