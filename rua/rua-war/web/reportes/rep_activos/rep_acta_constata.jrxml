@@ -35,13 +35,13 @@ cast((extract (year from fecha_asigna_acact)) as integer) as anio
 k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado
 from act_acta_constata a
 inner join act_movimiento j on a.ide_acact = j.ide_acact
-inner join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
+left join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
 inner join act_activo_fijo d  on d.ide_acafi=j.ide_acafi
-inner join gen_casa e on a.ide_gecas=e.ide_gecas
-inner join gen_OBRA f on a.ide_geobr=f.ide_geobr
+left join gen_casa e on a.ide_gecas=e.ide_gecas
+left join gen_OBRA f on a.ide_geobr=f.ide_geobr
 inner join gen_persona g on a.ide_geper=g.ide_geper
 inner join inv_articulo h  on d.ide_inarti=h.ide_inarti
-inner join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf
+left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf
 left join gen_persona k on a.gen_ide_geper= k.ide_geper
 where a.ide_acact=  $P{ide_acact}
 order by nombre_inarti,a.ide_acact]]>
