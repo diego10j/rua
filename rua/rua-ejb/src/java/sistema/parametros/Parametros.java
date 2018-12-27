@@ -55,7 +55,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_bodega_defecto", "Indica el tipo de bodega por defecto para la recepcion de los articulos", "27", "inv_bodega", "ide_inbod", "nombre_inbod"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_ingreso", "Permite conocer si es de tipo ingreso para ejecutar el kardex", "0", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
-
+        lis_parametros.add(new Parametro("1", "p_inv_bodega", "Permite cargar la bodega por defecto para la recpcion de materiales", "1", "inv_bodega", "ide_inbod", "nombre_inbod"));
 
         /*
          * CUENTAS POR PAGAR MODULO =2
@@ -398,6 +398,7 @@ public class Parametros {
          */
         lis_parametros.add(new Parametro("12", "p_gen_tipo_iden_ruc", "tipo de identificacion RUC", "1", "gen_tipo_identifi", "ide_getid", "nombre_getid"));
         lis_parametros.add(new Parametro("12", "p_gen_tipo_iden_cedula", "tipo de identificacion CEDULA", "0", "gen_tipo_identifi", "ide_getid", "nombre_getid"));
+        lis_parametros.add(new Parametro("12", "p_gen_anio_vigente", "identifica el anio vigente para las transacciones requeridas", "2", "gen_anio", "ide_geani", "nom_geani"));
 
         lis_parametros.add(new Parametro("12", "p_gen_beneficiario_roles", "Identifica al beneficiario en el asiento de roles de pago ", "1438", "gen_persona", "ide_geper", "nom_geper"));
         // desque aqui Luis Toapanta Agregado Parametros Generales
@@ -479,8 +480,9 @@ public class Parametros {
           lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
           lis_parametros.add(new Parametro("14", "p_prod_version_documento", "Indica la version en la que se encuentran los documentos", "Version 1"));
           lis_parametros.add(new Parametro("14", "p_prod_fecha_documento", "Indica la fecha de registro en la que se encuentran los documentos", "2018-10-31"));
-        
-          // MODULO PENSIONES = 15
+          lis_parametros.add(new Parametro("14", "p_prod_cod_version", "Especicfica el numero de la version normas ISO mecanplast", "V.2"));        
+          lis_parametros.add(new Parametro("14", "p_prod_fecha_version", "Especifica la fecha de la version de los reportes", "2019-01-01"));
+// MODULO PENSIONES = 15
           lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
           lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
           lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
