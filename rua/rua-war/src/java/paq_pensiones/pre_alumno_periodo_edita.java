@@ -40,13 +40,15 @@ public class pre_alumno_periodo_edita extends Pantalla{
         tab_tabla1.getColumna("ide_repar").setCombo(ser_pensiones.getParalelos("true,false"));
         tab_tabla1.getColumna("ide_recur").setCombo(ser_pensiones.getCursos("true,false"));
         tab_tabla1.getColumna("ide_reces").setCombo(ser_pensiones.getEspecialidad("true,false"));
+        tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2", ""));
+        tab_tabla1.getColumna("ide_geper").setFiltroContenido();
         //tab_tabla1.getColumna("ide_repar").setAutoCompletar();
         //tab_tabla1.getColumna("ide_recur").setAutoCompletar();
         //tab_tabla1.getColumna("ide_reces").setAutoCompletar();
-        tab_tabla1.getColumna("ide_repar").setLectura(true);
-        tab_tabla1.getColumna("ide_recur").setLectura(true);
-        tab_tabla1.getColumna("ide_reces").setLectura(true);
-        tab_tabla1.getColumna("ide_geper").setLectura(true);
+        //tab_tabla1.getColumna("ide_repar").setLectura(true);
+        //tab_tabla1.getColumna("ide_recur").setLectura(true);
+        //tab_tabla1.getColumna("ide_reces").setLectura(true);
+        //tab_tabla1.getColumna("ide_geper").setLectura(true);
         //tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         //tab_tabla1.getColumna("retirado_recalp").setLectura(true);
         tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
@@ -55,9 +57,8 @@ public class pre_alumno_periodo_edita extends Pantalla{
         tab_tabla1.getColumna("activo_recalp").setLectura(true);
         //tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
         //tab_tabla1.getColumna("fecha_retiro_recalp").setLectura(true);
-        tab_tabla1.getColumna("valor_descuento_recalp").setValorDefecto("0");
-        tab_tabla1.getColumna("ide_geper").setFiltroContenido();
-        tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2", ""));
+        tab_tabla1.getColumna("valor_descuento_recalp").setValorDefecto("0");     
+        
         tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2", ""));
         tab_tabla1.getColumna("ide_geper").setAutoCompletar();
         tab_tabla1.getColumna("gen_ide_geper").setAutoCompletar();
