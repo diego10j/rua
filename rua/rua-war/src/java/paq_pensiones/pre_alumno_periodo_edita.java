@@ -36,7 +36,7 @@ public class pre_alumno_periodo_edita extends Pantalla{
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("REC_ALUMNO_PERIODO", "IDE_RECALP", 1);
         tab_tabla1.getColumna("descripcion_recalp").setVisible(false);
-        tab_tabla1.getColumna("ide_repea").setVisible(false);
+        tab_tabla1.getColumna("ide_repea").setCombo(ser_pensiones.getPeriodoAcademico("true,false"));
         tab_tabla1.getColumna("ide_repar").setCombo(ser_pensiones.getParalelos("true,false"));
         tab_tabla1.getColumna("ide_recur").setCombo(ser_pensiones.getCursos("true,false"));
         tab_tabla1.getColumna("ide_reces").setCombo(ser_pensiones.getEspecialidad("true,false"));
@@ -54,7 +54,7 @@ public class pre_alumno_periodo_edita extends Pantalla{
         tab_tabla1.getColumna("retirado_recalp").setValorDefecto("FALSE");
         tab_tabla1.getColumna("descuento_recalp").setValorDefecto("false");
         tab_tabla1.getColumna("activo_recalp").setValorDefecto("true");
-        tab_tabla1.getColumna("activo_recalp").setLectura(true);
+        //tab_tabla1.getColumna("activo_recalp").setLectura(true);
         //tab_tabla1.getColumna("detalle_retiro_recalp").setLectura(true);
         //tab_tabla1.getColumna("fecha_retiro_recalp").setLectura(true);
         tab_tabla1.getColumna("valor_descuento_recalp").setValorDefecto("0");     
