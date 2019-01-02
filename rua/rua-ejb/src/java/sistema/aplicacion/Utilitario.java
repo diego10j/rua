@@ -384,8 +384,7 @@ public class Utilitario extends Framework {
                 cadena = recursivoNumeroLetras(numero / 1000000) + " Millones" + recursivoNumeroLetras(numero % 1000000);
             }
         } else // Aqui identifico si lleva Miles
-        {
-            if ((numero / 1000) > 0) {
+         if ((numero / 1000) > 0) {
 
                 if ((numero / 1000) == 1) {
                     cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
@@ -393,8 +392,7 @@ public class Utilitario extends Framework {
                     cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
                 }
             } else // Aqui identifico si lleva cientos
-            {
-                if ((numero / 100) > 0) {
+             if ((numero / 100) > 0) {
                     if ((numero / 100) == 1) {
                         if ((numero % 100) == 0) {
                             cadena = " Cien";
@@ -551,8 +549,6 @@ public class Utilitario extends Framework {
                             break;
                     }
                 }
-            }
-        }
         return cadena;
     }
 
@@ -1120,7 +1116,7 @@ public class Utilitario extends Framework {
     Retorna el path (.jasper) de un reporte configurado en la tabla sis_reporte_visual
      */
     public String getPathReporteVisualizador(String nombreReporte) {
-        String pathReporte = "";
+        String pathReporte = null;
         List lis_path = getConexion().consultar("SELECT nombre_repv,path_repv FROM sis_reporte_visual where upper(nombre_repv)='" + nombreReporte.toUpperCase() + "'");
         if (!lis_path.isEmpty()) {
             Object[] obj_fila = (Object[]) lis_path.get(0);
