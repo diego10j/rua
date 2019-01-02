@@ -194,7 +194,7 @@ public class pre_nota_credito extends Pantalla {
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
-        mep_menu.dibujar(2, "NOTAS DE CRÉDITO NO CONTABILIZADAS", gru);
+        mep_menu.dibujar(3, "NOTAS DE CRÉDITO NO CONTABILIZADAS", gru);
         // metodo of mauriicio
         utilitario.buscarPermisosObjetos();
     }
@@ -339,6 +339,9 @@ public class pre_nota_credito extends Pantalla {
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
             dibujarDashboard();
         } else if (mep_menu.getOpcion() == 2) {
+            tab_tabla1.setSql(ser_factura.getSqlNotas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_tabla1.ejecutarSql();
+        } else if (mep_menu.getOpcion() == 3) {
             tab_tabla1.setSql(ser_factura.getSqlNotasNoContabilizadas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla1.ejecutarSql();
         }
@@ -620,6 +623,7 @@ public class pre_nota_credito extends Pantalla {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_factura.getSqlNotas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla1.setNumeroTabla(986);
         tab_tabla1.setCampoPrimaria("ide_cpcno");
         tab_tabla1.getColumna("ide_cpcno").setVisible(false);
         tab_tabla1.getColumna("ide_geper").setVisible(false);
