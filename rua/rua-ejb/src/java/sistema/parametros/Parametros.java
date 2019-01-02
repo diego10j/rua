@@ -55,7 +55,6 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_bodega_defecto", "Indica el tipo de bodega por defecto para la recepcion de los articulos", "27", "inv_bodega", "ide_inbod", "nombre_inbod"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_ingreso", "Permite conocer si es de tipo ingreso para ejecutar el kardex", "0", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
-        lis_parametros.add(new Parametro("1", "p_inv_bodega", "Permite cargar la bodega por defecto para la recpcion de materiales", "1", "inv_bodega", "ide_inbod", "nombre_inbod"));
 
         /*
          * CUENTAS POR PAGAR MODULO =2
