@@ -846,7 +846,7 @@ public class pre_nota_credito extends Pantalla {
                     }
                 }
             }
-        } else if (mep_menu.getOpcion() == 2) {
+        } else if (mep_menu.getOpcion() == 3) {
             if (asc_asiento.isVisible()) {
                 asc_asiento.guardar();
                 if (asc_asiento.isVisible() == false) {
