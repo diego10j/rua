@@ -274,6 +274,10 @@ public class pre_modifica_factura extends Pantalla {
         tab_inf_adi.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_inf_adi);
+        pat_panel2.getMenuTabla().getItem_insertar().setRendered(true);
+        pat_panel2.getMenuTabla().getItem_eliminar().setRendered(true);
+        pat_panel2.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_actualizar().setRendered(true);
         grupo.getChildren().add(pat_panel2);
     }
 
