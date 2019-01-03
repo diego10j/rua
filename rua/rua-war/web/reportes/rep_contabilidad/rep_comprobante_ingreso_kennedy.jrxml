@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="421" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.3636363636363629"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="30"/>
+	<property name="ireport.y" value="54"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -61,9 +61,9 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="112" splitType="Stretch">
+		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="403" y="87" width="39" height="13"/>
+				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="402" y="85" width="39" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
@@ -71,7 +71,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="dd9f018b-d9ae-4bb8-a075-a3eb1283b7e4" x="441" y="87" width="112" height="13"/>
+				<reportElement uuid="dd9f018b-d9ae-4bb8-a075-a3eb1283b7e4" x="441" y="85" width="112" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
@@ -117,21 +117,23 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[Concepto: ]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="8c130246-bf3e-40ac-a0dc-8052ca93b2a5" x="66" y="99" width="491" height="13"/>
+				<reportElement uuid="8c130246-bf3e-40ac-a0dc-8052ca93b2a5" x="66" y="99" width="336" height="26"/>
 				<box topPadding="0" leftPadding="0">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion_cnccc}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="04ca5a77-504d-4b8e-902b-d9ecb68552dd" x="-1" y="71" width="67" height="15"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Documento: ]]></text>
 			</staticText>
@@ -172,6 +174,14 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
 			</subreport>
+			<staticText>
+				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="402" y="99" width="83" height="13"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Retención #:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -464,7 +474,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[Elaborado Por]]></text>
+				<text><![CDATA[Autorizado]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="0d103a93-bf75-4e96-914e-cbd51f83d97a" x="221" y="84" width="129" height="13"/>
@@ -472,7 +482,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[Vto Bueno]]></text>
+				<text><![CDATA[Revisado]]></text>
 			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="919e4047-9d25-49a3-af54-f7c26bb0eb1c" x="393" y="0" width="79" height="14"/>
@@ -563,6 +573,14 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<subreport>
+				<reportElement uuid="84cfdc89-2dca-4f9d-b644-5f9a70128abc" positionType="Float" x="264" y="28" width="155" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="ide_cnccc">
+					<subreportParameterExpression><![CDATA[$P{ide_cnccc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_num_documento.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</summary>
 </jasperReport>
