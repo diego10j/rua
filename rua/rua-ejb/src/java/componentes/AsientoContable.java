@@ -639,18 +639,24 @@ public class AsientoContable extends Dialogo {
     public void verAsientoContable(String ide_cnccc) {
         Map parametros_rep = new HashMap();
         vpd_asiento.setTitle("ASIENTO CONTABLE N. " + ide_cnccc);
+        String usuario=utilitario.getVariable("NICK");
+        String reporte="";
         if (reporteComprobante == 1) {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
+            parametros_rep.put("nombre", usuario);
+            
             String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
-            String nom_rep = "rep_comprobante_contabilidad.jasper";
+            reporte="rep_contabilidad/rep_comprobante_contabilidad.jasper";
+            String nom_rep = "Movimientos Ingreso";
             if (p_con_repo_nivel != null) {
                 if (p_con_repo_nivel.equalsIgnoreCase("true")) {
-                    nom_rep = "rep_comprobante_contabilidad_normal.jasper";
+                    reporte = utilitario.getPathReporteVisualizador(nom_rep);
                 }
             }
-            vpd_asiento.setVisualizarPDF("rep_contabilidad/" + nom_rep, parametros_rep);
+            System.out.println("imprimir reporte asiento "+reporte);
+            vpd_asiento.setVisualizarPDF(reporte, parametros_rep);
         }
         if (reporteComprobante == 2) {//cheque
             TablaGenerica tab_lib_banc = utilitario.consultar("select * from tes_cab_libr_banc where ide_cnccc =" + ide_cnccc);

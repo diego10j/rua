@@ -138,6 +138,7 @@ public class DocumentoCxP extends Dialogo {
                 "p_sri_otra_adqui_pago_12%_no_dertri_503",
                 "p_sri_adqui_pagos_0%_507",
                 "p_sri_adqui_no_obj_iva_531",
+                "p_cxp_doc_instituciones_finan",
                 "");
 
         this.setWidth("95%");
@@ -1731,7 +1732,7 @@ public class DocumentoCxP extends Dialogo {
 
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")||com_tipo_documento.getValue().equals(parametros.get("p_cxp_doc_instituciones_finan"))) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
