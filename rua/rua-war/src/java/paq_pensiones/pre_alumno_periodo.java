@@ -896,7 +896,23 @@ public class pre_alumno_periodo extends Pantalla {
                 utilitario.addUpdate("sel_rep");
 
             }
-        } else {
+        } 
+        else if (rep_reporte.getReporteSelecionado().equals("Alumno Deudas")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+            
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_paralelos.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+
+            }
+        } 
+        else {
             utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
         }
     }
