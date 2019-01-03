@@ -1117,10 +1117,11 @@ public class Utilitario extends Framework {
      */
     public String getPathReporteVisualizador(String nombreReporte) {
         String pathReporte = null;
-        List lis_path = getConexion().consultar("SELECT nombre_repv,path_repv FROM sis_reporte_visual where upper(nombre_repv)='" + nombreReporte.toUpperCase() + "'");
+        List lis_path = getConexion().consultar("SELECT nombre_repv,path_repv FROM sis_reporte_visual where upper(nombre_repv)=upper('" + nombreReporte.toUpperCase() + "')");
         if (!lis_path.isEmpty()) {
             Object[] obj_fila = (Object[]) lis_path.get(0);
-            pathReporte = "/reportes/" + obj_fila[1];
+            //pathReporte = "/reportes/" + obj_fila[1];
+             pathReporte = ""+obj_fila[1];
         }
         return pathReporte;
     }

@@ -73,6 +73,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_renova_interes_reinver", "Indica que el tipo de transaccion renovacion de intereses de inversion (Interes de Nueva Renovacion de Inversion) ", "20", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_retencion", "Indica que el tipo de transaccion Retencion ", "21", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_estado_factura_anulada", "Indica el estado de la factura (Anulada) ", "1", "cxp_estado_factur", "ide_cpefa", "nombre_cpefa"));
+        lis_parametros.add(new Parametro("2", "p_cxp_doc_instituciones_finan", "Indica los documentos emitidos por las instituciones financieras ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
 
         /*
          * CUENTAS POR COBRAR MODULO =3
