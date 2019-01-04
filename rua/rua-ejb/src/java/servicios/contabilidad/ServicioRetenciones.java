@@ -520,4 +520,27 @@ public class ServicioRetenciones extends ServicioBase {
                 + "ORDER BY 1";
     }
 
+    public String getSqlRetencionesNoContabilizadas(String ide_ccdaf, String fechaInicio, String fechaFin) {
+        if (ide_ccdaf == null) {
+            ide_ccdaf = "-1";
+        }
+        ide_ccdaf = ide_ccdaf.replace("null", "-1").trim();
+        if (ide_ccdaf.isEmpty() == false) {
+            ide_ccdaf = " and ide_ccdaf='" + ide_ccdaf + "' ";
+        }
+        return "SELECT a.ide_cncre,a.ide_cpcfa,fecha_emisi_cncre,a.ide_cnccc,nombre_sresc as ESTADO,observacion_cncre as OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
+                + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
+                + "(select sum(valor_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS VALOR,numero_cpcfa as NUM_FACTURA,nom_geper AS PROVEEDOR,a.ide_srcom\n"
+                + "FROM con_cabece_retenc a\n"
+                + "left join cxp_cabece_factur b on a.ide_cncre=b.ide_cncre\n"
+                + "left join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
+                + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
+                + "WHERE a.ide_empr=" + utilitario.getVariable("ide_empr") + "\n"
+                + "and fecha_emisi_cncre BETWEEN '" + fechaInicio + "' and '" + fechaFin + "' \n"
+                + "and es_venta_cncre = false and a.ide_cnccc is null \n"
+                + ide_ccdaf
+                + "ORDER BY numero_cncre desc,ide_cncre desc";
+    }
+
 }
