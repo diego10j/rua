@@ -261,7 +261,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kenney.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="370" y="39" width="185" height="24"/>
