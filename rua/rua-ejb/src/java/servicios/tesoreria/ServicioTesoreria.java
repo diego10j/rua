@@ -310,6 +310,7 @@ public class ServicioTesoreria {
         tab_cab_libro_banco.setValor("ide_cnccc", ide_cnccc);
         tab_cab_libro_banco.setValor("observacion_teclb", observacion);
         tab_cab_libro_banco.setValor("conciliado_teclb", "false");
+        actualizarNumMaximoTipoTransaccion(ide_tecba, ide_tettb, numero);
         tab_cab_libro_banco.guardar();
         return tab_cab_libro_banco;
     }
@@ -355,6 +356,7 @@ public class ServicioTesoreria {
         //}
         tab_cab_libro_banco.setValor("observacion_teclb", observacion);
         tab_cab_libro_banco.setValor("conciliado_teclb", "false");
+         actualizarNumMaximoTipoTransaccion(ide_tecba, ide_tettb, numero);
         tab_cab_libro_banco.guardar();
         return tab_cab_libro_banco.getValor(0, "ide_teclb") + "," + tab_cab_libro_banco.getValor(1, "ide_teclb");
     }
@@ -545,8 +547,8 @@ public class ServicioTesoreria {
         String str_ide_ttr_cheque = utilitario.getVariable("p_tes_tran_cheque");
         if (ide_tettb.equals(str_ide_ttr_nota_debito)) {
 //       calculo el maximo de las notas de debito
-            List lis_max = utilitario.getConexion().consultar("SELECT max(CAST(coalesce(numero_teclb, '0') AS BIGINT))  from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_nota_debito + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_tecba=" + ide_tecba);
-            System.out.println("SELECT max(CAST(coalesce(numero_teclb, '0') AS Integer))  from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_nota_debito + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_tecba=" + ide_tecba);
+            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb=" + str_ide_ttr_nota_debito + " and ide_tecba=" + ide_tecba);
+
             maximo = "000000001";
             if (lis_max.get(0) != null) {
                 try {
@@ -558,7 +560,7 @@ public class ServicioTesoreria {
             }
         } else if (ide_tettb.equals(str_ide_ttr_nota_credito)) {
 //       calculo el maximo de las notas de credito
-            List lis_max = utilitario.getConexion().consultar("SELECT max(CAST(coalesce(numero_teclb, '0') AS BIGINT))  from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_nota_credito + " and ide_sucu=" + utilitario.getVariable("ide_sucu") + " and ide_tecba=" + ide_tecba);
+            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb=" + str_ide_ttr_nota_credito + " and ide_tecba=" + ide_tecba);
             maximo = "000000001";
             if (lis_max.get(0) != null) {
                 try {
@@ -567,12 +569,12 @@ public class ServicioTesoreria {
                 } catch (Exception e) {
                 }
             }
-        } else if (ide_tettb.equals(str_ide_ttr_cheque)) {
+        } else if (ide_tettb.equals(str_ide_ttr_cheque) || ide_tettb.equals("14")) { //14= cheque posfechado
 //       calculo el maximo de los cheques
             if (ide_tecba.equals("-1")) {
                 maximo = "";
             }
-            List lis_max = utilitario.getConexion().consultar("SELECT max(CAST(coalesce(numero_teclb, '0') AS BIGINT))  from tes_cab_libr_banc where ide_tettb=" + str_ide_ttr_cheque + " and ide_tecba=" + ide_tecba);
+            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb in(" + str_ide_ttr_cheque + ",14) and ide_tecba=" + ide_tecba);
             if (lis_max.get(0) != null) {
                 try {
                     maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
@@ -582,6 +584,20 @@ public class ServicioTesoreria {
             }
             if (ide_tecba.equals("-1")) {
                 maximo = "";
+            }
+
+        } else if (ide_tettb.equals(str_ide_ttr_cheque) || ide_tettb.equals("8")) { //8 EFECTIVOS
+//       calculo el maximo EFECTIVOS
+
+            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb in(8) and ide_tecba=" + ide_tecba);
+            maximo = "000000001";
+            if (lis_max.get(0) != null) {
+                try {
+                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
+                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
+
+                } catch (Exception e) {
+                }
             }
 
         }
@@ -796,6 +812,50 @@ public class ServicioTesoreria {
 //        }
 //        double saldo = saldo_con_mes + saldo_ch_pos;
         return saldo_con_mes;
+    }
+
+    /**
+     * Actualiza el numeromaximo en la tabla de secuenciales de tipos de
+     * transaccion
+     *
+     * @param ide_tecba
+     * @param ide_tettb
+     * @param numeroIngresado
+     */
+    public void actualizarNumMaximoTipoTransaccion(String ide_tecba, String ide_tettb, String numeroIngresado) {
+        long numIng = 0;
+        String maximo = getNumMaximoTipoTransaccion(ide_tecba, ide_tettb);
+
+        if (maximo.isEmpty() == false) {
+            try {
+                //solo deja numeros
+                String num = "";
+                for (int i = 0; i < numeroIngresado.length(); i++) {
+                    if (Character.isDigit(numeroIngresado.charAt(i))) {
+                        num += numeroIngresado.charAt(i);
+                    }
+                }
+                numIng = Long.parseLong(num.trim());
+            } catch (Exception e) {
+            }
+            if (numIng > 0) {
+                TablaGenerica tag = new TablaGenerica();
+                tag.setTabla("tes_secuencial_trans", "ide_tesec");
+                tag.setCondicion("ide_tecba=" + ide_tecba + " and ide_tettb = " + ide_tettb + " and ide_sucu = " + utilitario.getVariable("IDE_SUCU"));
+                tag.ejecutarSql();
+                if (tag.isEmpty()) {
+                    tag.insertar();
+                } else {
+                    tag.modificar(0);
+                }
+                tag.setValor("ide_tettb", ide_tettb);
+                tag.setValor("ide_tecba", ide_tecba);
+                tag.setValor("ide_empr", utilitario.getVariable("ide_empr"));
+                tag.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
+                tag.setValor("secuencial_tesec", String.valueOf(numIng));
+                tag.guardar();
+            }
+        }
     }
 
 }
