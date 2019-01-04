@@ -368,6 +368,7 @@ public class pre_modifica_factura extends Pantalla {
             if (tab_cab_factura.getValor("ide_cccfa") != null) {
                 tab_inf_adi.insertar();
                 tab_inf_adi.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+                tab_inf_adi.setValor("ide_srcom", tab_cab_factura.getValor("ide_srcom"));
             }
         }
     }
@@ -384,8 +385,7 @@ public class pre_modifica_factura extends Pantalla {
             //SOLO GUARDA LA FACTURA
             tab_cab_factura.modificar(tab_cab_factura.getFilaActual());
             if (tab_cab_factura.guardar()) {
-                if (tab_deta_factura.guardar()) {
-                    tab_inf_adi.setValor("ide_srcom", tab_cab_factura.getValor("ide_srcom"));
+                if (tab_deta_factura.guardar()) {                    
                     tab_inf_adi.guardar();
                     //Guarda la cuenta por cobrar
                     ser_factura.generarModificarTransaccionFactura(tab_cab_factura);
