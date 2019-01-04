@@ -385,6 +385,7 @@ public class pre_modifica_factura extends Pantalla {
             tab_cab_factura.modificar(tab_cab_factura.getFilaActual());
             if (tab_cab_factura.guardar()) {
                 if (tab_deta_factura.guardar()) {
+                    tab_inf_adi.setValor("ide_srcom", tab_cab_factura.getValor("ide_srcom"));
                     tab_inf_adi.guardar();
                     //Guarda la cuenta por cobrar
                     ser_factura.generarModificarTransaccionFactura(tab_cab_factura);
