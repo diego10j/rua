@@ -167,6 +167,9 @@ public class FacturaCxC extends Dialogo {
             "GUIA DE REMISIÓN", "GUIA DE REMISIÓN"
         };
         lista.add(fila1);
+
+        haceGuia = ser_factura.isHaceGuiasElectrónicas(); //03-01-2019 --Si tiene configuracion de guia
+
         if (haceGuia) {
             lista.add(fila2);
         }
@@ -331,7 +334,6 @@ public class FacturaCxC extends Dialogo {
             tab_factura.getTab(5).getChildren().clear();
             tab_factura.getTab(6).getChildren().clear();
             tab_factura.getTab(0).getChildren().add(dibujarFactura());
-
             opcion = 2;
             //Carga la Factura
             activarTabs();
@@ -476,6 +478,7 @@ public class FacturaCxC extends Dialogo {
         tab_guia.getColumna("PUNTO_LLEGADA_CCGUI").setNombreVisual("PUNTO DE LLEGADA");
         tab_guia.getColumna("ide_cctgi").setNombreVisual("TIPO DE GUIA");
         tab_guia.getColumna("ide_cctgi").setCombo("cxc_tipo_guia", "ide_cctgi", "nombre_cctgi", "");
+        tab_guia.getColumna("ide_cctgi").setValorDefecto("9"); //TRASLADO DE MERCADERIA ****
         tab_guia.getColumna("ide_cctgi").setOrden(3);
         tab_guia.getColumna("ide_cctgi").setEstilo("width:240px");
         tab_guia.getColumna("ide_cctgi").setRequerida(true);
