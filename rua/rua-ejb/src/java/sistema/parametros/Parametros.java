@@ -74,6 +74,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_retencion", "Indica que el tipo de transaccion Retencion ", "21", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
         lis_parametros.add(new Parametro("2", "p_cxp_estado_factura_anulada", "Indica el estado de la factura (Anulada) ", "1", "cxp_estado_factur", "ide_cpefa", "nombre_cpefa"));
         lis_parametros.add(new Parametro("2", "p_cxp_doc_instituciones_finan", "Indica los documentos emitidos por las instituciones financieras ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
+        lis_parametros.add(new Parametro("2", "p_cxp_imprime_factura", "Indica los tipo de movimientos que deben imprmir facturas en el reporte dario ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
+        lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_factura_imp", "Indica los tipo de transaccion que deben imprmir facturas en el reporte dario ", "0", "cxc_tipo_transacc", "ide_ccttr", "nombre_ccttr"));
 
         /*
          * CUENTAS POR COBRAR MODULO =3
