@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d633b53b-6456-4b76-abbc-0aeac7eb6055">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="1"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="p_ingresos" class="java.lang.String"/>
 	<parameter name="p_gastos" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
@@ -38,35 +38,35 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 	<title>
 		<band height="107" splitType="Stretch">
 			<textField>
-				<reportElement uuid="6aa2b6e5-07ca-40a3-9b2a-afdcc4169247" x="70" y="41" width="168" height="15"/>
+				<reportElement uuid="6aa2b6e5-07ca-40a3-9b2a-afdcc4169247" x="70" y="41" width="446" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e9eca696-6aa8-41c2-a543-fa634150e998" x="70" y="17" width="168" height="15"/>
+				<reportElement uuid="e9eca696-6aa8-41c2-a543-fa634150e998" x="70" y="17" width="446" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{sucursal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="f0c8fd3c-4b27-4215-9b31-fdc26fcd20b4" x="70" y="4" width="168" height="15" forecolor="#000000"/>
+				<reportElement uuid="f0c8fd3c-4b27-4215-9b31-fdc26fcd20b4" x="70" y="4" width="446" height="15" forecolor="#000000"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c4979729-3007-4263-9a63-872d197e87ec" x="70" y="28" width="168" height="15"/>
+				<reportElement uuid="c4979729-3007-4263-9a63-872d197e87ec" x="70" y="28" width="447" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="03185924-6229-44c9-ad8a-19b936735eaa" x="70" y="53" width="168" height="15"/>
+				<reportElement uuid="03185924-6229-44c9-ad8a-19b936735eaa" x="70" y="53" width="447" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
