@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="535" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="489" leftMargin="4" rightMargin="42" topMargin="42" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="beneficiario" class="java.lang.String"/>
+	<parameter name="monto" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="dia" class="java.lang.String"/>
+	<parameter name="monto_letras" class="java.lang.String"/>
+	<parameter name="ide_cnccc" class="java.lang.Long"/>
+	<parameter name="ide_cnlap_debe" class="java.lang.String"/>
+	<parameter name="ide_cnlap_haber" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="p_identificacion" class="java.lang.String"/>
+	<parameter name="p_num_cheque" class="java.lang.String"/>
+	<parameter name="pfactura" class="java.lang.String"/>
+	<parameter name="ptransaccion" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select fecha_trans_cnccc,nom_geper,observacion_cnccc,numero_cnccc,nombre_cntcm,VALOR_CNDCC,detalle.ide_cnlap, nombre_cndpc,replace( codig_recur_cndpc,'.','') as codig_recur_cndpc ,nom_modu,cab.ide_cnccc,detalle.observacion_cndcc from con_cab_comp_cont cab
+left join sis_modulo modulo on cab.ide_modu=modulo.ide_modu
+INNER join con_tipo_comproba tip_com on cab.ide_cntcm=tip_com.ide_cntcm
+left join gen_persona per on cab.ide_geper=per.ide_geper
+inner join con_estado_compro est_com on cab.ide_cneco=est_com.ide_cneco
+inner join con_det_comp_cont detalle on cab.ide_cnccc= detalle.ide_cnccc
+INNER join con_lugar_aplicac lugar on detalle.ide_cnlap=lugar.ide_cnlap
+INNER join con_det_plan_cuen cuenta on detalle.ide_cndpc=cuenta.ide_cndpc
+where cab.IDE_CNCCC=$P{ide_cnccc}
+ORDER BY ide_cnlap desc]]>
+	</queryString>
+	<field name="fecha_trans_cnccc" class="java.sql.Date"/>
+	<field name="nom_geper" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
+	</field>
+	<field name="observacion_cnccc" class="java.lang.String"/>
+	<field name="numero_cnccc" class="java.lang.String"/>
+	<field name="nombre_cntcm" class="java.lang.String"/>
+	<field name="valor_cndcc" class="java.math.BigDecimal"/>
+	<field name="ide_cnlap" class="java.lang.Long"/>
+	<field name="nombre_cndpc" class="java.lang.String"/>
+	<field name="codig_recur_cndpc" class="java.lang.String"/>
+	<field name="nom_modu" class="java.lang.String"/>
+	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="observacion_cndcc" class="java.lang.String"/>
+	<variable name="VALOR_HABER" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{ide_cnlap}.toString().equals($P{ide_cnlap_haber}) ?($F{valor_cndcc}.doubleValue()):(null))]]></variableExpression>
+	</variable>
+	<variable name="VALOR_DEBE" class="java.lang.Double">
+		<variableExpression><![CDATA[new Double($F{ide_cnlap}.toString().equals($P{ide_cnlap_debe}) ?($F{valor_cndcc}.doubleValue()):(null))]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_DEBE" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{VALOR_DEBE}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL HABER" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{VALOR_HABER}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="121">
+			<textField>
+				<reportElement uuid="594208eb-1df5-4dff-aeb0-6fbfa0e1fa90" x="65" y="53" width="240" height="15"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{beneficiario}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy MMMMM dd">
+				<reportElement uuid="1f0a2bad-dcb3-429c-a5c9-a23c8255f64a" x="65" y="40" width="100" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_trans_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e07ed588-60fc-4a78-93af-ef44b44769af" positionType="Float" stretchType="RelativeToBandHeight" x="65" y="68" width="240" height="28" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="0" leftPadding="0">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_cnccc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="60394d45-6093-4981-96c6-430dc77d2503" x="6" y="22" width="59" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Asiento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1f0a2bad-dcb3-429c-a5c9-a23c8255f64a" x="65" y="22" width="65" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_cnccc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="f57c9ccc-60d4-40d9-9a40-99a88d67598a" x="136" y="22" width="213" height="15"/>
+				<box leftPadding="3" rightPadding="0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COMPROB: "+$F{nombre_cntcm} +" -  "+$F{numero_cnccc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3fcef2bc-36f5-4c84-99f4-3e82b7d54d59" x="270" y="41" width="72" height="13"/>
+				<box leftPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHPR:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="549b454c-bb09-43d0-ab2c-2110b6f45897" x="349" y="41" width="67" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_num_cheque}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="60394d45-6093-4981-96c6-430dc77d2503" x="319" y="98" width="59" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Diario:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9d4aa216-40e0-4dc9-b7f1-fb5680820133" x="1" y="0" width="70" height="14"/>
+				<box leftPadding="3" rightPadding="0">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1dca3080-7d0c-4a71-9ab7-ffb909c36209" x="73" y="0" width="210" height="14"/>
+				<box leftPadding="3" rightPadding="0">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new String($F{ide_cnlap}.equals($P{ide_cnlap_haber}) ?("      "+$F{nombre_cndpc}):($F{nombre_cndpc}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="d305b6ab-cac8-46d8-b109-2bd01a5ae66f" x="356" y="0" width="74" height="14"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{VALOR_HABER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="7370d357-b2ab-46ce-83e2-e877187547fd" x="286" y="0" width="70" height="14"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{VALOR_DEBE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="116" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="515935f5-bbb7-44f8-9e5e-7b25aa3c9963" stretchType="RelativeToBandHeight" x="53" y="0" width="258" height="20" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{beneficiario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="53" y="49" width="171" height="14"/>
+				<box rightPadding="0"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{mes}.equals("1")? $P{anio}+" Enero "+$P{dia}:
+$P{mes}.equals("2")? $P{anio}+" Febrero "+$P{dia}:
+$P{mes}.equals("3")? $P{anio}+" Marzo "+$P{dia}:
+$P{mes}.equals("4")? $P{anio}+" Abril "+$P{dia}:
+$P{mes}.equals("5")? $P{anio}+" Mayo "+$P{dia}:
+$P{mes}.equals("6")? $P{anio}+" Junio "+$P{dia}:
+$P{mes}.equals("7")? $P{anio}+" Julio "+$P{dia}:
+$P{mes}.equals("8")? $P{anio}+" Agosto "+$P{dia}:
+$P{mes}.equals("9")? $P{anio}+" Septiembre "+$P{dia}:
+$P{mes}.equals("10")? $P{anio}+" Octubre "+$P{dia}:
+$P{mes}.equals("11")? $P{anio}+" Noviembre "+$P{dia}:
+$P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="12" y="49" width="41" height="14"/>
+				<box rightPadding="1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Quito, ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="6516e375-4ec8-47a4-8e1c-ef3dc7a5f87b" x="53" y="21" width="377" height="18"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{monto_letras}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4eed6112-2976-47a5-9baa-daee6ae9eec3" x="348" y="0" width="73" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="12" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="84cfdc89-2dca-4f9d-b644-5f9a70128abc" positionType="Float" x="1" y="0" width="155" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="ptransaccion">
+					<subreportParameterExpression><![CDATA[$P{ptransaccion}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pfactura">
+					<subreportParameterExpression><![CDATA[$P{pfactura}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_cnccc">
+					<subreportParameterExpression><![CDATA[$P{ide_cnccc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/sub_rep_factura_kennedy.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
