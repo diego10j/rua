@@ -903,8 +903,7 @@ public class pre_alumno_periodo extends Pantalla {
             
                 //curso = sel_cursos.getSeleccionados();
                 parametro = new HashMap();
-
-                parametro.put("nombre", utilitario.getVariable("NICK"));
+               parametro.put("nombre", utilitario.getVariable("NICK"));
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_paralelos.cerrar();
                 sel_rep.dibujar();
