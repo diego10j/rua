@@ -829,10 +829,8 @@ public class pre_modifica_documento extends Pantalla {
     public void validarIdentificacionReembolso() {
         String identificacion = tab_com_reembolso.getValor("motivo_nc_cpcfa");
         boolean correcto = false;
-        if (identificacion.length() == 13) {
-            if (utilitario.validarRUC(identificacion)) {
-                correcto = true;
-            }
+        if (utilitario.validarRUC(identificacion)) {
+            correcto = true;
         }
         if (correcto == false) {
             tab_com_reembolso.setValor("motivo_nc_cpcfa", "");
