@@ -229,8 +229,10 @@ public class pre_orden extends Pantalla{
           tab_detalle_orden_control.setTabla("prod_orden_detalle","ide_prord",2);
           tab_detalle_orden_control.setCondicion("ide_prorp="+aut_ord_produ.getValor());
           tab_detalle_orden_control.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+          //tab_detalle_orden_control.getColumna("ide_inarti").setEstilo("width: 20px;");
           tab_detalle_orden_control.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
           tab_detalle_orden_control.getColumna("ide_inarti").setAutoCompletar();
+          tab_detalle_orden_control.getColumna("ide_prcol").setEstilo("width: 20px;");
           tab_detalle_orden_control.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
 
           tab_detalle_orden_control.agregarRelacion(tab_control_produccion);
@@ -348,6 +350,7 @@ public class pre_orden extends Pantalla{
         tab_orden_produccion.setCondicion("ide_prorp=" + aut_ord_produ.getValor());
         tab_orden_produccion.getColumna("ide_gtemp").setCombo(ser_cargoempleado.getSQLEmpleadosActivos());
         tab_orden_produccion.getColumna("ide_gtemp").setAutoCompletar();
+        //tab_orden_produccion.getColumna("ide_geper").setEstilo("width: 20px;");
         tab_orden_produccion.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_orden_produccion.getColumna("ide_geper").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
         tab_orden_produccion.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado()); 
@@ -454,6 +457,7 @@ public class pre_orden extends Pantalla{
        tab_solicitud.getColumna("numero_cavidades").setMetodoChange("calculaValoreSolicitud");
        tab_solicitud.getColumna("fecha_prsol").setLectura(true);
        tab_solicitud.getColumna("hora_prsol").setLectura(true);
+       //tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
        tab_solicitud.setHeader("TOTAL A PRODUCIR: "+valor_producir);
        tab_solicitud.setTipoFormulario(true);
        tab_solicitud.getGrid().setColumns(4);
