@@ -975,7 +975,7 @@ public class AsientoContable extends Dialogo {
         this.tipo = TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo();
         //Consulta las facturas
         TablaGenerica tab_fac = utilitario.consultar("SELECT a.ide_cpcfa,ide_geper,numero_cpcfa,fecha_emisi_cpcfa,ide_cntdo,\n"
-                + "total_cpcfa,base_grabada_cpcfa,base_tarifa0_cpcfa,valor_iva_cpcfa \n"
+                + "total_cpcfa,base_grabada_cpcfa,base_tarifa0_cpcfa,valor_iva_cpcfa,observacion_cpcfa \n"
                 + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as ide_cncimRenta\n"
                 + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as ide_cncimIva\n"
                 + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as valor_cndreRenta\n"
@@ -986,7 +986,7 @@ public class AsientoContable extends Dialogo {
             if (tab_fac.getTotalFilas() == 1) {
                 //una
                 tab_cabe_asiento.setValor("ide_geper", tab_fac.getValor("ide_geper"));
-                tab_cabe_asiento.setValor("observacion_cnccc", "V/. FACTURA N." + tab_fac.getValor("numero_cpcfa"));
+                tab_cabe_asiento.setValor("observacion_cnccc",tab_fac.getValor("observacion_cpcfa"));
             } else { //varias
                 String str_observa = "V/. FACTURAS N.";
                 boolean boo_mismo_clie = true; //si es el mismo cliente todos los seleccionados
