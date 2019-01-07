@@ -356,7 +356,7 @@ public class ServicioTesoreria {
         //}
         tab_cab_libro_banco.setValor("observacion_teclb", observacion);
         tab_cab_libro_banco.setValor("conciliado_teclb", "false");
-         actualizarNumMaximoTipoTransaccion(ide_tecba, ide_tettb, numero);
+        actualizarNumMaximoTipoTransaccion(ide_tecba, ide_tettb, numero);
         tab_cab_libro_banco.guardar();
         return tab_cab_libro_banco.getValor(0, "ide_teclb") + "," + tab_cab_libro_banco.getValor(1, "ide_teclb");
     }
@@ -542,64 +542,14 @@ public class ServicioTesoreria {
         if (ide_tettb == null || ide_tettb.isEmpty()) {
             ide_tettb = "-1";
         }
-        String str_ide_ttr_nota_debito = utilitario.getVariable("p_tes_nota_debito");
-        String str_ide_ttr_nota_credito = utilitario.getVariable("p_tes_nota_credito");
-        String str_ide_ttr_cheque = utilitario.getVariable("p_tes_tran_cheque");
-        if (ide_tettb.equals(str_ide_ttr_nota_debito)) {
-//       calculo el maximo de las notas de debito
-            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb=" + str_ide_ttr_nota_debito + " and ide_tecba=" + ide_tecba);
-
-            maximo = "000000001";
-            if (lis_max.get(0) != null) {
-                try {
-                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
-                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
-
-                } catch (Exception e) {
-                }
-            }
-        } else if (ide_tettb.equals(str_ide_ttr_nota_credito)) {
-//       calculo el maximo de las notas de credito
-            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb=" + str_ide_ttr_nota_credito + " and ide_tecba=" + ide_tecba);
-            maximo = "000000001";
-            if (lis_max.get(0) != null) {
-                try {
-                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
-                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
-                } catch (Exception e) {
-                }
-            }
-        } else if (ide_tettb.equals(str_ide_ttr_cheque) || ide_tettb.equals("14")) { //14= cheque posfechado
-//       calculo el maximo de los cheques
-            if (ide_tecba.equals("-1")) {
+        //       calculo el maximo y suma uno
+        List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb =" + ide_tettb + " and ide_tecba=" + ide_tecba + " AND calculado_tettb= true ");
+        if (lis_max.get(0) != null) {
+            try {
+                maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
+            } catch (Exception e) {
                 maximo = "";
             }
-            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb in(" + str_ide_ttr_cheque + ",14) and ide_tecba=" + ide_tecba);
-            if (lis_max.get(0) != null) {
-                try {
-                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ide_tecba.equals("-1")) {
-                maximo = "";
-            }
-
-        } else if (ide_tettb.equals(str_ide_ttr_cheque) || ide_tettb.equals("8")) { //8 EFECTIVOS
-//       calculo el maximo EFECTIVOS
-
-            List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb in(8) and ide_tecba=" + ide_tecba);
-            maximo = "000000001";
-            if (lis_max.get(0) != null) {
-                try {
-                    maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
-                    maximo = utilitario.generarCero(9 - maximo.length()) + maximo;
-
-                } catch (Exception e) {
-                }
-            }
-
         }
         return maximo;
     }
@@ -856,5 +806,5 @@ public class ServicioTesoreria {
                 tag.guardar();
             }
         }
-    } 
+    }
 }
