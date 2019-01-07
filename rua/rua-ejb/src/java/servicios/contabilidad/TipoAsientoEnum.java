@@ -18,7 +18,7 @@ public enum TipoAsientoEnum {
     LIBRO_BANCOS("5"),
     INVERSIONES("6"),
     PRESTAMOS("10"),
-    RETENCIONES_CXP("12"),
+    RETENCIONES_CXP("12"), 
     NOTAS_CREDITO_CXC("11");
 
     private final String codigo;
