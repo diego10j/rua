@@ -639,14 +639,25 @@ public class AsientoContable extends Dialogo {
     public void verAsientoContable(String ide_cnccc) {
         Map parametros_rep = new HashMap();
         vpd_asiento.setTitle("ASIENTO CONTABLE N. " + ide_cnccc);
-        String usuario = utilitario.getVariable("NICK");
-        String reporte = "";
+        String usuario=utilitario.getVariable("NICK");
+        String factura_imprime="-1";
+        String tipo_transaccion_imprime="-1";
+        if(utilitario.getVariable("p_cxp_imprime_factura")!=null){
+            factura_imprime=utilitario.getVariable("p_cxp_imprime_factura");
+        }
+        if(utilitario.getVariable("p_cxp_tipo_trans_factura_imp")!=null){
+            tipo_transaccion_imprime=utilitario.getVariable("p_cxp_tipo_trans_factura_imp");
+        }
+        String reporte="";
+        parametros_rep.put("pfactura", factura_imprime);
+        parametros_rep.put("ptransaccion", tipo_transaccion_imprime);
         if (reporteComprobante == 1) {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
             parametros_rep.put("nombre", usuario);
-
+            parametros_rep.put("pfactura", factura_imprime);
+            parametros_rep.put("ptransaccion", tipo_transaccion_imprime);
             String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
             reporte = "rep_contabilidad/rep_comprobante_contabilidad.jasper";
             String nom_rep = "Movimientos Ingreso";
@@ -655,7 +666,7 @@ public class AsientoContable extends Dialogo {
                     reporte = utilitario.getPathReporteVisualizador(nom_rep);
                 }
             }
-            System.out.println("imprimir reporte asiento " + reporte);
+            //System.out.println("imprimir reporte asiento "+reporte);
             vpd_asiento.setVisualizarPDF(reporte, parametros_rep);
         }
         if (reporteComprobante == 2) {//cheque
@@ -678,13 +689,16 @@ public class AsientoContable extends Dialogo {
                 parametros_rep.put("p_identificacion", "");
             }
             String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
-            String nom_rep = "rep_cheque.jasper";
+             reporte="rep_contabilidad/rep_cheque.jasper";
+            String nom_rep = "Cheque";
             if (p_con_repo_nivel != null) {
                 if (p_con_repo_nivel.equalsIgnoreCase("true")) {
-                    nom_rep = "rep_cheque_normal.jasper";
+                    //nom_rep = "rep_cheque_normal.jasper";
+                    reporte = utilitario.getPathReporteVisualizador(nom_rep);
                 }
             }
-            vpd_asiento.setVisualizarPDF("rep_bancos/" + nom_rep, parametros_rep);
+            System.out.println("parametros cheque "+parametros_rep);
+            vpd_asiento.setVisualizarPDF(reporte, parametros_rep);
 
         }
         vpd_asiento.dibujar();
