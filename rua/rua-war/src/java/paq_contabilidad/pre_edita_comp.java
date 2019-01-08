@@ -86,7 +86,9 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
             tab_tabla1.getColumna("ide_cneco").setLectura(true);
             tab_tabla1.setCampoOrden("ide_cnccc desc");
+            tab_tabla1.getColumna("ide_cneco").setVisible(true);
             tab_tabla1.dibujar();
+            tab_tabla1.getColumna("ide_cneco").setVisible(true);
             PanelTabla pat_panel1 = new PanelTabla();
             pat_panel1.setPanelTabla(tab_tabla1);
             pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
