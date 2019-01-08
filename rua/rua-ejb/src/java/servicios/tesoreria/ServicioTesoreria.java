@@ -543,7 +543,8 @@ public class ServicioTesoreria {
             ide_tettb = "-1";
         }
         //       calculo el maximo y suma uno
-        List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans where ide_tettb =" + ide_tettb + " and ide_tecba=" + ide_tecba + " AND calculado_tettb= true ");
+        List lis_max = utilitario.getConexion().consultar("SELECT max(secuencial_tesec)  from tes_secuencial_trans a \n"
+                + "inner join tes_tip_tran_banc b on a.ide_tettb = b.ide_tettb where a.ide_tettb =" + ide_tettb + " and ide_tecba=" + ide_tecba + " AND calculado_tettb= true ");
         if (lis_max.get(0) != null) {
             try {
                 maximo = ((Integer.parseInt(lis_max.get(0).toString())) + 1) + "";
