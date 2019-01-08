@@ -142,8 +142,9 @@ public class pre_documentosCxP extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES DOCUMENTOS POR PAGAR", "20%");
         mep_menu.agregarItem("Listado de Documentos CxP ", "dibujarDocumentos", "ui-icon-note");
-        mep_menu.agregarItem("Generar Asiento Contable", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
         mep_menu.agregarItem("Generar Comprobante Retención", "dibujarDocumentosNoRetencion", "ui-icon-notice");
+        mep_menu.agregarSubMenu("CONTABILIDAD");
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarDocumentosNoContabilizadas", "ui-icon-notice");
         mep_menu.agregarSubMenu("ANTICIPOS EMPLEADOS");
         mep_menu.agregarItem("Saldar Documentos CxP ", "dibujarSaldarAnticipo", "ui-icon-star");//8
         mep_menu.agregarSubMenu("CONSULTAS");
@@ -466,10 +467,10 @@ public class pre_documentosCxP extends Pantalla {
                 }
             } else {
                 if (guardarPantalla().isEmpty()) {
-                    dibujarSaldarAnticipo();
-                }
+                dibujarSaldarAnticipo();
             }
         }
+    }
     }
 
     /**
@@ -864,7 +865,7 @@ public class pre_documentosCxP extends Pantalla {
             }
             try {
                 asc_asiento.getTab_cabe_asiento().setValor("ide_geper", ser_factura.getIdeGeperTransaccionCXC(aut_anticipo.getValor()));
-            } catch (Exception e) { 
+            } catch (Exception e) {
             }
 
             asc_asiento.getBot_aceptar().setMetodo("guardar");

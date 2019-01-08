@@ -6,32 +6,18 @@
 package paq_cuentas_x_pagar;
 
 import componentes.DocumentoCxP;
-import dj.comprobantes.offline.enums.TipoComprobanteEnum;
-import dj.comprobantes.offline.enums.TipoImpuestoIvaEnum;
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.AreaTexto;
 import framework.componentes.Boton;
-import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
-import framework.componentes.Espacio;
-import framework.componentes.Etiqueta;
-import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Tabulador;
-import framework.componentes.Texto;
 import framework.componentes.Upload;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
-import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
@@ -41,7 +27,6 @@ import servicios.cuentas_x_pagar.ServicioProveedor;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
-import sistema.aplicacion.Utilitario;
 
 /**
  *
