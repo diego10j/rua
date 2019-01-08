@@ -775,37 +775,34 @@ public class ServicioTesoreria {
      */
     public void actualizarNumMaximoTipoTransaccion(String ide_tecba, String ide_tettb, String numeroIngresado) {
         long numIng = 0;
-        String maximo = getNumMaximoTipoTransaccion(ide_tecba, ide_tettb);
-
-        if (maximo.isEmpty() == false) {
-            try {
-                //solo deja numeros
-                String num = "";
-                for (int i = 0; i < numeroIngresado.length(); i++) {
-                    if (Character.isDigit(numeroIngresado.charAt(i))) {
-                        num += numeroIngresado.charAt(i);
-                    }
+        try {
+            //solo deja numeros
+            String num = "";
+            for (int i = 0; i < numeroIngresado.length(); i++) {
+                if (Character.isDigit(numeroIngresado.charAt(i))) {
+                    num += numeroIngresado.charAt(i);
                 }
-                numIng = Long.parseLong(num.trim());
-            } catch (Exception e) {
             }
-            if (numIng > 0) {
-                TablaGenerica tag = new TablaGenerica();
-                tag.setTabla("tes_secuencial_trans", "ide_tesec");
-                tag.setCondicion("ide_tecba=" + ide_tecba + " and ide_tettb = " + ide_tettb + " and ide_sucu = " + utilitario.getVariable("IDE_SUCU"));
-                tag.ejecutarSql();
-                if (tag.isEmpty()) {
-                    tag.insertar();
-                } else {
-                    tag.modificar(0);
-                }
-                tag.setValor("ide_tettb", ide_tettb);
-                tag.setValor("ide_tecba", ide_tecba);
-                tag.setValor("ide_empr", utilitario.getVariable("ide_empr"));
-                tag.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
-                tag.setValor("secuencial_tesec", String.valueOf(numIng));
-                tag.guardar();
+            numIng = Long.parseLong(num.trim());
+        } catch (Exception e) {
+        }
+        if (numIng > 0) {
+            TablaGenerica tag = new TablaGenerica();
+            tag.setTabla("tes_secuencial_trans", "ide_tesec");
+            tag.setCondicion("ide_tecba=" + ide_tecba + " and ide_tettb = " + ide_tettb + " and ide_sucu = " + utilitario.getVariable("IDE_SUCU"));
+            tag.ejecutarSql();
+            if (tag.isEmpty()) {
+                tag.insertar();
+            } else {
+                tag.modificar(0);
             }
+            tag.setValor("ide_tettb", ide_tettb);
+            tag.setValor("ide_tecba", ide_tecba);
+            tag.setValor("ide_empr", utilitario.getVariable("ide_empr"));
+            tag.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
+            tag.setValor("secuencial_tesec", String.valueOf(numIng));
+            tag.guardar();
         }
     }
+
 }
