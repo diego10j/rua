@@ -1357,7 +1357,7 @@ public class ServicioCuentasCxC extends ServicioBase {
      */
     public boolean isHaceGuiasElectrónicas() {
         TablaGenerica tag = utilitario.consultar("select ide_ccdaf,es_electronica_ccdaf "
-                + "from cxc_datos_fac where ide_cntdoc = 8 and es_electronica_ccdaf=true and activo_ccdaf=true and ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
+                + "from cxc_datos_fac where ide_cntdoc = 7 and es_electronica_ccdaf=true and activo_ccdaf=true and ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
         return !tag.isEmpty();
     }
 
