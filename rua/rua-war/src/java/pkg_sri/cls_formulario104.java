@@ -273,7 +273,7 @@ public class cls_formulario104 {
                 }
                 v605 = "0.00";
                 v607 = "0.00";
-                v609 = "0.00";
+                v609 = consultarRetencionVentasIVA();
                 v611 = getValor611();
                 v613 = "0.00";
                 v615 = "0.00";
@@ -1017,6 +1017,25 @@ public class cls_formulario104 {
         return utilitario.getFormatoNumero(dou_valor);
     }
 
+        public String consultarRetencionVentasIVA() {
+        double dou_valor = 0;
+        List lis_sql = utilitario.getConexion().consultar("SELECT  SUM(dr.valor_cndre) as valor_cndre"
+                + " FROM con_cabece_retenc cr "
+                + " LEFT JOIN con_detall_retenc dr ON (dr.ide_cncre = cr.ide_cncre) "
+                + " WHERE cr.fecha_emisi_cncre BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' "
+                + " AND ide_cnere=0 "
+                + " AND es_venta_cncre=true");
+        if (lis_sql != null && !lis_sql.isEmpty()) {
+            try {
+                dou_valor = Double.parseDouble(lis_sql.get(0) + "");
+            } catch (Exception e) {
+            }
+        }
+        return utilitario.getFormatoNumero(dou_valor);
+    }
+
+    
+    
     private Element crearElemento(String nombre, String[] atributos, String texto) {
         Element elemento = doc_formulario104.createElement(nombre);
         if (atributos != null) {
