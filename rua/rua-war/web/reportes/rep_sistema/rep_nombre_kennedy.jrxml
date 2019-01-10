@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="254" pageHeight="49" whenNoDataType="BlankPage" columnWidth="225" leftMargin="20" rightMargin="9" topMargin="0" bottomMargin="0" uuid="fedf1459-643b-41cd-bb4f-3d5a5fea7e1d">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT * FROM sis_empresa e, sis_sucursal s
+where s.ide_empr=e.ide_empr
+and s.ide_empr=$P{ide_empr}
+and s.ide_sucu=$P{ide_sucu}]]>
+	</queryString>
+	<field name="ide_empr" class="java.lang.Long"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="contacto_empr" class="java.lang.String"/>
+	<field name="representante_empr" class="java.lang.String"/>
+	<field name="identi_repre_empr" class="java.lang.String"/>
+	<field name="nom_corto_empr" class="java.lang.String"/>
+	<field name="mail_empr" class="java.lang.String"/>
+	<field name="pagina_empr" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="direccion_empr" class="java.lang.String"/>
+	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
+	<field name="logo_empr" class="java.io.InputStream"/>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
+	<title>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement uuid="741c4b2f-55a2-4cca-be77-f91444d4c746" x="0" y="20" width="179" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC: "+$F{identificacion_empr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3cda33f8-844f-4c17-89ee-eb1edabb551d" x="0" y="0" width="179" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>
