@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="261"/>
+	<property name="ireport.y" value="220"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -14,7 +14,7 @@
 	<parameter name="nombre" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.ide_acact,secuencial_acact as codigo_acact,fecha_asigna_acact,codigo_gecas,nombre_gecas,
-codigo_geobr,nombre_geobr, codigo_acuba,nombre_acuba,g.nom_geper,
+codigo_geobr,nombre_geobr, b.codigo_acuba,b.nombre_acuba,g.nom_geper, b.nombre_acuba as dep_activo,
 serie_acafi,codigo_barras_acafi,cantidad_acafi,nombre_inarti,
 observacion_acafi,nombre_aceaf,cod_anterior_acafi,observacion_acact,k.nom_geper as nuevo_custodio,
 (case when extract(month from fecha_asigna_acact) =1 then 'Enero'
@@ -43,6 +43,7 @@ inner join gen_persona g on a.ide_geper=g.ide_geper
 inner join inv_articulo h  on d.ide_inarti=h.ide_inarti
 left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf
 left join gen_persona k on a.gen_ide_geper= k.ide_geper
+left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba
 where a.ide_acact=  $P{ide_acact}
 order by nombre_inarti,a.ide_acact]]>
 	</queryString>
@@ -58,6 +59,7 @@ order by nombre_inarti,a.ide_acact]]>
 	<field name="nom_geper" class="java.lang.String">
 		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
 	</field>
+	<field name="dep_activo" class="java.lang.String"/>
 	<field name="serie_acafi" class="java.lang.String"/>
 	<field name="codigo_barras_acafi" class="java.lang.String"/>
 	<field name="cantidad_acafi" class="java.lang.Integer"/>
@@ -80,7 +82,7 @@ order by nombre_inarti,a.ide_acact]]>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="227" splitType="Stretch">
+		<band height="193" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="49c35220-230a-4287-824c-f28b7c79cbcd" x="380" y="3" width="173" height="48"/>
 			</rectangle>
@@ -135,17 +137,12 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement textAlignment="Justified"/>
 				<textFieldExpression><![CDATA["…. En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" quien ENTREGA y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio} +" quien RECIBE previa constatación y verificación, el bien detallado a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, se determinó que el mismo se encuentran DAÑADO y OBSOLETO, dejando  constancia de la conformidad de la presente"]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="896b3ebf-41cb-49a6-8967-5290cb280520" x="0" y="193" width="555" height="17"/>
-				<textElement/>
-				<text><![CDATA[Para su efecto y constancia firman las partes correspondientes al pie de esta acta.]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="12" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="376" y="0" width="32" height="12"/>
+				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="445" y="0" width="32" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -159,7 +156,21 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CANT.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="408" y="0" width="72" height="12"/>
+				<reportElement uuid="e1225dd8-a3ad-4ef5-8f95-f8dc61b14f6c" x="41" y="0" width="98" height="12"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UBICACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="477" y="0" width="72" height="12"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5"/>
@@ -173,7 +184,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="540994ad-b466-4b9e-abff-78a7d08cdf1b" x="70" y="0" width="200" height="12"/>
+				<reportElement uuid="540994ad-b466-4b9e-abff-78a7d08cdf1b" x="139" y="0" width="200" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -187,7 +198,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[NOMBRE ACTIVO FIJO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="270" y="0" width="106" height="12"/>
+				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="339" y="0" width="106" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -201,7 +212,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[CÓDIGO NUEVO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="38" y="0" width="32" height="12"/>
+				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="9" y="0" width="32" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -219,7 +230,7 @@ order by nombre_inarti,a.ide_acact]]>
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="270" y="0" width="106" height="13"/>
+				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="339" y="0" width="106" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -232,7 +243,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{codigo_barras_acafi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="376" y="0" width="32" height="13"/>
+				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="445" y="0" width="32" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -243,7 +254,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{cantidad_acafi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c7660bd3-297f-401f-81af-0814c6df72eb" x="408" y="0" width="72" height="13"/>
+				<reportElement uuid="c7660bd3-297f-401f-81af-0814c6df72eb" x="477" y="0" width="72" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -256,7 +267,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{nombre_aceaf}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d31abfa9-68f4-4808-ac54-552625860c5e" x="70" y="0" width="200" height="13"/>
+				<reportElement uuid="d31abfa9-68f4-4808-ac54-552625860c5e" x="139" y="0" width="200" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -269,7 +280,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="38" y="0" width="32" height="13"/>
+				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="9" y="0" width="32" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -280,6 +291,13 @@ order by nombre_inarti,a.ide_acact]]>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{vcontador}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="eae6d700-8cb7-4ad4-bd63-d9acbeb5247c" x="41" y="0" width="98" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dep_activo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -381,12 +399,12 @@ order by nombre_inarti,a.ide_acact]]>
 			<textField>
 				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="75" y="70" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{denom_custodio}+" "+$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="299" y="70" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{nuevo_custodio}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="360575e8-092d-49c0-bc6d-68b1571318d1" x="1" y="18" width="555" height="38" forecolor="#FF3333"/>
@@ -395,6 +413,11 @@ order by nombre_inarti,a.ide_acact]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="896b3ebf-41cb-49a6-8967-5290cb280520" x="0" y="1" width="555" height="17"/>
+				<textElement/>
+				<text><![CDATA[Para su efecto y constancia firman las partes correspondientes al pie de esta acta.]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

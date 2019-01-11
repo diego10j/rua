@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_suministros_materiales" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="05ba5099-3289-4454-8621-62a295751fc5">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="176"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="informe_para" class="java.lang.String"/>
 	<parameter name="fecha_inicio" class="java.util.Date"/>
@@ -51,6 +51,9 @@ order by b.nombre_georg,fecha_trans_incci,d.nom_geper,e.nombre_inarti]]>
 		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
 	</variable>
 	<variable name="valor_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="total_reporte" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
 	<group name="DEPARTAMENTO">
@@ -359,6 +362,44 @@ order by b.nombre_georg,fecha_trans_incci,d.nom_geper,e.nombre_inarti]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band splitType="Stretch"/>
+		<band height="75" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f2d6e882-a036-4929-9509-93f419fe375c" x="330" y="0" width="142" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Consumo de Período:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="475" y="5" width="78" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_reporte}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f12de0a2-86fb-4dc9-9427-901a98a7edb6" x="75" y="55" width="164" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f12de0a2-86fb-4dc9-9427-901a98a7edb6" x="297" y="55" width="164" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Revisado Por:]]></text>
+			</staticText>
+		</band>
 	</summary>
 </jasperReport>

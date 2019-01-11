@@ -6,6 +6,11 @@
 	<parameter name="ide_usua" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT ide_ipcer,nombre_teban as BANCO,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,ide_cnccc,
 capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES
@@ -131,14 +136,31 @@ order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="103" splitType="Stretch">
+		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="8dc602c7-3a09-4221-8905-91a7f6de252a" x="0" y="83" width="555" height="20"/>
+				<reportElement uuid="8dc602c7-3a09-4221-8905-91a7f6de252a" x="332" y="19" width="205" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INVERSIONES SISTEMA FINANCIERO]]></text>
 			</staticText>
+			<subreport>
+				<reportElement uuid="e9fd4739-441e-44c8-adce-a3b8279badd8" x="0" y="0" width="200" height="50"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>

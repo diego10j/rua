@@ -23,6 +23,7 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<style name="Crosstab Data Text" hAlign="Center"/>
 	<subDataset name="Table Dataset 1" uuid="59ab0dd2-3e40-4347-9828-7d1130e711df"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer">
@@ -37,19 +38,15 @@
 	<parameter name="pide_curso" class="java.lang.String"/>
 	<parameter name="pide_paralelo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,nombre_gemes,valor_factura,
+		<![CDATA[
+select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,abreviatura_recon as des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
 nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,
-ide_repea,ide_repar,ide_recur,ide_reces
+ide_repea,ide_repar,ide_recur,ide_reces,abreviatura_gemes,abreviatura_recon
 from (
-select a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,nombre_gemes,valor_factura,a.ide_geper
-from rec_valores a, rec_concepto b,gen_mes c,(
-select ide_titulo_recval,sum(total_revad) -sum(valor_descuento_revad) as valor_factura
-from rec_valor_detalle
-group by ide_titulo_recval
-) d
+select a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,nombre_gemes,total_recva as valor_factura,a.ide_geper,abreviatura_gemes,abreviatura_recon
+from rec_valores a, rec_concepto b,gen_mes c
 where a.ide_concepto_recon = b.ide_concepto_recon
 and a.ide_gemes= c.ide_gemes
-and a.ide_titulo_recval = d.ide_titulo_recval
 AND a.ide_recest=2
 ) a
 inner join (
@@ -64,9 +61,11 @@ and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
 order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper
 ) b on a.ide_recalp = b.ide_recalp
-order by orden_recur,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper]]>
+order by orden_recur,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper,a.ide_gemes]]>
 	</queryString>
-	<field name="ide_geper" class="java.lang.Long"/>
+	<field name="ide_geper" class="java.lang.Long">
+		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>
+	</field>
 	<field name="ide_recalp" class="java.lang.Long"/>
 	<field name="ide_titulo_recval" class="java.lang.Long"/>
 	<field name="ide_concepto_recon" class="java.lang.Long"/>
@@ -102,17 +101,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<fieldDescription><![CDATA[Este campo es la clave principal de la tabla yavirac_alum_registro_academico]]></fieldDescription>
 	</field>
 	<field name="ide_reces" class="java.lang.Long"/>
+	<field name="abreviatura_gemes" class="java.lang.String"/>
+	<field name="abreviatura_recon" class="java.lang.String"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
 	<variable name="contador" class="java.lang.Integer" resetType="Group" resetGroup="paralelos" calculation="Count">
 		<variableExpression><![CDATA[$F{nom_geper}]]></variableExpression>
-	</variable>
-	<variable name="suma_alumno" class="java.math.BigDecimal" resetType="Group" resetGroup="alumno" calculation="Sum">
-		<variableExpression><![CDATA[$F{valor_factura}]]></variableExpression>
-	</variable>
-	<variable name="suma_total" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{valor_factura}]]></variableExpression>
 	</variable>
 	<group name="especialidad">
 		<groupExpression><![CDATA[$F{ide_reces}]]></groupExpression>
@@ -146,94 +141,232 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
-	<group name="alumno">
-		<groupExpression><![CDATA[$F{ide_geper}]]></groupExpression>
-		<groupHeader>
-			<band height="27">
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="72" y="0" width="40" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Código]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="163" y="0" width="23" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[C.I.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="275" y="0" width="95" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Apellidos y Nombres]]></text>
-				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="112" y="2" width="51" height="12"/>
-					<textElement>
-						<font size="7"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{codigo_geper}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="06be60ca-e13f-4dc1-82e4-977aab486c67" x="186" y="2" width="84" height="12"/>
-					<textElement>
-						<font size="7"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="370" y="2" width="185" height="12"/>
-					<textElement>
-						<font size="7"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="102" y="13" width="35" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Mes]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="167" y="13" width="35" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Rubro]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="275" y="13" width="58" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Valor Deuda]]></text>
-				</staticText>
-			</band>
-		</groupHeader>
-		<groupFooter>
-			<band height="18">
-				<textField>
-					<reportElement uuid="92f5a0e4-ce87-4d48-bebd-6b0d54e6f1fa" x="228" y="0" width="100" height="14"/>
-					<textElement textAlignment="Right">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{suma_alumno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="122" y="0" width="76" height="14"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Total alumno:]]></text>
-				</staticText>
+			<band height="135">
+				<crosstab>
+					<reportElement uuid="eef433b9-8848-458a-a08a-7827790da1a4" x="0" y="0" width="555" height="135" printWhenGroupChanges="paralelos"/>
+					<crosstabDataset>
+						<dataset resetType="Group" resetGroup="paralelos"/>
+					</crosstabDataset>
+					<rowGroup name="nom_geper" width="144" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{nom_geper}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="6e63757f-c581-469a-ac70-a524271a5fa2" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="144" height="15"/>
+									<box>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Left" verticalAlignment="Middle">
+										<font size="7"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{nom_geper}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="44dcf6e0-c177-4ce7-9246-e018c550efbb" mode="Opaque" x="0" y="0" width="144" height="25"/>
+									<box>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="7"/>
+									</textElement>
+									<text><![CDATA[Total de Totales >>>>>>]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="nombre_gemes" height="18" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{nombre_gemes}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="146ce832-ab0f-4a25-a930-0f34f1e0c26a" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="18"/>
+									<box>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font size="7"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{nombre_gemes}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents backcolor="#005FB3" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="14e74285-89b5-41bf-9c2f-dbc21368a7b4" mode="Opaque" x="0" y="0" width="49" height="35" forecolor="#000000"/>
+									<box>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="7"/>
+									</textElement>
+									<text><![CDATA[Total de Totales]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<columnGroup name="des_concepto_recon" height="17" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{des_concepto_recon}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="8155a5e0-1f6b-421d-886f-01122c22eee3" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="17"/>
+									<box>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font size="7"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{des_concepto_recon}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="valor_facturaMeasure" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{valor_factura}]]></measureExpression>
+					</measure>
+					<crosstabCell width="46" height="15">
+						<cellContents>
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="6f444265-4e81-4226-831d-19476a3a3796" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="15"/>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="46" height="25" rowTotalGroup="nom_geper">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="6b2780a1-7871-4e86-92ce-a77e0a888a23" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="25"/>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="49" height="15" columnTotalGroup="nombre_gemes">
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="9d5251b8-9a38-449e-97c2-c1ace86f1f4c" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="49" height="15" forecolor="#000000"/>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="49" rowTotalGroup="nom_geper" columnTotalGroup="nombre_gemes">
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="b87b729d-8be3-40a5-bc70-fffe2ce11dbb" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="49" height="25" forecolor="#000000"/>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="15" columnTotalGroup="des_concepto_recon">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" rowTotalGroup="nom_geper" columnTotalGroup="des_concepto_recon">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
 			</band>
 		</groupFooter>
 	</group>
@@ -241,16 +374,16 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="63" splitType="Stretch">
+		<band height="53" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="370" y="7" width="185" height="32"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="370" y="7" width="185" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[LISTADO DE DEUDAS]]></text>
 			</staticText>
 			<subreport isUsingCache="true">
-				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="2" width="168" height="61"/>
+				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="7" y="2" width="168" height="47"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -264,7 +397,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="370" y="39" width="185" height="24"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="370" y="29" width="185" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -279,29 +412,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="12" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="102" y="0" width="51" height="12"/>
-				<textElement>
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_gemes}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="167" y="0" width="61" height="12"/>
-				<textElement>
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{des_concepto_recon}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="275" y="0" width="51" height="12"/>
-				<textElement textAlignment="Right">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{valor_factura}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band splitType="Stretch"/>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
@@ -389,21 +500,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="15" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="122" y="1" width="106" height="14"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total de Totales >>>]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="92f5a0e4-ce87-4d48-bebd-6b0d54e6f1fa" x="226" y="1" width="100" height="14"/>
-				<textElement textAlignment="Right">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{suma_total}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>
