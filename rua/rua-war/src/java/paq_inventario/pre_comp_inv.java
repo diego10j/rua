@@ -189,7 +189,6 @@ public class pre_comp_inv extends Pantalla {
         agregarComponente(rep_reporte);
         sel_arbol.setId("sel_arbol");
         sel_arbol.setSeleccionArbol("inv_articulo", "ide_inarti", "nombre_inarti", "inv_ide_inarti");
-        sel_arbol.getArb_seleccion().setCondicion("ide_inarti=" + utilitario.getVariable("p_inv_articulo_bien"));
         sel_arbol.getArb_seleccion().setOptimiza(true);
         agregarComponente(sel_arbol);
         sel_arbol.getBot_aceptar().setMetodo("aceptarReporte");
