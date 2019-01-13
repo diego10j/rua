@@ -84,6 +84,7 @@ public final class Comprobante implements Serializable {
     private String telefonos;
     private boolean sinFinesLucro = false;
     private String correoEmpresa;
+    private String resolucionSri;
 
     public Comprobante() {
     }
@@ -141,6 +142,7 @@ public final class Comprobante implements Serializable {
                 this.sinFinesLucro = resultado.getBoolean("fines_lucro_empr");
             }
             this.setCorreoEmpresa(resultado.getString("mail_empr"));
+            this.setResolucionSri(resultado.getString("RESOLUCION_EMPR"));
             //fin
 
             this.motivo = resultado.getString("motivo_srcom");
@@ -795,5 +797,14 @@ public final class Comprobante implements Serializable {
     public void setSubtotalNoObjeto(BigDecimal subtotalNoObjeto) {
         this.subtotalNoObjeto = subtotalNoObjeto;
     }
+
+    public String getResolucionSri() {
+        return resolucionSri;
+    }
+
+    public void setResolucionSri(String resolucionSri) {
+        this.resolucionSri = resolucionSri;
+    }
+    
 
 }
