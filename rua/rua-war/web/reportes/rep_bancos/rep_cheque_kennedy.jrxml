@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="535" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="489" leftMargin="4" rightMargin="42" topMargin="21" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="127"/>
+	<property name="ireport.x" value="18"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
 	<parameter name="monto" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -68,7 +68,7 @@ ORDER BY ide_cnlap desc]]>
 	<columnHeader>
 		<band height="123">
 			<textField>
-				<reportElement uuid="594208eb-1df5-4dff-aeb0-6fbfa0e1fa90" x="65" y="53" width="240" height="15"/>
+				<reportElement uuid="594208eb-1df5-4dff-aeb0-6fbfa0e1fa90" x="65" y="53" width="218" height="15"/>
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{beneficiario}]]></textFieldExpression>
 			</textField>
@@ -204,7 +204,7 @@ ORDER BY ide_cnlap desc]]>
 	<pageFooter>
 		<band height="116" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="515935f5-bbb7-44f8-9e5e-7b25aa3c9963" stretchType="RelativeToBandHeight" x="53" y="0" width="258" height="20" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="515935f5-bbb7-44f8-9e5e-7b25aa3c9963" stretchType="RelativeToBandHeight" x="53" y="0" width="334" height="20" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
@@ -212,7 +212,9 @@ ORDER BY ide_cnlap desc]]>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{beneficiario}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -240,7 +242,9 @@ $P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 			</staticText>
 			<textField>
 				<reportElement uuid="6516e375-4ec8-47a4-8e1c-ef3dc7a5f87b" x="54" y="28" width="377" height="18"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{monto_letras}]]></textFieldExpression>
 			</textField>
 			<textField>
