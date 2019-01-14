@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.io.*;
+import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -384,7 +385,8 @@ public class Utilitario extends Framework {
                 cadena = recursivoNumeroLetras(numero / 1000000) + " Millones" + recursivoNumeroLetras(numero % 1000000);
             }
         } else // Aqui identifico si lleva Miles
-         if ((numero / 1000) > 0) {
+        {
+            if ((numero / 1000) > 0) {
 
                 if ((numero / 1000) == 1) {
                     cadena = " Mil" + recursivoNumeroLetras(numero % 1000);
@@ -392,7 +394,8 @@ public class Utilitario extends Framework {
                     cadena = recursivoNumeroLetras(numero / 1000) + " Mil" + recursivoNumeroLetras(numero % 1000);
                 }
             } else // Aqui identifico si lleva cientos
-             if ((numero / 100) > 0) {
+            {
+                if ((numero / 100) > 0) {
                     if ((numero / 100) == 1) {
                         if ((numero % 100) == 0) {
                             cadena = " Cien";
@@ -549,6 +552,8 @@ public class Utilitario extends Framework {
                             break;
                     }
                 }
+            }
+        }
         return cadena;
     }
 
@@ -1121,8 +1126,31 @@ public class Utilitario extends Framework {
         if (!lis_path.isEmpty()) {
             Object[] obj_fila = (Object[]) lis_path.get(0);
             //pathReporte = "/reportes/" + obj_fila[1];
-             pathReporte = ""+obj_fila[1];
+            pathReporte = "" + obj_fila[1];
         }
         return pathReporte;
     }
+
+    /**
+     * Retorna el Logo de la empresa en forma StreamedContent
+     *
+     * @return
+     */
+    public StreamedContent getLogoEmpresa() {
+        StreamedContent stream = null;
+        try {
+            TablaGenerica tabEmpresa = consultar("SELECT LOGO_SUCU,ide_sucu from sis_sucursal where ide_sucu=" + getVariable("ide_sucu"));
+            if (tabEmpresa.isEmpty() == false) {
+                try (InputStream myInputStream = new ByteArrayInputStream((byte[]) tabEmpresa.getValorObjeto("LOGO_SUCU"))) {
+                    myInputStream.mark(0);
+                    String mimeType = URLConnection.guessContentTypeFromStream(myInputStream);
+                    stream = new DefaultStreamedContent(myInputStream, mimeType);
+                    myInputStream.close();
+                }
+            }
+        } catch (Exception e) {
+        }
+        return stream;
+    }
+
 }
