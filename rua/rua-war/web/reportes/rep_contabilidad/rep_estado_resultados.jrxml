@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="p_ingresos" class="java.lang.String"/>
 	<parameter name="p_gastos" class="java.lang.String"/>
-	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="empresa" class="java.lang.String"/>
 	<parameter name="sucursal" class="java.lang.String"/>
 	<parameter name="direccion" class="java.lang.String"/>
@@ -74,7 +74,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 			</textField>
 			<image onErrorType="Blank">
 				<reportElement uuid="54ad7c5b-eec2-46e3-92ea-6e8ed9deec6c" x="1" y="3" width="82" height="60"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="f3886b48-de75-4b73-b801-afad7f52a014" x="0" y="87" width="554" height="15"/>
