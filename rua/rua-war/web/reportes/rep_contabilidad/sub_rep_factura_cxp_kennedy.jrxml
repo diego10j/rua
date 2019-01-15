@@ -7,8 +7,12 @@
 	<parameter name="pfactura" class="java.lang.String"/>
 	<parameter name="ptransaccion" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select secuencial_cccfa,valor_ccdtr as total_cccfa,nom_geper,valor_ccdtr,c.ide_cnccc from cxc_cabece_factura a,gen_persona b,cxc_detall_transa c
-where a.ide_geper = b.ide_geper and a.ide_cccfa= c.ide_cccfa and ide_ccttr in ($P!{ptransaccion}) and c.ide_cnccc in (select ide_cnccc from con_cab_comp_cont where ide_cnccc=$P{ide_cnccc} and ide_cntcm in ($P!{pfactura}) )]]>
+		<![CDATA[select numero_cpcfa as secuencial_cccfa,valor_cpdtr as total_cccfa,nom_geper,valor_cpdtr as valor_ccdtr,c.ide_cnccc
+from cxp_cabece_factur a,gen_persona b,cxp_detall_transa c
+where a.ide_geper = b.ide_geper
+and a.ide_cpcfa= c.ide_cpcfa
+and ide_cpttr in ($P!{ptransaccion})
+and c.ide_cnccc in (select ide_cnccc from con_cab_comp_cont where ide_cnccc=$P{ide_cnccc} and ide_cntcm in ($P!{pfactura}) )]]>
 	</queryString>
 	<field name="secuencial_cccfa" class="java.lang.String"/>
 	<field name="total_cccfa" class="java.math.BigDecimal"/>
