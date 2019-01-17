@@ -1883,6 +1883,12 @@ public class FacturaCxC extends Dialogo {
                     utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe ingresar un alterno en los Detalles de la factura ");
                     return false;
                 }
+
+                if (tab_deta_factura.getValor(i, "ide_inarti") == null || tab_deta_factura.getValor("ide_inarti").isEmpty()) {
+                    utilitario.agregarMensajeError("No se puede guardar la Factura", "Debe seleccionar un artículo en los Detalles de la factura ");
+                    return false;
+                }
+
             }
         }
         double dou_total = 0;
@@ -2199,7 +2205,6 @@ public class FacturaCxC extends Dialogo {
     }
 
 }
-
 
 /////**
 ////     * Busca si tiene configuración para hacer guias de remision electronicas
