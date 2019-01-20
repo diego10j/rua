@@ -642,15 +642,19 @@ public class AsientoContable extends Dialogo {
         String usuario=utilitario.getVariable("NICK");
         String factura_imprime="-1";
         String tipo_transaccion_imprime="-1";
+        String tipo_transaccion_imprime_cheque="-1";
+
         if(utilitario.getVariable("p_cxp_imprime_factura")!=null){
             factura_imprime=utilitario.getVariable("p_cxp_imprime_factura");
         }
         if(utilitario.getVariable("p_cxp_tipo_trans_factura_imp")!=null){
             tipo_transaccion_imprime=utilitario.getVariable("p_cxp_tipo_trans_factura_imp");
         }
+        if(utilitario.getVariable("p_cxp_tipo_trans_factura_che")!=null){
+            tipo_transaccion_imprime_cheque=utilitario.getVariable("p_cxp_tipo_trans_factura_che");
+        }
         String reporte="";
-        parametros_rep.put("pfactura", factura_imprime);
-        parametros_rep.put("ptransaccion", tipo_transaccion_imprime);
+
         if (reporteComprobante == 1) {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
@@ -666,7 +670,7 @@ public class AsientoContable extends Dialogo {
                     reporte = utilitario.getPathReporteVisualizador(nom_rep);
                 }
             }
-            //System.out.println("imprimir reporte asiento "+reporte);
+            //System.out.println("imprimir reporte cheque "+reporte+ "parametros "+parametros_rep);
             vpd_asiento.setVisualizarPDF(reporte, parametros_rep);
         }
         if (reporteComprobante == 2) {//cheque
@@ -682,6 +686,8 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("p_num_cheque", tab_lib_banc.getValor("numero_teclb") + "");
             parametros_rep.put("p_num_trans", tab_lib_banc.getValor("ide_teclb") + "");
+            parametros_rep.put("pfactura", factura_imprime);
+            parametros_rep.put("ptransaccion", tipo_transaccion_imprime_cheque);
             TablaGenerica tab_persona = ser_tesoreria.getPersona(ser_comprobante.getCabeceraComprobante(ide_cnccc).getValor("ide_geper"));
             if (tab_persona.isEmpty() == false) {
                 parametros_rep.put("p_identificacion", tab_persona.getValor("identificac_geper"));

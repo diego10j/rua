@@ -77,6 +77,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("2", "p_cxp_doc_instituciones_finan", "Indica los documentos emitidos por las instituciones financieras ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
         lis_parametros.add(new Parametro("2", "p_cxp_imprime_factura", "Indica los tipo de movimientos que deben imprmir facturas en el reporte dario ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
         lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_factura_imp", "Indica los tipo de transaccion que deben imprmir facturas en el reporte dario ", "0", "cxc_tipo_transacc", "ide_ccttr", "nombre_ccttr"));
+        lis_parametros.add(new Parametro("2", "p_cxp_tipo_trans_factura_che", "Indica los tipo de transaccion que deben imprmir facturas en el reporte cheque", "0", "cxp_tipo_transacc", "ide_cpttr", "nombre_cpttr"));
 
         /*
          * CUENTAS POR COBRAR MODULO =3
