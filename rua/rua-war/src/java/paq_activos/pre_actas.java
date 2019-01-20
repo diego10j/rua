@@ -445,8 +445,8 @@ public class pre_actas extends Pantalla {
                 utilitario.agregarMensajeInfo("No Registra Activos", "El custodio consultado no registra bienes a su cargo revise por favor");
             }
         } else if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))) {
-            //System.out.println("etre a imprimir el acta de baja");
-            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_actual, "1", estado_activo, clase_activo));
+            //System.out.println("etre a imprimir el acta de baja");            
+            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_constatacion, "1", estado_activo, clase_activo));
             set_activos.getTab_seleccion().ejecutarSql();
             set_activos.dibujar();
 

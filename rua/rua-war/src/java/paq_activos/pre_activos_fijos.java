@@ -1434,24 +1434,31 @@ public void actualizarCustodio(){
 
     public void cargarActivoFijo() {
         String ide_acafi = tab_tabla.getValor("ide_acafi");
+        //System.out.println(" entre a cargar activo fijo "+ide_acafi);
         if (ide_acafi != null) {
             dibujarActivoFijo();
+            //System.out.println(" pase dibujar activo fijo ");
             tab_tabla.setCondicion("ide_acafi=" + ide_acafi);
             tab_tabla.ejecutarSql();
             tab_tabla.modificar(tab_tabla.getFilaActual()); //dfj 
             tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
+                        //System.out.println(" pase tabla 2 activo fijo ");
+                        
             tab_tabla2.ejecutarSql();
-            tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo(tab_tabla.getValor("ide_acafi")));
-            tab_tabla3.ejecutarSql();
+                        //System.out.println(" antes tabla 5 activo fijo ");
+
             tab_tabla2.setRendered(true);
-            tab_tabla3.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
+                        //System.out.println(" pase pase tabla 5 activo fijo ");
+
             tab_tabla5.ejecutarSql();
             tab_tabla.getColumna("cantidad_acafi").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
 
             tab_tabla4.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
             tab_tabla4.ejecutarSql();
             tab_tabla6.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
+                                    System.out.println(" pase pase tabla 6 activo fijo ");
+
             tab_tabla6.ejecutarSql();
 
             cargarCodigoBarras();
