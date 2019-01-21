@@ -80,6 +80,25 @@
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
     </persistence-unit>
-  
+    
+    <!---9  Casa Inspectorial Salesiana 2019/> -->
+    <persistence-unit name="rua_inspectoria" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_inspectoria</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>
+    
+    <!---10  Centro de Espiritualidad San Patricio 2019/> -->
+    <persistence-unit name="rua_sanpatricio" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_sanpatricio</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>
   
 </persistence>
