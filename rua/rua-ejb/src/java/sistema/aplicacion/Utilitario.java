@@ -1118,7 +1118,7 @@ public class Utilitario extends Framework {
     }
 
     /*
-    Retorna el path (.jasper) de un reporte configurado en la tabla sis_reporte_visual
+     Retorna el path (.jasper) de un reporte configurado en la tabla sis_reporte_visual
      */
     public String getPathReporteVisualizador(String nombreReporte) {
         String pathReporte = null;
@@ -1139,9 +1139,9 @@ public class Utilitario extends Framework {
     public StreamedContent getLogoEmpresa() {
         StreamedContent stream = null;
         try {
-            TablaGenerica tabEmpresa = consultar("SELECT LOGO_SUCU,ide_sucu from sis_sucursal where ide_sucu=" + getVariable("ide_sucu"));
+            TablaGenerica tabEmpresa = consultar("SELECT LOGO_EMPR,ide_empr from sis_empresa where ide_empr=" + getVariable("ide_empr"));
             if (tabEmpresa.isEmpty() == false) {
-                try (InputStream myInputStream = new ByteArrayInputStream((byte[]) tabEmpresa.getValorObjeto("LOGO_SUCU"))) {
+                try (InputStream myInputStream = new ByteArrayInputStream((byte[]) tabEmpresa.getValorObjeto("LOGO_EMPR"))) {
                     myInputStream.mark(0);
                     String mimeType = URLConnection.guessContentTypeFromStream(myInputStream);
                     stream = new DefaultStreamedContent(myInputStream, mimeType);
