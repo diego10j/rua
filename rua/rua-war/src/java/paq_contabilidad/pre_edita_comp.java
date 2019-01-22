@@ -64,13 +64,13 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.setCondicionSucursal(true);
             tab_tabla1.getColumna("ide_cneco").setCombo("con_estado_compro", "ide_cneco", "nombre_cneco", "");
             tab_tabla1.getColumna("fecha_siste_cnccc").setVisible(false);
-            tab_tabla1.getColumna("numero_cnccc").setEtiqueta();
+            //tab_tabla1.getColumna("numero_cnccc").setEtiqueta();
             tab_tabla1.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
             tab_tabla1.getColumna("fecha_siste_cnccc").setValorDefecto(utilitario.getFechaActual());
             tab_tabla1.getColumna("fecha_trans_cnccc").setValorDefecto(utilitario.getFechaActual());
             tab_tabla1.getColumna("hora_sistem_cnccc").setVisible(false);
             tab_tabla1.getColumna("hora_sistem_cnccc").setValorDefecto(utilitario.getHoraActual());
-            tab_tabla1.getColumna("ide_cntcm").setVisible(false);
+            tab_tabla1.getColumna("ide_cntcm").setCombo("con_tipo_comproba","ide_cntcm","nombre_cntcm","");  
             tab_tabla1.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
             tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
             tab_tabla1.getColumna("ide_usua").setLectura(true);
@@ -84,7 +84,7 @@ public class pre_edita_comp extends Pantalla {
             tab_tabla1.setTipoFormulario(true);
             tab_tabla1.getGrid().setColumns(6);
             tab_tabla1.getColumna("ide_cneco").setValorDefecto(utilitario.getVariable("p_con_estado_comprobante_normal"));
-            tab_tabla1.getColumna("ide_cneco").setLectura(true);
+            //tab_tabla1.getColumna("ide_cneco").setLectura(false);
             tab_tabla1.setCampoOrden("ide_cnccc desc");
             tab_tabla1.getColumna("ide_cneco").setVisible(true);
             tab_tabla1.dibujar();
