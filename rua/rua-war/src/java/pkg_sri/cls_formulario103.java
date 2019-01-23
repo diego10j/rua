@@ -105,7 +105,7 @@ public class cls_formulario103 {
                 double dou_total = Double.parseDouble(v349);
                 //  System.out.println("v349 " + v349 + " .... dou_total_ats " + dou_total_ats);
                 // System.out.println("v332 " + v332);
-                v349 = utilitario.getFormatoNumero(dou_total_ats);
+                v349 = utilitario.getFormatoNumero(dou_total);  //*** antes dou_total_ats
 //////////////                if (dou_total != dou_total_ats) {
 //////////////                    //1 si es mayor el total en el ats
 //////////////                    double d332 = Double.parseDouble(v332);
