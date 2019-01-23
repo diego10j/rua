@@ -1429,6 +1429,7 @@ public class DocumentoCxP extends Dialogo {
 
         //base_grabada = base_grabada - descuento;
         valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
+        System.out.println("---ice "+ valor_ice); 
         if (valor_ice > 0) {
             valor_iva += (valor_ice * tarifaIVA); //0.12
         }
