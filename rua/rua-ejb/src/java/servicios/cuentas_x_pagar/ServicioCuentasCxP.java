@@ -355,6 +355,7 @@ public class ServicioCuentasCxP extends ServicioBase {
             
             tab_det_tran_cxp.guardar();
             utilitario.getConexion().agregarSql("UPDATE cxp_cabece_transa SET  ide_cpcfa = " + tab_cab_factura.getValor("ide_cpcfa") + " WHERE  ide_cpctr =  " + ide_cpctr);
+            utilitario.getConexion().agregarSql("UPDATE cxp_detall_transa SET  ide_cpcfa = " + tab_cab_factura.getValor("ide_cpcfa") + " WHERE  ide_cpctr =  " + ide_cpctr);
         }
         return ide_cpctr;
     }
