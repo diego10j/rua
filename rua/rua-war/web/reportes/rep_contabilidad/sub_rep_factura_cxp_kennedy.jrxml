@@ -45,21 +45,21 @@ and c.ide_cnccc in (select ide_cnccc from con_cab_comp_cont where ide_cnccc=$P{i
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="27" y="0" width="100" height="12"/>
+				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="18" y="0" width="143" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["FACTURA "+$F{secuencial_cccfa}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["FACT: "+$F{secuencial_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="248" y="0" width="75" height="12"/>
+				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="282" y="0" width="75" height="12"/>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="127" y="0" width="121" height="12"/>
+				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="161" y="0" width="121" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -76,7 +76,7 @@ and c.ide_cnccc in (select ide_cnccc from con_cab_comp_cont where ide_cnccc=$P{i
 	<summary>
 		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="248" y="0" width="75" height="15"/>
+				<reportElement uuid="49117658-d228-46e6-bd37-95fc68b58e2b" x="282" y="0" width="75" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 				</box>
@@ -86,7 +86,7 @@ and c.ide_cnccc in (select ide_cnccc from con_cab_comp_cont where ide_cnccc=$P{i
 				<textFieldExpression><![CDATA[$V{suma_total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="318bf170-9231-4ba1-bbb0-761a3b30e74e" x="94" y="0" width="136" height="15"/>
+				<reportElement uuid="318bf170-9231-4ba1-bbb0-761a3b30e74e" x="128" y="0" width="136" height="15"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
