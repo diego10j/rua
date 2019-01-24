@@ -88,9 +88,10 @@ public class cls_anexo_transaccional_electronicos {
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
-                    ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones  
+                    ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones 
+                    ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones    
-                    ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones  
+                    
                     
                     if (ideRetenciones.equals("'null'") || ideRetenciones.equals("null") || ideRetenciones.isEmpty()) {
                         ideRetenciones = "-1";
