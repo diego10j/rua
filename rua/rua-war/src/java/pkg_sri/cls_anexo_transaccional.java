@@ -615,6 +615,7 @@ public class cls_anexo_transaccional {
                 //String master = "D:";
                 nombre = "ATS.xml";
                 path = master + "/" + nombre;
+                 System.out.println("path "+path);
                 Result console = new StreamResult(System.out);
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 //Result result = new StreamResult("D:/" + nombre); //nombre del archivo
