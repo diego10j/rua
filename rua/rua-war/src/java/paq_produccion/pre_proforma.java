@@ -151,6 +151,7 @@ public class pre_proforma extends Pantalla {
         agregarComponente(vipdf_proforma);
     }//Metodo impresion PDF//
     public void imprimir(){
+        String usuario=utilitario.getVariable("NICK");
         if (tab_proforma.getValorSeleccionado() != null) {
                         ///////////AQUI ABRE EL REPORTE
                         Map parametros = new HashMap();
@@ -158,7 +159,7 @@ public class pre_proforma extends Pantalla {
                         parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
                         parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("pide_modulo", Integer.parseInt(utilitario.getVariable("p_prod_numero_proforma")));
-
+                         parametros.put("nombre", usuario);
                         //System.out.println(" " + str_titulos);
                         vipdf_proforma.setVisualizarPDF("rep_produccion/rep_proforma.jasper", parametros);
                         vipdf_proforma.dibujar();
