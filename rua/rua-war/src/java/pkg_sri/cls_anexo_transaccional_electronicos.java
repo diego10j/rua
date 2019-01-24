@@ -88,13 +88,14 @@ public class cls_anexo_transaccional_electronicos {
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
-                    ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones 
-                    ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones 
-                    ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones                                
+                    ideRetenciones = ideRetenciones.replaceAll("'null',", ""); //si hay documentos sin retenciones 
+                    ideRetenciones = ideRetenciones.replaceAll("'null'", ""); //si hay documentos sin retenciones 
+                    ideRetenciones = ideRetenciones.replaceAll("null,", ""); //si hay documentos sin retenciones  
+                    ideRetenciones = ideRetenciones.replaceAll(",)", ")"); //si hay documentos sin retenciones  
+                    ideRetenciones = ideRetenciones.replaceAll(",,", ","); //si hay documentos sin retenciones   
                     if (ideRetenciones.equals("'null'") || ideRetenciones.equals("null") || ideRetenciones.isEmpty()) {
                         ideRetenciones = "-1";
                     } 
-
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
