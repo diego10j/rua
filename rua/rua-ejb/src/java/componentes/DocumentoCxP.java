@@ -248,17 +248,6 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "ide_geper=" + tab_cab_factura.getValor("ide_geper"));
         tab_cab_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
         tab_cab_documento.ejecutarSql();
-        com_tipo_documento.setValue(tab_cab_factura.getValor("ide_cntdo"));
-        tab_det_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
-        tab_det_documento.ejecutarSql();
-        if (tab_cab_documento.getValor("ide_cncre") != null) {
-            tab_documenoCxP.getTab(1).getChildren().add(dibujarComprobanteRetencion());
-        }
-        if (tab_cab_documento.getValor("ide_cnccc") != null) {
-            tab_documenoCxP.getTab(2).getChildren().add(dibujarAsiento());
-        }
-        tab_documenoCxP.getTab(3).getChildren().add(dibujarDetallePago());
-        cambioFecha();
         tex_iva.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_iva_cpcfa")));
         //Carga totales y observacion
         double dou_subt0 = 0;
@@ -275,10 +264,21 @@ public class DocumentoCxP extends Dialogo {
         tex_subtotal12.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("base_grabada_cpcfa")));
         tex_total.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("total_cpcfa")));
         ate_observacion.setValue(tab_cab_documento.getValor("observacion_cpcfa"));
-        
+
         tex_ice.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_ice_cpcfa")));
         tex_otros.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("otros_cpcfa")));
-        
+        com_tipo_documento.setValue(tab_cab_factura.getValor("ide_cntdo")); 
+        tab_det_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
+        tab_det_documento.ejecutarSql();
+        if (tab_cab_documento.getValor("ide_cncre") != null) {
+            tab_documenoCxP.getTab(1).getChildren().add(dibujarComprobanteRetencion());
+        }
+        if (tab_cab_documento.getValor("ide_cnccc") != null) {
+            tab_documenoCxP.getTab(2).getChildren().add(dibujarAsiento());
+        }
+        tab_documenoCxP.getTab(3).getChildren().add(dibujarDetallePago());
+        cambioFecha();
+
         if (tab_cab_documento.getFilaSeleccionada() != null) {
             tab_cab_documento.getFilaSeleccionada().setLectura(true);
         }
@@ -715,7 +715,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.getColumna("pagado_cpcfa").setValorDefecto("False");
         tab_cab_documento.getColumna("total_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("IDE_ADCOMP").setVisible(false);  //CAMPO LUIS
-        
+
         tab_cab_documento.getColumna("total_cpcfa").setValorDefecto("0");
         tab_cab_documento.getColumna("numero_cpcfa").setEstilo("font-size: 12px;font-weight: bold");
         tab_cab_documento.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
@@ -1429,26 +1429,26 @@ public class DocumentoCxP extends Dialogo {
 
         //base_grabada = base_grabada - descuento;
         valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
-        System.out.println("---ice "+ valor_ice); 
+
         if (valor_ice > 0) {
             valor_iva += (valor_ice * tarifaIVA); //0.12
         }
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
         tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(valor_ice));
-        
+
         tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(valor_otros));
 
         tab_cab_documento.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice +valor_otros));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
 
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice +valor_otros));
+        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
         utilitario.addUpdate("tab_documenoCxP:0:gri_valores");
     }
 
@@ -1733,7 +1733,7 @@ public class DocumentoCxP extends Dialogo {
 
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10")||com_tipo_documento.getValue().equals(parametros.get("p_cxp_doc_instituciones_finan"))) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10") || com_tipo_documento.getValue().equals(parametros.get("p_cxp_doc_instituciones_finan"))) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
