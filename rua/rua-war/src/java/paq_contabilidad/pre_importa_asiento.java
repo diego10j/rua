@@ -322,6 +322,7 @@ public class pre_importa_asiento extends Pantalla {
 
             String str_codigos = tab_detalle.getStringColumna("codig_recur_cndpc");
             TablaGenerica tab_cuentas = ser_contabilidad.getCuentaporCodigo(str_codigos);
+            tab_cuentas.imprimirSql();
             if (tab_cuentas.getTotalFilas() > 0) {
                 //Busca ide_cndpc
                 boolean correcto = true;
@@ -412,18 +413,18 @@ public class pre_importa_asiento extends Pantalla {
                         //si la cuenta no termina en .
                         String c = tab_detalle.getValor(i, "codig_recur_cndpc");
                         //if (tab_detalle.getValor(i, "codig_recur_cndpc").endsWith(".") == false) {
-                        if (c.endsWith(".") == false) {
-                            asc_asiento.getTab_deta_asiento().insertar();
-                            asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", tab_detalle.getValor(i, "ide_cndcc"));
-                            if (tab_detalle.getValor(i, "debe") != null) {
-                                asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaDebe());
-                                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "debe"));
-                            } else if (tab_detalle.getValor(i, "haber") != null) {
-                                asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
-                                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "haber"));
-                            }
-                            asc_asiento.getTab_deta_asiento().getFila(0).setLectura(true); //para no permitir editar
+                        //if (c.endsWith(".") == false) {  **********************
+                        asc_asiento.getTab_deta_asiento().insertar();
+                        asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", tab_detalle.getValor(i, "ide_cndcc"));
+                        if (tab_detalle.getValor(i, "debe") != null) {
+                            asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaDebe());
+                            asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "debe"));
+                        } else if (tab_detalle.getValor(i, "haber") != null) {
+                            asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
+                            asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", tab_detalle.getValor(i, "haber"));
                         }
+                        asc_asiento.getTab_deta_asiento().getFila(0).setLectura(true); //para no permitir editar
+                        // } ****************
 
                     }
                     asc_asiento.calcularTotal();
