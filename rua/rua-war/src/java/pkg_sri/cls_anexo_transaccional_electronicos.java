@@ -612,7 +612,7 @@ public class cls_anexo_transaccional_electronicos {
                 Source source = new DOMSource(doc_anexo);
                 String master = System.getProperty("user.dir");
                 //String master = "D:";
-                nombre = "AT" + mes + anio + ".xml";
+                nombre = "ATS.xml";
                 path = master + "/" + nombre;
                 Result console = new StreamResult(System.out);
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
