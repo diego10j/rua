@@ -581,34 +581,42 @@ public class pre_libro_bancos extends Pantalla {
                 IOUtils.copy(event.getFile().getInputstream(), out);
             }
             List<String> lines = Files.readAllLines(tempFile.toPath(),
-                    StandardCharsets.UTF_8);
+                    StandardCharsets.ISO_8859_1);
             int intFila = 0;
             //Columnas            
             String strColumnas = "";
             List listaColumnas = new ArrayList();
             if (lines.isEmpty() == false) {
-                String[] array = lines.get(0).split("" + tex_separa.getValue() + "\"");
+                String columnas = lines.get(0);
+                columnas = columnas.replace("\"", "");
+                String[] array = columnas.split(tex_separa.getValue() + "");
                 for (String array1 : array) {
 
                     if (strColumnas.isEmpty() == false) {
                         strColumnas += ",";
                     }
-                    if (array1.replace("\"", "").equalsIgnoreCase("FECHA")) {
+                    array1 = array1.replace("\"", "");
+                    if (array1.contains("FECHA")) {
                         strColumnas += "'' FECHA_MOVIMIENTO";
                         Object fila[] = {"FECHA_MOVIMIENTO", "FECHA_MOVIMIENTO"};
                         listaColumnas.add(fila);
                     } else {
-                        strColumnas += "'' " + array1.replace("\"", "");
+                        array1 = array1.replace(" ", "");
+                        strColumnas += "'' " + array1;
                         Object fila[] = {array1.replace("\"", ""), array1.replace("\"", "")};
                         listaColumnas.add(fila);
                     }
-
                 }
             }
             com_colDocumento.setCombo(listaColumnas);
             com_colValor.setCombo(listaColumnas);
-            UIComponent padre = tab_tabla1.getParent();
-            padre.getChildren().remove(tab_tabla1);
+            UIComponent padre = null;
+            try {
+                padre = tab_tabla1.getParent();
+                padre.getChildren().remove(tab_tabla1);
+            } catch (Exception e) {
+            }
+
             tab_tabla1 = new Tabla();
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setSql("SELECT 0 as ENCONTRO, " + strColumnas + " from sis_empresa WHERE IDE_EMPR=1");
@@ -624,7 +632,11 @@ public class pre_libro_bancos extends Pantalla {
 
             tab_tabla1.dibujar();
             tab_tabla1.setLectura(false);
-            padre.getChildren().add(tab_tabla1);
+            try {
+                padre.getChildren().add(tab_tabla1);
+            } catch (Exception e) {
+            }
+
             //Filas
             for (String line : lines) {
                 if (intFila == 0) {
@@ -632,7 +644,9 @@ public class pre_libro_bancos extends Pantalla {
                     continue;
                 }
                 tab_tabla1.insertar();
-                String[] array = line.split(",\"");
+
+                line = line.replace("\"", "");
+                String[] array = line.split(tex_separa.getValue() + "");
                 int intColumna = 1;
                 for (String array1 : array) {
                     tab_tabla1.setValor(tab_tabla1.getColumnas()[intColumna].getNombre(), array1.replace("\"", ""));
