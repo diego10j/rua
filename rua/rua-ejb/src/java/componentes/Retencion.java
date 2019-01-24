@@ -514,6 +514,7 @@ public class Retencion extends Dialogo {
         double douBaseImponible = 0;
         double douBaseTarifa0 = 0;
         double douBaseNoObjeto = 0;
+        double douICE = 0;   //24-01-2018
         try {
             douBaseImponible = Double.parseDouble(tab_cab_documento.getValor("base_grabada_cpcfa"));
         } catch (Exception e) {
@@ -527,10 +528,16 @@ public class Retencion extends Dialogo {
         } catch (Exception e) {
         }
         try {
+            //24-01-2018  se le debe hacer retencion 332
+            douICE = Double.parseDouble(tab_cab_documento.getValor("valor_ice_cpcfa"));
+        } catch (Exception e) {
+        }
+        try {
             douBaseImponibleIvaTotal = Double.parseDouble(tab_cab_documento.getValor("valor_iva_cpcfa"));
         } catch (Exception e) {
         }
-        douBaseImponibleRentaTotal = douBaseImponible + douBaseTarifa0 + douBaseNoObjeto;
+        
+        douBaseImponibleRentaTotal = douBaseImponible + douBaseTarifa0 + douBaseNoObjeto + douICE;
 
         Grupo grupo = new Grupo();
 
@@ -978,13 +985,13 @@ public class Retencion extends Dialogo {
             if (tab_dt_retencion.getValor("base_cndre") == null || tab_dt_retencion.getValor("base_cndre").isEmpty()) {
                 if (ser_retencion.isImpuestoRenta(tab_dt_retencion.getValor("ide_cncim"))) {
                     if (douBaseImponibleRentaTotal > 0) {
-                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
+                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleRentaTotal));
                     }
                 } else {
                     if (douBaseImponibleIvaTotal > 0) {
-                    tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
+                        tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(douBaseImponibleIvaTotal));
+                    }
                 }
-            }
             }
             utilitario.addUpdateTabla(tab_dt_retencion, "base_cndre", "");
         }
@@ -1048,7 +1055,7 @@ public class Retencion extends Dialogo {
 //            return false;
 //        }
         return ser_retencion.isElectronica();
-        }
+    }
 
     public Tabla getTab_cb_retencion() {
         return tab_cb_retencion;
