@@ -72,10 +72,6 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				</textElement>
 				<textFieldExpression><![CDATA["RUC: "+$P{ruc}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
-				<reportElement uuid="54ad7c5b-eec2-46e3-92ea-6e8ed9deec6c" x="1" y="3" width="82" height="60"/>
-				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
-			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="f3886b48-de75-4b73-b801-afad7f52a014" x="0" y="87" width="554" height="15"/>
 				<textElement textAlignment="Center">
