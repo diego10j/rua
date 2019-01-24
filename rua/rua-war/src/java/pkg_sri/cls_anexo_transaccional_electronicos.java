@@ -90,9 +90,7 @@ public class cls_anexo_transaccional_electronicos {
                     String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
                     ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones 
-                    ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones    
-                    
-                    
+                    ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones                                
                     if (ideRetenciones.equals("'null'") || ideRetenciones.equals("null") || ideRetenciones.isEmpty()) {
                         ideRetenciones = "-1";
                     } 
