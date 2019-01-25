@@ -24,10 +24,10 @@ public class ServicioCliente extends ServicioBase {
      * Codigo Padre de todos los clientes para el campo GEN_IDE_GEPER
      */
     public final static String P_PADRE_CLIENTES = "1";
-    
+
     @EJB
     private ServicioConfiguracion ser_configuracion;
-    
+
     @PostConstruct
     public void init() {
         //Recupera todos los parametros que se van a ocupar en el EJB
@@ -105,7 +105,7 @@ public class ServicioCliente extends ServicioBase {
     public String getSqlComboClientes() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_cliente_geper is TRUE and identificac_geper is not null order by nom_geper ";
     }
-    
+
     public String getSqlListaClientes() {
         return "select ide_geper,codigo_geper,identificac_geper,nom_geper,correo_geper,direccion_geper,telefono_geper,contacto_geper,nombre_cndfp as FORMA_PAGO from gen_persona a left join con_deta_forma_pago b on a.ide_cndfp=b.ide_cndfp where es_cliente_geper is TRUE and identificac_geper is not null order by nom_geper ";
     }
@@ -116,7 +116,7 @@ public class ServicioCliente extends ServicioBase {
      * @param tabla
      */
     public void configurarTablaCliente(Tabla tabla) {
-        
+
         tabla.setTabla("gen_persona", "ide_geper", -1);
         tabla.setCondicion("es_cliente_geper=true and ide_geper=-1");
         tabla.getColumna("es_cliente_geper").setValorDefecto("true");
@@ -313,9 +313,9 @@ public class ServicioCliente extends ServicioBase {
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
     }
-    
+
     public String getSqlCuentasPorCobrar(String ide_geper) {
-        
+
         String str_sql_cxc = "select dt.ide_ccctr,"
                 + "dt.ide_cccfa,"
                 + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end,"
@@ -333,7 +333,7 @@ public class ServicioCliente extends ServicioBase {
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
                 + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
                 + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
-        
+
         return str_sql_cxc;
     }
 
@@ -363,7 +363,7 @@ public class ServicioCliente extends ServicioBase {
      * @return
      */
     public String getSqlProductosVendidos(String ide_geper) {
-        
+
         return "select distinct a.ide_inarti,nombre_inarti,observacion_ccdfa,max(b.fecha_emisi_cccfa) as fecha_ultima_venta,\n"
                 + "(select precio_ccdfa from cxc_deta_factura  inner join cxc_cabece_factura  on cxc_deta_factura.ide_cccfa=cxc_cabece_factura.ide_cccfa where ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " and ide_geper=" + ide_geper + " and ide_inarti=a.ide_inarti order by fecha_emisi_cccfa desc limit 1) as ultimo_precio\n"
                 + "from cxc_deta_factura a \n"
@@ -400,12 +400,12 @@ public class ServicioCliente extends ServicioBase {
             utilitario.agregarMensajeError("Error no puede guardar", "Debe seleccionar el tipo de contribuyente");
             return false;
         }
-        
+
         if (tab_cliente.getValor("DIRECCION_GEPER") == null || tab_cliente.getValor("DIRECCION_GEPER").isEmpty()) {
             utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar la dirección");
             return false;
         }
-        
+
         if (tab_cliente.getValor("TELEFONO_GEPER") == null || tab_cliente.getValor("TELEFONO_GEPER").isEmpty()) {
             utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar un número de teléfono");
             return false;
@@ -413,7 +413,7 @@ public class ServicioCliente extends ServicioBase {
         //      }
         return true;
     }
-    
+
     public String getSqlComboFacturasPorCobrar(String ide_geper) {
         return "select dt.ide_ccctr,\n"
                 + "coalesce(nombre_cntdo,'Cuenta por Cobrar'),coalesce(cf.secuencial_cccfa,''),\n"
@@ -507,7 +507,7 @@ public class ServicioCliente extends ServicioBase {
                 + "group by a.ide_cntco,nombre_cntco\n"
                 + "ORDER BY 2";
     }
-    
+
     public String getSqlChequesPosfechadosCliente(String ide_geper) {
         return "select distinct a.ide_teclb,fec_cam_est_teclb,nombre_tettb as TRANSACCION,numero_teclb as NUMERO,beneficiari_teclb as BENEFICIARIO,\n"
                 + "valor_teclb as VALOR,fecha_trans_teclb as FECHA_TRANSACCION,'' as NUM_CUENTA_CHEQUE,(SELECT nombre_teban FROM tes_banco where a.ide_teban=ide_teban)as BANCO_CHEQUE,observacion_teclb as OBSERVACION\n"
@@ -520,5 +520,35 @@ public class ServicioCliente extends ServicioBase {
                 + "and ide_geper= " + ide_geper + " "
                 + "order by fec_cam_est_teclb, ide_teclb";
     }
-    
+
+    /**
+     * Busca facturas por cobrar en una fecha para saldar en grupo
+     *
+     * @param fecha
+     * @return
+     */
+    public String getSqlCuentasPorCobrarGrupo(String fecha) {
+
+        String str_sql_cxc = "select dt.ide_ccctr,"
+                + "dt.ide_cccfa,"
+                + "case when (cf.fecha_emisi_cccfa) is null then ct.fecha_trans_ccctr else cf.fecha_emisi_cccfa end,"
+                + "cf.secuencial_cccfa,"
+                + "cf.total_cccfa,"
+                + "sum (dt.valor_ccdtr*tt.signo_ccttr) as saldo_x_pagar,"
+                + "case when (cf.observacion_cccfa) is NULL then nom_geper || ' ' || ct.observacion_ccctr else nom_geper || ' ' || cf.observacion_cccfa end "
+                + "from cxc_detall_transa dt "
+                + "left join cxc_cabece_transa ct on dt.ide_ccctr=ct.ide_ccctr "
+                + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
+                + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
+                + "left join gen_persona p on cf.ide_geper=p.ide_geper "
+                + "where cf.fecha_emisi_cccfa='" + fecha + "' "
+                + "and ct.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa,nom_geper, "
+                + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "
+                + "HAVING sum (dt.valor_ccdtr*tt.signo_ccttr) > 0 "
+                + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
+
+        return str_sql_cxc;
+    }
+
 }
