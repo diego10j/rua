@@ -343,6 +343,51 @@ public class ServicioCuentasCxC extends ServicioBase {
     }
 
     /**
+     * Registra la Factura en una transaccion cxc
+     *
+     * @param tab_cab_factura
+     * @param ide_ccctr
+     * @return ide_ccctr Cabecera de la Transaccion CxC
+     */
+    public String generarTransaccionFacturaAnticipo(Tabla tab_cab_factura, String ide_ccctr) {
+
+        if (tab_cab_factura != null) {
+
+   
+            TablaGenerica tab_det_tran_cxc = new TablaGenerica();
+
+            tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
+            tab_det_tran_cxc.getColumna("ide_ccdtr").setExterna(false);
+            tab_det_tran_cxc.setCondicion("ide_ccctr=-1");
+            tab_det_tran_cxc.ejecutarSql();
+
+            String str_p_cxc_tipo_trans_factura = parametros.get("p_cxc_tipo_trans_factura");//Tipo transaccion Factura 
+
+            tab_det_tran_cxc.insertar();
+            tab_det_tran_cxc.setValor("ide_usua", utilitario.getVariable("IDE_USUA"));
+            tab_det_tran_cxc.setValor("ide_ccctr", ide_ccctr);
+            tab_det_tran_cxc.setValor("ide_cccfa", tab_cab_factura.getValor("ide_cccfa"));
+            tab_det_tran_cxc.setValor("ide_ccttr", str_p_cxc_tipo_trans_factura);
+            tab_det_tran_cxc.setValor("fecha_trans_ccdtr", tab_cab_factura.getValor("fecha_emisi_cccfa"));
+            tab_det_tran_cxc.setValor("valor_ccdtr", tab_cab_factura.getValor("total_cccfa"));
+            tab_det_tran_cxc.setValor("observacion_ccdtr", "V/. FACTURA " + tab_cab_factura.getValor("secuencial_cccfa") + " ");
+            tab_det_tran_cxc.setValor("numero_pago_ccdtr", "0");
+            int dias_credito = 0;
+            try {
+                dias_credito = Integer.parseInt(tab_cab_factura.getValor("dias_credito_cccfa"));
+            } catch (Exception e) {
+            }
+            tab_det_tran_cxc.setValor("fecha_venci_ccdtr", utilitario.getFormatoFecha(utilitario.sumarDiasFecha(utilitario.getFecha(tab_cab_factura.getValor("fecha_emisi_cccfa")), dias_credito)));
+            tab_det_tran_cxc.setValor("docum_relac_ccdtr", tab_cab_factura.getValor("secuencial_cccfa"));
+            tab_det_tran_cxc.guardar();
+            utilitario.getConexion().agregarSql("UPDATE cxc_cabece_transa SET  ide_cccfa = " + tab_cab_factura.getValor("ide_cccfa") + " WHERE  ide_ccctr =  " + ide_ccctr);
+            utilitario.getConexion().agregarSql("UPDATE cxc_detall_transa SET  ide_cccfa = " + tab_cab_factura.getValor("ide_cccfa") + " WHERE  ide_ccctr =  " + ide_ccctr);
+
+        }
+        return ide_ccctr;
+    }
+
+    /**
      * Registra la Nota de Crédito de una Factrua
      *
      *
@@ -1359,6 +1404,22 @@ public class ServicioCuentasCxC extends ServicioBase {
         TablaGenerica tag = utilitario.consultar("select ide_ccdaf,es_electronica_ccdaf "
                 + "from cxc_datos_fac where ide_cntdoc = 7 and es_electronica_ccdaf=true and activo_ccdaf=true and ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
         return !tag.isEmpty();
+    }
+
+    /**
+     * Busca anticipos registrados de un cliente
+     *
+     * @param ide_geper
+     * @return
+     */
+    public String getSqlAnticiposCliente(String ide_geper) {
+        return "select b.ide_ccctr,nom_geper,valor_ccdtr,observacion_ccdtr from cxc_detall_transa  a\n"
+                + "inner join cxc_cabece_transa b on a.ide_ccctr=b.ide_ccctr\n"
+                + "inner join gen_persona c on b.ide_geper=c.ide_geper\n"
+                + "where a.ide_ccttr=5\n" //anticipo
+                + "and b.ide_geper=" + ide_geper + "\n"
+                + "and b.ide_cccfa is null " //sin factura --ahun no se utiliza
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");
     }
 
 }
