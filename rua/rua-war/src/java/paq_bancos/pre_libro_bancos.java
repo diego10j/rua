@@ -144,6 +144,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Movimientos Anulados", "dibujarAnulados", "ui-icon-cancel");//11
         mep_menu.agregarSubMenu("TRANSACCIONES");
         mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
+        mep_menu.agregarItem("Cuentas por Cobrar Grupo", "dibujarCxCGrupo", "ui-icon-star");//15
         mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
         mep_menu.agregarItem("Anticipos a Proveedores", "dibujarAnticipo", "ui-icon-contact");//9
         mep_menu.agregarItem("Anticipos a Empleados", "dibujarAnticipoEmpleados", "ui-icon-contact");//13
@@ -800,6 +801,134 @@ public class pre_libro_bancos extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar un Moviento", "");
         }
+    }
+
+    public void dibujarCxCGrupo() {
+        Grid contenido = new Grid();
+
+        Grid gri1 = new Grid();
+        gri1.setColumns(3);
+
+        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta());
+        gri1.getChildren().add(new Etiqueta()); 
+
+        aut_persona = new AutoCompletar();
+        aut_persona.setId("aut_persona");
+        aut_persona.setMetodoChange("cargarCuentasporCobrar");
+        aut_persona.setAutocompletarContenido();
+        aut_persona.setAutoCompletar(ser_cliente.getSqlComboClientes());
+        aut_persona.setSize(70);
+        aut_persona.setValor(asc_asiento.getBeneficiarioEmpresa());
+        cal_fecha_pago = new Calendario();
+        cal_fecha_pago.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago);
+
+        Boton bt_busca = new Boton();
+        bt_busca.setValue("Buscar Transacciones");
+        bt_busca.setMetodo("cargarCuentasporCobrarGrupo");
+
+        gri1.getChildren().add(bt_busca);
+        gri1.getChildren().add(new Etiqueta());
+
+        gri1.getChildren().add(new Etiqueta("<strong>A LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
+        aut_cuenta = new AutoCompletar();
+        aut_cuenta.setId("aut_cuenta");
+        aut_cuenta.setMetodoChange("cambioCuenta");
+        aut_cuenta.setAutoCompletar(aut_cuentas.getLista());
+        aut_cuenta.setDropdown(true);
+        aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setSize(66);
+        aut_cuenta.setMaxResults(25);
+
+        gri1.getChildren().add(aut_cuenta);
+
+        com_tip_tran = new Combo();
+        com_tip_tran.setMetodo("cambioTipoTransBanco");
+        com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionPositivo());
+        gri1.getChildren().add(com_tip_tran);
+
+        tex_num = new Texto();
+        tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
+        gri1.getChildren().add(tex_num);
+
+        contenido.getChildren().add(gri1);
+
+        Grid gri3 = new Grid();
+        gri3.setColumns(1);
+        ate_observacion = new AreaTexto();
+        ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
+        ate_observacion.setRows(2);
+        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri3.getChildren().add(ate_observacion);
+        contenido.getChildren().add(gri3);
+        contenido.getChildren().add(new Separator());
+
+        PanelGrid gri4 = new PanelGrid();
+        gri4.setColumns(4);
+        Etiqueta eti_valor_cobrar = new Etiqueta();
+        Etiqueta eti_diferencia_cxc = new Etiqueta();
+        eti_valor_cobrar.setValue("VALOR A COBRAR $:");
+        tex_diferencia = new Texto();
+        tex_diferencia.setId("tex_diferencia");
+        eti_diferencia_cxc.setStyle("font-size: 14px;font-weight: bold;padding-left:10px;");
+        tex_diferencia.setStyle("font-size: 14px;font-weight: bold");
+        tex_diferencia.setDisabled(true);
+        tex_diferencia.setSoloNumeros();
+        eti_diferencia_cxc.setValue("DIFERENCIA $: ");
+        tex_valor_pagar = new Texto();
+        // tex_valor_pagar.setSoloNumeros();
+        tex_valor_pagar.setId("tex_valor_pagar");
+        tex_valor_pagar.setMetodoKeyPress("CalcularDiferenciaCxC");
+        tex_valor_pagar.setMetodoChange("CalcularDiferenciaCxC");
+        eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;");
+        tex_valor_pagar.setStyle("font-size: 14px;font-weight: bold");
+        gri4.getChildren().add(eti_valor_cobrar);
+        gri4.getChildren().add(tex_valor_pagar);
+        gri4.getChildren().add(eti_diferencia_cxc);
+        gri4.getChildren().add(tex_diferencia);
+
+        contenido.getChildren().add(gri4);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_seleccion");
+        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_cuenta.getValor()));
+        tab_tabla1.getColumna("saldo_x_pagar").setEstilo("font-size: 15px;font-weight: bold;");
+        tab_tabla1.getColumna("saldo_x_pagar").alinearDerecha();
+        tab_tabla1.getColumna("saldo_x_pagar").setLongitud(25);
+        tab_tabla1.getColumna("total_cccfa").setLongitud(25);
+        tab_tabla1.getColumna("total_cccfa").alinearDerecha();
+        tab_tabla1.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla1.getColumna("secuencial_cccfa").setLongitud(25);
+        tab_tabla1.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
+        tab_tabla1.getColumna("secuencial_cccfa").setNombreVisual("NUM. FACTURA");
+        tab_tabla1.getColumna("total_cccfa").setNombreVisual("TOTAL");
+        tab_tabla1.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
+        tab_tabla1.getColumna("observacion_cccfa").setNombreVisual("OBSERVACIÓN");
+
+        tab_tabla1.setScrollable(true);
+        tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 380);
+        tab_tabla1.setCampoPrimaria("ide_ccctr");
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setCondicion("ide_ccctr=-1");
+        tab_tabla1.setColumnaSuma("saldo_x_pagar");
+
+        tab_tabla1.onSelectCheck("seleccionaFacturaCxC");
+        tab_tabla1.onUnselectCheck("deseleccionaFacturaCxC");
+        tab_tabla1.dibujar();
+
+        contenido.getChildren().add(tab_tabla1);
+        contenido.getChildren().add(new Separator());
+        Boton bot_aceptar = new Boton();
+        bot_aceptar.setValue("Aceptar");
+        bot_aceptar.setMetodo("aceptarCxC");
+        contenido.getChildren().add(bot_aceptar);
+        mep_menu.dibujar(5, "CUENTAS POR COBRAR EN GRUPO", contenido);
     }
 
     public void dibujarCxC() {
@@ -2291,6 +2420,20 @@ public class pre_libro_bancos extends Pantalla {
         tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));
         if (tab_tabla1.isEmpty()) {
             utilitario.agregarMensajeError("El cliente seleccionado no tiene cuentas por cobrar", "");
+        }
+    }
+
+    /**
+     * Carga facturas pendientes de pago en una fecha
+     */
+    public void cargarCuentasporCobrarGrupo() {
+
+        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrarGrupo(cal_fecha_pago.getFecha()));
+        tab_tabla1.ejecutarSql();
+        tex_diferencia.setValue(utilitario.getFormatoNumero(0));
+        tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));
+        if (tab_tabla1.isEmpty()) {
+            utilitario.agregarMensajeError("No existen cuentas por cobrar", "");
         }
     }
 
