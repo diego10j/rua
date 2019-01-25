@@ -56,7 +56,7 @@ public class pre_modifica_documento extends Pantalla {
     private final Texto tex_valor_descuento = new Texto();
     private final Texto tex_porc_descuento = new Texto();
     private final Texto tex_ice = new Texto();
-
+    private final Texto tex_otros = new Texto();
     private Tabla tab_cab_documento;
     private Tabla tab_det_documento;
     private Combo com_tipo_documento;
@@ -420,7 +420,9 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.setScrollHeight(55);
         tab_com_reembolso.setRecuperarLectura(true);
         tab_com_reembolso.setCondicion("ide_cpcfa=-1");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
         tab_com_reembolso.dibujar();
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_com_reembolso);
         pat_panel2.getMenuTabla().getItem_buscar().setRendered(false);
@@ -444,10 +446,19 @@ public class pre_modifica_documento extends Pantalla {
         gri_valores.setId("gri_valores");
         gri_valores.setColumns(6);
 
+        gri_valores.getChildren().add(new Etiqueta("<strong> OTROS VALORES :</strong>"));
+        tex_otros.setStyle("font-size: 14px;text-align: right;width:110px");
+
+        tex_otros.setMetodoChange("calcularTotalDocumento");
+        gri_valores.getChildren().add(tex_otros);
+
         gri_valores.getChildren().add(new Etiqueta("<strong> VALOR ICE:</strong>"));
         tex_ice.setStyle("font-size: 14px;text-align: right;width:110px");
         tex_ice.setMetodoChange("calcularTotalDocumento");
-        tex_ice.setValue(utilitario.getFormatoNumero("0"));
+
+        tex_ice.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_ice_cpcfa")));
+        tex_otros.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("otros_cpcfa")));
+
         gri_valores.getChildren().add(tex_ice);
         gri_valores.getChildren().add(new Etiqueta("<strong> % DESCUENTO :</strong>"));
         tex_porc_descuento.setStyle("font-size: 14px;text-align: right;width:110px");
@@ -578,6 +589,7 @@ public class pre_modifica_documento extends Pantalla {
 
         double descuento = 0;
         double valor_ice = 0;
+        double valor_otros = 0;
 
         if (tex_valor_descuento.getValue() != null) {
             try {
@@ -591,6 +603,14 @@ public class pre_modifica_documento extends Pantalla {
             } catch (Exception e) {
             }
         }
+
+        if (tex_otros.getValue() != null) {
+            try {
+                valor_otros = Double.parseDouble(utilitario.getFormatoNumero(tex_otros.getValue()));
+            } catch (Exception e) {
+            }
+        }
+
         //base_grabada = base_grabada - descuento;
         valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
         if (valor_ice > 0) {
@@ -599,17 +619,18 @@ public class pre_modifica_documento extends Pantalla {
         tab_cab_documento.setValor("porcen_desc_cpcfa", utilitario.getFormatoNumero(porce_descuento));
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(descuento));
         tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(tex_ice));
+        tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(valor_otros));
 
         tab_cab_documento.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
 
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice));
+        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
         utilitario.addUpdate("gri_valores");
     }
 
@@ -966,9 +987,9 @@ public class pre_modifica_documento extends Pantalla {
     public void guardar() {
         tab_cab_documento.setValor("ide_cntdo", String.valueOf(com_tipo_documento.getValue()));
         tab_cab_documento.setValor("observacion_cpcfa", String.valueOf(ate_observacion.getValue()));
-
         tab_cab_documento.setValor("descuento_cpcfa", utilitario.getFormatoNumero(tex_valor_descuento.getValue()));
         tab_cab_documento.setValor("valor_ice_cpcfa", utilitario.getFormatoNumero(tex_ice.getValue()));
+        tab_cab_documento.setValor("otros_cpcfa", utilitario.getFormatoNumero(tex_otros.getValue()));
         tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
         tab_cab_documento.modificar(tab_cab_documento.getFilaActual());
         if (validarDocumento()) {
