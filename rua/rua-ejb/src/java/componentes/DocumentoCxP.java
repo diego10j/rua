@@ -1289,7 +1289,7 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
             tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
 
-            if (validarDocumento()) {
+            if (validarDocumento()) { 
                 obteneAlterno104();
                 if (tab_cab_documento.guardar()) {
                     String ide_cccfa = tab_cab_documento.getValor("ide_cpcfa");
