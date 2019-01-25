@@ -133,6 +133,9 @@ public class FacturaCxC extends Dialogo {
     private Boton bot_listado = new Boton();
 
     private Tabla tab_info_adi;
+    //25-01-218
+    private Combo com_anticipo;
+    private final Etiqueta eti_anticipo = new Etiqueta();
 
     public FacturaCxC() {
         parametros = utilitario.getVariables("p_con_tipo_documento_factura",
@@ -640,6 +643,7 @@ public class FacturaCxC extends Dialogo {
         }
         Grupo grupo = new Grupo();
         Grid gri_pto = new Grid();
+        gri_pto.setId("gri_pto");
         gri_pto.setColumns(9);
         gri_pto.getChildren().add(new Etiqueta("<strong>PUNTO DE EMISIÓN :</strong>"));
         gri_pto.getChildren().add(com_pto_emision);
@@ -788,6 +792,14 @@ public class FacturaCxC extends Dialogo {
             pat_panel2.setStyle("overflow:hiden");
             dia_creacion_producto.setDialogo(pat_panel2);
 
+            //Anticipo 
+            eti_anticipo.setValue("ANTICIPO :");
+            eti_anticipo.setRendered(false);
+            eti_anticipo.setStyle("font-weight: bold;");
+            gri_pto.getChildren().add(eti_anticipo);
+            com_anticipo = new Combo();
+            com_anticipo.setRendered(false);
+            gri_pto.getChildren().add(com_anticipo);
         }
 
         grupo.getChildren().add(gri_pto);
@@ -1326,6 +1338,16 @@ public class FacturaCxC extends Dialogo {
      */
     public void seleccionarCliente(SelectEvent evt) {
         tab_cab_factura.modificar(evt);
+        com_anticipo.setCombo(ser_factura.getSqlAnticiposCliente(tab_cab_factura.getValor("ide_geper")));
+        if (com_anticipo.getChildCount() > 1) {
+            com_anticipo.setRendered(true);
+            eti_anticipo.setRendered(true);
+            utilitario.agregarMensaje("El Cliente: " + tab_cab_factura.getValorArreglo("ide_geper", 1), " Tiene Anticipos registrados");
+        } else {
+            com_anticipo.setRendered(false);
+            eti_anticipo.setRendered(false);
+        }
+
         if (tab_cab_factura.getValor("ide_geper") != null) {
             setCliente(tab_cab_factura.getValor("ide_geper"));
             asignarDatosGuia();
@@ -1335,6 +1357,7 @@ public class FacturaCxC extends Dialogo {
             tab_cab_factura.setValor("correo_cccfa", null);
             utilitario.addUpdateTabla(tab_cab_factura, "direccion_cccfa,telefono_cccfa,correo_cccfa", "");
         }
+        utilitario.addUpdate("tab_factura:0:gri_pto");
 
     }
 
@@ -1653,7 +1676,13 @@ public class FacturaCxC extends Dialogo {
             if (auxGuardaGuia) {
                 if (tab_deta_factura.guardar()) {
                     //Guarda la cuenta por cobrar
-                    ser_factura.generarTransaccionFactura(tab_cab_factura);
+                     if (com_anticipo.getValue() == null) {
+                         ser_factura.generarTransaccionFactura(tab_cab_factura);
+                     }
+                     else{
+                          ser_factura.generarTransaccionFacturaAnticipo(tab_cab_factura,String.valueOf(com_anticipo.getValue()));
+                     }
+                    
                     //Transaccion de Inventario                
                     if (haceKardex) {
                         ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
