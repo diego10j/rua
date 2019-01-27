@@ -303,6 +303,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_det_documento.getColumna("cantidad_cpdfa").setFormatoNumero(3);
         tab_det_documento.getColumna("precio_cpdfa").setOrden(3);
         tab_det_documento.getColumna("precio_cpdfa").setNombreVisual("PRECIO");
+        tab_det_documento.getColumna("precio_cpdfa").setDecimales(4);        
         tab_det_documento.getColumna("precio_cpdfa").setMetodoChange("cambioPrecioCantidadIva");
         tab_det_documento.getColumna("valor_cpdfa").setEtiqueta();
         tab_det_documento.getColumna("valor_cpdfa").setEstilo("font-size:14px;font-weight: bold;");
