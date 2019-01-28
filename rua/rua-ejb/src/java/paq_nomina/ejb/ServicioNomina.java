@@ -1027,7 +1027,7 @@ public class ServicioNomina {
 	}
 
 	public String getPeriodosRol(String fecha_inicial,String fecha_final){
-
+               // System.out.println("entre a getPeriodosRol "+fecha_inicial+ " fecha final "+fecha_final);
 		int mes_ini=0;
 		int mes_fin=0;
 		int anio_ini=0;
@@ -1037,26 +1037,31 @@ public class ServicioNomina {
 			mes_fin=utilitario.getMes(fecha_final);
 			anio_ini=utilitario.getAnio(fecha_inicial);
 			anio_fin=utilitario.getAnio(fecha_final);
+                        
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("Error enteros de meses "+e);
 		}
+        
 		int ide_gemes_fin_aux=mes_fin;
 		int ide_gemes_ini_aux=1;
 		int ide_geani_aux=anio_fin;
 		if (validarFechas(fecha_inicial, fecha_final)){
+                    //System.out.println("Entre if despues de validar fechas ");
 			int diferencia_anios=anio_fin-anio_ini;
 			TablaGenerica tab_gen_per=new TablaGenerica();
-			String str_ide_gepro="";
+			String str_ide_gepro="-2";
 			if (diferencia_anios==0){
-				str_ide_gepro="";
+				str_ide_gepro="-3";
 				tab_gen_per=utilitario.consultar("select * from GEN_PERIDO_ROL " +
 						"where ((IDE_GEMES BETWEEN "+mes_ini+" and "+mes_fin+") " +
 						"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (nom_geani) like '"+anio_ini+"'))");
-				for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
+				//System.out.println("tab_gen_per if 1");
+                                tab_gen_per.imprimirSql();
+                                for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
 					str_ide_gepro+=tab_gen_per.getValor(j, "IDE_GEPRO")+",";
 				}
 			}else{
-				str_ide_gepro="";
+				str_ide_gepro="-4";
 				for (int i = 0; i <= diferencia_anios; i++) {
 					if (i==0){
 						ide_gemes_ini_aux=mes_ini;
@@ -1078,7 +1083,9 @@ public class ServicioNomina {
 					tab_gen_per=utilitario.consultar("select * from GEN_PERIDO_ROL " +
 							"where ((IDE_GEMES BETWEEN "+ide_gemes_ini_aux+" and "+ide_gemes_fin_aux+") " +
 							"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (nom_geani) like '"+ide_geani_aux+"'))");
-					for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
+					//System.out.println("tab_gen_per if 2");
+                                        tab_gen_per.imprimirSql();
+                                        for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
 						str_ide_gepro+=tab_gen_per.getValor(j, "IDE_GEPRO")+",";
 					}
 				}
@@ -1109,7 +1116,7 @@ public class ServicioNomina {
 		//System.out.println("envio fechas  "+fecha_ini+" fecha final "+fecha_fin);
 
 			String ide_gepro=getPeriodosRol(fecha_ini, fecha_fin);
-		
+		//System.out.println("retorna ide_geprobb"+ide_gepro);
 
 			if (ide_gepro!=null || !ide_gepro.isEmpty() || ide_gepro!="" ||!ide_gepro.equals("")|| !ide_gepro.equals(null)){
                             //System.out.println("entre a pesar de no tener prriodo rol "+ide_gepro);
@@ -1126,7 +1133,7 @@ public class ServicioNomina {
 							"AND RUB.IDE_NRRUB in ("+IDE_NRRUB+") " +
 							"and PRO.IDE_GEPRO IN ("+ide_gepro+") " +
 							"group by ide_geedp ) a";
-                                                     //   System.out.println(" bbbbbb "+str_sql);
+                                                        //System.out.println(" bbbbbb "+str_sql);
 					TablaGenerica tab_det_rub2=utilitario.consultar(str_sql);
 					if (tab_det_rub2.getTotalFilas()>0){
 						if (tab_det_rub2.getValor("sumatoria_rubro")!=null && !tab_det_rub2.getValor("sumatoria_rubro").isEmpty()){
@@ -1137,8 +1144,8 @@ public class ServicioNomina {
 							}
 						}
 					}
-
 				} catch (Exception e) {
+                                    
 					// TODO: handle exception
 					System.out.println("error al ejecutar sql "+str_sql);
 				}
@@ -1484,7 +1491,7 @@ public class ServicioNomina {
 		String ide_gereg=serv_empleado.getRegionEmpleado(getEmpleadoDepartamento(IDE_GEEDP).getValor("IDE_GTEMP")).getValor("IDE_GEREG");
 		String fecha_ini_dec=getFechaInicioDecimoCuartoSueldo(str_ide_nrdtn,ide_gereg);
 		String fecha_fin_dec=getFechaFinalDecimoCuartoSueldo(str_ide_nrdtn,ide_gereg);
-              System.out.println("calculo valor_decimo_cuarto_sueldo "+fecha_ini_dec+" fecha final "+fecha_fin_dec);    
+              //System.out.println("calculo valor_decimo_cuarto_sueldo "+fecha_ini_dec+" fecha final "+fecha_fin_dec);    
 
 		valor_decimo_cuarto_sueldo=getSumatoriaRubro1(IDE_GEEDP, utilitario.getVariable("p_nrh_rubro_proviciones_d4"), fecha_ini_dec, fecha_fin_dec);
 
@@ -1793,6 +1800,7 @@ public class ServicioNomina {
 
 
 	public void calcularRentaEmpleados(String IDE_NRROL){
+            //System.out.println("tab ide nrrol "+IDE_NRROL);
 		if (IDE_NRROL==null || IDE_NRROL.isEmpty()){
 			return;
 		}
@@ -1834,10 +1842,15 @@ public class ServicioNomina {
 			// fecha fin de calculo(aa/mm/dd), si el mes es 12 o Dicimebre entonces (31 de diciembre del anio del periodo)
 			str_fecha_fin_calculo=anio+"-12-31";
 		}else{
+                    if (Integer.parseInt(ide_gemes)==1){
+			// fecha fin de calculo(aa/mm/dd), si el mes es 12 o Dicimebre entonces (31 de diciembre del anio del periodo)
+			str_fecha_fin_calculo=anio+"-01-31";
+                        }else{
 			// si el mes es menor que 12 entonces la fecha fin de calculo va hasta el mes 
 			// y dia de la fecha de inicio de periodo de rol
 			str_fecha_fin_calculo=anio+"-"+(utilitario.getMes(fecha_ini_gepro)-1)+"-"+utilitario.getDia(fecha_ini_gepro);
-		}
+                        }
+                    }
 
 		// obtenemos la tabla de los empleados del rol con el rubro de aportaciones y total a recibir del mes del periodo 
 		String sql_emp_renta="select * from ( "+  
@@ -1950,7 +1963,7 @@ public class ServicioNomina {
 				double dou_aporte_personal_del_mes=Double.parseDouble(tab_aportaciones_empleados.getValor(i, "VALOR_NRDRO"));
 
 				// obtengo el total de aportes acumulado
-                                             // System.out.println("calculo dou_tot_aportes_acumul "+str_fecha_ini_calculo+" fecha final "+str_fecha_fin_calculo);    
+                                //System.out.println("calculo dou_tot_aportes_acumul "+str_fecha_ini_calculo+" fecha final "+str_fecha_fin_calculo);    
 
 				double dou_tot_aportes_acumul=getSumatoriaRubro1(ide_geedp,utilitario.getVariable("p_nrh_rubro_aportes_personales"), str_fecha_ini_calculo,str_fecha_fin_calculo);
 
@@ -1990,7 +2003,7 @@ public class ServicioNomina {
 					
 				} catch (Exception e) {
 					// TODO: handle exception
-						System.out.println("entro exception "+int_edad+ " error "+e );
+						//System.out.println("entro exception "+int_edad+ " error "+e );
 				}
 				double dou_deduccion_gasto_discapacitado=0;
 				
