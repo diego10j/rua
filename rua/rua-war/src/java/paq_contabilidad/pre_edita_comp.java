@@ -15,7 +15,9 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import servicios.contabilidad.ServicioContabilidadGeneral;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -24,6 +26,9 @@ import sistema.aplicacion.Pantalla;
  *
  */
 public class pre_edita_comp extends Pantalla {
+
+    @EJB
+    private final ServicioContabilidadGeneral ser_contabilidad = (ServicioContabilidadGeneral) utilitario.instanciarEJB(ServicioContabilidadGeneral.class);
 
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
@@ -38,26 +43,23 @@ public class pre_edita_comp extends Pantalla {
     private Boton bot_buscar_transaccion = new Boton();
 
     public pre_edita_comp() {
-        //Recuperar el plan de cuentas activo
-        List lis_plan = utilitario.getConexion().consultar("select ide_CNCPC from con_cab_plan_cuen where activo_cncpc=true");
 
-        if (lis_plan != null && !lis_plan.isEmpty()) {
-            bar_botones.quitarBotonsNavegacion();
+        bar_botones.quitarBotonsNavegacion();
 
-            tex_num_transaccion.setId("tex_num_transaccion");
-            tex_num_transaccion.setSoloEnteros();
-            tex_num_transaccion.setSize(15);
-            bot_buscar_transaccion.setTitle("Buscar");
-            bot_buscar_transaccion.setIcon("ui-icon-search");
-            bot_buscar_transaccion.setMetodo("buscarTransaccion");
-            bar_botones.agregarComponente(new Etiqueta("NUM. ASIENTO: "));
-            bar_botones.agregarComponente(tex_num_transaccion);
-            bar_botones.agregarBoton(bot_buscar_transaccion);
+        tex_num_transaccion.setId("tex_num_transaccion");
+        tex_num_transaccion.setSoloEnteros();
+        tex_num_transaccion.setSize(15);
+        bot_buscar_transaccion.setTitle("Buscar");
+        bot_buscar_transaccion.setIcon("ui-icon-search");
+        bot_buscar_transaccion.setMetodo("buscarTransaccion");
+        bar_botones.agregarComponente(new Etiqueta("NUM. ASIENTO: "));
+        bar_botones.agregarComponente(tex_num_transaccion);
+        bar_botones.agregarBoton(bot_buscar_transaccion);
 
-            MarcaAgua maa_marca = new MarcaAgua();
-            maa_marca.setValue("Num. Asiento");
-            maa_marca.setFor("tex_num_transaccion");
-            agregarComponente(maa_marca);
+        MarcaAgua maa_marca = new MarcaAgua();
+        maa_marca.setValue("Num. Asiento");
+        maa_marca.setFor("tex_num_transaccion");
+        agregarComponente(maa_marca);
 
             tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setTabla("con_cab_comp_cont", "ide_cnccc", 1);
@@ -94,47 +96,45 @@ public class pre_edita_comp extends Pantalla {
             pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
             pat_panel1.getMenuTabla().getItem_insertar().setRendered(false);
 
-            tab_tabla2.setId("tab_tabla2");
-            tab_tabla2.setTabla("con_det_comp_cont", "ide_cndcc", 2);
-            tab_tabla2.getColumna("ide_cndpc").setCombo("con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc,nombre_cndpc", "ide_cncpc=" + lis_plan.get(0));
-            tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
-            tab_tabla2.getColumna("ide_cndpc").setRequerida(true);
-            tab_tabla2.getColumna("ide_cnlap").setCombo("con_lugar_aplicac", "ide_cnlap", "nombre_cnlap", "");
-            tab_tabla2.getColumna("ide_cnlap").setPermitirNullCombo(false);
-            tab_tabla2.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
-            tab_tabla2.setCampoOrden("ide_cnlap desc");
-            tab_tabla2.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
-            tab_tabla2.setRows(10);
-            tab_tabla2.dibujar();
-            PanelTabla pat_panel2 = new PanelTabla();
-            pat_panel2.setPanelTabla(tab_tabla2);
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("con_det_comp_cont", "ide_cndcc", 2);
+        tab_tabla2.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentasHijas());
+        tab_tabla2.getColumna("ide_cndpc").setAutoCompletar();
+        tab_tabla2.getColumna("ide_cndpc").setRequerida(true);
+        tab_tabla2.getColumna("ide_cnlap").setCombo("con_lugar_aplicac", "ide_cnlap", "nombre_cnlap", "");
+        tab_tabla2.getColumna("ide_cnlap").setPermitirNullCombo(false);
+        tab_tabla2.getColumna("ide_cnlap").setMetodoChange("cambioLugarAplica");
+        tab_tabla2.setCampoOrden("ide_cnlap desc");
+        tab_tabla2.getColumna("valor_cndcc").setMetodoChange("ingresaCantidad");
+        tab_tabla2.setRows(10);
+        tab_tabla2.dibujar();
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_tabla2);
 
-            Grid gri_totales = new Grid();
-            gri_totales.setId("gri_totales");
+        Grid gri_totales = new Grid();
+        gri_totales.setId("gri_totales");
 
-            gri_totales.setColumns(3);
-            eti_suma_debe.setValue("TOTAL DEBE : 0");
-            eti_suma_debe.setStyle("font-size: 14px;font-weight: bold");
-            eti_suma_haber.setValue("TOTAL HABER : 0");
-            eti_suma_haber.setStyle("font-size: 14px;font-weight: bold");
-            eti_suma_diferencia.setValue("DIFERENCIA : 0");
-            eti_suma_diferencia.setStyle("font-size: 14px;font-weight: bold");
-            gri_totales.setWidth("100%");
-            gri_totales.getChildren().add(eti_suma_diferencia);
-            gri_totales.getChildren().add(eti_suma_debe);
-            gri_totales.getChildren().add(eti_suma_haber);
-            Division div_division = new Division();
-            div_division.setId("div_division");
-            Division div_detalle = new Division();
-            div_detalle.setFooter(pat_panel2, gri_totales, "85%");
+        gri_totales.setColumns(3);
+        eti_suma_debe.setValue("TOTAL DEBE : 0");
+        eti_suma_debe.setStyle("font-size: 14px;font-weight: bold");
+        eti_suma_haber.setValue("TOTAL HABER : 0");
+        eti_suma_haber.setStyle("font-size: 14px;font-weight: bold");
+        eti_suma_diferencia.setValue("DIFERENCIA : 0");
+        eti_suma_diferencia.setStyle("font-size: 14px;font-weight: bold");
+        gri_totales.setWidth("100%");
+        gri_totales.getChildren().add(eti_suma_diferencia);
+        gri_totales.getChildren().add(eti_suma_debe);
+        gri_totales.getChildren().add(eti_suma_haber);
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        Division div_detalle = new Division();
+        div_detalle.setFooter(pat_panel2, gri_totales, "85%");
 
-            div_division.dividir2(pat_panel1, div_detalle, "40%", "H");
+        div_division.dividir2(pat_panel1, div_detalle, "40%", "H");
 
-            gru_pantalla.getChildren().add(bar_botones);
-            gru_pantalla.getChildren().add(div_division);
-        } else {
-            utilitario.agregarNotificacionInfo("No existe un plan de cuentas activo", "Para poder ingresar a esta pantalla debe estar activo un plan de cuentas, contactese con el administrador del sistema");
-        }
+        gru_pantalla.getChildren().add(bar_botones);
+        gru_pantalla.getChildren().add(div_division);
+
     }
 
     public void buscarTransaccion() {
