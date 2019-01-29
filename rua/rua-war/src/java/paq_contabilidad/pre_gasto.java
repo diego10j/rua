@@ -42,9 +42,6 @@ public class pre_gasto extends Pantalla {
         tab_tabla1.getColumna("iva_inarti").setValorDefecto("1");
         tab_tabla1.getColumna("INV_IDE_INARTI").setVisible(false);
         tab_tabla1.getColumna("ice_inarti").setVisible(true);
-        tab_tabla1.getColumna("ide_cndpc").setCombo(ser_contabilidad.getSqlCuentas());
-        tab_tabla1.getColumna("ide_cndpc").setVisible(true);
-        tab_tabla1.getColumna("ide_cndpc").setRequerida(true);
         tab_tabla1.getColumna("ide_georg").setVisible(false);
         tab_tabla1.getColumna("es_combo_inarti").setVisible(false);
         tab_tabla1.getColumna("observacion_inarti").setControl("Texto");
