@@ -43,35 +43,35 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<title>
 		<band height="109" splitType="Stretch">
 			<textField>
-				<reportElement uuid="02d82fff-71cc-463f-a905-fecbf907ebb6" x="69" y="28" width="401" height="15"/>
+				<reportElement uuid="02d82fff-71cc-463f-a905-fecbf907ebb6" x="154" y="28" width="401" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="0846bb5d-e49e-47c1-ba8f-893da2711fc5" x="69" y="17" width="401" height="15"/>
+				<reportElement uuid="0846bb5d-e49e-47c1-ba8f-893da2711fc5" x="154" y="17" width="401" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{sucursal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="21d83efa-7153-41f7-b77a-42281a320bc8" x="69" y="4" width="401" height="15" forecolor="#000000"/>
+				<reportElement uuid="21d83efa-7153-41f7-b77a-42281a320bc8" x="154" y="4" width="401" height="15" forecolor="#000000"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7b744000-dc3a-456a-ba62-aa08ee3442e2" x="69" y="41" width="401" height="15"/>
+				<reportElement uuid="7b744000-dc3a-456a-ba62-aa08ee3442e2" x="154" y="41" width="401" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="82acb7c8-08bc-4b36-a4dc-3c8a0425da98" x="69" y="53" width="401" height="15"/>
+				<reportElement uuid="82acb7c8-08bc-4b36-a4dc-3c8a0425da98" x="154" y="53" width="401" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="false"/>
 				</textElement>
@@ -91,6 +91,10 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				</textElement>
 				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
 			</textField>
+			<image onErrorType="Blank">
+				<reportElement uuid="f1ca425d-abc4-4fe4-9c0e-2951464d429a" x="1" y="4" width="153" height="64"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
