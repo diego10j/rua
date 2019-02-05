@@ -811,7 +811,7 @@ public class pre_libro_bancos extends Pantalla {
 
         gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
-        gri1.getChildren().add(new Etiqueta()); 
+        gri1.getChildren().add(new Etiqueta());
 
         aut_persona = new AutoCompletar();
         aut_persona.setId("aut_persona");
@@ -1793,7 +1793,7 @@ public class pre_libro_bancos extends Pantalla {
 
     }
 
-      private void generarAsiento(String ide_teclb) {
+    private void generarAsiento(String ide_teclb) {
         asc_asiento.nuevoAsiento();
         asc_asiento.dibujar();
         if (ate_observacion != null) {
@@ -1840,7 +1840,7 @@ public class pre_libro_bancos extends Pantalla {
 
             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_tesoreria.getCuentaContable(aut_cuenta.getValor()));
 
-            if (mep_menu.getOpcion() == 5 && tab_tabla2.getSumaColumna("valor_ccdtr") > 0) {
+            if (mep_menu.getOpcion() == 5 && (tab_tabla2 != null && tab_tabla2.getSumaColumna("valor_ccdtr") > 0)) {
                 double valor_adicional = tab_tabla2.getSumaColumna("valor_ccdtr");
                 double valor_pagar = Double.parseDouble(tex_valor_pagar.getValue().toString());
                 asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(valor_adicional + valor_pagar));
@@ -1853,31 +1853,33 @@ public class pre_libro_bancos extends Pantalla {
                 asc_asiento.getTab_deta_asiento().insertar();
                 asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
                 asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_cliente.getCuentaCliente(aut_persona.getValor()));
-                if (tab_tabla2.getSumaColumna("valor_ccdtr") < 0) {
+                if (tab_tabla2 != null && tab_tabla2.getSumaColumna("valor_ccdtr") < 0) {
                     double valor_adicional = tab_tabla2.getSumaColumna("valor_ccdtr");
                     double valor_pagar = Double.parseDouble(tex_valor_pagar.getValue().toString());
                     asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(Math.abs(valor_adicional) + valor_pagar));
                 } else {
                     asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
                 }
-                for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-                    double valor_ad = 0;
-                    try {
-                        valor_ad = Double.parseDouble(tab_tabla2.getValor(i, "valor_ccdtr"));
-                    } catch (Exception ex) {
+                if (tab_tabla2 != null) {
+                    for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
+                        double valor_ad = 0;
+                        try {
+                            valor_ad = Double.parseDouble(tab_tabla2.getValor(i, "valor_ccdtr"));
+                        } catch (Exception ex) {
 
-                    }
-                    if (valor_ad != 0) {
-                        asc_asiento.getTab_deta_asiento().insertar();
-                        if (valor_ad > 0) {
-                            asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
-                        } else {
-                            asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaDebe());
                         }
-                        asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", tab_tabla2.getValor(i, "ide_cnccc"));
-                        asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(Math.abs(valor_ad)));
-                    }
+                        if (valor_ad != 0) {
+                            asc_asiento.getTab_deta_asiento().insertar();
+                            if (valor_ad > 0) {
+                                asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaHaber());
+                            } else {
+                                asc_asiento.getTab_deta_asiento().setValor("ide_cnlap", asc_asiento.getLugarAplicaDebe());
+                            }
+                            asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", tab_tabla2.getValor(i, "ide_cnccc"));
+                            asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(Math.abs(valor_ad)));
+                        }
 
+                    }
                 }
             }
 
@@ -1888,7 +1890,7 @@ public class pre_libro_bancos extends Pantalla {
                 asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_proveedor.getCuentaProveedor(aut_persona.getValor()));
                 asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
             }
-           
+
             asc_asiento.calcularTotal();
             if (com_tip_tran.getValue().equals(utilitario.getVariable("p_tes_tran_cheque"))) {
                 asc_asiento.setReporteCheque();
@@ -1913,6 +1915,7 @@ public class pre_libro_bancos extends Pantalla {
         asc_asiento.getTab_cabe_asiento().setValor("fecha_trans_cnccc", cal_fecha_pago.getFecha()); //dfj
 
     }
+
     private void actualizarSaldos() {
         if (aut_cuentas.getValor() != null) {
             double saldo_anterior = ser_tesoreria.getSaldoInicialCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha());
