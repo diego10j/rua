@@ -63,7 +63,7 @@ public class pre_lista_activos extends Pantalla {
         tab_lista.getColumna("ide_actac").setAutoCompletar();
         tab_lista.getColumna("ide_accls").setCombo("act_clasificacion","ide_accls","nombre_accls","");
         tab_lista.getColumna("ide_accls").setAutoCompletar();
-        tab_lista.getColumna("proveedor_acafi").setFiltroContenido();
+        tab_lista.getColumna("proveedor_acafi").setFiltro(true);
         tab_lista.getColumna("ide_accla").setCombo("act_clase_activo","ide_accla","nombre_accla","");
         tab_lista.getColumna("ide_accla").setAutoCompletar();
         tab_lista.getColumna("act_ide_acafi").setVisible(false);
