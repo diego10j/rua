@@ -77,8 +77,8 @@ public class pre_comp_inv_nei extends Pantalla {
          tab_tabla1.clearInitialState();
         //Recuperar el plan de cuentas activo
 
-        bar_botones.quitarBotonsNavegacion();
-        bar_botones.agregarReporte();
+        //bar_botones.quitarBotonsNavegacion();
+        //bar_botones.agregarReporte();
         //Busqueda del num de articulo
         tex_num_transaccion.setId("tex_num_transaccion");
         tex_num_transaccion.setSoloEnteros();
