@@ -2076,8 +2076,13 @@ public class pre_libro_bancos extends Pantalla {
     public void aceptarCxP() {
         if (validarCxP()) {
             String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
-            generarAsiento(ide_teclb);
-            dibujarCxP();
+            //11/02/2019 Control por si genera error al guardar la transacción
+            if (ide_teclb != null) {
+                generarAsiento(ide_teclb);
+                dibujarCxP();
+            } else {
+                utilitario.agregarMensajeError("Error al guardar la transacción", "Cuentas por Pagar");
+            }
         }
     }
 
@@ -2096,11 +2101,17 @@ public class pre_libro_bancos extends Pantalla {
             String ide_teclb = ser_tesoreria.generarLibroBanco(tex_beneficiario.getValue().toString(), cal_fecha_pago.getFecha(),
                     com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), String.valueOf(tex_num_asiento.getValue()));
             if (rad_hace_asiento.getValue().toString().equalsIgnoreCase("true")) {
-                generarAsiento(ide_teclb);
+                //11/02/2019 Control por si genera error al guardar la transacción
+                if (ide_teclb != null) {
+                    generarAsiento(ide_teclb);
+                    dibujarOtros();
+                } else {
+                    utilitario.agregarMensajeError("Error al guardar la transacción", "Otras transacciones");
+                }
             } else {
                 guardarPantalla();
+                dibujarOtros();
             }
-            dibujarOtros();
         }
     }
 
@@ -2537,8 +2548,14 @@ public class pre_libro_bancos extends Pantalla {
     public void aceptarCxC() {
         if (validarCxC()) {
             String ide_teclb = cargarPagoCxC(Double.parseDouble(tex_valor_pagar.getValue().toString()));
-            generarAsiento(ide_teclb);
-            dibujarCxC();
+            //11/02/2019 Control por si genera error al guardar la transacción
+            if (ide_teclb != null) {
+                generarAsiento(ide_teclb);
+                dibujarCxC();
+            } else {
+                utilitario.agregarMensajeError("Error al guardar la transacción", "Cuentas por Cobrar");
+            }
+
         }
     }
 
