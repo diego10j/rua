@@ -7,7 +7,7 @@ package paq_pensiones;
 
 /**
  *
- * @author ANDRES REDROBAN
+ * @
  */
 
 import framework.aplicacion.TablaGenerica;

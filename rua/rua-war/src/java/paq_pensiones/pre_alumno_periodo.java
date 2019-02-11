@@ -321,7 +321,7 @@ public class pre_alumno_periodo extends Pantalla {
         dia_retiro.setTitle("Ingrese la información");
         dia_retiro.setWidth("39%");
         dia_retiro.setHeight("24%");
-        dia_retiro.getBot_aceptar().setMetodo("aceptarDescuento");
+        dia_retiro.getBot_aceptar().setMetodo("aceptarRetiroAlumno");
         dia_retiro.setResizable(false);
 
         Grid gri3 = new Grid();
