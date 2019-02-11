@@ -72,7 +72,7 @@ public class cls_anexo_transaccional_electronicos {
                     ////////////////////BUSCAR TODAS LAS COMPRAS ESTO ES EN UN FOR
                     TablaGenerica tab_compras = utilitario.consultar("Select cabece.ide_cpcfa, cabece.ide_cncre,suste.alterno_srtst,iden.alterno1_getid,prove.identificac_geper,docu.alter_tribu_cntdo,  "
                             + " cabece.fecha_trans_cpcfa,cabece.numero_cpcfa,cabece.fecha_emisi_cpcfa,cabece.autorizacio_cpcfa,cabece.total_cpcfa,valor_ice_cpcfa, "
-                            + " cabece.base_grabada_cpcfa,cabece.base_tarifa0_cpcfa,cabece.base_no_objeto_iva_cpcfa,cabece.valor_iva_cpcfa, "
+                            + " cabece.base_grabada_cpcfa + valor_ice_cpcfa as base_grabada_cpcfa ,cabece.base_tarifa0_cpcfa,cabece.base_no_objeto_iva_cpcfa,cabece.valor_iva_cpcfa, "
                             + " rete.numero_cncre,rete.autorizacion_cncre,rete.fecha_emisi_cncre,dpa.alterno_ats,cabece.ide_cntdo, fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa "
                             + " from cxp_cabece_factur cabece "
                             + " left join gen_persona prove on cabece.ide_geper= prove.ide_geper "
