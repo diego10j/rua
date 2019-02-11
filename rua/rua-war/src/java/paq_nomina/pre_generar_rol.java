@@ -441,7 +441,7 @@ public class pre_generar_rol extends Pantalla{
 
 					"and ide_nrrub in (select IDE_NRRUB from NRH_RUBRO where DECIMO_NRRUB=TRUE) ");
 
-                        System.out.println("imprmo tab_decimos ");
+                        //System.out.println("imprmo tab_decimos ");
                         tab_decimos.imprimirSql();
                         
 			for (int j = 0; j < tab_decimos.getTotalFilas(); j++) {
@@ -457,7 +457,7 @@ public class pre_generar_rol extends Pantalla{
 					TablaGenerica tab_per=utilitario.consultar("select * from GEN_PERIDO_ROL where IDE_GEPRO="+ide_gepro+" " +
 							"and cast ('"+fecha_pago_rubro+"' as date) BETWEEN FECHA_INICIAL_GEPRO and FECHA_FINAL_GEPRO ");
                                         
-                                        System.out.println("tabla periodo ");
+                                        //System.out.println("tabla periodo ");
                                         tab_per.imprimirSql();
 					if (tab_per.getTotalFilas()>0){
 						str_ide_nrder_decimos+=tab_decimos.getValor(j,"IDE_NRDER")+",";
@@ -606,7 +606,7 @@ public class pre_generar_rol extends Pantalla{
 						"AND EDP.ACTIVO_GEEDP=true " +
 						")))";
 				utilitario.getConexion().agregarSql(str_update_anticipos);
-				System.out.println("update nticipos "+str_update_anticipos);
+				//System.out.println("update nticipos "+str_update_anticipos);
 
 				utilitario.getConexion().agregarSql("delete from NRH_DETALLE_ROL where ide_nrrol ="+tab_rol.getValor(0,"IDE_NRROL"));
 				utilitario.getConexion().agregarSql("delete from NRH_ROL where ide_nrrol ="+tab_rol.getValor(0,"IDE_NRROL"));
@@ -716,12 +716,12 @@ public class pre_generar_rol extends Pantalla{
 					TablaGenerica tab_emp=utilitario.consultar(sql);
 					if (tab_emp.getTotalFilas()>0){
 						//							if (ser_nomina.getRol(fila.getRowKey()+"", com_periodo.getValue()+"").getValor("IDE_NRESR").equalsIgnoreCase(utilitario.getVariable("p_nrh_estado_pre_nomina"))){
-						System.out.println("ide_nrdtn "+fila.getRowKey());
-						System.out.println("periodo "+com_periodo.getValue());
+						//System.out.println("ide_nrdtn "+fila.getRowKey());
+						//System.out.println("periodo "+com_periodo.getValue());
 
 						String ide_nrrol=insertarCabeceraRol(fila.getRowKey(),com_periodo.getValue()+"");
 						guardarPantalla();
-						System.out.println("ide max "+ide_num_max);
+						//System.out.println("ide max "+ide_num_max);
 						TablaGenerica deta_rol=ser_nomina.calcularRol(tab_emp,ide_nrrol,ide_num_max);
 						ide_num_max=ide_num_max+Long.parseLong(deta_rol.getTotalFilas()+"")+1;
 					}
@@ -795,7 +795,7 @@ public class pre_generar_rol extends Pantalla{
 
 				// valido que aun no se calcule la renta
 				String estado_renta_nrrol=tab_rol.getValor(tab_rol.getFilaActual(),"ESTADO_RENTA_NRROL");
-				System.out.println("estado renta "+estado_renta_nrrol);
+				//System.out.println("estado renta "+estado_renta_nrrol);
 				if (estado_renta_nrrol!=null && !estado_renta_nrrol.isEmpty() 
 						&& estado_renta_nrrol.equalsIgnoreCase("1")){
 					utilitario.agregarMensajeInfo("No se puede calcular la renta", "Ya se calculo la renta para la nomina "+fila.getCampos()[2]+", Recalcule la nomina, para poder calcular la renta nuevamente");
