@@ -38,8 +38,7 @@
 	<parameter name="pide_curso" class="java.lang.String"/>
 	<parameter name="pide_paralelo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[
-select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,abreviatura_recon as des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
+		<![CDATA[select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,abreviatura_recon as des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
 nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,
 ide_repea,ide_repar,ide_recur,ide_reces,abreviatura_gemes,abreviatura_recon
 from (
@@ -127,7 +126,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<band/>
 		</groupFooter>
 	</group>
-	<group name="paralelos" isStartNewPage="true">
+	<group name="paralelos">
 		<groupExpression><![CDATA[$F{ide_repar}]]></groupExpression>
 		<groupHeader>
 			<band height="16">
