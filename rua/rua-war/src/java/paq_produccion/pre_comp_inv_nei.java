@@ -307,12 +307,14 @@ public class pre_comp_inv_nei extends Pantalla {
      }
     
     public void generarPDFnota(){
+        String usuario = utilitario.getVariable("NICK");
         if (tab_tabla1.getValorSeleccionado() != null) {
                         Map parametros = new HashMap();
                         parametros.put("pide_nota_entrega_interna", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
                         parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
                         parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
                         //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+                        parametros.put("nombre", usuario);
                         vipdf_nota_entrega_inter.setVisualizarPDF("rep_produccion/rep_nota_entrega_interna.jasper", parametros);
                         vipdf_nota_entrega_inter.dibujar();
                         utilitario.addUpdate("vipdf_nota_entrega_inter");
