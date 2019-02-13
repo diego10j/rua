@@ -502,7 +502,9 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("INGRESOS").setSuma(false);
             tab_tabla.getColumna("EGRESOS").setSuma(false);
             tab_tabla.getColumna("saldo").setSuma(false);
-
+            tab_tabla.getColumna("INGRESOS").setDecimales(2);
+            tab_tabla.getColumna("EGRESOS").setDecimales(2);
+            tab_tabla.getColumna("saldo").setDecimales(2);
             tab_tabla.getColumna("INGRESOS").setFormatoNumero(2);
             tab_tabla.getColumna("EGRESOS").setFormatoNumero(2);
             tab_tabla.getColumna("saldo").setFormatoNumero(2);
@@ -663,7 +665,9 @@ public class pre_clientes extends Pantalla {
                 tab_tabla.getColumna("haber").setSuma(false);
                 tab_tabla.getColumna("saldo").setSuma(false);
                 tab_tabla.setColumnaSuma("debe,haber,saldo");
-
+                tab_tabla.getColumna("debe").setDecimales(2);
+                tab_tabla.getColumna("haber").setDecimales(2);
+                tab_tabla.getColumna("saldo").setDecimales(2);
                 tab_tabla.getColumna("debe").setFormatoNumero(2);
                 tab_tabla.getColumna("haber").setFormatoNumero(2);
                 tab_tabla.getColumna("saldo").setFormatoNumero(2);
@@ -812,6 +816,10 @@ public class pre_clientes extends Pantalla {
             tab_tabla.getColumna("iva").alinearDerecha();
             tab_tabla.getColumna("total").alinearDerecha();
 
+            tab_tabla.getColumna("ventas12").setDecimales(2);
+            tab_tabla.getColumna("ventas0").setDecimales(2);
+            tab_tabla.getColumna("iva").setDecimales(2);
+            tab_tabla.getColumna("total").setDecimales(2);
             tab_tabla.getColumna("ventas12").setFormatoNumero(2);
             tab_tabla.getColumna("ventas0").setFormatoNumero(2);
             tab_tabla.getColumna("iva").setFormatoNumero(2);
@@ -1124,7 +1132,7 @@ public class pre_clientes extends Pantalla {
             }
             if (ide_cnccc != null) {
                 //Asigna num de asiento a documento cxc y a transaccion cxc
-                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa +" AND ide_cnccc IS NULL");
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa=" + ide_cccfa + " AND ide_cnccc IS NULL");
                 if (ide_cccfa != null) {
                     utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_detall_transa set ide_cnccc=" + ide_cnccc + " WHERE ide_ccctr=" + ide_ccctr + " and ide_cnccc is null");
                 }
