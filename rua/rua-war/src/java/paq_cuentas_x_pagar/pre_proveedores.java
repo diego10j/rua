@@ -383,6 +383,12 @@ public class pre_proveedores extends Pantalla {
             tab_tabla.getColumna("INGRESOS").setSuma(false);
             tab_tabla.getColumna("EGRESOS").setSuma(false);
             tab_tabla.getColumna("saldo").setSuma(false);
+            tab_tabla.getColumna("INGRESOS").setDecimales(2);
+            tab_tabla.getColumna("EGRESOS").setDecimales(2);
+            tab_tabla.getColumna("saldo").setDecimales(2);
+            tab_tabla.getColumna("INGRESOS").setFormatoNumero(2);
+            tab_tabla.getColumna("EGRESOS").setFormatoNumero(2);
+            tab_tabla.getColumna("saldo").setFormatoNumero(2);
             tab_tabla.setOrdenar(false);
             tab_tabla.setLectura(true);
             tab_tabla.setScrollable(true);
@@ -532,6 +538,12 @@ public class pre_proveedores extends Pantalla {
                 tab_tabla.getColumna("haber").setSuma(false);
                 tab_tabla.getColumna("saldo").setSuma(false);
                 tab_tabla.setColumnaSuma("debe,haber,saldo");
+                tab_tabla.getColumna("debe").setDecimales(2);
+                tab_tabla.getColumna("haber").setDecimales(2);
+                tab_tabla.getColumna("saldo").setDecimales(2);
+                tab_tabla.getColumna("debe").setFormatoNumero(2);
+                tab_tabla.getColumna("haber").setFormatoNumero(2);
+                tab_tabla.getColumna("saldo").setFormatoNumero(2);
                 tab_tabla.setRows(20);
                 tab_tabla.setOrdenar(false);
                 tab_tabla.dibujar();
