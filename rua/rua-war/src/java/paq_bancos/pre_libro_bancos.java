@@ -1234,10 +1234,13 @@ public class pre_libro_bancos extends Pantalla {
 
         contenido.getChildren().add(new Separator());
         Boton bot_aceptar = new Boton();
+        bot_aceptar.setId("bot_aceptar");
         bot_aceptar.setValue("Aceptar");
         bot_aceptar.setMetodo("aceptarAnticipo");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(9, "ANTICIPO A PROVEEDORES", contenido);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void dibujarAnticipoEmpleados() {
@@ -1322,6 +1325,8 @@ public class pre_libro_bancos extends Pantalla {
         bot_aceptar.setIcon("ui-icon-check");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(13, "ANTICIPO A EMPLEADOS", contenido);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void cargarAnticiposAnteriores(SelectEvent evt) {
@@ -1474,6 +1479,8 @@ public class pre_libro_bancos extends Pantalla {
         bot_aceptar.setMetodo("aceptarOtros");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(5, "OTRAS TRANSACCIONES", contenido);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
 
     public void cambiaHaceAsiento() {
@@ -2828,8 +2835,9 @@ public class pre_libro_bancos extends Pantalla {
         bot_aceptar.setIcon("ui-icon-check");
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(14, "ANTICIPO DE CLIENTES", contenido);
+        //metodo of mauricio
+        utilitario.buscarPermisosObjetos();
     }
-
     public void aceptarAnticipoCliente() {
         if (validarAnticipo()) {
             TablaGenerica tab_libro = ser_tesoreria.generarTablaLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
