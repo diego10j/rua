@@ -55,7 +55,7 @@ public class ServicioProducto {
     }
 
     public String getSqlListaProductos() {
-        return "select ide_inarti,codigo_inarti,nombre_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1";
+        return "select ide_inarti,substring(nombre_inarti from 1 for 50) as nombre_inarti,substring(codigo_inarti from 1 for 10) as codigo_inarti from inv_articulo where nivel_inarti='HIJO' and ide_intpr=1 order by nombre_inarti";
     }
   
         public String getSqlListaArticulos() {
