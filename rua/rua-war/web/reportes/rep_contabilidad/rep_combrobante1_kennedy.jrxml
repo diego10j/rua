@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combrobante1_kennedy" language="groovy" pageWidth="524" pageHeight="396" columnWidth="496" leftMargin="14" rightMargin="14" topMargin="23" bottomMargin="0" uuid="fe3e4350-9b5b-4018-88c8-388f614a3a6c">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="46"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -259,7 +259,7 @@ ORDER BY ide_cnlap desc,numero_orden_cndpc asc]]>
 				<textFieldExpression><![CDATA[$V{VALOR_HABER}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="7b71b675-202e-449b-930a-485987a4f01c" x="63" y="0" width="189" height="14"/>
+				<reportElement uuid="7b71b675-202e-449b-930a-485987a4f01c" x="63" y="0" width="231" height="14"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
