@@ -163,6 +163,7 @@ public class pre_orden extends Pantalla {
      
       public void dibujaProforma(){
           int_opcion=3;
+          tab_proforma_orden = new Tabla();
           tab_proforma_orden.setId("tab_proforma_orden");
           tab_proforma_orden.setTabla("prod_proforma_orden","ide_prprof",1);
           //tab_proforma_orden.setCondicion("ide_prprof=" + aut_ord_produ.getValor());
@@ -233,7 +234,7 @@ public class pre_orden extends Pantalla {
           bot_ver.setIcon("ui-icon-search");
           bot_ver.setMetodo("cargarOrden");
           bar_menu.agregarComponente(bot_ver);*/
-
+            tab_detalle_orden_control= new Tabla();
             tab_detalle_orden_control.setId("tab_detalle_orden_control");
             tab_detalle_orden_control.setTabla("prod_orden_detalle", "ide_prord", 2);
             tab_detalle_orden_control.setCondicion("ide_prorp=" + aut_ord_produ.getValor());
@@ -252,7 +253,7 @@ public class pre_orden extends Pantalla {
             PanelTabla pat_detalle_orden_control = new PanelTabla();
             pat_detalle_orden_control.setId("pat_detalle_orden_control");
             pat_detalle_orden_control.setPanelTabla(tab_detalle_orden_control);
-
+            tab_control_produccion= new Tabla();
             tab_control_produccion.setId("tab_control_produccion");
             tab_control_produccion.setTabla("prod_control_produccion", "ide_prcop", 3);
             // tab_control_produccion.setCondicion("ide_prcop=" + aut_ord_produ.getValor());
@@ -350,6 +351,7 @@ public class pre_orden extends Pantalla {
     public void dibujaOrden() {
 
         int_opcion = 1;
+        tab_orden_produccion= new Tabla();
         tab_orden_produccion.setId("tab_orden_produccion");
         tab_orden_produccion.setTabla("prod_orden_produccion", "ide_prorp", 4);
         tab_orden_produccion.setCondicion("ide_prorp="+aut_ord_produ.getValor());
@@ -382,6 +384,7 @@ public class pre_orden extends Pantalla {
 
 
         //--- tab_detalle_orden//
+        tab_detalle_orden = new Tabla();
         tab_detalle_orden.setId("tab_detalle_orden");
         tab_detalle_orden.setTabla("prod_orden_detalle", "ide_prord", 5);
         tab_detalle_orden.setCondicion("IDE_PRORP  = " + tab_orden_produccion.getValorSeleccionado());
@@ -460,6 +463,7 @@ public class pre_orden extends Pantalla {
             TablaGenerica tab_datos_produccion = utilitario.consultar("SELECT ide_prorp, total_producion_prorp FROM prod_orden_produccion WHERE ide_prorp = " + aut_ord_produ.getValor() + "");
             valor_producir = tab_datos_produccion.getValor("total_producion_prorp");
             int_opcion = 4;
+            tab_solicitud = new Tabla();
             tab_solicitud.setId("tab_solicitud");
             tab_solicitud.setTabla("prod_solicitud", "ide_prsol", 6);
             tab_solicitud.setCondicion("ide_prorp=" + aut_ord_produ.getValor());
@@ -479,7 +483,7 @@ public class pre_orden extends Pantalla {
             tab_solicitud.getColumna("numero_cavidades").setValorDefecto("0");
             tab_solicitud.getColumna("numero_cavidades").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
             tab_solicitud.getColumna("numero_cavidades").setMetodoChange("calculaValoreSolicitud");
-            tab_solicitud.getColumna("fecha_prsol").setLectura(true);
+            //tab_solicitud.getColumna("fecha_prsol").setLectura(true);
             tab_solicitud.getColumna("hora_prsol").setLectura(true);
             //tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
             tab_solicitud.setHeader("TOTAL A PRODUCIR: " + valor_producir);
@@ -490,7 +494,8 @@ public class pre_orden extends Pantalla {
             PanelTabla pat_solicitud = new PanelTabla();
             pat_solicitud.setId("pat_solicitud");
             pat_solicitud.setPanelTabla(tab_solicitud);
-
+            
+            tab_detalle_solicitud = new Tabla();
             tab_detalle_solicitud.setId("tab_detalle_solicitud");
             tab_detalle_solicitud.setTabla("prod_detalle_solicitud", "ide_prdes", 7);
             tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
