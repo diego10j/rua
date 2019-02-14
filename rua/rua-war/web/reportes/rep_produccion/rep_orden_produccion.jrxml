@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="118"/>
-	<property name="ireport.y" value="121"/>
+	<property name="ireport.x" value="532"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -32,6 +32,12 @@
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pide_orden" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_version" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_fecha" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
@@ -115,20 +121,6 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<text><![CDATA[ORDEN DE PRODUCCIÓN]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="691004ed-927c-49b4-903b-f8e6d434b61b" x="400" y="30" width="107" height="14"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Versión 1]]></text>
-			</staticText>
-			<textField pattern="yyyy/MM/dd">
-				<reportElement uuid="37896ea8-f711-498c-9db9-74762889abe0" x="400" y="44" width="107" height="14"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="182" y="1" width="1" height="68"/>
 			</line>
@@ -163,6 +155,20 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_logo_kennedy.jasper"]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement uuid="7db53a9b-4147-4b5b-bf10-2f2da0eff2a1" x="400" y="30" width="107" height="14"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_version}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f0da7be8-a5a0-466f-9364-b52f85bb57db" x="400" y="44" width="107" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_fecha}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
