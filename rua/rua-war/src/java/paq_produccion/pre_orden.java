@@ -428,8 +428,8 @@ public class pre_orden extends Pantalla {
         if (tab_orden_produccion.getValorSeleccionado() != null) {
             Map parametros = new HashMap();
             parametros.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
-            //parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
-            //parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
+            parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
+            parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
             //parametros.put("p_usuario", utilitario.getVariable("NICK"));
             parametros.put("nombre", usuario);
             vipdf_orden_produccion.setVisualizarPDF("rep_produccion/rep_orden_produccion.jasper", parametros);
