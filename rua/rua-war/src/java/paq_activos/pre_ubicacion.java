@@ -26,9 +26,9 @@ public class pre_ubicacion extends Pantalla {
         tab_tabla1.setTabla("act_ubicacion_activo", "ide_acuba", 1);
         tab_tabla1.setCampoPadre("act_ide_acuba");
         tab_tabla1.setCampoNombre("codigo_acuba||' '||nombre_acuba");
-        tab_tabla1.getColumna("codigo_acuba").setMascara("99");
-        tab_tabla1.getColumna("codigo_acuba").setLongitud(2);
-        tab_tabla1.getColumna("codigo_acuba").setAncho(2);
+        //tab_tabla1.getColumna("codigo_acuba").setMascara("99");
+        //tab_tabla1.getColumna("codigo_acuba").setLongitud(2);
+        //tab_tabla1.getColumna("codigo_acuba").setAncho(2);
         tab_tabla1.agregarArbol(arb_arbol);
 
         tab_tabla1.dibujar();
