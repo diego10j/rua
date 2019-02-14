@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="535" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="489" leftMargin="4" rightMargin="42" topMargin="21" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="107"/>
+	<property name="ireport.y" value="106"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
 	<parameter name="monto" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -31,7 +31,7 @@ inner join con_det_comp_cont detalle on cab.ide_cnccc= detalle.ide_cnccc
 INNER join con_lugar_aplicac lugar on detalle.ide_cnlap=lugar.ide_cnlap
 INNER join con_det_plan_cuen cuenta on detalle.ide_cndpc=cuenta.ide_cndpc
 where cab.IDE_CNCCC=$P{ide_cnccc}
-ORDER BY ide_cnlap desc]]>
+ORDER BY ide_cnlap desc,numero_orden_cndpc]]>
 	</queryString>
 	<field name="fecha_trans_cnccc" class="java.sql.Date"/>
 	<field name="nom_geper" class="java.lang.String">

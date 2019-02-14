@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="2"/>
+	<property name="ireport.x" value="118"/>
 	<property name="ireport.y" value="121"/>
 	<style name="table">
 		<box>
@@ -35,11 +35,10 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord
+		<![CDATA[select a.ide_prorp, a.ide_geper, b.nom_geper, b.identificac_geper, direccion_geper, telefono_geper, correo_geper, SOLITADO_POR_PRORP, FECHA_EMISION_PRORP, HORA_TERMINADO_PRORP, NUMERO_PRORP as numero_proforma, FECHA_TERMINADO_PRORP, TOTAL_PRODUCION_PRORP, c.nombre_inuni, c.nombre_inarti, c. detalle_prcol as color, c.bulto_paquete_prord, c.unidades_prord, total_prord,observacion_prorp
 ,nombre_empleado_solicitante, detalle_gtcar, HORA_REGISTRO_PRORP, LOGO_PRORP, NUMERACION_PRORP, detalle_prtio,codigo_inarti,codigo_prmaq
 from prod_orden_produccion a
 left join (select ide_geper, nom_geper, identificac_geper, direccion_geper, telefono_geper, correo_geper from gen_persona) b on a.ide_geper = b.ide_geper
---detalle de orden
 left join(
 select ide_prord, ide_prorp, a.ide_inuni, b.nombre_inuni, a.ide_inarti, c.nombre_inarti,  a.ide_prcol, d.detalle_prcol, bulto_paquete_prord, unidades_prord, total_prord,codigo_inarti, a.ide_prmaq,codigo_prmaq
 from prod_orden_detalle a
@@ -85,6 +84,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="bulto_paquete_prord" class="java.lang.Long"/>
 	<field name="unidades_prord" class="java.math.BigDecimal"/>
 	<field name="total_prord" class="java.math.BigDecimal"/>
+	<field name="observacion_prorp" class="java.lang.String"/>
 	<field name="nombre_empleado_solicitante" class="java.lang.String"/>
 	<field name="detalle_gtcar" class="java.lang.String">
 		<fieldDescription><![CDATA[Este campo define elnombre del cargo.]]></fieldDescription>
@@ -364,7 +364,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[Logo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e58d7be5-ff00-4e81-b9af-848a3972bb22" x="316" y="30" width="99" height="11"/>
+				<reportElement uuid="e58d7be5-ff00-4e81-b9af-848a3972bb22" x="316" y="30" width="84" height="11"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -385,7 +385,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{logo_prorp}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="0cee11a5-6189-4e9d-9e21-9fb8522b3cae" x="412" y="30" width="118" height="11"/>
+				<reportElement uuid="0cee11a5-6189-4e9d-9e21-9fb8522b3cae" x="400" y="31" width="118" height="11"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
@@ -441,18 +441,18 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[M#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a36d716c-b061-4dfc-8755-c5cad61ada7c" x="1" y="30" width="100" height="11"/>
+				<reportElement uuid="a36d716c-b061-4dfc-8755-c5cad61ada7c" x="1" y="30" width="97" height="11"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Observacion:]]></text>
+				<text><![CDATA[Observación:]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="87dfd961-167e-4739-98ca-2c9d50997a1e" x="101" y="30" width="203" height="11"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="87dfd961-167e-4739-98ca-2c9d50997a1e" x="97" y="30" width="219" height="19"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{observacion_prorp}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -541,7 +541,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>

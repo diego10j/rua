@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="220"/>
+	<property name="ireport.x" value="68"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -82,12 +82,12 @@ order by nombre_inarti,a.ide_acact]]>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="193" splitType="Stretch">
+		<band height="235" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="49c35220-230a-4287-824c-f28b7c79cbcd" x="380" y="3" width="173" height="48"/>
+				<reportElement uuid="49c35220-230a-4287-824c-f28b7c79cbcd" x="346" y="3" width="173" height="48"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="398" y="33" width="39" height="13"/>
+				<reportElement uuid="8879001f-36fa-493f-aeed-38f7c3af5ba0" x="364" y="33" width="39" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -95,7 +95,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="dd9f018b-d9ae-4bb8-a075-a3eb1283b7e4" x="436" y="33" width="112" height="13"/>
+				<reportElement uuid="dd9f018b-d9ae-4bb8-a075-a3eb1283b7e4" x="402" y="33" width="112" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
@@ -125,7 +125,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement uuid="68a001d3-c271-4371-9443-8b04f241afa1" x="398" y="3" width="150" height="24"/>
+				<reportElement uuid="68a001d3-c271-4371-9443-8b04f241afa1" x="364" y="3" width="150" height="24"/>
 				<box leftPadding="3" rightPadding="6"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
@@ -133,16 +133,18 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA["Nro. "+$F{codigo_acact}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="434e1b67-7c56-4177-97d5-2bd931904612" x="0" y="120" width="555" height="73"/>
-				<textElement textAlignment="Justified"/>
-				<textFieldExpression><![CDATA["…. En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" quien ENTREGA y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio} +" quien RECIBE previa constatación y verificación, el bien detallado a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, se determinó que el mismo se encuentran DAÑADO y OBSOLETO, dejando  constancia de la conformidad de la presente"]]></textFieldExpression>
+				<reportElement uuid="434e1b67-7c56-4177-97d5-2bd931904612" x="9" y="116" width="510" height="119"/>
+				<textElement textAlignment="Justified">
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["…. En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" quien RECIBE y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio} +" quien ENTREGA previa constatación y verificación, el bien detallado a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, se determinó que el mismo se encuentran DAÑADO y OBSOLETO, dejando  constancia de la conformidad de la presente"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="12" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="445" y="0" width="32" height="12"/>
+				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="427" y="0" width="32" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -159,10 +161,10 @@ order by nombre_inarti,a.ide_acact]]>
 				<reportElement uuid="e1225dd8-a3ad-4ef5-8f95-f8dc61b14f6c" x="41" y="0" width="98" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
@@ -170,7 +172,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[UBICACIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="477" y="0" width="72" height="12"/>
+				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="459" y="0" width="60" height="12"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5"/>
@@ -184,7 +186,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="540994ad-b466-4b9e-abff-78a7d08cdf1b" x="139" y="0" width="200" height="12"/>
+				<reportElement uuid="540994ad-b466-4b9e-abff-78a7d08cdf1b" x="139" y="0" width="182" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -198,7 +200,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[NOMBRE ACTIVO FIJO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="339" y="0" width="106" height="12"/>
+				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="321" y="0" width="106" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -230,7 +232,7 @@ order by nombre_inarti,a.ide_acact]]>
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="339" y="0" width="106" height="13"/>
+				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="321" y="0" width="106" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -243,7 +245,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{codigo_barras_acafi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="445" y="0" width="32" height="13"/>
+				<reportElement uuid="48812bcb-7309-4532-bb68-28705a5f77d3" x="427" y="0" width="32" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -254,7 +256,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{cantidad_acafi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c7660bd3-297f-401f-81af-0814c6df72eb" x="477" y="0" width="72" height="13"/>
+				<reportElement uuid="c7660bd3-297f-401f-81af-0814c6df72eb" x="459" y="0" width="60" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -267,7 +269,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{nombre_aceaf}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d31abfa9-68f4-4808-ac54-552625860c5e" x="139" y="0" width="200" height="13"/>
+				<reportElement uuid="d31abfa9-68f4-4808-ac54-552625860c5e" x="139" y="0" width="182" height="13"/>
 				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -294,6 +296,12 @@ order by nombre_inarti,a.ide_acact]]>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="eae6d700-8cb7-4ad4-bd63-d9acbeb5247c" x="41" y="0" width="98" height="13"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -360,9 +368,9 @@ order by nombre_inarti,a.ide_acact]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="99" splitType="Stretch">
+		<band height="114" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="98" y="57" width="129" height="13"/>
+				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="91" y="70" width="129" height="13"/>
 				<box topPadding="0"/>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
@@ -370,7 +378,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[ENTREGA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5" x="321" y="57" width="129" height="13"/>
+				<reportElement uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5" x="321" y="70" width="129" height="13"/>
 				<box topPadding="0"/>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
@@ -378,13 +386,13 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[RECIBE]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="98" y="56" width="129" height="1"/>
+				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="91" y="68" width="129" height="1"/>
 			</line>
 			<line>
-				<reportElement uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2" x="321" y="58" width="129" height="1"/>
+				<reportElement uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2" x="321" y="69" width="129" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="69ebebe8-8ca6-4d35-942d-fb12fe905e50" x="-1" y="86" width="99" height="13"/>
+				<reportElement uuid="69ebebe8-8ca6-4d35-942d-fb12fe905e50" x="-1" y="99" width="99" height="13"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -392,17 +400,17 @@ order by nombre_inarti,a.ide_acact]]>
 				<text><![CDATA[OBSERVACIÓN:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="878d294c-5da4-40bd-9020-c1a5d70f769b" x="98" y="86" width="456" height="13"/>
+				<reportElement uuid="878d294c-5da4-40bd-9020-c1a5d70f769b" x="97" y="99" width="456" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{observacion_acact}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="75" y="70" width="181" height="14"/>
+				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="67" y="84" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{denom_custodio}+" "+$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="299" y="70" width="181" height="14"/>
+				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="296" y="84" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}]]></textFieldExpression>
 			</textField>
