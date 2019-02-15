@@ -11,6 +11,7 @@ import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.component.separator.Separator;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import paq_gestion.ejb.ServicioEmpleado;
@@ -44,7 +46,7 @@ public class pre_orden extends Pantalla {
     private Tabla tab_proforma_orden = new Tabla();
     private Tabla tab_solicitud = new Tabla();
     private Tabla tab_detalle_solicitud = new Tabla();
-    private MenuPanel menup = new MenuPanel();
+    private final MenuPanel menup = new MenuPanel();
     private double dou_base_calculada = 0;
     private double dou_total_produccion = 0;
     private Reporte rep_reporte = new Reporte();
@@ -88,7 +90,8 @@ public class pre_orden extends Pantalla {
         bar_botones.agregarComponente(new Etiqueta("ING.ORDEN PRODUCCIÓN"));
         aut_ord_produ.setId("aut_ord_produ");
         aut_ord_produ.setAutoCompletar(ser_produccion.getOrdenPro());
-        aut_ord_produ.setMetodoChange("seleccionoAutocompletar");
+        //aut_ord_produ.setMetodoChange("seleccionoAutocompletar");
+        aut_ord_produ.setMetodoChangeRuta("pre_index.clase.seleccionoAutocompletar");
         //aut_ord_produ.setSize(35);
 
         bar_botones.agregarComponente(aut_ord_produ);
@@ -225,15 +228,7 @@ public class pre_orden extends Pantalla {
     public void dibujaControl() {
         int_opcion = 2;
         if (aut_ord_produ.getValor() != null) {
-            /*Barra bar_menu = new Barra();
-          bar_menu.setId("bar_menu");
-          bar_menu.limpiar();
 
-          Boton bot_ver = new Boton();
-          bot_ver.setValue("Buscar Orden de Producción");
-          bot_ver.setIcon("ui-icon-search");
-          bot_ver.setMetodo("cargarOrden");
-          bar_menu.agregarComponente(bot_ver);*/
             tab_detalle_orden_control= new Tabla();
             tab_detalle_orden_control.setId("tab_detalle_orden_control");
             tab_detalle_orden_control.setTabla("prod_orden_detalle", "ide_prord", 2);
@@ -349,11 +344,12 @@ public class pre_orden extends Pantalla {
     }
 
     public void dibujaOrden() {
-
+        Grupo gru_grupo = new Grupo();
         int_opcion = 1;
         tab_orden_produccion= new Tabla();
+        tab_detalle_orden = new Tabla();
         tab_orden_produccion.setId("tab_orden_produccion");
-        tab_orden_produccion.setTabla("prod_orden_produccion", "ide_prorp", 4);
+        tab_orden_produccion.setTabla("prod_orden_produccion", "ide_prorp", 44);
         tab_orden_produccion.setCondicion("ide_prorp="+aut_ord_produ.getValor());
         tab_orden_produccion.getColumna("ide_gtemp").setCombo(ser_cargoempleado.getSQLEmpleadosActivos());
         tab_orden_produccion.getColumna("ide_gtemp").setAutoCompletar();
@@ -376,22 +372,23 @@ public class pre_orden extends Pantalla {
         tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//EstilO
         tab_orden_produccion.getColumna("fecha_terminado_prorp").setVisible(false);
         tab_orden_produccion.getColumna("hora_terminado_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("detalle_produccion_prorp").setVisible(false);
         tab_orden_produccion.dibujar();
 
         PanelTabla pat_orden_produccion = new PanelTabla();
         pat_orden_produccion.setId("pat_orden_produccion");
         pat_orden_produccion.setPanelTabla(tab_orden_produccion);
-
+        gru_grupo.getChildren().add(pat_orden_produccion);
+        gru_grupo.getChildren().add(new Separator());
 
         //--- tab_detalle_orden//
-        tab_detalle_orden = new Tabla();
+        
         tab_detalle_orden.setId("tab_detalle_orden");
-        tab_detalle_orden.setTabla("prod_orden_detalle", "ide_prord", 5);
-        tab_detalle_orden.setCondicion("IDE_PRORP  = " + tab_orden_produccion.getValorSeleccionado());
+        tab_detalle_orden.setTabla("prod_orden_detalle", "ide_prord", 55);
+        tab_detalle_orden.setCondicion("ide_prorp="+aut_ord_produ.getValor());
         tab_detalle_orden.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
         tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_detalle_orden.getColumna("ide_inarti").setAutoCompletar();
-        tab_detalle_orden.getColumna("ide_inarti").setEstilo("width: 30px;");
         tab_detalle_orden.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
         tab_detalle_orden.getColumna("BULTO_PAQUETE_PRORD").setValorDefecto("0");
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setValorDefecto("0");
@@ -412,12 +409,9 @@ public class pre_orden extends Pantalla {
         PanelTabla pat_detalle_orden = new PanelTabla();
         pat_detalle_orden.setId("pat_detalle_orden");
         pat_detalle_orden.setPanelTabla(tab_detalle_orden);
+        gru_grupo.getChildren().add(pat_detalle_orden);
 
-        Division div_orden_produccion = new Division();
-        div_orden_produccion.setId("div_orden_produccion");
-        div_orden_produccion.dividir2(pat_orden_produccion, pat_detalle_orden, "50%", "H");
-        agregarComponente(div_orden_produccion);
-        menup.dibujar(1, "ORDEN", div_orden_produccion);
+        menup.dibujar(1,"fa fa-database", "ORDEN", gru_grupo,true);
 
         
     }
@@ -430,7 +424,7 @@ public class pre_orden extends Pantalla {
             parametros.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
             parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
             parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
-            //parametros.put("p_usuario", utilitario.getVariable("NICK"));
+            parametros.put("p_usuario", utilitario.getVariable("NICK"));
             parametros.put("nombre", usuario);
             vipdf_orden_produccion.setVisualizarPDF("rep_produccion/rep_orden_produccion.jasper", parametros);
             vipdf_orden_produccion.dibujar();
@@ -459,6 +453,7 @@ public class pre_orden extends Pantalla {
     }
 
     public void dibujaSolicitud() {
+        Grupo gru_grupo = new Grupo();
         if (aut_ord_produ != null) {
             TablaGenerica tab_datos_produccion = utilitario.consultar("SELECT ide_prorp, total_producion_prorp FROM prod_orden_produccion WHERE ide_prorp = " + aut_ord_produ.getValor() + "");
             valor_producir = tab_datos_produccion.getValor("total_producion_prorp");
@@ -494,6 +489,8 @@ public class pre_orden extends Pantalla {
             PanelTabla pat_solicitud = new PanelTabla();
             pat_solicitud.setId("pat_solicitud");
             pat_solicitud.setPanelTabla(tab_solicitud);
+            gru_grupo.getChildren().add(pat_solicitud);
+            gru_grupo.getChildren().add(new Separator());
             
             tab_detalle_solicitud = new Tabla();
             tab_detalle_solicitud.setId("tab_detalle_solicitud");
@@ -507,11 +504,8 @@ public class pre_orden extends Pantalla {
             pat_detalle_solicitud.setId("pat_detalle_solicitud");
             pat_detalle_solicitud.setPanelTabla(tab_detalle_solicitud);
 
-            Division div_solicitud = new Division();
-            div_solicitud.setId("div_solicitud");
-            div_solicitud.dividir2(pat_solicitud, pat_detalle_solicitud, "50%", "H");
-            agregarComponente(div_solicitud);
-            menup.dibujar(4, "SOLICITUD DE MATERIAL", div_solicitud);
+            gru_grupo.getChildren().add(pat_detalle_solicitud);
+            menup.dibujar(4,"fa fa-list-ul", "SOLICITUD DE MATERIAL", gru_grupo, true);
 
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una Orden de Produccion", "");
@@ -736,10 +730,35 @@ public class pre_orden extends Pantalla {
 
     public void seleccionoAutocompletar(SelectEvent evt) {
         aut_ord_produ.onSelect(evt);
+        
+        if (aut_ord_produ != null) {
+            switch (menup.getOpcion()) {
+                case 1:
+                    dibujaOrden();
+                    break;
+                case 2:
+                    dibujaControl();
+                    break;
+                case 3:
+                    dibujaProforma();
+                    break;
+                case 4:
+                    
+                default:
+                    dibujaSolicitud();
+            }
+        } else {
+            limpiar();
+        }
+        /*
         if (aut_ord_produ.getValor() != null) {
             
             if (menup.getOpcion() == 1) {
-                dibujaOrden();
+                //dibujaOrden();
+                tab_orden_produccion.setCondicion("ide_prorp="+aut_ord_produ.getValor());
+                tab_orden_produccion.ejecutarSql();
+                tab_detalle_orden.setCondicion("ide_prorp="+aut_ord_produ.getValor());
+                tab_detalle_orden.ejecutarSql();
             }
             else if (menup.getOpcion() == 2) {
                 dibujaControl();
@@ -755,6 +774,7 @@ public class pre_orden extends Pantalla {
         } else {
             utilitario.agregarMensajeInfo("Seleccionar una Orden de Producción", "Debe seleccionar una Orden de Producción");
         }
+        */
     }
 
     public Tabla getTab_orden_produccion() {
@@ -779,14 +799,6 @@ public class pre_orden extends Pantalla {
 
     public void setTab_detalle_orden(Tabla tab_detalle_orden) {
         this.tab_detalle_orden = tab_detalle_orden;
-    }
-
-    public MenuPanel getMenup() {
-        return menup;
-    }
-
-    public void setMenup(MenuPanel menup) {
-        this.menup = menup;
     }
 
     public int getInt_opcion() {
