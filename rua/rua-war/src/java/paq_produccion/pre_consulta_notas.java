@@ -25,9 +25,11 @@ public class pre_consulta_notas extends Pantalla {
         tab_consulta.getColumna("ide_incci").setNombreVisual("CODIGO");
         tab_consulta.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper","");
         tab_consulta.getColumna("ide_geper").setFiltroContenido();
+        tab_consulta.getColumna("ide_geper").setLongitud(100);
         tab_consulta.getColumna("ide_geper").setAutoCompletar();
         tab_consulta.getColumna("ide_usua").setVisible(false);
         tab_consulta.getColumna("ide_intti").setCombo("inv_tip_tran_inve", "ide_intti", "nombre_intti", "");
+        tab_consulta.getColumna("ide_intti").setLongitud(40);
         tab_consulta.getColumna("ide_geper").setLectura(true);
         tab_consulta.getColumna("ide_intti").setLectura(true);
         tab_consulta.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
@@ -53,7 +55,7 @@ public class pre_consulta_notas extends Pantalla {
         tab_consulta.getColumna("maquina_incci").setVisible(false);
         tab_consulta.getColumna("ide_inepi").setVisible(false);
         tab_consulta.setLectura(true);
-        tab_consulta.setRows(25);
+        tab_consulta.setRows(40);
         tab_consulta.dibujar();
         PanelTabla pat_consulta = new PanelTabla();
         pat_consulta.setId("pat_consulta");
