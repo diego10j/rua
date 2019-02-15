@@ -188,6 +188,34 @@ public class UtilitarioCeo extends Framework {
      */
     @Override
     public String getFormatoNumero(Object numero, int numero_decimales) {
+        if (numero_decimales == 2) {
+            numero = getFormatoNumero(numero, 4);
+            String lstr_formato = "0";
+            String ceros = "1";
+            double dceros = 1;
+            for (int i = 0; i < 2; i++) {
+                if (i == 0) {
+                    lstr_formato += ".";
+                }
+                lstr_formato += "0";
+                ceros += "0";
+            }
+            ceros += ".00";
+            dceros = Double.parseDouble(ceros);
+            DecimalFormat formatoNumero;
+            DecimalFormatSymbols idfs_simbolos = new DecimalFormatSymbols();
+            idfs_simbolos.setDecimalSeparator('.');
+            formatoNumero = new DecimalFormat(lstr_formato, idfs_simbolos);
+
+            try {
+                double ldob_valor = Double.parseDouble(numero.toString());
+                ldob_valor = Math.round(ldob_valor * dceros) / dceros;
+                return formatoNumero.format(ldob_valor);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
         String lstr_formato = "0";
         String ceros = "1";
         double dceros = 1;
