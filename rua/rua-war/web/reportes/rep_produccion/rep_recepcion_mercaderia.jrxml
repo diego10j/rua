@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="680" pageHeight="396" columnWidth="640" leftMargin="20" rightMargin="20" topMargin="11" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="702"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
@@ -261,7 +261,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Unidades]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="857042e9-33f3-4ac5-90d5-910ab2eec004" x="369" y="-40" width="144" height="16"/>
+				<reportElement uuid="857042e9-33f3-4ac5-90d5-910ab2eec004" x="493" y="-40" width="144" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -301,7 +301,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="83" y="0" width="223" height="20"/>
+				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="76" y="0" width="230" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
