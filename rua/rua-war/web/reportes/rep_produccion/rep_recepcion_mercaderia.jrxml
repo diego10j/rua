@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="740" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="11" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="680" pageHeight="396" columnWidth="640" leftMargin="20" rightMargin="20" topMargin="11" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="7"/>
-	<property name="ireport.y" value="63"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -72,37 +72,37 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 	<title>
 		<band height="66" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="8" y="4" width="524" height="62"/>
+				<reportElement uuid="5a69af44-b9b2-4c84-85dd-c71f9f518153" x="0" y="4" width="640" height="62"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="196" y="4" width="195" height="61"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="196" y="4" width="225" height="61"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[REQUERIMIENTOS MATERIA PRIMA Producción a Bodega]]></text>
+				<text><![CDATA[   RECEPCIÓN DE MERCADERIA       Producción a Bodega]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="195" y="4" width="1" height="61"/>
 			</line>
 			<line>
-				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="391" y="3" width="1" height="62"/>
+				<reportElement uuid="8b9ba5fc-c55c-4c18-9ed6-6af3a43913fb" x="421" y="3" width="1" height="62"/>
 			</line>
 			<staticText>
-				<reportElement uuid="49d8f23b-1192-4302-a08e-f9710f971d15" x="401" y="10" width="123" height="16"/>
+				<reportElement uuid="49d8f23b-1192-4302-a08e-f9710f971d15" x="466" y="10" width="123" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RD - 02]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="4c2f33f9-7dba-4321-ab98-eecce671f8d0" x="400" y="42" width="123" height="16"/>
+				<reportElement uuid="4c2f33f9-7dba-4321-ab98-eecce671f8d0" x="467" y="42" width="123" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pide_fecha}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="51e4a4fd-76a9-4146-abe1-328cc067ae5c" x="401" y="26" width="123" height="16"/>
+				<reportElement uuid="51e4a4fd-76a9-4146-abe1-328cc067ae5c" x="467" y="26" width="123" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -141,7 +141,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Maquina No:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="7" y="12" width="76" height="20"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="0" y="12" width="76" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -155,7 +155,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="211" y="12" width="59" height="20"/>
+				<reportElement uuid="2dfbce31-24bb-4893-bab5-563c78714d20" x="306" y="12" width="59" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -169,7 +169,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="83" y="12" width="128" height="20"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="76" y="12" width="230" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -183,7 +183,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Producto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="270" y="12" width="63" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="365" y="12" width="64" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -219,7 +219,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="333" y="12" width="61" height="20"/>
+				<reportElement uuid="e14fe7f9-13d4-4fd0-8ae7-2f2027fca9b8" x="429" y="12" width="61" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -233,7 +233,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Cantidad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="465" y="12" width="66" height="20"/>
+				<reportElement uuid="45697837-9c0d-4aa2-9790-9e0580ef94a9" x="561" y="12" width="79" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -247,7 +247,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="394" y="12" width="71" height="20"/>
+				<reportElement uuid="0d94030f-6483-44f3-b1d1-5bc96e69e088" x="490" y="12" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -287,7 +287,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="0af69fbf-a0b3-49d0-a600-9d64e1d2009e" x="7" y="0" width="76" height="20"/>
+				<reportElement uuid="0af69fbf-a0b3-49d0-a600-9d64e1d2009e" x="0" y="0" width="76" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -301,7 +301,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="83" y="0" width="128" height="20"/>
+				<reportElement uuid="0eb54929-30d6-4e25-9684-cf7ca8110fd9" x="83" y="0" width="223" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -315,7 +315,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e8e6fd9b-3a36-4be5-89a7-3d640b5dc5fe" x="211" y="0" width="59" height="20"/>
+				<reportElement uuid="e8e6fd9b-3a36-4be5-89a7-3d640b5dc5fe" x="306" y="0" width="59" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -323,13 +323,13 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="c1b2d4e8-6b2b-4606-a9ad-fdc82cb8579c" x="270" y="0" width="63" height="20"/>
+				<reportElement uuid="c1b2d4e8-6b2b-4606-a9ad-fdc82cb8579c" x="365" y="0" width="64" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -337,13 +337,13 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detalle_prcol}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="dad50d44-29e2-4b78-822f-8f76640a0f96" x="333" y="0" width="61" height="20"/>
+				<reportElement uuid="dad50d44-29e2-4b78-822f-8f76640a0f96" x="429" y="0" width="61" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -357,7 +357,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="4b279a51-572e-4024-912b-0ef9caf7333d" x="394" y="0" width="71" height="20"/>
+				<reportElement uuid="4b279a51-572e-4024-912b-0ef9caf7333d" x="490" y="0" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -371,7 +371,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<textFieldExpression><![CDATA[$F{unidades}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6ab728ab-9dd1-4982-a214-be62748732dd" x="465" y="0" width="66" height="20"/>
+				<reportElement uuid="6ab728ab-9dd1-4982-a214-be62748732dd" x="561" y="0" width="79" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -392,7 +392,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 	<summary>
 		<band height="96" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="394" y="0" width="71" height="20"/>
+				<reportElement uuid="896ffa76-670b-4ded-9770-2afe6fe6f1dd" x="490" y="0" width="71" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -409,7 +409,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="79" y="63" width="147" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="66a37599-850c-47e0-a0bb-08219b7e32eb" x="465" y="0" width="66" height="20"/>
+				<reportElement uuid="66a37599-850c-47e0-a0bb-08219b7e32eb" x="561" y="0" width="79" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -430,10 +430,10 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Encargado de Grupo]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="309" y="62" width="147" height="1"/>
+				<reportElement uuid="7923f44b-0a03-42ca-af2b-af5a34edfc32" x="338" y="62" width="147" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="309" y="76" width="147" height="14"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="338" y="76" width="147" height="14"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
@@ -447,7 +447,7 @@ WHERE a.IDE_INCCI = $P{pide_recepcion}]]>
 				<text><![CDATA[Firma]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="309" y="62" width="147" height="15"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="338" y="62" width="147" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
