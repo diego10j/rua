@@ -30,24 +30,33 @@ public class ServicioActivosFijos extends ServicioBase {
      * @return
      */
     public String getSqlListaActivosFijos(String tipo_persona, String persona, String tipo_estado, String estado, String ide_accls) {
-        String sql = "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
-                + " ,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi,a.ide_aceaf\n"
-                + "from act_activo_fijo a \n"
-                + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
-                + "left join gen_persona c on a.ide_geper=c.ide_geper\n"
-                + "left join inv_articulo arti on arti.ide_inarti = a.ide_inarti "
-                + "left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n"
-                + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
-                + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
-                + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
-                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls in ("+ide_accls+")";//ACTIVO FIJO
+        String sql = " select ide_acafi,nombre_accla AS CLASE,"
+        +" arti.nombre_inarti as TIPO_ACTIVO,i.nombre_inarti as SUBTIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,d.nombre_acuba as AREA_UBICACION,j.nombre_acuba as SUBAREA_UBICACION,nombre_aceaf as ESTADO,"
+        +" nom_geper,identificac_geper as DOCUMENTO_CUSTODIO,nombre_invmar as MARCA,modelo_acafi as MODELO,"
+        +" serie_acafi as SERIE,nombre_accls as CLASIFICACION,nombre_actac as TIPO_ADQUISICION,fecha_compra_acafi,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,"
+        +" nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi,proveedor_acafi,N_EGRESO_ACAFI AS NUMERO_EGRESO,NUMERO_FACTU_ACAFI AS NUMERO_FACTURA, a.ide_aceaf,codig_recur_cndpc as CODIGO_PLAN,nombre_cndpc as PLAN_CUENTAS"
+        +" from act_activo_fijo a "
+                 +" left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf"
+                 +" left join gen_persona c on a.ide_geper=c.ide_geper"
+                 +" left join inv_articulo arti on arti.ide_inarti = a.ide_inarti"
+                 +" left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba"
+                 +" left join gen_casa e on a.ide_gecas=e.ide_gecas"
+                 +" left join gen_obra f on a.ide_geobr=f.ide_geobr"
+                 +" left join act_clase_activo g on a.ide_accla=g.ide_accla"
+                 +" left join con_det_plan_cuen h on a.ide_cndpc=h.ide_cndpc"
+                 +" left join inv_articulo i on i.ide_inarti=a.inv_ide_inarti"
+                 +" left join act_ubicacion_activo j on j.ide_acuba=a.act_ide_acuba"
+                 +" left join inv_marca k on a.ide_inmar=k.ide_inmar"
+                 +" left join act_clasificacion l on a.ide_accls=l.ide_accls"
+                 +" left join act_tipo_adquisicion m on a.ide_actac=m.ide_actac"
+                + " where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and a.ide_accls in ("+ide_accls+")";//ACTIVO FIJO
                 if(tipo_persona.equals("1")){
                  sql+=" and a.ide_geper in ("+persona+")";
                 }
                 if(tipo_estado.equals("1")){
                  sql+=" and a.ide_aceaf in ("+estado+")";
                 }
-                sql+= "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+                sql+= "order by nombre_gecas,nombre_geobr,nombre_accla,arti.nombre_inarti,ide_acafi";
                 
                 //System.out.println("sql "+sql);
         
@@ -404,6 +413,6 @@ public class ServicioActivosFijos extends ServicioBase {
                 + "from act_acta_constata a,act_movimiento b,gen_persona c,act_estado_activo_fijo d\n"
                 + "where a.ide_acact = b.ide_acact \n"
                 + "and a.gen_ide_geper =  c.ide_geper\n"
-                + "and b.ide_aceaf = d.ide_aceaf and ide_acafi ="+acafi;
+                + "and b.ide_aceaf = d.ide_aceaf and ide_acafi =" + acafi;
     }
 }
