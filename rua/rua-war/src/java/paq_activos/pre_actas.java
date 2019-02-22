@@ -262,9 +262,10 @@ public class pre_actas extends Pantalla {
                 for (int i = 0; i < tab_detalle_activo.getTotalFilas(); i++) {
                     utilitario.getConexion().agregarSql("UPDATE act_activo_fijo set ide_aceaf=" + utilitario.getVariable("p_act_estado_dado_de_baja") + " where ide_acafi=" + tab_detalle_activo.getValor(i, "ide_acafi"));
                 }
-
+                
             }
         }
+            utilitario.agregarMensaje("Acta Aprobada", "Se ha aprobado el acta");        
             con_confirma.cerrar();
             tab_tabla.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
@@ -469,8 +470,8 @@ public class pre_actas extends Pantalla {
 
             for (int i = 0; i < tabla_activos.getTotalFilas(); i++) {
                 tab_tabla2.insertar();
-                tab_tabla2.setValor(i, "ide_acafi", tabla_activos.getValor(i, "ide_acafi"));
-                tab_tabla2.setValor(i, "ide_aceaf", tabla_activos.getValor(i, "ide_aceaf"));
+                tab_tabla2.setValor("ide_acafi", tabla_activos.getValor(i, "ide_acafi"));
+                tab_tabla2.setValor("ide_aceaf", tabla_activos.getValor(i, "ide_aceaf"));
             }
             utilitario.addUpdate("tab_tabla2");
 
