@@ -43,7 +43,9 @@
 	<parameter name="nombre" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.ide_prpro,nombre_cndfp,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper, d.primer_nombre_gtemp||' '||d.apellido_paterno_gtemp as nombre_empleado,detalle_gtcar,
-g.detalle_prvat as validez,numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,total_prpro,observacion_prpro,nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,subtotal_prpro-valor_descuento_prpro as subtotaldescuento,detalle_prvat as tiempo
+g.detalle_prvat as validez,numero_prpro,fecha_prpro,solitado_por_prpro,subtotal_prpro,valor_descuento_prpro,por_descuento_prpro,iva_prpro,
+total_prpro,observacion_prpro,nombre_inuni,nombre_inarti,cantidad_prdep,valor_unitario_prdep,valor_total_prdep,
+subtotal_prpro-valor_descuento_prpro as subtotaldescuento,k.detalle_prvat as tiempo
 from prod_proforma a
 left join con_deta_forma_pago b on a.ide_cndfp = b.ide_cndfp
 left join gen_persona c on a.ide_geper = c.ide_geper
@@ -53,6 +55,7 @@ left join prod_validez_tiempo g on a.ide_prvat = g.ide_prvat
 left join prod_detalle_proforma h on a.ide_prpro = h.ide_prpro
 left join inv_unidad i on h.ide_inuni = i.ide_inuni
 left join inv_articulo j on h.ide_inarti = j.ide_inarti
+left join prod_validez_tiempo k on a.pro_ide_prvat = k.ide_prvat
 where a.ide_prpro = $P{ide_prpro}]]>
 	</queryString>
 	<field name="ide_prpro" class="java.lang.Long">
