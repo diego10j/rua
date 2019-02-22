@@ -71,17 +71,18 @@ public class pre_consulta_notas extends Pantalla {
 
     @Override
     public void insertar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       tab_consulta.insertar();
     }
 
     @Override
     public void guardar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      tab_consulta.guardar();
+      guardarPantalla();
     }
 
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       tab_consulta.eliminar();
     }
 
     public Tabla getTab_consulta() {
