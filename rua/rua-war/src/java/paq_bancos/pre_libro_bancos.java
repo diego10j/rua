@@ -2084,7 +2084,17 @@ public class pre_libro_bancos extends Pantalla {
         if (validarCxP()) {
             String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             //11/02/2019 Control por si genera error al guardar la transacción
-            if (ide_teclb != null) {
+            if (ide_teclb == null) {
+                ide_teclb = "";
+            }
+            int num = -1;
+            try {
+                num = Integer.parseInt(ide_teclb);
+            } catch (Exception e) {
+                num = -1;
+            }
+
+            if (num > 0) {
                 generarAsiento(ide_teclb);
                 dibujarCxP();
             } else {
@@ -2556,7 +2566,17 @@ public class pre_libro_bancos extends Pantalla {
         if (validarCxC()) {
             String ide_teclb = cargarPagoCxC(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             //11/02/2019 Control por si genera error al guardar la transacción
-            if (ide_teclb != null) {
+            if (ide_teclb == null) {
+                ide_teclb = "";
+            }
+            int num = -1;
+            try {
+                num = Integer.parseInt(ide_teclb);
+            } catch (Exception e) {
+                num = -1;
+            }
+
+            if (num > 0) {
                 generarAsiento(ide_teclb);
                 dibujarCxC();
             } else {
@@ -2838,6 +2858,7 @@ public class pre_libro_bancos extends Pantalla {
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
+
     public void aceptarAnticipoCliente() {
         if (validarAnticipo()) {
             TablaGenerica tab_libro = ser_tesoreria.generarTablaLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
