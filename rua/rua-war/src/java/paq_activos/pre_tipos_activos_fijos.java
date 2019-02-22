@@ -20,11 +20,14 @@ import sistema.aplicacion.Pantalla;
 public class pre_tipos_activos_fijos extends Pantalla {
     
     private Tabla tab_tabla1 = new Tabla();
+    private Arbol arb_arbol = new Arbol();
     
     public pre_tipos_activos_fijos() {
         
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_articulo", "ide_inarti", 1);
+        tab_tabla1.setCampoPadre("inv_ide_inarti");
+        tab_tabla1.setCampoNombre("nombre_inarti||' '||codigo_inarti");
         tab_tabla1.getColumna("ide_infab").setVisible(false);
         tab_tabla1.getColumna("ide_inmar").setVisible(false);
         tab_tabla1.getColumna("ide_inuni").setVisible(false);
@@ -49,14 +52,18 @@ public class pre_tipos_activos_fijos extends Pantalla {
         tab_tabla1.getColumna("codigo_inarti").setAncho(3);
         tab_tabla1.getColumna("codigo_inarti").setMascara("999");
         tab_tabla1.getColumna("codigo_inarti").setLongitud(3);
+        tab_tabla1.agregarArbol(arb_arbol);
         
         tab_tabla1.dibujar();
         tab_tabla1.setCondicion("");
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
         
+        arb_arbol.setId("arb_arbol");
+        arb_arbol.dibujar();
+
         Division div_division = new Division();
-        div_division.dividir1(pat_panel);
+        div_division.dividir2(arb_arbol,pat_panel,"30%","V");
         agregarComponente(div_division);
         
     }
@@ -84,6 +91,14 @@ public class pre_tipos_activos_fijos extends Pantalla {
     
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public Arbol getArb_arbol() {
+        return arb_arbol;
+    }
+
+    public void setArb_arbol(Arbol arb_arbol) {
+        this.arb_arbol = arb_arbol;
     }
     
 }

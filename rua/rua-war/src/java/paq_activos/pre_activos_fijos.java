@@ -1152,15 +1152,25 @@ public void actualizarCustodio(){
         utilitario.buscarPermisosObjetos();
     }
 
+    	public void cargarDepartamentos() {
+			tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 and inv_ide_inarti="+tab_tabla.getValor("ide_inarti")+" order by codigo_inarti");
+			utilitario.addUpdateTabla(tab_tabla, "inv_ide_inarti", "");
+		
+	}
+        public void filtraArea(){
+                tab_tabla.getColumna("act_ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba="+tab_tabla.getValor("ide_acuba")+" order by codigo_acuba");
+                utilitario.addUpdateTabla(tab_tabla, "act_ide_acuba", "");
+        }
     public void dibujarActivoFijo() {
         cantidad = 1;
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
-        tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
+        tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 and nivel_inarti='PADRE' order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
-        tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
+        //tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
+        tab_tabla.getColumna("ide_inarti").setMetodoChange("cargarDepartamentos");
         tab_tabla.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
         tab_tabla.getColumna("ide_rheor").setVisible(false);
         tab_tabla.getColumna("alterno_acafi").setVisible(false);
@@ -1177,14 +1187,14 @@ public void actualizarCustodio(){
         tab_tabla.getColumna("valor_depreciado_acafi").setValorDefecto("0");
         tab_tabla.getColumna("valor_depreciado_acafi").setEtiqueta();
         tab_tabla.getColumna("valor_depreciado_acafi").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");
-        tab_tabla.getColumna("ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba");
+        tab_tabla.getColumna("ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba is null order by codigo_acuba");
         tab_tabla.getColumna("act_ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba");
-        tab_tabla.getColumna("act_ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo order by codigo_acuba");
+        tab_tabla.getColumna("ide_acuba").setMetodoChange("filtraArea");
         tab_tabla.getColumna("ide_cndpc").setCombo("select ide_cndpc,codig_recur_cndpc,nombre_cndpc from con_det_plan_cuen order by codig_recur_cndpc");
         tab_tabla.getColumna("ide_cndpc").setAutoCompletar();
 
         tab_tabla.getColumna("ide_acuba").setRequerida(true);
-        tab_tabla.getColumna("ide_acuba").setMetodoChange("generarCodigoBarras");
+        //tab_tabla.getColumna("ide_acuba").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("serie_acafi").setRequerida(false);///antes true
         tab_tabla.getColumna("nombre_acafi").setRequerida(false);
         tab_tabla.getColumna("ide_inarti").setRequerida(true);
