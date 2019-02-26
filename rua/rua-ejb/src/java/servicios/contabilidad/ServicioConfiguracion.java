@@ -166,7 +166,7 @@ public class ServicioConfiguracion {
     }
 
     public String getSqlAsientosTipo() {
-        return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a INNER JOIN sis_modulo b on a.ide_modu=b.ide_modu and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");//!!!!!***AGREAGAR MULTIEMPRESA
+        return "SELECT ide_conac,detalle_conac,nom_modu FROM cont_nombre_asiento_contable a LEFT JOIN sis_modulo b on a.ide_modu=b.ide_modu and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");//!!!!!***AGREAGAR MULTIEMPRESA
     }
 
     public TablaGenerica getCuentasAsientoTipo(String ide_conac) {
