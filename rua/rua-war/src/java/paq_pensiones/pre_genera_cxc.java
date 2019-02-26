@@ -56,6 +56,7 @@ public class pre_genera_cxc extends Pantalla {
                 tabla.ejecutarSql();
                 ser_factura.generarModificarTransaccionFactura(tabla);
             }
+            guardarPantalla();
         }
     }
 
