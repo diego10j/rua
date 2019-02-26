@@ -639,21 +639,21 @@ public class AsientoContable extends Dialogo {
     public void verAsientoContable(String ide_cnccc) {
         Map parametros_rep = new HashMap();
         vpd_asiento.setTitle("ASIENTO CONTABLE N. " + ide_cnccc);
-        String usuario=utilitario.getVariable("NICK");
-        String factura_imprime="-1";
-        String tipo_transaccion_imprime="-1";
-        String tipo_transaccion_imprime_cheque="-1";
+        String usuario = utilitario.getVariable("NICK");
+        String factura_imprime = "-1";
+        String tipo_transaccion_imprime = "-1";
+        String tipo_transaccion_imprime_cheque = "-1";
 
-        if(utilitario.getVariable("p_cxp_imprime_factura")!=null){
-            factura_imprime=utilitario.getVariable("p_cxp_imprime_factura");
+        if (utilitario.getVariable("p_cxp_imprime_factura") != null) {
+            factura_imprime = utilitario.getVariable("p_cxp_imprime_factura");
         }
-        if(utilitario.getVariable("p_cxp_tipo_trans_factura_imp")!=null){
-            tipo_transaccion_imprime=utilitario.getVariable("p_cxp_tipo_trans_factura_imp");
+        if (utilitario.getVariable("p_cxp_tipo_trans_factura_imp") != null) {
+            tipo_transaccion_imprime = utilitario.getVariable("p_cxp_tipo_trans_factura_imp");
         }
-        if(utilitario.getVariable("p_cxp_tipo_trans_factura_che")!=null){
-            tipo_transaccion_imprime_cheque=utilitario.getVariable("p_cxp_tipo_trans_factura_che");
+        if (utilitario.getVariable("p_cxp_tipo_trans_factura_che") != null) {
+            tipo_transaccion_imprime_cheque = utilitario.getVariable("p_cxp_tipo_trans_factura_che");
         }
-        String reporte="";
+        String reporte = "";
 
         if (reporteComprobante == 1) {
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
@@ -695,7 +695,7 @@ public class AsientoContable extends Dialogo {
                 parametros_rep.put("p_identificacion", "");
             }
             String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
-             reporte="rep_contabilidad/rep_cheque.jasper";
+            reporte = "rep_contabilidad/rep_cheque.jasper";
             String nom_rep = "Cheque";
             if (p_con_repo_nivel != null) {
                 if (p_con_repo_nivel.equalsIgnoreCase("true")) {
@@ -703,7 +703,7 @@ public class AsientoContable extends Dialogo {
                     reporte = utilitario.getPathReporteVisualizador(nom_rep);
                 }
             }
-            System.out.println("parametros cheque "+parametros_rep);
+            System.out.println("parametros cheque " + parametros_rep);
             vpd_asiento.setVisualizarPDF(reporte, parametros_rep);
 
         }
@@ -740,24 +740,22 @@ public class AsientoContable extends Dialogo {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario               
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ") AND ide_cnccc is null");
                 utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cccfa in(" + relacion + ") and numero_pago_ccdtr=0 AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cccfa in(" + relacion + ")) and ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cccfa in(" + relacion + ")) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.DOCUMENTOS_CXP.getCodigo())) {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario                             
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") AND ide_cnccc is null");
                 utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_cpcfa in(" + relacion + ") and numero_pago_cpdtr=0 AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in(" + relacion + ")) and ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in(" + relacion + ") ) and ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in(" + relacion + ")) and ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in(" + relacion + ") ) and ide_cnccc is null");
             } else if (tipo.equals(TipoAsientoEnum.LIBRO_BANCOS.getCodigo())) {
                 //Asigna el ide_cnccc a la  facturas, documentos cxp,transaccion cxc o cxp y al libro bancos               
-                utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
-                utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
-
-                utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
-
-                utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
+                utilitario.getConexion().ejecutarSql("UPDATE tes_cab_libr_banc SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") ");
+                utilitario.getConexion().ejecutarSql("UPDATE cxc_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") and ide_cnccc is null and numero_pago_ccdtr>0");
+                utilitario.getConexion().ejecutarSql("UPDATE cxp_detall_transa SET ide_cnccc=" + ide_cnccc + " WHERE ide_teclb in(" + relacion + ") and ide_cnccc is null and numero_pago_cpdtr>0");
+                //utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur set ide_cnccc =" + ide_cnccc + " where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE cxc_cabece_factura set ide_cnccc =" + ide_cnccc + " where ide_cccfa in (select ide_cccfa from cxc_detall_transa where ide_teclb in (" + relacion + ")) AND ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
+                //utilitario.getConexion().ejecutarSql("UPDATE inv_cab_comp_inve SET ide_cnccc=" + ide_cnccc + " WHERE ide_incci in(select ide_incci from inv_det_comp_inve where ide_cpcfa in (select ide_cpcfa from cxp_detall_transa where ide_teclb in (" + relacion + ")) ) and ide_cnccc is null");
 
             } else if (tipo.equals(TipoAsientoEnum.NOTAS_CREDITO_CXC.getCodigo())) {
                 //Asigna el ide_cnccc a la factura y a la transaccion cxc  y comp inventario               
@@ -992,7 +990,7 @@ public class AsientoContable extends Dialogo {
             if (tab_fac.getTotalFilas() == 1) {
                 //una
                 tab_cabe_asiento.setValor("ide_geper", tab_fac.getValor("ide_geper"));
-                tab_cabe_asiento.setValor("observacion_cnccc",tab_fac.getValor("observacion_cpcfa"));
+                tab_cabe_asiento.setValor("observacion_cnccc", tab_fac.getValor("observacion_cpcfa"));
             } else { //varias
                 String str_observa = "V/. FACTURAS N.";
                 boolean boo_mismo_clie = true; //si es el mismo cliente todos los seleccionados
