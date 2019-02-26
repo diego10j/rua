@@ -682,6 +682,8 @@ public class ServicioTesoreria {
         if (tab_busca.getTotalFilas() > 0) {
             utilitario.getConexion().agregarSqlPantalla("update con_cab_comp_cont set ide_cneco=" + p_con_estado_comprobante_anulado + " where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
             utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+            utilitario.getConexion().agregarSqlPantalla("UPDATE cxc_cabece_factura set ide_cnccc=Null where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
+            utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_cabece_factur set ide_cnccc=Null where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
         }
         //eliminar pago y cobro sea el caso
         utilitario.getConexion().agregarSqlPantalla("delete from cxc_detall_transa where ide_teclb=" + ide_teclb + " and numero_pago_ccdtr >0 ");
