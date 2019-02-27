@@ -122,11 +122,11 @@ public class cls_retenciones {
             for (int j = 0; j < tab_detalle_factura.getTotalFilas(); j++) {
                 if (es_venta) {
                     if (casillero.equals(conta.buscarParametroProducto("ide_cncim", "RETENCION RENTA POR COBRAR", tab_detalle_factura.getValor(j, "ide_inarti")))) {
-                        suma = Double.parseDouble(tab_detalle_factura.getValor(j, "total_ccdfa")) + suma;
+                        suma = Double.parseDouble(utilitario.getFormatoNumero(tab_detalle_factura.getValor(j, "total_ccdfa"))) + suma;
                     }
                 } else {
                     if (casillero.equals(conta.buscarParametroProducto("ide_cncim", "RETENCION RENTA POR PAGAR", tab_detalle_factura.getValor(j, "ide_inarti")))) {
-                        suma = Double.parseDouble(tab_detalle_factura.getValor(j, "valor_cpdfa")) + suma;
+                        suma = Double.parseDouble(utilitario.getFormatoNumero(tab_detalle_factura.getValor(j, "valor_cpdfa"))) + suma;
                     }
                 }
             }
