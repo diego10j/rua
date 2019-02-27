@@ -14,6 +14,7 @@ import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
+import framework.componentes.BotonesCombo;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
@@ -715,6 +716,37 @@ public class pre_facturasCxC extends Pantalla {
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
+        
+        /*
+       Boton bot_todos = new Boton();
+       bot_todos.setMetodo("seleccionarTod");
+       bot_todos.setValue("Seleccionar Todo");
+       bot_todos.setIcon("ui-icon-check");
+       bar_menu.agregarComponente(bot_todos);
+        */
+        // boton seleccion inversa
+            BotonesCombo boc_seleccion_inversa = new BotonesCombo();
+            ItemMenu itm_todas = new ItemMenu();
+            ItemMenu itm_niguna = new ItemMenu();
+
+            itm_todas.setValue("Seleccion Inversa");
+            itm_todas.setIcon("ui-icon-circle-check");
+            itm_todas.setMetodo("seleccinarInversa");
+            itm_todas.setUpdate("tab_seleccion");
+            boc_seleccion_inversa.agregarBoton(itm_todas);
+            
+            boc_seleccion_inversa.setValue("Selección Todo");
+            boc_seleccion_inversa.setIcon("ui-icon-check");
+            boc_seleccion_inversa.setMetodo("seleccionarTodas");
+            boc_seleccion_inversa.setUpdate("tab_seleccion");
+
+            itm_niguna.setValue("Seleccionar Ninguna");
+            itm_niguna.setIcon("ui-icon-minus");
+            itm_niguna.setMetodo("seleccionarNinguna");
+            itm_niguna.setUpdate("tab_seleccion");
+            bar_menu.agregarComponente(boc_seleccion_inversa);
+            
+            
         Boton bot_asi = new Boton();
         bot_asi.setValue("Generar Asiento Contable");
         bot_asi.setMetodo("abrirGeneraAsiento");
@@ -760,7 +792,15 @@ public class pre_facturasCxC extends Pantalla {
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
-
+public void seleccionarTod(){
+    tab_tabla.setSeleccionados(null);
+    Fila seleccionados[]= new Fila[tab_tabla.getTotalFilas()];
+    for(int i=0; i< tab_tabla.getFilas().size();i++){
+        seleccionados[i]=tab_tabla.getFilas().get(i);
+    }
+    tab_tabla.setSeleccionados(seleccionados);
+    utilitario.addUpdate("tab_seleccion");
+}
     public void sumarSeleccionNoConta() {
         double dou_suma = 0;
         for (Fila actual : tab_tabla.getSeleccionados()) {
@@ -1333,7 +1373,52 @@ public class pre_facturasCxC extends Pantalla {
             utilitario.agregarMensajeError("Debe ingresar el Número Secuencial de la Factura", "");
         }
     }
+public void seleccionarTodas() {
+        tab_tabla.setSeleccionados(null);
+        Fila seleccionados[] = new Fila[tab_tabla.getTotalFilas()];
+        for (int i = 0; i < tab_tabla.getFilas().size(); i++) {
+            seleccionados[i] = tab_tabla.getFilas().get(i);
+        }
+        tab_tabla.setSeleccionados(seleccionados);
+        //calculoTotal();
+        sumarSeleccionNoConta();
+    }
+public void seleccinarInversa() {
+        if (tab_tabla.getSeleccionados() == null) {
+            seleccionarTodas();
+        } else if (tab_tabla.getSeleccionados().length == tab_tabla.getTotalFilas()) {
+            seleccionarNinguna();
+        } else {
+            Fila seleccionados[] = new Fila[tab_tabla.getTotalFilas() - tab_tabla.getSeleccionados().length];
+            int cont = 0;
+            for (int i = 0; i < tab_tabla.getFilas().size(); i++) {
+                boolean boo_selecionado = false;
+                for (int j = 0; j < tab_tabla.getSeleccionados().length; j++) {
+                    if (tab_tabla.getSeleccionados()[j].equals(tab_tabla.getFilas().get(i))) {
+                        boo_selecionado = true;
+                        break;
+                    }
+                }
+                if (boo_selecionado == false) {
+                    seleccionados[cont] = tab_tabla.getFilas().get(i);
+                    cont++;
+                }
+            }
+            tab_tabla.setSeleccionados(seleccionados);
+        }
+        //calculoTotal();
+        //sumarSeleccionNoConta();
 
+    }
+
+    public void seleccionarNinguna() {
+        tab_tabla.setSeleccionados(null);
+        //txt_total.setValue(utilitario.getFormatoNumero(0,2));
+        //utilitario.addUpdate("txt_total");
+        
+    }
+    
+    
     @Override
     public void eliminar() {
     }
