@@ -182,10 +182,10 @@ public class pre_proforma extends Pantalla {
               suma=valor_precio*valor_unitario;
               
 
-              tab_detalle_proforma.setValor("valor_total_prdep", utilitario.getFormatoNumero(suma, 2)+""); 
+              tab_detalle_proforma.setValor("valor_total_prdep", utilitario.getFormatoNumero(suma, 4)+""); 
               utilitario.addUpdateTabla(tab_detalle_proforma, "valor_total_prdep","");
               subtotal=Double.parseDouble(tab_detalle_proforma.getSumaColumna("valor_total_prdep")+"");
-              tab_proforma.setValor("subtotal_prpro",utilitario.getFormatoNumero(subtotal, 2)+"");
+              tab_proforma.setValor("subtotal_prpro",utilitario.getFormatoNumero(subtotal, 4)+"");
               utilitario.addUpdateTabla(tab_proforma, "subtotal_prpro","");
               CalcularTotales();
               

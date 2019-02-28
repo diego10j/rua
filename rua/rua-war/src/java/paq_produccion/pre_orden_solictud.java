@@ -32,11 +32,8 @@ import paq_produccion.ejb.ServicioProduccion;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
 
-/**
- *
- * @author Nicolas Cajilema
- */
-public class pre_orden extends Pantalla {
+
+public class pre_orden_solictud extends Pantalla {
 
     private Tabla tab_orden_produccion = new Tabla();
     private Tabla tab_detalle_orden = new Tabla();
@@ -84,84 +81,124 @@ public class pre_orden extends Pantalla {
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
            private VisualizarPDF vipdf_orden_produccion = new VisualizarPDF(); 
     
-    public pre_orden() {
+    public pre_orden_solictud() {
         //  bar_botones.limpiar();
-        //  bar_botones.agregarReporte();
-        bar_botones.agregarComponente(new Etiqueta("ING.ORDEN PRODUCCIÓN"));
-        aut_ord_produ.setId("aut_ord_produ");
-        aut_ord_produ.setAutoCompletar(ser_produccion.getOrdenPro());
-        //aut_ord_produ.setMetodoChange("seleccionoAutocompletar");
-        aut_ord_produ.setMetodoChangeRuta("pre_index.clase.seleccionoAutocompletar");
-        //aut_ord_produ.setSize(35);
+        
 
-        bar_botones.agregarComponente(aut_ord_produ);
-        Boton bot_clean = new Boton();
-        bot_clean.setIcon("ui-icon-cancel");
-        bot_clean.setTitle("Limpiar");
-        bot_clean.setMetodo("limpiar");
-        bar_botones.agregarComponente(bot_clean);
-
-        menup.setMenuPanel("MENÚ PRODUCCIÓN", "18%");
-        menup.setTransient(true);
-        menup.agregarItem("Orden de Producción", "dibujaOrden", "ui-icon-cart");
-        menup.agregarItem("Control de Producción", "dibujaControl", "ui-icon-home");
-        menup.agregarItem("Solicitud de Material", "dibujaSolicitud", "ui-icon-document");
-        menup.agregarItem("Agregar Proforma / Orden", "dibujaProforma", "ui-icon-note");
-        agregarComponente(menup);
         
         vipdf_orden_produccion.setId("vipdf_orden_produccion");
-        vipdf_orden_produccion.setTitle("ORDEN DE PRODUCCION");
+        vipdf_orden_produccion.setTitle("SOLICTUD DE MATERIAL");
         agregarComponente(vipdf_orden_produccion);
         
         Boton bot_imprimir_nota = new Boton();
-        bot_imprimir_nota.setValue("IMPRIMIR ORDEN");
+        bot_imprimir_nota.setValue("IMPRIMIR SOLICITUD MATERIAL");
         bot_imprimir_nota.setIcon("ui-icon-print");
         bot_imprimir_nota.setMetodo("generarPDForden");
         bar_botones.agregarBoton(bot_imprimir_nota);
         
-        agregarComponente(menup);
+        tab_orden_produccion.setId("tab_orden_produccion");
+        tab_orden_produccion.setTabla("prod_orden_produccion", "ide_prorp", 1);
+        tab_orden_produccion.setCampoOrden("numero_prorp desc");
+        tab_orden_produccion.getColumna("ide_gtemp").setCombo(ser_cargoempleado.getSQLEmpleadosActivos());
+        tab_orden_produccion.getColumna("ide_gtemp").setAutoCompletar();
+        tab_orden_produccion.getColumna("ide_gtemp").setVisible(false);
+        tab_orden_produccion.getColumna("ide_gtcar").setVisible(false);
+        tab_orden_produccion.getColumna("ide_prtio").setVisible(false);
+        tab_orden_produccion.getColumna("fecha_emision_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("hora_registro_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("LOGO_PRORP").setVisible(false);
+        tab_orden_produccion.getColumna("NUMERACION_PRORP").setVisible(false);
+        tab_orden_produccion.getColumna("SOLITADO_POR_PRORP").setVisible(false);
+        //tab_orden_produccion.getColumna("ide_geper").setEstilo("width: 20px;");
+        tab_orden_produccion.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
+        tab_orden_produccion.getColumna("ide_geper").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
+        tab_orden_produccion.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado());
+        tab_orden_produccion.getColumna("numero_prorp").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
+        tab_orden_produccion.getColumna("numero_prorp").setEtiqueta();//etiqueta numero_modulo_prorp
+        tab_orden_produccion.getColumna("ide_prtio").setCombo(ser_produccion.getTipoOrden());
+        tab_orden_produccion.getColumna("fecha_emision_prorp").setValorDefecto(utilitario.getFechaActual());
+        tab_orden_produccion.getColumna("hora_registro_prorp").setValorDefecto(utilitario.getHoraActual());
+         tab_orden_produccion.setTipoFormulario(true);
+        tab_orden_produccion.getGrid().setColumns(8);
+        tab_orden_produccion.agregarRelacion(tab_solicitud);
+        tab_orden_produccion.setHeader("ORDEN PRODUCCION");
+        tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEtiqueta();//etiqueta
+        tab_orden_produccion.getColumna("TOTAL_PRODUCION_PRORP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//EstilO
+        tab_orden_produccion.getColumna("fecha_terminado_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("hora_terminado_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("detalle_produccion_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("fecha_estimada_entrega_prorp").setVisible(false);
+        tab_orden_produccion.getColumna("IDE_GEPER").setLectura(true);
+        tab_orden_produccion.getColumna("OBSERVACION_PRORP").setLectura(true);
+        tab_orden_produccion.getColumna("OBSERVACION_PRORP").setEtiqueta();
+        tab_orden_produccion.getColumna("logo_prorp").setValorDefecto("N/A");
+        tab_orden_produccion.getColumna("numeracion_prorp").setValorDefecto("N/A");
+        //tab_orden_produccion.setRecuperarLectura(true);
+        tab_orden_produccion.dibujar();
 
-        Boton bot_anular = new Boton();
-        bot_anular.setIcon("ui-icon-search");
-        bot_anular.setValue("IMPRIMIR REPORTES");
-        bot_anular.setMetodo("abrirListaReportes");
+        PanelTabla pat_orden_produccion = new PanelTabla();
+        pat_orden_produccion.setId("pat_orden_produccion");
+        pat_orden_produccion.setPanelTabla(tab_orden_produccion);
 
-        //  bar_botones.agregarBoton(bot_anular);
-        rep_reporte.setId("rep_reporte");
-        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
-        agregarComponente(rep_reporte);
-        bar_botones.agregarReporte();
-        sel_rep.setId("sel_rep");
-        agregarComponente(sel_rep);
-        agregarComponente(rep_reporte);
+        
+        
+            tab_solicitud.setId("tab_solicitud");
+            tab_solicitud.setTabla("prod_solicitud", "ide_prsol", 2);
+            tab_solicitud.getColumna("ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
+            tab_solicitud.setCampoOrden("numero_secuencial_prsol desc");
+            tab_solicitud.getColumna("numero_secuencial_prsol").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
+            tab_solicitud.getColumna("numero_secuencial_prsol").setEtiqueta();//etiqueta
+            tab_solicitud.getColumna("fecha_prsol").setValorDefecto(utilitario.getFechaActual());
+            tab_solicitud.getColumna("hora_prsol").setValorDefecto(utilitario.getHoraActual());
+            tab_solicitud.getColumna("total_inyector_prsol").setValorDefecto("0.00");
+            tab_solicitud.getColumna("total_inyector_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            tab_solicitud.getColumna("total_inyector_prsol").setEtiqueta();//etiqueta
+            tab_solicitud.getColumna("peso_pieza_prsol").setValorDefecto("0");
+            tab_solicitud.getColumna("peso_pieza_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            tab_solicitud.getColumna("peso_unidad_prsol").setValorDefecto("0");
+            tab_solicitud.getColumna("peso_unidad_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            tab_solicitud.getColumna("numero_cavidades_prsol").setValorDefecto("0");
+            tab_solicitud.getColumna("numero_cavidades_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            tab_solicitud.getColumna("hora_prsol").setLectura(true);
+            tab_solicitud.getColumna("peso_pieza_prsol").setMetodoChange("calculaInyectar");
+            
+            tab_solicitud.getColumna("limpia_canion_prsol").setValorDefecto("0.00");
+            tab_solicitud.getColumna("limpia_canion_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            tab_solicitud.getColumna("limpia_canion_prsol").setEtiqueta();//etiqueta
+            tab_solicitud.getColumna("ramal_prsol").setValorDefecto("0.00");
+            tab_solicitud.getColumna("ramal_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            tab_solicitud.getColumna("ramal_prsol").setEtiqueta();//etiqueta
+            tab_solicitud.getColumna("total_inyecta_uni_prsol").setValorDefecto("0.00");
+            tab_solicitud.getColumna("total_inyecta_uni_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            tab_solicitud.getColumna("total_inyecta_uni_prsol").setEtiqueta();//etiqueta
+            //tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
+            tab_solicitud.setTipoFormulario(true);
+            tab_solicitud.getGrid().setColumns(6);
+            tab_solicitud.agregarRelacion(tab_detalle_solicitud);
+            tab_solicitud.dibujar();
+            PanelTabla pat_solicitud = new PanelTabla();
+            pat_solicitud.setId("pat_solicitud");
+            pat_solicitud.setPanelTabla(tab_solicitud);
 
-        sel_tab_proforma.setId("sel_tab_proforma");
-        sel_tab_proforma.setTitle("PROFORMA");
-        sel_tab_proforma.setSeleccionTabla(ser_produccion.getProforma(), "ide_prpro");
-        sel_tab_proforma.setWidth("80%");
-        sel_tab_proforma.setHeight("70%");
-        sel_tab_proforma.setRadio();
-        sel_tab_proforma.getBot_aceptar().setMetodo("aceptarProforma");
-        agregarComponente(sel_tab_proforma);
-        dibujaOrden();
-
-        /*    sel_tab_orden_pro.setId("sel_tab_orden_pro");
-          sel_tab_orden_pro.setTitle("ORDENES DE PRODUCCIÓN");
-         // sel_tab_orden_pro.setSeleccionTabla(ser_produccion.getSqlOrdenesProduccion("", "1"), "ide_prord");
-//          sel_tab_orden_pro.getTab_seleccion().getColumna("numero_prorp").setFiltroContenido();
-//          sel_tab_orden_pro.getTab_seleccion().getColumna("nom_geper").setFiltroContenido();
-//          sel_tab_orden_pro.getTab_seleccion().getColumna("fecha_emision_prorp").setFiltroContenido();
-          sel_tab_orden_pro.setWidth("80%");
-          sel_tab_orden_pro.setHeight("70%");
-          sel_tab_orden_pro.setRadio();
-          sel_tab_orden_pro.getBot_aceptar().setMetodo("aceptarOrdenProduccion");
-          sel_tab_orden_pro.getTab_seleccion().getColumna("ide_inarti").setVisible(false);
-          sel_tab_orden_pro.getTab_seleccion().getColumna("ide_prorp").setVisible(false);
-          agregarComponente(sel_tab_orden_pro);*/
-        sel_fechas.setId("sel_fechas");
-        sel_fechas.getBot_aceptar().setMetodo("aceptarReporte");
-        sel_fechas.setFechaActual();
-        agregarComponente(sel_fechas);
+         
+            tab_detalle_solicitud.setId("tab_detalle_solicitud");
+            tab_detalle_solicitud.setTabla("prod_detalle_solicitud", "ide_prdes", 3);
+            tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+            tab_detalle_solicitud.getColumna("ide_inarti").setAutoCompletar();
+            tab_detalle_solicitud.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+            tab_detalle_solicitud.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+            tab_detalle_solicitud.getColumna("inyectar_prdes").setValorDefecto("true");
+            tab_detalle_solicitud.getColumna("cantidad_prdes").setMetodoChange("calculaRemanente");
+            tab_detalle_solicitud.getColumna("ide_inuni").setAncho(10);
+            tab_detalle_solicitud.dibujar();
+            PanelTabla pat_detalle_solicitud = new PanelTabla();
+            pat_detalle_solicitud.setId("pat_detalle_solicitud");
+            pat_detalle_solicitud.setPanelTabla(tab_detalle_solicitud);
+            
+            Division div_solcitud = new Division();
+            div_solcitud.setId("div_solcitud");
+            div_solcitud.dividir3(pat_orden_produccion, pat_solicitud, pat_detalle_solicitud, "20%", "40%", "H");
+            agregarComponente(div_solcitud);
       }
      
       public void dibujaProforma(){
@@ -424,12 +461,12 @@ public class pre_orden extends Pantalla {
         String usuario = utilitario.getVariable("NICK");
         if (tab_orden_produccion.getValorSeleccionado() != null) {
             Map parametros = new HashMap();
-            parametros.put("pide_orden", Integer.parseInt(tab_orden_produccion.getValorSeleccionado()));
+            parametros.put("pide_solicitud", Integer.parseInt(tab_solicitud.getValorSeleccionado()));
             parametros.put("pide_version", utilitario.getVariable("p_prod_version_documento"));
             parametros.put("pide_fecha", utilitario.getVariable("p_prod_fecha_documento"));
             parametros.put("p_usuario", utilitario.getVariable("NICK"));
             parametros.put("nombre", usuario);
-            vipdf_orden_produccion.setVisualizarPDF("rep_produccion/rep_orden_produccion.jasper", parametros);
+            vipdf_orden_produccion.setVisualizarPDF("rep_produccion/rep_solicitud_material.jasper", parametros);
             vipdf_orden_produccion.dibujar();
             utilitario.addUpdate("vipdf_orden_produccion");
         } else {
@@ -437,6 +474,9 @@ public class pre_orden extends Pantalla {
         }
     }
 
+    
+    
+    
     public void calculaTotalBultos(AjaxBehaviorEvent evt) {
         tab_detalle_orden.modificar(evt);
 
@@ -462,52 +502,7 @@ public class pre_orden extends Pantalla {
             valor_producir = tab_datos_produccion.getValor("total_producion_prorp");
             int_opcion = 4;
             tab_solicitud = new Tabla();
-            tab_solicitud.setId("tab_solicitud");
-            tab_solicitud.setTabla("prod_solicitud", "ide_prsol", 6);
-            tab_solicitud.setCondicion("ide_prorp=" + aut_ord_produ.getValor());
-            tab_solicitud.getColumna("ide_prorp").setVisible(false);
-            tab_solicitud.getColumna("ide_gtemp").setCombo(ser_adquisiciones.getDatosEmpleado());
-            tab_solicitud.getColumna("numero_secuencial_prsol").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//etiqueta
-            tab_solicitud.getColumna("numero_secuencial_prsol").setEtiqueta();//etiqueta
-            tab_solicitud.getColumna("fecha_prsol").setValorDefecto(utilitario.getFechaActual());
-            tab_solicitud.getColumna("hora_prsol").setValorDefecto(utilitario.getHoraActual());
-            tab_solicitud.getColumna("total_inyector_prsol").setValorDefecto("0.00");
-            tab_solicitud.getColumna("total_inyector_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
-            tab_solicitud.getColumna("total_inyector_prsol").setEtiqueta();//etiqueta
-            tab_solicitud.getColumna("peso_pieza_prsol").setValorDefecto("0");
-            tab_solicitud.getColumna("peso_pieza_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
-            tab_solicitud.getColumna("peso_unidad_prsol").setValorDefecto("0");
-            tab_solicitud.getColumna("peso_unidad_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
-            tab_solicitud.getColumna("numero_cavidades").setValorDefecto("0");
-            tab_solicitud.getColumna("numero_cavidades").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
-            tab_solicitud.getColumna("numero_cavidades").setMetodoChange("calculaValoreSolicitud");
-            //tab_solicitud.getColumna("fecha_prsol").setLectura(true);
-            tab_solicitud.getColumna("hora_prsol").setLectura(true);
-            //tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
-            tab_solicitud.setHeader("TOTAL A PRODUCIR: " + valor_producir);
-            tab_solicitud.setTipoFormulario(true);
-            tab_solicitud.getGrid().setColumns(4);
-            tab_solicitud.agregarRelacion(tab_detalle_solicitud);
-            tab_solicitud.dibujar();
-            PanelTabla pat_solicitud = new PanelTabla();
-            pat_solicitud.setId("pat_solicitud");
-            pat_solicitud.setPanelTabla(tab_solicitud);
-            gru_grupo.getChildren().add(pat_solicitud);
-            gru_grupo.getChildren().add(new Separator());
             
-            tab_detalle_solicitud = new Tabla();
-            tab_detalle_solicitud.setId("tab_detalle_solicitud");
-            tab_detalle_solicitud.setTabla("prod_detalle_solicitud", "ide_prdes", 7);
-            tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
-            tab_detalle_solicitud.getColumna("ide_inarti").setAutoCompletar();
-            tab_detalle_solicitud.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
-            tab_detalle_solicitud.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
-            tab_detalle_solicitud.dibujar();
-            PanelTabla pat_detalle_solicitud = new PanelTabla();
-            pat_detalle_solicitud.setId("pat_detalle_solicitud");
-            pat_detalle_solicitud.setPanelTabla(tab_detalle_solicitud);
-
-            gru_grupo.getChildren().add(pat_detalle_solicitud);
             menup.dibujar(4,"fa fa-list-ul", "SOLICITUD DE MATERIAL", gru_grupo, true);
 
         } else {
@@ -516,20 +511,63 @@ public class pre_orden extends Pantalla {
 
     }
 
-    public void calculaValoreSolicitud(AjaxBehaviorEvent evt) {
+    public void calculaRemanente(AjaxBehaviorEvent evt) {
         tab_solicitud.modificar(evt);
         try {
+            double total_inyectar_prima=0;
+            double cantidad=0;
+            double limpia_canion=0;
+            double total_m_inyecta=0;
+            double total_producir=0;
+            double total_ramal=0;
+            for(int i=0;i<tab_detalle_solicitud.getTotalFilas();i++){
+                if(tab_detalle_solicitud.getValor(i, "inyectar_prdes").equals("true")){
+                    cantidad=Double.parseDouble(tab_detalle_solicitud.getValor(i, "cantidad_prdes"));
+                    total_inyectar_prima=total_inyectar_prima+cantidad;
+                }
+            }
+            
+            total_m_inyecta=Double.parseDouble(tab_solicitud.getValor("total_inyector_prsol"));
+            limpia_canion=total_inyectar_prima-total_m_inyecta;
+            
+            total_producir=Double.parseDouble(tab_orden_produccion.getValor("total_producion_prorp"));
             peso_x_pieza = Double.parseDouble(tab_solicitud.getValor("peso_pieza_prsol"));
-            num_cavidades = Double.parseDouble(tab_solicitud.getValor("numero_cavidades"));
-            dou_valor_producir = Double.parseDouble(valor_producir);
-            total_inyectar = (peso_x_pieza * dou_valor_producir) / num_cavidades;
-            tab_solicitud.setValor("total_inyector_prsol", utilitario.getFormatoNumero(total_inyectar, 2));//cuado quiera sumar las columnas solo getsumacolum
+            num_cavidades = Double.parseDouble(tab_solicitud.getValor("numero_cavidades_prsol"));
+            
+            double ramal_previo=0;
+            double peso_x_unidad=0;
+            
+            peso_x_unidad =Double.parseDouble(tab_solicitud.getValor("peso_unidad_prsol"));
+            
+            ramal_previo=(total_producir*peso_x_unidad)*num_cavidades;
+            total_ramal=(peso_x_pieza-(peso_x_unidad*num_cavidades))*total_producir;
+            
+            tab_solicitud.setValor("total_inyecta_uni_prsol", utilitario.getFormatoNumero(ramal_previo, 4));//cuado quiera sumar las columnas solo getsumacolum
+            tab_solicitud.setValor("ramal_prsol", utilitario.getFormatoNumero(total_ramal, 4));//cuado quiera sumar las columnas solo getsumacolum
+            tab_solicitud.setValor("limpia_canion_prsol", utilitario.getFormatoNumero(limpia_canion, 4));//cuado quiera sumar las columnas solo getsumacolum
             tab_solicitud.modificar(tab_solicitud.getFilaActual());
             utilitario.addUpdate("tab_solicitud");
         } catch (Exception e) {
         }
     }
-
+public void calculaInyectar(AjaxBehaviorEvent evt) {
+        tab_solicitud.modificar(evt);
+        double total_mp_inyectar=0;
+                double producir=0;
+                double peso_x_pieza=0;
+                try{
+                  
+                    
+                    producir=Double.parseDouble(tab_orden_produccion.getValor("total_producion_prorp"));
+                    peso_x_pieza=Double.parseDouble(tab_solicitud.getValor("peso_pieza_prsol"));
+                    total_mp_inyectar=producir*peso_x_pieza;
+                }
+                catch(Exception e){
+                    System.out.println("Eroor calculo "+e);
+                }
+                tab_solicitud.setValor("total_inyector_prsol",utilitario.getFormatoNumero(total_mp_inyectar, 4));
+                utilitario.addUpdateTabla(tab_solicitud, "total_inyector_prsol", "");
+    }
     @Override
     public void abrirListaReportes() {
 //Se ejecuta cuando da click en el boton de Reportes de la Barra 
@@ -613,117 +651,46 @@ public class pre_orden extends Pantalla {
     @Override
 
     public void insertar() {
-        if (int_opcion == 1) {
-            if (tab_orden_produccion.isFocus()) {
-                tab_orden_produccion.insertar();
-                TablaGenerica tab_secuencial = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_sec_orden_producion")));
-                TablaGenerica numero_secuencial = utilitario.consultar(ser_produccion.getNumeroSecuencial("numero_prorp", "prod_orden_produccion"));
-                tab_orden_produccion.setValor("numero_prorp", numero_secuencial.getValor("numero"));
-                // tab_orden_produccion.setValor("numero_modulo_prorp", tab_secuencial.getValor("nuevo_secuencial"));
-            } else if (tab_detalle_orden.isFocus()) {
-                tab_detalle_orden.insertar();
 
-            }
-
-        }
-
-        if (int_opcion == 2) {
-            if (tab_detalle_orden_control.isFocus()) {
-                tab_detalle_orden_control.insertar();
-                //TablaGenerica tab_secuencial=utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_control_produccion")));
-
-            } else if (tab_control_produccion.isFocus()) {
-                tab_control_produccion.insertar();
-            }
-        }
-        if (int_opcion == 3) {
-            if (tab_proforma_orden.isFocus()) {
-                tab_proforma_orden.insertar();
-                tab_proforma_orden.setValor("ide_prorp", aut_ord_produ.getValor());
-                utilitario.addUpdate("tab_proforma_orden");
-            }
-        }
-        if (int_opcion == 4) {
             if (tab_solicitud.isFocus()) {
-                tab_solicitud.insertar();
-                tab_solicitud.setValor("ide_prorp", aut_ord_produ.getValor());
+                tab_solicitud.insertar();                
                 TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_prod_num_mod_solicitud_material")));
                 String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
                 tab_solicitud.setValor("numero_secuencial_prsol", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano"))) + tab_secuen.getValor("nuevo_secuencial"));
             } else if (tab_detalle_solicitud.isFocus()) {
                 tab_detalle_solicitud.insertar();
             }
-        }
+        
     }
 
     @Override
     public void guardar() {
-        if (int_opcion == 1) {
-            if (tab_orden_produccion.guardar()) {
-                // utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_sec_orden_pro")));
-                tab_detalle_orden.guardar();
-                guardarPantalla();
-            }
-            aut_ord_produ.actualizar();
-        }
-
-        else if (int_opcion == 2) {
-            if (tab_control_produccion.isFocus()) {
-                tab_control_produccion.guardar();
-                guardarPantalla();
-            } else if (tab_detalle_control_prod.isFocus()) {
-                tab_detalle_control_prod.guardar();
-                guardarPantalla();
-            }
-        }
-        else if (int_opcion == 3) {
-            if (tab_proforma_orden.isFocus()) {
-                tab_proforma_orden.guardar();
-                guardarPantalla();
-            }
-        }
-        else if (int_opcion == 4) {
-            if (tab_solicitud.isFocus()) {
-                tab_solicitud.guardar();
-                guardarPantalla();
+       
+            if (tab_solicitud.guardar()){
+                                 //    System.out.println("entre al guardar");
+                if(tab_solicitud.isFilaInsertada()){
+                    // System.out.println("entre al secuencia");
                 utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_prod_num_mod_solicitud_material")));
-            } else if (tab_detalle_solicitud.isFocus()) {
-                tab_detalle_solicitud.guardar();
+                }
+                if(tab_detalle_solicitud.guardar()){
                 guardarPantalla();
+               
+                } 
+                 
             }
-        }
+        
         
     }
 
     @Override
     public void eliminar() {
-        if (int_opcion == 1) {
-            if (tab_orden_produccion.isFocus()) {
-                tab_orden_produccion.eliminar();
-            } else if (tab_detalle_orden.isFocus()) {
-                tab_detalle_orden.eliminar();
-            }
-        }
-
-        if (int_opcion == 2) {
-            if (tab_control_produccion.isFocus()) {
-                tab_control_produccion.eliminar();
-            } else if (tab_detalle_control_prod.isFocus()) {
-                tab_detalle_control_prod.eliminar();
-            }
-        }
-        if (int_opcion == 3) {
-            if (tab_proforma_orden.isFocus()) {
-                tab_proforma_orden.eliminar();
-            }
-        }
-        if (int_opcion == 4) {
+       
             if (tab_solicitud.isFocus()) {
                 tab_solicitud.eliminar();
             } else if (tab_detalle_solicitud.isFocus()) {
                 tab_detalle_solicitud.eliminar();
             }
-        }
+        
     }
 
     public void limpiar() {
