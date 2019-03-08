@@ -767,5 +767,10 @@ public class ServicioFacturaCxC extends ServicioBase {
     public String getIdeGeperTransaccionCXC(String ide_ccctr) {
         return utilitario.consultar("select ide_geper,ide_ccctr from cxc_cabece_transa where ide_ccctr=" + ide_ccctr).getValor("ide_geper");
     }
+public void cancelarFacturaPensiones(String ide_cccfa,String forma_pago,String num_doc,String fecha_pago,String caja,String cajero){
+    utilitario.getConexion().ejecutarSql("update rec_valores\n" +
+                                             "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+forma_pago+", num_titulo_recva = "+num_doc+", fecha_pago_recva = '"+fecha_pago+"', gth_ide_gtemp="+cajero+", ide_cocaj="+caja+"\n" +
+                                             "where ide_titulo_recval in ("+ide_cccfa+")");
 
+}
 }
