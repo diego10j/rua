@@ -199,8 +199,8 @@ public class ServiciosAdquisiones {
     
     public String getUsuarioCaja(String ide_usua){
         String sql="";
-        sql="select a.ide_ademple, cedula_ademple, nombres_ademple, b.detalle_cocaj , c.observacion_ccdaf from adq_empleado a\n" +
-"left join (select ide_cxcaem, a.ide_ademple, b.detalle_cocaj from cxc_caja_empleado a left join cont_caja b on a.ide_cocaj = b.ide_cocaj where activo_cxcaem = true) b on a.ide_ademple = b.ide_ademple\n" +
+        sql="select a.ide_ademple, cedula_ademple, nombres_ademple, b.detalle_cocaj , c.observacion_ccdaf,b.ide_cocaj,a.ide_gtemp from adq_empleado a\n" +
+"left join (select ide_cxcaem, a.ide_ademple, b.detalle_cocaj,b.ide_cocaj from cxc_caja_empleado a left join cont_caja b on a.ide_cocaj = b.ide_cocaj where activo_cxcaem = true) b on a.ide_ademple = b.ide_ademple\n" +
 "left join(select a.ide_ccdaf,b.observacion_ccdaf,a.ide_cxdaem,a.ide_ademple from cxc_dat_fac_emp a left join cxc_datos_fac b  on a.ide_ccdaf =b.ide_ccdaf) c on a.ide_ademple = c.IDE_ADEMPLE \n" +
 "where  ide_usua = "+ide_usua;
         return sql;
