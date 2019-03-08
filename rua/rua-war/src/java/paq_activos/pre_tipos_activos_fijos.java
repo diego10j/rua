@@ -45,7 +45,7 @@ public class pre_tipos_activos_fijos extends Pantalla {
         tab_tabla1.getColumna("iva_inarti").setVisible(false);
         tab_tabla1.getColumna("iva_inarti").setValorDefecto("1");
         tab_tabla1.setCondicion("ide_intpr=0 and inv_ide_inarti is not null");
-        tab_tabla1.getColumna("nivel_inarti").setVisible(false);
+        //tab_tabla1.getColumna("nivel_inarti").setVisible(false);
         tab_tabla1.getColumna("nivel_inarti").setValorDefecto("HIJO");
         tab_tabla1.getColumna("codigo_inarti").setMascara("000");
         tab_tabla1.getColumna("codigo_inarti").setRequerida(true);

@@ -85,6 +85,7 @@ public class pre_lista_activos extends Pantalla {
         tab_lista.getColumna("codigo_recu_acafi").setVisible(false);
         tab_lista.setLectura(true);
         tab_lista.dibujar(); 
+        tab_lista.setRows(15);
         PanelTabla pat_lista = new PanelTabla();
         pat_lista.setId("pat_lista");
         pat_lista.setPanelTabla(tab_lista);
