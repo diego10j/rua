@@ -34,7 +34,7 @@ public class ServicioActivosFijos extends ServicioBase {
         +" arti.nombre_inarti as TIPO_ACTIVO,i.nombre_inarti as SUBTIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,d.nombre_acuba as AREA_UBICACION,j.nombre_acuba as SUBAREA_UBICACION,nombre_aceaf as ESTADO,"
         +" nom_geper,identificac_geper as DOCUMENTO_CUSTODIO,nombre_invmar as MARCA,modelo_acafi as MODELO,"
         +" serie_acafi as SERIE,nombre_accls as CLASIFICACION,nombre_actac as TIPO_ADQUISICION,fecha_compra_acafi,anos_uso_acafi,deprecia_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,"
-        +" nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi,proveedor_acafi,N_EGRESO_ACAFI AS NUMERO_EGRESO,NUMERO_FACTU_ACAFI AS NUMERO_FACTURA, a.ide_aceaf,codig_recur_cndpc as CODIGO_PLAN,nombre_cndpc as PLAN_CUENTAS"
+        +" nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi,proveedor_acafi,N_EGRESO_ACAFI AS NUMERO_EGRESO,NUMERO_FACTU_ACAFI AS NUMERO_FACTURA, a.ide_aceaf,codig_recur_cndpc as CODIGO_PLAN,nombre_cndpc as PLAN_CUENTAS,cod_anterior_acafi"
         +" from act_activo_fijo a "
                  +" left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf"
                  +" left join gen_persona c on a.ide_geper=c.ide_geper"
