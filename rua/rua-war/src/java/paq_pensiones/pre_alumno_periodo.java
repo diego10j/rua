@@ -185,6 +185,7 @@ public class pre_alumno_periodo extends Pantalla {
         tab_tabla1.setCondicion("IDE_RECALP = -1");
         tab_tabla1.setTipoSeleccion(true);
         tab_tabla1.dibujar();
+        tab_tabla1.setRows(15);
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
         pat_tabla1.getChildren().add(boc_seleccion_inversa);
@@ -457,7 +458,7 @@ public class pre_alumno_periodo extends Pantalla {
         try {
             String alumno_selec = tab_tabla1.getFilasSeleccionadas();
             utilitario.getConexion().ejecutarSql("update rec_alumno_periodo\n"
-                    + "set retirado_recalp = true, detalle_retiro_recalp = '" + area_dialogo.getValue() + "',activo_recalp = false, fecha_retiro_recalp = '" + fecha_retiro.getValue() + "'\n"
+                    + "set retirado_recalp = true, detalle_retiro_recalp = '" + area_dialogo.getValue() + "',activo_recalp = false, fecha_retiro_recalp = '" + fecha_retiro.getFecha() + "'\n"
                     + "where ide_recalp in (" + alumno_selec + ")");
             dia_retiro.cerrar();
             utilitario.agregarMensaje("Se ha guardado correctamente", "");
@@ -715,17 +716,22 @@ public class pre_alumno_periodo extends Pantalla {
         String str_alum = sel_tab_alumno.getSeleccionados();
         TablaGenerica tab_dat_alum = utilitario.consultar("select ide_geper, identificac_geper, nom_geper  from gen_persona  where ide_vgtcl = 1 and ide_geper = " + str_alum + "order by nom_geper");
         for (int i = 0; i < tab_dat_alum.getTotalFilas(); i++) {
-            if (tab_tabla1.isFilaInsertada() == false) {
-                tab_tabla1.insertar();
-            }
-            tab_tabla1.setValor("ide_geper", tab_dat_alum.getValor(i, "ide_geper"));
+            TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_alumno_periodo", "ide_recalp"));
+            
+            utilitario.getConexion().ejecutarSql("insert into rec_alumno_periodo (ide_recalp,ide_geper,ide_repea,ide_repar,ide_recur,ide_reces,activo_recalp,aplica_convenio_pago_recalp,\n" +
+            "descuento_recalp,retirado_recalp) values ("+codigo_maximo.getValor("maximo")+","+tab_dat_alum.getValor(i, "ide_geper")+","+com_periodo_academico.getValue().toString()+","+com_paralelos.getValue().toString()+","+com_cursos.getValue().toString()+","+com_especialidad.getValue().toString()+",true,false,false,false)");
+            //if (tab_tabla1.isFilaInsertada() == false) {
+              //  tab_tabla1.insertar();
+            //}
+            //tab_tabla1.setValor("ide_geper", tab_dat_alum.getValor(i, "ide_geper"));
         }
-        tab_tabla1.setValor("ide_repea", com_periodo_academico.getValue().toString());
-        tab_tabla1.setValor("ide_recur", com_cursos.getValue().toString());
-        tab_tabla1.setValor("ide_repar", com_paralelos.getValue().toString());
-        tab_tabla1.setValor("ide_reces", com_especialidad.getValue().toString());
-        utilitario.addUpdateTabla(tab_tabla1, "ide_repea,ide_recur,ide_repar,ide_reces", "");
-
+        //tab_tabla1.setValor("ide_repea", "");
+        //tab_tabla1.setValor("ide_recur", );
+        //tab_tabla1.setValor("ide_repar", );
+        //tab_tabla1.setValor("ide_reces", );
+        //utilitario.addUpdateTabla(tab_tabla1, "ide_repea,ide_recur,ide_repar,ide_reces", "");
+        utilitario.agregarMensaje("Guardado", "Se registro estudiantes en los cursos");
+        tab_tabla1.ejecutarSql();
         sel_tab_alumno.cerrar();
         utilitario.addUpdate("tab_tabla1");
     }
