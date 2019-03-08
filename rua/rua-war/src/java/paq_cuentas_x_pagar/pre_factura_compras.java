@@ -214,11 +214,12 @@ private DocumentoCxP doc_cuenta_pagar = new DocumentoCxP();
         tab_cab_documento.getColumna("numero_nc_cpcfa").setRequerida(false);
         tab_cab_documento.getColumna("fecha_emision_nc_cpcfa").setRequerida(false);
         tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(false);
-        
+        /*
         tab_cab_documento.getColumna("ide_ademple").setNombreVisual("RESPONSABLE");
         tab_cab_documento.getColumna("ide_ademple").setLectura(true);
         tab_cab_documento.getColumna("ide_ademple").setCombo(ser_adquisiciones.getEmpleado());
         tab_cab_documento.getColumna("ide_ademple").setAutoCompletar();
+        */
         tab_cab_documento.getColumna("ide_adcomp").setVisible(false);
         tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setLectura(true);
         tab_cab_documento.getColumna("RECIBIDO_COMPRA_CPCFA").setValorDefecto("FALSE");
@@ -438,7 +439,8 @@ private DocumentoCxP doc_cuenta_pagar = new DocumentoCxP();
         for (int i=0; i < tab_cabece_fac.getTotalFilas(); i++ ){
             if (tab_cab_documento.isFilaInsertada() == false){
                 tab_cab_documento.insertar();
-                tab_cab_documento.setValor("ide_ademple", ide_ademple);
+                //tab_cab_documento.setValor("ide_ademple", ide_ademple);// esta linea remplazar por vendedor en la tabla ara no dañar estructura cuando se tenga tiempo
+                //
             }
             tab_cab_documento.setValor("ide_geper",tab_cabece_fac.getValor(i, "ide_geper"));
             tab_cab_documento.setValor("ide_adcomp",tab_cabece_fac.getValor(i, "ide_adcomp"));
@@ -541,7 +543,7 @@ private DocumentoCxP doc_cuenta_pagar = new DocumentoCxP();
     public void insertar() {
         if (tab_cab_documento.isFocus()) {
             tab_cab_documento.insertar();
-             tab_cab_documento.setValor("ide_ademple", ide_ademple);
+             //tab_cab_documento.setValor("ide_ademple", ide_ademple); descomnetar y corregir or el vendedor cuando se tenga tiempo
         } else if (tab_det_documento.isFocus()) {
             tab_det_documento.insertar();
         }
