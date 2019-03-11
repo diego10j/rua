@@ -115,6 +115,7 @@ public class pre_retenciones extends Pantalla {
         mep_menu.agregarItem("Consulta Consolidada", "dibujarConsolidado", "ui-icon-calendar");//5
         mep_menu.agregarSubMenu("COMPROBANTES RETENCIONES EN VENTAS");
         mep_menu.agregarItem("Listado de RetencionesVentas", "dibujarListadoVentas", "ui-icon-bookmark");//3
+        mep_menu.agregarItem("Generar Asiento Contable", "dibujarDocumentosNoContabilizadasVentas", "ui-icon-notice"); //7
         agregarComponente(mep_menu);
         dibujarListado();
 
@@ -436,8 +437,12 @@ public class pre_retenciones extends Pantalla {
                 tab_tabla1.ejecutarSql();
                 break;
             case 7:
-                tab_tabla1.setSql(ser_retencion.getSqlRetencionesNoContabilizadas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-                tab_tabla1.ejecutarSql();
+                tab_tabla.setSql(ser_retencion.getSqlRetencionesComprasNoContabilizadas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_tabla.ejecutarSql();
+                break;
+            case 8:
+                tab_tabla.setSql(ser_retencion.getSqlRetencionesVentasNoContabilizadas( cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+                tab_tabla.ejecutarSql(); 
                 break;
             default:
                 break;
@@ -748,39 +753,86 @@ public class pre_retenciones extends Pantalla {
         bot_asi.setValue("Generar Asiento Contable");
         bot_asi.setMetodo("abrirGeneraAsiento");
         bar_menu.agregarComponente(bot_asi);
-        bar_menu.agregarSeparador();
-        Boton bot_ver = new Boton();
-        bot_ver.setValue("Ver Factura");
-        bot_ver.setMetodo("abrirVerFactura");
+//        bar_menu.agregarSeparador();
+//        Boton bot_ver = new Boton();
+//        bot_ver.setValue("Ver Factura");
+//        bot_ver.setMetodo("abrirVerFactura");
 
-        tab_tabla1 = new Tabla();
-        tab_tabla1.setId("tab_seleccion");
-        tab_tabla1.setSql(ser_retencion.getSqlRetencionesNoContabilizadas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
-        tab_tabla1.setCampoPrimaria("ide_cncre");
-        tab_tabla1.getColumna("ide_cncre").setVisible(false);
-        tab_tabla1.getColumna("ide_cnere").setVisible(false);
-        tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
-        tab_tabla1.getColumna("BASE_IMPONIBLE").alinearDerecha();
-        tab_tabla1.getColumna("NUMERO").setFiltroContenido();
-        tab_tabla1.getColumna("NUMERO").setLongitud(50);
-        tab_tabla1.getColumna("ide_cnccc").setFiltroContenido();
-        tab_tabla1.getColumna("NUM_FACTURA").setFiltroContenido();
-        tab_tabla1.getColumna("PROVEEDOR").setFiltroContenido();
-        tab_tabla1.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
-        tab_tabla1.getColumna("VALOR").alinearDerecha();
-        tab_tabla1.getColumna("numero").setLongitud(25);
-        tab_tabla1.setRows(20);
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_seleccion");
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesComprasNoContabilizadas(String.valueOf(com_autoriza.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setCampoPrimaria("ide_cpcfa");
+        tab_tabla.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla.setNumeroTabla(-1);
+        tab_tabla.getColumna("BASE_IMPONIBLE").alinearDerecha();
+        tab_tabla.getColumna("NUMERO").setFiltroContenido();
+        tab_tabla.getColumna("NUMERO").setLongitud(50);
+        tab_tabla.getColumna("FACTURA").setFiltroContenido();
+        tab_tabla.getColumna("PROVEEDOR").setFiltroContenido();
+        tab_tabla.getColumna("ESTADO").setLongitud(-1);
+        tab_tabla.getColumna("ESTADO").setAncho(-1);
+        tab_tabla.getColumna("OBSERVACION").setLongitud(30);
+        tab_tabla.getColumna("OBSERVACION").setAncho(30);
+        tab_tabla.getColumna("VALOR").alinearDerecha();
+        tab_tabla.getColumna("numero").setLongitud(25);
+        tab_tabla.setRows(15);
         //tab_tabla1.setLectura(true);
-        tab_tabla1.setTipoSeleccion(true);
-        tab_tabla1.setSeleccionTabla("multiple");
-        tab_tabla1.dibujar();
+        tab_tabla.setTipoSeleccion(true);
+        tab_tabla.setSeleccionTabla("multiple");
+        tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
-        pat_panel.setPanelTabla(tab_tabla1);
+        pat_panel.setPanelTabla(tab_tabla);
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
 
-        mep_menu.dibujar(7, "COMPROBANTES DE RETENCIÓN SIN COMPROBANTE CONTABLE", gru);
+        mep_menu.dibujar(7, "COMPROBANTES DE RETENCIÓN (COMPRAS) SIN COMPROBANTE CONTABLE", gru);
+        //metodo of mauricio
+        //utilitario.buscarPermisosObjetos();
+    }
+
+    public void dibujarDocumentosNoContabilizadasVentas() {
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Asiento Contable");
+        bot_asi.setMetodo("abrirGeneraAsientoVentas");
+        bar_menu.agregarComponente(bot_asi);
+//        bar_menu.agregarSeparador();
+//        Boton bot_ver = new Boton();
+//        bot_ver.setValue("Ver Factura");
+//        bot_ver.setMetodo("abrirVerFactura");
+
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_seleccion");
+        tab_tabla.setSql(ser_retencion.getSqlRetencionesVentasNoContabilizadas( cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla.setCampoPrimaria("ide_cccfa");
+        tab_tabla.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla.getColumna("pk").setVisible(false);
+        tab_tabla.getColumna("BASE_IMPONIBLE").alinearDerecha();
+        tab_tabla.getColumna("NUMERO").setFiltroContenido();
+        tab_tabla.getColumna("NUMERO").setLongitud(50);
+        tab_tabla.getColumna("NUM_FACTURA").setFiltroContenido();
+        tab_tabla.getColumna("CLIENTE").setFiltroContenido();
+        tab_tabla.getColumna("VALOR").alinearDerecha();
+        tab_tabla.getColumna("numero").setLongitud(25);
+        tab_tabla.getColumna("ESTADO").setLongitud(-1);
+        tab_tabla.getColumna("ESTADO").setAncho(-1);
+        tab_tabla.getColumna("OBSERVACION").setLongitud(30);
+        tab_tabla.getColumna("OBSERVACION").setAncho(30);
+        tab_tabla.setRows(15);
+        //tab_tabla1.setLectura(true);
+        tab_tabla.setTipoSeleccion(true);
+        tab_tabla.setSeleccionTabla("multiple");
+        tab_tabla.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(8, "COMPROBANTES DE RETENCIÓN (VENTAS) SIN COMPROBANTE CONTABLE", gru);
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
@@ -789,12 +841,12 @@ public class pre_retenciones extends Pantalla {
      * 04-01-2019 Genrar asiento contable solo de la retención
      */
     public void abrirGeneraAsiento() {
-        if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().length() > 0) {
+        if (tab_tabla.getFilasSeleccionadas() != null && tab_tabla.getFilasSeleccionadas().length() > 0) {
             asc_asiento.nuevoAsiento();
             asc_asiento.dibujar();
             if (mep_menu.getOpcion() == 8) {
                 String ide_cpcfa = "";
-                for (Fila actual : tab_tabla1.getSeleccionados()) {
+                for (Fila actual : tab_tabla.getSeleccionados()) {
                     if (ide_cpcfa.isEmpty() == false) {
                         ide_cpcfa = ide_cpcfa += ",";
 
@@ -804,12 +856,46 @@ public class pre_retenciones extends Pantalla {
                 }
                 asc_asiento.setAsientoRetencionCxP(ide_cpcfa);
             } else {
-                asc_asiento.setAsientoRetencionCxP(tab_tabla1.getFilasSeleccionadas());
+                asc_asiento.setAsientoRetencionCxP(tab_tabla.getFilasSeleccionadas());
             }
 
             asc_asiento.getBot_aceptar().setMetodo("guardar");
         } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar almenos una Factura", "");
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos una Retención", "");
+        }
+    }
+
+    public void cerrarAsiento() {
+        //limpia sql guardados
+        utilitario.getConexion().getSqlPantalla().clear();
+        asc_asiento.cerrar();
+    }
+
+    /**
+     * 11-03-2019 Genrar asiento contable solo de la retención en ventas
+     */
+    public void abrirGeneraAsientoVentas() {
+        if (tab_tabla.getFilasSeleccionadas() != null && tab_tabla.getFilasSeleccionadas().length() > 0) {
+            asc_asiento.nuevoAsiento();
+            asc_asiento.dibujar();
+            if (mep_menu.getOpcion() == 8) {
+                String ide_cccfa = "";
+                for (Fila actual : tab_tabla.getSeleccionados()) {
+                    if (ide_cccfa.isEmpty() == false) {
+                        ide_cccfa = ide_cccfa += ",";
+
+                    }
+                    ide_cccfa += actual.getCampos()[1];
+
+                }
+                asc_asiento.setAsientoRetencionCxC(ide_cccfa);
+            } else {
+                asc_asiento.setAsientoRetencionCxC(tab_tabla.getFilasSeleccionadas());
+            }
+
+            asc_asiento.getBot_aceptar().setMetodo("guardar");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos una Factura", "");
         }
     }
 
@@ -895,6 +981,14 @@ public class pre_retenciones extends Pantalla {
 
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
+    }
+
+    public Tabla getTab_seleccion() {
+        return tab_tabla;
+    }
+
+    public void setTab_seleccion(Tabla tab_tabla) {
+        this.tab_tabla = tab_tabla;
     }
 
 }
