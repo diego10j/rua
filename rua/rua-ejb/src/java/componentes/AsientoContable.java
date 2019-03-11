@@ -1325,7 +1325,6 @@ public class AsientoContable extends Dialogo {
                 + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as valor_cndreIva\n"
                 + "FROM cxc_cabece_factura a  "
                 + "WHERE a.ide_cccfa in (" + ide_cccfa + ")"); ////INER JOIN A RETENCION        
-        tab_fac.imprimirSql(); 
         if (tab_fac.isEmpty() == false) {
             if (tab_fac.getTotalFilas() == 1) {
                 //una
