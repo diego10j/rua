@@ -2591,7 +2591,7 @@ private int tienePerfilSecretaria() {
      */
     public void cargarCuentasporCobrarGrupo() {
 
-        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrarGrupo(cal_fecha_pago.getFecha()));
+        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrarGrupoPension(cal_fecha_pago.getFecha()));
         tab_tabla1.ejecutarSql();
         tex_diferencia.setValue(utilitario.getFormatoNumero(0));
         tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));
