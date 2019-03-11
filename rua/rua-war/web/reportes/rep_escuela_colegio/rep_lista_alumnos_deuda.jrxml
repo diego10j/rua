@@ -60,7 +60,7 @@ and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
 order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper
 ) b on a.ide_recalp = b.ide_recalp
-order by orden_recur,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper,a.ide_gemes]]>
+order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,nom_geper,a.ide_gemes]]>
 	</queryString>
 	<field name="ide_geper" class="java.lang.Long">
 		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>

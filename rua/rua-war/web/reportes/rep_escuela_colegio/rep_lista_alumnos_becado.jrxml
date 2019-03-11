@@ -51,7 +51,7 @@ and a.ide_reces in ($P!{pide_especialidad})
 and a.ide_repar in ($P!{pide_paralelo})
 and a.ide_recur in ($P!{pide_curso})
 and a.ide_repea in ($P!{pide_periodo})
-order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper]]>
+order by a.ide_repea,orden_recur,descripcion_repar,descripcion_reces,nom_geper]]>
 	</queryString>
 	<field name="nom_geper" class="java.lang.String">
 		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
@@ -120,7 +120,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textField isBlankWhenNull="true">
 					<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="26" y="0" width="529" height="16"/>
 					<textElement verticalAlignment="Top">
-						<font size="9" isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{descripcion_reces}+"  "+$F{descripcion_recur}+"  "+$F{descripcion_repar}]]></textFieldExpression>
 				</textField>
@@ -180,9 +180,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="73" splitType="Stretch">
+		<band height="67" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="361" y="7" width="194" height="45"/>
+				<reportElement uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0" x="361" y="0" width="194" height="45"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
@@ -203,7 +203,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="361" y="45" width="194" height="24"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="361" y="38" width="194" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
