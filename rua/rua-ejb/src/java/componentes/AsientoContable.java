@@ -765,6 +765,9 @@ public class AsientoContable extends Dialogo {
             } else if (tipo.equals(TipoAsientoEnum.RETENCIONES_CXP.getCodigo())) {
                 utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxp_cabece_factur where ide_cpcfa in(" + relacion + ") ) and ide_cnccc is null");
             }
+             else if (tipo.equals(TipoAsientoEnum.RETENCIONES_CXC.getCodigo())) {
+                utilitario.getConexion().ejecutarSql("UPDATE con_cabece_retenc SET ide_cnccc=" + ide_cnccc + " WHERE ide_cncre in  (select ide_cncre from cxc_cabece_factura where ide_cccfa in(" + relacion + ") ) and ide_cnccc is null");
+            }
         }
     }
 
@@ -1300,6 +1303,131 @@ public class AsientoContable extends Dialogo {
             tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
             if (cuenta_cxc == null || cuenta_cxc.equals("null")) {
                 tab_deta_asiento.setValor("observacion_cndcc", "*** CUENTA POR PAGAR");
+            }
+
+            calcularTotal();
+        } else {
+            utilitario.agregarMensajeError("Error no se puede generar el Asiento Contable", "No existe el Documento");
+        }
+
+    }
+    
+    
+    public void setAsientoRetencionCxC(String ide_cccfa) {
+        this.relacion = ide_cccfa;
+        this.tipo = TipoAsientoEnum.RETENCIONES_CXC.getCodigo();
+        //Consulta las facturas
+        TablaGenerica tab_fac = utilitario.consultar("SELECT a.ide_cccfa,ide_geper,secuencial_cccfa,fecha_emisi_cccfa,\n"
+                + "total_cccfa,base_grabada_cccfa,base_tarifa0_cccfa,valor_iva_cccfa \n"
+                + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as ide_cncimRenta\n"
+                + ",(select MAX(d.ide_cncim) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as ide_cncimIva\n"
+                + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=1) as valor_cndreRenta\n"
+                + ",(select SUM(valor_cndre) from con_detall_retenc d INNER JOIN con_cabece_impues f on d.ide_cncim=f.ide_cncim  where d.ide_cncre=a.ide_cncre and f.ide_cnimp=0) as valor_cndreIva\n"
+                + "FROM cxc_cabece_factura a  "
+                + "WHERE a.ide_cccfa in (" + ide_cccfa + ")"); ////INER JOIN A RETENCION        
+        tab_fac.imprimirSql(); 
+        if (tab_fac.isEmpty() == false) {
+            if (tab_fac.getTotalFilas() == 1) {
+                //una
+                tab_cabe_asiento.setValor("ide_geper", tab_fac.getValor("ide_geper"));
+                tab_cabe_asiento.setValor("observacion_cnccc", "V/. FACTURA N." + tab_fac.getValor("secuencial_cccfa"));
+            } else { //varias
+                String str_observa = "V/. FACTURAS N.";
+                boolean boo_mismo_clie = true; //si es el mismo cliente todos los seleccionados
+                String str_ide_geper = "";
+                for (int i = 0; i < tab_fac.getTotalFilas(); i++) {
+                    if (i == 0) {
+                        str_ide_geper = tab_fac.getValor(i, "ide_geper");
+                    }
+                    if (str_ide_geper == null) {
+                        str_ide_geper = "";
+                    }
+                    if (str_ide_geper.equals(tab_fac.getValor(i, "ide_geper")) == false) {
+                        boo_mismo_clie = false;
+                    }
+                    if (str_observa.equals("V/. FACTURAS N.")) {
+                        str_observa += " ";
+                    } else {
+                        str_observa += ", ";
+                    }
+                    str_observa += "" + tab_fac.getValor(i, "numero_cpcfa");
+                }
+                if (boo_mismo_clie) {
+                    tab_cabe_asiento.setValor("ide_geper", str_ide_geper);
+                } else {
+                    tab_cabe_asiento.setValor("ide_geper", getBeneficiarioEmpresa());//sociedad salesianos                
+                }
+
+                if (tab_cabe_asiento.getValor("observacion_cnccc") == null) {
+                    tab_cabe_asiento.setValor("observacion_cnccc", str_observa);
+                }
+            }
+
+            cls_contabilidad cls_conta = new cls_contabilidad();
+            tab_cabe_asiento.setValor("ide_cntcm", "0");//DIARIO           
+            //Recupera cuentas contables asiento de factura de ventas
+            String p_con_lugar_debe = parametros.get("p_con_lugar_debe");
+            String p_con_lugar_haber = parametros.get("p_con_lugar_haber");
+            tab_deta_asiento.setTabla("con_det_comp_cont", "ide_cndcc", 997);
+            tab_deta_asiento.setCondicion("ide_cndcc=-1");
+            tab_deta_asiento.ejecutarSql();
+            //CUENTA                               DEBE              HABER
+            //RETENCION IVA VENTA                     X
+            //RETENCION RENTA VENTA                   X
+            //CUENTA POR COBRAR                                        X
+
+            //verifica si hay retenciones en compras
+            double retRentaVenta = 0; //acumula ret iva
+            double retIvaVenta = 0; //acumula ret renta
+            for (int j = 0; j < tab_fac.getTotalFilas(); j++) {
+
+                if (tab_fac.getValor(j, "ide_cncimRenta") != null) {  //renta
+
+                    String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION RENTA VENTA", null, null, tab_fac.getValor(j, "ide_cncimRenta"), null, null, null); //RETENCION renta
+                    double retActual = 0;
+                    try {
+                        retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndreRenta"));
+                    } catch (Exception e) {
+                    }
+                    retRentaVenta += retActual;
+                    if (retActual > 0) {
+                        tab_deta_asiento.insertar();
+                        tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                        tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
+                        tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
+                        if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                            tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION RENTA VENTA");
+                        }
+                    }
+                }
+                if (tab_fac.getValor(j, "ide_cncimIva") != null) {  //renta
+
+                    String cuenta_retRenta = cls_conta.buscarCuenta("RETENCION IVA VENTA", null, null, tab_fac.getValor(j, "ide_cncimIva"), null, null, null); //RETENCION iva
+                    double retActual = 0;
+                    try {
+                        retActual = Double.parseDouble(tab_fac.getValor(j, "valor_cndreIva"));
+                    } catch (Exception e) {
+                    }
+                    retIvaVenta += retActual;
+                    if (retActual > 0) {
+                        tab_deta_asiento.insertar();
+                        tab_deta_asiento.setValor("ide_cndpc", cuenta_retRenta);
+                        tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_debe);
+                        tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(retActual));
+                        if (cuenta_retRenta == null || cuenta_retRenta.equals("null")) {
+                            tab_deta_asiento.setValor("observacion_cndcc", "*** RETENCION IVA VENTA");
+                        }
+                    }
+                }
+            }
+            tab_deta_asiento.insertar();
+            String cuenta_cxc = cls_conta.buscarCuentaPersona("CUENTA POR COBRAR", tab_cabe_asiento.getValor("ide_geper"));
+            double valor_cxc = retRentaVenta + retIvaVenta;
+            tab_deta_asiento.setValor("ide_cndpc", cuenta_cxc);
+            tab_deta_asiento.setValor("ide_cnlap", p_con_lugar_haber);
+            tab_deta_asiento.setValor("valor_cndcc", utilitario.getFormatoNumero(valor_cxc));
+            if (cuenta_cxc == null || cuenta_cxc.equals("null")) {
+                tab_deta_asiento.setValor("observacion_cndcc", "*** CUENTA POR COBRAR");
             }
 
             calcularTotal();
