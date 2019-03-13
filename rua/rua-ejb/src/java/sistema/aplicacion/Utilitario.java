@@ -148,24 +148,27 @@ public class Utilitario extends Framework {
      */
     public boolean validarRUC(String str_ruc) {
         boolean boo_correcto = false;
-        try {
-            boo_correcto = ValidarIdentificacion.validarRucPersonaNatural(str_ruc);
-        } catch (Exception e) {
-        }
-        if (boo_correcto == false) {
+
+        if (str_ruc.length() == 13) {
+
             try {
-                boo_correcto = ValidarIdentificacion.validarRucSociedadPrivada(str_ruc);
+                boo_correcto = ValidarIdentificacion.validarRucPersonaNatural(str_ruc);
             } catch (Exception e) {
             }
+            if (boo_correcto == false) {
+                try {
+                    boo_correcto = ValidarIdentificacion.validarRucSociedadPrivada(str_ruc);
+                } catch (Exception e) {
+                }
 
-        }
-        if (boo_correcto == false) {
-            try {
-                boo_correcto = ValidarIdentificacion.validarRucPublica(str_ruc);
-            } catch (Exception e) {
+            }
+            if (boo_correcto == false) {
+                try {
+                    boo_correcto = ValidarIdentificacion.validarRucPublica(str_ruc);
+                } catch (Exception e) {
+                }
             }
         }
-
         return boo_correcto;
     }
 
