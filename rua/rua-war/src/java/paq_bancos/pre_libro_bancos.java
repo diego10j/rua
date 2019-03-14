@@ -1624,7 +1624,7 @@ public class pre_libro_bancos extends Pantalla {
     public void dibujarConciliarM() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
-        tab_tabla1.setSql(ser_tesoreria.getSqlTransaccionesCuentaNoConciliado(String.valueOf(aut_cuentas.getValue()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla1.setSql(ser_tesoreria.getSqlTransaccionesCuentaNoConciliado(String.valueOf(aut_cuentas.getValor()), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
         tab_tabla1.setRows(1105);
         tab_tabla1.setHeader("MOVIMIENTOS NO CONCILIADOS");
         tab_tabla1.setLectura(true);
