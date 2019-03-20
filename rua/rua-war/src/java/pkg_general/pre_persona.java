@@ -9,7 +9,9 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
+import servicios.cuentas_x_cobrar.ServicioCliente;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -22,6 +24,8 @@ public class pre_persona extends Pantalla {
 
     private AutoCompletar aut_filtro_persona = new AutoCompletar();
     private String persona = "-1";
+@EJB
+    private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
 
     public pre_persona() {
 
@@ -40,8 +44,8 @@ public class pre_persona extends Pantalla {
         tab_tabla1.getColumna("nivel_geper").setPermitirNullCombo(true);
         tab_tabla1.getColumna("ide_getid").setCombo("gen_tipo_identifi", "ide_getid", "nombre_getid", "");
         tab_tabla1.getColumna("ide_cntco").setCombo("con_tipo_contribu", "ide_cntco", "nombre_cntco", "");
-        tab_tabla1.getColumna("ide_cntco").setLectura(true);
-        tab_tabla1.getColumna("identificac_geper").setLectura(true);
+        //tab_tabla1.getColumna("ide_cntco").setLectura(true);
+        //tab_tabla1.getColumna("identificac_geper").setLectura(true);
         tab_tabla1.getColumna("identificac_geper").setUnico(true);
         tab_tabla1.getColumna("ide_rhtro").setVisible(false);
         tab_tabla1.getColumna("gen_ide_geper").setVisible(false);
@@ -100,10 +104,7 @@ public class pre_persona extends Pantalla {
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
-        pat_panel.getMenuTabla().getItem_eliminar().setRendered(false);
-        pat_panel.getMenuTabla().getItem_insertar().setRendered(false);
-        bar_botones.getBot_insertar().setRendered(false);
-        bar_botones.getBot_eliminar().setRendered(false);
+
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
@@ -121,18 +122,22 @@ public class pre_persona extends Pantalla {
 
     @Override
     public void insertar() {
+        tab_tabla1.insertar();
     }
 
     @Override
     public void guardar() {
-        if (tab_tabla1.isFilaModificada()) {
-            tab_tabla1.guardar();
-            utilitario.getConexion().guardarPantalla();
+        if (ser_cliente.validarCliente(tab_tabla1)) {
+        if (tab_tabla1.guardar()) {
+            
+           guardarPantalla();
+        }
         }
     }
 
     @Override
     public void eliminar() {
+        tab_tabla1.eliminar();
     }
 
     public Tabla getTab_tabla1() {
