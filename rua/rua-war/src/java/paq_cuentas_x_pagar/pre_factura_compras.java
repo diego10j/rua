@@ -436,15 +436,13 @@ private DocumentoCxP doc_cuenta_pagar = new DocumentoCxP();
                                                             "from adq_compra a\n" +
                                                             "left join gen_persona b on a.ide_geper = b.ide_geper\n" +
                                                             "where a.ide_adcomp = "+solicitud+"");
-        for (int i=0; i < tab_cabece_fac.getTotalFilas(); i++ ){
             if (tab_cab_documento.isFilaInsertada() == false){
                 tab_cab_documento.insertar();
-                //tab_cab_documento.setValor("ide_ademple", ide_ademple);// esta linea remplazar por vendedor en la tabla ara no dañar estructura cuando se tenga tiempo
-                //
+
             }
-            tab_cab_documento.setValor("ide_geper",tab_cabece_fac.getValor(i, "ide_geper"));
-            tab_cab_documento.setValor("ide_adcomp",tab_cabece_fac.getValor(i, "ide_adcomp"));
-        }
+            tab_cab_documento.setValor("ide_geper",tab_cabece_fac.getValor("ide_geper"));
+            tab_cab_documento.setValor("ide_adcomp",tab_cabece_fac.getValor("ide_adcomp"));
+        
         tab_cab_documento.guardar();
         guardarPantalla();
         sel_tab_detalle_compra.cerrar();
