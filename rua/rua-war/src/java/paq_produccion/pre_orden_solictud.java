@@ -151,27 +151,27 @@ public class pre_orden_solictud extends Pantalla {
             tab_solicitud.getColumna("fecha_prsol").setValorDefecto(utilitario.getFechaActual());
             tab_solicitud.getColumna("hora_prsol").setValorDefecto(utilitario.getHoraActual());
             tab_solicitud.getColumna("total_inyector_prsol").setValorDefecto("0.00");
-            tab_solicitud.getColumna("total_inyector_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
-            tab_solicitud.getColumna("total_inyector_prsol").setEtiqueta();//etiqueta
+           // tab_solicitud.getColumna("total_inyector_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            //tab_solicitud.getColumna("total_inyector_prsol").setEtiqueta();//etiqueta
             tab_solicitud.getColumna("peso_pieza_prsol").setValorDefecto("0");
-            tab_solicitud.getColumna("peso_pieza_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            //tab_solicitud.getColumna("peso_pieza_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
             tab_solicitud.getColumna("peso_unidad_prsol").setValorDefecto("0");
-            tab_solicitud.getColumna("peso_unidad_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            //tab_solicitud.getColumna("peso_unidad_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
             tab_solicitud.getColumna("numero_cavidades_prsol").setValorDefecto("0");
-            tab_solicitud.getColumna("numero_cavidades_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
+            //tab_solicitud.getColumna("numero_cavidades_prsol").setEstilo("font-size:15px;font-weight: bold;color:black");//etiqueta
             tab_solicitud.getColumna("hora_prsol").setLectura(true);
             tab_solicitud.getColumna("peso_pieza_prsol").setMetodoChange("calculaInyectar");
             
             tab_solicitud.getColumna("limpia_canion_prsol").setValorDefecto("0.00");
-            tab_solicitud.getColumna("limpia_canion_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
-            tab_solicitud.getColumna("limpia_canion_prsol").setEtiqueta();//etiqueta
+            //tab_solicitud.getColumna("limpia_canion_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            //tab_solicitud.getColumna("limpia_canion_prsol").setEtiqueta();//etiqueta
             tab_solicitud.getColumna("ramal_prsol").setValorDefecto("0.00");
-            tab_solicitud.getColumna("ramal_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
-            tab_solicitud.getColumna("ramal_prsol").setEtiqueta();//etiqueta
+            //tab_solicitud.getColumna("ramal_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            //tab_solicitud.getColumna("ramal_prsol").setEtiqueta();//etiqueta
             tab_solicitud.getColumna("total_inyecta_uni_prsol").setValorDefecto("0.00");
-            tab_solicitud.getColumna("total_inyecta_uni_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
-            tab_solicitud.getColumna("total_inyecta_uni_prsol").setEtiqueta();//etiqueta
-            //tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
+            //tab_solicitud.getColumna("total_inyecta_uni_prsol").setEstilo("font-size:15px;font-weight: bold;color:green");//etiqueta
+            //tab_solicitud.getColumna("total_inyecta_uni_prsol").setEtiqueta();//etiqueta
+            tab_solicitud.getColumna("hora_prsol").setEstilo("font-size:8px;font-weight: bold;color:blue");//etiqueta
             tab_solicitud.setTipoFormulario(true);
             tab_solicitud.getGrid().setColumns(6);
             tab_solicitud.agregarRelacion(tab_detalle_solicitud);
