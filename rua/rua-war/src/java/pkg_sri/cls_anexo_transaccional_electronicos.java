@@ -91,11 +91,11 @@ public class cls_anexo_transaccional_electronicos {
                     ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones  
-                   
+
                     ideRetenciones = ideRetenciones.replace(",,", ","); //si hay documentos sin retenciones   
                     if (ideRetenciones.equals("'null'") || ideRetenciones.equals("null") || ideRetenciones.isEmpty()) {
                         ideRetenciones = "-1";
-                    } 
+                    }
                     TablaGenerica tab_rete_iva_bienes_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
@@ -405,17 +405,17 @@ public class cls_anexo_transaccional_electronicos {
                             + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
                             + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
                             + "where es_venta_cncre =TRUE\n"
-                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 )\n"  //antes 1
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=0 )\n" //antes 1
                             + "and a.ide_cncre=cab.ide_cncre\n"
                             + "),\n"
                             + "ret_fuente_cccfa = (\n"
                             + "select sum (valor_cndre)  as retiva from con_cabece_retenc a\n"
                             + "inner join con_detall_retenc b on a.ide_cncre= b.ide_cncre\n"
                             + "where es_venta_cncre =TRUE\n"
-                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 )\n"  //antes 0
+                            + "and ide_cncim IN (SELECT ide_cncim FROM con_cabece_impues where ide_cnimp=1 )\n" //antes 0
                             + "and a.ide_cncre=cab.ide_cncre\n"
                             + ")\n"
-                            + "where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")                           
+                            + "where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                     );
 
                     Element ventas = doc_anexo.createElement("ventas");
@@ -431,6 +431,25 @@ public class cls_anexo_transaccional_electronicos {
                             + "left join con_cabece_retenc rete on rete.ide_cncre=cab.ide_cncre and rete.es_venta_cncre=true "
                             + " where cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                             + " group by tide.alterno2_getid,cli.identificac_geper,doc.alter_tribu_cntdo");
+
+                    //20/03/2019
+                    String cedulasFacturas = tab_ventas.getStringColumna("identificac_geper");
+                    cedulasFacturas = cedulasFacturas.replace("'null',", "");
+                    cedulasFacturas = cedulasFacturas.replace("'null'", "");
+                    cedulasFacturas = cedulasFacturas.replace("null,", "");
+                    cedulasFacturas = cedulasFacturas.replace(",,", ",");
+                    if (cedulasFacturas.equals("'null'") || cedulasFacturas.equals("null") || cedulasFacturas.isEmpty()) {
+                        cedulasFacturas = "-1";
+                    }
+
+                    TablaGenerica tab_formaPago = utilitario.consultar("select identificac_geper,alterno_ats from cxc_cabece_factura cab "
+                            + "inner join con_deta_forma_pago dp on cab.ide_cndfp = dp.ide_cndfp "
+                            + "inner join gen_persona p on cab.ide_geper= p.ide_geper"
+                            + "where identificac_geper in (" + cedulasFacturas + ") "
+                            + " and cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
+                            + "group by alterno_ats,identificac_geper "
+                            + "order by identificac_geper");
+
                     // System.out.println("VENTAS --- " + tab_ventas.getSql());
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
                         ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
@@ -473,7 +492,22 @@ public class cls_anexo_transaccional_electronicos {
 
                         Element formasDePago = doc_anexo.createElement("formasDePago");
                         detalleVentas.appendChild(formasDePago);
-                        formasDePago.appendChild(crearElemento("formaPago", null, "20"));
+                        //20-03-2019 Agrega todas las formas de pago encontradas en el mes
+                        String cedulaActual = tab_ventas.getValor(i, "identificac_geper");
+                        boolean encontro = false;
+                        for (int f = 0; i <= tab_formaPago.getTotalFilas(); i++) {
+                            if (cedulaActual.equals(tab_formaPago.getValor(f, "identificac_geper"))) {
+                                encontro = true;
+                                formasDePago.appendChild(crearElemento("formaPago", null, tab_formaPago.getValor(f, "alterno_ats")));
+                            } else {
+                                if (encontro) {
+                                    break;
+                                }
+                            }
+                        }
+                        if (encontro == false) {
+                            formasDePago.appendChild(crearElemento("formaPago", null, "20"));
+                        }
                     }
 
                     ////NOTAS DE CREDITO
@@ -614,7 +648,6 @@ public class cls_anexo_transaccional_electronicos {
                 //String master = "D:";
                 nombre = "ATS.xml";
                 path = master + "/" + nombre;
-                System.out.println("path "+path);
                 Result console = new StreamResult(System.out);
                 Result result = new StreamResult(new java.io.File(master + "/" + nombre)); //nombre del archivo
                 //Result result = new StreamResult("D:/" + nombre); //nombre del archivo
