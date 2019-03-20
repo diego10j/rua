@@ -506,7 +506,7 @@ public class cls_anexo_transaccional {
                             }
                         }
                         if (encontro == false) {
-                            formasDePago.appendChild(crearElemento("formaPago", null, "20"));
+                            formasDePago.appendChild(crearElemento("formaPago", null, "01")); // 01 --SIN UTILIZACIÓN DEL SISTEMA FINANCIERO
                         }
                     }
 
