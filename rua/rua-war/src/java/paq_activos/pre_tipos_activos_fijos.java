@@ -40,8 +40,8 @@ public class pre_tipos_activos_fijos extends Pantalla {
         tab_tabla1.getColumna("es_combo_inarti").setVisible(false);
         tab_tabla1.getColumna("ice_inarti").setVisible(false);
         tab_tabla1.getColumna("hace_kardex_inarti").setVisible(false);
-        tab_tabla1.getColumna("inv_ide_inarti").setVisible(false);
-        tab_tabla1.getColumna("inv_ide_inarti").setValorDefecto("53");
+        //tab_tabla1.getColumna("inv_ide_inarti").setVisible(false);
+        //tab_tabla1.getColumna("inv_ide_inarti").setValorDefecto("53");
         tab_tabla1.getColumna("iva_inarti").setVisible(false);
         tab_tabla1.getColumna("iva_inarti").setValorDefecto("1");
         tab_tabla1.setCondicion("ide_intpr=0 and inv_ide_inarti is not null");
@@ -61,7 +61,6 @@ public class pre_tipos_activos_fijos extends Pantalla {
         
         arb_arbol.setId("arb_arbol");
         arb_arbol.dibujar();
-
         Division div_division = new Division();
         div_division.dividir2(arb_arbol,pat_panel,"30%","V");
         agregarComponente(div_division);
