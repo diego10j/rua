@@ -445,7 +445,7 @@ public class cls_anexo_transaccional_electronicos {
                     TablaGenerica tab_formaPago = utilitario.consultar("select identificac_geper,alterno_ats from cxc_cabece_factura cab "
                             + "inner join con_deta_forma_pago dp on cab.ide_cndfp = dp.ide_cndfp "
                             + "inner join gen_persona p on cab.ide_geper= p.ide_geper"
-                            + "where identificac_geper in (" + cedulasFacturas + ") "
+                            + " where identificac_geper in (" + cedulasFacturas + ") "
                             + " and cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                             + " group by alterno_ats,identificac_geper "
                             + " order by identificac_geper");
