@@ -447,8 +447,8 @@ public class cls_anexo_transaccional_electronicos {
                             + "inner join gen_persona p on cab.ide_geper= p.ide_geper"
                             + "where identificac_geper in (" + cedulasFacturas + ") "
                             + " and cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
-                            + "group by alterno_ats,identificac_geper "
-                            + "order by identificac_geper");
+                            + " group by alterno_ats,identificac_geper "
+                            + " order by identificac_geper");
                      System.out.println("FORMAS DE PAGO --- " + tab_formaPago.getSql());
                     // System.out.println("VENTAS --- " + tab_ventas.getSql());
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
