@@ -495,7 +495,7 @@ public class cls_anexo_transaccional {
                         //20-03-2019 Agrega todas las formas de pago encontradas en el mes
                         String cedulaActual = tab_ventas.getValor(i, "identificac_geper");
                         boolean encontro = false;
-                        for (int f = 0; i <= tab_formaPago.getTotalFilas(); i++) {
+                        for (int f = 0; f <= tab_formaPago.getTotalFilas(); f++) {
                             if (cedulaActual.equals(tab_formaPago.getValor(f, "identificac_geper"))) {
                                 encontro = true;
                                 formasDePago.appendChild(crearElemento("formaPago", null, tab_formaPago.getValor(f, "alterno_ats")));
