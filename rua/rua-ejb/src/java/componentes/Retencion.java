@@ -536,7 +536,7 @@ public class Retencion extends Dialogo {
             douBaseImponibleIvaTotal = Double.parseDouble(tab_cab_documento.getValor("valor_iva_cpcfa"));
         } catch (Exception e) {
         }
-        
+
         douBaseImponibleRentaTotal = douBaseImponible + douBaseTarifa0 + douBaseNoObjeto + douICE;
 
         Grupo grupo = new Grupo();
@@ -713,7 +713,7 @@ public class Retencion extends Dialogo {
                     tab_dt_retencion.setValor("porcentaje_cndre", porcen);
                     tab_dt_retencion.setValor("base_cndre", utilitario.getFormatoNumero(retenciones.getL_valor_casillero().get(i)));
                     tab_dt_retencion.setValor("valor_cndre", utilitario.getFormatoNumero(((Double.parseDouble(retenciones.getL_valor_casillero().get(i).toString()) * Double.parseDouble(porcen)) / 100)));
-
+                    calclularValorRetencion();
                 }
             }
         }
@@ -1013,6 +1013,10 @@ public class Retencion extends Dialogo {
      */
     public void calclularValorRetencion(AjaxBehaviorEvent evt) {
         tab_dt_retencion.modificar(evt);
+        calclularValorRetencion();
+    }
+
+    private void calclularValorRetencion() {
 
         double dou_val_ret = 0;
 
