@@ -122,7 +122,11 @@ public class cls_anexo_transaccional {
                         detalleCompras.appendChild(crearElemento("idProv", null, tab_compras.getValor(i, "identificac_geper")));
                         detalleCompras.appendChild(crearElemento("tipoComprobante", null, tab_compras.getValor(i, "alter_tribu_cntdo")));
                         detalleCompras.appendChild(crearElemento("parteRel", null, "NO"));
-                        detalleCompras.appendChild(crearElemento("fechaRegistro", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));
+                        if (tab_compras.getValor(i, "fecha_emisi_cncre") != null) {
+                            detalleCompras.appendChild(crearElemento("fechaRegistro", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));
+                        } else {
+                            detalleCompras.appendChild(crearElemento("fechaRegistro", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                        }
                         String numero = tab_compras.getValor(i, "numero_cpcfa");
                         detalleCompras.appendChild(crearElemento("establecimiento", null, numero.substring(0, 3)));
                         detalleCompras.appendChild(crearElemento("puntoEmision", null, numero.substring(3, 6)));
