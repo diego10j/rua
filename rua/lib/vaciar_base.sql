@@ -82,6 +82,8 @@ update reh_tipo_asiento set ide_sucu=0;
 update reh_tipo_contrato set ide_sucu=0;
 update reh_tipo_empleado set ide_sucu=0;
 update sis_usuario_sucursal set ide_sucu=0;
+update sri_cab_impuesto_renta set ide_sucu=0;
+
 delete from iyp_pago_interes;
 delete from iyp_deta_prestamo;
 delete from iyp_cab_prestamo;
@@ -101,17 +103,24 @@ delete from nrh_detalle_rol;
 delete from sri_proyeccion_ingres;
 delete from gen_empleados_departamento_par;
 delete from gen_detalle_empleado_departame;
+delete from gth_cuenta_anticipo;
 delete from gth_empleado;
 delete from nrh_rol;
 delete from act_foto_activo;
 delete from act_transaccion;
 delete from act_asignacion_activo;
+delete from act_movimiento;
+update act_activo_fijo set ide_acact = null;
 delete from act_acta_constata;
 delete from act_activo_fijo;
-
+delete from adq_compra_bienes;
+delete from adq_compra;
+delete from adq_empleado_aprueba;
+delete from adq_empleado_departamento;
+delete from cxc_caja_empleado;
+delete from cxc_dat_fac_emp;
 delete from adq_empleado;
-delete from adq_empleado;
-
+delete from act_clase_articulo;
 
 delete from nrh_cabecera_asiento;
 delete from gen_perido_rol;
@@ -130,9 +139,8 @@ delete from pre_programa;
 delete from pre_funcion_programa;
 delete from modulomigra;
 delete from pre_funcion_programa;
-DELETE from gen_persona where nivel_geper !='PADRE';
 DELETE from gen_persona where es_proveedo_geper=true;
-delete  from inv_articulo where nivel_inarti='HIJO';
+delete from inv_articulo where inv_ide_inarti is not null ;
 delete from pre_clasificador;
 delete from migra_actividadp;
 delete  from adq_area_administrativa;
@@ -140,7 +148,7 @@ delete  from adq_area_administrativa;
 delete from sis_usuario_sucursal where ide_usua not in (0,11);
 delete from sis_usuario_clave where ide_usua not in (0,11);
 delete from sis_usuario where ide_usua not in (0,11);
-
+----------------
 delete from sis_sucursal where ide_sucu !=0;
 
 delete from cxc_datos_fac;
@@ -199,9 +207,14 @@ delete  from gen_persona where nivel_geper='HIJO' and usuario_ingre is not null;
 delete from act_foto_activo;
 delete from act_asignacion_activo;
 delete from act_transaccion;
+delete from act_movimiento;
 delete from act_acta_constata;
 delete from act_activo_fijo; 
 
+
+----ACTUALIZA CUENTAS NIVEL HIJO
+update con_det_plan_cuen set nivel_cndpc='HIJO' from con_det_plan_cuen a where 
+(select count(1)from con_det_plan_cuen where con_ide_cndpc=a.ide_cndpc) =0
 
 http://192.168.1.121:8080/rua-war/home.jsf?filtroObras=San_Patricio
 http://192.168.1.121:8080/rua-war/home.jsf?filtroObras=Kennedy
