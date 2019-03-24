@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
     
-    <!---4 Casa Inspectorial Salesiana/> -->
+    <!---1 Casa Inspectorial Salesiana/> -->
     <persistence-unit name="sistema" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>sistema</jta-data-source>
@@ -95,6 +95,36 @@
     <persistence-unit name="rua_sanpatricio" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>rua_sanpatricio</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>
+  
+    <!---11  FONDO VOCACIONAL SALESIANO/> -->
+    <persistence-unit name="rua_fondo_vs" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_fondo_vs</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>
+  
+    <!---12  COMUNIDAD SALESIANA MARIA AUXILIADORA DE CUENCA/> -->
+    <persistence-unit name="rua_comunidad_mac" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_comunidad_mac</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>
+    
+    <!---13  PARROQUIA DE MARIA AUXILIADORA DE LOS CRISTIANOS/> -->
+    <persistence-unit name="rua_parroquia_mac" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_parroquia_mac</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.logging.level" value="SEVERE"/>
