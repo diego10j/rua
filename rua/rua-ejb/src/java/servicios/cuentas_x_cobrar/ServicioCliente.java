@@ -551,8 +551,10 @@ public class ServicioCliente extends ServicioBase {
 
         return str_sql_cxc;
     }
-/**
-     * Busca facturas por cobrar en una fecha de pago para contabilizar por grupo
+
+    /**
+     * Busca facturas por cobrar en una fecha de pago para contabilizar por
+     * grupo
      *
      * @param fecha de pago
      * @return
@@ -579,6 +581,35 @@ public class ServicioCliente extends ServicioBase {
                 + "ORDER BY cf.fecha_emisi_cccfa ASC ,ct.fecha_trans_ccctr ASC,dt.ide_ccctr ASC";
 
         return str_sql_cxc;
+    }
+
+    /**
+     * SQL para importar clientes desde archivo excel
+     *
+     * @return
+     */
+    public String getSqlClientesImportarArchivo() {
+        return "select "
+                + "ide_geper AS CODIGO, "
+                + "telefono_geper AS ESTADO,"
+                + "contacto_geper AS UBICACION,"
+                + "telefono_geper AS TIPO_CLIENTE,"
+                + "contacto_geper AS NOMBRE_COMPLETO,"
+                + "contacto_geper AS NOMBRE,"
+                + "telefono_geper AS TIPO_CONTRIBUYENTE,"
+                + "telefono_geper AS TIPO_IDENTIFICACION,"
+                + "telefono_geper AS IDENTIFICACION,"
+                + "contacto_geper AS CONTACTO,"
+                + "contacto_geper AS DIRECCION,"
+                + "telefono_geper AS TELEFONO1,"
+                + "telefono_geper AS TELEFONO2,"
+                + "telefono_geper AS FAX,"
+                + "telefono_geper AS MOVIL,"
+                + "correo_geper AS CORREO,"
+                + "observacion_geper AS OBSERVACION,"
+                + "sueldo_geper AS SALDO_INICIAL,"
+                + "telefono_geper AS CUENTA_CONTABLE"
+                + "from gen_persona where ide_geper=-1";
     }
 
 }
