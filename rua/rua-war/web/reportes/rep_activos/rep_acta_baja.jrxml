@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="176"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -35,8 +35,8 @@ cast((extract (year from fecha_asigna_acact)) as integer) as anio
 k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado
 from act_acta_constata a
 left join act_movimiento j on a.ide_acact = j.ide_acact
-left join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
 left join act_activo_fijo d  on d.ide_acafi=j.ide_acafi
+left join act_ubicacion_activo b on d.ide_acuba=b.ide_acuba
 left join gen_casa e on a.ide_gecas=e.ide_gecas
 left join gen_OBRA f on a.ide_geobr=f.ide_geobr
 left join gen_persona g on a.ide_geper=g.ide_geper
@@ -45,8 +45,7 @@ left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf
 left join gen_persona k on a.gen_ide_geper= k.ide_geper
 left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba
 where a.ide_acact= $P{ide_acact}
-order by nombre_inarti,a.ide_acact
-]]>
+order by nombre_inarti,a.ide_acact]]>
 	</queryString>
 	<field name="ide_acact" class="java.lang.Long"/>
 	<field name="codigo_acact" class="java.lang.String"/>

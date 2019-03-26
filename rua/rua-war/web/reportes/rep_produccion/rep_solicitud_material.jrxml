@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="376"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
@@ -137,7 +137,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 	<pageHeader>
 		<band height="24" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="ebb51261-e505-495a-b032-cf9754ae8765" x="463" y="1" width="75" height="23"/>
+				<reportElement uuid="ebb51261-e505-495a-b032-cf9754ae8765" x="480" y="1" width="75" height="23"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -165,7 +165,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="97" y="1" width="141" height="23"/>
+				<reportElement uuid="e52a3e0f-33b8-459a-8b90-c55aa7f6a6c3" x="97" y="1" width="230" height="23"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -179,7 +179,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<text><![CDATA[Materia Prima ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9541ae33-9f2e-44d8-9dcf-b20c0728320b" x="238" y="1" width="131" height="23"/>
+				<reportElement uuid="9541ae33-9f2e-44d8-9dcf-b20c0728320b" x="327" y="1" width="59" height="23"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -190,10 +190,10 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Unidad de Medida]]></text>
+				<text><![CDATA[U/M]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="369" y="1" width="94" height="23"/>
+				<reportElement uuid="61525238-900d-4201-81e4-1e3a81ad63b5" x="386" y="1" width="94" height="23"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -290,8 +290,8 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 	</columnHeader>
 	<detail>
 		<band height="13" splitType="Stretch">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a10583c8-603c-4702-aff8-eecf6f7051df" x="97" y="0" width="141" height="13"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a10583c8-603c-4702-aff8-eecf6f7051df" x="97" y="0" width="230" height="13"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -305,7 +305,7 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="42654af3-c06d-4bf2-807f-df0da07fe4fb" x="238" y="0" width="131" height="13"/>
+				<reportElement uuid="42654af3-c06d-4bf2-807f-df0da07fe4fb" x="327" y="0" width="59" height="13"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -333,21 +333,21 @@ WHERE a.ide_prsol =$P{pide_solicitud}]]>
 				<textFieldExpression><![CDATA[$F{codigo_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="76c55b8d-7aaa-49a7-8ddd-b7f93e7d7cc3" x="463" y="0" width="75" height="13"/>
-				<box>
+				<reportElement uuid="76c55b8d-7aaa-49a7-8ddd-b7f93e7d7cc3" x="480" y="0" width="75" height="13"/>
+				<box rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_prdes}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="bcf2f78e-2958-4bd6-b6f7-8cd04222c671" x="369" y="0" width="94" height="13"/>
+				<reportElement uuid="bcf2f78e-2958-4bd6-b6f7-8cd04222c671" x="386" y="0" width="94" height="13"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
