@@ -150,8 +150,10 @@ public class ServicioProveedor {
         tabla.getColumna("cuent_banco_geper").setVisible(false);
         tabla.getColumna("IDE_RHFRE").setVisible(false);
         tabla.getColumna("IDE_USUA").setVisible(false);
-        tabla.getColumna("GEN_IDE_GEPER").setVisible(false);
+        //tabla.getColumna("GEN_IDE_GEPER").setVisible(false);
         tabla.getColumna("GEN_IDE_GEPER").setRequerida(true);
+        tabla.getColumna("GEN_IDE_GEPER").setNombreVisual("GRUPO");
+        tabla.getColumna("ide_coepr").setNombreVisual("ESTADO");
         tabla.getColumna("GEN_IDE_GEPER").setCombo("select ide_geper,nom_geper from gen_persona where nivel_geper ='PADRE' and es_proveedo_geper=true order by nom_geper");
         tabla.getColumna("GEN_IDE_GEPER").setPermitirNullCombo(false);
         tabla.getColumna("ide_tetcb").setVisible(false);
