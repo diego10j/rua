@@ -1221,7 +1221,7 @@ public void actualizarCustodio(){
         tab_tabla.getColumna("ide_gecas").setCombo("select ide_gecas,nombre_gecas,codigo_gecas from gen_casa order by codigo_gecas");
         tab_tabla.getColumna("ide_gecas").setRequerida(true);
         tab_tabla.getColumna("ide_gecas").setMetodoChange("generarCodigoBarras");
-        tab_tabla.getColumna("ide_geobr").setCombo(" select ide_geobr,nombre_geobr,codigo_geobr from  gen_obra order by codigo_geobr");
+        tab_tabla.getColumna("ide_geobr").setCombo("select ide_geobr,nombre_geobr,codigo_geobr from  gen_obra order by codigo_geobr");
         tab_tabla.getColumna("ide_geobr").setRequerida(true);
         tab_tabla.getColumna("ide_geobr").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("ide_accla").setCombo("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla");
