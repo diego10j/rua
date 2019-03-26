@@ -161,7 +161,7 @@ public class ServicioCliente extends ServicioBase {
         tabla.getColumna("cuent_banco_geper").setVisible(false);
         tabla.getColumna("IDE_RHFRE").setVisible(false);
         tabla.getColumna("IDE_USUA").setVisible(false);
-        tabla.getColumna("GEN_IDE_GEPER").setVisible(false);
+        tabla.getColumna("GEN_IDE_GEPER").setVisible(true);
         tabla.getColumna("NIVEL_GEPER").setVisible(false);
         tabla.getColumna("GEN_IDE_GEPER").setVisible(true);
         tabla.getColumna("GEN_IDE_GEPER").setCombo("select ide_geper,nom_geper from gen_persona where nivel_geper ='PADRE' and es_cliente_geper=true order by nom_geper");
