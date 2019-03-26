@@ -129,6 +129,6 @@
         <properties>
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
-    </persistence-unit>
+    </persistence-unit> 
   
 </persistence>
