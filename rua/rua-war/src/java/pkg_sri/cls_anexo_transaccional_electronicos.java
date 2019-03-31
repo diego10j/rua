@@ -285,97 +285,97 @@ public class cls_anexo_transaccional_electronicos {
                                 }
                             }
                         } else {
-                            //20-08-2018 --- No se reportan retenciones cuando son electronicas
-//////////////////////                            Element air = doc_anexo.createElement("air");
-//////////////////////                            detalleCompras.appendChild(air);
-////////////////////////                            TablaGenerica tab_retencion = utilitario.consultar("SELECT impuesto.casillero_cncim,sum(base_cndre) as base_cndre,porcentaje_cndre,sum(valor_cndre) as valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
-////////////////////////                                    + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
-////////////////////////                                    + "where impuesto.ide_cnimp=" + utilitario.getVariable("p_con_impuesto_renta") + " and cabece.ide_cncre=" + ide_retencion + " GROUP BY impuesto.casillero_cncim,porcentaje_cndre");
-//////////////////////
-//////////////////////                            booEncontro = false;
-//////////////////////                            for (int x = 0; x < tab_retencion_.getTotalFilas(); x++) {
-//////////////////////                                if (ide_retencion.equals(tab_retencion_.getValor(x, "ide_cncre"))) {
-//////////////////////                                    tab_retencion_.setFilaActual(x);
-//////////////////////                                    booEncontro = true;
-//////////////////////                                    break;
-//////////////////////                                }
-//////////////////////                            }
-//////////////////////                            if (booEncontro) {
-//////////////////////                                double dou_total = 0;
-//////////////////////                                for (int j = 0; j < tab_retencion_.getTotalFilas(); j++) {
-//////////////////////                                    if (ide_retencion.equals(tab_retencion_.getValor(j, "ide_cncre"))) {
-//////////////////////
-//////////////////////                                        Element detalleAir = doc_anexo.createElement("detalleAir");
-//////////////////////                                        air.appendChild(detalleAir);
-//////////////////////                                        double dou_porcen = 0;
-//////////////////////                                        double dou_base = 0;
-//////////////////////                                        dou_total = 0;
-//////////////////////                                        try {
-//////////////////////                                            dou_porcen = Double.parseDouble(tab_retencion_.getValor(j, "porcentaje_cndre"));
-//////////////////////                                            if (dou_porcen > 0) {
-//////////////////////                                                dou_porcen = dou_porcen / 100;
-//////////////////////                                            }
-//////////////////////                                            dou_base = Double.parseDouble(tab_retencion_.getValor(j, "base_cndre"));
-//////////////////////                                            //dou_total = dou_porcen * dou_base;  //Descuadraba los decimales
-//////////////////////                                            dou_total += Double.parseDouble(tab_retencion_.getValor(j, "valor_cndre"));
-//////////////////////                                        } catch (Exception e) {
-//////////////////////                                        }
-//////////////////////                                        if (tab_retencion_.getValor(j, "casillero_cncim").startsWith("332")) {
-//////////////////////                                            detalleAir.appendChild(crearElemento("codRetAir", null, "332"));
-//////////////////////                                        } else {
-//////////////////////                                            detalleAir.appendChild(crearElemento("codRetAir", null, tab_retencion_.getValor(j, "casillero_cncim")));
-//////////////////////                                        }
-//////////////////////
-//////////////////////                                        detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
-////////////////////////////                                        if (dou_base != 0.00) {
-////////////////////////////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
-////////////////////////////                                        } else {
-////////////////////////////                                            double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
-////////////////////////////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
-////////////////////////////                                        }
-//////////////////////                                        detalleAir.appendChild(crearElemento("porcentajeAir", null, tab_retencion_.getValor(j, "porcentaje_cndre")));
-//////////////////////                                        detalleAir.appendChild(crearElemento("valRetAir", null, utilitario.getFormatoNumero(dou_total)));
-//////////////////////                                    }
-//////////////////////                                }
-///////////////////////////BORRA 332 AUTOMATICO                                
-//////////////////////                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
-//////////////////////                                if (numero_retencion != null) {
-//////////////////////////////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
-//////////////////////////////////////                                        if (dou_total > 0) {
-//////////////////////////////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
-//////////////////////////////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
-//////////////////////////////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
-//////////////////////////////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-//////////////////////////////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
-//////////////////////////////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-//////////////////////////////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
-//////////////////////////////////////                                        }
-//////////////////////////////////////                                    }
-//////////////////////////////////////                                else {
-//////////////////////////////////////                                    //para las retenciones q no se imprimen las de % 0
-//////////////////////////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
-//////////////////////////////////////                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
-//////////////////////////////////////                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
-//////////////////////////////////////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
-//////////////////////////////////////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
-//////////////////////////////////////                                }
-//////////////////////                                }
-//////////////////////
-//////////////////////                            } else {
-//////////////////////                                //si no hay retención
-////////////////////////                                Element detalleAir = doc_anexo.createElement("detalleAir");
-////////////////////////                                air.appendChild(detalleAir);
-////////////////////////                                detalleAir.appendChild(crearElemento("codRetAir", null, "332"));//OTRAS COMPRAS Y SERVICIOS NO SUJETAS A RETENCIÓN.
-////////////////////////                                double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
-////////////////////////                                detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
-////////////////////////                                detalleAir.appendChild(crearElemento("porcentajeAir", null, "0"));
-////////////////////////                                detalleAir.appendChild(crearElemento("valRetAir", null, "0.00"));
-////////////////////////                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
-////////////////////////                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
-////////////////////////                            detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
-////////////////////////                            detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
-////////////////////////                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
-//////////////////////                            }
+                            ///////////
+                            Element air = doc_anexo.createElement("air");
+                            detalleCompras.appendChild(air);
+//                            TablaGenerica tab_retencion = utilitario.consultar("SELECT impuesto.casillero_cncim,sum(base_cndre) as base_cndre,porcentaje_cndre,sum(valor_cndre) as valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
+//                                    + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
+//                                    + "where impuesto.ide_cnimp=" + utilitario.getVariable("p_con_impuesto_renta") + " and cabece.ide_cncre=" + ide_retencion + " GROUP BY impuesto.casillero_cncim,porcentaje_cndre");
+
+                            booEncontro = false;
+                            for (int x = 0; x < tab_retencion_.getTotalFilas(); x++) {
+                                if (ide_retencion.equals(tab_retencion_.getValor(x, "ide_cncre"))) {
+                                    tab_retencion_.setFilaActual(x);
+                                    booEncontro = true;
+                                    break;
+                                }
+                            }
+                            if (booEncontro) {
+                                double dou_total = 0;
+                                for (int j = 0; j < tab_retencion_.getTotalFilas(); j++) {
+                                    if (ide_retencion.equals(tab_retencion_.getValor(j, "ide_cncre"))) {
+
+                                        Element detalleAir = doc_anexo.createElement("detalleAir");
+                                        air.appendChild(detalleAir);
+                                        double dou_porcen = 0;
+                                        double dou_base = 0;
+                                        dou_total = 0;
+                                        try {
+                                            dou_porcen = Double.parseDouble(tab_retencion_.getValor(j, "porcentaje_cndre"));
+                                            if (dou_porcen > 0) {
+                                                dou_porcen = dou_porcen / 100;
+                                            }
+                                            dou_base = Double.parseDouble(tab_retencion_.getValor(j, "base_cndre"));
+                                            //dou_total = dou_porcen * dou_base;  //Descuadraba los decimales
+                                            dou_total += Double.parseDouble(tab_retencion_.getValor(j, "valor_cndre"));
+                                        } catch (Exception e) {
+                                        }
+                                        if (tab_retencion_.getValor(j, "casillero_cncim").startsWith("332")) {
+                                            detalleAir.appendChild(crearElemento("codRetAir", null, "332"));
+                                        } else {
+                                            detalleAir.appendChild(crearElemento("codRetAir", null, tab_retencion_.getValor(j, "casillero_cncim")));
+                                        }
+
+                                        detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
+//////                                        if (dou_base != 0.00) {
+//////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(dou_base)));
+//////                                        } else {
+//////                                            double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
+//////                                            detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
+//////                                        }
+                                        detalleAir.appendChild(crearElemento("porcentajeAir", null, tab_retencion_.getValor(j, "porcentaje_cndre")));
+                                        detalleAir.appendChild(crearElemento("valRetAir", null, utilitario.getFormatoNumero(dou_total)));
+                                    }
+                                }
+/////BORRA 332 AUTOMATICO                                
+                                String numero_retencion = tab_compras.getValor(i, "numero_cncre");
+                                if (numero_retencion != null) {
+////////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
+////////////////                                        if (dou_total > 0) {
+////////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
+////////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
+////////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
+////////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+////////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
+////////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
+////////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+////////////////                                        }
+////////////////                                    }
+////////////////                                else {
+////////////////                                    //para las retenciones q no se imprimen las de % 0
+////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
+////////////////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
+////////////////                                }
+                                }
+
+                            } else {
+                                //si no hay retención
+//                                Element detalleAir = doc_anexo.createElement("detalleAir");
+//                                air.appendChild(detalleAir);
+//                                detalleAir.appendChild(crearElemento("codRetAir", null, "332"));//OTRAS COMPRAS Y SERVICIOS NO SUJETAS A RETENCIÓN.
+//                                double suma = Double.parseDouble(tab_compras.getValor(i, "base_grabada_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_tarifa0_cpcfa")) + Double.parseDouble(tab_compras.getValor(i, "base_no_objeto_iva_cpcfa"));
+//                                detalleAir.appendChild(crearElemento("baseImpAir", null, utilitario.getFormatoNumero(suma)));
+//                                detalleAir.appendChild(crearElemento("porcentajeAir", null, "0"));
+//                                detalleAir.appendChild(crearElemento("valRetAir", null, "0.00"));
+//                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
+//                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
+//                            detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
+//                            detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
+//                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
+                            }
                         }
 //                        detalleCompras.appendChild(crearElemento("docModificado", null, "0"));
 //                        detalleCompras.appendChild(crearElemento("estabModificado", null, "000"));
