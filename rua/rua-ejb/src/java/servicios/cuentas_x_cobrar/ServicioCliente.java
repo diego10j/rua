@@ -609,7 +609,7 @@ public class ServicioCliente extends ServicioBase {
                 + "observacion_geper AS OBSERVACION,"
                 + "sueldo_geper AS SALDO_INICIAL,"
                 + "telefono_geper AS CUENTA_CONTABLE"
-                + "from gen_persona where ide_geper=-1";
+                + " from gen_persona where ide_geper=-1";
     }
 
 }
