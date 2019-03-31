@@ -107,14 +107,16 @@ public class pre_importar_clientes extends Pantalla {
         tab_detalle.setId("tab_detalle");
         tab_detalle.setSql(ser_cliente.getSqlClientesImportarArchivo());
         tab_detalle.setScrollable(true);
-        tab_detalle.setRows(100);
+        tab_detalle.setRows(15);
         //tab_detalle.setValueExpression("rowStyleClass", "fila.campos[5]  eq null ? null :  'text-red'"); //pinta de rojo la fila si hay observación
-        tab_detalle.setScrollHeight(200); //300
+
         tab_detalle.setLectura(true);
         tab_detalle.dibujar();
         tab_detalle.setLectura(false);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_detalle);
+        
+        
         agregarComponente(pat_panel);
 
     }
@@ -200,7 +202,7 @@ public class pre_importar_clientes extends Pantalla {
                     Object[] obj = new Object[2];
                     obj[0] = i;
                     obj[1] = hoja.getCell(i, int_fila_columna).getContents();
-                    System.out.println(obj[0] + " " + obj[1]);
+                    //System.out.println(obj[0] + " " + obj[1]);
                     lis_campos_excel.add(obj);
                 } catch (Exception e) {
                     System.out.println("Fallo al leer columnas del archivo xls :" + e.getMessage());
@@ -210,23 +212,23 @@ public class pre_importar_clientes extends Pantalla {
             for (int fila = (int_fin - 1); fila >= int_inicio; fila--) {
                 String CODIGO = hoja.getCell(0, fila).getContents();
                 String ESTADO = hoja.getCell(1, fila).getContents();
-                String UBICACION = hoja.getCell(0, fila).getContents();
-                String TIPO_CLIENTE = hoja.getCell(0, fila).getContents();
-                String NOMBRE_COMPLETO = hoja.getCell(0, fila).getContents();
-                String NOMBRE = hoja.getCell(0, fila).getContents();
-                String TIPO_CONTRIBUYENTE = hoja.getCell(0, fila).getContents();
-                String TIPO_IDENTIFICACION = hoja.getCell(0, fila).getContents();
-                String IDENTIFICACION = hoja.getCell(0, fila).getContents();
-                String CONTACTO = hoja.getCell(0, fila).getContents();
-                String DIRECCION = hoja.getCell(0, fila).getContents();
-                String TELEFONO1 = hoja.getCell(0, fila).getContents();
-                String TELEFONO2 = hoja.getCell(0, fila).getContents();
-                String FAX = hoja.getCell(0, fila).getContents();
-                String MOVIL = hoja.getCell(0, fila).getContents();
-                String CORREO = hoja.getCell(0, fila).getContents();
-                String OBSERVACION = hoja.getCell(0, fila).getContents();
-                String SALDO_INICIAL = hoja.getCell(2, fila).getContents();
-                String CUENTA_CONTABLE = hoja.getCell(0, fila).getContents();
+                String UBICACION = hoja.getCell(2, fila).getContents();
+                String TIPO_CLIENTE = hoja.getCell(3, fila).getContents();
+                String NOMBRE_COMPLETO = hoja.getCell(4, fila).getContents();
+                String NOMBRE = hoja.getCell(5, fila).getContents();
+                String TIPO_CONTRIBUYENTE = hoja.getCell(6, fila).getContents();
+                String TIPO_IDENTIFICACION = hoja.getCell(7, fila).getContents();
+                String IDENTIFICACION = hoja.getCell(8, fila).getContents();
+                String CONTACTO = hoja.getCell(9, fila).getContents();
+                String DIRECCION = hoja.getCell(10, fila).getContents();
+                String TELEFONO1 = hoja.getCell(11, fila).getContents();
+                String TELEFONO2 = hoja.getCell(12, fila).getContents();
+                String FAX = hoja.getCell(13, fila).getContents();
+                String MOVIL = hoja.getCell(14, fila).getContents();
+                String CORREO = hoja.getCell(15, fila).getContents();
+                String OBSERVACION = hoja.getCell(16, fila).getContents();
+                String SALDO_INICIAL = hoja.getCell(17, fila).getContents();
+                String CUENTA_CONTABLE = hoja.getCell(18, fila).getContents();
                 tab_detalle.insertar();
 
                 tab_detalle.setValor("CODIGO", CODIGO);
