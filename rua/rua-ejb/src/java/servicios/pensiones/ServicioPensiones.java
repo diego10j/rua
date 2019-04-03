@@ -391,4 +391,20 @@ public class ServicioPensiones extends ServicioBase {
         return lista;
 
     }
+    
+    public List estado_emitido() {
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "true", "Emitido"
+        };
+
+        Object fila2[] = {
+            "false", "No Emitido"
+
+        };
+        lista.add(fila1);
+        lista.add(fila2);
+        return lista;
+
+    }
 }
