@@ -13,6 +13,7 @@ package paq_pensiones;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Confirmar;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
@@ -30,6 +31,7 @@ public class pre_valores extends Pantalla{
     private Tabla tab_tabla2 = new Tabla();
     private AutoCompletar autAlumno = new AutoCompletar();
     private SeleccionTabla sel_tab_alumno = new SeleccionTabla();
+    private Confirmar con_confirma = new Confirmar();
     String alumno = "";
     
     @EJB
@@ -126,6 +128,13 @@ public class pre_valores extends Pantalla{
         //bot_fac_elec.setMetodo(ser_pensiones.generarFacturaElectronica("-1"));
         agregarComponente(bot_fac_elec);
         bar_botones.agregarBoton(bot_fac_elec);
+        
+        con_confirma.setId("con_confirma");
+        con_confirma.setMessage("Está seguro que desea enviar a generar factura");
+        con_confirma.setTitle("ENVIAR A GENERAR FACTURA");
+        con_confirma.getBot_aceptar().setValue("Si");
+        con_confirma.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma); 
     }
     
     public void cargaDetalle(AjaxBehaviorEvent evt){
@@ -180,18 +189,30 @@ public class pre_valores extends Pantalla{
         utilitario.addUpdate("tab_tabla2");
     }
     public void generarFactura(){
+        if(autAlumno.getValor()==null || autAlumno.getValor().isEmpty()){
+          utilitario.agregarMensajeError("Seleccione un registro", "Seleccione el nomber de un alumno para continuar");
+
+        }
         if(tab_tabla1.getValor("generado_fact_recva").equals("true")){
             utilitario.agregarNotificacionInfo("Ya se encuentra Generada la factura", "No se puede generar ya se encuentra generado la factura");
         }
         else {
-        String maximo = "";
+            con_confirma.getBot_aceptar().setMetodo("aprobarEmision");
+            utilitario.addUpdate("con_confirma");
+            con_confirma.dibujar();
+        
+        } 
+    }
+    public void aprobarEmision(){
+       String maximo = "";
        // String defecto = 0;
-        //ser_pensiones.generarFacturaElectronica(alumno);
-        TablaGenerica cod_max = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("pen_tmp_lista_fact", "ide_petlf"));
-        maximo = cod_max.getValor("maximo");
+        
         String codig_val = tab_tabla1.getValorSeleccionado();
         TablaGenerica tab_datos_temp = utilitario.consultar(ser_pensiones.selectPenTemp(codig_val));
         for (int i=0;i<tab_datos_temp.getTotalFilas();i++){
+            //ser_pensiones.generarFacturaElectronica(alumno);
+            TablaGenerica cod_max = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("pen_tmp_lista_fact", "ide_petlf"));
+            maximo = cod_max.getValor("maximo");
             utilitario.getConexion().ejecutarSql("INSERT INTO pen_tmp_lista_fact (ide_petlf, codigo_alumno_petlf, nombre_alumno_petlf, paralelo_petlf, subtotal_petlf, rebaja_petlf, total_petlf, cod_factura_petlf, fecha_petlf, concepto_petlf, representante_petlf, cedula_petlf, periodo_lectivo_petlf, correo_petlf, direccion_petlf, telefono_petlf, cedula_alumno_petlf, ide_sucu, ide_empr)\n" +
                                                  "VALUES ("+maximo+", "+tab_datos_temp.getValor(i, "codigo_alumno")+", '"+tab_datos_temp.getValor(i, "nombres_alumno")+"', '"+tab_datos_temp.getValor(i, "paralelo")+"', "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "valor_descuento_revad")+", "+tab_datos_temp.getValor(i, "total")+", "+tab_datos_temp.getValor(i, "codigo_fac")+", '"+tab_datos_temp.getValor(i, "fecha")+"', '"+tab_datos_temp.getValor(i, "concepto")+"', "
                                                          + "'"+tab_datos_temp.getValor(i, "nom_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_repre")+"', '"+tab_datos_temp.getValor(i, "periodo_academico")+"', '"+tab_datos_temp.getValor(i, "correo_repre")+"', '"+tab_datos_temp.getValor(i, "direccion_repre")+"', '"+tab_datos_temp.getValor(i, "telefono_repre")+"', '"+tab_datos_temp.getValor(i, "cedula_alumno")+"', "+tab_datos_temp.getValor(i, "ide_sucu")+", "+tab_datos_temp.getValor(i, "ide_empr")+")");
@@ -206,10 +227,9 @@ public class pre_valores extends Pantalla{
         }
             catch(Exception e){
                 utilitario.agregarMensajeError("Error al generar la factura", "Verifique datos o consulte con el administrador");
-            }
-        } 
+            } 
+        con_confirma.cerrar();
     }
-    
     public void aceptarAlumno(){
         String codig_alumno = sel_tab_alumno.getValorSeleccionado();
         System.out.println("Este es el alumno seleccionado "+codig_alumno);
@@ -343,6 +363,14 @@ public class pre_valores extends Pantalla{
 
     public void setSel_tab_alumno(SeleccionTabla sel_tab_alumno) {
         this.sel_tab_alumno = sel_tab_alumno;
+    }
+
+    public Confirmar getCon_confirma() {
+        return con_confirma;
+    }
+
+    public void setCon_confirma(Confirmar con_confirma) {
+        this.con_confirma = con_confirma;
     }
 
 
