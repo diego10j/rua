@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="163"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -407,12 +407,12 @@ order by nombre_inarti,a.ide_acact]]>
 			<textField>
 				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="81" y="122" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{denom_custodio}+" "+$F{nom_geper}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="667d4349-5d55-4a15-95e8-b692a0dd213f" x="310" y="122" width="181" height="14"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{denom_custodio}+" "+$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="360575e8-092d-49c0-bc6d-68b1571318d1" x="1" y="39" width="555" height="38" forecolor="#FF3333"/>
