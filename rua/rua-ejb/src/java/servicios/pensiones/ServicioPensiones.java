@@ -273,7 +273,7 @@ public class ServicioPensiones extends ServicioBase {
     public String selectPenTemp(String codigo) {
         return "select a.IDE_TITULO_RECVAL as codigo_fac, b.ide_geper, b.codigo_geper as codigo_alumno, b.identificac_geper as cedula_alumno, b.nom_geper as nombres_alumno,\n"
                 + "               c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, correo_recalp as correo_repre,\n"
-                + "               d.periodo_lectivo as periodo_academico, d.paralelo_alumno as paralelo, a.TOTAL_RECVA as total, des_concepto_recon as concepto, a.FECHA_EMISION_RECVA as fecha, a.ide_sucu as ide_sucu, a.ide_empr as ide_empr, \n"
+                + "               d.periodo_lectivo as periodo_academico, d.paralelo_alumno as paralelo, a.TOTAL_RECVA as total, des_concepto_recon||' '||nombre_gemes as concepto, a.FECHA_EMISION_RECVA as fecha, a.ide_sucu as ide_sucu, a.ide_empr as ide_empr, \n"
                 + "               f.detalle_revad, f.cantidad_revad, f.precio_revad, f.total_revad, f.valor_descuento_revad, f.iva_inarti\n"
                 + "               from rec_valores a \n"
                 + "               left join gen_persona b on a.ide_geper = b.ide_geper and b.ide_vgtcl=1 and b.nivel_geper='HIJO'\n"
@@ -290,7 +290,7 @@ public class ServicioPensiones extends ServicioBase {
                 + "	        from rec_valor_detalle  a\n"
                 + "	        left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n"
                 + "	        left join inv_articulo c on b.ide_inarti = c.ide_inarti\n"
-                + "	        ) f on a.IDE_TITULO_RECVAL = f.IDE_TITULO_RECVAL\n"
+                + "	        ) f on a.IDE_TITULO_RECVAL = f.IDE_TITULO_RECVAL left join gen_mes g on  a.ide_gemes = g.ide_gemes \n"
                 + "	        where a.IDE_TITULO_RECVAL = " + codigo + "";
         /* + "select a.IDE_TITULO_RECVAL as codigo_fac, b.ide_geper, b.codigo_geper as codigo_alumno, b.identificac_geper as cedula_alumno, b.nom_geper as nombres_alumno,\n"
          + "c.identificac_geper as cedula_repre, c.nom_geper as nom_repre, c.direccion_geper as direccion_repre, c.telefono_geper as telefono_repre, c.correo_geper as correo_repre,\n"
