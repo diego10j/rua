@@ -1847,13 +1847,13 @@ public class pre_libro_bancos extends Pantalla {
 
             asc_asiento.getTab_deta_asiento().setValor("ide_cndpc", ser_tesoreria.getCuentaContable(aut_cuenta.getValor()));
 
-            if (mep_menu.getOpcion() == 5 && (tab_tabla2 != null && tab_tabla2.getSumaColumna("valor_ccdtr") > 0)) {
-                double valor_adicional = tab_tabla2.getSumaColumna("valor_ccdtr");
-                double valor_pagar = Double.parseDouble(tex_valor_pagar.getValue().toString());
-                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(valor_adicional + valor_pagar));
-            } else {
-                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
-            }
+//            if (mep_menu.getOpcion() == 5 && (tab_tabla2 != null && tab_tabla2.getSumaColumna("valor_ccdtr") > 0)) {
+//                double valor_adicional = tab_tabla2.getSumaColumna("valor_ccdtr");
+//                double valor_pagar = Double.parseDouble(tex_valor_pagar.getValue().toString());
+//                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(valor_adicional + valor_pagar));
+//            } else {
+//                asc_asiento.getTab_deta_asiento().setValor("valor_cndcc", utilitario.getFormatoNumero(tex_valor_pagar.getValue().toString()));
+//            }
             /////////////DETALLE ASIENTO
             //si es cuenta por cobrar
             if (mep_menu.getOpcion() == 5) {
