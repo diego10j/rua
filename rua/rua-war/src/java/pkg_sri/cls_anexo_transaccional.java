@@ -109,6 +109,13 @@ public class cls_anexo_transaccional {
                     TablaGenerica tab_rete_iva_servicios100_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
                             + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva100") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
+                    //05-04-2019 Iva 20% , Iva 10% Contribuyentes especiales
+                    TablaGenerica tab_rete_iva10_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
+                            + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
+                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva10") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
+                    TablaGenerica tab_rete_iva20_ = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
+                            + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
+                            + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva20") + " and cabece.ide_cncre in(" + ideRetenciones + ") order by cabece.ide_cncre");
                     // System.out.println("tab_rete_iva_servicios100_:  " + tab_rete_iva_servicios100_.getSql());
                     TablaGenerica tab_retencion_ = utilitario.consultar("SELECT impuesto.casillero_cncim,sum(base_cndre) as base_cndre,porcentaje_cndre,sum(valor_cndre) as valor_cndre,cabece.ide_cncre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
                             + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
@@ -141,18 +148,43 @@ public class cls_anexo_transaccional {
                         detalleCompras.appendChild(crearElemento("montoIva", null, tab_compras.getValor(i, "valor_iva_cpcfa")));
 
                         //// 
-                        detalleCompras.appendChild(crearElemento("valRetBien10", null, "0.00"));
-                        detalleCompras.appendChild(crearElemento("valRetServ20", null, "0.00"));
-
                         String ide_retencion = tab_compras.getValor(i, "ide_cncre");
                         if (ide_retencion == null) {
                             ide_retencion = "-1";
                         }
 
+                        boolean booEncontro = false;
+                        for (int x = 0; x < tab_rete_iva10_.getTotalFilas(); x++) {
+                            if (ide_retencion.equals(tab_rete_iva10_.getValor(x, "ide_cncre"))) {
+                                tab_rete_iva10_.setFilaActual(x);
+                                booEncontro = true;
+                                break;
+                            }
+                        }
+                        if (booEncontro) {
+                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, tab_rete_iva10_.getValor("valor_cndre")));
+                        } else {
+                            detalleCompras.appendChild(crearElemento("valRetBien10", null, "0.00"));
+                        }
+
+                        booEncontro = false;
+                        for (int x = 0; x < tab_rete_iva20_.getTotalFilas(); x++) {
+                            if (ide_retencion.equals(tab_rete_iva20_.getValor(x, "ide_cncre"))) {
+                                tab_rete_iva20_.setFilaActual(x);
+                                booEncontro = true;
+                                break;
+                            }
+                        }
+                        if (booEncontro) {
+                            detalleCompras.appendChild(crearElemento("valRetServ20", null, tab_rete_iva20_.getValor("valor_cndre")));
+                        } else {
+                            detalleCompras.appendChild(crearElemento("valRetServ20", null, "0.00"));
+                        }
+
 //                        TablaGenerica tab_rete_iva_bienes = utilitario.consultar("SELECT detalle.ide_cncim,valor_cndre FROM con_cabece_retenc cabece INNER JOIN con_detall_retenc detalle on detalle.ide_cncre=cabece.ide_cncre "
 //                                + "INNER JOIN con_cabece_impues impuesto on  detalle.ide_cncim=impuesto.ide_cncim "
 //                                + "where impuesto.ide_cncim=" + utilitario.getVariable("p_con_impuesto_iva30") + " and cabece.ide_cncre=" + ide_retencion);
-                        boolean booEncontro = false;
+                        booEncontro = false;
                         for (int x = 0; x < tab_rete_iva_bienes_.getTotalFilas(); x++) {
                             if (ide_retencion.equals(tab_rete_iva_bienes_.getValor(x, "ide_cncre"))) {
                                 tab_rete_iva_bienes_.setFilaActual(x);
