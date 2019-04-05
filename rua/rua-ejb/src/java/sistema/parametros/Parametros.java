@@ -104,14 +104,14 @@ public class Parametros {
         lis_parametros.add(new Parametro("4", "p_act_estado_activo_valora_deprec", "Indica el los estados que tienen los activos para valorar la depreciacion de los mismos. ", "0", "act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf"));
         lis_parametros.add(new Parametro("4", "p_act_activo_fijo", "Indica si es activo fijo o bien", "1", "act_clasificacion", "ide_accls", "nombre_accls"));
         lis_parametros.add(new Parametro("4", "p_act_porcen_valor_residual", "Porcentaje de valoracion de activos fijos", "30"));
-        lis_parametros.add(new Parametro("4", "p_act_secuecial_entrega_recepcion", "Indica el numero secuencial el acta entrega recepcion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
-        lis_parametros.add(new Parametro("4", "p_act_secuecial_constatacion", "Indica el numero secuencial el acta constacion fisica", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
-        lis_parametros.add(new Parametro("4", "p_act_secuecial_baja", "Indica el numero secuencial el acta de bajas", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
-        lis_parametros.add(new Parametro("4", "p_act_secuecial_cambio", "Indica el numero secuencial el acta de cambio de custodio", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
-        lis_parametros.add(new Parametro("4", "p_act_acta_entrega_recep", "Indica el codigo de tipo acta entrega recepcion", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
-        lis_parametros.add(new Parametro("4", "p_act_acta_constatacion", "Indica el codigo de tipo acta constatacion fisica", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
-        lis_parametros.add(new Parametro("4", "p_act_acta_baja", "Indica el codigo de tipo acta de baja", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
-        lis_parametros.add(new Parametro("4", "p_act_acta_cambio", "Indica el codigo de tipo acta de baja de cambio de custodio", "3", "act_tipo_acta", "ide_actia", "detalle_actia")); 
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_entrega_recepcion", "Indica el numero secuencial el acta entrega recepcion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_constatacion", "Indica el numero secuencial el acta constacion fisica", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_baja", "Indica el numero secuencial el acta de bajas", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("4", "p_act_secuecial_cambio", "Indica el numero secuencial el acta de cambio de custodio", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("4", "p_act_acta_entrega_recep", "Indica el codigo de tipo acta entrega recepcion", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
+        lis_parametros.add(new Parametro("4", "p_act_acta_constatacion", "Indica el codigo de tipo acta constatacion fisica", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
+        lis_parametros.add(new Parametro("4", "p_act_acta_baja", "Indica el codigo de tipo acta de baja", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
+        lis_parametros.add(new Parametro("4", "p_act_acta_cambio", "Indica el codigo de tipo acta de baja de cambio de custodio", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
 
         /*
          * COMPRAS MODULO =5
@@ -238,7 +238,7 @@ public class Parametros {
         /*
          * VENTAS =8
          */
- /*
+        /*
          * PRESTAMOS E INVERSIONES =9 *
          */
         lis_parametros.add(new Parametro("9", "p_iyp_activo", "Indica que se carga solo las cuentas de nivel de Activo", "0", "con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc"));
@@ -460,35 +460,40 @@ public class Parametros {
 //
         lis_parametros.add(new Parametro("0", "p_con_repo_nivel", "Visualiza reporte comprobante contable a nivel 5 ", "false"));
 
-        
+        lis_parametros.add(new Parametro("0", "p_con_impuesto_iva30", "Iva 30 ATS", "1", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+        lis_parametros.add(new Parametro("0", "p_con_impuesto_iva70", "Iva 70 ATS", "13", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+        lis_parametros.add(new Parametro("0", "p_con_impuesto_iva100", "Iva 100 ATS ", "14", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+        lis_parametros.add(new Parametro("0", "p_con_impuesto_iva10", "Iva 10 ATS ", "28", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+        lis_parametros.add(new Parametro("0", "p_con_impuesto_iva20", "Iva 20 ATS ", "33", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+
         // PRODUCCION = 14
-         //NUMERO SECUENCIALES DE PRODUCCION
-          lis_parametros.add(new Parametro("14", "p_prod_numero_proforma", "Indica el numero secuencial para cualquier documento", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_sec_orden_producion", "Indica el numero secuencial para cualquier documento de orden de produccion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos")); 
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_control_produccion", "Indica el numero secuencial para cualquier documento de control de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_cronograma_produccion", "Indica el numero secuencial para cualquier documento del cronograma de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_recepcion_mercaderia", "Indica el numero secuencial para cualquier documento de recepcion de mercaderia de produccion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_clientes", "Indica el numero secuencial para cualquier documento de nota de entrega a clientes", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_requeri_materia_prima", "Indica el numero secuencial para cualquier documento de requerimiento de materia prima", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_solicitud_material", "Indica el numero secuencial para cualquier documento de requerimiento de solicitud de material", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_interna", "Indica el numero secuencial para cualquier documento de requerimiento de nota de entrega interna", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_recibido_interno", "Indica el numero secuencial para cualquier documento de requerimiento de nota de recibido interno", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_devolucion", "Indica el numero secuencial para cualquier documento de requerimiento de nota de devolucion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-          //TIPOS DE COMPROBANTES
-          lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_recepcion_mercaderia", "Indica que el tipo de transaccion de recepcion de mercaderia", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_clientes", "Indica que el tipo de transaccion de nota de entrega a clientes", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_solicitud_material", "Indica que el tipo de transaccion de solicitud de material", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_nota_recibido_interno", "Indica que el tipo de transaccion de nota de recibido interno", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-          lis_parametros.add(new Parametro("14", "p_prod_version_documento", "Indica la version en la que se encuentran los documentos", "Version 1"));
-          lis_parametros.add(new Parametro("14", "p_prod_fecha_documento", "Indica la fecha de registro en la que se encuentran los documentos", "2018-10-31"));
- // MODULO PENSIONES = 15
-          lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
-          lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
-          lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
-          
+        //NUMERO SECUENCIALES DE PRODUCCION
+        lis_parametros.add(new Parametro("14", "p_prod_numero_proforma", "Indica el numero secuencial para cualquier documento", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_sec_orden_producion", "Indica el numero secuencial para cualquier documento de orden de produccion", "3", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_control_produccion", "Indica el numero secuencial para cualquier documento de control de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_cronograma_produccion", "Indica el numero secuencial para cualquier documento del cronograma de produccion", "4", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_recepcion_mercaderia", "Indica el numero secuencial para cualquier documento de recepcion de mercaderia de produccion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_clientes", "Indica el numero secuencial para cualquier documento de nota de entrega a clientes", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_requeri_materia_prima", "Indica el numero secuencial para cualquier documento de requerimiento de materia prima", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_solicitud_material", "Indica el numero secuencial para cualquier documento de requerimiento de solicitud de material", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_interna", "Indica el numero secuencial para cualquier documento de requerimiento de nota de entrega interna", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_recibido_interno", "Indica el numero secuencial para cualquier documento de requerimiento de nota de recibido interno", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_devolucion", "Indica el numero secuencial para cualquier documento de requerimiento de nota de devolucion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        //TIPOS DE COMPROBANTES
+        lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_recepcion_mercaderia", "Indica que el tipo de transaccion de recepcion de mercaderia", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_clientes", "Indica que el tipo de transaccion de nota de entrega a clientes", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_solicitud_material", "Indica que el tipo de transaccion de solicitud de material", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_nota_recibido_interno", "Indica que el tipo de transaccion de nota de recibido interno", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_nota_devolucion", "Indica que el tipo de transaccion de nota de devolucion", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+        lis_parametros.add(new Parametro("14", "p_prod_version_documento", "Indica la version en la que se encuentran los documentos", "Version 1"));
+        lis_parametros.add(new Parametro("14", "p_prod_fecha_documento", "Indica la fecha de registro en la que se encuentran los documentos", "2018-10-31"));
+        // MODULO PENSIONES = 15
+        lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
+        lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
+        lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
+
         return lis_parametros;
     }
 }
