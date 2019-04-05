@@ -5,7 +5,6 @@
  */
 package paq_pensiones;
 
-
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.AutoCompletar;
@@ -18,16 +17,20 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.VisualizarPDF;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.pensiones.ServicioPensiones;
 import sistema.aplicacion.Pantalla;
 
-public class pre_recaudacion_consulta extends Pantalla{
+public class pre_recaudacion_consulta extends Pantalla {
+
     private Tabla tab_tabla1 = new Tabla();
     private AutoCompletar autAlumno = new AutoCompletar();
     private Dialogo dia_emision = new Dialogo();
@@ -39,119 +42,126 @@ public class pre_recaudacion_consulta extends Pantalla{
     private final Etiqueta eti_cajero = new Etiqueta();
     private final Etiqueta eti_caja = new Etiqueta();
     private final Etiqueta eti_emision = new Etiqueta();
+    private Map parametro = new HashMap();
     String alumno = "";
     String seleccion_alumno = "";
     String valor_pagar = "";
     String fecha_actual = "";
     String nombre_alumno = "";
-    
+
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
-    
-    public pre_recaudacion_consulta(){
-        
+    private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
+
+    public pre_recaudacion_consulta() {
+
         if (tienePerfilSecretaria() != 0) {
-            
-        bar_botones.quitarBotonInsertar();
-        bar_botones.quitarBotonEliminar();
-        bar_botones.quitarBotonGuardar();
-        autAlumno.setId("autAlumno");
-        autAlumno.setAutoCompletar(ser_pensiones.getSqlComboAlumnos());
-        autAlumno.setSize(75);
-        autAlumno.setAutocompletarContenido(); // no startWith para la busqueda
-        autAlumno.setMetodoChange("seleccionarAlumno");
-        bar_botones.agregarComponente(new Etiqueta("Buscar Alumno : "));
-        bar_botones.agregarComponente(autAlumno);
-        
-        Boton bot_clean = new Boton();
-        bot_clean.setIcon("ui-icon-cancel");
-        bot_clean.setTitle("Limpiar");
-        bot_clean.setMetodo("limpiar");
-        bar_botones.agregarComponente(bot_clean);
-        
-        Boton bot_recaudar = new Boton();
-        bot_recaudar.setTitle("Limpiar");
-        bot_recaudar.setIcon("ui-icon-search");
-        bot_recaudar.setValue("Recaudar");
-        bot_recaudar.setMetodo("abrirDialogo");
-        bar_botones.agregarComponente(bot_recaudar);
-        
-        tab_tabla1.setId("tab_tabla1");   //identificador
-        tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa")+" and ide_titulo_recval = -1"));
-        tab_tabla1.setRows(500);
-        tab_tabla1.setLectura(true);
-        tab_tabla1.setTipoSeleccion(true);
-        tab_tabla1.dibujar();
-        PanelTabla pat_tabla1 = new PanelTabla();
-        pat_tabla1.setId("pat_tabla1");
-        pat_tabla1.setPanelTabla(tab_tabla1);
-        Division div_tabla1 = new Division();
-        div_tabla1.setId("div_tabla1");
-        div_tabla1.dividir1(pat_tabla1);
-        agregarComponente(div_tabla1);
-        
-        
-        eti_cajero.setStyle("font-size:16px;font-weight: bold");
-        eti_cajero.setValue("Cajero:"+empleado);
-                    
-        eti_caja.setStyle("font-size:16px;font-weight: bold");
-        eti_caja.setValue("Caja:"+caja);
-                    
-        eti_emision.setStyle("font-size:16px;font-weight: bold");
-        eti_emision.setValue("Emision:"+emision);
-                    
-        Grid grup_titulo = new Grid();
-        grup_titulo.setColumns(1);
-        grup_titulo.setWidth("100%");
-        grup_titulo.setId("grup_titulo");
-        grup_titulo.getChildren().add(eti_cajero);
-        grup_titulo.getChildren().add(eti_caja);
-        grup_titulo.getChildren().add(eti_emision);      
-        
-        Division div_cabecera=new Division();
-        div_cabecera.setId("div_cabecera");
-        div_cabecera.setFooter(grup_titulo, div_tabla1, "15%");
-        agregarComponente(div_cabecera);
-        
-        dia_emision.setId("dia_emision");
-        dia_emision.setTitle("Seleccion los parámetros");
-        dia_emision.setWidth("30%");
-        dia_emision.setHeight("28%");
-        dia_emision.getBot_aceptar().setMetodo("recaudarRubro");
-        dia_emision.setResizable(false);
-        
-        com_forma_pago.setId("com_forma_pago");
-        com_forma_pago.setCombo("select ide_cndfp, nombre_cndfp from con_deta_forma_pago order by nombre_cndfp");
-        
-        Grid gru_cuerpo = new Grid();
-        gru_cuerpo.setColumns(2);
-        Etiqueta eti_mensaje = new Etiqueta();
-        eti_mensaje.setValue("FORMA DE PAGO:                                             ");
-        eti_mensaje.setStyle("font-size: 11px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
-        gru_cuerpo.getChildren().add(eti_mensaje);
-        gru_cuerpo.getChildren().add(com_forma_pago);
-        
-        area_dialogo = new AreaTexto();
-        area_dialogo.setCols(45);
-        area_dialogo.setMaxlength(60);
-        area_dialogo.setRows(1);
-        gru_cuerpo.getChildren().add(new Etiqueta("RECIBO N°: "));
-        gru_cuerpo.getChildren().add(area_dialogo);
-        
-        gru_cuerpo.getChildren().add(new Etiqueta("FECHA: "));
-        //fecha.setId("fecha");
-        //fecha.setFechaActual();
-        //fecha.setTipoBoton(true); 
-        //java.util.Date fecha2 = new Date();
-        //eti_fecha.setValue(fecha2);
-        //eti_fecha.setStyle("font-size: 11px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
-        gru_cuerpo.getChildren().add(eti_fecha);
-        //gru_cuerpo.getChildren().add(fecha);
-        
-        dia_emision.setDialogo(gru_cuerpo);
-        agregarComponente(dia_emision);
+
+            bar_botones.quitarBotonInsertar();
+            bar_botones.quitarBotonEliminar();
+            bar_botones.quitarBotonGuardar();
+            autAlumno.setId("autAlumno");
+            autAlumno.setAutoCompletar(ser_pensiones.getSqlComboAlumnos());
+            autAlumno.setSize(75);
+            autAlumno.setAutocompletarContenido(); // no startWith para la busqueda
+            autAlumno.setMetodoChange("seleccionarAlumno");
+            bar_botones.agregarComponente(new Etiqueta("Buscar Alumno : "));
+            bar_botones.agregarComponente(autAlumno);
+
+            Boton bot_clean = new Boton();
+            bot_clean.setIcon("ui-icon-cancel");
+            bot_clean.setTitle("Limpiar");
+            bot_clean.setMetodo("limpiar");
+            bar_botones.agregarComponente(bot_clean);
+
+            Boton bot_recaudar = new Boton();
+            bot_recaudar.setTitle("Limpiar");
+            bot_recaudar.setIcon("ui-icon-search");
+            bot_recaudar.setValue("Recaudar");
+            //bot_recaudar.setMetodo("generarPDFrecaudacion");
+            bot_recaudar.setMetodo("abrirDialogo");
+            bar_botones.agregarComponente(bot_recaudar);
+
+            tab_tabla1.setId("tab_tabla1");   //identificador
+            tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa") + " and ide_titulo_recval = -1"));
+            tab_tabla1.setRows(500);
+            tab_tabla1.setLectura(true);
+            tab_tabla1.setTipoSeleccion(true);
+            tab_tabla1.dibujar();
+            PanelTabla pat_tabla1 = new PanelTabla();
+            pat_tabla1.setId("pat_tabla1");
+            pat_tabla1.setPanelTabla(tab_tabla1);
+            Division div_tabla1 = new Division();
+            div_tabla1.setId("div_tabla1");
+            div_tabla1.dividir1(pat_tabla1);
+            agregarComponente(div_tabla1);
+
+            eti_cajero.setStyle("font-size:16px;font-weight: bold");
+            eti_cajero.setValue("Cajero:" + empleado);
+
+            eti_caja.setStyle("font-size:16px;font-weight: bold");
+            eti_caja.setValue("Caja:" + caja);
+
+            eti_emision.setStyle("font-size:16px;font-weight: bold");
+            eti_emision.setValue("Emision:" + emision);
+
+            Grid grup_titulo = new Grid();
+            grup_titulo.setColumns(1);
+            grup_titulo.setWidth("100%");
+            grup_titulo.setId("grup_titulo");
+            grup_titulo.getChildren().add(eti_cajero);
+            grup_titulo.getChildren().add(eti_caja);
+            grup_titulo.getChildren().add(eti_emision);
+
+            Division div_cabecera = new Division();
+            div_cabecera.setId("div_cabecera");
+            div_cabecera.setFooter(grup_titulo, div_tabla1, "15%");
+            agregarComponente(div_cabecera);
+
+            dia_emision.setId("dia_emision");
+            dia_emision.setTitle("Seleccion los parámetros");
+            dia_emision.setWidth("30%");
+            dia_emision.setHeight("28%");
+            dia_emision.getBot_aceptar().setMetodo("recaudarRubro");
+            dia_emision.setResizable(false);
+
+            com_forma_pago.setId("com_forma_pago");
+            com_forma_pago.setCombo("select ide_cndfp, nombre_cndfp from con_deta_forma_pago order by nombre_cndfp");
+
+            Grid gru_cuerpo = new Grid();
+            gru_cuerpo.setColumns(2);
+            Etiqueta eti_mensaje = new Etiqueta();
+            eti_mensaje.setValue("FORMA DE PAGO:                                             ");
+            eti_mensaje.setStyle("font-size: 11px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+            gru_cuerpo.getChildren().add(eti_mensaje);
+            gru_cuerpo.getChildren().add(com_forma_pago);
+
+            area_dialogo = new AreaTexto();
+            area_dialogo.setCols(45);
+            area_dialogo.setMaxlength(60);
+            area_dialogo.setRows(1);
+            //gru_cuerpo.getChildren().add(new Etiqueta("RECIBO N°: "));
+            //gru_cuerpo.getChildren().add(area_dialogo);
+
+            gru_cuerpo.getChildren().add(new Etiqueta("FECHA: "));
+            //fecha.setId("fecha");
+            //fecha.setFechaActual();
+            //fecha.setTipoBoton(true); 
+            //java.util.Date fecha2 = new Date();
+            //eti_fecha.setValue(fecha2);
+            //eti_fecha.setStyle("font-size: 11px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+            gru_cuerpo.getChildren().add(eti_fecha);
+            //gru_cuerpo.getChildren().add(fecha);
+
+            dia_emision.setDialogo(gru_cuerpo);
+            agregarComponente(dia_emision);
+
+            //add component visualizarPDF
+            vipdf_recaudacion.setId("vipdf_recaudacion");
+            vipdf_recaudacion.setTitle("RECIBO RECAUDACIONES");
+            agregarComponente(vipdf_recaudacion);
         } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la facturacion. Consulte con el Administrador");
         }
@@ -161,6 +171,7 @@ public class pre_recaudacion_consulta extends Pantalla{
     String ide_ademple = "";
     String caja = "";
     String emision = "";
+
     private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
 
@@ -172,88 +183,109 @@ public class pre_recaudacion_consulta extends Pantalla{
             caja = fila[3].toString();
             emision = fila[4].toString();
             return 1;
-            
 
         } else {
             return 0;
-            
+
         }
     }
-    
+
     public void seleccionarAlumno(SelectEvent evt) {
         autAlumno.onSelect(evt);
         alumno = autAlumno.getValor();
         if (autAlumno.getValor() != null) {
-          TablaGenerica tab_nom_alumno = utilitario.consultar("select ide_geper, nom_geper  from gen_persona where ide_geper = "+alumno+"");
-          nombre_alumno = tab_nom_alumno.getValor("nom_geper");
-          tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa"))+ " and a.ide_geper = "+alumno+"");
-          tab_tabla1.ejecutarSql();
-          utilitario.addUpdate("tab_tabla1");
-          if (tab_tabla1.isEmpty()){
-              utilitario.agregarMensajeInfo("El estudiante "+nombre_alumno+" no presenta deudas a cobrar", "Ingrese otro alumno.");
-          }
+            TablaGenerica tab_nom_alumno = utilitario.consultar("select ide_geper, nom_geper  from gen_persona where ide_geper = " + alumno + "");
+            nombre_alumno = tab_nom_alumno.getValor("nom_geper");
+            tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa")) + " and a.ide_geper = " + alumno + "");
+            tab_tabla1.ejecutarSql();
+            utilitario.addUpdate("tab_tabla1");
+            if (tab_tabla1.isEmpty()) {
+                utilitario.agregarMensajeInfo("El estudiante " + nombre_alumno + " no presenta deudas a cobrar", "Ingrese otro alumno.");
+            }
         } else {
             tab_tabla1.limpiar();
         }
     }
-    
-        public void limpiar() {
+
+    public void limpiar() {
         autAlumno.limpiar();
         tab_tabla1.limpiar();
     }
-    public void abrirDialogo(){
-        if(tab_tabla1.getTotalFilas() > 0){
-            if (tab_tabla1.getFilasSeleccionadas().isEmpty()){
-             utilitario.agregarMensajeError("Debe seleccionar al menos un valor a recaudar para continuar", "");
-            } 
-            else{
-            fecha_actual = utilitario.getFechaActual();
-            seleccion_alumno = tab_tabla1.getFilasSeleccionadas();
-            TablaGenerica tab_suma_rubro = utilitario.consultar("select 1 as codigo, sum(total_recva) as valor_pago from rec_valores where ide_titulo_recval in ("+seleccion_alumno+")");
-            eti_fecha.setValue(fecha_actual);
-            eti_fecha.setStyle("font-size: 14px;border: none;text-shadow: 0px 2px 3px #ccc;background: none; color:black;");
-            valor_pagar = tab_suma_rubro.getValor("valor_pago");
-            eti_valor_pagar.setValue(valor_pagar);
-            eti_valor_pagar.setStyle("font-size: 16px;border: none;text-shadow: 0px 2px 3px #ccc;background: none; color:red;");
-            dia_emision.setTitle("TOTAL A COBRAR: $"+eti_valor_pagar.getValue());
-            dia_emision.dibujar();
+
+    public void abrirDialogo() {
+        if (tab_tabla1.getTotalFilas() > 0) {
+            if (tab_tabla1.getFilasSeleccionadas().isEmpty()) {
+                utilitario.agregarMensajeError("Debe seleccionar al menos un valor a recaudar para continuar", "");
+            } else {
+                fecha_actual = utilitario.getFechaActual();
+                seleccion_alumno = tab_tabla1.getFilasSeleccionadas();
+                TablaGenerica tab_suma_rubro = utilitario.consultar("select 1 as codigo, sum(total_recva) as valor_pago from rec_valores where ide_titulo_recval in (" + seleccion_alumno + ")");
+                eti_fecha.setValue(fecha_actual);
+                eti_fecha.setStyle("font-size: 14px;border: none;text-shadow: 0px 2px 3px #ccc;background: none; color:black;");
+                valor_pagar = tab_suma_rubro.getValor("valor_pago");
+                eti_valor_pagar.setValue(valor_pagar);
+                eti_valor_pagar.setStyle("font-size: 16px;border: none;text-shadow: 0px 2px 3px #ccc;background: none; color:red;");
+                dia_emision.setTitle("TOTAL A COBRAR: $" + eti_valor_pagar.getValue());
+                dia_emision.dibujar();
             }
-        }
-        else{
+        } else {
             utilitario.agregarMensajeError("Debe seleccionar un estudiante para realizar la recaudación", "");
         }
     }
-    public void recaudarRubro(){
-        if (validar()){
-        //System.out.println("combo: "+com_forma_pago.getValue());
-        //System.out.println("area: "+area_dialogo.getValue());
-        //System.out.println("fecha: "+eti_fecha.getValue());
-        try{
-        utilitario.getConexion().ejecutarSql("update rec_valores\n" +
-                                             "set ide_recest = "+utilitario.getVariable("p_pen_deuda_recaudada")+" , ide_cndfp = "+com_forma_pago.getValue()+", num_titulo_recva = "+area_dialogo.getValue()+", fecha_pago_recva = '"+eti_fecha.getValue()+"'\n" +
-                                             "where ide_titulo_recval in ("+seleccion_alumno+")");
-        dia_emision.cerrar();
-        utilitario.agregarMensaje("Se ha recaudado correctamente la(s) pension(es) del alumno "+nombre_alumno+"", "");
-        tab_tabla1.actualizar();
-        area_dialogo.limpiar();
-        utilitario.addUpdate("tab_tabla1");
-        }catch (Exception e){
-            
-        }
+
+    public void recaudarRubro() {
+        if (validar()) {
+            //System.out.println("combo: "+com_forma_pago.getValue());
+            //System.out.println("area: "+area_dialogo.getValue());
+            //System.out.println("fecha: "+eti_fecha.getValue());
+            try {
+                String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
+                TablaGenerica tab_seleccionados = utilitario.consultar("select ide_titulo_recval,ide_geper from rec_valores \n"
+                        + "where ide_titulo_recval in (" + alumnos_seleccionados + ")");
+
+                for (int i = 0; i < tab_seleccionados.getTotalFilas(); i++) {
+                    TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "cast(num_titulo_recva as integer)"));
+                    
+                    utilitario.getConexion().ejecutarSql("update rec_valores\n"
+                            + "set ide_recest = " + utilitario.getVariable("p_pen_deuda_recaudada") + " , ide_cndfp = " + com_forma_pago.getValue() + ", num_titulo_recva = " + area_dialogo.getValue() + ", fecha_pago_recva = '" + eti_fecha.getValue() + "'\n"
+                            + "where ide_titulo_recval in (" + tab_seleccionados.getValor(i, "ide_titulo_recval") + ")");
+                    dia_emision.cerrar(); 
+                    tab_tabla1.actualizar();
+                    utilitario.addUpdate("tab_tabla1");
+                }
+
+                generarPDFrecaudacion(tab_seleccionados.getValor("ide_titulo_recval"));
+                //utilitario.agregarMensaje("Se ha recaudado correctamente la(s) pension(es) del alumno " + nombre_alumno + "", "");
+                area_dialogo.limpiar();
+            } catch (Exception e) {
+
+            }
         }
     }
+
     public boolean validar() {
         if (com_forma_pago.getValue() == null || com_forma_pago.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("No se puede continuar", "Debe ingresar la Forma de Pago");
             return false;
         }
-        if (area_dialogo.getValue() == null || area_dialogo.getValue().toString().isEmpty()) {
+        /* if (area_dialogo.getValue() == null || area_dialogo.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("No se puede continuar", "Debe ingresar el valor del recibo");
             return false;
-        }
+        }*/
         return true;
     }
-    
+
+    public void generarPDFrecaudacion(String seleccionado) {
+
+
+        Map parametro = new HashMap();
+        parametro.put("pide_titulo", Integer.parseInt(seleccionado));
+        vipdf_recaudacion.setVisualizarPDF("rep_escuela_colegio/rec_recaudacion.jasper", parametro);
+        vipdf_recaudacion.dibujar();
+        utilitario.addUpdate("vipdf_recaudacion");
+
+    }
+
     @Override
     public void insertar() {
         tab_tabla1.insertar();
@@ -267,7 +299,7 @@ public class pre_recaudacion_consulta extends Pantalla{
 
     @Override
     public void eliminar() {
-       tab_tabla1.eliminar();
+        tab_tabla1.eliminar();
     }
 
     public Tabla getTab_tabla1() {
@@ -276,6 +308,14 @@ public class pre_recaudacion_consulta extends Pantalla{
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public VisualizarPDF getVipdf_recaudacion() {
+        return vipdf_recaudacion;
+    }
+
+    public void setVipdf_recaudacion(VisualizarPDF vipdf_recaudacion) {
+        this.vipdf_recaudacion = vipdf_recaudacion;
     }
 
     public AutoCompletar getAutAlumno() {
@@ -334,6 +374,4 @@ public class pre_recaudacion_consulta extends Pantalla{
         this.eti_valor_pagar = eti_valor_pagar;
     }
 
-
-    
 }
