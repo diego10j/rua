@@ -373,25 +373,25 @@ public class cls_anexo_transaccional_electronicos {
 /////BORRA 332 AUTOMATICO                                
                                 String numero_retencion = tab_compras.getValor(i, "numero_cncre");
                                 if (numero_retencion != null) {
-////////////////                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
-////////////////                                        if (dou_total > 0) {
-////////////////                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
-////////////////                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
-////////////////                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
-////////////////                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
-////////////////                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
-////////////////                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
-////////////////                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
-////////////////                                        }
-////////////////                                    }
-////////////////                                else {
-////////////////                                    //para las retenciones q no se imprimen las de % 0
-////////////////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
-////////////////                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
-////////////////                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
-////////////////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
-////////////////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
-////////////////                                }
+                                    if (tab_compras.getValor(i, "autorizacion_cncre").startsWith("000000") == false) {
+                                        if (dou_total > 0) {
+                                            detalleCompras.appendChild(crearElemento("estabRetencion1", null, numero_retencion.substring(0, 3)));
+                                            detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, numero_retencion.substring(3, 6)));
+                                            detalleCompras.appendChild(crearElemento("secRetencion1", null, Integer.parseInt(numero_retencion.substring(6, numero_retencion.length())) + ""));
+                                            detalleCompras.appendChild(crearElemento("autRetencion1", null, tab_compras.getValor(i, "autorizacion_cncre")));
+                                            //AQUI X SI LA FECHA DE EMISION DE LA RETE ES ANTERIOS
+                                            //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
+                                            detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
+                                        }
+                                    }
+//////                                else {
+//////                                    //para las retenciones q no se imprimen las de % 0
+//////                                    detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));
+//////                                    detalleCompras.appendChild(crearElemento("ptoEmiRetencion1", null, "000"));
+//////                                    detalleCompras.appendChild(crearElemento("secRetencion1", null, "000000000"));
+//////                                    detalleCompras.appendChild(crearElemento("autRetencion1", null, "0000"));
+//////                                    detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, "00/00/0000"));
+//////                                }
                                 }
 
                             } else {
