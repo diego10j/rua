@@ -692,15 +692,15 @@ public class pre_modifica_documento extends Pantalla {
                 }
             }
         }
-        double dou_total = 0;
-        try {
-            dou_total = Double.parseDouble(tab_cab_documento.getValor("total_cpcfa"));
-        } catch (Exception e) {
-        }
-        if (dou_total <= 0) {
-            utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
-            return false;
-        }
+//        double dou_total = 0;
+//        try {
+//            dou_total = Double.parseDouble(tab_cab_documento.getValor("total_cpcfa"));
+//        } catch (Exception e) {
+//        }
+//        if (dou_total <= 0) {
+//            utilitario.agregarMensajeError("No se puede guardar el Documento", "El total del Documento debe ser mayor a 0");
+//            return false;
+//        }
         //Validaciones Nota de Crédito
         if (tab_cab_documento.getColumna("autorizacio_nc_cpcfa").isVisible()) {
             String autorizacion = tab_cab_documento.getValor("autorizacio_nc_cpcfa");
