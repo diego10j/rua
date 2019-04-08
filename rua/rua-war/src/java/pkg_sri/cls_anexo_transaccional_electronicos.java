@@ -161,7 +161,7 @@ public class cls_anexo_transaccional_electronicos {
                             }
                         }
                         if (booEncontro) {
-                            detalleCompras.appendChild(crearElemento("valorRetBienes", null, tab_rete_iva10_.getValor("valor_cndre")));
+                            detalleCompras.appendChild(crearElemento("valRetBien10", null, tab_rete_iva10_.getValor("valor_cndre")));
                         } else {
                             detalleCompras.appendChild(crearElemento("valRetBien10", null, "0.00"));
                         }
