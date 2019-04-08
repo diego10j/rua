@@ -9,6 +9,7 @@ package paq_pensiones;
  *
  * @
  */
+import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
@@ -81,50 +82,87 @@ public class pre_lista_valores extends Pantalla {
         bot_filtro_consulta.setValue("CONSULTAR");
         bot_filtro_consulta.setMetodo("filtroAlumno");
         bar_botones.agregarBoton(bot_filtro_consulta);
+        
+        // boton seleccion inversa
+        BotonesCombo boc_seleccion_inversa = new BotonesCombo();
+        ItemMenu itm_todas = new ItemMenu();
+        ItemMenu itm_niguna = new ItemMenu();
+
+        boc_seleccion_inversa.setValue("Selección Inversa");
+        boc_seleccion_inversa.setIcon("ui-icon-circle-check");
+        boc_seleccion_inversa.setMetodo("seleccinarInversa");
+        boc_seleccion_inversa.setUpdate("tab_tabla1");
+        itm_todas.setValue("Seleccionar Todo");
+        itm_todas.setIcon("ui-icon-check");
+        itm_todas.setMetodo("seleccionarTodas");
+        itm_todas.setUpdate("tab_tabla1");
+        boc_seleccion_inversa.agregarBoton(itm_todas);
+        itm_niguna.setValue("Seleccionar Ninguna");
+        itm_niguna.setIcon("ui-icon-minus");
+        itm_niguna.setMetodo("seleccionarNinguna");
+        itm_niguna.setUpdate("tab_tabla1");
+        boc_seleccion_inversa.agregarBoton(itm_niguna);
+        
+
+        
 
         tab_tabla1.setId("tab_tabla1");   //identificador
+        tab_tabla1.setHeader("EMISIÓN DE FACTURAS PENSIONES POR BLOQUES");
         tab_tabla1.setTabla("rec_valores", "ide_titulo_recval", 1);
         tab_tabla1.setCondicion("ide_titulo_recval = -1");
         tab_tabla1.getColumna("ide_concepto_recon").setVisible(false);
-        tab_tabla1.getColumna("ide_cccfa").setVisible(false);
-        tab_tabla1.getColumna("ide_geper").setVisible(false);
-        tab_tabla1.getColumna("gen_ide_geper").setVisible(false);
+        tab_tabla1.getColumna("ide_cccfa").setCombo("select ide_cccfa,secuencial_cccfa from cxc_cabece_factura");
         tab_tabla1.getColumna("ide_gtemp").setVisible(false);
         tab_tabla1.getColumna("gth_ide_gtemp").setVisible(false);
         tab_tabla1.getColumna("ide_recest").setVisible(false);
         tab_tabla1.getColumna("ide_cndfp").setVisible(false);
         tab_tabla1.getColumna("ide_empr").setVisible(false);
         tab_tabla1.getColumna("ide_sucu").setVisible(false);
-        tab_tabla1.getColumna("fecha_emision_recva").setVisible(false);
+        tab_tabla1.getColumna("fecha_pago_recva").setVisible(false);
         tab_tabla1.getColumna("fecha_vence_recva").setVisible(false);
         tab_tabla1.getColumna("valor_imponible_recva").setVisible(false);
         tab_tabla1.getColumna("num_titulo_recva").setVisible(false);
         tab_tabla1.getColumna("base_no_objeto_iva_recva").setVisible(false);
         tab_tabla1.getColumna("base_tarifa0_recva").setVisible(false);
         tab_tabla1.getColumna("base_grabada_recva").setVisible(false);
-        tab_tabla1.getColumna("usuario_ingre").setVisible(false);
-        tab_tabla1.getColumna("fecha_ingre").setVisible(false);
-        tab_tabla1.getColumna("hora_ingre").setVisible(false);
-        tab_tabla1.getColumna("usuario_actua").setVisible(false);
-        tab_tabla1.getColumna("fecha_actua").setVisible(false);
-        tab_tabla1.getColumna("hora_actua").setVisible(false);
         tab_tabla1.getColumna("aplica_convenio_recva").setVisible(false);
         tab_tabla1.getColumna("fecha_iniconve_recva").setVisible(false);
         tab_tabla1.getColumna("fecha_finconve_recva").setVisible(false);
         tab_tabla1.getColumna("fecha_descuento_recva").setVisible(false);
-
+        tab_tabla1.getColumna("ide_cocaj").setVisible(false);
+        tab_tabla1.getColumna("ide_cccfa").setLectura(true);
+        tab_tabla1.getColumna("ide_recalp").setCombo("select ide_recalp, c.nom_geani ||' '|| b.descripcion_repea ||' '|| b.fecha_inicial_repea ||' '|| b.fecha_final_repea as detalle\n" +
+                                                     "from rec_alumno_periodo a\n" +
+                                                     "inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n" +
+                                                     "inner join gen_anio c on b.ide_geani = c.ide_geani\n" +
+                                                     "order by fecha_inicial_repea");
+        tab_tabla1.getColumna("ide_recalp").setAutoCompletar();
+        tab_tabla1.getColumna("ide_cocaj").setCombo(ser_adquisiciones.getTipoCaja());
+        tab_tabla1.getColumna("ide_geper").setNombreVisual("ALUMNO/A");
+        tab_tabla1.getColumna("gen_ide_geper").setNombreVisual("REPRESENTANTE");
+        tab_tabla1.getColumna("ide_geper").setCombo(ser_pensiones.getListaAlumnos("2", ""));
+        tab_tabla1.getColumna("gen_ide_geper").setCombo(ser_pensiones.getListaAlumnos("2", ""));
+        tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("RESPONSABLE");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setCombo("gth_empleado", "ide_gtemp", "documento_identidad_gtemp,apellido_paterno_gtemp,primer_nombre_gtemp", "");
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setAutoCompletar();
+        tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("CAJERO");
+        tab_tabla1.getColumna("ide_concepto_recon").setCombo("rec_concepto", "ide_concepto_recon", "des_concepto_recon", "");
+        tab_tabla1.getColumna("ide_concepto_recon").setRequerida(true);
+        tab_tabla1.getColumna("ide_recest").setCombo("rec_estados", "ide_recest", "descripcion_recest", "");
+        tab_tabla1.getColumna("TOTAL_RECVA").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_tabla1.getColumna("IDE_CNDFP").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "");
         tab_tabla1.getColumna("ide_gemes").setCombo("select ide_gemes, nombre_gemes from gen_mes order by ide_gemes");
-        tab_tabla1.getColumna("ide_gemes").setLectura(true);
-        tab_tabla1.getColumna("ide_recalp").setCombo("select ide_recalp, c.nom_geani, b.descripcion_repea\n"
-                + "from rec_alumno_periodo a\n"
-                + "inner join rec_periodo_academico b on a.ide_repea = b.ide_repea\n"
-                + "inner join gen_anio c on b.ide_geani = c.ide_geani");  
-        tab_tabla1.getColumna("ide_recalp").setLectura(true);
+        tab_tabla1.getColumna("ide_recest").setRequerida(true);
+        tab_tabla1.getColumna("valor_iva_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_tabla1.getColumna("tarifa_iva_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+        tab_tabla1.getColumna("base_tarifa0_recva").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:blue");//Estilo
+
         tab_tabla1.setTipoSeleccion(true);
         tab_tabla1.dibujar(); 
-
+        tab_tabla1.setRows(15);
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
+        pat_tabla1.getChildren().add(boc_seleccion_inversa);
         pat_tabla1.setPanelTabla(tab_tabla1);
 
         Division div_tabla1 = new Division();
@@ -150,15 +188,12 @@ public class pre_lista_valores extends Pantalla {
 
     public void generarFactura() {
         if (tab_tabla1.getFilasSeleccionadas() != "") {
-            utilitario.agregarMensajeError("No se puede continuar", "Debe seleccionar al menos un registro para generar factura");
-        }
-        if (tab_tabla1.getValor("generado_fact_recva").equals("true")) {
-            utilitario.agregarNotificacionInfo("Ya se encuentra Generada la factura", "No se puede generar ya se encuentra generado la factura");
-        } else {
             con_confirma.getBot_aceptar().setMetodo("aprobarEmision");
             utilitario.addUpdate("con_confirma");
             con_confirma.dibujar();
 
+        }  else {
+            utilitario.agregarMensajeError("No se puede continuar", "Debe seleccionar al menos un registro para generar los rubros");
         }
     }
 
@@ -166,7 +201,13 @@ public class pre_lista_valores extends Pantalla {
         String maximo = "";
         // String defecto = 0;
 
-        String codig_val = tab_tabla1.getValorSeleccionado();
+        String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
+        
+        
+        TablaGenerica tab_cons_alumperiodo = utilitario.consultar("select * from rec_valores where ide_titulo_recval in (" + alumnos_seleccionados + ")");
+        
+        for (int j = 0; j < tab_cons_alumperiodo.getTotalFilas(); j++) {
+        String codig_val= tab_cons_alumperiodo.getValor(j, "ide_titulo_recval");
         TablaGenerica tab_datos_temp = utilitario.consultar(ser_pensiones.selectPenTemp(codig_val));
         for (int i = 0; i < tab_datos_temp.getTotalFilas(); i++) {
             //ser_pensiones.generarFacturaElectronica(alumno);
@@ -180,12 +221,15 @@ public class pre_lista_valores extends Pantalla {
         try {
             String ide_ccfa = ser_pensiones.generarFacturaElectronica(codig_val);
             utilitario.getConexion().ejecutarSql("update rec_valores set ide_cccfa=" + ide_ccfa + ",generado_fact_recva=true where IDE_TITULO_RECVAL=" + codig_val);
-            tab_tabla1.ejecutarSql();
-            tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
-            utilitario.agregarMensaje("La factura se ha generado correctamente", "");
         } catch (Exception e) {
+            System.out.println("Error: emitir " +e);
             utilitario.agregarMensajeError("Error al generar la factura", "Verifique datos o consulte con el administrador");
         }
+        
+        
+        }
+        utilitario.agregarMensaje("Se ha realizado con éxito las emisiones", "Gracias");
+        filtroAlumno();
         con_confirma.cerrar();
     }
 
@@ -201,17 +245,17 @@ public class pre_lista_valores extends Pantalla {
             utilitario.agregarMensajeError("Seleccione Registro", "Para consultar listado de alumnos debe seleccionar un periodo academico");
 
         } else {
-            condicion += " ide_recalp= " + com_periodo_academico.getValue();
+            condicion += " ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = " + com_periodo_academico.getValue();
             if (!cm_mes.equals("null")) {
                 condicion += " and ide_gemes= " + cm_mes;
             }
             if (!cm_cur.equals("null")) {
-                condicion += " and ide_recalp= " + cm_cur;
+                condicion += " and ide_recur= " + cm_cur;
             }
             if (!cm_par.equals("null")) {
-                condicion += " and ide_recalp= " + cm_par;
+                condicion += " and ide_repar= " + cm_par;
             }
-
+            condicion +=" )";
             if (!cm_emi.equals("null")) {
                 if (cm_emi.equals("true")) {
                     condicion += " and generado_fact_recva=true ";
@@ -221,14 +265,13 @@ public class pre_lista_valores extends Pantalla {
             }
             tab_tabla1.setCondicion(condicion);
             tab_tabla1.ejecutarSql();
-            tab_tabla1.imprimirSql();
             utilitario.addUpdate("tab_tabla1");
         }
     }
 
     public void filtroComboPeriodoAcademnico() {
 
-        tab_tabla1.setCondicion("select  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea=" + com_periodo_academico.getValue().toString() + ") ");
+        tab_tabla1.setCondicion(" ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea=" + com_periodo_academico.getValue().toString() + ") ");
         tab_tabla1.ejecutarSql();
         utilitario.addUpdate("tab_tabla1");
 
@@ -242,18 +285,46 @@ public class pre_lista_valores extends Pantalla {
 
     }
 
-    public void filtroComboCursos() {
+    public void seleccionarTodas() {
+        tab_tabla1.setSeleccionados(null);
+        Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas()];
+        for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+            seleccionados[i] = tab_tabla1.getFilas().get(i);
+        }
+        tab_tabla1.setSeleccionados(seleccionados);
+        //calculoTotal();
 
-        tab_tabla1.setCondicion("select  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_recur in" + com_cursos.getValue().toString() + ")");
-        tab_tabla1.ejecutarSql();
-        utilitario.addUpdate("tab_tabla1");
     }
 
-    public void filtroComboParalelos() {
+    public void seleccinarInversa() {
+        if (tab_tabla1.getSeleccionados() == null) {
+            seleccionarTodas();
+        } else if (tab_tabla1.getSeleccionados().length == tab_tabla1.getTotalFilas()) {
+            seleccionarNinguna();
+        } else {
+            Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas() - tab_tabla1.getSeleccionados().length];
+            int cont = 0;
+            for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+                boolean boo_selecionado = false;
+                for (int j = 0; j < tab_tabla1.getSeleccionados().length; j++) {
+                    if (tab_tabla1.getSeleccionados()[j].equals(tab_tabla1.getFilas().get(i))) {
+                        boo_selecionado = true;
+                        break;
+                    }
+                }
+                if (boo_selecionado == false) {
+                    seleccionados[cont] = tab_tabla1.getFilas().get(i);
+                    cont++;
+                }
+            }
+            tab_tabla1.setSeleccionados(seleccionados);
+        }
+        //calculoTotal();
+    }
 
-        tab_tabla1.setCondicion("select  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repar in" + com_paralelos.getValue().toString() + ")");
-        tab_tabla1.ejecutarSql();
-        utilitario.addUpdate("tab_tabla1");
+    public void seleccionarNinguna() {
+        tab_tabla1.setSeleccionados(null);
+
     }
 
     @Override
