@@ -74,10 +74,10 @@ public class pre_transferencias extends Pantalla {
         bar_botones.agregarBoton(bot_filtro_consulta);
 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setHeader("PRUEBA");
+        tab_tabla1.setHeader("TRANSFERENCIA BANCOS");
         tab_tabla1.setSql(ser_pensiones.gettranferencias("-1"));
         tab_tabla1.setLectura(true);
-        tab_tabla1.setRows(20);
+        tab_tabla1.setRows(30);
         tab_tabla1.dibujar();
 
         PanelTabla pat_tabla1 = new PanelTabla();
@@ -117,7 +117,7 @@ public class pre_transferencias extends Pantalla {
                     + "from  rec_valores a\n"
                     + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                     + "left join rec_valor_detalle c on a.ide_titulo_recval=c.ide_titulo_recval\n"
-                    + "left join gen_mes d on a.ide_gemes=d.ide_gemes "
+                    + "left join gen_mes d on a.ide_gemes=d.ide_gemes \n"
                     + "where ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = " + com_periodo_academico.getValue();
             if (!cm_mes.equals("null")) {
                 condicion += " and a.ide_gemes= " + cm_mes;
