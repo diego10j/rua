@@ -391,7 +391,7 @@ public class ServicioPensiones extends ServicioBase {
         return lista;
 
     }
-    
+
     public List estado_emitido() {
         List lista = new ArrayList();
         Object fila1[] = {
@@ -407,4 +407,19 @@ public class ServicioPensiones extends ServicioBase {
         return lista;
 
     }
+
+    public String gettranferencias(String periodo) {
+        String sql = "";
+        sql = "select 'CO' as co,'2009016291' as numero_cuenta,'1'as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
+                + "'USD' as moneda,total_recva as valor,'REC' as rec,'36' as num,' 'as m, 'C' as c,codigo_geper as codigo_alumno2,\n"
+                + "nom_geper as apellido_y_nombres,'QUITO' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
+                + "from  rec_valores a\n"
+                + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
+                + "left join rec_valor_detalle c on a.ide_titulo_recval=c.ide_titulo_recval\n"
+                + "left join gen_mes d on a.ide_gemes=d.ide_gemes\n"
+                + "where  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = "+periodo+") and generado_fact_recva=false \n"
+                + "order by nom_geper";
+        return sql;
+    }
+
 }
