@@ -19,6 +19,10 @@ import framework.componentes.Etiqueta;
 import framework.componentes.ItemMenu;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import javax.ejb.EJB;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import servicios.pensiones.ServicioPensiones;
@@ -40,7 +44,7 @@ public class pre_transferencias extends Pantalla {
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
 
-    public pre_transferencias() {
+    public pre_transferencias() throws UnknownHostException, SocketException {
 
         com_periodo_academico.setId("cmb_periodo_academico");
         com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true"));
@@ -88,6 +92,8 @@ public class pre_transferencias extends Pantalla {
         div_tabla1.setId("div_tabla1");
         div_tabla1.dividir1(pat_tabla1);
         agregarComponente(div_tabla1);
+        
+        filtroMac();
 
     }
 
@@ -168,6 +174,24 @@ public class pre_transferencias extends Pantalla {
         tab_tabla1.setSeleccionados(seleccionados);
         //calculoTotal();
 
+    }
+
+    public void filtroMac() throws UnknownHostException, SocketException {
+        InetAddress ip;
+        ip = InetAddress.getLocalHost();
+        System.out.println("Current IP address : " + ip.getHostAddress());
+
+        NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+
+        byte[] mac = network.getHardwareAddress();
+
+        System.out.print("Current MAC address : ");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mac.length; i++) {
+            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+        }
+        System.out.println(sb.toString());
     }
 
     public void seleccinarInversa() {
