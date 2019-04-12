@@ -1,4 +1,5 @@
-/*
+
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -79,11 +80,11 @@ public class pre_transferencias extends Pantalla {
 
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setHeader("TRANSFERENCIA BANCOS");
-        tab_tabla1.setSql(ser_pensiones.gettranferencias("-1"));
+        tab_tabla1.setSql(ser_pensiones.gettranfertabla("-1", "CO","12","usd","rec","36", "c"," ciudad"));
         tab_tabla1.setLectura(true);
-        tab_tabla1.setRows(30);
-        tab_tabla1.dibujar();
-
+        tab_tabla1.setRows(20);
+        tab_tabla1.dibujar();  
+        
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
         pat_tabla1.setPanelTabla(tab_tabla1);
@@ -97,13 +98,7 @@ public class pre_transferencias extends Pantalla {
 
     }
 
-    public void filtro() {
-
-        tab_tabla1.setSql(ser_pensiones.gettranferencias(com_periodo_academico.getValue().toString()));
-        tab_tabla1.ejecutarSql();
-        utilitario.addUpdate("tab_tabla1");
-
-    }
+    
 
     public void filtroAlumno() {
 
@@ -117,14 +112,7 @@ public class pre_transferencias extends Pantalla {
             utilitario.agregarMensajeError("Seleccione Registro", "Para consultar listado de alumnos debe seleccionar un periodo academico");
 
         } else {
-            condicion += "select 'CO' as co,'2009016291' as numero_cuenta,'1'as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
-                    + "'USD' as moneda,replace(total_recva||'' ,'.', ' ') as valor,'REC' as rec,'36' as num,' 'as m,' 'as n ,'C' as c,codigo_geper as codigo_alumno,\n"
-                    + "nom_geper as apellido_y_nombres,' 'as o,' 'as p,' 'as q,'QUITO' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
-                    + "from  rec_valores a\n"
-                    + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
-                    + "left join rec_valor_detalle c on a.ide_titulo_recval=c.ide_titulo_recval\n"
-                    + "left join gen_mes d on a.ide_gemes=d.ide_gemes \n"
-                    + "where ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = " + com_periodo_academico.getValue();
+            condicion += ser_pensiones.gettranferencias(com_periodo_academico.getValue().toString(), utilitario.getVariable("p_co"), utilitario.getVariable("p_num_cuenta"), utilitario.getVariable("p_moneda"), utilitario.getVariable("p_rec"), utilitario.getVariable("p_36"), utilitario.getVariable("p_c"), utilitario.getVariable("p_ciudad"));
             if (!cm_mes.equals("null")) {
                 condicion += " and a.ide_gemes= " + cm_mes;
             }
@@ -137,9 +125,9 @@ public class pre_transferencias extends Pantalla {
             condicion += " )";
             if (!cm_emi.equals("null")) {
                 if (cm_emi.equals("true")) {
-                    condicion += " and generado_fact_recva=true ";
+                    condicion += "  and generado_fact_recva=true ";
                 } else if (cm_emi.equals("false")) {
-                    condicion += " and generado_fact_recva=false ";
+                    condicion += "  and generado_fact_recva=false ";
                 }
             }
             System.out.println("SQL: " + condicion);
