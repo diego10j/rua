@@ -493,7 +493,14 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_pen_deuda_activa", "Indica los valores de los estudiantes que se encuentra en estado no cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
         lis_parametros.add(new Parametro("15", "p_pen_deuda_recaudada", "Indica los valores de los estudiantes que se encuentra en estado cancelado", "2", "rec_estados", "ide_recest", "descripcion_recest"));
         lis_parametros.add(new Parametro("15", "p_pen_transferencia_forma_pago", "Indica que la recaudacion se la hizo mediante tranferencia en la conciliaciom", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
-
+        lis_parametros.add(new Parametro("15", "p_co", "Parametro por defecto", "CO"));
+        lis_parametros.add(new Parametro("15", "p_num_cuenta", "Parametro por defecto de numero de la cuenta", "2009016291"));
+        lis_parametros.add(new Parametro("15", "p_moneda", "Parametro por defecto de moneda", "USD"));
+        lis_parametros.add(new Parametro("15", "p_rec", "Parametro por defecto", "REC"));
+        lis_parametros.add(new Parametro("15", "p_36", "Parametro por defecto", "36"));
+        lis_parametros.add(new Parametro("15", "p_c", "Parametro por defecto", "C"));
+        lis_parametros.add(new Parametro("15", "p_ciudad", "Parametro por defecto", "QUITO"));
         return lis_parametros;
+        
     }
 }
