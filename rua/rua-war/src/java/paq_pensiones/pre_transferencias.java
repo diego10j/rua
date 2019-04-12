@@ -11,16 +11,12 @@ package paq_pensiones;
  * @
  */
 import framework.aplicacion.Fila;
-import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
-import framework.componentes.BotonesCombo;
 import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
-import framework.componentes.ItemMenu;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -80,7 +76,7 @@ public class pre_transferencias extends Pantalla {
 
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setHeader("TRANSFERENCIA BANCOS");
-        tab_tabla1.setSql(ser_pensiones.gettranfertabla("-1", "CO","12","usd","rec","36", "c"," ciudad"));
+        tab_tabla1.setSql(ser_pensiones.gettranfertabla("-1", utilitario.getVariable("p_co"), utilitario.getVariable("p_num_cuenta"), utilitario.getVariable("p_moneda"), utilitario.getVariable("p_rec"), utilitario.getVariable("p_36"), utilitario.getVariable("p_c"), utilitario.getVariable("p_ciudad")));
         tab_tabla1.setLectura(true);
         tab_tabla1.setRows(20);
         tab_tabla1.dibujar();  
@@ -94,7 +90,6 @@ public class pre_transferencias extends Pantalla {
         div_tabla1.dividir1(pat_tabla1);
         agregarComponente(div_tabla1);
         
-        filtroMac();
 
     }
 
@@ -130,7 +125,7 @@ public class pre_transferencias extends Pantalla {
                     condicion += "  and generado_fact_recva=false ";
                 }
             }
-            System.out.println("SQL: " + condicion);
+            
             tab_tabla1.setSql(condicion);
             tab_tabla1.ejecutarSql();
             utilitario.addUpdate("tab_tabla1");
@@ -163,25 +158,7 @@ public class pre_transferencias extends Pantalla {
         //calculoTotal();
 
     }
-
-    public void filtroMac() throws UnknownHostException, SocketException {
-        InetAddress ip;
-        ip = InetAddress.getLocalHost();
-        System.out.println("Current IP address : " + ip.getHostAddress());
-
-        NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-
-        byte[] mac = network.getHardwareAddress();
-
-        System.out.print("Current MAC address : ");
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < mac.length; i++) {
-            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-        }
-        System.out.println(sb.toString());
-    }
-
+   
     public void seleccinarInversa() {
         if (tab_tabla1.getSeleccionados() == null) {
             seleccionarTodas();
