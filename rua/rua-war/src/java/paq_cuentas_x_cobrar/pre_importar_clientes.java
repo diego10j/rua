@@ -6,8 +6,10 @@
 package paq_cuentas_x_cobrar;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -116,6 +118,16 @@ public class pre_importar_clientes extends Pantalla {
         tab_detalle.setLectura(false);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_detalle);
+        Grupo gri = new Grupo();
+
+        gri.getChildren().add(new Etiqueta("<div align='center'>"));
+
+        Boton bot_subir = new Boton();
+        bot_subir.setValue("Subir Clientes");
+        bot_subir.setMetodo("crearClientes");
+        gri.getChildren().add(bot_subir);
+        gri.getChildren().add(new Etiqueta("</div>"));
+        pat_panel.setFooter(gri);
 
         agregarComponente(pat_panel);
 
