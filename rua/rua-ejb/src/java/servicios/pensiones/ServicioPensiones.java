@@ -407,33 +407,59 @@ public class ServicioPensiones extends ServicioBase {
         return lista;
 
     }
+
     //servicio solo para dibujar la pantalla
-    public String gettranfertabla(String periodo,String co,String num_cuenta,String moneda,String rec,String num_36,String cm ,String ciudad) {
+    public String gettranfertabla(String periodo, String co, String num_cuenta, String moneda, String rec, String num_36, String cm, String ciudad) {
         String sql = "";
-        sql = "select '"+co+"' as co,'"+num_cuenta+"' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
-                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,''as kl,''as mn, '"+cm+"' as c_2 ,codigo_geper as codigo_alumno2,\n"
-                + "nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'"+ciudad+"' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
+        sql = "select '" + co + "' as co,'" + num_cuenta + "' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
+                + "'" + moneda + "' as moneda,replace(total_recva||'','.','') as valor,'" + rec + "' as rec,'" + num_36 + "' as num,''as kl,''as mn, '" + cm + "' as c_2 ,codigo_geper as codigo_alumno2,\n"
+                + "nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'" + ciudad + "' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
                 + "from  rec_valores a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                 + "left join rec_valor_detalle c on a.ide_titulo_recval=c.ide_titulo_recval\n"
                 + "left join gen_mes d on a.ide_gemes=d.ide_gemes\n"
-                + "where  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = "+periodo+"  )\n";
-        
+                + "where  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = " + periodo + "  )\n";
+
         return sql;
-        
+
     }
-    
+
     //servicio que genera la consulta con los filtros
-    public String gettranferencias(String periodo,String co,String num_cuenta,String moneda,String rec,String num_36,String c ,String ciudad) {
+    public String gettranferencias(String periodo, String co, String num_cuenta, String moneda, String rec, String num_36, String c, String ciudad) {
         String sql = "";
-        sql = "select '"+co+"' as co,'"+num_cuenta+"' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
-                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,' 'as kl,'  'as mn, '"+c+"' as c2,codigo_geper as codigo_alumno2,\n"
-                + "nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'"+ciudad+"' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
+        sql = "select '" + co + "' as co,'" + num_cuenta + "' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
+                + "'USD' as moneda,\n"
+                + "        (case when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 1 then '000000000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 2 then '00000000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 3 then '0000000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end))\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 4 then '000000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 5 then '00000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 6 then '0000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 7 then '000000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 8 then '00000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 9 then '0000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 10 then '000'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 11 then '00'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 12 then '0'||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        when length(((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )||'') = 13 then ''||((case when max(cast(replace(total_recva||'','.','') as integer)) is null then  0 else max(cast(replace(total_recva||'','.','') as integer)) end) )\n"
+                + "        end) as  valor,'" + rec + "' as rec,'" + num_36 + "' as num,' 'as kl,'  'as mn, '" + c + "' as c2,\n"
+                + "        (case when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 1 then '000000000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 2 then '00000000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 3 then '0000000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end))\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 4 then '000000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 5 then '00000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 6 then '0000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 7 then '000'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 8 then '00'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 9 then '0'||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        when length(((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )||'') = 10 then ''||((case when max(cast(codigo_geper as integer)) is null then  0 else max(cast(codigo_geper as integer)) end) )\n"
+                + "        end) as codigo_alumno2,nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'" + ciudad + "' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
                 + "from  rec_valores a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
                 + "left join rec_valor_detalle c on a.ide_titulo_recval=c.ide_titulo_recval\n"
                 + "left join gen_mes d on a.ide_gemes=d.ide_gemes\n"
-                + "where  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = "+periodo+"  \n";
+                + "where  ide_recalp in (select ide_recalp from rec_alumno_periodo where ide_repea = " + periodo + "  \n";
+        
         return sql;
     }
 
