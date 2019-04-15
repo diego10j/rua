@@ -411,7 +411,7 @@ public class ServicioPensiones extends ServicioBase {
     public String gettranfertabla(String periodo,String co,String num_cuenta,String moneda,String rec,String num_36,String cm ,String ciudad) {
         String sql = "";
         sql = "select '"+co+"' as co,'"+num_cuenta+"' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
-                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,''as mn,''as n, '"+cm+"' as c_2 ,codigo_geper as codigo_alumno2,\n"
+                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,''as kl,''as mn, '"+cm+"' as c_2 ,codigo_geper as codigo_alumno2,\n"
                 + "nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'"+ciudad+"' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
                 + "from  rec_valores a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
@@ -427,7 +427,7 @@ public class ServicioPensiones extends ServicioBase {
     public String gettranferencias(String periodo,String co,String num_cuenta,String moneda,String rec,String num_36,String c ,String ciudad) {
         String sql = "";
         sql = "select '"+co+"' as co,'"+num_cuenta+"' as numero_cuenta,row_number() over(order by a.ide_titulo_recval )as numero_registro,a.ide_titulo_recval as codigo,codigo_geper as codigo_alumno,\n"
-                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,' 'as m,'  'as mn, '"+c+"' as c2,codigo_geper as codigo_alumno2,\n"
+                + "'"+moneda+"' as moneda,replace(total_recva||'','.','') as valor,'"+rec+"' as rec,'"+num_36+"' as num,' 'as kl,'  'as mn, '"+c+"' as c2,codigo_geper as codigo_alumno2,\n"
                 + "nom_geper as apellido_y_nombres,'  'as d,' 'as p,' 'as q,'"+ciudad+"' as ciudad,detalle_revad||' '||nombre_gemes as concepto\n"
                 + "from  rec_valores a\n"
                 + "left join gen_persona b on a.ide_geper=b.ide_geper\n"
