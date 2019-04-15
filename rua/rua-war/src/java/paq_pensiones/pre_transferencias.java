@@ -117,7 +117,7 @@ public class pre_transferencias extends Pantalla {
             if (!cm_par.equals("null")) {
                 condicion += " and ide_repar= " + cm_par;
             }
-            condicion += " )";
+            condicion += "  ) group by a.ide_titulo_recval,b.codigo_geper,nom_geper,detalle_revad,nombre_gemes ";
             if (!cm_emi.equals("null")) {
                 if (cm_emi.equals("true")) {
                     condicion += "  and generado_fact_recva=true ";
