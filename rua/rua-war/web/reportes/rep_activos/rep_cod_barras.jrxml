@@ -28,7 +28,7 @@
 				<text><![CDATA[ACTIVOS FIJOS]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="20" y="14" width="135" height="32" uuid="de17adb2-c380-467b-96bb-d1174c15d2ae"/>
+				<reportElement x="21" y="14" width="135" height="32" uuid="de17adb2-c380-467b-96bb-d1174c15d2ae"/>
 				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Int2of5" drawText="false" checksumRequired="false" barWidth="0">
 					<jr:codeExpression><![CDATA[$F{codigo_barras_acafi}]]></jr:codeExpression>
 				</jr:barbecue>
