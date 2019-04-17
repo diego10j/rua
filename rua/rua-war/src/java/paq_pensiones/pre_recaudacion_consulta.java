@@ -16,6 +16,7 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
 import java.util.ArrayList;
@@ -48,12 +49,16 @@ public class pre_recaudacion_consulta extends Pantalla {
     String valor_pagar = "";
     String fecha_actual = "";
     String nombre_alumno = "";
+    private SeleccionCalendario sec_rango_fechas = new SeleccionCalendario();
+    private Etiqueta eti_rango_fechas = new Etiqueta("DESDE: 0/0/0       HASTA: 0/0/0 ");
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
 
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
     private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
+    private VisualizarPDF vipdf_cierre = new VisualizarPDF();
 
     public pre_recaudacion_consulta() {
 
@@ -84,6 +89,22 @@ public class pre_recaudacion_consulta extends Pantalla {
             bot_recaudar.setMetodo("abrirDialogo");
             bar_botones.agregarComponente(bot_recaudar);
 
+            //boton cierre recaudaion
+            Boton bot_abrir = new Boton();
+            bot_abrir.setValue("REPORTE RECAUDACIONES");
+            bot_abrir.setIcon("ui-calendario");
+            bot_abrir.setMetodo("abrirRango");
+            bar_botones.agregarBoton(bot_abrir);
+            bar_botones.getBot_insertar().setRendered(false);
+            bar_botones.getBot_eliminar().setRendered(false);
+            bar_botones.getBot_guardar().setRendered(false);
+
+            sec_rango_fechas.setId("sec_rango_fecha");
+            sec_rango_fechas.getBot_aceptar().setMetodo("aceptarRango");
+            sec_rango_fechas.setFechaActual();
+            agregarComponente(sec_rango_fechas);
+
+            //
             tab_tabla1.setId("tab_tabla1");   //identificador
             tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa") + " and ide_titulo_recval = -1"));
             tab_tabla1.setRows(500);
@@ -162,6 +183,10 @@ public class pre_recaudacion_consulta extends Pantalla {
             vipdf_recaudacion.setId("vipdf_recaudacion");
             vipdf_recaudacion.setTitle("RECIBO RECAUDACIONES");
             agregarComponente(vipdf_recaudacion);
+            //
+            vipdf_cierre.setId("vipdf_cierre");
+            vipdf_cierre.setTitle("REPORTE CIERRE DE RECAUDACIONES");
+            agregarComponente(vipdf_cierre);
         } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la facturacion. Consulte con el Administrador");
         }
@@ -212,6 +237,40 @@ public class pre_recaudacion_consulta extends Pantalla {
         tab_tabla1.limpiar();
     }
 
+    public void abrirRango() {
+
+        sec_rango_fechas.dibujar();
+
+    }
+
+    public void aceptarRango() {
+
+        if (sec_rango_fechas.isFechasValidas()) {
+            
+            generarPDFcierreRecaudaciones();
+            sec_rango_fechas.cerrar();
+
+        } else {
+
+            utilitario.agregarMensajeError("Las fechas selecionadas no son válidas", "");
+        }
+    }
+
+    public void generarPDFcierreRecaudaciones() {
+
+        ///////////AQUI ABRE EL REPORTE
+        Map map_parametros = new HashMap();
+        map_parametros.put("fecha_inicio", sec_rango_fechas.getFecha1String());
+        map_parametros.put("fecha_final", sec_rango_fechas.getFecha2String());
+        map_parametros.put("nombre", utilitario.getVariable("NICK")); 
+
+        System.out.println(" " + map_parametros);
+        //vipdf_comprobante.setVisualizarPDF(data, docente, map_parametros);
+        vipdf_cierre.setVisualizarPDF("rep_escuela_colegio/rec_cierre_recaudaciones.jasper", map_parametros);
+        vipdf_cierre.dibujar();
+        utilitario.addUpdate("vipdf_cierre");
+    }
+
     public void abrirDialogo() {
         if (tab_tabla1.getTotalFilas() > 0) {
             if (tab_tabla1.getFilasSeleccionadas().isEmpty()) {
@@ -245,11 +304,11 @@ public class pre_recaudacion_consulta extends Pantalla {
 
                 for (int i = 0; i < tab_seleccionados.getTotalFilas(); i++) {
                     TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "cast(num_titulo_recva as integer)"));
-                    
+
                     utilitario.getConexion().ejecutarSql("update rec_valores\n"
                             + "set ide_recest = " + utilitario.getVariable("p_pen_deuda_recaudada") + " , ide_cndfp = " + com_forma_pago.getValue() + ", num_titulo_recva = " + area_dialogo.getValue() + ", fecha_pago_recva = '" + eti_fecha.getValue() + "'\n"
                             + "where ide_titulo_recval in (" + tab_seleccionados.getValor(i, "ide_titulo_recval") + ")");
-                    dia_emision.cerrar(); 
+                    dia_emision.cerrar();
                     tab_tabla1.actualizar();
                     utilitario.addUpdate("tab_tabla1");
                 }
@@ -276,7 +335,6 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     public void generarPDFrecaudacion(String seleccionado) {
-
 
         Map parametro = new HashMap();
         parametro.put("pide_titulo", Integer.parseInt(seleccionado));
