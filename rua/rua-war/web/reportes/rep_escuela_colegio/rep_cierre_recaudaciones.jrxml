@@ -1,47 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_lista_alumnos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.2396694214876034"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<style name="table">
-		<box>
-			<pen lineWidth="1.0" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Crosstab Data Text" hAlign="Center"/>
-	<subDataset name="Table Dataset 1" uuid="59ab0dd2-3e40-4347-9828-7d1130e711df"/>
-	<parameter name="ide_sucu" class="java.lang.Integer"/>
-	<parameter name="ide_empr" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="rep_cierre_recaudaciones"
+
+		 language="groovy"		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="555"
+		 columnSpacing="0"
+		 leftMargin="20"
+		 rightMargin="20"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.zoom" value="1.2396694214876034" />
+	<property name="ireport.x" value="0" />
+	<property name="ireport.y" value="0" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<style 
+		name="table"
+	/>
+	<style 
+		name="table_TH"
+		mode="Opaque"
+		backcolor="#F0F8FF"
+	/>
+	<style 
+		name="table_CH"
+		mode="Opaque"
+		backcolor="#BFE1FF"
+	/>
+	<style 
+		name="table_TD"
+		mode="Opaque"
+		backcolor="#FFFFFF"
+	/>
+	<style 
+		name="Crosstab Data Text"
+		hAlign="Center"
+	/>
+
+	<parameter name="ide_sucu" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="ide_empr" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String">
-		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
-	</parameter>
-	<parameter name="nombre" class="java.lang.String"/>
-	<parameter name="fecha_inicio" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="fecha_final" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<queryString>
-		<![CDATA[
-select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
+	<parameter name="nombre" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="fecha_inicio" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="fecha_final" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
 nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,
 ide_repea,ide_repar,ide_recur,ide_reces,abreviatura_gemes,abreviatura_recon,a.descripcion_recest,fecha_pago_recva,num_titulo_recva,detalle_recva
 from (
@@ -50,7 +67,7 @@ from rec_valores a, rec_concepto b,gen_mes c,rec_estados d
 where a.ide_concepto_recon = b.ide_concepto_recon
 and a.ide_gemes= c.ide_gemes
 and a.ide_recest=d.ide_recest
-and a.ide_recest=1 and fecha_pago_recva between  $P{fecha_inicio} and $P{fecha_final}
+and a.ide_recest=1 and fecha_pago_recva between cast( $P{fecha_inicio} as date) and cast ($P{fecha_final} as date)
 ) a
 inner join (
 select a.ide_recalp,nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,
@@ -64,8 +81,8 @@ and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
 order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper
 ) b on a.ide_recalp = b.ide_recalp
-order by ide_concepto_recon,num_titulo_recva,nom_geper]]>
-	</queryString>
+order by ide_concepto_recon,num_titulo_recva,nom_geper]]></queryString>
+
 	<field name="ide_geper" class="java.lang.Long">
 		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>
 	</field>
@@ -110,412 +127,446 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="fecha_pago_recva" class="java.sql.Date"/>
 	<field name="num_titulo_recva" class="java.lang.String"/>
 	<field name="detalle_recva" class="java.lang.String"/>
-	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[]]></variableExpression>
+
+	<variable name="sum_certificacion" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 	</variable>
-	<variable name="sum_tot" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sum_tot" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor_factura}]]></variableExpression>
 	</variable>
-	<group name="concepto">
-		<groupExpression><![CDATA[$F{ide_concepto_recon}]]></groupExpression>
-		<groupHeader>
-			<band height="36">
-				<textField isBlankWhenNull="true">
-					<reportElement x="7" y="0" width="536" height="16" uuid="77839792-1352-4515-917d-edac659c31c6"/>
+
+		<group  name="concepto" >
+			<groupExpression><![CDATA[$F{ide_concepto_recon}]]></groupExpression>
+			<groupHeader>
+			<band height="36"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="0"
+						width="536"
+						height="16"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement verticalAlignment="Top">
 						<font size="11" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{des_concepto_recon}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_concepto_recon}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="7" y="16" width="37" height="20" uuid="127a141d-04d3-4244-adb8-1ffab100e6d4"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="7"
+						y="16"
+						width="37"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[CODIGO]]></text>
+				<text><![CDATA[CODIGO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="44" y="16" width="58" height="20" uuid="5c30fefd-63a5-4d35-b28f-1c0170435ab9"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="44"
+						y="16"
+						width="58"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[CEDULA]]></text>
+				<text><![CDATA[CEDULA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="102" y="16" width="162" height="20" uuid="fdecd1a3-eaa6-40eb-bb3a-5398653d76b0"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="102"
+						y="16"
+						width="162"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[ALUMNO]]></text>
+				<text><![CDATA[ALUMNO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="264" y="16" width="123" height="20" uuid="c0130515-a56d-4051-8b49-4d5edadd7c9c"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="264"
+						y="16"
+						width="123"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[NIVEL]]></text>
+				<text><![CDATA[NIVEL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="387" y="16" width="45" height="20" uuid="e1466457-8f33-4743-ac5d-62db067e85f0"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="387"
+						y="16"
+						width="45"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[PARALELO]]></text>
+				<text><![CDATA[PARALELO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="432" y="16" width="57" height="20" uuid="4bb9d724-34a4-4e19-987e-756812a7f849"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
+					<reportElement
+						x="432"
+						y="16"
+						width="57"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VALOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="489"
+						y="16"
+						width="57"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[VALOR]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="489" y="16" width="57" height="20" uuid="d1a1de00-8a26-4097-b58c-7bb8a7812118"/>
-					<box>
-						<pen lineWidth="0.0" lineStyle="Dashed"/>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-						<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-						<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[NRO. PAGO]]></text>
+				<text><![CDATA[NRO. PAGO]]></text>
 				</staticText>
 			</band>
-		</groupHeader>
-		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="49" splitType="Stretch">
-			<staticText>
-				<reportElement x="335" y="1" width="220" height="22" uuid="739d69f7-4a4b-4873-bc76-f94b0a1f89a0"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
-				</textElement>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="49"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="335"
+						y="1"
+						width="220"
+						height="22"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
 				<text><![CDATA[CIERRE DE RECAUDACIONES]]></text>
-			</staticText>
-			<subreport isUsingCache="true">
-				<reportElement key="subreport" x="7" y="2" width="176" height="47" uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_empr">
-					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ide_sucu">
-					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
-			</subreport>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="404" y="23" width="60" height="24" uuid="77839792-1352-4515-917d-edac659c31c6"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="381" y="23" width="23" height="24" uuid="a33742a7-aefe-4053-a5a1-4ebf1ccccaa0"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
+				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="7"
+						y="2"
+						width="176"
+						height="47"
+						key="subreport"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ide_empr">
+						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ide_sucu">
+						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="404"
+						y="23"
+						width="60"
+						height="24"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="381"
+						y="23"
+						width="23"
+						height="24"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="10" isBold="true"/>
+					</textElement>
 				<text><![CDATA[DEL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="464" y="23" width="35" height="24" uuid="7501e231-f6bc-4d41-ad4a-6996a8b45cef"/>
-				<textElement verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="464"
+						y="23"
+						width="35"
+						height="24"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Top">
+						<font size="10" isBold="true"/>
+					</textElement>
 				<text><![CDATA[HASTA]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="495" y="23" width="60" height="24" uuid="4d3772be-a313-4cdb-bac4-73cf02c1f37a"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
-			</textField>
-		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band height="13">
-			<textField>
-				<reportElement x="7" y="0" width="37" height="12" uuid="9ad01507-51a7-41ed-b2be-8eba195ca19f"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{codigo_geper}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="44" y="0" width="58" height="12" uuid="d8c37b2a-20a2-4ad6-979a-20cd8766b34a"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{identificac_geper}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="102" y="0" width="162" height="12" uuid="e97f7e55-1359-4fa0-bbe5-c7e4b555438d"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="264" y="0" width="123" height="12" uuid="e30f741b-14ed-4e29-b8c2-8864c88d0384"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descripcion_recur}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="432" y="0" width="57" height="12" uuid="008508a3-3093-4b7b-871e-503d95be5d1e"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{valor_factura}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="489" y="0" width="57" height="12" uuid="2f1a66d6-e349-444b-b8d4-37db2b31ae55"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{num_titulo_recva}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="387" y="0" width="45" height="12" uuid="20dc7871-d695-4573-bc40-d184741325d7"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descripcion_repar}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="7" y="12" width="536" height="1" uuid="270c287f-98ed-41ec-8b71-f2b784ecc3d7"/>
-				<graphicElement>
-					<pen lineWidth="0.25" lineStyle="Dashed"/>
-				</graphicElement>
-			</line>
-		</band>
-	</detail>
-	<columnFooter>
-		<band splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="12" splitType="Stretch">
-			<staticText>
-				<reportElement key="staticText-8" x="5" y="0" width="100" height="12" uuid="be59d63d-7c83-47f2-a553-3259e91a35a7"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="495"
+						y="23"
+						width="60"
+						height="24"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="0"
+						width="37"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{codigo_geper}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="44"
+						y="0"
+						width="58"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{identificac_geper}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="102"
+						y="0"
+						width="162"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{nom_geper}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="264"
+						y="0"
+						width="123"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{descripcion_recur}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="432"
+						y="0"
+						width="57"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{valor_factura}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="0"
+						width="57"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{num_titulo_recva}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="387"
+						y="0"
+						width="45"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{descripcion_repar}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="7"
+						y="12"
+						width="536"
+						height="1"
+						key="line"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="12"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="5"
+						y="0"
+						width="100"
+						height="12"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
 				<text><![CDATA[Usuario Impresión: ]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false">
-				<reportElement key="textField-7" x="274" y="0" width="100" height="12" uuid="ab33c9a7-6bfd-4731-9d1d-1811f897ab97"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement key="staticText-9" x="214" y="0" width="56" height="12" uuid="79719f66-2733-43bb-8eca-1e150fbf260e"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="274"
+						y="0"
+						width="100"
+						height="12"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="214"
+						y="0"
+						width="56"
+						height="12"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
 				<text><![CDATA[Fecha:]]></text>
-			</staticText>
-			<textField isBlankWhenNull="false">
-				<reportElement key="textField-8" x="413" y="0" width="86" height="12" uuid="96198ad0-0906-466a-b754-3ed82e14b2c6"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement key="textField-10" x="106" y="0" width="100" height="12" uuid="ca489c68-7ff3-4172-80ef-77480c4bb08d"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{nombre}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="false">
-				<reportElement key="textField-9" x="499" y="0" width="40" height="12" uuid="758c7f85-a07e-4c75-9771-47e5fd8fc936"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
-	<summary>
-		<band height="25" splitType="Stretch">
-			<staticText>
-				<reportElement x="106" y="0" width="249" height="19" uuid="c2b4362b-5fb0-4fb9-936c-85a53edbb272"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="413"
+						y="0"
+						width="86"
+						height="12"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="0"
+						width="100"
+						height="12"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{nombre}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="499"
+						y="0"
+						width="40"
+						height="12"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="25"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="106"
+						y="0"
+						width="249"
+						height="19"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
 				<text><![CDATA[TOTAL RECAUDADO :]]></text>
-			</staticText>
-			<textField pattern="#,##0.00">
-				<reportElement x="375" y="0" width="114" height="19" uuid="97838450-3baa-4d49-9acc-418c356605af"/>
-				<box>
-					<pen lineWidth="0.0" lineStyle="Dashed"/>
-					<topPen lineWidth="0.0" lineStyle="Dashed"/>
-					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
-					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
-					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{sum_tot}]]></textFieldExpression>
-			</textField>
-		</band>
-	</summary>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="375"
+						y="0"
+						width="114"
+						height="19"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{sum_tot}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
 </jasperReport>
