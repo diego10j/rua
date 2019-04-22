@@ -35,8 +35,8 @@ cast((extract (year from fecha_asigna_acact)) as integer) as anio
 k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado
 from act_acta_constata a
 left join act_movimiento j on a.ide_acact = j.ide_acact
-left join act_ubicacion_activo b on a.ide_acuba=b.ide_acuba
 left join act_activo_fijo d  on d.ide_acafi=j.ide_acafi
+left join act_ubicacion_activo b on d.ide_acuba=b.ide_acuba
 left join gen_casa e on a.ide_gecas=e.ide_gecas
 left join gen_OBRA f on a.ide_geobr=f.ide_geobr
 left join gen_persona g on a.ide_geper=g.ide_geper

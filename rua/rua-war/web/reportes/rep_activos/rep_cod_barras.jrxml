@@ -14,27 +14,27 @@
 	<detail>
 		<band height="72" splitType="Stretch">
 			<staticText>
-				<reportElement x="1" y="4" width="163" height="13" uuid="388286ee-cf2d-4342-a54e-b46f011f23d9"/>
+				<reportElement uuid="388286ee-cf2d-4342-a54e-b46f011f23d9" x="1" y="6" width="163" height="13"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[SOCIEDAD SALESIANA ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="52" width="164" height="16" uuid="6f5136ff-27e4-4a03-8e27-5dd9c218d51a"/>
+				<reportElement uuid="6f5136ff-27e4-4a03-8e27-5dd9c218d51a" x="0" y="53" width="164" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[ACTIVOS FIJOS]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="44" y="17" width="117" height="26" uuid="de17adb2-c380-467b-96bb-d1174c15d2ae"/>
-				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Int2of5" drawText="false" checksumRequired="false" barWidth="0">
+				<reportElement uuid="de17adb2-c380-467b-96bb-d1174c15d2ae" x="1" y="21" width="160" height="28"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128" drawText="false" checksumRequired="false" barWidth="0">
 					<jr:codeExpression><![CDATA[$F{codigo_barras_acafi}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
 			<textField>
-				<reportElement x="1" y="43" width="163" height="13" uuid="6ddce174-29f9-4b14-8f7f-46903190f9a2"/>
+				<reportElement uuid="6ddce174-29f9-4b14-8f7f-46903190f9a2" x="1" y="47" width="163" height="13"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>

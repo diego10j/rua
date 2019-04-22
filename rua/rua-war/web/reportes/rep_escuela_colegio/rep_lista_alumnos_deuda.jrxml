@@ -40,9 +40,9 @@
 	<queryString>
 		<![CDATA[select a.ide_geper,a.ide_recalp,a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,abreviatura_recon as des_concepto_recon,abreviatura_gemes as nombre_gemes,valor_factura,
 nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,
-ide_repea,ide_repar,ide_recur,ide_reces,abreviatura_gemes,abreviatura_recon
+ide_repea,ide_repar,ide_recur,ide_reces,abreviatura_gemes,abreviatura_recon,orden_pen_gemes
 from (
-select a.ide_titulo_recval,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,nombre_gemes,total_recva as valor_factura,a.ide_geper,abreviatura_gemes,abreviatura_recon
+select a.ide_titulo_recval,orden_pen_gemes,a.ide_concepto_recon,a.ide_gemes,a.ide_recalp,des_concepto_recon,nombre_gemes,total_recva as valor_factura,a.ide_geper,abreviatura_gemes,abreviatura_recon
 from rec_valores a, rec_concepto b,gen_mes c
 where a.ide_concepto_recon = b.ide_concepto_recon
 and a.ide_gemes= c.ide_gemes
@@ -60,7 +60,7 @@ and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
 order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper
 ) b on a.ide_recalp = b.ide_recalp
-order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,nom_geper,a.ide_gemes]]>
+order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gemes,nom_geper]]>
 	</queryString>
 	<field name="ide_geper" class="java.lang.Long">
 		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>
@@ -102,6 +102,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="ide_reces" class="java.lang.Long"/>
 	<field name="abreviatura_gemes" class="java.lang.String"/>
 	<field name="abreviatura_recon" class="java.lang.String"/>
+	<field name="orden_pen_gemes" class="java.lang.Integer"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -126,7 +127,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<band/>
 		</groupFooter>
 	</group>
-	<group name="paralelos">
+	<group name="paralelos" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{ide_repar}]]></groupExpression>
 		<groupHeader>
 			<band height="16">
@@ -193,7 +194,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					</rowGroup>
 					<columnGroup name="nombre_gemes" height="18" totalPosition="End">
 						<bucket class="java.lang.String">
-							<bucketExpression><![CDATA[$F{nombre_gemes}]]></bucketExpression>
+							<bucketExpression><![CDATA[$F{orden_pen_gemes}+" "+$F{nombre_gemes}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
 							<cellContents backcolor="#F0F8FF" mode="Opaque">
@@ -396,7 +397,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="370" y="29" width="185" height="24"/>
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="370" y="28" width="185" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
