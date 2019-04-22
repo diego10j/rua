@@ -12,6 +12,7 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AreaTexto;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.BotonesCombo;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
@@ -102,7 +103,7 @@ public class pre_libro_bancos_esc_col extends Pantalla {
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
-    
+
     private AutoCompletar aut_persona;
     private AutoCompletar autAlumno;
     private Calendario cal_fecha_pago;
@@ -117,7 +118,7 @@ public class pre_libro_bancos_esc_col extends Pantalla {
     private Combo com_tipo_identificacion;
     private AreaTexto ate_observacion;
     private String str_ide_geper;
-    private Combo com_forma_pago ;
+    private Combo com_forma_pago;
     private Texto area_dialogo;
 
     private Dialogo dia_modifica = new Dialogo();
@@ -147,113 +148,113 @@ public class pre_libro_bancos_esc_col extends Pantalla {
 
     public pre_libro_bancos_esc_col() {
         if (tienePerfilSecretaria() != 0) {
-        mep_menu.setMenuPanel("CONSULTAS", "20%");
-        mep_menu.agregarItem("Posición Consolidada", "dibujarPosicion", "ui-icon-note");//1
-        mep_menu.agregarItem("Consulta de Movimientos", "dibujarMovimienots", "ui-icon-note");//2
-        mep_menu.agregarItem("Movimientos Anulados", "dibujarAnulados", "ui-icon-cancel");//11
-        mep_menu.agregarSubMenu("TRANSACCIONES");
-        mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
-        mep_menu.agregarItem("Cuentas por Cobrar Grupo", "dibujarCxCGrupo", "ui-icon-star");//15
-        mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
-        mep_menu.agregarItem("Anticipos a Proveedores", "dibujarAnticipo", "ui-icon-contact");//9
-        mep_menu.agregarItem("Anticipos a Empleados", "dibujarAnticipoEmpleados", "ui-icon-contact");//13
-        mep_menu.agregarItem("Anticipos de Clientes", "dibujarAnticipoClientes", "ui-icon-contact");//14
-        mep_menu.agregarItem("Otras Transacciones", "dibujarOtros", "ui-icon-contact");//5
-        mep_menu.agregarItem("Transferencias entre Cuentas", "dibujarTransferencias", "ui-icon-contact");//6
-        mep_menu.agregarSubMenu("HERRAMIENTAS");
-        mep_menu.agregarItem("Conciliación Manual", "dibujarConciliarM", "ui-icon-pencil"); //7
-        mep_menu.agregarItem("Conciliación Automática", "dibujarConciliarA", "ui-icon-calculator");//10
+            mep_menu.setMenuPanel("CONSULTAS", "20%");
+            mep_menu.agregarItem("Posición Consolidada", "dibujarPosicion", "ui-icon-note");//1
+            mep_menu.agregarItem("Consulta de Movimientos", "dibujarMovimienots", "ui-icon-note");//2
+            mep_menu.agregarItem("Movimientos Anulados", "dibujarAnulados", "ui-icon-cancel");//11
+            mep_menu.agregarSubMenu("TRANSACCIONES");
+            mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
+            mep_menu.agregarItem("Cuentas por Cobrar Grupo", "dibujarCxCGrupo", "ui-icon-star");//15
+            mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
+            mep_menu.agregarItem("Anticipos a Proveedores", "dibujarAnticipo", "ui-icon-contact");//9
+            mep_menu.agregarItem("Anticipos a Empleados", "dibujarAnticipoEmpleados", "ui-icon-contact");//13
+            mep_menu.agregarItem("Anticipos de Clientes", "dibujarAnticipoClientes", "ui-icon-contact");//14
+            mep_menu.agregarItem("Otras Transacciones", "dibujarOtros", "ui-icon-contact");//5
+            mep_menu.agregarItem("Transferencias entre Cuentas", "dibujarTransferencias", "ui-icon-contact");//6
+            mep_menu.agregarSubMenu("HERRAMIENTAS");
+            mep_menu.agregarItem("Conciliación Manual", "dibujarConciliarM", "ui-icon-pencil"); //7
+            mep_menu.agregarItem("Conciliación Automática", "dibujarConciliarA", "ui-icon-calculator");//10
 
-        agregarComponente(mep_menu);
+            agregarComponente(mep_menu);
 
-        aut_cuentas.setId("aut_cuentas");
-        aut_cuentas.setAutocompletarContenido();
-        aut_cuentas.setDropdown(true);
-        aut_cuentas.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
-        aut_cuentas.setMetodoChange("actualizarMovimientos");
-        aut_cuentas.setGlobal(true);
-        aut_cuentas.setValue(null);
-        aut_cuentas.setGlobal(true);
-        aut_cuentas.setMaxResults(25);
+            aut_cuentas.setId("aut_cuentas");
+            aut_cuentas.setAutocompletarContenido();
+            aut_cuentas.setDropdown(true);
+            aut_cuentas.setAutoCompletar(ser_tesoreria.getSqlComboCuentas());
+            aut_cuentas.setMetodoChange("actualizarMovimientos");
+            aut_cuentas.setGlobal(true);
+            aut_cuentas.setValue(null);
+            aut_cuentas.setGlobal(true);
+            aut_cuentas.setMaxResults(25);
 
-        bar_botones.limpiar();
+            bar_botones.limpiar();
 
-        bar_botones.agregarReporte();
+            bar_botones.agregarReporte();
 
-        bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
-        bar_botones.agregarComponente(aut_cuentas);
-        bar_botones.agregarSeparador();
-        bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
+            bar_botones.agregarComponente(new Etiqueta("CUENTA :"));
+            bar_botones.agregarComponente(aut_cuentas);
+            bar_botones.agregarSeparador();
+            bar_botones.agregarComponente(new Etiqueta("FECHA DESDE :"));
 
-        cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
-        bar_botones.agregarComponente(cal_fecha_inicio);
-        bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
+            cal_fecha_inicio.setValue(utilitario.getFecha(utilitario.getAnio(utilitario.getFechaActual()) + "-01-01"));
+            bar_botones.agregarComponente(cal_fecha_inicio);
+            bar_botones.agregarComponente(new Etiqueta("FECHA HASTA :"));
 
-        cal_fecha_fin.setFechaActual();
-        bar_botones.agregarComponente(cal_fecha_fin);
+            cal_fecha_fin.setFechaActual();
+            bar_botones.agregarComponente(cal_fecha_fin);
 
-        Boton bot_consultar = new Boton();
-        bot_consultar.setMetodo("actualizarMovimientos");
-        bot_consultar.setIcon("ui-icon-search");
+            Boton bot_consultar = new Boton();
+            bot_consultar.setMetodo("actualizarMovimientos");
+            bot_consultar.setIcon("ui-icon-search");
 
-        bar_botones.agregarBoton(bot_consultar);
-        dibujarPosicion();
+            bar_botones.agregarBoton(bot_consultar);
+            dibujarPosicion();
 
-        asc_asiento.setId("asc_asiento");
-        asc_asiento.getBot_aceptar().setMetodo("guardar");
-        asc_asiento.getBot_cancelar().setMetodo("cerrarAsiento");
-        agregarComponente(asc_asiento);
+            asc_asiento.setId("asc_asiento");
+            asc_asiento.getBot_aceptar().setMetodo("guardar");
+            asc_asiento.getBot_cancelar().setMetodo("cerrarAsiento");
+            agregarComponente(asc_asiento);
 
-        dia_modifica.setId("dia_modifica");
-        dia_modifica.setHeight("50%");
-        dia_modifica.setWidth("40%");
-        dia_modifica.setTitle("MODIFICAR MOVIMIENTO");
-        dia_modifica.getBot_aceptar().setMetodo("aceptarModificar");
-        agregarComponente(dia_modifica);
-        con_confirma.setId("con_confirma");
-        con_confirma.setMessage("Está seguro de Anular el Movimiento Seleccionado ?");
-        con_confirma.setTitle("ANULAR MOVIMIENTO");
-        con_confirma.getBot_aceptar().setValue("Si");
-        con_confirma.getBot_cancelar().setValue("No");
-        agregarComponente(con_confirma);
+            dia_modifica.setId("dia_modifica");
+            dia_modifica.setHeight("50%");
+            dia_modifica.setWidth("40%");
+            dia_modifica.setTitle("MODIFICAR MOVIMIENTO");
+            dia_modifica.getBot_aceptar().setMetodo("aceptarModificar");
+            agregarComponente(dia_modifica);
+            con_confirma.setId("con_confirma");
+            con_confirma.setMessage("Está seguro de Anular el Movimiento Seleccionado ?");
+            con_confirma.setTitle("ANULAR MOVIMIENTO");
+            con_confirma.getBot_aceptar().setValue("Si");
+            con_confirma.getBot_cancelar().setValue("No");
+            agregarComponente(con_confirma);
 
-        sel_conciliados.setId("sel_conciliados");
-        sel_conciliados.setSeleccionTabla(ser_tesoreria.getSqlTransaccionesEncontradasConciliarCuenta("-1"), "ide_teclb");
-        sel_conciliados.setTitle("MOVIMIENTOS ENCONTRADOS");
-        sel_conciliados.getBot_aceptar().setMetodo("aceptarSeleccionadosConciliar");
-        sel_conciliados.setWidth("65%");
-        sel_conciliados.setHeight("65");
-        agregarComponente(sel_conciliados);
+            sel_conciliados.setId("sel_conciliados");
+            sel_conciliados.setSeleccionTabla(ser_tesoreria.getSqlTransaccionesEncontradasConciliarCuenta("-1"), "ide_teclb");
+            sel_conciliados.setTitle("MOVIMIENTOS ENCONTRADOS");
+            sel_conciliados.getBot_aceptar().setMetodo("aceptarSeleccionadosConciliar");
+            sel_conciliados.setWidth("65%");
+            sel_conciliados.setHeight("65");
+            agregarComponente(sel_conciliados);
 
-        rep_reporte.setId("rep_reporte");
-        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
-        sel_formato.setId("sel_formato");
-        agregarComponente(rep_reporte);
-        agregarComponente(sel_formato);
+            rep_reporte.setId("rep_reporte");
+            rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+            sel_formato.setId("sel_formato");
+            agregarComponente(rep_reporte);
+            agregarComponente(sel_formato);
 
-        asc_asiento.setId("asc_asiento");
-        asc_asiento.getBot_aceptar().setMetodo("guardar");
-        agregarComponente(asc_asiento);
+            asc_asiento.setId("asc_asiento");
+            asc_asiento.getBot_aceptar().setMetodo("guardar");
+            agregarComponente(asc_asiento);
 
-        sel_fechas.setId("sel_fechas");
-        sel_fechas.getBot_aceptar().setMetodo("aceptarReporte");
-        agregarComponente(sel_fechas);
+            sel_fechas.setId("sel_fechas");
+            sel_fechas.getBot_aceptar().setMetodo("aceptarReporte");
+            agregarComponente(sel_fechas);
 
-        set_bancos.setId("set_bancos");
-        set_bancos.setSeleccionTabla(ser_tesoreria.getSqlComboCuentas(), "ide_tecba");
-        set_bancos.setWidth("50%");
-        set_bancos.getBot_aceptar().setMetodo("aceptarReporte");
-        set_bancos.setHeight("65%");
-        set_bancos.setTitle("CUENTAS CAJAS - BANCOS");
-        agregarComponente(set_bancos);
+            set_bancos.setId("set_bancos");
+            set_bancos.setSeleccionTabla(ser_tesoreria.getSqlComboCuentas(), "ide_tecba");
+            set_bancos.setWidth("50%");
+            set_bancos.getBot_aceptar().setMetodo("aceptarReporte");
+            set_bancos.setHeight("65%");
+            set_bancos.setTitle("CUENTAS CAJAS - BANCOS");
+            agregarComponente(set_bancos);
 
-        set_tipo_transaccion.setId("set_tipo_transaccion");
-        set_tipo_transaccion.setSeleccionTabla(ser_tesoreria.getSqlTipoTransaccion(), "ide_tettb");
-        set_tipo_transaccion.setWidth("50%");
-        set_tipo_transaccion.getBot_aceptar().setMetodo("aceptarReporte");
-        set_tipo_transaccion.setHeight("65%");
-        set_tipo_transaccion.setTitle("TIPOS DE TRANSACCION - BANCOS");
-        agregarComponente(set_tipo_transaccion);
+            set_tipo_transaccion.setId("set_tipo_transaccion");
+            set_tipo_transaccion.setSeleccionTabla(ser_tesoreria.getSqlTipoTransaccion(), "ide_tettb");
+            set_tipo_transaccion.setWidth("50%");
+            set_tipo_transaccion.getBot_aceptar().setMetodo("aceptarReporte");
+            set_tipo_transaccion.setHeight("65%");
+            set_tipo_transaccion.setTitle("TIPOS DE TRANSACCION - BANCOS");
+            agregarComponente(set_tipo_transaccion);
         } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para las cuentas por cobrar. Consulte con el Administrador");
         }
@@ -264,8 +265,9 @@ public class pre_libro_bancos_esc_col extends Pantalla {
     String caja = "";
     String emision = "";
     String ide_caja = "";
-    String ide_empleado="";
-private int tienePerfilSecretaria() {
+    String ide_empleado = "";
+
+    private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
 
         if (!sql.isEmpty()) {
@@ -278,13 +280,13 @@ private int tienePerfilSecretaria() {
             ide_caja = fila[5].toString();
             ide_empleado = fila[5].toString();
             return 1;
-            
 
         } else {
             return 0;
-            
+
         }
     }
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
@@ -930,9 +932,28 @@ private int tienePerfilSecretaria() {
         gri4.getChildren().add(tex_diferencia);
 
         contenido.getChildren().add(gri4);
-
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_seleccion");
+
+        // boton seleccion inversa
+        BotonesCombo boc_seleccion_inversa = new BotonesCombo();
+        ItemMenu itm_todas = new ItemMenu();
+        ItemMenu itm_niguna = new ItemMenu();
+
+        
+        boc_seleccion_inversa.setValue("Seleccionar Todo");
+        boc_seleccion_inversa.setIcon("ui-icon-check");
+        boc_seleccion_inversa.setMetodo("seleccionarTodas");
+        boc_seleccion_inversa.setUpdate("tab_seleccion");
+        itm_niguna.setValue("Seleccionar Ninguna");
+        itm_niguna.setIcon("ui-icon-minus");
+        itm_niguna.setMetodo("seleccionarNinguna");
+        itm_niguna.setUpdate("tab_seleccion");
+        boc_seleccion_inversa.agregarBoton(itm_niguna);
+
+        gri4.getChildren().add(boc_seleccion_inversa);
+        contenido.getChildren().add(gri4);
+
         tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_cuenta.getValor()));
         tab_tabla1.getColumna("saldo_x_pagar").setEstilo("font-size: 15px;font-weight: bold;");
         tab_tabla1.getColumna("saldo_x_pagar").alinearDerecha();
@@ -948,7 +969,7 @@ private int tienePerfilSecretaria() {
         tab_tabla1.getColumna("observacion_cccfa").setNombreVisual("OBSERVACIÓN");
 
         tab_tabla1.setScrollable(true);
-        tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 380);
+        tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 450);
         tab_tabla1.setCampoPrimaria("ide_ccctr");
         tab_tabla1.setLectura(true);
         tab_tabla1.setTipoSeleccion(true);
@@ -970,29 +991,27 @@ private int tienePerfilSecretaria() {
 
     public void dibujarCxC() {
         Grid contenido = new Grid();
-        
+
         Grid gri0 = new Grid();
-        
+
         gri0.setColumns(4);
-        gri0.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CAJERO : "+empleado+" </strong><span style='color:red;font-weight: bold;'>*</span>"));
-        gri0.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;  ---- "+caja+" ---- </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri0.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;CAJERO : " + empleado + " </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri0.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;  ---- " + caja + " ---- </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri0.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FORMA PAGO :  </strong><span style='color:red;font-weight: bold;'>*</span>"));
-      
-        com_forma_pago= new Combo();
-        com_forma_pago.setId("com_forma_pago");       
+
+        com_forma_pago = new Combo();
+        com_forma_pago.setId("com_forma_pago");
         com_forma_pago.setCombo("select ide_cndfp, nombre_cndfp from con_deta_forma_pago order by nombre_cndfp");
         gri0.getChildren().add(com_forma_pago);
 
-        
-        
         Grid gri1 = new Grid();
-        gri1.setColumns(3);        
+        gri1.setColumns(3);
         gri1.getChildren().add(new Etiqueta("<strong>ALUMNO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
         gri1.getChildren().add(new Etiqueta());
-        
+
         autAlumno = new AutoCompletar();
-         autAlumno.setId("autAlumno");
+        autAlumno.setId("autAlumno");
         autAlumno.setAutoCompletar(ser_pensiones.getSqlComboAlumnos());
         autAlumno.setSize(75);
         autAlumno.setAutocompletarContenido(); // no startWith para la busqueda
@@ -1000,8 +1019,7 @@ private int tienePerfilSecretaria() {
         gri1.getChildren().add(autAlumno);
         gri1.getChildren().add(new Etiqueta());
         gri1.getChildren().add(new Etiqueta());
-        
-        
+
         gri1.getChildren().add(new Etiqueta("<strong>CLIENTE : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
@@ -1119,12 +1137,13 @@ private int tienePerfilSecretaria() {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(5, "CUENTAS POR COBRAR A CLIENTES", contenido);
     }
- public void seleccionarAlumno(SelectEvent evt ){
-     aut_persona.onSelect(evt);
-     TablaGenerica tab_reprse= utilitario.consultar("Select ide_geper,gen_ide_geper from rec_alumno_periodo where ide_geper="+autAlumno.getValor());
-     aut_persona.setValor(tab_reprse.getValor("gen_ide_geper"));
-     
-     tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_persona.getValor()));
+
+    public void seleccionarAlumno(SelectEvent evt) {
+        aut_persona.onSelect(evt);
+        TablaGenerica tab_reprse = utilitario.consultar("Select ide_geper,gen_ide_geper from rec_alumno_periodo where ide_geper=" + autAlumno.getValor());
+        aut_persona.setValor(tab_reprse.getValor("gen_ide_geper"));
+
+        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrar(aut_persona.getValor()));
         tab_tabla1.ejecutarSql();
         tex_diferencia.setValue(utilitario.getFormatoNumero(0));
         tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));
@@ -1132,7 +1151,8 @@ private int tienePerfilSecretaria() {
             utilitario.agregarMensajeError("El cliente seleccionado no tiene cuentas por cobrar", "");
         }
         utilitario.addUpdate("aut_persona");
- }
+    }
+
     public void dibujarCxP() {
         Grid contenido = new Grid();
         Grid gri1 = new Grid();
@@ -2750,7 +2770,7 @@ private int tienePerfilSecretaria() {
             TablaGenerica tab_cabecera = utilitario.consultar(ser_factura.getSqlCabeceraFactura(String.valueOf(obj_fila[0])));
 
             ser_factura.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()));
-            ser_factura.cancelarFacturaPensiones(obj_fila[0]+"",com_forma_pago.getValue().toString(),tex_num.getValue().toString(),cal_fecha_pago.getFecha(),ide_caja,ide_empleado);
+            // ser_factura.cancelarFacturaPensiones(obj_fila[0]+"",com_forma_pago.getValue().toString(),tex_num.getValue().toString(),cal_fecha_pago.getFecha(),ide_caja,ide_empleado);
         }
         return ide_teclb;
         //utilitario.getConexion().setImprimirSqlConsola(true);
@@ -2948,6 +2968,62 @@ private int tienePerfilSecretaria() {
             ser_cuentas_cxc.generarTransaccionAnticipo(aut_persona.getValor(), tab_libro);
             generarAsiento(tab_libro.getValor("ide_teclb"));
         }
+    }
+
+    public void seleccionarTodas() {
+        tab_tabla1.setSeleccionados(null);
+        Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas()];
+        for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+            seleccionados[i] = tab_tabla1.getFilas().get(i);
+        }
+        tab_tabla1.setSeleccionados(seleccionados);
+        //calculoTotal();
+        double total = 0;
+            for (Fila actual : tab_tabla1.getSeleccionados()) {
+                total = Double.parseDouble(actual.getCampos()[5] + "") + total;
+            }
+            tex_valor_pagar.setValue(utilitario.getFormatoNumero(total));
+            utilitario.addUpdate("tex_valor_pagar");
+            CalcularDiferenciaCxC();
+
+    }
+
+    public void seleccinarInversa() {
+        if (tab_tabla1.getSeleccionados() == null) {
+            seleccionarTodas();
+            
+        } else if (tab_tabla1.getSeleccionados().length == tab_tabla1.getTotalFilas()) {
+            seleccionarNinguna();
+            
+        } else {
+            Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas() - tab_tabla1.getSeleccionados().length];
+            int cont = 0;
+            for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+                boolean boo_selecionado = false;
+                for (int j = 0; j < tab_tabla1.getSeleccionados().length; j++) {
+                    if (tab_tabla1.getSeleccionados()[j].equals(tab_tabla1.getFilas().get(i))) {
+                        boo_selecionado = true;
+                        break;
+                    }
+                }
+                if (boo_selecionado == false) {
+                    seleccionados[cont] = tab_tabla1.getFilas().get(i);
+                    cont++;
+                }
+            }
+            tab_tabla1.setSeleccionados(seleccionados);
+        }
+        //calculoTotal();
+
+    }
+
+    public void seleccionarNinguna() {
+        tab_tabla1.setSeleccionados(null);
+        double total = 0;
+            total = Double.parseDouble("0.00") + total;
+            tex_valor_pagar.setValue(utilitario.getFormatoNumero(total));
+            utilitario.addUpdate("tex_valor_pagar");
+            CalcularDiferenciaCxC();
     }
 
     public AutoCompletar getAut_cuentas() {
