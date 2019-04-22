@@ -11,7 +11,6 @@ import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
-import paq_nomina.*;
 import sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -77,13 +76,14 @@ public class pre_actas extends Pantalla {
         //bar_botones.agregarReporte();//aparece el boton de reportes en la barra de botones
         self_reporte.setId("self_reporte"); //id
         //agregarComponente(self_reporte);
-
+        com_tipo_acta.setId("com_tipo_acta");
         com_tipo_acta.setCombo(ser_activos.getTipoActa());
         com_tipo_acta.setMetodo("seleccionarTipoActa");
         bar_botones.agregarComponente(new Etiqueta("Seleccione El Tipo de Acta:"));
         bar_botones.agregarComponente(com_tipo_acta);
 
         Boton bot_clean = new Boton();
+        bot_clean.setId("bot_clean");
         bot_clean.setIcon("ui-icon-cancel");
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
@@ -483,13 +483,10 @@ public class pre_actas extends Pantalla {
 
     public void seleccionarTipoActa() {
         if (com_tipo_acta.getValue() != null) {
-            tab_tabla.getColumna("observacion_acact").setVisible(true);
-            //actualizarCampos();
             tab_tabla.setCondicion("ide_actia=" + com_tipo_acta.getValue());
             tab_tabla.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
 
-            //tab_tabla2.ejecutarSql();
         } else {
             tab_tabla.setCondicion("ide_actia=-1");
             tab_tabla.ejecutarSql();
