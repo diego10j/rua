@@ -29,7 +29,8 @@ import servicios.pensiones.ServicioPensiones;
 import sistema.aplicacion.Pantalla;
 
 public class pre_recaudacion_consulta extends Pantalla {
-
+    private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
+    private VisualizarPDF vipdf_cierre = new VisualizarPDF();
     private Tabla tab_tabla1 = new Tabla();
     private AutoCompletar autAlumno = new AutoCompletar();
     private Dialogo dia_emision = new Dialogo();
@@ -41,7 +42,6 @@ public class pre_recaudacion_consulta extends Pantalla {
     private final Etiqueta eti_cajero = new Etiqueta();
     private final Etiqueta eti_caja = new Etiqueta();
     private final Etiqueta eti_emision = new Etiqueta();
-    private Map parametro = new HashMap();
     String alumno = "";
     String seleccion_alumno = "";
     String valor_pagar = "";
@@ -55,8 +55,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
-    private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
-    private VisualizarPDF vipdf_cierre = new VisualizarPDF();
+    
 
     public pre_recaudacion_consulta() {
 
@@ -93,6 +92,8 @@ public class pre_recaudacion_consulta extends Pantalla {
             bot_abrir.setIcon("ui-calendario");
             bot_abrir.setMetodo("abrirRango");
             bar_botones.agregarBoton(bot_abrir);
+            
+            
             bar_botones.getBot_insertar().setRendered(false);
             bar_botones.getBot_eliminar().setRendered(false);
             bar_botones.getBot_guardar().setRendered(false);
@@ -245,7 +246,7 @@ public class pre_recaudacion_consulta extends Pantalla {
 
         if (sec_rango_fechas.isFechasValidas()) {
 
-            generarPDFcierreRecaudaciones();
+            generarPDFcierreR();
             sec_rango_fechas.cerrar();
 
         } else {
@@ -254,18 +255,14 @@ public class pre_recaudacion_consulta extends Pantalla {
         }
     }
 
-    public void generarPDFcierreRecaudaciones() {
+    public void generarPDFcierreR() {
 //sec_rango_fechas.getFecha1String(), sec_rango_fechas.getFecha2String()
         ///////////AQUI ABRE EL REPORTE
         Map map_parametro = new HashMap();
         map_parametro.put("nombre", utilitario.getVariable("NICK"));
-        map_parametro.put("fecha_inicio", "10-08-2018");
-        map_parametro.put("fecha_final","10-09-2018");
-
-        System.out.println(" " + map_parametro);
-        //vipdf_comprobante.setVisualizarPDF(data, docente, map_parametros);
-        vipdf_cierre.setVisualizarPDF("rep_escuela_colegio/rec_cierre_recaudaciones.jasper", map_parametro);
-        //vipdf_cierre.setVisualizarPDF("rep_escuela_colegio/prueba.jasper");
+        map_parametro.put("fecha_inicio",sec_rango_fechas.getFecha1String());
+        map_parametro.put("fecha_final",sec_rango_fechas.getFecha2String());
+        vipdf_cierre.setVisualizarPDF("rep_escuela_colegio/rep_cierre_recaudaciones.jasper", map_parametro);
         vipdf_cierre.dibujar();
         utilitario.addUpdate("vipdf_cierre");
     }
@@ -375,13 +372,6 @@ public class pre_recaudacion_consulta extends Pantalla {
         this.vipdf_recaudacion = vipdf_recaudacion;
     }
 
-    public Map getParametro() {
-        return parametro;
-    }
-
-    public void setParametro(Map parametro) {
-        this.parametro = parametro;
-    }
 
     public SeleccionCalendario getSec_rango_fechas() {
         return sec_rango_fechas;
@@ -389,14 +379,6 @@ public class pre_recaudacion_consulta extends Pantalla {
 
     public void setSec_rango_fechas(SeleccionCalendario sec_rango_fechas) {
         this.sec_rango_fechas = sec_rango_fechas;
-    }
-
-    public Etiqueta getEti_rango_fechas() {
-        return eti_rango_fechas;
-    }
-
-    public void setEti_rango_fechas(Etiqueta eti_rango_fechas) {
-        this.eti_rango_fechas = eti_rango_fechas;
     }
 
     public SeleccionCalendario getSec_rango_reporte() {
@@ -407,28 +389,12 @@ public class pre_recaudacion_consulta extends Pantalla {
         this.sec_rango_reporte = sec_rango_reporte;
     }
 
-    public ServicioPensiones getSer_pensiones() {
-        return ser_pensiones;
-    }
-
-    public void setSer_pensiones(ServicioPensiones ser_pensiones) {
-        this.ser_pensiones = ser_pensiones;
-    }
-
     public VisualizarPDF getVipdf_cierre() {
         return vipdf_cierre;
     }
 
     public void setVipdf_cierre(VisualizarPDF vipdf_cierre) {
         this.vipdf_cierre = vipdf_cierre;
-    }
-
-    public AutoCompletar getAutAlumno() {
-        return autAlumno;
-    }
-
-    public void setAutAlumno(AutoCompletar autAlumno) {
-        this.autAlumno = autAlumno;
     }
 
     public Dialogo getDia_emision() {
@@ -439,44 +405,5 @@ public class pre_recaudacion_consulta extends Pantalla {
         this.dia_emision = dia_emision;
     }
 
-    public Calendario getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Calendario fecha) {
-        this.fecha = fecha;
-    }
-
-    public Combo getCom_forma_pago() {
-        return com_forma_pago;
-    }
-
-    public void setCom_forma_pago(Combo com_forma_pago) {
-        this.com_forma_pago = com_forma_pago;
-    }
-
-    public AreaTexto getArea_dialogo() {
-        return area_dialogo;
-    }
-
-    public void setArea_dialogo(AreaTexto area_dialogo) {
-        this.area_dialogo = area_dialogo;
-    }
-
-    public Etiqueta getEti_fecha() {
-        return eti_fecha;
-    }
-
-    public void setEti_fecha(Etiqueta eti_fecha) {
-        this.eti_fecha = eti_fecha;
-    }
-
-    public Etiqueta getEti_valor_pagar() {
-        return eti_valor_pagar;
-    }
-
-    public void setEti_valor_pagar(Etiqueta eti_valor_pagar) {
-        this.eti_valor_pagar = eti_valor_pagar;
-    }
 
 }
