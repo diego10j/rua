@@ -47,12 +47,12 @@ public class pre_lista_activos extends Pantalla {
         //combos
         com_area.setId("com_area");
         com_area.setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba is null order by codigo_acuba");
-        bar_botones.agregarComponente(new Etiqueta("Area de ubicación"));
+        bar_botones.agregarComponente(new Etiqueta("Area"));
         bar_botones.agregarComponente(com_area);
 
         com_activo_fijo.setId("com_activo_fijo");
         com_activo_fijo.setCombo("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla");
-        bar_botones.agregarComponente(new Etiqueta("Grupo Activo Fijo"));
+        bar_botones.agregarComponente(new Etiqueta("Grupo Contable"));
         bar_botones.agregarComponente(com_activo_fijo);
 
         com_custodio.setId("com_custodio");
@@ -171,24 +171,25 @@ public class pre_lista_activos extends Pantalla {
         String cm_area = com_area.getValue() + "";
         String cm_grupo = com_activo_fijo.getValue() + "";
         String cm_custodio = com_custodio.getValue() + "";
-        System.out.println("entre al filtro del activo");
+        //System.out.println("entre al filtro del activo");
         String condicion = "";
         if (com_area.getValue() == null && com_activo_fijo.getValue() == null && com_custodio.getValue() == null) {
-            condicion += " 1=1 ";
+            
+        } else {
+            condicion += " 1=1  " ;
+            if (!cm_area.equals("null")) {
+                condicion += " and ide_acuba= " + cm_area;
+            }
+            if (!cm_grupo.equals("null")) {
+                condicion += " and ide_accla= " + cm_grupo;
+            }
+            if (!cm_custodio.equals("null")) {
+                condicion += " and ide_geper= " + cm_custodio;
+            }
         }
-        if (!cm_area.equals("null")) {
-            condicion += " and ide_acuba= " + cm_area;
-        }
-        if (!cm_grupo.equals("null")) {
-            condicion += " and ide_accla= " + cm_grupo;
-        }
-        if (!cm_custodio.equals("null")) {
-            condicion += " and ide_geper= " + cm_custodio;
-        }
-
         tab_lista.setCondicion(condicion);
         tab_lista.ejecutarSql();
-        tab_lista.imprimirSql();
+        //tab_lista.imprimirSql();
         utilitario.addUpdate("tab_lista");
 
     }
