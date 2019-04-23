@@ -81,7 +81,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             Boton bot_recaudar = new Boton();
             bot_recaudar.setTitle("Limpiar");
             bot_recaudar.setIcon("ui-icon-search");
-            bot_recaudar.setValue("RECAUDARr");
+            bot_recaudar.setValue("RECAUDAR");
             //bot_recaudar.setMetodo("generarPDFrecaudacion");
             bot_recaudar.setMetodo("abrirDialogo");
             bar_botones.agregarComponente(bot_recaudar);
@@ -334,7 +334,7 @@ public class pre_recaudacion_consulta extends Pantalla {
         System.out.println("PARAMETROS TITULO: " + seleccionado);
         Map parametro = new HashMap();
         parametro.put("pide_titulo", Integer.parseInt(seleccionado));
-        vipdf_recaudacion.setVisualizarPDF("rep_escuela_colegio/rec_recaudacion.jasper", parametro);
+        vipdf_recaudacion.setVisualizarPDF("rep_escuela_colegio/rep_recaudacion.jasper", parametro);
         vipdf_recaudacion.dibujar();
         utilitario.addUpdate("vipdf_recaudacion");
 
@@ -354,6 +354,14 @@ public class pre_recaudacion_consulta extends Pantalla {
     @Override
     public void eliminar() {
         tab_tabla1.eliminar();
+    }
+
+    public AutoCompletar getAutAlumno() {
+        return autAlumno;
+    }
+
+    public void setAutAlumno(AutoCompletar autAlumno) {
+        this.autAlumno = autAlumno;
     }
 
     public Tabla getTab_tabla1() {
