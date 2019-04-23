@@ -21,7 +21,7 @@
 				<text><![CDATA[SOCIEDAD SALESIANA ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6f5136ff-27e4-4a03-8e27-5dd9c218d51a" x="0" y="53" width="164" height="16"/>
+				<reportElement uuid="6f5136ff-27e4-4a03-8e27-5dd9c218d51a" x="0" y="55" width="164" height="16"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>

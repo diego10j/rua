@@ -38,7 +38,7 @@
 	<parameter name="pide_paralelo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,
-retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,valor_descuento_recalp,fecha_descuento_recva
+retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,valor_descuento_recalp,fecha_descuento_recalp
 from rec_alumno_periodo a, gen_persona b,rec_periodo_academico c,gen_anio d,rec_paralelos g,rec_curso e, rec_especialidad f
 where a.ide_geper= b.ide_geper
 and a.ide_repea = c.ide_repea

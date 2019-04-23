@@ -198,38 +198,17 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band height="49" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="289ae40c-5535-4a26-ad8f-ac7a79b05770" key="staticText" x="335" y="1" width="220" height="22"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[CIERRE DE RECAUDACIONES]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="3db65b6c-9671-40e4-ab7c-15de6c123df6" key="textField" x="404" y="23" width="60" height="24"/>
+				<reportElement uuid="3db65b6c-9671-40e4-ab7c-15de6c123df6" key="textField" x="335" y="23" width="220" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="423bede9-1243-4cf2-8bce-ae5ca3d4b795" key="staticText" x="374" y="23" width="30" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DEL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="440fc6f7-6b0b-4016-a401-2520c20830cb" key="staticText" x="464" y="23" width="35" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[AL]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="9f979a0c-5fc8-44ab-866c-5e31402ca04b" key="textField" x="495" y="23" width="60" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{fecha_final}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["DEL "+$P{fecha_inicio}+" AL "$P{fecha_final}]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
 				<reportElement uuid="1f08164f-afb7-48fe-9c3f-f3bfcc79d64c" key="subreport" x="0" y="0" width="168" height="47"/>
