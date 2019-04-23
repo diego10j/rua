@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_nombre_kennedy_recibo" pageWidth="236" pageHeight="60" whenNoDataType="BlankPage" columnWidth="206" leftMargin="0" rightMargin="30" topMargin="0" bottomMargin="0" uuid="f4aa4697-be53-468d-ba94-d3aca97727d2">
+	<property name="ireport.zoom" value="2.7272727272727275"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT * FROM sis_empresa e, sis_sucursal s
+where s.ide_empr=e.ide_empr
+and s.ide_empr=$P{ide_empr}
+and s.ide_sucu=$P{ide_sucu}]]>
+	</queryString>
+	<field name="ide_empr" class="java.lang.Long"/>
+	<field name="nom_empr" class="java.lang.String"/>
+	<field name="contacto_empr" class="java.lang.String"/>
+	<field name="representante_empr" class="java.lang.String"/>
+	<field name="identi_repre_empr" class="java.lang.String"/>
+	<field name="nom_corto_empr" class="java.lang.String"/>
+	<field name="mail_empr" class="java.lang.String"/>
+	<field name="pagina_empr" class="java.lang.String"/>
+	<field name="identificacion_empr" class="java.lang.String"/>
+	<field name="direccion_empr" class="java.lang.String"/>
+	<field name="telefono_empr" class="java.lang.String"/>
+	<field name="constitucion_empr" class="java.lang.String"/>
+	<field name="logo_empr" class="java.io.InputStream"/>
+	<field name="ide_sucu" class="java.lang.Long"/>
+	<field name="nom_sucu" class="java.lang.String"/>
+	<field name="telefonos_sucu" class="java.lang.String"/>
+	<field name="direccion_sucu" class="java.lang.String"/>
+	<field name="contacto_suc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="24f3cbbf-ae83-4fac-8fd9-b5c0c5022302" key="textField" x="0" y="1" width="186" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="40eb21bc-146f-4c73-aa25-0559428f347a" key="textField" x="0" y="15" width="186" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC: "+$F{identi_repre_empr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="4200248e-4193-4146-bff4-791437d44704" key="textField" x="0" y="29" width="186" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_empr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="bc3cd218-836e-4d8f-93b4-420a68fb039c" key="textField" x="0" y="43" width="186" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TELF: "+$F{telefono_empr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
