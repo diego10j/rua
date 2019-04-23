@@ -6,10 +6,13 @@
 package paq_activos;
 
 import framework.aplicacion.Fila;
+import framework.componentes.Boton;
 import framework.componentes.BotonesCombo;
+import framework.componentes.Combo;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.ItemMenu;
-import framework.componentes.PanelTabla; 
+import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
@@ -26,18 +29,43 @@ public class pre_lista_activos extends Pantalla {
     private Tabla tab_lista = new Tabla();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private Combo com_area = new Combo();
+    private Combo com_activo_fijo = new Combo();
+    private Combo com_custodio = new Combo();
 
     public pre_lista_activos() {
         bar_botones.getBot_insertar().setRendered(false);
-        
+
         bar_botones.agregarReporte();
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
-        
+
         sel_rep.setId("sel_rep");
         agregarComponente(sel_rep);
-        
+
+        //combos
+        com_area.setId("com_area");
+        com_area.setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba is null order by codigo_acuba");
+        bar_botones.agregarComponente(new Etiqueta("Area de ubicación"));
+        bar_botones.agregarComponente(com_area);
+
+        com_activo_fijo.setId("com_activo_fijo");
+        com_activo_fijo.setCombo("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla");
+        bar_botones.agregarComponente(new Etiqueta("Grupo Activo Fijo"));
+        bar_botones.agregarComponente(com_activo_fijo);
+
+        com_custodio.setId("com_custodio");
+        com_custodio.setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
+        bar_botones.agregarComponente(new Etiqueta("Custodio"));
+        bar_botones.agregarComponente(com_custodio);
+
+        Boton bot_filtro_consulta = new Boton();
+        bot_filtro_consulta.setIcon("ui-icon-search");
+        bot_filtro_consulta.setValue("CONSULTAR");
+        bot_filtro_consulta.setMetodo("filtroArea");
+        bar_botones.agregarBoton(bot_filtro_consulta);
+
         // boton seleccion inversa
         BotonesCombo boc_seleccion_inversa = new BotonesCombo();
         ItemMenu itm_todas = new ItemMenu();
@@ -58,9 +86,9 @@ public class pre_lista_activos extends Pantalla {
         itm_niguna.setUpdate("tab_lista");
         boc_seleccion_inversa.agregarBoton(itm_niguna);
 
-
         tab_lista.setId("tab_lista");
-        tab_lista.setTabla("act_activo_fijo","ide_acafi",1);
+        tab_lista.setTabla("act_activo_fijo", "ide_acafi", 1);
+        tab_lista.setCondicion("ide_acafi=-1");
         tab_lista.getColumna("ide_acafi").setNombreVisual("CODIGO");
         tab_lista.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         tab_lista.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
@@ -81,29 +109,29 @@ public class pre_lista_activos extends Pantalla {
         tab_lista.getColumna("ide_aceaf").setRequerida(true);
         tab_lista.getColumna("ide_inmar").setCombo("inv_marca", "ide_inmar", "nombre_invmar", "");
         tab_lista.getColumna("ide_inmar").setFiltro(true);
-        tab_lista.getColumna("ide_acuba").setCombo("act_ubicacion_activo","ide_acuba","nombre_acuba","");
+        tab_lista.getColumna("ide_acuba").setCombo("act_ubicacion_activo", "ide_acuba", "nombre_acuba", "");
         tab_lista.getColumna("ide_acuba").setFiltroContenido();
-        tab_lista.getColumna("ide_gecas").setCombo("gen_casa","ide_gecas","nombre_gecas","");
+        tab_lista.getColumna("ide_gecas").setCombo("gen_casa", "ide_gecas", "nombre_gecas", "");
         tab_lista.getColumna("ide_gecas").setFiltroContenido();
         tab_lista.getColumna("ide_gecas").setLongitud(60);
-        tab_lista.getColumna("ide_geobr").setCombo("gen_obra","ide_geobr","nombre_geobr","");
+        tab_lista.getColumna("ide_geobr").setCombo("gen_obra", "ide_geobr", "nombre_geobr", "");
         tab_lista.getColumna("ide_geobr").setFiltroContenido();
         tab_lista.getColumna("ide_geobr").setLongitud(100);
         tab_lista.getColumna("ide_cndpc").setCombo("select ide_cndpc,codig_recur_cndpc,nombre_cndpc from  con_det_plan_cuen order by codig_recur_cndpc");
         tab_lista.getColumna("ide_cndpc").setFiltroContenido();
         tab_lista.getColumna("ide_cndpc").setLongitud(150);
-        tab_lista.getColumna("inv_ide_inarti").setCombo("inv_articulo","ide_inarti","nombre_inarti","");
+        tab_lista.getColumna("inv_ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "");
         tab_lista.getColumna("inv_ide_inarti").setLongitud(70);
         tab_lista.getColumna("inv_ide_inarti").setFiltroContenido();
-        tab_lista.getColumna("act_ide_acuba").setCombo("act_ubicacion_activo","ide_acuba","nombre_acuba","");
+        tab_lista.getColumna("act_ide_acuba").setCombo("act_ubicacion_activo", "ide_acuba", "nombre_acuba", "");
         tab_lista.getColumna("act_ide_acuba").setLongitud(70);
         tab_lista.getColumna("act_ide_acuba").setFiltroContenido();
-        tab_lista.getColumna("ide_actac").setCombo("act_tipo_adquisicion","ide_actac","nombre_actac","");
+        tab_lista.getColumna("ide_actac").setCombo("act_tipo_adquisicion", "ide_actac", "nombre_actac", "");
         tab_lista.getColumna("ide_actac").setAutoCompletar();
-        tab_lista.getColumna("ide_accls").setCombo("act_clasificacion","ide_accls","nombre_accls","");
+        tab_lista.getColumna("ide_accls").setCombo("act_clasificacion", "ide_accls", "nombre_accls", "");
         tab_lista.getColumna("ide_accls").setLongitud(50);
         tab_lista.getColumna("proveedor_acafi").setFiltroContenido();
-        tab_lista.getColumna("ide_accla").setCombo("act_clase_activo","ide_accla","nombre_accla","");
+        tab_lista.getColumna("ide_accla").setCombo("act_clase_activo", "ide_accla", "nombre_accla", "");
         tab_lista.getColumna("ide_accla").setAutoCompletar();
         tab_lista.getColumna("act_ide_acafi").setVisible(false);
         tab_lista.getColumna("gen_ide_geper").setVisible(false);
@@ -124,24 +152,48 @@ public class pre_lista_activos extends Pantalla {
         tab_lista.getColumna("codigo_recu_acafi").setVisible(false);
         tab_lista.setLectura(true);
         tab_lista.setTipoSeleccion(true);
-        tab_lista.dibujar(); 
+        tab_lista.dibujar();
         tab_lista.setRows(15);
         PanelTabla pat_lista = new PanelTabla();
         pat_lista.setId("pat_lista");
         pat_lista.getChildren().add(boc_seleccion_inversa);
         pat_lista.setPanelTabla(tab_lista);
-        
+
         Division div_lista = new Division();
         div_lista.setId("div_lista");
         div_lista.dividir1(pat_lista);
         agregarComponente(div_lista);
 
-        
-        
-        
-        
     }
-public void seleccionarTodas() {
+
+    public void filtroArea() {
+
+        String cm_area = com_area.getValue() + "";
+        String cm_grupo = com_activo_fijo.getValue() + "";
+        String cm_custodio = com_custodio.getValue() + "";
+        System.out.println("entre al filtro del activo");
+        String condicion = "";
+        if (com_area.getValue() == null && com_activo_fijo.getValue() == null && com_custodio.getValue() == null) {
+            condicion += " 1=1 ";
+        }
+        if (!cm_area.equals("null")) {
+            condicion += " and ide_acuba= " + cm_area;
+        }
+        if (!cm_grupo.equals("null")) {
+            condicion += " and ide_accla= " + cm_grupo;
+        }
+        if (!cm_custodio.equals("null")) {
+            condicion += " and ide_geper= " + cm_custodio;
+        }
+
+        tab_lista.setCondicion(condicion);
+        tab_lista.ejecutarSql();
+        tab_lista.imprimirSql();
+        utilitario.addUpdate("tab_lista");
+
+    }
+
+    public void seleccionarTodas() {
         tab_lista.setSeleccionados(null);
         Fila seleccionados[] = new Fila[tab_lista.getTotalFilas()];
         for (int i = 0; i < tab_lista.getFilas().size(); i++) {
@@ -190,7 +242,8 @@ public void seleccionarTodas() {
     public void setTab_lista(Tabla tab_lista) {
         this.tab_lista = tab_lista;
     }
-@Override
+
+    @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
@@ -202,14 +255,15 @@ public void seleccionarTodas() {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
-               
+
                 parametro.put("ide_acafi", tab_lista.getFilasSeleccionadas());
                 sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_rep.dibujar();
                 utilitario.addUpdate("sel_rep");
-            }        
+            }
         }
     }
+
     @Override
     public void insertar() {
         tab_lista.insertar();
@@ -217,13 +271,13 @@ public void seleccionarTodas() {
 
     @Override
     public void guardar() {
-       tab_lista.guardar();
-       guardarPantalla();
+        tab_lista.guardar();
+        guardarPantalla();
     }
 
     @Override
     public void eliminar() {
-     tab_lista.eliminar();
+        tab_lista.eliminar();
     }
 
     public Reporte getRep_reporte() {
@@ -241,5 +295,5 @@ public void seleccionarTodas() {
     public void setSel_rep(SeleccionFormatoReporte sel_rep) {
         this.sel_rep = sel_rep;
     }
-    
+
 }
