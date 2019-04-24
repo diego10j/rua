@@ -90,8 +90,10 @@ public class pre_orden_produccion extends Pantalla {
 
         tab_orden_produccion.setId("tab_orden_produccion");
         tab_orden_produccion.setTabla("prod_orden_produccion", "ide_prorp", 1);
+        tab_orden_produccion.getColumna("ide_gtemp").setValorDefecto(utilitario.getVariable("p_prod_responsable_orden"));
         tab_orden_produccion.getColumna("ide_gtemp").setCombo(ser_cargoempleado.getSQLEmpleadosActivos());
         tab_orden_produccion.getColumna("ide_gtemp").setAutoCompletar();
+        tab_orden_produccion.getColumna("ide_gtemp").setLectura(true);
         //tab_orden_produccion.getColumna("ide_geper").setEstilo("width: 20px;");
         tab_orden_produccion.getColumna("ide_geper").setCombo(ser_adquisiciones.getDatosProveedor());
         tab_orden_produccion.getColumna("ide_geper").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
