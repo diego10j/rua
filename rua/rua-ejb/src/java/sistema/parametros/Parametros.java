@@ -479,6 +479,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_entrega_interna", "Indica el numero secuencial para cualquier documento de requerimiento de nota de entrega interna", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
         lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_recibido_interno", "Indica el numero secuencial para cualquier documento de requerimiento de nota de recibido interno", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
         lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_devolucion", "Indica el numero secuencial para cualquier documento de requerimiento de nota de devolucion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        lis_parametros.add(new Parametro("14", "p_prod_responsable_orden", "Indica la persona responsable del orden", "5", "gth_empleado", "ide_gtemp", "apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,documento_identidad_gtemp"));
         //TIPOS DE COMPROBANTES
         lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
