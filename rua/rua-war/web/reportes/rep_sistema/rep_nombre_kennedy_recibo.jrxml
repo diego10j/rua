@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_nombre_kennedy_recibo" pageWidth="236" pageHeight="60" whenNoDataType="BlankPage" columnWidth="206" leftMargin="0" rightMargin="30" topMargin="0" bottomMargin="0" uuid="f4aa4697-be53-468d-ba94-d3aca97727d2">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_nombre_kennedy_recibo" pageWidth="236" pageHeight="60" whenNoDataType="BlankPage" columnWidth="216" leftMargin="0" rightMargin="20" topMargin="0" bottomMargin="0" uuid="f4aa4697-be53-468d-ba94-d3aca97727d2">
 	<property name="ireport.zoom" value="2.7272727272727275"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -40,7 +40,7 @@ and s.ide_sucu=$P{ide_sucu}]]>
 	<title>
 		<band height="60" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement uuid="24f3cbbf-ae83-4fac-8fd9-b5c0c5022302" key="textField" x="0" y="1" width="206" height="14"/>
+				<reportElement uuid="24f3cbbf-ae83-4fac-8fd9-b5c0c5022302" key="textField" x="0" y="1" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -53,7 +53,7 @@ and s.ide_sucu=$P{ide_sucu}]]>
 				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement uuid="40eb21bc-146f-4c73-aa25-0559428f347a" key="textField" x="0" y="15" width="206" height="14"/>
+				<reportElement uuid="40eb21bc-146f-4c73-aa25-0559428f347a" key="textField" x="0" y="15" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -66,7 +66,7 @@ and s.ide_sucu=$P{ide_sucu}]]>
 				<textFieldExpression><![CDATA["RUC: "+$F{identi_repre_empr}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement uuid="4200248e-4193-4146-bff4-791437d44704" key="textField" x="0" y="29" width="206" height="14"/>
+				<reportElement uuid="4200248e-4193-4146-bff4-791437d44704" key="textField" x="0" y="29" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -79,7 +79,7 @@ and s.ide_sucu=$P{ide_sucu}]]>
 				<textFieldExpression><![CDATA[$F{direccion_empr}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement uuid="bc3cd218-836e-4d8f-93b4-420a68fb039c" key="textField" x="0" y="43" width="206" height="14"/>
+				<reportElement uuid="bc3cd218-836e-4d8f-93b4-420a68fb039c" key="textField" x="0" y="43" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
