@@ -29,6 +29,7 @@ import servicios.pensiones.ServicioPensiones;
 import sistema.aplicacion.Pantalla;
 
 public class pre_recaudacion_consulta extends Pantalla {
+
     private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
     private VisualizarPDF vipdf_cierre = new VisualizarPDF();
     private Tabla tab_tabla1 = new Tabla();
@@ -55,7 +56,6 @@ public class pre_recaudacion_consulta extends Pantalla {
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
-    
 
     public pre_recaudacion_consulta() {
 
@@ -92,8 +92,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             bot_abrir.setIcon("ui-calendario");
             bot_abrir.setMetodo("abrirRango");
             bar_botones.agregarBoton(bot_abrir);
-            
-            
+
             bar_botones.getBot_insertar().setRendered(false);
             bar_botones.getBot_eliminar().setRendered(false);
             bar_botones.getBot_guardar().setRendered(false);
@@ -260,8 +259,8 @@ public class pre_recaudacion_consulta extends Pantalla {
         ///////////AQUI ABRE EL REPORTE
         Map map_parametro = new HashMap();
         map_parametro.put("nombre", utilitario.getVariable("NICK"));
-        map_parametro.put("fecha_inicio",sec_rango_fechas.getFecha1String());
-        map_parametro.put("fecha_final",sec_rango_fechas.getFecha2String());
+        map_parametro.put("fecha_inicio", sec_rango_fechas.getFecha1String());
+        map_parametro.put("fecha_final", sec_rango_fechas.getFecha2String());
         vipdf_cierre.setVisualizarPDF("rep_escuela_colegio/rep_cierre_recaudaciones.jasper", map_parametro);
         vipdf_cierre.dibujar();
         utilitario.addUpdate("vipdf_cierre");
@@ -307,11 +306,12 @@ public class pre_recaudacion_consulta extends Pantalla {
                     dia_emision.cerrar();
                     tab_tabla1.actualizar();
                     utilitario.addUpdate("tab_tabla1");
-                    generarPDFrecaudacion(tab_seleccionados.getValor(i, "ide_titulo_recval"));
-                }
 
+                }
+                generarPDFrecaudacion(alumnos_seleccionados);
                 //utilitario.agregarMensaje("Se ha recaudado correctamente la(s) pension(es) del alumno " + nombre_alumno + "", "");
                 area_dialogo.limpiar();
+
             } catch (Exception e) {
 
             }
@@ -330,10 +330,10 @@ public class pre_recaudacion_consulta extends Pantalla {
         return true;
     }
 
-    public void generarPDFrecaudacion(String seleccionado) {
-        System.out.println("PARAMETROS TITULO: " + seleccionado);
+    public void generarPDFrecaudacion(String titulo) {
+        System.out.println("PARAMETROS TITULO: " + titulo);
         Map parametro = new HashMap();
-        parametro.put("pide_titulo", Integer.parseInt(seleccionado));
+        parametro.put("pide_titulo", Integer.parseInt(titulo));
         vipdf_recaudacion.setVisualizarPDF("rep_escuela_colegio/rep_recaudacion.jasper", parametro);
         vipdf_recaudacion.dibujar();
         utilitario.addUpdate("vipdf_recaudacion");
@@ -380,7 +380,6 @@ public class pre_recaudacion_consulta extends Pantalla {
         this.vipdf_recaudacion = vipdf_recaudacion;
     }
 
-
     public SeleccionCalendario getSec_rango_fechas() {
         return sec_rango_fechas;
     }
@@ -412,6 +411,5 @@ public class pre_recaudacion_consulta extends Pantalla {
     public void setDia_emision(Dialogo dia_emision) {
         this.dia_emision = dia_emision;
     }
-
 
 }
