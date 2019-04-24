@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rec_recaudacion" pageWidth="236" pageHeight="380" columnWidth="188" leftMargin="20" rightMargin="28" topMargin="20" bottomMargin="20" uuid="e4d349e3-f40e-4b33-9691-4aaf3407901d">
-	<property name="ireport.zoom" value="2.853116706110013"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rec_recaudacion" pageWidth="236" pageHeight="420" columnWidth="196" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e4d349e3-f40e-4b33-9691-4aaf3407901d">
+	<property name="ireport.zoom" value="2.1961500000000007"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="768"/>
+	<property name="ireport.y" value="481"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -11,14 +11,16 @@
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:/Users/JHONPRODUCER/Documents/GitHub/code_rua/trunk/rua/rua-war/web"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C:/Users/usuario/Documents/GitHub/rua_code/trunk/rua/rua-war/web"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_titulo" class="java.lang.Integer"/>
+	<parameter name="pide_titulo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select sum(total_revad) as tarifa,a.ide_titulo_recval,detalle_cocaj,fecha_pago_recva,apellido_paterno_gtemp||' '||primer_nombre_gtemp||' '|| segundo_nombre_gtemp as cajero,secuencial_cccfa,g.nom_geper,
 descripcion_recur,g.codigo_geper,i.nom_geper as representante,i.identificac_geper,i.correo_geper,cantidad_revad,
 (case when aplica_mes_recon = true then detalle_revad ||' '|| nombre_gemes else detalle_revad end) as detalle ,aplica_mes_recon,
-num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,descripcion_repea||' '||nom_geani as periodo,total_revad
+num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,nom_geani as periodo,total_revad,nombre_cndfp
 from rec_valores a
 left join rec_valor_detalle b on a.ide_titulo_recval=b.ide_titulo_recval
 left join rec_alumno_periodo c on a.ide_recalp=c.ide_recalp
@@ -32,10 +34,11 @@ left join gen_mes j on a.ide_gemes=j.ide_gemes
 left join rec_concepto k on a.ide_concepto_recon=k.ide_concepto_recon
 left join rec_periodo_academico l on c.ide_repea=l.ide_repea
 left join gen_anio m on l.ide_geani=m.ide_geani
+left join con_deta_forma_pago n on a.ide_cndfp=n.ide_cndfp
 where a.ide_titulo_recval in ($P{pide_titulo})
 group by a.ide_titulo_recval,detalle_cocaj,apellido_paterno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,secuencial_cccfa,g.nom_geper,
 descripcion_recur,g.codigo_geper,i.nom_geper,i.identificac_geper,i.correo_geper,cantidad_revad,aplica_mes_recon,detalle_revad,nombre_gemes,
-num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,descripcion_repea,nom_geani,total_revad
+num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,descripcion_repea,nom_geani,total_revad,nombre_cndfp
 order by num_titulo_recva]]>
 	</queryString>
 	<field name="tarifa" class="java.math.BigDecimal"/>
@@ -67,6 +70,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="total_recva" class="java.math.BigDecimal"/>
 	<field name="periodo" class="java.lang.String"/>
 	<field name="total_revad" class="java.math.BigDecimal"/>
+	<field name="nombre_cndfp" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -80,22 +84,22 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="340" splitType="Stretch">
+		<band height="380" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="b9e4c634-3868-425c-acd3-fd43649b90fc" key="textField" x="1" y="242" width="21" height="10"/>
+				<reportElement uuid="b9e4c634-3868-425c-acd3-fd43649b90fc" key="textField" x="0" y="256" width="21" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_revad}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="060e4cda-cdef-4195-83f0-8cf790ae8eda" key="textField" x="24" y="242" width="78" height="10"/>
+				<reportElement uuid="060e4cda-cdef-4195-83f0-8cf790ae8eda" key="textField" x="23" y="256" width="92" height="20"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -108,7 +112,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{detalle}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="d667482f-e90d-40af-bd47-66e03c958186" key="textField" x="105" y="242" width="40" height="10"/>
+				<reportElement uuid="d667482f-e90d-40af-bd47-66e03c958186" key="textField" x="115" y="256" width="40" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -121,7 +125,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{precio_revad}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="c7f5374e-00e9-4433-a307-82b56369bb9e" key="textField" x="145" y="242" width="40" height="10"/>
+				<reportElement uuid="c7f5374e-00e9-4433-a307-82b56369bb9e" key="textField" x="155" y="256" width="41" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -134,7 +138,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{total_revad}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="9de9b750-43b3-4002-9d46-a281f0e33cd3" key="staticText" x="24" y="222" width="78" height="10"/>
+				<reportElement uuid="9de9b750-43b3-4002-9d46-a281f0e33cd3" key="staticText" x="23" y="236" width="92" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -147,33 +151,33 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[DESCRIPCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b58c3095-f4f0-4715-8ec1-10ad3e40e251" key="staticText" x="145" y="222" width="40" height="10"/>
+				<reportElement uuid="b58c3095-f4f0-4715-8ec1-10ad3e40e251" key="staticText" x="155" y="236" width="41" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="32148239-69cb-4af8-9297-8979aa23dffa" key="staticText" x="105" y="222" width="40" height="10"/>
+				<reportElement uuid="32148239-69cb-4af8-9297-8979aa23dffa" key="staticText" x="115" y="236" width="40" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[VALOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="916f6358-cf1b-4f7f-be27-33496e97589a" key="staticText" x="0" y="222" width="22" height="10"/>
+				<reportElement uuid="916f6358-cf1b-4f7f-be27-33496e97589a" key="staticText" x="0" y="236" width="21" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -186,46 +190,46 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[CANT.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6d2ee28f-f5ed-4a46-aefd-7d20d86b6512" key="staticText" x="0" y="232" width="187" height="10"/>
+				<reportElement uuid="6d2ee28f-f5ed-4a46-aefd-7d20d86b6512" key="staticText" x="0" y="246" width="196" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[=======================================================]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="064276c5-9108-4752-ae62-1425b5b8bf4b" key="staticText" x="0" y="252" width="187" height="10"/>
+				<reportElement uuid="064276c5-9108-4752-ae62-1425b5b8bf4b" key="staticText" x="0" y="276" width="196" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[======================================================]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a45314c2-a164-47c2-9c2d-a995dda72485" key="staticText" x="0" y="212" width="187" height="10"/>
+				<reportElement uuid="a45314c2-a164-47c2-9c2d-a995dda72485" key="staticText" x="0" y="226" width="196" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[=======================================================]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="66945fb6-6b5f-4c34-9d97-6ce375e4b02e" key="staticText" x="92" y="262" width="53" height="10"/>
+				<reportElement uuid="66945fb6-6b5f-4c34-9d97-6ce375e4b02e" key="staticText" x="101" y="286" width="53" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -238,7 +242,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[SUBTOTAL:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9bc7b057-8503-4a73-843e-38f627eb64af" key="staticText" x="92" y="272" width="53" height="10"/>
+				<reportElement uuid="9bc7b057-8503-4a73-843e-38f627eb64af" key="staticText" x="101" y="296" width="53" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -251,7 +255,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[DESCUENTO :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="410ee93c-1ccb-4cac-86fb-aca5f413ed77" key="staticText" x="92" y="282" width="53" height="10"/>
+				<reportElement uuid="410ee93c-1ccb-4cac-86fb-aca5f413ed77" key="staticText" x="101" y="306" width="53" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -264,7 +268,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[TOTAL:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="a544c0c0-c08c-41ef-8ca3-da6e2525fca6" key="textField" x="146" y="262" width="40" height="10"/>
+				<reportElement uuid="a544c0c0-c08c-41ef-8ca3-da6e2525fca6" key="textField" x="155" y="286" width="41" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -277,7 +281,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{tarifa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="7ca2e2dd-b867-478f-9f87-66885c8b952c" key="textField" x="146" y="272" width="40" height="10"/>
+				<reportElement uuid="7ca2e2dd-b867-478f-9f87-66885c8b952c" key="textField" x="155" y="296" width="41" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -290,7 +294,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{valor_descuento_recva}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="69ccb231-6f6e-4fe9-8311-c457f10a2399" key="textField" x="0" y="86" width="186" height="14"/>
+				<reportElement uuid="69ccb231-6f6e-4fe9-8311-c457f10a2399" key="textField" x="0" y="86" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -303,7 +307,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{detalle_cocaj}+" : "+$F{cajero}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="0399d5cb-b189-4050-bc86-5e207397a7a6" key="textField" x="0" y="114" width="186" height="14"/>
+				<reportElement uuid="0399d5cb-b189-4050-bc86-5e207397a7a6" key="textField" x="0" y="128" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -316,7 +320,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["ALUMNO: "+$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="4d082a2d-b826-4c05-96fc-6f4f8c2f29db" key="textField" x="0" y="128" width="185" height="14"/>
+				<reportElement uuid="4d082a2d-b826-4c05-96fc-6f4f8c2f29db" key="textField" x="0" y="142" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -329,7 +333,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["CURSO: "+$F{descripcion_recur}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="895309d2-53e4-4d6b-acdd-d2f7b389f76f" key="textField" x="0" y="142" width="186" height="14"/>
+				<reportElement uuid="895309d2-53e4-4d6b-acdd-d2f7b389f76f" key="textField" x="0" y="156" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -341,8 +345,8 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA["CODIGO: "+$F{codigo_geper}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement uuid="a735b2fb-e23d-4b1d-a4cd-ace7df0a0453" key="textField" isPrintRepeatedValues="false" x="-1" y="100" width="186" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a735b2fb-e23d-4b1d-a4cd-ace7df0a0453" key="textField" isPrintRepeatedValues="false" x="0" y="100" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -355,7 +359,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["FACTURA: "+$F{secuencial_cccfa}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="cc8c592f-aa01-4c51-b7cb-a20c28565f4d" key="textField" x="0" y="170" width="185" height="14"/>
+				<reportElement uuid="cc8c592f-aa01-4c51-b7cb-a20c28565f4d" key="textField" x="0" y="184" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -368,7 +372,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["CLIENTE: "+$F{representante}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="3ba887ad-1747-49bc-893c-dd74f43628c4" key="textField" x="0" y="184" width="185" height="14"/>
+				<reportElement uuid="3ba887ad-1747-49bc-893c-dd74f43628c4" key="textField" x="0" y="198" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -381,7 +385,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["C.I "+$F{identificac_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="9e798aec-ca09-415f-a1d0-2a4956ca0000" key="textField" x="0" y="198" width="185" height="14"/>
+				<reportElement uuid="9e798aec-ca09-415f-a1d0-2a4956ca0000" key="textField" x="0" y="212" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -394,7 +398,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["EMAIL: "+$F{correo_geper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="c8ce5126-0292-4a54-9fab-74d231b1a6be" key="textField" x="0" y="292" width="186" height="48"/>
+				<reportElement uuid="c8ce5126-0292-4a54-9fab-74d231b1a6be" key="textField" x="0" y="316" width="196" height="48"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -409,7 +413,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 "http://comprobantes.salesianos.org.ec o sri.gob.ec"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="7663b186-2344-4203-a5ff-8b4be0f1aae1" key="textField" x="0" y="156" width="185" height="14"/>
+				<reportElement uuid="7663b186-2344-4203-a5ff-8b4be0f1aae1" key="textField" x="0" y="170" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -422,7 +426,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["AÑO LECTIVO: "+$F{periodo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="531722e2-0640-427d-a448-8b4fe1013633" key="textField" x="146" y="282" width="40" height="10"/>
+				<reportElement uuid="531722e2-0640-427d-a448-8b4fe1013633" key="textField" x="155" y="306" width="41" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -434,8 +438,8 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_recva}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement uuid="b8f83cdf-827d-493f-a2d0-cffdc7919c01" key="textField" x="0" y="58" width="186" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b8f83cdf-827d-493f-a2d0-cffdc7919c01" key="textField" x="0" y="58" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -448,7 +452,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["RECIBO DE PAGO N° "+$F{num_titulo_recva}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="504d57b4-f389-404b-afcc-0d280c71b67a" key="textField" x="0" y="72" width="185" height="14"/>
+				<reportElement uuid="504d57b4-f389-404b-afcc-0d280c71b67a" key="textField" x="0" y="72" width="196" height="14"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -461,7 +465,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA["FECHA DE PAGO:  "+$F{fecha_pago_recva}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="1e76c467-cd68-4092-9c94-0a5d4eb3a318" x="1" y="0" width="184" height="57"/>
+				<reportElement uuid="1e76c467-cd68-4092-9c94-0a5d4eb3a318" x="-1" y="0" width="197" height="57"/>
 				<subreportParameter name="ide_sucu">
 					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -471,6 +475,19 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_nombre_kennedy_recibo.jasper"]]></subreportExpression>
 			</subreport>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a735b2fb-e23d-4b1d-a4cd-ace7df0a0453" key="textField" isPrintRepeatedValues="false" x="0" y="114" width="196" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FORMA DE PAGO: "+$F{nombre_cndfp}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
