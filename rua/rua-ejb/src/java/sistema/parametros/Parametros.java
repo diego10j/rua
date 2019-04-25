@@ -501,6 +501,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_36", "Parametro por defecto", "36"));
         lis_parametros.add(new Parametro("15", "p_c", "Parametro por defecto", "C"));
         lis_parametros.add(new Parametro("15", "p_ciudad", "Parametro por defecto", "QUITO"));
+        //NUMERO SECUENCIAL
+        lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        
         return lis_parametros;
         
     }
