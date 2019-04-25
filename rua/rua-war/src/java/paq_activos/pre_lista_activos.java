@@ -216,7 +216,7 @@ public class pre_lista_activos extends Pantalla {
             for (int i = 0; i < tab_lista.getFilas().size(); i++) {
                 boolean boo_selecionado = false;
                 for (int j = 0; j < tab_lista.getSeleccionados().length; j++) {
-                    if (tab_lista.getSeleccionados()[j].equals(tab_lista.getFilas().get(i))) {
+                              if (tab_lista.getSeleccionados()[j].equals(tab_lista.getFilas().get(i))) {
                         boo_selecionado = true;
                         break;
                     }
@@ -252,7 +252,13 @@ public class pre_lista_activos extends Pantalla {
 
     @Override
     public void aceptarReporte() {
-        if (rep_reporte.getReporteSelecionado().equals("Codigo Barras")) {
+        if (rep_reporte.getReporteSelecionado().equals("ReporteListaActivos")) {
+            rep_reporte.cerrar();
+            parametro.put("titulo", "Listado Activos Fijos");
+            sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_rep.dibujar(); 
+        }
+        /*if (rep_reporte.getReporteSelecionado().equals("Codigo Barras")) {
             if (rep_reporte.isVisible()) {
                 parametro = new HashMap();
                 rep_reporte.cerrar();
@@ -263,6 +269,19 @@ public class pre_lista_activos extends Pantalla {
                 utilitario.addUpdate("sel_rep");
             }
         }
+        if(rep_reporte.getReporteSelecionado().equals("Depresación")){
+            
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+
+                parametro.put("ide_acafi", tab_lista.getFilasSeleccionadas());
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+            }        
+        
+        }*/
     }
 
     @Override
@@ -295,6 +314,14 @@ public class pre_lista_activos extends Pantalla {
 
     public void setSel_rep(SeleccionFormatoReporte sel_rep) {
         this.sel_rep = sel_rep;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
     }
 
 }
