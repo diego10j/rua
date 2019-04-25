@@ -85,7 +85,7 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("TOTAL_PRPRO").setNombreVisual("TOTAL");
         tab_proforma.getColumna("VALOR_DESCUENTO_PRPRO").setNombreVisual("VALOR DESCUENTO");
         tab_proforma.getColumna("IDE_CNDFP").setNombreVisual("FORMA PAGO");
-        tab_proforma.getColumna("IDE_GEPER").setNombreVisual("RAZON SOCIAL");
+        tab_proforma.getColumna("IDE_GEPER").setNombreVisual("RAZÓN SOCIAL");
         tab_proforma.getColumna("IDE_PRVAT").setNombreVisual("VALIDEZ OFERTA ");
         tab_proforma.getColumna("FECHA_PRPRO").setNombreVisual("FECHA");
         tab_proforma.getColumna("SUBTOTAL_PRPRO").setNombreVisual("SUBTOTAL");
@@ -115,10 +115,11 @@ public class pre_proforma extends Pantalla {
         tab_detalle_proforma.getColumna("cantidad_prdep").setValorDefecto("0");
         tab_detalle_proforma.getColumna("valor_unitario_prdep").setValorDefecto("0");
         tab_detalle_proforma.getColumna("ide_inarti").setCombo(ser_persona.getMaterial("", ""));
+        tab_detalle_proforma.getColumna("ide_inarti").setAutoCompletar();
         //Para visualizacion de datos en la pantalla nombres de etiquetas //
-        tab_detalle_proforma.getColumna("IDE_PRDEP").setNombreVisual("CODIGO");
+        tab_detalle_proforma.getColumna("IDE_PRDEP").setNombreVisual("CÓDIGO");
         tab_detalle_proforma.getColumna("IDE_INUNI").setNombreVisual("U/M");
-        tab_detalle_proforma.getColumna("IDE_INARTI").setNombreVisual("DETALLE ARTICULO");
+        tab_detalle_proforma.getColumna("IDE_INARTI").setNombreVisual("DETALLE ARTÍCULO");
         tab_detalle_proforma.getColumna("CANTIDAD_PRDEP").setNombreVisual("CANTIDAD");
         tab_detalle_proforma.getColumna("VALOR_UNITARIO_PRDEP").setNombreVisual("VALOR UNITARIO");
         tab_detalle_proforma.getColumna("VALOR_TOTAL_PRDEP").setNombreVisual("VALOR TOTAL");
