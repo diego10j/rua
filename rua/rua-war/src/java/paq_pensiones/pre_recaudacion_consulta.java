@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
+import paq_produccion.ejb.ServicioProduccion;
 import servicios.pensiones.ServicioPensiones;
 import sistema.aplicacion.Pantalla;
 
@@ -56,6 +57,10 @@ public class pre_recaudacion_consulta extends Pantalla {
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    @EJB
+    private final ServicioProduccion ser_produccion = (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class);
+    @EJB
+    private final ServicioProduccion ser_valtiempo = (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class);
 
     public pre_recaudacion_consulta() {
 
@@ -89,7 +94,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             //boton cierre recaudaion
             Boton bot_abrir = new Boton();
             bot_abrir.setValue("REPORTE RECAUDACIONES");
-            bot_abrir.setIcon("ui-calendario");
+            bot_abrir.setIcon("ui-print");
             bot_abrir.setMetodo("abrirRango");
             bar_botones.agregarBoton(bot_abrir);
 
@@ -194,6 +199,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     String ide_ademple = "";
     String caja = "";
     String emision = "";
+    String num_caja = "";
 
     private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
@@ -205,6 +211,8 @@ public class pre_recaudacion_consulta extends Pantalla {
             ide_ademple = fila[0].toString();
             caja = fila[3].toString();
             emision = fila[4].toString();
+            num_caja = fila[5].toString();
+
             return 1;
 
         } else {
@@ -267,7 +275,12 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     public void abrirDialogo() {
-        if (tab_tabla1.getTotalFilas() > 0) {
+        TablaGenerica tab_caja = utilitario.consultar("select ide_ademple,ide_gtemp,ide_usua from adq_empleado where  ide_usua=" + utilitario.getVariable("IDE_USUA") + "");
+        String recaudador = tab_caja.getValor("ide_gtemp");
+        
+        if (recaudador == null) {
+            utilitario.agregarNotificacionInfo("Notificación", "No puede recaudar por que no tiene un empleado registrado para recaudar");
+        } else if (tab_tabla1.getTotalFilas() > 0) {
             if (tab_tabla1.getFilasSeleccionadas().isEmpty()) {
                 utilitario.agregarMensajeError("Debe seleccionar al menos un valor a recaudar para continuar", "");
             } else {
@@ -296,15 +309,27 @@ public class pre_recaudacion_consulta extends Pantalla {
                 String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
                 TablaGenerica tab_seleccionados = utilitario.consultar("select ide_titulo_recval,ide_geper from rec_valores \n"
                         + "where ide_titulo_recval in (" + alumnos_seleccionados + ")");
+                TablaGenerica tab_caja = utilitario.consultar("select ide_ademple,ide_gtemp,ide_usua from adq_empleado where  ide_usua=" + utilitario.getVariable("IDE_USUA") + "");
+                String recaudador = tab_caja.getValor("ide_gtemp");
+                //System.out.println("ide " + recaudador);
 
                 for (int i = 0; i < tab_seleccionados.getTotalFilas(); i++) {
-                    TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "cast(num_titulo_recva as integer)"));
-
-                    utilitario.getConexion().ejecutarSql("update rec_valores\n"
-                            + "set ide_recest = " + utilitario.getVariable("p_pen_deuda_recaudada") + " , ide_cndfp = " + com_forma_pago.getValue() + ", num_titulo_recva = " + area_dialogo.getValue() + ", fecha_pago_recva = '" + eti_fecha.getValue() + "'\n"
-                            + "where ide_titulo_recval in (" + tab_seleccionados.getValor(i, "ide_titulo_recval") + ")");
+                    //TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valores", "cast(num_titulo_recva as integer)"));
+                    //System.out.println("ESTOY EN EL FOR " + i);
+                    TablaGenerica tab_secuencial = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_pen_num_sec_recibo_recaudacion")));
+                    String secuencia = tab_secuencial.getValor("nuevo_secuencial");
+                    //System.out.println("N° recibo: " + secuencia);
+                    String sql = "update rec_valores\n"
+                            + "set  gth_ide_gtemp = " + recaudador + ",ide_recest = " + utilitario.getVariable("p_pen_deuda_recaudada") + " ,ide_cocaj=" + num_caja + ", ide_cndfp = " + com_forma_pago.getValue() + ", num_titulo_recva = " + secuencia + ", fecha_pago_recva = '" + eti_fecha.getValue() + "'\n"
+                            + "where ide_titulo_recval in (" + tab_seleccionados.getValor(i, "ide_titulo_recval") + ")";
+                    //System.out.println("SQL: " + sql);
+                    utilitario.getConexion().ejecutarSql(sql);
                     dia_emision.cerrar();
+
                     tab_tabla1.actualizar();
+
+                    utilitario.getConexion().ejecutarSql(ser_valtiempo.getActualizarSecuencial(utilitario.getVariable("p_pen_num_sec_recibo_recaudacion")));
+
                     utilitario.addUpdate("tab_tabla1");
 
                 }
@@ -331,9 +356,9 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     public void generarPDFrecaudacion(String titulo) {
-        System.out.println("PARAMETROS TITULO: " + titulo);
+        //System.out.println("PARAMETROS TITULO: " + titulo);
         Map parametro = new HashMap();
-        parametro.put("pide_titulo", Integer.parseInt(titulo));
+        parametro.put("pide_titulo", titulo);
         vipdf_recaudacion.setVisualizarPDF("rep_escuela_colegio/rep_recaudacion.jasper", parametro);
         vipdf_recaudacion.dibujar();
         utilitario.addUpdate("vipdf_recaudacion");
