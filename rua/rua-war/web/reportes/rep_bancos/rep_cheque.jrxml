@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="780" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56b4d915-0038-4981-9516-c570e72e2a58">
 	<property name="ireport.zoom" value="1.3995221406292009"/>
-	<property name="ireport.x" value="65"/>
-	<property name="ireport.y" value="99"/>
+	<property name="ireport.x" value="29"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="beneficiario" class="java.lang.String"/>
 	<parameter name="monto" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -19,6 +19,7 @@
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="p_identificacion" class="java.lang.String"/>
 	<parameter name="p_num_cheque" class="java.lang.String"/>
+	<parameter name="pciudad" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select fecha_trans_cnccc,nom_geper,observacion_cnccc,numero_cnccc,nombre_cntcm,VALOR_CNDCC,detalle.ide_cnlap,(select a.nombre_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) )as nombre_cndpc,(select a.codig_recur_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) ) as codig_recur_cndpc,nom_modu,cab.ide_cnccc,detalle.observacion_cndcc from con_cab_comp_cont cab
 left join sis_modulo modulo on cab.ide_modu=modulo.ide_modu
@@ -75,33 +76,10 @@ ORDER BY ide_cnlap desc]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="60b9a365-6092-4d4b-be04-37245dc8627f" x="238" y="71" width="41" height="14"/>
-				<box rightPadding="1"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[Quito, ]]></text>
-			</staticText>
 			<textField>
 				<reportElement uuid="6516e375-4ec8-47a4-8e1c-ef3dc7a5f87b" x="238" y="53" width="317" height="18"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{monto_letras}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="279" y="71" width="171" height="14"/>
-				<box rightPadding="0"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{mes}.equals("1")? $P{anio}+" Enero "+$P{dia}:
-$P{mes}.equals("2")? $P{anio}+" Febrero "+$P{dia}:
-$P{mes}.equals("3")? $P{anio}+" Marzo "+$P{dia}:
-$P{mes}.equals("4")? $P{anio}+" Abril "+$P{dia}:
-$P{mes}.equals("5")? $P{anio}+" Mayo "+$P{dia}:
-$P{mes}.equals("6")? $P{anio}+" Junio "+$P{dia}:
-$P{mes}.equals("7")? $P{anio}+" Julio "+$P{dia}:
-$P{mes}.equals("8")? $P{anio}+" Agosto "+$P{dia}:
-$P{mes}.equals("9")? $P{anio}+" Septiembre "+$P{dia}:
-$P{mes}.equals("10")? $P{anio}+" Octubre "+$P{dia}:
-$P{mes}.equals("11")? $P{anio}+" Noviembre "+$P{dia}:
-$P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement uuid="ecb3ddb2-5efa-4752-bc7c-96f942e6a423" x="-3" y="0" width="160" height="85"/>
@@ -217,6 +195,28 @@ $P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
 				</textElement>
 				<text><![CDATA[OBSERVACIÓN]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="4eed6112-2976-47a5-9baa-daee6ae9eec3" x="239" y="71" width="99" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{pciudad}+",  "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25dec8ce-06f0-484e-9b60-5a1f36fe1122" x="338" y="71" width="144" height="14"/>
+				<box rightPadding="0"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{mes}.equals("1")? $P{anio}+" Enero "+$P{dia}:
+$P{mes}.equals("2")? $P{anio}+" Febrero "+$P{dia}:
+$P{mes}.equals("3")? $P{anio}+" Marzo "+$P{dia}:
+$P{mes}.equals("4")? $P{anio}+" Abril "+$P{dia}:
+$P{mes}.equals("5")? $P{anio}+" Mayo "+$P{dia}:
+$P{mes}.equals("6")? $P{anio}+" Junio "+$P{dia}:
+$P{mes}.equals("7")? $P{anio}+" Julio "+$P{dia}:
+$P{mes}.equals("8")? $P{anio}+" Agosto "+$P{dia}:
+$P{mes}.equals("9")? $P{anio}+" Septiembre "+$P{dia}:
+$P{mes}.equals("10")? $P{anio}+" Octubre "+$P{dia}:
+$P{mes}.equals("11")? $P{anio}+" Noviembre "+$P{dia}:
+$P{mes}.equals("12")? $P{anio}+" Diciembre "+$P{dia}:""]]></textFieldExpression>
+			</textField>
 			<line>
 				<reportElement uuid="a6f39841-9a45-493e-9471-9c8083443331" x="0" y="237" width="555" height="1"/>
 				<graphicElement>
