@@ -234,6 +234,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("7", "p_tes_tip_tran_reversar_menos", "Indica que se realiza una transaccion inversa (-) ", "11", "tes_tip_tran_banc", "ide_tettb", "nombre_tettb"));
         lis_parametros.add(new Parametro("7", "p_tes_tipo_cuenta_banco_virtual", "Indica que el tipo de cuenta bancaria virtual (cajas) ", "6", "tes_tip_cuen_banc", "ide_tetcb", "nombre_tetcb"));
         lis_parametros.add(new Parametro("7", "p_tes_banco_casas", "Indica que el Banco es de tipo casas para pagar por trandsferencia de cuentas contables ", "5", "tes_banco", "ide_teban", "nombre_teban"));
+        lis_parametros.add(new Parametro("7", "p_tes_ciudad_cheque", "La ciudad para la impresión del cheque", "Quito"));
 
         /*
          * VENTAS =8
