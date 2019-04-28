@@ -643,7 +643,7 @@ public class AsientoContable extends Dialogo {
         String factura_imprime = "-1";
         String tipo_transaccion_imprime = "-1";
         String tipo_transaccion_imprime_cheque = "-1";
-
+        String ciudad="Quito";
         if (utilitario.getVariable("p_cxp_imprime_factura") != null) {
             factura_imprime = utilitario.getVariable("p_cxp_imprime_factura");
         }
@@ -653,6 +653,7 @@ public class AsientoContable extends Dialogo {
         if (utilitario.getVariable("p_cxp_tipo_trans_factura_che") != null) {
             tipo_transaccion_imprime_cheque = utilitario.getVariable("p_cxp_tipo_trans_factura_che");
         }
+        ciudad=utilitario.getVariable("p_tes_ciudad_cheque");
         String reporte = "";
 
         if (reporteComprobante == 1) {
@@ -687,6 +688,7 @@ public class AsientoContable extends Dialogo {
             parametros_rep.put("p_num_cheque", tab_lib_banc.getValor("numero_teclb") + "");
             parametros_rep.put("p_num_trans", tab_lib_banc.getValor("ide_teclb") + "");
             parametros_rep.put("pfactura", factura_imprime);
+            parametros_rep.put("pciudad", ciudad);
             parametros_rep.put("ptransaccion", tipo_transaccion_imprime_cheque);
             TablaGenerica tab_persona = ser_tesoreria.getPersona(ser_comprobante.getCabeceraComprobante(ide_cnccc).getValor("ide_geper"));
             if (tab_persona.isEmpty() == false) {
