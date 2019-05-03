@@ -17,7 +17,7 @@
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="2" />
+	<property name="ireport.scriptlethandling" value="0" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
@@ -25,7 +25,7 @@
 
 	<parameter name="ide_sucu" isForPrompting="true" class="java.lang.Integer"/>
 	<parameter name="ide_empr" isForPrompting="true" class="java.lang.Integer"/>
-	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["C:/Users/usuario/Documents/GitHub/rua_code/trunk/rua/rua-war/web"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pide_periodo" isForPrompting="false" class="java.lang.Integer"/>
@@ -144,7 +144,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					<reportElement
 						x="0"
 						y="0"
-						width="139"
+						width="142"
 						height="28"
 						key="staticText-2"/>
 					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
@@ -154,7 +154,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 				<text><![CDATA[NOMBRE DEL ESTUDIANTE]]></text>
 				</staticText>
 						</cellContents>
-					</crosstabHeaderCell>					<rowGroup name="nom_geper" width="139" totalPosition="End">
+					</crosstabHeaderCell>					<rowGroup name="nom_geper" width="142" totalPosition="End">
 						<bucket>
 							<bucketExpression class="java.lang.String"><![CDATA[$F{nom_geper}]]></bucketExpression>
 						</bucket>
@@ -165,7 +165,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					<reportElement
 						x="0"
 						y="0"
-						width="139"
+						width="142"
 						height="14"
 						key="textField"/>
 					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
@@ -183,7 +183,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					<reportElement
 						x="0"
 						y="0"
-						width="139"
+						width="142"
 						height="14"
 						key="staticText-2"/>
 					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
@@ -303,7 +303,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{valor_facturaMeasure} ]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
 				</textField>
 						</cellContents>
 					</crosstabCell>
@@ -321,7 +321,7 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{valor_facturaMeasure} ]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{valor_facturaMeasure}]]></textFieldExpression>
 				</textField>
 						</cellContents>
 					</crosstabCell>
@@ -387,22 +387,6 @@ order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gem
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{nom_geani}+"-"+$F{descripcion_repea}]]></textFieldExpression>
 				</textField>
-				<subreport  isUsingCache="true">
-					<reportElement
-						x="5"
-						y="10"
-						width="91"
-						height="16"
-						key="subreport-1"/>
-					<subreportParameter  name="ide_sucu">
-						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="ide_empr">
-						<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
-					</subreportParameter>
-					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_kennedy.jasper"]]></subreportExpression>
-				</subreport>
 			</band>
 		</title>
 		<pageHeader>
