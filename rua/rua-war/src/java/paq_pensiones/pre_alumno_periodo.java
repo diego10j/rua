@@ -522,7 +522,7 @@ public class pre_alumno_periodo extends Pantalla {
         String alumnos_seleccionados = tab_tabla1.getFilasSeleccionadas();
         TablaGenerica tab_cons_alumperiodo = utilitario.consultar("select * from rec_alumno_periodo where ide_recalp in (" + alumnos_seleccionados + ")");
         TablaGenerica tab_mes=utilitario.consultar("select ide_gemes,nombre_gemes from gen_mes where ide_gemes ="+com_mes.getValue());
-        TablaGenerica tab_anio=utilitario.consultar("select ide_repea,nom_geani from rec_periodo_academico a,gen_anio b where a.ide_geani = b.ide_geani and ide_repea="+com_periodo_academico.getValue());
+        TablaGenerica tab_anio=utilitario.consultar("select ide_repea,nom_geani,descripcion_repea from rec_periodo_academico a,gen_anio b where a.ide_geani = b.ide_geani and ide_repea="+com_periodo_academico.getValue());
         TablaGenerica tab_detalle_concepto=utilitario.consultar("select ide_concepto_recon,des_concepto_recon from rec_concepto where ide_concepto_recon="+com_conceptos.getValue());        
         String opcion_descuento = rad_descuento.getValue().toString();
         String valor_descuento="0";
@@ -556,15 +556,15 @@ public class pre_alumno_periodo extends Pantalla {
                     + "                           , ide_gemes, valor_imponible_recva,valor_descuento_recva,aplica_total_descuento_recva,generado_fact_recva,detalle_recva,fecha_descuento_recva )\n"
                     + "VALUES (" + maximo + ", " + tab_cons_alumperiodo.getValor(i, "IDE_RECALP") + ", " + utilitario.getVariable("ide_sucu") + ", " + utilitario.getVariable("ide_empr") + " "
                     + ", " + tab_cons_alumperiodo.getValor(i, "ide_geper") + "," + tab_cons_alumperiodo.getValor(i, "gen_ide_geper") + ", " + utilitario.getVariable("p_pen_deuda_activa") + ", '" + fechaInicio.getFecha() + "', '" + fechaFin.getFecha()+ "', " + com_conceptos.getValue() + ",   "
-                    + " " + com_mes.getValue() + ", 0," + valor_descuento + "," + aplica_descuento + ",false ,'"+tab_detalle_concepto.getValor("des_concepto_recon")+" CORRESPONDIENTE AL MES: "+tab_mes.getValor("nombre_gemes")+" DEL "+tab_anio.getValor("nom_geani")+"',"+fecha_descuento+" );");
+                    + " " + com_mes.getValue() + ", 0," + valor_descuento + "," + aplica_descuento + ",false ,'"+tab_detalle_concepto.getValor("des_concepto_recon")+" CORRESPONDIENTE AL MES: "+tab_mes.getValor("nombre_gemes")+" DEL "+tab_anio.getValor("descripcion_repea")+"',"+fecha_descuento+" );");
 
             for (int j = 0; j < tab_concepto.getTotalFilas(); j++) {
-                TablaGenerica tab_impuesto = utilitario.consultar("select * from rec_impuesto where ide_impuesto_reimp = " + tab_concepto.getValor(j, "ide_impuesto_reimp") + "");
+                TablaGenerica tab_impuesto = utilitario.consultar("select ide_impuesto_reimp,a.ide_inarti,des_impuesto_reimp,valor_reimp ,nombre_inarti from rec_impuesto a   left join inv_articulo b on a.ide_inarti=b.ide_inarti where ide_impuesto_reimp = " + tab_concepto.getValor(j, "ide_impuesto_reimp") + "");
                 String valor_ide = tab_concepto.getValor(j, "ide_impuesto_reimp");
                 TablaGenerica cod_max_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("rec_valor_detalle", "ide_valdet_revad"));
                 maximo_detalle = cod_max_detalle.getValor("maximo");
                 utilitario.getConexion().ejecutarSql("INSERT INTO rec_valor_detalle (ide_valdet_revad,ide_titulo_recval, ide_impuesto_reimp, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valor_descuento_revad, porcentaje_descuento_revad,detalle_revad)\n"
-                        + "VALUES (" + maximo_detalle + ", " + maximo + ", " + tab_impuesto.getValor("ide_impuesto_reimp") + ", " + "1" + ", " + tab_impuesto.getValor("valor_reimp") + ", " + tab_impuesto.getValor("valor_reimp") + "-" + valor_descuento + ", " + "0" + "," + valor_descuento + ", " + "0" + ",'" + tab_impuesto.getValor("des_impuesto_reimp") + "'    );");
+                        + "VALUES (" + maximo_detalle + ", " + maximo + ", " + tab_impuesto.getValor("ide_impuesto_reimp") + ", " + "1" + ", " + tab_impuesto.getValor("valor_reimp") + ", " + tab_impuesto.getValor("valor_reimp") + "-" + valor_descuento + ", " + "0" + "," + valor_descuento + ", " + "0" + ",'" + tab_impuesto.getValor("nombre_inarti") + "'    );");
                 // IDE_impuesto_revad, cantidad_revad, precio_revad, total_revad, iva_inarti_revad, valoor_desceunto_revad, porcentaje_desceunto_revad
 
             }
