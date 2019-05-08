@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recaudacion" pageWidth="204" pageHeight="456" columnWidth="174" leftMargin="22" rightMargin="8" topMargin="20" bottomMargin="20" uuid="e4d349e3-f40e-4b33-9691-4aaf3407901d">
 	<property name="ireport.zoom" value="1.5394743546921206"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="348"/>
+	<property name="ireport.y" value="347"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -420,7 +420,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textFieldExpression><![CDATA[$F{total_recva}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="61379ae8-9a5a-4999-ac2f-996a287d05d8" x="0" y="95" width="174" height="24"/>
+					<reportElement uuid="61379ae8-9a5a-4999-ac2f-996a287d05d8" x="0" y="95" width="174" height="33"/>
 					<textElement textAlignment="Justified" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="7"/>
 					</textElement>

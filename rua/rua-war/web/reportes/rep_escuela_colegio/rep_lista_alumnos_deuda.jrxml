@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_lista_alumnos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.3636363636363635"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_lista_alumnos" language="groovy" pageWidth="623" pageHeight="842" columnWidth="603" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
+	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
@@ -143,11 +143,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		<groupFooter>
 			<band height="135">
 				<crosstab>
-					<reportElement uuid="eef433b9-8848-458a-a08a-7827790da1a4" x="0" y="0" width="555" height="135" printWhenGroupChanges="paralelos"/>
+					<reportElement uuid="eef433b9-8848-458a-a08a-7827790da1a4" x="0" y="0" width="583" height="135" printWhenGroupChanges="paralelos"/>
 					<crosstabDataset>
 						<dataset resetType="Group" resetGroup="paralelos"/>
 					</crosstabDataset>
-					<rowGroup name="nom_geper" width="144" totalPosition="End">
+					<rowGroup name="nom_geper" width="150" totalPosition="End">
 						<bucket class="java.lang.String">
 							<bucketExpression><![CDATA[$F{nom_geper}]]></bucketExpression>
 						</bucket>
@@ -157,7 +157,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<textField>
-									<reportElement uuid="6e63757f-c581-469a-ac70-a524271a5fa2" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="144" height="15"/>
+									<reportElement uuid="6e63757f-c581-469a-ac70-a524271a5fa2" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="150" height="15"/>
 									<box>
 										<topPen lineWidth="0.5"/>
 										<leftPen lineWidth="0.5"/>
@@ -166,6 +166,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									</box>
 									<textElement textAlignment="Left" verticalAlignment="Middle">
 										<font size="7"/>
+										<paragraph leftIndent="2" rightIndent="2"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{nom_geper}]]></textFieldExpression>
 								</textField>
@@ -177,7 +178,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<staticText>
-									<reportElement uuid="44dcf6e0-c177-4ce7-9246-e018c550efbb" mode="Opaque" x="0" y="0" width="144" height="25"/>
+									<reportElement uuid="44dcf6e0-c177-4ce7-9246-e018c550efbb" mode="Opaque" x="0" y="0" width="150" height="25"/>
 									<box>
 										<topPen lineWidth="0.5"/>
 										<leftPen lineWidth="0.5"/>
@@ -186,6 +187,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									</box>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="7"/>
+										<paragraph leftIndent="2" rightIndent="2"/>
 									</textElement>
 									<text><![CDATA[Total de Totales >>>>>>]]></text>
 								</staticText>
@@ -202,7 +204,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<textField>
-									<reportElement uuid="146ce832-ab0f-4a25-a930-0f34f1e0c26a" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="18"/>
+									<reportElement uuid="146ce832-ab0f-4a25-a930-0f34f1e0c26a" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="18"/>
 									<box>
 										<topPen lineWidth="0.5"/>
 										<leftPen lineWidth="0.5"/>
@@ -222,7 +224,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<staticText>
-									<reportElement uuid="14e74285-89b5-41bf-9c2f-dbc21368a7b4" mode="Opaque" x="0" y="0" width="49" height="35" forecolor="#000000"/>
+									<reportElement uuid="14e74285-89b5-41bf-9c2f-dbc21368a7b4" mode="Opaque" x="0" y="0" width="35" height="35" forecolor="#000000"/>
 									<box>
 										<topPen lineWidth="0.5"/>
 										<leftPen lineWidth="0.5"/>
@@ -247,7 +249,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<textField>
-									<reportElement uuid="8155a5e0-1f6b-421d-886f-01122c22eee3" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="17"/>
+									<reportElement uuid="8155a5e0-1f6b-421d-886f-01122c22eee3" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="17"/>
 									<box>
 										<topPen lineWidth="0.5"/>
 										<leftPen lineWidth="0.5"/>
@@ -272,13 +274,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<measure name="valor_facturaMeasure" class="java.math.BigDecimal" calculation="Sum">
 						<measureExpression><![CDATA[$F{valor_factura}]]></measureExpression>
 					</measure>
-					<crosstabCell width="46" height="15">
+					<crosstabCell width="35" height="15">
 						<cellContents>
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField>
-								<reportElement uuid="6f444265-4e81-4226-831d-19476a3a3796" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="15"/>
+								<reportElement uuid="6f444265-4e81-4226-831d-19476a3a3796" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="15"/>
 								<box>
 									<topPen lineWidth="0.5"/>
 									<leftPen lineWidth="0.5"/>
@@ -292,13 +294,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="46" height="25" rowTotalGroup="nom_geper">
+					<crosstabCell width="35" height="25" rowTotalGroup="nom_geper">
 						<cellContents backcolor="#BFE1FF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField>
-								<reportElement uuid="6b2780a1-7871-4e86-92ce-a77e0a888a23" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="46" height="25"/>
+								<reportElement uuid="6b2780a1-7871-4e86-92ce-a77e0a888a23" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="25"/>
 								<box>
 									<topPen lineWidth="0.5"/>
 									<leftPen lineWidth="0.5"/>
@@ -312,13 +314,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="49" height="15" columnTotalGroup="nombre_gemes">
+					<crosstabCell width="35" height="15" columnTotalGroup="nombre_gemes">
 						<cellContents backcolor="#005FB3" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField>
-								<reportElement uuid="9d5251b8-9a38-449e-97c2-c1ace86f1f4c" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="49" height="15" forecolor="#000000"/>
+								<reportElement uuid="9d5251b8-9a38-449e-97c2-c1ace86f1f4c" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="15" forecolor="#000000"/>
 								<box>
 									<topPen lineWidth="0.5"/>
 									<leftPen lineWidth="0.5"/>
@@ -332,13 +334,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="49" rowTotalGroup="nom_geper" columnTotalGroup="nombre_gemes">
+					<crosstabCell width="35" rowTotalGroup="nom_geper" columnTotalGroup="nombre_gemes">
 						<cellContents backcolor="#005FB3" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField>
-								<reportElement uuid="b87b729d-8be3-40a5-bc70-fffe2ce11dbb" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="49" height="25" forecolor="#000000"/>
+								<reportElement uuid="b87b729d-8be3-40a5-bc70-fffe2ce11dbb" style="Crosstab Data Text" mode="Opaque" x="0" y="0" width="35" height="25" forecolor="#000000"/>
 								<box>
 									<topPen lineWidth="0.5"/>
 									<leftPen lineWidth="0.5"/>
