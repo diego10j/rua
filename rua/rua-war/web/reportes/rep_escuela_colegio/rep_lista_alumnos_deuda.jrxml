@@ -144,7 +144,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			<band height="135">
 				<crosstab>
 					<reportElement uuid="eef433b9-8848-458a-a08a-7827790da1a4" x="0" y="0" width="583" height="135" printWhenGroupChanges="paralelos"/>
-					<crosstabDataset>
+					<crosstabDataset isDataPreSorted="true">
 						<dataset resetType="Group" resetGroup="paralelos"/>
 					</crosstabDataset>
 					<rowGroup name="nom_geper" width="150" totalPosition="End">
