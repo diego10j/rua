@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pre_tramite_rua" language="groovy" pageWidth="595" pageHeight="841" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="14" bottomMargin="20" uuid="ff01492f-6e65-4e46-a5fd-00338297e22f">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="310"/>
+	<property name="ireport.zoom" value="2.415765000000001"/>
+	<property name="ireport.x" value="732"/>
+	<property name="ireport.y" value="407"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -367,7 +367,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_prdep}]]></textFieldExpression>
@@ -381,8 +381,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_unitario_prdep}]]></textFieldExpression>
 			</textField>
@@ -395,8 +396,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_total_prdep}]]></textFieldExpression>
 			</textField>
@@ -409,8 +411,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
@@ -423,8 +426,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
@@ -443,7 +447,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombre}]]></textFieldExpression>
@@ -456,7 +460,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Usuario Impresión:]]></text>
@@ -469,7 +473,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
@@ -482,7 +486,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -495,7 +499,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
@@ -508,7 +512,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
@@ -576,8 +580,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{subtotal_prpro}]]></textFieldExpression>
 			</textField>
@@ -590,8 +595,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_descuento_prpro}]]></textFieldExpression>
 			</textField>
@@ -604,8 +610,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{iva_prpro}]]></textFieldExpression>
 			</textField>
@@ -639,7 +646,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<paragraph leftIndent="2" rightIndent="2"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{subtotaldescuento}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -735,8 +744,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total_prpro}]]></textFieldExpression>
 			</textField>
@@ -759,7 +769,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[TLF: 022415267 - 022412153]]></text>
+				<text><![CDATA[TLF: 022415267]]></text>
 			</staticText>
 		</band>
 	</summary>
