@@ -165,7 +165,7 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.setTabla("cxc_deta_factura", "ide_ccdfa", 2);
         tab_deta_factura.setCampoForanea("ide_cccfa");
         tab_deta_factura.getColumna("ide_ccdfa").setVisible(false);
-        tab_deta_factura.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
+        tab_deta_factura.getColumna("ide_inarti").setCombo("SELECT ide_inarti, nombre_inarti, codigo_inarti FROM inv_articulo  WHERE nivel_inarti='HIJO'");
         tab_deta_factura.getColumna("ide_inarti").setAutoCompletar();
         tab_deta_factura.getColumna("ide_inarti").setMetodoChange("seleccionarProducto");
         tab_deta_factura.getColumna("ide_inarti").setRequerida(true);
@@ -306,6 +306,7 @@ public class pre_modifica_factura extends Pantalla {
             tab_cab_factura.setCondicion("ide_ccdaf=" + com_pto_emision.getValue() + " and secuencial_cccfa='" + mas_num_factua.getValue() + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal"));//no anuladas
             tab_cab_factura.ejecutarSql();
 
+            
             if (tab_cab_factura.isEmpty()) {
                 tab_cab_factura.insertar();
                 tab_cab_factura.getFilaSeleccionada().setLectura(true);
