@@ -137,6 +137,7 @@ public class pre_orden_produccion extends Pantalla {
         tab_detalle_orden.getColumna("TOTAL_PRORD").setValorDefecto("0");
         tab_detalle_orden.getColumna("BULTO_PAQUETE_PRORD").setMetodoChange("calculaTotalBultos");
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setMetodoChange("calculaTotalBultos");
+        //tab_detalle_orden.getColumna("UNIDADES_PRORD").setMetodoChange("calculaTotalProduccion");
         tab_detalle_orden.getColumna("TOTAL_PRORD").setEtiqueta();
         tab_detalle_orden.getColumna("BULTO_PAQUETE_PRORD").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setEstilo("font-size:15px;font-weight: bold;color:black");//Estilo
@@ -395,7 +396,7 @@ public class pre_orden_produccion extends Pantalla {
         tab_orden_produccion.modificar(tab_orden_produccion.getFilaActual());
         utilitario.addUpdateTabla(tab_orden_produccion, "total_producion_prorp", "");
         utilitario.addUpdateTabla(tab_detalle_orden, "TOTAL_PRORD,total_entregado_prord", "");
-        aut_ord_produ.actualizar();
+        //aut_ord_produ.actualizar();
     }
 
     public void dibujaSolicitud() {
