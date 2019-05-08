@@ -64,8 +64,10 @@ public class pre_proforma extends Pantalla {
         tab_proforma.getColumna("ide_cndfp").setCombo(ser_cuentascxp.getFormaPagolista()); // llamada de servicios con get y fin//
         tab_proforma.getColumna("ide_geper").setCombo(ser_persona.getDatosProveedor());
         tab_proforma.getColumna("ide_geper").setAutoCompletar();
+        tab_proforma.getColumna("ide_gtemp").setValorDefecto(utilitario.getVariable("p_prod_responsable_orden"));
         tab_proforma.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_proforma.getColumna("ide_gtemp").setAutoCompletar(); // El autocompletar se ejecuta cuando un combo ya este realizado y solo lleva esta linea//
+        tab_proforma.getColumna("ide_gtemp").setLectura(true);
         tab_proforma.getColumna("ide_gtcar").setCombo(ser_cargoempleado.getCargoEmpleado());
         tab_proforma.getColumna("ide_prvat").setCombo(ser_valtiempo.getValidezTiempo());
         tab_proforma.getColumna("pro_ide_prvat").setCombo(ser_valtiempo.getValidezTiempo());
