@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recaudacion" pageWidth="204" pageHeight="456" columnWidth="174" leftMargin="22" rightMargin="8" topMargin="20" bottomMargin="20" uuid="e4d349e3-f40e-4b33-9691-4aaf3407901d">
 	<property name="ireport.zoom" value="1.5394743546921206"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="347"/>
+	<property name="ireport.y" value="0"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -197,7 +197,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textFieldExpression><![CDATA["Fecha:  "+$F{fecha_pago_recva}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement uuid="1e76c467-cd68-4092-9c94-0a5d4eb3a318" x="0" y="0" width="174" height="57"/>
+					<reportElement uuid="1e76c467-cd68-4092-9c94-0a5d4eb3a318" x="-14" y="0" width="174" height="57"/>
 					<subreportParameter name="ide_sucu">
 						<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 					</subreportParameter>
