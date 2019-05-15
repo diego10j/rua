@@ -86,7 +86,7 @@ public class cls_formulario103 {
                 v340 = consultarBaseCasillero("340");
                 v341 = consultarBaseCasillero("341");
                 v342 = consultarBaseCasillero("342");
-                v343 = consultarBaseCasillero("343");
+                v343 = consultarBaseCasillero("343,343A");
                 v344 = consultarBaseCasillero("344");
                 v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
                         + Double.parseDouble(v303) + Double.parseDouble(v304)
