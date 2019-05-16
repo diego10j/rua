@@ -122,6 +122,7 @@ public class pre_comp_inv_rmp extends Pantalla {
         //tab_tabla1.getColumna("ide_intti").setMetodoChange("cambiaTipoTransaccion");
         tab_tabla1.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("gth_ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
+        tab_tabla1.getColumna("gth_ide_gtemp").setValorDefecto(utilitario.getVariable("p_prod_entregado_requerimiento"));
         tab_tabla1.getColumna("gth_ide_gtemp2").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
         tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
@@ -142,6 +143,7 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("REFERENCIA_INCCI").setVisible(false);
         tab_tabla1.getColumna("GTH_IDE_GTEMP3").setVisible(false);
         tab_tabla1.getColumna("MAQUINA_INCCI").setVisible(false);
+        tab_tabla1.getColumna("valor_factura_incci").setVisible(false);
         tab_tabla1.getColumna("IDE_GTEMP").setNombreVisual("SOLICITADO POR");
         tab_tabla1.getColumna("IDE_GTEMP").setAutoCompletar();
         tab_tabla1.getColumna("GTH_IDE_GTEMP").setNombreVisual("ENTREGADO POR");
@@ -150,6 +152,7 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla1.getColumna("GTH_IDE_GTEMP2").setAutoCompletar();
         tab_tabla1.getColumna("CODIGO_DOCUMENTO_INCCI").setNombreVisual("PRODUCCIÓN DE");
         tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setNombreVisual("RP-02 N°");
+        tab_tabla1.getColumna("CODIGO_DOCUMENTO2_INCCI").setValorDefecto("N/A");
         tab_tabla1.getColumna("IDE_INTTI").setNombreVisual("DOCUMENTO");
         tab_tabla1.getColumna("IDE_INTTI").setAutoCompletar();
 
@@ -167,9 +170,9 @@ public class pre_comp_inv_rmp extends Pantalla {
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
         tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
-
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_requerimiento")));
         //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
