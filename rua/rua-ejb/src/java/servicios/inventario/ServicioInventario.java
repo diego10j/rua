@@ -10,6 +10,7 @@ import framework.componentes.Tabla;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import servicios.pensiones.ServicioPensiones;
 import sistema.aplicacion.Utilitario;
 
 /**
@@ -23,6 +24,9 @@ public class ServicioInventario {
 
     @EJB
     private ServicioProducto ser_producto;
+    @EJB
+    private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
+    
 
     ///////////////////////ORDENES DE PRODUCCION
     public String getIdeOrdenProduccion(String num_orden_inorp) {
@@ -364,7 +368,7 @@ public class ServicioInventario {
                 }
                 double valor = Double.parseDouble(tab_detalle.getValor(i, "cantidad_cpdfa")) * precio;
 
-                tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio,getDecimalesPrecioUnitario()));
+                tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
                 tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(valor));
 //                String precio_promedio = in.getPrecioPromedioTransaccionPositiva(tab_tabla2.getValor(i, "ide_inarti"), "1", Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")), Double.parseDouble(tab_tabla2.getValor(i, "cantidad_cpdfa")));
 //                if (precio_promedio != null) {
@@ -607,7 +611,7 @@ public class ServicioInventario {
             double total = cant_convertida * precio;
 
             tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
-            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio,getDecimalesPrecioUnitario()));
+            tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
             tab_det_comp_inv.setValor("observacion_indci", tab_cab_comp_inv.getValor("observacion_incci"));
 
@@ -643,11 +647,10 @@ public class ServicioInventario {
     public String getSqlComboProductosKardex() {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
     }
-    
-     public String getSqlConsultaInventario() {
+
+    public String getSqlConsultaInventario() {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
     }
-       
 
     /**
      * Retorna el numero de decimales para manejar cantidad
@@ -688,24 +691,109 @@ public class ServicioInventario {
         }
         return numDecimales;
     }
-        /**
+
+    /**
      * Retorna las existencias del articulo, a su vez los valores costo
      *
      * @return
      */
- public String saldosArticulos(String articulos, String anio, String bodega){
-     String sql="";
-     sql+="select ide_boart,ingreso_material_boart,existencia_inicial_boart,egreso_material_boart,costo_actual_boart,precio_venta_boart, " +
-        "(ingreso_material_boart+existencia_inicial_boart) - egreso_material_boart as saldo_existencia " +
-        "from bodt_articulos where ide_boart in ("+articulos+")";
-     return sql;
- }
- public String bodegasProductos(String articulos, String anio,String bodega){
-     return "completar para pruebas de buscar bodega";
- }
- public String getTipoTransaccion(){
-     String sql="";
-     sql+="select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci order by nombre_intci desc, nombre_intti";
-     return sql;
- }
+    public String saldosArticulos(String articulos, String anio, String bodega) {
+        String sql = "";
+        sql += "select ide_boart,ingreso_material_boart,existencia_inicial_boart,egreso_material_boart,costo_actual_boart,precio_venta_boart, "
+                + "(ingreso_material_boart+existencia_inicial_boart) - egreso_material_boart as saldo_existencia "
+                + "from bodt_articulos where ide_boart in (" + articulos + ")";
+        return sql;
+    }
+
+    public String bodegasProductos(String articulos, String anio, String bodega) {
+        return "completar para pruebas de buscar bodega";
+    }
+
+    public String getTipoTransaccion() {
+        String sql = "";
+        sql += "select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci order by nombre_intci desc, nombre_intti";
+        return sql;
+    }
+
+    public String getBodtCostoArticulo(String articulo, String sucu, String empr) {
+        String sql = "";
+        sql += "select ide_bocoa,ide_inarti,ide_empr,ide_sucu,tipo_aplica_bocoa,valor_bocoa,porcentaje_bocoa from bodt_costo_articulo  \n"
+                + "where ide_inarti = " + articulo + " and ide_sucu =" + sucu + " and ide_empr =" + empr + " and activo_bocoa=true";
+        return sql;
+    }
+
+    public String getBodtArticulo(String articulo, String anio, String sucu, String empr) {
+        String sql = "";
+        sql += "select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
+                + "from bodt_articulos \n"
+                + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ";
+        return sql;
+    }
+
+    public String getInventarioAnio(String anio) {
+        String sql = "";
+        sql += "select ide_geani,nom_geani from gen_anio \n"
+                + "where nom_geani='" + anio + "'";
+        return sql;
+    }
+
+    public String getExtraerAnio(String fecha) {
+        String sql = "";
+        sql += "select 1,cast(extract(year from date '" + fecha + "') as text) as anio";
+        return sql;
+    }
+
+    public double getValorUnitario(String articulo, String anio, String sucu, String empr) {
+        double valor = 0;
+        TablaGenerica tab_costo = utilitario.consultar(this.getBodtCostoArticulo(articulo, sucu, empr));
+        if (tab_costo.getTotalFilas() > 0) {
+            if (tab_costo.getValor("tipo_aplica_bocoa").equals("1")) {
+                valor = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("valor_bocoa"), 2));
+            } else if (tab_costo.getValor("tipo_aplica_bocoa").equals("2")) {
+                TablaGenerica tab_anio = utilitario.consultar(this.getInventarioAnio(anio));
+                TablaGenerica tab_articulo = utilitario.consultar(this.getBodtArticulo(articulo, tab_anio.getValor("ide_geani"), sucu, empr));
+                double porcentaje = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("porcentaje_bocoa"), 2));
+                double valor_actual = Double.parseDouble(utilitario.getFormatoNumero(tab_articulo.getValor("costo_actual_boart"), 2));
+                valor = (((porcentaje * valor_actual) / 100) + valor_actual);
+            }
+        } else {
+            valor = 0;
+        }
+
+        return valor;
+    }
+
+    public String getInventarioGrupo(String grupo) {
+        String sql = "";
+        sql += "select ide_inarti,codigo_inarti,nombre_inarti \n"
+                + "from inv_articulo  \n"
+                + "where inv_ide_inarti in (" + grupo + ") ";
+        return sql;
+    }
+
+    public String getDetalleInventario(String codigo, String articulo, String sucu, String empr) {
+        String sql = "";
+        sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
+                + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
+                + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
+                + "       referencia1_indci, precio_promedio_indci, usuario_ingre, fecha_ingre, \n"
+                + "       hora_ingre, usuario_actua, fecha_actua, hora_actua, ide_prcol, \n"
+                + "       ide_inuni\n"
+                + "from inv_det_comp_inve  \n"
+                + "where ide_incci=" + codigo + " and ide_inarti=" + articulo + " and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
+        return sql;
+    }
+
+    public String getInsertarBodegaArticulos(String anio, String sucu, String empr,String articulo) {
+        TablaGenerica tab_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("bodt_articulos", "ide_boart"));
+        String sql = "";
+        sql += "INSERT INTO bodt_articulos(\n"
+                + "            ide_boart, ide_geani, ide_sucu, ide_empr, ide_inarti,ingreso_material_boart, \n"
+                + "            egreso_material_boart, existencia_inicial_boart,costo_inicial_boart, costo_anterior_boart, \n"
+                + "            costo_actual_boart \n"
+                + "            )\n"
+                + "VALUES ("+tab_maximo.getValor("codigo")+", "+anio+", "+sucu+", "+empr+", "+articulo+", 0, 0, 0, 0, 0, 0 );";
+        return sql;
+    }
+
 }
