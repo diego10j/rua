@@ -56,6 +56,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_bodega_defecto", "Indica el tipo de bodega por defecto para la recepcion de los articulos", "27", "inv_bodega", "ide_inbod", "nombre_inbod"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_ingreso", "Permite conocer si es de tipo ingreso para ejecutar el kardex", "0", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
         lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
+        lis_parametros.add(new Parametro("1", "p_inv_valor_base", "Permite conocer el valor base del articulo", "1"));
+        lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
 
         /*
          * CUENTAS POR PAGAR MODULO =2
@@ -239,7 +241,7 @@ public class Parametros {
         /*
          * VENTAS =8
          */
-        /*
+ /*
          * PRESTAMOS E INVERSIONES =9 *
          */
         lis_parametros.add(new Parametro("9", "p_iyp_activo", "Indica que se carga solo las cuentas de nivel de Activo", "0", "con_det_plan_cuen", "ide_cndpc", "codig_recur_cndpc"));
@@ -481,6 +483,10 @@ public class Parametros {
         lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_recibido_interno", "Indica el numero secuencial para cualquier documento de requerimiento de nota de recibido interno", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
         lis_parametros.add(new Parametro("14", "p_prod_num_mod_nota_devolucion", "Indica el numero secuencial para cualquier documento de requerimiento de nota de devolucion", "5", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
         lis_parametros.add(new Parametro("14", "p_prod_responsable_orden", "Indica la persona responsable del orden", "5", "gth_empleado", "ide_gtemp", "apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,documento_identidad_gtemp"));
+        lis_parametros.add(new Parametro("14", "p_prod_entregado_requerimiento", "Indica la persona que entrega el requerimiento de materia prima", "5", "gth_empleado", "ide_gtemp", "apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,documento_identidad_gtemp"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_requerimiento", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_solicitud", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+         
         //TIPOS DE COMPROBANTES
         lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
@@ -504,8 +510,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_ciudad", "Parametro por defecto", "QUITO"));
         //NUMERO SECUENCIAL
         lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
-        
+
         return lis_parametros;
-        
+
     }
 }
