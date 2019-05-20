@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="5.178406821589673"/>
-	<property name="ireport.x" value="2169"/>
-	<property name="ireport.y" value="1397"/>
+	<property name="ireport.x" value="1398"/>
+	<property name="ireport.y" value="877"/>
 	<parameter name="ide_geper" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -41,7 +41,7 @@ order by nombre_acafi]]>
 	<title>
 		<band height="251">
 			<subreport>
-				<reportElement uuid="e9fd4739-441e-44c8-adce-a3b8279badd8" x="0" y="0" width="200" height="85"/>
+				<reportElement x="0" y="0" width="200" height="85" uuid="e9fd4739-441e-44c8-adce-a3b8279badd8"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -55,7 +55,7 @@ order by nombre_acafi]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="c86d1506-730e-4971-a2fe-c8e3d7cf505b" x="21" y="124" width="509" height="97"/>
+				<reportElement x="21" y="124" width="509" height="97" uuid="c86d1506-730e-4971-a2fe-c8e3d7cf505b"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
@@ -67,14 +67,14 @@ $F{nom_geper} + " quien RECIBE previa constatación y verificación, los bienes 
 $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="7508ca17-f7c7-4612-9b0e-c2005c5df93d" x="21" y="223" width="509" height="25"/>
+				<reportElement x="21" y="223" width="509" height="25" uuid="7508ca17-f7c7-4612-9b0e-c2005c5df93d"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Para su efecto y constancia firman las partes correspondientes al pie de esta acta."]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="a4236ace-386f-4fea-95bf-2f6dffbabca3" x="2" y="88" width="554" height="26"/>
+				<reportElement x="2" y="88" width="554" height="26" uuid="a4236ace-386f-4fea-95bf-2f6dffbabca3"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
@@ -86,7 +86,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 	<columnHeader>
 		<band height="14" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="c6d4584c-cb27-4b9e-a0f7-f3717e2939e4" x="248" y="1" width="81" height="12"/>
+				<reportElement x="248" y="1" width="81" height="12" uuid="c6d4584c-cb27-4b9e-a0f7-f3717e2939e4"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
@@ -100,7 +100,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="025dc5aa-de40-4e46-ac8c-53e19da7eb8b" x="329" y="1" width="80" height="12"/>
+				<reportElement x="329" y="1" width="80" height="12" uuid="025dc5aa-de40-4e46-ac8c-53e19da7eb8b"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
@@ -114,7 +114,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[CODIGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="34" y="1" width="214" height="12"/>
+				<reportElement x="34" y="1" width="214" height="12" uuid="afea7e78-b139-453b-b594-ea4ba89ca6be"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
@@ -128,7 +128,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[ARTICULO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="410" y="1" width="93" height="12"/>
+				<reportElement x="410" y="1" width="93" height="12" uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -142,43 +142,43 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="2cc15ccc-1bfc-4448-888e-47e3689655e6" x="34" y="1" width="468" height="1"/>
+				<reportElement x="34" y="1" width="468" height="1" uuid="2cc15ccc-1bfc-4448-888e-47e3689655e6"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="fb36ff7c-a29e-4886-982b-417247e6c836" x="34" y="13" width="468" height="1"/>
+				<reportElement x="34" y="13" width="468" height="1" uuid="fb36ff7c-a29e-4886-982b-417247e6c836"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="aaeca1da-8578-4e32-b23e-5644d5d20141" x="33" y="2" width="1" height="12"/>
+				<reportElement x="33" y="2" width="1" height="12" uuid="aaeca1da-8578-4e32-b23e-5644d5d20141"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="350b17c8-dc4b-4b2c-a0fb-0f5309daed5e" x="247" y="1" width="1" height="12"/>
+				<reportElement x="247" y="1" width="1" height="12" uuid="350b17c8-dc4b-4b2c-a0fb-0f5309daed5e"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="410b16ec-9873-4cbe-883c-d04757f6ad8b" x="409" y="1" width="1" height="12"/>
+				<reportElement x="409" y="1" width="1" height="12" uuid="410b16ec-9873-4cbe-883c-d04757f6ad8b"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="2897259b-cf4c-44e0-8d0a-107a2b8cc959" x="502" y="1" width="1" height="12"/>
+				<reportElement x="502" y="1" width="1" height="12" uuid="2897259b-cf4c-44e0-8d0a-107a2b8cc959"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="f57fbf41-1093-4b5a-a677-10726e3c118c" x="329" y="2" width="1" height="12"/>
+				<reportElement x="329" y="2" width="1" height="12" uuid="f57fbf41-1093-4b5a-a677-10726e3c118c"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -188,7 +188,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" x="34" y="0" width="214" height="14"/>
+				<reportElement x="34" y="0" width="214" height="14" uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -202,7 +202,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<textFieldExpression><![CDATA[$F{nombre_acafi}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="da3513db-848c-4061-9c12-e7742474f256" x="248" y="0" width="81" height="14"/>
+				<reportElement x="248" y="0" width="81" height="14" uuid="da3513db-848c-4061-9c12-e7742474f256"/>
 				<box rightPadding="5">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -216,7 +216,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<textFieldExpression><![CDATA[$F{cantidad_acafi}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="90af7bc0-7486-4a07-a195-f4b2d4d8fa37" x="329" y="0" width="80" height="14"/>
+				<reportElement x="329" y="0" width="80" height="14" uuid="90af7bc0-7486-4a07-a195-f4b2d4d8fa37"/>
 				<box rightPadding="5">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -230,37 +230,37 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<textFieldExpression><![CDATA[$F{serie_acafi}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="4c9fbcc4-bc28-44ba-a095-78c322826350" positionType="FixRelativeToBottom" x="34" y="13" width="468" height="1"/>
+				<reportElement positionType="FixRelativeToBottom" x="34" y="13" width="468" height="1" uuid="4c9fbcc4-bc28-44ba-a095-78c322826350"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="60d9ab84-c78a-434b-8f98-2758f4a2c259" positionType="Float" stretchType="RelativeToBandHeight" x="33" y="0" width="1" height="14"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="33" y="0" width="1" height="14" uuid="60d9ab84-c78a-434b-8f98-2758f4a2c259"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="2eec49c2-bb07-4c76-bd54-6a676597fb38" positionType="Float" stretchType="RelativeToBandHeight" x="247" y="0" width="1" height="14"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="247" y="0" width="1" height="14" uuid="2eec49c2-bb07-4c76-bd54-6a676597fb38"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="9bb38599-5924-40ef-8716-31ce3a938eca" positionType="Float" stretchType="RelativeToBandHeight" x="409" y="0" width="1" height="14"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="409" y="0" width="1" height="14" uuid="9bb38599-5924-40ef-8716-31ce3a938eca"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement uuid="2efcf589-717e-4a4e-9c10-46c23be0b45d" positionType="Float" stretchType="RelativeToBandHeight" x="502" y="0" width="1" height="14"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="502" y="0" width="1" height="14" uuid="2efcf589-717e-4a4e-9c10-46c23be0b45d"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e4649824-fcb0-4a6f-911c-06809c81b1e7" x="410" y="0" width="93" height="14"/>
+				<reportElement x="410" y="0" width="93" height="14" uuid="e4649824-fcb0-4a6f-911c-06809c81b1e7"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
 					<font size="6" isBold="false"/>
@@ -272,14 +272,14 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 	<pageFooter>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement uuid="99b6372d-fd79-4214-baed-861dee6c0e5b" x="437" y="0" width="80" height="12"/>
+				<reportElement x="437" y="0" width="80" height="12" uuid="99b6372d-fd79-4214-baed-861dee6c0e5b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="0da5d74a-c590-4329-b781-61dfb03a89f1" x="516" y="0" width="40" height="12"/>
+				<reportElement x="516" y="0" width="40" height="12" uuid="0da5d74a-c590-4329-b781-61dfb03a89f1"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
@@ -290,7 +290,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 	<summary>
 		<band height="128" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="43" y="76" width="129" height="13"/>
+				<reportElement x="43" y="76" width="129" height="13" uuid="50966d03-e99e-4c92-ab97-86cf12fce728"/>
 				<box topPadding="0"/>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
@@ -298,7 +298,7 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[ENTREGA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5" x="394" y="76" width="129" height="13"/>
+				<reportElement x="394" y="76" width="129" height="13" uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5"/>
 				<box topPadding="0"/>
 				<textElement textAlignment="Center">
 					<font isBold="false"/>
@@ -306,43 +306,42 @@ $F{nom_empr}+", dejando  constancia de la conformidad de la presente."]]></textF
 				<text><![CDATA[ RECIBE]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="43" y="75" width="129" height="1"/>
+				<reportElement x="43" y="75" width="129" height="1" uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97"/>
 			</line>
 			<line>
-				<reportElement uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2" x="394" y="77" width="129" height="1"/>
+				<reportElement x="394" y="77" width="129" height="1" uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2"/>
 			</line>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="79a34e4e-1481-4ff8-a0a3-0e308c5cfe04" x="49" y="117" width="103" height="11"/>
+				<reportElement x="49" y="117" width="103" height="11" uuid="79a34e4e-1481-4ff8-a0a3-0e308c5cfe04"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="49f0cf09-1c30-40c2-bf22-729fdfc640ea" x="0" y="117" width="49" height="11"/>
+				<reportElement x="0" y="117" width="49" height="11" uuid="49f0cf09-1c30-40c2-bf22-729fdfc640ea"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Impresión:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="91f78b21-4cdb-4d1f-a499-dea1bc99e6e0" x="555" y="0" width="1" height="14"/>
+				<reportElement x="555" y="0" width="1" height="14" uuid="91f78b21-4cdb-4d1f-a499-dea1bc99e6e0"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement uuid="35a4b77b-82d6-44da-aa9c-af752ec68d17" x="14" y="89" width="233" height="20"/>
-				<textElement/>
+				<reportElement x="14" y="89" width="233" height="20" uuid="35a4b77b-82d6-44da-aa9c-af752ec68d17"/>
 				<textFieldExpression><![CDATA[$F{nom_usua}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8410d8c3-2b2c-4f94-b409-3bd42858a589" x="312" y="89" width="233" height="20"/>
+				<reportElement x="312" y="89" width="233" height="20" uuid="8410d8c3-2b2c-4f94-b409-3bd42858a589"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="6fd41fff-81f5-48d0-989d-0f4e1e916f90" positionType="Float" stretchType="RelativeToBandHeight" x="329" y="-26" width="1" height="14"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="329" y="-26" width="1" height="14" uuid="6fd41fff-81f5-48d0-989d-0f4e1e916f90"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
