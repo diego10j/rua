@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_depr_activos_fijos" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="99435340-5f4d-4944-8287-e6f562ce594d">
+	<property name="ireport.zoom" value="0.9090909090909091"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_acafi,a.ide_inarti,a.ide_geper,a.ide_acuba,ide_accls,codigo_barras_acafi,
+nombre_acuba as area,nom_geper as custodio,nombre_inarti as articulo, valor_compra_acafi,
+fecha_compra_acafi,valor_reposicion_acafi, valor_depreciado_acafi,dias_depreciar_acafi
+from act_activo_fijo a
+left join gen_persona b on a.ide_geper=b.ide_geper
+left join act_ubicacion_activo c on a.ide_acuba=c.ide_acuba
+left join inv_articulo d on a.ide_inarti=d.ide_inarti
+
+where nombre_inarti= 'CAMIONETA'
+order by nombre_acuba]]>
+	</queryString>
+	<field name="ide_acafi" class="java.lang.Long"/>
+	<field name="ide_inarti" class="java.lang.Long"/>
+	<field name="ide_geper" class="java.lang.Long">
+		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>
+	</field>
+	<field name="ide_acuba" class="java.lang.Long"/>
+	<field name="ide_accls" class="java.lang.Integer"/>
+	<field name="codigo_barras_acafi" class="java.lang.String"/>
+	<field name="area" class="java.lang.String"/>
+	<field name="custodio" class="java.lang.String"/>
+	<field name="articulo" class="java.lang.String"/>
+	<field name="valor_compra_acafi" class="java.math.BigDecimal"/>
+	<field name="fecha_compra_acafi" class="java.sql.Date"/>
+	<field name="valor_reposicion_acafi" class="java.math.BigDecimal"/>
+	<field name="valor_depreciado_acafi" class="java.math.BigDecimal"/>
+	<field name="dias_depreciar_acafi" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="102" splitType="Stretch">
+			<staticText>
+				<reportElement x="269" y="30" width="283" height="28" uuid="a8025ed0-7424-4922-9113-3c76fbe63f0c"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE DEPRECIACIONES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="107" splitType="Stretch">
+			<staticText>
+				<reportElement x="14" y="12" width="120" height="20" uuid="c7e0b7f0-9968-4a0e-ae3d-0393c45e9b60"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AREA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="32" width="120" height="20" uuid="44f0161d-dbba-48c0-bc3a-44583703aa9f"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLASE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="52" width="120" height="20" uuid="826441a4-ee82-4685-8146-fb63670a5768"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE DEPRECIACION]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="134" y="12" width="303" height="20" uuid="83d72c10-7ce8-4f70-8cfa-31f2f7454682"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="14" y="72" width="48" height="20" uuid="4b2fbddf-6a8d-4470-bae5-dab3e057b619"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="72" width="73" height="20" uuid="cc718a98-1447-4064-adcc-3c248b5b04d2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="269" y="72" width="73" height="20" uuid="a26b9e1d-da7d-4923-af9e-19b3b2953805"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28">
+			<staticText>
+				<reportElement x="1" y="0" width="104" height="28" uuid="41e8e0c0-49e9-4084-9628-282b7a342061"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="0" width="156" height="28" uuid="df3ec79b-fea5-4c94-873c-74ed93f5ccf8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="397" y="0" width="100" height="28" uuid="591a13f6-b035-4d19-a5e6-3c4f66c6c4d4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha compra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="0" width="131" height="28" uuid="8e377864-da02-4c5f-b88d-a1f694ecb7b5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Custidio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="700" y="0" width="100" height="28" uuid="1fbf958e-c1d8-4bdf-bb0a-065646b4f22c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Días depreciación]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="800" height="1" uuid="3057bd72-293c-4383-986f-84ae84e51c8e"/>
+			</line>
+			<line>
+				<reportElement x="0" y="27" width="800" height="1" uuid="e6b3076a-898f-4f3f-aff3-ccbb32da7bcb"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="26" uuid="fff4ffc1-5d7c-4057-8842-24b084cd8c96"/>
+			</line>
+			<line>
+				<reportElement x="105" y="2" width="1" height="26" uuid="4748fdda-3965-4972-b242-926f3664255d"/>
+			</line>
+			<line>
+				<reportElement x="263" y="2" width="1" height="26" uuid="01748eb2-1080-421b-8098-c3ad4ddf1308"/>
+			</line>
+			<line>
+				<reportElement x="396" y="2" width="1" height="26" uuid="cd76daed-36ec-4d52-b96e-fc0613299552"/>
+			</line>
+			<line>
+				<reportElement x="497" y="0" width="1" height="26" uuid="7b1cea37-9171-421d-a51c-20fd25a6fc41"/>
+			</line>
+			<line>
+				<reportElement x="598" y="2" width="1" height="26" uuid="a61c3a6e-95f4-4a51-ab1e-1518e8d18cc1"/>
+			</line>
+			<line>
+				<reportElement x="699" y="0" width="1" height="26" uuid="749dba30-f86c-4b39-9424-84364834d1c5"/>
+			</line>
+			<line>
+				<reportElement x="800" y="2" width="1" height="26" uuid="b0cee9ed-903f-4e34-bbe1-0976a3a031fd"/>
+			</line>
+			<staticText>
+				<reportElement x="599" y="0" width="100" height="28" uuid="56cc7c3b-93fe-4e65-8a76-51a72335089a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Valor depreciación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="498" y="0" width="100" height="28" uuid="eb8d2305-4085-440d-993c-635fe087cb60"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Valor/Costo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="1" width="105" height="33" uuid="9eff7328-903e-4337-b751-74ad9c5140ab"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_barras_acafi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="0" width="158" height="33" uuid="a3a96140-9da4-4af1-b8a9-1b4b410439d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{articulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="0" width="129" height="33" uuid="d8d50db1-4418-4812-817c-1d5328851f5a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{custodio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="396" y="0" width="103" height="33" uuid="47093be2-862c-48d1-9ec3-b1e97f817d16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_compra_acafi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="498" y="0" width="101" height="33" uuid="430a9be1-b7cc-4f6d-ae8e-80117532a177"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_compra_acafi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="599" y="0" width="100" height="33" uuid="0aebd7f4-4278-4d8e-923d-2575146a7365"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_depreciado_acafi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="700" y="0" width="100" height="33" uuid="41599450-dd4b-496a-bb5c-528b261f02c4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dias_depreciar_acafi}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="33" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="156" height="20" uuid="0c2bfd1a-c637-4b21-836c-8811c7e9cd57"/>
+				<text><![CDATA[Responsable de Activos Fijos]]></text>
+			</staticText>
+			<line>
+				<reportElement x="3" y="0" width="150" height="1" uuid="1b543279-f369-4314-8541-09c7383d712a"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
