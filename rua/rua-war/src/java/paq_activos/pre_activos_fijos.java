@@ -60,7 +60,7 @@ public class pre_activos_fijos extends Pantalla {
 
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
-    
+
     private Tabla tab_tabla;
     private Tabla tab_tabla2;
     private Tabla tab_tabla3;
@@ -87,7 +87,7 @@ public class pre_activos_fijos extends Pantalla {
 
     private Dialogo dia_foto = new Dialogo();
     private Tabla tab_foto = new Tabla();
-    
+
     private double valor_compra = 0;
     private double valor_reposicion = 0;
     private double valor_total = 0;
@@ -106,8 +106,7 @@ public class pre_activos_fijos extends Pantalla {
     private double resultado_sub = 0;
     private double valor_recidual = 0;
     private double valor_depreciado_final = 0;
-    
-    
+
     public pre_activos_fijos() {
         bar_botones.agregarReporte();
 
@@ -115,8 +114,6 @@ public class pre_activos_fijos extends Pantalla {
         mep_menu.agregarItem("Listado de Activos", "dibujarListadosActivos", "ui-icon-note");//1                
         mep_menu.agregarItem("Listado Bienes de Control", "dibujarListadosBienesC", "ui-icon-note");//1       
         mep_menu.agregarItem("Depreciar Activos", "dibujarDepreciar", "ui-icon-clock");//6
-        mep_menu.agregarSubMenu("ACTAS");
-        mep_menu.agregarItem("Listado Actas Constatación Física", "dibujarListadoActasConstata", "ui-icon-note");//10
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Consultar por Código de Barras", "dibujarConsultarPorCodigoB", "ui-icon-contact");//11
         mep_menu.agregarItem("Consultar Activos Asignados", "dibujarConsultarAsignados", "ui-icon-contact");//3
@@ -160,7 +157,7 @@ public class pre_activos_fijos extends Pantalla {
         set_selecciona.setHeight("70%");
         set_selecciona.setHeader("SELECCIONAR ACTIVO FIJO");
         agregarComponente(set_selecciona);
-        
+
         sel_clase_activos.setId("sel_clase_activos");
         sel_clase_activos.setSeleccionTabla("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla", "ide_accla");
         sel_clase_activos.setWidth("40%");
@@ -169,7 +166,6 @@ public class pre_activos_fijos extends Pantalla {
         sel_clase_activos.getBot_aceptar().setMetodo("calcularValorGrupal");
         agregarComponente(sel_clase_activos);
 
-
         sel_activos_no_aprobados.setId("sel_activos_no_aprobados");
         sel_activos_no_aprobados.setSeleccionTabla(ser_activos.getsqlDepreciadosNoAprobados("false"), "ide_acdepr");
         sel_activos_no_aprobados.setWidth("40%");
@@ -177,7 +173,6 @@ public class pre_activos_fijos extends Pantalla {
         sel_activos_no_aprobados.setHeader("ACTIVOS NO DEPRECIADOS");
         sel_activos_no_aprobados.getBot_aceptar().setMetodo("aprobarActivos");
         agregarComponente(sel_activos_no_aprobados);
-        
 
         con_confirma.setId("con_confirma");
         con_confirma.setMessage("Está seguro que desea eliminar el Activo Fijo Seleccionado ?");
@@ -213,8 +208,7 @@ public class pre_activos_fijos extends Pantalla {
         gf.setStyle("width:" + (dia_foto.getAnchoPanel() - 5) + "px;height:" + (dia_foto.getAltoPanel() - 10) + "px;overflow: hidden;display: block;");
         dia_foto.setDialogo(gf);
         dia_foto.getBot_aceptar().setMetodo("aceptarGuardarFoto");
-        
-        
+
     }
 
     public void aceptarGuardarFoto() {
@@ -290,7 +284,7 @@ public class pre_activos_fijos extends Pantalla {
         gr.getChildren().add(aut_custodio);
 
         gr.getChildren().add(new Etiqueta("<strong>CUSTODIO NUEVO:</strong>"));
-        aut_custodio_nuevo= new AutoCompletar();
+        aut_custodio_nuevo = new AutoCompletar();
         aut_custodio_nuevo.setId("aut_custodio_nuevo");
         aut_custodio_nuevo.setAutoCompletar("select ide_geper, nom_geper,identificac_geper from gen_persona where es_empleado_geper=true and ide_empr=" + utilitario.getVariable("ide_empr"));
         aut_custodio_nuevo.setAutocompletarContenido();
@@ -306,15 +300,15 @@ public class pre_activos_fijos extends Pantalla {
         bot_generar.setIcon("ui-icon-print");
         bot_generar.setMetodo("generarActa");
         gr.getChildren().add(bot_generar);
-        
+
         gru.getChildren().add(gr);
 
         /*cargo listado de activos fijos
         
-        */
+         */
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1","-1","1","-1","1"));
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1", "-1", "1", "-1", "1"));
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
@@ -341,26 +335,26 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
         tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
         tab_tabla.setLectura(true);
-        
+
         tab_tabla.setRows(18);
         tab_tabla.setTipoSeleccion(true);
 
-        //COLOR verde cantidad diferente de  1
-       // tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         gru.getChildren().add(pat_panel);
-        
+
         mep_menu.dibujar(9, "ACTA DE ENTREGA - RECEPCIÓN", gru);
-        
+
     }
-public void actualizarCustodio(){
-    tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1",aut_custodio.getValor(),"1",utilitario.getVariable("p_act_estado_activo_valora_deprec"),"1"));
-    tab_tabla.ejecutarSql();
-    utilitario.addUpdate("tab_tabla");
-}
+
+    public void actualizarCustodio() {
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("1", aut_custodio.getValor(), "1", utilitario.getVariable("p_act_estado_activo_valora_deprec"), "1"));
+        tab_tabla.ejecutarSql();
+        utilitario.addUpdate("tab_tabla");
+    }
+
     public void generarActa() {
         if (cal_fecha.getValue() == null) {
             utilitario.agregarMensajeInfo("Seleccione una fecha para generar el Acta", "");
@@ -411,7 +405,6 @@ public void actualizarCustodio(){
         Grupo gru = new Grupo();
         gru.getChildren().add(bar_menu);
         gru.getChildren().add(pat_panel);
-        mep_menu.dibujar(10, "LISTADO DE ACTAS DE CONSTATCIÓN FÍSICA DE ACTIVOS FIJOS", gru);
     }
 
     @Override
@@ -485,7 +478,7 @@ public void actualizarCustodio(){
     public void dibujarDepreciar() {
         Grid grm = new Grid();
         grm.setColumns(6);
-       // grm.setWidth("0");
+        // grm.setWidth("0");
         grm.setStyle("font-size:14px;color:black;text-align:left;");
         grm.setMensajeInfo("Seleccione los parámetros para depreciar los activos");
         grm.getChildren().add(new Etiqueta("Fecha Valoración: "));
@@ -496,22 +489,20 @@ public void actualizarCustodio(){
         bot_valorar.setIcon("ui-icon-print");
         bot_valorar.setValue("Depreciación Grupal");
         bot_valorar.setMetodo("dibujarSeleccionClaseActivos");
-        
+
         Boton bot_valorar_individual = new Boton();
         bot_valorar_individual.setIcon("ui-icon-print");
         bot_valorar_individual.setValue("Depreciación Individual");
         bot_valorar_individual.setMetodo("depreciacionIndividual");
-        
+
         Boton bot_validar_depre = new Boton();
         bot_validar_depre.setIcon("ui-icon-print");
         bot_validar_depre.setValue("Aprobar Depreciación");
         bot_validar_depre.setMetodo("aprobarDepreciacion");
-        
-        
-        
+
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0","-1","0","-1","1"));
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0", "-1", "0", "-1", "1"));
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.setCondicion("deprecia_acafi=false");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
@@ -539,21 +530,21 @@ public void actualizarCustodio(){
         tab_tabla.getColumna("valor_comercial_acafi").alinearDerecha();
         tab_tabla.getColumna("valor_remate_acafi").alinearDerecha();
         tab_tabla.setLectura(true);
-        
+
         tab_tabla.setRows(18);
         tab_tabla.setTipoSeleccion(true);
 
         //COLOR verde cantidad diferente de  1
-       // tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
+        // tab_tabla.setValueExpression("rowStyleClass", "fila.campos[5] eq '1'  ? null : 'text-green'");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
-        
+
         grm.getChildren().add(cal_fecha_depreciacion);
         grm.getChildren().add(bot_valorar);
         grm.getChildren().add(bot_valorar_individual);
-        grm.getChildren().add(bot_validar_depre);        
+        grm.getChildren().add(bot_validar_depre);
         Grupo gru_grupo = new Grupo();
         gru_grupo.getChildren().add(grm);
         gru_grupo.getChildren().add(pat_panel);
@@ -562,134 +553,136 @@ public void actualizarCustodio(){
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
-    public void aprobarActivos(){
+
+    public void aprobarActivos() {
         String valores_seleccionados = sel_activos_no_aprobados.getSeleccionados();
-        TablaGenerica tab_no_aprobados= utilitario.consultar("select * from act_depreciacion where ide_acdepr in ("+valores_seleccionados+")");
-         
-        for(int i=0;i<tab_no_aprobados.getTotalFilas();i++){
-            utilitario.getConexion().ejecutarSql("update act_depreciacion set validado_depre_acdepr=true where ide_acdepr="+tab_no_aprobados.getValor(i,"ide_acdepr"));
-            TablaGenerica tab_activo=utilitario.consultar("select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado,\n" +
-                "(valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien,\n" +
-                "( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre\n" +
-                "from act_activo_fijo a,(\n" +
-                "select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi="+tab_no_aprobados.getValor(i,"ide_acafi")+" and validado_depre_acdepr=true group by ide_acafi\n" +
-                ") b\n" +
-                "where a.ide_acafi=b.ide_acafi");
-            String sql_activo="update act_activo_fijo set valor_depreciado_acafi="+tab_activo.getValor("valor_actual_bien")+", deprecia_acafi ='"+tab_activo.getValor("finalizado_depre")+"' where ide_acafi="+tab_no_aprobados.getValor(i,"ide_acafi");
+        TablaGenerica tab_no_aprobados = utilitario.consultar("select * from act_depreciacion where ide_acdepr in (" + valores_seleccionados + ")");
+
+        for (int i = 0; i < tab_no_aprobados.getTotalFilas(); i++) {
+            utilitario.getConexion().ejecutarSql("update act_depreciacion set validado_depre_acdepr=true where ide_acdepr=" + tab_no_aprobados.getValor(i, "ide_acdepr"));
+            TablaGenerica tab_activo = utilitario.consultar("select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado,\n"
+                    + "(valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien,\n"
+                    + "( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre\n"
+                    + "from act_activo_fijo a,(\n"
+                    + "select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi") + " and validado_depre_acdepr=true group by ide_acafi\n"
+                    + ") b\n"
+                    + "where a.ide_acafi=b.ide_acafi");
+            String sql_activo = "update act_activo_fijo set valor_depreciado_acafi=" + tab_activo.getValor("valor_actual_bien") + ", deprecia_acafi ='" + tab_activo.getValor("finalizado_depre") + "' where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi");
             utilitario.getConexion().ejecutarSql(sql_activo);
             //System.out.println("  acualizadd "+sql_activo);
-        
+
         }
         sel_activos_no_aprobados.cerrar();
         utilitario.agregarMensaje("Aprobado", "Activo seleccionados se encuantra validado la depreciación");
     }
-    public void aprobarDepreciacion(){
+
+    public void aprobarDepreciacion() {
         sel_activos_no_aprobados.dibujar();
     }
-    public void depreciacionIndividual(){
-        String activos_seleccionados=tab_tabla.getFilasSeleccionadas();
+
+    public void depreciacionIndividual() {
+        String activos_seleccionados = tab_tabla.getFilasSeleccionadas();
         utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(activos_seleccionados));
         //System.out.println("activos seleccionados "+ activos_seleccionados);
-       TablaGenerica tab_depreciaciones_consulta = utilitario.consultar("select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_acafi in ("+activos_seleccionados+") ");
-       
-       try{
-            for (int i=0; i<tab_depreciaciones_consulta.getTotalFilas() ; i++){
-            ide_acafi = tab_depreciaciones_consulta.getValor(i,"ide_acafi");
-            fecha_compra = tab_depreciaciones_consulta.getValor(i, "fecha_compra_acafi");
-            vida_util = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "vida_util_acafi"));
-            valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
-            valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
-            valor_total = valor_compra + valor_reposicion;
-            utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(ide_acafi));
-            TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
-            ser_activos.calcularTotalResidual(valor_total,tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
-            valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
-            calculaDepreciacion();
-        }
-        utilitario.agregarMensaje("Se ha depreciado correctamente", "");
-        }
-        catch(Exception e){
-         utilitario.agregarMensajeError("No se puedo guardar", "Faltan Asignar parámetros"+e);   
+        TablaGenerica tab_depreciaciones_consulta = utilitario.consultar("select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_acafi in (" + activos_seleccionados + ") ");
+
+        try {
+            for (int i = 0; i < tab_depreciaciones_consulta.getTotalFilas(); i++) {
+                ide_acafi = tab_depreciaciones_consulta.getValor(i, "ide_acafi");
+                fecha_compra = tab_depreciaciones_consulta.getValor(i, "fecha_compra_acafi");
+                vida_util = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "vida_util_acafi"));
+                valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
+                valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
+                valor_total = valor_compra + valor_reposicion;
+                utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(ide_acafi));
+                TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
+                ser_activos.calcularTotalResidual(valor_total, tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
+                valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
+                calculaDepreciacion();
+            }
+            utilitario.agregarMensaje("Se ha depreciado correctamente", "");
+        } catch (Exception e) {
+            utilitario.agregarMensajeError("No se puedo guardar", "Faltan Asignar parámetros" + e);
         }
     }
-    public void calcularValorGrupal(){
+
+    public void calcularValorGrupal() {
         String valores_seleccionados = sel_clase_activos.getSeleccionados();
-        utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(" select ide_acafi from act_activo_fijo where ide_accla in ("+valores_seleccionados+")and ide_aceaf in("+utilitario.getVariable("p_act_estado_activo_valora_deprec")+")"));
-        String sql="select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_accla in ("+valores_seleccionados+") "
-                                                                       + "and ide_aceaf in("+utilitario.getVariable("p_act_estado_activo_valora_deprec")+") and deprecia_acafi = false ";
+        utilitario.getConexion().ejecutarSql(ser_activos.updateDiasDeprecia(" select ide_acafi from act_activo_fijo where ide_accla in (" + valores_seleccionados + ")and ide_aceaf in(" + utilitario.getVariable("p_act_estado_activo_valora_deprec") + ")"));
+        String sql = "select ide_acafi, ide_aceaf, ide_accla, deprecia_acafi, valor_compra_acafi, fecha_compra_acafi,vida_util_acafi, valor_reposicion_acafi, recidual_acafi,dias_depreciar_acafi from act_activo_fijo where ide_accla in (" + valores_seleccionados + ") "
+                + "and ide_aceaf in(" + utilitario.getVariable("p_act_estado_activo_valora_deprec") + ") and deprecia_acafi = false ";
         //System.out.println("calcular valor grupal "+sql);
         TablaGenerica tab_depreciaciones_consulta = utilitario.consultar(sql);
-        
-        try{
-            for (int i=0; i<tab_depreciaciones_consulta.getTotalFilas() ; i++){
-            ide_acafi = tab_depreciaciones_consulta.getValor(i,"ide_acafi");
-            fecha_compra = tab_depreciaciones_consulta.getValor(i, "fecha_compra_acafi");
-            vida_util = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "vida_util_acafi"));
-            dias_a_depreciar = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "dias_depreciar_acafi"));
-            valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
-            valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
-            valor_total = valor_compra + valor_reposicion;
-            
-            TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
-            ser_activos.calcularTotalResidual(valor_total, tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
-            valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
-            calculaDepreciacion();
-        }
-        sel_clase_activos.cerrar();
-        utilitario.agregarMensaje("Se ha depreciado correctamente", "");
-        }
-        catch(Exception e){
-         utilitario.agregarMensajeError("No se puedo guardar", "Faltan Asignar parámetros"+e);   
+
+        try {
+            for (int i = 0; i < tab_depreciaciones_consulta.getTotalFilas(); i++) {
+                ide_acafi = tab_depreciaciones_consulta.getValor(i, "ide_acafi");
+                fecha_compra = tab_depreciaciones_consulta.getValor(i, "fecha_compra_acafi");
+                vida_util = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "vida_util_acafi"));
+                dias_a_depreciar = Integer.parseInt(tab_depreciaciones_consulta.getValor(i, "dias_depreciar_acafi"));
+                valor_compra = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_compra_acafi"));
+                valor_reposicion = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "valor_reposicion_acafi"));
+                valor_total = valor_compra + valor_reposicion;
+
+                TablaGenerica tab_valor_residual = utilitario.consultar(ser_activos.getPorcentajeResidual(tab_depreciaciones_consulta.getValor(i, "ide_accla")));
+                ser_activos.calcularTotalResidual(valor_total, tab_valor_residual.getValor("por_residual_accla"), ide_acafi);
+                valor_recidual = Double.parseDouble(tab_depreciaciones_consulta.getValor(i, "recidual_acafi"));
+                calculaDepreciacion();
+            }
+            sel_clase_activos.cerrar();
+            utilitario.agregarMensaje("Se ha depreciado correctamente", "");
+        } catch (Exception e) {
+            utilitario.agregarMensajeError("No se puedo guardar", "Faltan Asignar parámetros" + e);
         }
     }
-    public void calculaDepreciacion(){
+
+    public void calculaDepreciacion() {
         valor_pendiente_depre = 0;
-        boolean finalizado_depre=false;
-        utilitario.getConexion().ejecutarSql("delete from act_depreciacion where ide_acafi="+ide_acafi+" and validado_depre_acdepr=false;");
-        TablaGenerica tab_depreciacion = utilitario.consultar("select ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr \n" +
-                                                              "from act_depreciacion \n" +
-                                                              "where validado_depre_acdepr = true \n" +
-                                                              "and ide_acafi in ("+ide_acafi+")");
+        boolean finalizado_depre = false;
+        utilitario.getConexion().ejecutarSql("delete from act_depreciacion where ide_acafi=" + ide_acafi + " and validado_depre_acdepr=false;");
+        TablaGenerica tab_depreciacion = utilitario.consultar("select ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr \n"
+                + "from act_depreciacion \n"
+                + "where validado_depre_acdepr = true \n"
+                + "and ide_acafi in (" + ide_acafi + ")");
         TablaGenerica tab_fecha = utilitario.consultar("select ide_acafi, max(fecha_acdepr) as fecha_maxima from act_depreciacion "
-                                                        + "where ide_acafi = "+ide_acafi+" group by ide_acafi");
+                + "where ide_acafi = " + ide_acafi + " group by ide_acafi");
         TablaGenerica codigo_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("act_depreciacion", "ide_acdepr"));
-        TablaGenerica tab_dias_depreciado=utilitario.consultar(ser_activos.getDiasDepreciado(ide_acafi));
-        int dias_depreciado=0;
-        if(tab_dias_depreciado.getTotalFilas()>0){
-            dias_depreciado=Integer.parseInt(tab_dias_depreciado.getValor("dias_depre"));
+        TablaGenerica tab_dias_depreciado = utilitario.consultar(ser_activos.getDiasDepreciado(ide_acafi));
+        int dias_depreciado = 0;
+        if (tab_dias_depreciado.getTotalFilas() > 0) {
+            dias_depreciado = Integer.parseInt(tab_dias_depreciado.getValor("dias_depre"));
         }
         String maximo = codigo_maximo.getValor("maximo");
         String fecha_maxima = tab_fecha.getValor("fecha_maxima");
-       // if (tab_depreciacion.getTotalFilas() > 0){
+        // if (tab_depreciacion.getTotalFilas() > 0){
         String valor_acdepr = tab_depreciacion.getValor("valor_acdepr");
         String fecha_deprecia = tab_depreciacion.getValor("fecha_acdepr");
-         
-        if (fecha_deprecia == null){
+
+        if (fecha_deprecia == null) {
             fecha_depreciacion = fecha_compra;
         } else {
-            fecha_depreciacion = fecha_maxima;   
+            fecha_depreciacion = fecha_maxima;
         }
-        try{
+        try {
             int num_dias = utilitario.getDiferenciasDeFechas(utilitario.getFecha(fecha_depreciacion), utilitario.getFecha(cal_fecha_depreciacion.getFecha()));
-            
-            valor_deprecia_dias = (valor_total-valor_recidual) / dias_a_depreciar;
+
+            valor_deprecia_dias = (valor_total - valor_recidual) / dias_a_depreciar;
             valor_depreciado = valor_deprecia_dias * num_dias;
-            int resultado=0;
-            if(dias_depreciado<dias_a_depreciar){
-                resultado = dias_a_depreciar-dias_depreciado;
-                if(num_dias<=resultado){
-                    numero_dias=num_dias;
+            int resultado = 0;
+            if (dias_depreciado < dias_a_depreciar) {
+                resultado = dias_a_depreciar - dias_depreciado;
+                if (num_dias <= resultado) {
+                    numero_dias = num_dias;
+                } else {
+                    numero_dias = resultado;
                 }
-                else
-                    numero_dias=resultado;
+            } else {
+                numero_dias = 0;
             }
-            else{
-                numero_dias=0;
-            }
-            if(numero_dias>0){
+            if (numero_dias > 0) {
                 valor_depreciado = valor_deprecia_dias * numero_dias;
-                utilitario.getConexion().ejecutarSql("INSERT INTO act_depreciacion (ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_reposicion_acdepr, valor_residual_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr)\n" +
-                "VALUES ("+maximo+", "+ide_acafi+", '"+cal_fecha_depreciacion.getFecha()+"', "+valor_depreciado+", "+valor_reposicion+", "+valor_recidual+", "+valor_compra+", false,"+numero_dias+" );");
+                utilitario.getConexion().ejecutarSql("INSERT INTO act_depreciacion (ide_acdepr, ide_acafi, fecha_acdepr, valor_acdepr, valor_reposicion_acdepr, valor_residual_acdepr, valor_compra_acdepr, validado_depre_acdepr,dias_depreciado_acdepr)\n"
+                        + "VALUES (" + maximo + ", " + ide_acafi + ", '" + cal_fecha_depreciacion.getFecha() + "', " + valor_depreciado + ", " + valor_reposicion + ", " + valor_recidual + ", " + valor_compra + ", false," + numero_dias + " );");
 
             }
             /*
@@ -703,16 +696,17 @@ public void actualizarCustodio(){
             System.out.println("resultado "+resultado_sub);
             System.out.println("valor_depreciado_final "+valor_depreciado_final);
             System.out.println("cal_fecha_depreciacion "+fecha_depreciacion);
-            */
-            } catch(Exception e){
-                System.out.println("Error metodo depreciar "+e);
+             */
+        } catch (Exception e) {
+            System.out.println("Error metodo depreciar " + e);
         }
 
     }
-    public void dibujarSeleccionClaseActivos(){
+
+    public void dibujarSeleccionClaseActivos() {
         sel_clase_activos.dibujar();
     }
-    
+
     public void dibujarDardeBaja() {
         Grupo gru = new Grupo();
 
@@ -1102,7 +1096,7 @@ public void actualizarCustodio(){
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0","-1","0","-1","1"));
+        tab_tabla.setSql(ser_activos.getSqlListaActivosFijos("0", "-1", "0", "-1", "1"));
         tab_tabla.setCampoPrimaria("ide_acafi");
         tab_tabla.getColumna("ide_acafi").setVisible(true);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
@@ -1146,15 +1140,17 @@ public void actualizarCustodio(){
         utilitario.buscarPermisosObjetos();
     }
 
-    	public void cargarDepartamentos() {
-			tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 and inv_ide_inarti="+tab_tabla.getValor("ide_inarti")+" order by codigo_inarti");
-			utilitario.addUpdateTabla(tab_tabla, "inv_ide_inarti", "");
-		
-	}
-        public void filtraArea(){
-                tab_tabla.getColumna("act_ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba="+tab_tabla.getValor("ide_acuba")+" order by codigo_acuba");
-                utilitario.addUpdateTabla(tab_tabla, "act_ide_acuba", "");
-        }
+    public void cargarDepartamentos() {
+        tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 and inv_ide_inarti=" + tab_tabla.getValor("ide_inarti") + " order by codigo_inarti");
+        utilitario.addUpdateTabla(tab_tabla, "inv_ide_inarti", "");
+
+    }
+
+    public void filtraArea() {
+        tab_tabla.getColumna("act_ide_acuba").setCombo("select ide_acuba,nombre_acuba,codigo_acuba from act_ubicacion_activo where act_ide_acuba=" + tab_tabla.getValor("ide_acuba") + " order by codigo_acuba");
+        utilitario.addUpdateTabla(tab_tabla, "act_ide_acuba", "");
+    }
+
     public void dibujarActivoFijo() {
         cantidad = 1;
         tab_tabla = new Tabla();
@@ -1278,13 +1274,7 @@ public void actualizarCustodio(){
         gri_cb.getChildren().add(bot_imprimir);
 
         gri_cb.getChildren().add(new Etiqueta("</div>"));
-        
-        
-       
-        
-        
-        
-        
+
         tab_tabla4 = new Tabla();
         tab_tabla4.setId("tab_tabla4");
         tab_tabla4.setIdCompleto("tab_tabulador:tab_tabla4");
@@ -1319,8 +1309,6 @@ public void actualizarCustodio(){
         pat_panel4.setPanelTabla(tab_tabla4);
         pat_panel4.getMenuTabla().getItem_eliminar().setRendered(false);
         tab_tabulador.agregarTab("FOTOS", pat_panel4);
-        
-        
 
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
@@ -1336,9 +1324,6 @@ public void actualizarCustodio(){
         pat_panel2.setPanelTabla(tab_tabla2);
         tab_tabulador.agregarTab("HISTORIAL ASIGNACIONES", pat_panel2);
 
-    
-        
-
         tab_tabla5 = new Tabla();
         tab_tabla5.setId("tab_tabla5");
         tab_tabla5.setIdCompleto("tab_tabulador:tab_tabla5");
@@ -1349,13 +1334,11 @@ public void actualizarCustodio(){
         tab_tabla5.setRows(10);
 
         tab_tabla5.dibujar();
-         
-   
-        
+
         PanelTabla pat_panel6 = new PanelTabla();
         pat_panel6.setPanelTabla(tab_tabla5);
         tab_tabulador.agregarTab("DETALLE CANTIDAD", pat_panel6);
-        
+
         tab_tabla6 = new Tabla();
         tab_tabla6.setId("tab_tabla6");
         tab_tabla6.setIdCompleto("tab_tabulador:tab_tabla6");
@@ -1452,14 +1435,14 @@ public void actualizarCustodio(){
             tab_tabla.ejecutarSql();
             tab_tabla.modificar(tab_tabla.getFilaActual()); //dfj 
             tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
-                        //System.out.println(" pase tabla 2 activo fijo ");
-                        
+            //System.out.println(" pase tabla 2 activo fijo ");
+
             tab_tabla2.ejecutarSql();
-                        //System.out.println(" antes tabla 5 activo fijo ");
+            //System.out.println(" antes tabla 5 activo fijo ");
 
             tab_tabla2.setRendered(true);
             tab_tabla5.setSql(ser_activos.getSqlActivosHijoMasivo(tab_tabla.getValor("ide_acafi")));
-                        //System.out.println(" pase pase tabla 5 activo fijo ");
+            //System.out.println(" pase pase tabla 5 activo fijo ");
 
             tab_tabla5.ejecutarSql();
             tab_tabla.getColumna("cantidad_acafi").setLectura(true); ///BLOQUEA PARA QUE NO PUEDAN MODIFICAR CANTIDAD
@@ -1467,7 +1450,7 @@ public void actualizarCustodio(){
             tab_tabla4.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
             tab_tabla4.ejecutarSql();
             tab_tabla6.setCondicion("ide_acafi=" + tab_tabla.getValor("ide_acafi"));
-                                    System.out.println(" pase pase tabla 6 activo fijo ");
+            System.out.println(" pase pase tabla 6 activo fijo ");
 
             tab_tabla6.ejecutarSql();
 
