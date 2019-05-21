@@ -4372,7 +4372,8 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 		// insertarmos todos los rubros del empleado e importamos los valores unicamente de los rubros de forma de calculo (IMPORTADO)
 		insertarDetallesRolEmpleado(ide_geedp, ide_nrrol, tab_rubros, boo_tiene_beneficio_guarderia, boo_tiene_anticipos, IDE_GEREG,RMU, acumula_fondos, fecha_ingreso, fecha_contrato, ide_gepro, fecha_inicial_gepro, fecha_final_gepro,fecha_subroga,fecha_fin_subroga,RMU_CARGO_SUBROGA,ajuste_sueldo,fecha_ajuste_sueldo,dias_pendientes_vacacion,nro_dias_comercial,false,acumula_decimo,base_imponible_mes_anterior,fondo_reserva_acum_pago,fondo_reserva_nom_pago);
 
-
+                // Luis Toapanta, vamos a proceder a actualizar lso rubros que tienen predfinidos
+                //++
 
 		int indice=tab_rubros.getTotalFilas();
 
@@ -4434,7 +4435,10 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 		}
 
 	}
-
+        public void importarRubrosPredefinidos(String ide_geedp){ // Este metodo procede de la tabla gth_empleado_rubro
+            
+            
+        }
 	public void calcularRolIndividualLiquidacion(TablaGenerica tab_rubros,String ide_gtemp,String ide_geedp,String ide_nrrol,String fecha_ingreso,String fecha_contrato,String IDE_GEREG,String RMU,String acumula_fondos,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String fecha_subroga,String fecha_fin_subroga,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,Long ide_inicial,int nro_dias_comercial,String ide_nrtin,String acumula_decimos,String base_imponible_mes_anterior,String fondo_reserva_acum_pago, String fondo_reserva_nom_pago){
 
 		boolean boo_tiene_anticipos=false;
