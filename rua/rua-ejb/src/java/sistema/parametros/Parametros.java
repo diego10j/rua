@@ -58,6 +58,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
         lis_parametros.add(new Parametro("1", "p_inv_valor_base", "Permite conocer el valor base del articulo", "1"));
         lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
+        lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2","inv_tip_comp_inve", "ide_intci", "nombre_intci"));
 
         /*
          * CUENTAS POR PAGAR MODULO =2
