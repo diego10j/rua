@@ -3660,7 +3660,7 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 				utilitario.getConexion().ejecutarSql("delete from nrh_detalle_rol where ide_nrdro="+tab_det_rol1.getValor(0,"ide_nrdro"));
 			}
 		}
-
+importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 	}
 
 	String str_ide_nramo_descontar="";
@@ -4068,7 +4068,22 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 		}
 		return fecha;
 	}
-
+        
+        public void importarRubrosFijosEmpleado(String ide_geedp,String ide_nrrol){
+            String sql="update nrh_detalle_rol\n" +
+                                        "set valor_nrdro=  valor_gtemr\n" +
+                                " from ( \n" +
+                                " select a.ide_nrrub,valor_gtemr,ide_geedp,ide_nrder\n" +
+                            " from gth_empleado_rubro   a,gen_empleados_departamento_par b, nrh_detalle_rubro c\n" +
+" where a.ide_gtemp= b.ide_gtemp and a.ide_nrrub = c.ide_nrrub and ide_geedp = " +ide_geedp+
+" ) a\n" +
+" where nrh_detalle_rol.ide_nrrol =" +ide_nrrol+
+" and nrh_detalle_rol.ide_geedp = a.ide_geedp\n" +
+" and nrh_detalle_rol.ide_nrder =a.ide_nrder";
+            System.out.println(" importa rubros fijos "+sql);
+            utilitario.getConexion().ejecutarSql(sql);
+            
+        }
 	public void insertarDetallesRolEmpleado(String ide_geedp,String ide_nrrol,TablaGenerica tab_rubros,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String fecha_subroga,String fecha_fin_subroga,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int nro_dias_comercial_nrtit,boolean es_liquidacion,String acumula_decimos,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago){
 
 		int dias_antiguedad=Integer.parseInt(getTotalDiasLaborados(fecha_ingreso,fecha_final_gepro));
@@ -4372,8 +4387,7 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 		// insertarmos todos los rubros del empleado e importamos los valores unicamente de los rubros de forma de calculo (IMPORTADO)
 		insertarDetallesRolEmpleado(ide_geedp, ide_nrrol, tab_rubros, boo_tiene_beneficio_guarderia, boo_tiene_anticipos, IDE_GEREG,RMU, acumula_fondos, fecha_ingreso, fecha_contrato, ide_gepro, fecha_inicial_gepro, fecha_final_gepro,fecha_subroga,fecha_fin_subroga,RMU_CARGO_SUBROGA,ajuste_sueldo,fecha_ajuste_sueldo,dias_pendientes_vacacion,nro_dias_comercial,false,acumula_decimo,base_imponible_mes_anterior,fondo_reserva_acum_pago,fondo_reserva_nom_pago);
 
-                // Luis Toapanta, vamos a proceder a actualizar lso rubros que tienen predfinidos
-                //++
+                
 
 		int indice=tab_rubros.getTotalFilas();
 
@@ -4433,6 +4447,10 @@ System.out.println("update  NRH_AMORTIZACION set ACTIVO_NRAMO=false " +
 				utilitario.getConexion().ejecutarSql("delete from nrh_detalle_rol where ide_nrdro="+tab_det_rol.getValor(0,"ide_nrdro"));
 			}
 		}
+                
+                // Luis Toapanta, vamos a proceder a actualizar lso rubros que tienen predfinidos
+                //++
+                importarRubrosFijosEmpleado(ide_geedp, ide_nrrol);
 
 	}
         public void importarRubrosPredefinidos(String ide_geedp){ // Este metodo procede de la tabla gth_empleado_rubro
