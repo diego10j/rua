@@ -26,7 +26,6 @@ public class ServicioInventario {
     private ServicioProducto ser_producto;
     @EJB
     private ServicioPensiones ser_pensiones = (ServicioPensiones) utilitario.instanciarEJB(ServicioPensiones.class);
-    
 
     ///////////////////////ORDENES DE PRODUCCION
     public String getIdeOrdenProduccion(String num_orden_inorp) {
@@ -771,7 +770,7 @@ public class ServicioInventario {
         return sql;
     }
 
-    public String getDetalleInventario(String codigo, String articulo, String sucu, String empr) {
+    public String getDetalleInventario(String codigo, String sucu, String empr) {
         String sql = "";
         sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
                 + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
@@ -780,11 +779,12 @@ public class ServicioInventario {
                 + "       hora_ingre, usuario_actua, fecha_actua, hora_actua, ide_prcol, \n"
                 + "       ide_inuni\n"
                 + "from inv_det_comp_inve  \n"
-                + "where ide_incci=" + codigo + " and ide_inarti=" + articulo + " and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
+                + "where ide_incci=" + codigo + " and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
+
         return sql;
     }
 
-    public String getInsertarBodegaArticulos(String anio, String sucu, String empr,String articulo) {
+    public String getInsertarBodegaArticulos(String anio, String sucu, String empr, String articulo) {
         TablaGenerica tab_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("bodt_articulos", "ide_boart"));
         String sql = "";
         sql += "INSERT INTO bodt_articulos(\n"
@@ -792,7 +792,50 @@ public class ServicioInventario {
                 + "            egreso_material_boart, existencia_inicial_boart,costo_inicial_boart, costo_anterior_boart, \n"
                 + "            costo_actual_boart \n"
                 + "            )\n"
-                + "VALUES ("+tab_maximo.getValor("codigo")+", "+anio+", "+sucu+", "+empr+", "+articulo+", 0, 0, 0, 0, 0, 0 );";
+                + "VALUES (" + tab_maximo.getValor("maximo") + ", " + anio + ", " + sucu + ", " + empr + ", " + articulo + ", 0, 0, 0, 0, 0, 0 );";
+        return sql;
+    }
+
+    public double getPrecioPonderado(Double stock, Double costa_actual, Double cantidad, Double valor_total) {
+        //System.out.println("PARAMETROS: " + stock + " " + costa_actual + " " + cantidad + " " + valor_total);
+        double costo_actual = 0;
+        double total = (stock * costa_actual);
+        costo_actual = ((total + valor_total) / (stock + cantidad));
+        return costo_actual;
+    }
+
+    public String getConsultarTipoTransaccion(String codigo) {
+        String sql = "";
+        sql += "select ide_intti, nombre_intti, nombre_intci,a.ide_intci from inv_tip_tran_inve a\n"
+                + "inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
+                + "where ide_intti=" + codigo + "\n"
+                + "order by nombre_intci desc, nombre_intti";
+        return sql;
+    }
+
+    public String getActualizarBodegaArticulos(String stock, String costo_actual, Double precio, String articulo, String anio) {
+        String sql = "";
+        sql += "UPDATE bodt_articulos   SET \n"
+                + "       existencia_inicial_boart=" + stock + ", \n"
+                + "       costo_anterior_boart=" + costo_actual + ", \n"
+                + "       costo_actual_boart=" + precio + "\n"
+                + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
+        return sql;
+    }
+
+    public String getActualizarIngreso(String cantidad, String articulo, String anio) {
+        String sql = "";
+        sql += "UPDATE bodt_articulos   SET \n"
+                + "       ingreso_material_boart=( ingreso_material_boart + " + cantidad + ") \n"
+                + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
+        return sql;
+    }
+
+    public String getActualizarEgreso(String cantidad, String articulo, String anio) {
+        String sql = "";
+        sql += "UPDATE bodt_articulos   SET \n"
+                + "       egreso_material_boart=( egreso_material_boart +" + cantidad + ") \n"
+                + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
         return sql;
     }
 
