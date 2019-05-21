@@ -17,10 +17,10 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select sum(total_revad) as tarifa,a.ide_titulo_recval,detalle_cocaj,fecha_pago_recva,apellido_paterno_gtemp||' '||primer_nombre_gtemp||' '|| segundo_nombre_gtemp as cajero,secuencial_cccfa,g.nom_geper,
+		<![CDATA[select sum(total_revad) as tarifa,a.ide_titulo_recval,INITCAP(detalle_cocaj) as caja,fecha_pago_recva,INITCAP(apellido_paterno_gtemp||' '||primer_nombre_gtemp||' '|| segundo_nombre_gtemp) as cajero,secuencial_cccfa,g.nom_geper,
 descripcion_recur,g.codigo_geper,i.nom_geper as representante,i.identificac_geper,i.correo_geper,cantidad_revad,
 (case when aplica_mes_recon = true then detalle_revad ||' '|| nombre_gemes else detalle_revad end) as detalle ,aplica_mes_recon,
-num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,nom_geani as periodo,total_revad,nombre_cndfp,
+num_titulo_recva,cantidad_revad,precio_revad,base_tarifa0_recva,valor_descuento_recva,total_recva,descripcion_repea as periodo,total_revad,nombre_cndfp,
 descripcion_repar
 from rec_valores a
 left join rec_valor_detalle b on a.ide_titulo_recval=b.ide_titulo_recval
@@ -46,7 +46,7 @@ order by num_titulo_recva]]>
 	</queryString>
 	<field name="tarifa" class="java.math.BigDecimal"/>
 	<field name="ide_titulo_recval" class="java.lang.Long"/>
-	<field name="detalle_cocaj" class="java.lang.String"/>
+	<field name="caja" class="java.lang.String"/>
 	<field name="fecha_pago_recva" class="java.sql.Date"/>
 	<field name="cajero" class="java.lang.String"/>
 	<field name="secuencial_cccfa" class="java.lang.String"/>
@@ -142,7 +142,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textElement verticalAlignment="Middle">
 						<font fontName="SansSerif" size="7"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{detalle_cocaj}+" : "+$F{cajero}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{caja}+" : "+$F{cajero}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="false">
 					<reportElement uuid="0399d5cb-b189-4050-bc86-5e207397a7a6" key="textField" x="0" y="127" width="174" height="14"/>
