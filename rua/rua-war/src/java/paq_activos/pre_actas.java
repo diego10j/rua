@@ -177,6 +177,7 @@ public class pre_actas extends Pantalla {
         set_activos.getTab_seleccion().getColumna("SECUENCIAL").setFiltro(true);
         set_activos.getTab_seleccion().getColumna("observacion_acafi").setOrden(1);
         set_activos.getTab_seleccion().getColumna("TIPO_ACTIVO").setOrden(2);
+        set_activos.getTab_seleccion().getColumna("SECUENCIAL").setOrden(3);
         set_activos.getBot_aceptar().setMetodo("aceptarActivo");
         agregarComponente(set_activos);
 
@@ -454,7 +455,7 @@ public class pre_actas extends Pantalla {
         }
         else if (valor_combo.equals(utilitario.getVariable("p_act_acta_cambio"))) {
             //System.out.println("etre a imprimir el acta de baja");
-            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_constatacion, "1", estado_activo, clase_activo));
+            set_activos.getTab_seleccion().setSql(ser_activos.getSqlListaActivosFijos("1", custodio_actual, "1", estado_activo, clase_activo));
             set_activos.getTab_seleccion().ejecutarSql();
             set_activos.dibujar();
 
