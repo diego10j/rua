@@ -699,7 +699,7 @@ public class ServicioInventario {
     public String saldosArticulos(String articulos, String anio, String bodega) {
         String sql = "";
         sql += "select ide_boart,ingreso_material_boart,existencia_inicial_boart,egreso_material_boart,costo_actual_boart,precio_venta_boart, "
-                + "(ingreso_material_boart+existencia_inicial_boart) - egreso_material_boart as saldo_existencia "
+                + "(ingreso_material_boart + existencia_inicial_boart) - egreso_material_boart as saldo_existencia "
                 + "from bodt_articulos where ide_boart in (" + articulos + ")";
         return sql;
     }
@@ -813,10 +813,9 @@ public class ServicioInventario {
         return sql;
     }
 
-    public String getActualizarBodegaArticulos(String stock, String costo_actual, Double precio, String articulo, String anio) {
+    public String getActualizarBodegaArticulos(String costo_actual, Double precio, String articulo, String anio) {
         String sql = "";
         sql += "UPDATE bodt_articulos   SET \n"
-                + "       existencia_inicial_boart=" + stock + ", \n"
                 + "       costo_anterior_boart=" + costo_actual + ", \n"
                 + "       costo_actual_boart=" + precio + "\n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
@@ -836,6 +835,23 @@ public class ServicioInventario {
         sql += "UPDATE bodt_articulos   SET \n"
                 + "       egreso_material_boart=( egreso_material_boart +" + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
+        return sql;
+    }
+
+    public String getActualizarDetalleStock(String stock, Double precio, String codigo, String articulo) {
+        String sql = "";
+        sql += "UPDATE inv_det_comp_inve SET \n"
+                + "       cantidad1_indci= " + stock + ", \n"
+                + "       precio_promedio_indci=" + precio + " \n"
+                + " WHERE ide_incci=" + codigo + " and ide_inarti=" + articulo + " ";
+        return sql;
+    }
+
+    public String getActualizarEstadoInventario(String estado, String codigo) {
+        String sql = "";
+        sql += "UPDATE inv_cab_comp_inve\n"
+                + "   SET ide_inepi="+estado+"\n"
+                + " WHERE ide_incci="+codigo+" ";
         return sql;
     }
 
