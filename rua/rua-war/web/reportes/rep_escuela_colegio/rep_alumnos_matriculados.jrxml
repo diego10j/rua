@@ -37,8 +37,10 @@
 	<parameter name="pide_curso" class="java.lang.String"/>
 	<parameter name="pide_paralelo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_repar,descripcion_recur,substring(descripcion_reces from 1 for 40) as descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,
-retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,valor_descuento_recalp
+		<![CDATA[select count(identificac_geper) as codigo,a.ide_recur,descripcion_reces,orden_recur,descripcion_repea,nom_geani
+from (
+select nom_geper,identificac_geper,codigo_geper,descripcion_repea,nom_geani,descripcion_reces||' '||descripcion_recur||' '||descripcion_repar as descripcion_reces,activo_recalp,a.ide_repea,a.ide_repar,a.ide_recur,a.ide_reces,
+retirado_recalp,fecha_retiro_recalp,detalle_retiro_recalp,valor_descuento_recalp,orden_recur
 from rec_alumno_periodo a, gen_persona b,rec_periodo_academico c,gen_anio d,rec_paralelos g,rec_curso e, rec_especialidad f
 where a.ide_geper= b.ide_geper
 and a.ide_repea = c.ide_repea
@@ -51,111 +53,66 @@ and a.ide_reces in ($P!{pide_especialidad})
 and a.ide_repar in ($P!{pide_paralelo})
 and a.ide_recur in ($P!{pide_curso})
 and a.ide_repea in ($P!{pide_periodo})
-order by a.ide_repea,orden_recur,descripcion_repar,descripcion_reces,nom_geper
-]]>
+) a
+group by a.ide_recur,descripcion_reces,orden_recur,a.ide_repea,a.ide_repar,descripcion_repea,nom_geani
+order by a.ide_repea,orden_recur,ide_repar]]>
 	</queryString>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
-	<field name="identificac_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[empleado
-este campo es para guardar la cedula del empleado]]></fieldDescription>
-	</field>
-	<field name="codigo_geper" class="java.lang.String"/>
-	<field name="descripcion_repea" class="java.lang.String"/>
-	<field name="nom_geani" class="java.lang.String"/>
-	<field name="descripcion_repar" class="java.lang.String"/>
-	<field name="descripcion_recur" class="java.lang.String"/>
-	<field name="descripcion_reces" class="java.lang.String"/>
-	<field name="activo_recalp" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[Este campo nos indicara el activo de la tabla yavirac_alum_registro_academico]]></fieldDescription>
-	</field>
-	<field name="ide_repea" class="java.lang.Long">
-		<fieldDescription><![CDATA[Este campo es la clave principal de la tabla yavirac_alum_registro_academico]]></fieldDescription>
-	</field>
-	<field name="ide_repar" class="java.lang.Long">
-		<fieldDescription><![CDATA[Este campo es la clave principal de la tabla yavirac_alum_registro_academico]]></fieldDescription>
-	</field>
+	<field name="codigo" class="java.lang.Long"/>
 	<field name="ide_recur" class="java.lang.Long">
 		<fieldDescription><![CDATA[Este campo es la clave principal de la tabla yavirac_alum_registro_academico]]></fieldDescription>
 	</field>
-	<field name="ide_reces" class="java.lang.Long"/>
-	<field name="retirado_recalp" class="java.lang.Boolean"/>
-	<field name="fecha_retiro_recalp" class="java.sql.Date"/>
-	<field name="detalle_retiro_recalp" class="java.lang.String"/>
-	<field name="valor_descuento_recalp" class="java.math.BigDecimal"/>
+	<field name="descripcion_reces" class="java.lang.String"/>
+	<field name="orden_recur" class="java.lang.Integer"/>
+	<field name="descripcion_repea" class="java.lang.String"/>
+	<field name="nom_geani" class="java.lang.String"/>
 	<variable name="sum_certificacion" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
-	<variable name="contador" class="java.lang.Integer" resetType="Group" resetGroup="paralelos" calculation="Count">
-		<variableExpression><![CDATA[$F{nom_geper}]]></variableExpression>
+	<variable name="subtotal" class="java.lang.Double" resetType="Group" resetGroup="curso" calculation="Sum">
+		<variableExpression><![CDATA[$F{codigo}]]></variableExpression>
 	</variable>
-	<variable name="suma_parelos" class="java.lang.Integer" resetType="Group" resetGroup="paralelos" calculation="Count">
-		<variableExpression><![CDATA[$F{ide_recur}]]></variableExpression>
+	<variable name="total" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{codigo}]]></variableExpression>
 	</variable>
-	<variable name="suma_total" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{ide_recur}]]></variableExpression>
-	</variable>
-	<variable name="suma_curso" class="java.lang.Integer" resetType="Group" resetGroup="cursos" calculation="Count">
-		<variableExpression><![CDATA[$F{ide_recur}]]></variableExpression>
-	</variable>
-	<group name="especialidad">
-		<groupExpression><![CDATA[$F{ide_reces}]]></groupExpression>
-		<groupHeader>
-			<band height="2"/>
-		</groupHeader>
-		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
-	<group name="cursos">
+	<group name="curso">
 		<groupExpression><![CDATA[$F{ide_recur}]]></groupExpression>
 		<groupHeader>
-			<band height="2"/>
+			<band height="14">
+				<staticText>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="421" y="0" width="65" height="14"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cantidad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="19" y="0" width="35" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Curso]]></text>
+				</staticText>
+			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="20">
-				<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
-					<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="416" y="3" width="65" height="16"/>
-					<textElement textAlignment="Right">
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{suma_curso}]]></textFieldExpression>
-				</textField>
+			<band height="24">
 				<staticText>
-					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="276" y="0" width="94" height="16"/>
+					<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="320" y="7" width="94" height="16"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[SUBTOTAL:]]></text>
+					<text><![CDATA[SUBTOTAL]]></text>
 				</staticText>
-				<line>
-					<reportElement uuid="47ba62d0-421e-4e8f-802e-f5534f3c71be" x="26" y="1" width="455" height="1"/>
-				</line>
-			</band>
-		</groupFooter>
-	</group>
-	<group name="paralelos">
-		<groupExpression><![CDATA[$F{ide_repar}]]></groupExpression>
-		<groupHeader>
-			<band/>
-		</groupHeader>
-		<groupFooter>
-			<band height="18">
 				<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
-					<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="415" y="2" width="65" height="16"/>
+					<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="421" y="7" width="65" height="16"/>
 					<textElement textAlignment="Right">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{suma_parelos}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{subtotal}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="13" y="2" width="402" height="16"/>
-					<textElement verticalAlignment="Middle">
-						<font size="7" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{descripcion_reces}+"  "+$F{descripcion_recur}+"  "+$F{descripcion_repar}]]></textFieldExpression>
-				</textField>
+				<line>
+					<reportElement uuid="eb543fca-1457-43aa-93b4-1a822345c9ad" x="37" y="3" width="449" height="1"/>
+				</line>
 			</band>
 		</groupFooter>
 	</group>
@@ -195,99 +152,34 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="4" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="15" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="415" y="1" width="65" height="14"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Cantidad]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="47" y="1" width="35" height="14"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Curso]]></text>
-			</staticText>
-		</band>
+		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band splitType="Stretch"/>
+		<band height="17" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="77839792-1352-4515-917d-edac659c31c6" x="19" y="0" width="402" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_reces}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="421" y="0" width="65" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="12" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="be59d63d-7c83-47f2-a553-3259e91a35a7" key="staticText-8" x="2" y="0" width="100" height="12"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Usuario Impresión:]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false">
-				<reportElement uuid="ab33c9a7-6bfd-4731-9d1d-1811f897ab97" key="textField-7" x="270" y="0" width="100" height="12"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="79719f66-2733-43bb-8eca-1e150fbf260e" key="staticText-9" x="211" y="0" width="56" height="12"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Fecha:]]></text>
-			</staticText>
-			<textField isBlankWhenNull="false">
-				<reportElement uuid="96198ad0-0906-466a-b754-3ed82e14b2c6" key="textField-8" x="416" y="0" width="80" height="12"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement uuid="ca489c68-7ff3-4172-80ef-77480c4bb08d" key="textField-10" x="102" y="0" width="100" height="12"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{nombre}]]></textFieldExpression>
-			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="false">
 				<reportElement uuid="758c7f85-a07e-4c75-9771-47e5fd8fc936" key="textField-9" x="496" y="0" width="40" height="12"/>
 				<box>
@@ -301,24 +193,89 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="be59d63d-7c83-47f2-a553-3259e91a35a7" key="staticText-8" x="0" y="0" width="100" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Usuario Impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="false">
+				<reportElement uuid="ab33c9a7-6bfd-4731-9d1d-1811f897ab97" key="textField-7" x="268" y="0" width="100" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="79719f66-2733-43bb-8eca-1e150fbf260e" key="staticText-9" x="209" y="0" width="56" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="96198ad0-0906-466a-b754-3ed82e14b2c6" key="textField-8" x="414" y="0" width="80" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="ca489c68-7ff3-4172-80ef-77480c4bb08d" key="textField-10" x="100" y="0" width="100" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="16" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="267" y="0" width="94" height="16"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[GRAN TOTAL... >>>>]]></text>
-			</staticText>
+		<band height="17" splitType="Stretch">
 			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
-				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="415" y="0" width="65" height="16"/>
+				<reportElement uuid="c6309cd9-78d4-42c9-aabb-5994c475571e" x="421" y="0" width="65" height="16"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{suma_total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="6c08242e-be23-44a2-85b1-fb47faf56d9d" x="265" y="0" width="149" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL DE TOTALES... >>>>]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>
