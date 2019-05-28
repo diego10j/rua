@@ -154,7 +154,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							<bucketExpression><![CDATA[$F{nom_geper}]]></bucketExpression>
 						</bucket>
 						<crosstabRowHeader>
-							<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
 								<box>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
@@ -169,7 +169,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</cellContents>
 						</crosstabRowHeader>
 						<crosstabTotalRowHeader>
-							<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
 								<box>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
@@ -188,7 +188,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							<bucketExpression><![CDATA[$F{nombre_gemes}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
-							<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
 								<box>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
@@ -202,12 +202,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</cellContents>
 						</crosstabColumnHeader>
 						<crosstabTotalColumnHeader>
-							<cellContents backcolor="#005FB3" mode="Opaque">
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
 								<box>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<staticText>
-									<reportElement uuid="d5df2d0d-5401-4af6-9ca0-d18ba381621c" stretchType="RelativeToBandHeight" x="0" y="0" width="35" height="30" forecolor="#FFFFFF"/>
+									<reportElement uuid="d5df2d0d-5401-4af6-9ca0-d18ba381621c" stretchType="RelativeToBandHeight" x="0" y="0" width="35" height="30" forecolor="#000000"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="7" isBold="true"/>
 									</textElement>
@@ -221,7 +221,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							<bucketExpression><![CDATA[$F{des_concepto_recon}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
-							<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
 								<box>
 									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 								</box>
@@ -264,7 +264,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 						</cellContents>
 					</crosstabCell>
 					<crosstabCell width="35" height="15" rowTotalGroup="nom_geper">
-						<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
@@ -278,12 +278,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 						</cellContents>
 					</crosstabCell>
 					<crosstabCell width="35" height="15" columnTotalGroup="nombre_gemes">
-						<cellContents backcolor="#005FB3" mode="Opaque">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="#,##0.00">
-								<reportElement uuid="ba7719aa-2b75-440b-8e46-ac077c76ff88" style="Crosstab Data Text" x="0" y="0" width="35" height="15" forecolor="#FFFFFF"/>
+								<reportElement uuid="ba7719aa-2b75-440b-8e46-ac077c76ff88" style="Crosstab Data Text" x="0" y="0" width="35" height="15" forecolor="#000000"/>
 								<textElement verticalAlignment="Middle">
 									<font size="7"/>
 								</textElement>
@@ -292,12 +292,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 						</cellContents>
 					</crosstabCell>
 					<crosstabCell width="35" height="15" rowTotalGroup="nom_geper" columnTotalGroup="nombre_gemes">
-						<cellContents backcolor="#005FB3" mode="Opaque">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="#,##0.00">
-								<reportElement uuid="3886bf76-951f-4026-930f-91d407d8a384" style="Crosstab Data Text" x="0" y="0" width="35" height="15" forecolor="#FFFFFF"/>
+								<reportElement uuid="3886bf76-951f-4026-930f-91d407d8a384" style="Crosstab Data Text" x="0" y="0" width="35" height="15" forecolor="#000000"/>
 								<textElement verticalAlignment="Middle">
 									<font size="7"/>
 								</textElement>
