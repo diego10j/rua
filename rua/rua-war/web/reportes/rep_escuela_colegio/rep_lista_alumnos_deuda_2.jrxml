@@ -60,8 +60,7 @@ and a.ide_recur = e.ide_recur
 and a.ide_reces = f.ide_reces
 order by a.ide_repea,descripcion_reces,descripcion_recur,descripcion_repar,nom_geper
 ) b on a.ide_recalp = b.ide_recalp
-order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gemes,nom_geper
-]]>
+order by ide_repea,orden_recur,descripcion_repar,descripcion_reces,orden_pen_gemes,nom_geper ]]>
 	</queryString>
 	<field name="ide_geper" class="java.lang.Long">
 		<fieldDescription><![CDATA[representa actual custodio]]></fieldDescription>
@@ -185,7 +184,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					</rowGroup>
 					<columnGroup name="orden_pen_gemes" height="15" totalPosition="End">
 						<bucket class="java.lang.String">
-							<bucketExpression><![CDATA[$F{orden_pen_gemes}]]></bucketExpression>
+							<bucketExpression><![CDATA[$F{nombre_gemes}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
 							<cellContents backcolor="#FFFFFF" mode="Opaque">
@@ -197,7 +196,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<textElement verticalAlignment="Middle">
 										<font size="7"/>
 									</textElement>
-									<textFieldExpression><![CDATA[( $V{orden_pen_gemes}.equals("1") ? $V{mes} : ( $V{orden_pen_gemes}.equals("2") ? $V{mes} : ( $V{orden_pen_gemes}.equals("3") ? $V{mes} : ( $V{orden_pen_gemes}.equals("4") ? $V{mes} : ( $V{orden_pen_gemes}.equals("5") ? $V{mes} : ( $V{orden_pen_gemes}.equals("6") ? $V{mes} : ( $V{orden_pen_gemes}.equals("7") ? $V{mes} : ( $V{orden_pen_gemes}.equals("8") ? $V{mes} : ( $V{orden_pen_gemes}.equals("9") ? $V{mes} : ( $V{orden_pen_gemes}.equals("10") ? $V{mes} : ( $V{orden_pen_gemes}.equals("11") ? $V{mes} : ( $V{orden_pen_gemes}.equals("12") ? $V{mes} : "" ) ) ) ) ) ) ) ) ) ) ) )]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$V{orden_pen_gemes}]]></textFieldExpression>
 								</textField>
 							</cellContents>
 						</crosstabColumnHeader>
@@ -261,8 +260,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 								<textElement verticalAlignment="Middle">
 									<font size="7"/>
 								</textElement>
-								<textFieldExpression><![CDATA[( $V{valor_facturaMeasure} != null ? $V{valor_facturaMeasure} : 0 )
-]]></textFieldExpression>
+								<textFieldExpression><![CDATA[( $V{valor_facturaMeasure} != null ? $V{valor_facturaMeasure} : 0 )]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabCell>
