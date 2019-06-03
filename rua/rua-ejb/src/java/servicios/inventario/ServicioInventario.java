@@ -772,12 +772,12 @@ public class ServicioInventario {
 
     public String getDetalleInventario(String codigo, String sucu, String empr) {
         String sql = "";
+        
         sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
                 + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
                 + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
                 + "       referencia1_indci, precio_promedio_indci, usuario_ingre, fecha_ingre, \n"
-                + "       hora_ingre, usuario_actua, fecha_actua, hora_actua, ide_prcol, \n"
-                + "       ide_inuni\n"
+                + "       hora_ingre, usuario_actua, fecha_actua, hora_actua \n"
                 + "from inv_det_comp_inve  \n"
                 + "where ide_incci=" + codigo + " and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
 
@@ -827,6 +827,7 @@ public class ServicioInventario {
         sql += "UPDATE bodt_articulos   SET \n"
                 + "       ingreso_material_boart=( ingreso_material_boart + " + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
+        System.out.println(" <<<<<<<<<<<<< ACTUALIZO INGRESO \n"+sql);
         return sql;
     }
 
@@ -835,6 +836,7 @@ public class ServicioInventario {
         sql += "UPDATE bodt_articulos   SET \n"
                 + "       egreso_material_boart=( egreso_material_boart +" + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
+        System.out.println(" <<<<<<< ACTUALIZO EGRESO \n"+sql);
         return sql;
     }
 
@@ -843,16 +845,74 @@ public class ServicioInventario {
         sql += "UPDATE inv_det_comp_inve SET \n"
                 + "       cantidad1_indci= " + stock + ", \n"
                 + "       precio_promedio_indci=" + precio + " \n"
-                + " WHERE ide_incci=" + codigo + " and ide_inarti=" + articulo + " ";
+                + " WHERE ide_indci=" + codigo + " and ide_inarti=" + articulo + " ";
+        System.out.println(" <<<<<<<<< Actualizo STOCK \n"+sql);
         return sql;
     }
 
     public String getActualizarEstadoInventario(String estado, String codigo) {
         String sql = "";
         sql += "UPDATE inv_cab_comp_inve\n"
-                + "   SET ide_inepi="+estado+"\n"
-                + " WHERE ide_incci="+codigo+" ";
+                + "   SET ide_inepi=" + estado + "\n"
+                + " WHERE ide_incci=" + codigo + " ";
         return sql;
     }
 
+    public String getReporteOrdenado(String anio, String articulo) {
+        String sql = "";
+        sql += "select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,\n"
+                + "	costo_inicial_boart,cantidad_indci,precio_indci,valor_indci,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad1_indci,precio_promedio_indci,\n"
+                + "	fecha_trans_incci,numero_incci,ide_indci\n"
+                + "	from inv_cab_comp_inve a\n"
+                + "	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti\n"
+                + "	left join inv_tip_comp_inve c on b.ide_intci=c.ide_intci\n"
+                + "	left join inv_det_comp_inve d on a.ide_incci=d.ide_incci\n"
+                + "	left join bodt_articulos e on d.ide_inarti=e.ide_inarti\n"
+                + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
+                + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
+                + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)\n"
+                + "		and e.ide_geani="+anio+" and e.ide_inarti in ("+articulo+")\n"
+                + "union\n"
+                + "	select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,\n"
+                + "	0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,\n"
+                + "	fecha_trans_incci,numero_incci,ide_indci\n"
+                + "	from inv_cab_comp_inve a\n"
+                + "	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti\n"
+                + "	left join inv_tip_comp_inve c on b.ide_intci=c.ide_intci\n"
+                + "	left join inv_det_comp_inve d on a.ide_incci=d.ide_incci\n"
+                + "	left join bodt_articulos e on d.ide_inarti=e.ide_inarti\n"
+                + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
+                + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
+                + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n"
+                + "	and e.ide_geani="+anio+" and e.ide_inarti in ("+articulo+")\n"
+                + "order by ide_inarti,fecha_trans_incci,ide_indci ";
+        return sql;
+    }
+
+    public String getActualizarBdt(String anio, String articulo) {
+        String sql = "";
+        sql += "update bodt_articulos set \n"
+                + "	ingreso_material_boart=0,\n"
+                + "	egreso_material_boart=0,\n"
+                + "	costo_anterior_boart=0,\n"
+                + "	costo_actual_boart=0\n"
+                + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
+        return sql;
+    }
+    
+    public String getConsultaDetalleInventario(String codigo, String articulo,String sucu, String empr) {
+        String sql = "";
+        
+        sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
+                + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
+                + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
+                + "       referencia1_indci, precio_promedio_indci, usuario_ingre, fecha_ingre, \n"
+                + "       hora_ingre, usuario_actua, fecha_actua, hora_actua \n"
+                + "from inv_det_comp_inve  \n"
+                + "where ide_incci=" + codigo + " and ide_inarti="+articulo+" and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
+
+        return sql;
+    }
+
+    
 }
