@@ -327,7 +327,7 @@ public class pre_comp_inv_nec extends Pantalla {
         double costo_actual = 0;
         if (tab_transaccion.getValor("ide_intci").equals(utilitario.getVariable("p_inv_tipo_ingreso"))) {
             for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-                TablaGenerica tab_kardex = utilitario.consultar("select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti=" + tab_detalle.getValor(i, "ide_inarti") + "");
+                TablaGenerica tab_kardex = utilitario.consultar(ser_inventario.getAplicaKardex(tab_detalle.getValor(i, "ide_inarti")));
                 if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
                     TablaGenerica tab_articulo = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
                     if (tab_articulo.getTotalFilas() > 0) {
@@ -352,7 +352,7 @@ public class pre_comp_inv_nec extends Pantalla {
             }
         } else if (tab_transaccion.getValor("ide_intci").equals(utilitario.getVariable("p_inv_tipo_egreso"))) {
             for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-                TablaGenerica tab_kardex = utilitario.consultar("select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti=" + tab_detalle.getValor(i, "ide_inarti") + "");
+                TablaGenerica tab_kardex = utilitario.consultar(ser_inventario.getAplicaKardex(tab_detalle.getValor(i, "ide_inarti")));
                 if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
                     TablaGenerica tab_articulo = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
                     if (tab_articulo.getTotalFilas() > 0) {
