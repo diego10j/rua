@@ -183,9 +183,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</cellContents>
 						</crosstabTotalRowHeader>
 					</rowGroup>
-					<columnGroup name="nombre_gemes" height="15" totalPosition="End">
+					<columnGroup name="orden_pen_gemes" height="15" totalPosition="End">
 						<bucket class="java.lang.String">
-							<bucketExpression><![CDATA[$F{nombre_gemes}]]></bucketExpression>
+							<bucketExpression><![CDATA[$F{orden_pen_gemes}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
 							<cellContents backcolor="#FFFFFF" mode="Opaque">
@@ -197,7 +197,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 									<textElement verticalAlignment="Middle">
 										<font size="7"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$V{nombre_gemes}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[( $V{orden_pen_gemes}.equals("1") ? $V{mes} : ( $V{orden_pen_gemes}.equals("2") ? $V{mes} : ( $V{orden_pen_gemes}.equals("3") ? $V{mes} : ( $V{orden_pen_gemes}.equals("4") ? $V{mes} : ( $V{orden_pen_gemes}.equals("5") ? $V{mes} : ( $V{orden_pen_gemes}.equals("6") ? $V{mes} : ( $V{orden_pen_gemes}.equals("7") ? $V{mes} : ( $V{orden_pen_gemes}.equals("8") ? $V{mes} : ( $V{orden_pen_gemes}.equals("9") ? $V{mes} : ( $V{orden_pen_gemes}.equals("10") ? $V{mes} : ( $V{orden_pen_gemes}.equals("11") ? $V{mes} : ( $V{orden_pen_gemes}.equals("12") ? $V{mes} : "" ) ) ) ) ) ) ) ) ) ) ) )]]></textFieldExpression>
 								</textField>
 							</cellContents>
 						</crosstabColumnHeader>
@@ -248,6 +248,9 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<measure name="total" class="java.lang.Double" calculation="Sum">
 						<measureExpression><![CDATA[$F{valor_factura}]]></measureExpression>
 					</measure>
+					<measure name="mes" class="java.lang.String">
+						<measureExpression><![CDATA[$F{abreviatura_gemes}]]></measureExpression>
+					</measure>
 					<crosstabCell width="35" height="15">
 						<cellContents>
 							<box>
@@ -277,7 +280,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="35" height="15" columnTotalGroup="nombre_gemes">
+					<crosstabCell width="35" height="15" columnTotalGroup="orden_pen_gemes">
 						<cellContents backcolor="#FFFFFF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -291,7 +294,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 							</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="35" height="15" rowTotalGroup="nom_geper" columnTotalGroup="nombre_gemes">
+					<crosstabCell width="35" height="15" rowTotalGroup="nom_geper" columnTotalGroup="orden_pen_gemes">
 						<cellContents backcolor="#FFFFFF" mode="Opaque">
 							<box>
 								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
