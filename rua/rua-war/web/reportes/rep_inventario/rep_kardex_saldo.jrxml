@@ -47,8 +47,7 @@ union
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)
 	and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
-order by ide_inarti,fecha_trans_incci,ide_indci
-]]>
+order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 	</queryString>
 	<field name="ide_intci" class="java.lang.Long"/>
 	<field name="ide_geani" class="java.lang.Integer">
