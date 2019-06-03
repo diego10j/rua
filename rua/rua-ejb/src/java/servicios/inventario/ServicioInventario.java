@@ -827,7 +827,6 @@ public class ServicioInventario {
         sql += "UPDATE bodt_articulos   SET \n"
                 + "       ingreso_material_boart=( ingreso_material_boart + " + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
-        System.out.println(" <<<<<<<<<<<<< ACTUALIZO INGRESO \n"+sql);
         return sql;
     }
 
@@ -836,7 +835,6 @@ public class ServicioInventario {
         sql += "UPDATE bodt_articulos   SET \n"
                 + "       egreso_material_boart=( egreso_material_boart +" + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
-        System.out.println(" <<<<<<< ACTUALIZO EGRESO \n"+sql);
         return sql;
     }
 
@@ -846,7 +844,6 @@ public class ServicioInventario {
                 + "       cantidad1_indci= " + stock + ", \n"
                 + "       precio_promedio_indci=" + precio + " \n"
                 + " WHERE ide_indci=" + codigo + " and ide_inarti=" + articulo + " ";
-        System.out.println(" <<<<<<<<< Actualizo STOCK \n"+sql);
         return sql;
     }
 
@@ -900,19 +897,9 @@ public class ServicioInventario {
         return sql;
     }
     
-    public String getConsultaDetalleInventario(String codigo, String articulo,String sucu, String empr) {
+    public String getAplicaKardex(String articulo) {
         String sql = "";
-        
-        sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
-                + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
-                + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
-                + "       referencia1_indci, precio_promedio_indci, usuario_ingre, fecha_ingre, \n"
-                + "       hora_ingre, usuario_actua, fecha_actua, hora_actua \n"
-                + "from inv_det_comp_inve  \n"
-                + "where ide_incci=" + codigo + " and ide_inarti="+articulo+" and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
-
+        sql += "select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti="+articulo+"";
         return sql;
     }
-
-    
 }
