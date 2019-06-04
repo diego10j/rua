@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb44e5d2-0078-40d7-b4da-6dbdcc6f19de">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="107"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_sucu" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -47,7 +47,7 @@ union
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)
 	and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
-order by ide_inarti,fecha_trans_incci,ide_indci ]]>
+order by ide_inarti,fecha_trans_incci,ide_indci]]>
 	</queryString>
 	<field name="ide_intci" class="java.lang.Long"/>
 	<field name="ide_geani" class="java.lang.Integer">
@@ -85,9 +85,9 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 	<group name="articulo">
 		<groupExpression><![CDATA[$F{ide_inarti}]]></groupExpression>
 		<groupHeader>
-			<band height="54">
+			<band height="77">
 				<staticText>
-					<reportElement uuid="c634070c-0ab2-4b54-9c06-d7adf5222e26" x="0" y="41" width="50" height="13"/>
+					<reportElement uuid="c634070c-0ab2-4b54-9c06-d7adf5222e26" x="0" y="64" width="50" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -101,7 +101,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Fecha]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="f805b6f2-8493-47f7-988f-a4bb6c740594" x="50" y="41" width="64" height="13"/>
+					<reportElement uuid="f805b6f2-8493-47f7-988f-a4bb6c740594" x="50" y="64" width="64" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -115,7 +115,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Comp. Nº]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="b5d44a62-5cca-4db5-9a9d-bca0df9c66a5" x="114" y="41" width="49" height="13"/>
+					<reportElement uuid="b5d44a62-5cca-4db5-9a9d-bca0df9c66a5" x="114" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -129,7 +129,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Cantidad]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="8ea1f82d-cdaf-4f62-a67b-fbd688829e61" x="163" y="41" width="49" height="13"/>
+					<reportElement uuid="8ea1f82d-cdaf-4f62-a67b-fbd688829e61" x="163" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -143,7 +143,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Precio]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="209b5ddf-305a-44cb-ba83-6aa3ca0279d5" x="212" y="41" width="49" height="13"/>
+					<reportElement uuid="209b5ddf-305a-44cb-ba83-6aa3ca0279d5" x="212" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -157,7 +157,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Total]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="821a3f0d-20c5-495c-823f-1d20cb08be65" x="359" y="41" width="49" height="13"/>
+					<reportElement uuid="821a3f0d-20c5-495c-823f-1d20cb08be65" x="359" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -171,7 +171,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Total]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="d1f7fd06-ec5d-404d-b066-b53bb541f2ac" x="310" y="41" width="49" height="13"/>
+					<reportElement uuid="d1f7fd06-ec5d-404d-b066-b53bb541f2ac" x="310" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -185,7 +185,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Precio]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="bd20cfec-9b13-4600-bbf1-6a83feb7f5f7" x="261" y="41" width="49" height="13"/>
+					<reportElement uuid="bd20cfec-9b13-4600-bbf1-6a83feb7f5f7" x="261" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -199,7 +199,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Cantidad]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="03ad87ee-a824-44f6-93b6-fb6ed4372df0" x="506" y="41" width="49" height="13"/>
+					<reportElement uuid="03ad87ee-a824-44f6-93b6-fb6ed4372df0" x="506" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -213,7 +213,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Total]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="f86eadb7-1904-47bd-aa28-2a3e03b790d1" x="457" y="41" width="49" height="13"/>
+					<reportElement uuid="f86eadb7-1904-47bd-aa28-2a3e03b790d1" x="457" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -227,7 +227,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Precio]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="77205c1d-e21e-4b32-b540-0e72567647cf" x="408" y="41" width="49" height="13"/>
+					<reportElement uuid="77205c1d-e21e-4b32-b540-0e72567647cf" x="408" y="64" width="49" height="13"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -241,7 +241,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Cantidad]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="bd69ff94-eedf-4a29-86d5-2f1e1d6a6cd9" x="114" y="27" width="147" height="14"/>
+					<reportElement uuid="bd69ff94-eedf-4a29-86d5-2f1e1d6a6cd9" x="114" y="50" width="147" height="14"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -255,7 +255,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[INGRESOS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="33333552-0770-4261-ae3d-62658113c4fb" x="261" y="27" width="147" height="14"/>
+					<reportElement uuid="33333552-0770-4261-ae3d-62658113c4fb" x="261" y="50" width="147" height="14"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -269,7 +269,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[EGRESOS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="8296c673-c54b-4625-97b8-eff35da16e32" x="408" y="27" width="147" height="14"/>
+					<reportElement uuid="8296c673-c54b-4625-97b8-eff35da16e32" x="408" y="50" width="147" height="14"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -305,43 +305,105 @@ order by ide_inarti,fecha_trans_incci,ide_indci ]]>
 					<text><![CDATA[Artículos:]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="152" y="8" width="183" height="13"/>
+					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="152" y="8" width="256" height="13"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement uuid="009e64b4-424b-424d-9bee-e62ab355b08f" x="335" y="8" width="60" height="13"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Saldo inicial:]]></text>
-				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="395" y="8" width="50" height="13"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="9"/>
+					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="408" y="37" width="49" height="13"/>
+					<box>
+						<leftPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{existencia_inicial_boart}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement uuid="009e64b4-424b-424d-9bee-e62ab355b08f" x="445" y="8" width="60" height="13"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Costo inicial:]]></text>
-				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="505" y="8" width="50" height="13"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="9"/>
+					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="457" y="37" width="49" height="13"/>
+					<box>
+						<leftPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{costo_inicial_boart}]]></textFieldExpression>
 				</textField>
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
+					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="506" y="37" width="49" height="13"/>
+					<box>
+						<leftPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{existencia_inicial_boart} * $F{costo_inicial_boart}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="b5d44a62-5cca-4db5-9a9d-bca0df9c66a5" x="408" y="24" width="49" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cantidad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8ea1f82d-cdaf-4f62-a67b-fbd688829e61" x="457" y="24" width="49" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Precio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="209b5ddf-305a-44cb-ba83-6aa3ca0279d5" x="506" y="24" width="49" height="13"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bd69ff94-eedf-4a29-86d5-2f1e1d6a6cd9" x="408" y="10" width="147" height="14"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[INICIAL]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
