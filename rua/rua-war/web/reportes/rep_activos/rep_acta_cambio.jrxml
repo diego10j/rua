@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="252"/>
+	<property name="ireport.y" value="193"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -132,7 +132,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement textAlignment="Justified">
 					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["… En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{anio}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["… En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -238,7 +238,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CÓDIGO ANTERIOR]]></text>
+				<text><![CDATA[CÓD. ANTERIOR]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="55056d6a-907b-4a66-bbe3-6f42b24a1e7d" x="0" y="0" width="1" height="12"/>

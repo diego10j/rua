@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="213"/>
+	<property name="ireport.y" value="223"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -31,7 +31,7 @@ when extract(month from fecha_asigna_acact) =11 then 'Noviembre'
 when extract(month from fecha_asigna_acact) =12 then 'Diciembre' end) as mes,
 cast((extract(day from fecha_asigna_acact)) as integer) as dia,
 cast((extract (year from fecha_asigna_acact)) as integer) as anio
-,g.denominacion_geper as denom_custodio,
+,g.denominacion_geper as denom_custodio,d.ide_accls,nombre_accls,
 k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado
 from act_acta_constata a
 left join act_movimiento j on a.ide_acact = j.ide_acact
@@ -44,7 +44,8 @@ left join inv_articulo h  on d.ide_inarti=h.ide_inarti
 left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf
 left join gen_persona k on a.gen_ide_geper= k.ide_geper
 left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba
-where a.ide_acact=  $P{ide_acact}
+left join act_clasificacion m on d.ide_accls= m.ide_accls
+where a.ide_acact=$P{ide_acact}
 order by d.ide_accls,nombre_inarti,a.ide_acact]]>
 	</queryString>
 	<field name="ide_acact" class="java.lang.Long"/>
@@ -73,8 +74,34 @@ order by d.ide_accls,nombre_inarti,a.ide_acact]]>
 	<field name="dia" class="java.lang.Integer"/>
 	<field name="anio" class="java.lang.Integer"/>
 	<field name="denom_custodio" class="java.lang.String"/>
+	<field name="ide_accls" class="java.lang.Integer"/>
+	<field name="nombre_accls" class="java.lang.String"/>
 	<field name="denom_nuevo_custodio" class="java.lang.String"/>
 	<field name="estado" class="java.lang.String"/>
+	<group name="tipo_bien">
+		<groupExpression><![CDATA[$F{ide_accls}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<line>
+					<reportElement uuid="4c9fbcc4-bc28-44ba-a095-78c322826350" positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="eae6d700-8cb7-4ad4-bd63-d9acbeb5247c" x="0" y="2" width="555" height="13"/>
+					<box leftPadding="2"/>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TIPO DE BIEN: "+$F{nombre_accls}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -318,12 +345,6 @@ order by d.ide_accls,nombre_inarti,a.ide_acact]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<line>
-				<reportElement uuid="aaeca1da-8578-4e32-b23e-5644d5d20141" x="0" y="-13" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="faa457e0-3889-4487-ab2d-cae92ec2942a" x="88" y="0" width="106" height="13"/>
 				<textElement textAlignment="Center">
@@ -362,12 +383,6 @@ order by d.ide_accls,nombre_inarti,a.ide_acact]]>
 				<textFieldExpression><![CDATA[$F{nombre_aceaf}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="83669ef7-794f-45da-bb46-7d3de0b3663d" x="228" y="-11" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
 				<reportElement uuid="dadc4406-ae48-4e63-9589-428c26a5f664" positionType="Float" stretchType="RelativeToBandHeight" x="228" y="0" width="1" height="14"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
@@ -381,7 +396,9 @@ order by d.ide_accls,nombre_inarti,a.ide_acact]]>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="eae6d700-8cb7-4ad4-bd63-d9acbeb5247c" x="1" y="0" width="87" height="13"/>
-				<box leftPadding="2"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0"/>
+				</box>
 				<textElement>
 					<font size="8"/>
 				</textElement>
