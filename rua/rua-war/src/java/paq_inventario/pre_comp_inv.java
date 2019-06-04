@@ -304,7 +304,7 @@ public class pre_comp_inv extends Pantalla {
         String reporte = "";
         Map parametros = new HashMap();
         parametros.put("ide_incci", Integer.parseInt(tab_tabla1.getValor("ide_incci")));
-        reporte = "rep_comprob_inv_kennedy.jasper";
+        reporte = "rep_inventario/rep_comprob_inv_kennedy.jasper";
         String nom_rep = "Comprobante";
         vipdf_comprobante.setVisualizarPDF(reporte, parametros);
         vipdf_comprobante.dibujar();
