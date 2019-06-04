@@ -18,6 +18,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class pre_comp_inv extends Pantalla {
     private SeleccionTabla sel_cabecera_orden_prod = new SeleccionTabla();
     private SeleccionTabla sel_detalle_orden_prod = new SeleccionTabla();
     private Confirmar con_confirma = new Confirmar();
+    private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
     String factura = "";
     String valor_orden = "";
 
@@ -232,6 +234,12 @@ public class pre_comp_inv extends Pantalla {
         bot_aprobar_ingreso.setMetodo("aprobarIngreso");
         bar_botones.agregarBoton(bot_aprobar_ingreso);
 
+        Boton bot_imprimir = new Boton();
+        bot_imprimir.setValue("IMPRIMIR");
+        bot_imprimir.setIcon("ui-icon-print");
+        bot_imprimir.setMetodo("generarPDFnota");
+        bar_botones.agregarBoton(bot_imprimir);
+
         sel_cabece_compra.setId("sel_cabece_compra");
         sel_cabece_compra.setTitle("SELECCIONE UNA FACTURA");
         sel_cabece_compra.setSeleccionTabla("select ide_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n"
@@ -286,6 +294,22 @@ public class pre_comp_inv extends Pantalla {
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
 
+        vipdf_comprobante.setId("vipdf_comprobante");
+        vipdf_comprobante.setTitle("COMPROBANTE INVENTARIO");
+        agregarComponente(vipdf_comprobante);
+
+    }
+
+    public void generarPDFnota() {
+        String reporte = "";
+        Map parametros = new HashMap();
+        parametros.put("ide_incci", Integer.parseInt(tab_tabla1.getValor("ide_incci")));
+        reporte = "rep_comprob_inv_kennedy.jasper";
+        String nom_rep = "Comprobante";
+        vipdf_comprobante.setVisualizarPDF(reporte, parametros);
+        vipdf_comprobante.dibujar();
+        utilitario.addUpdate("vipdf_comprobante");
+
     }
 
     public void registrarInventario() {
@@ -325,21 +349,21 @@ public class pre_comp_inv extends Pantalla {
                 if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
                     TablaGenerica tab_articulo = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
                     if (tab_articulo.getTotalFilas() > 0) {
-                        costo_actual = ser_inventario.getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        //costo_actual = ser_inventario.getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
+                        //utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
 
                     } else {
                         utilitario.getConexion().ejecutarSql(ser_inventario.getInsertarBodegaArticulos(tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_detalle.getValor(i, "ide_inarti")));
                         TablaGenerica tab_articulos = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        costo_actual = ser_inventario.getPrecioPonderado(Double.parseDouble(tab_articulos.getValor("stock")), Double.parseDouble(tab_articulos.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulos.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        //costo_actual = ser_inventario.getPrecioPonderado(Double.parseDouble(tab_articulos.getValor("stock")), Double.parseDouble(tab_articulos.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
+                        //utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulos.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
 
                     }
