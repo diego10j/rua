@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb44e5d2-0078-40d7-b4da-6dbdcc6f19de">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="107"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_sucu" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -22,8 +22,9 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,
-	costo_inicial_boart,cantidad_indci,precio_indci,valor_indci,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad1_indci,precio_promedio_indci,
+		<![CDATA[
+select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,
+	costo_inicial_boart,0 as precio,cantidad_indci,precio_indci,valor_indci,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad1_indci,precio_promedio_indci,
 	fecha_trans_incci,numero_incci,ide_indci
 	from inv_cab_comp_inve a
 	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti
@@ -36,7 +37,7 @@
 		and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
 union
 	select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,
-	0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,
+	precio_promedio_indci as precio,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,
 	fecha_trans_incci,numero_incci,ide_indci
 	from inv_cab_comp_inve a
 	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti
@@ -59,6 +60,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci]]>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="existencia_inicial_boart" class="java.math.BigDecimal"/>
 	<field name="costo_inicial_boart" class="java.math.BigDecimal"/>
+	<field name="precio" class="java.math.BigDecimal"/>
 	<field name="cantidad_indci" class="java.math.BigDecimal"/>
 	<field name="precio_indci" class="java.math.BigDecimal"/>
 	<field name="valor_indci" class="java.math.BigDecimal"/>
@@ -614,7 +616,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci]]>
 					<font size="7" pdfFontName="Times-Roman"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prec_egre}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.0000" isBlankWhenNull="true">
 				<reportElement uuid="aa1d589f-a906-470b-9bfc-dec146d3970d" x="261" y="0" width="49" height="13"/>
@@ -644,7 +646,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci]]>
 					<font size="7" pdfFontName="Times-Roman"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{valor_egre}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cant_egre} * $F{precio}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.0000" isBlankWhenNull="true">
 				<reportElement uuid="b3dc2327-e802-472a-a543-b7dede3ce91b" x="408" y="0" width="49" height="13"/>
