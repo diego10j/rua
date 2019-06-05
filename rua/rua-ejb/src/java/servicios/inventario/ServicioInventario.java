@@ -798,7 +798,7 @@ public class ServicioInventario {
 
     public double getPrecioPonderado(Double stock, Double costa_actual, Double cantidad, Double valor_total) {
         //System.out.println("PARAMETROS: " + stock + " " + costa_actual + " " + cantidad + " " + valor_total);
-        double costo_actual = 0;
+        double costo_actual = 0; 
         double total = (stock * costa_actual);
         costo_actual = ((total + valor_total) / (stock + cantidad));
         return costo_actual;
@@ -833,7 +833,7 @@ public class ServicioInventario {
     public String getActualizarEgreso(String cantidad, String articulo, String anio) {
         String sql = "";
         sql += "UPDATE bodt_articulos   SET \n"
-                + "       egreso_material_boart=( egreso_material_boart +" + cantidad + ") \n"
+                + "       egreso_material_boart=( egreso_material_boart + " + cantidad + ") \n"
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
         return sql;
     }
@@ -896,6 +896,15 @@ public class ServicioInventario {
                 + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
         return sql;
     }
+    
+    public String getActualizarCostoInicial(String anio, String articulo) {
+        String sql = "";
+        sql += "update bodt_articulos set \n"
+                + "	costo_actual_boart=costo_inicial_boart\n"
+                + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
+        return sql;
+    }
+    
     
     public String getAplicaKardex(String articulo) {
         String sql = "";
