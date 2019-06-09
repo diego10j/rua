@@ -1073,7 +1073,7 @@ public class DocumentoCxP extends Dialogo {
         utilitario.addUpdate("tab_creacion_cliente");
     }
 
-    public void seleccionarArchivoXML(FileUploadEvent event) {
+      public void seleccionarArchivoXML(FileUploadEvent event) {
 
         try {
 
@@ -1093,18 +1093,20 @@ public class DocumentoCxP extends Dialogo {
             } finally {
                 scanner.close();
             }
+            String xmlFactura =  fileContents.toString().replaceAll("&gt;", ">");
+            xmlFactura = xmlFactura.replaceAll("&lt;", "<");
             //Validaciones
-            String codDoc = utilitario.getValorEtiqueta(fileContents.toString(), "codDoc");
+            String codDoc = utilitario.getValorEtiqueta(xmlFactura, "codDoc");
             if (codDoc == null || codDoc.equals(TipoComprobanteEnum.FACTURA.getCodigo()) == false) {
                 utilitario.agregarMensajeError("Error archivo XML", "Tipo de comprobante no válido");
                 return;
             }
-            String ide_geper = ser_proveedor.getIdeProveedor(utilitario.getValorEtiqueta(fileContents.toString(), "ruc"));
+            String ide_geper = ser_proveedor.getIdeProveedor(utilitario.getValorEtiqueta(xmlFactura, "ruc"));
             if (ide_geper == null) {
-                utilitario.agregarMensajeError("Error", "El proveedor " + utilitario.getValorEtiqueta(fileContents.toString(), "razonSocial") + " no existe en la base de datos");
+                utilitario.agregarMensajeError("Error", "El proveedor " + utilitario.getValorEtiqueta(xmlFactura, "razonSocial") + " no existe en la base de datos");
                 return;
             }
-            String autorizacio_cpcfa = utilitario.getValorEtiqueta(fileContents.toString(), "numeroAutorizacion");
+            String autorizacio_cpcfa = utilitario.getValorEtiqueta(xmlFactura, "numeroAutorizacion");
             if (ser_cuentas_cxp.isExisteDocumentoElectronico(autorizacio_cpcfa)) {
                 utilitario.agregarMensajeError("Error", "La factura electronica seleccionada ya existe");
                 return;
@@ -1112,15 +1114,15 @@ public class DocumentoCxP extends Dialogo {
 
             com_tipo_documento.setValue(parametros.get("p_con_tipo_documento_factura"));
             cargarProveedores();
-            String numero_cpcfa = utilitario.getValorEtiqueta(fileContents.toString(), "estab") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "ptoEmi") + "-" + utilitario.getValorEtiqueta(fileContents.toString(), "secuencial");
+            String numero_cpcfa = utilitario.getValorEtiqueta(xmlFactura, "estab") + "-" + utilitario.getValorEtiqueta(xmlFactura, "ptoEmi") + "-" + utilitario.getValorEtiqueta(xmlFactura, "secuencial");
             tab_cab_documento.setValor("ide_geper", ide_geper);
             tab_cab_documento.setValor("autorizacio_cpcfa", autorizacio_cpcfa);
             //System.out.println("--- " + numero_cpcfa);
             tab_cab_documento.setValor("numero_cpcfa", numero_cpcfa);
-            tab_cab_documento.setValor("fecha_emisi_cpcfa", utilitario.getFormatoFecha(utilitario.toDate(utilitario.getFormatoFecha(utilitario.getValorEtiqueta(fileContents.toString(), "fechaEmision")), "dd/MM/yyyy")));
-            tab_cab_documento.setValor("ide_cndfp", ser_cuentas_cxp.getFormaPago(utilitario.getValorEtiqueta(fileContents.toString(), "formaPago")));
+            tab_cab_documento.setValor("fecha_emisi_cpcfa", utilitario.getFormatoFecha(utilitario.toDate(utilitario.getFormatoFecha(utilitario.getValorEtiqueta(xmlFactura, "fechaEmision")), "dd/MM/yyyy")));
+            tab_cab_documento.setValor("ide_cndfp", ser_cuentas_cxp.getFormaPago(utilitario.getValorEtiqueta(xmlFactura, "formaPago")));
             //Detalles
-            String cadenaDetalles = utilitario.getValorEtiqueta(fileContents.toString(), "detalles");
+            String cadenaDetalles = utilitario.getValorEtiqueta(xmlFactura, "detalles");
             String strDetalles[] = cadenaDetalles.split("</detalle>");
             tab_det_documento.limpiar();
             for (String strDetalleActual : strDetalles) {
@@ -1145,7 +1147,7 @@ public class DocumentoCxP extends Dialogo {
             utilitario.crearError("Error al Leer Factura XML", "en el método seleccionarArchivoXML()", ex);
         }
     }
-
+      
     public void abrirArchivoXML() {
         dia_cxp_xml.dibujar();
     }
