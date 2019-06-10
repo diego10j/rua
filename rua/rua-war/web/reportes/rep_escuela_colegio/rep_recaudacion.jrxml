@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recaudacion" pageWidth="204" pageHeight="456" columnWidth="174" leftMargin="22" rightMargin="8" topMargin="20" bottomMargin="20" uuid="e4d349e3-f40e-4b33-9691-4aaf3407901d">
 	<property name="ireport.zoom" value="1.5394743546921206"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="168"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -10,7 +10,7 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["C:/Users/usuario/Documents/GitHub/rua_code/trunk/rua/rua-war/web"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pide_titulo" class="java.lang.String">
@@ -75,6 +75,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="total_revad" class="java.math.BigDecimal"/>
 	<field name="nombre_cndfp" class="java.lang.String"/>
 	<field name="descripcion_repar" class="java.lang.String"/>
+	<variable name="total_det" class="java.lang.Double">
+		<variableExpression><![CDATA[($F{cantidad_revad}.doubleValue() * $F{precio_revad}.doubleValue())]]></variableExpression>
+	</variable>
+	<variable name="sub_total" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{total_det}]]></variableExpression>
+	</variable>
 	<group name="titulo">
 		<groupExpression><![CDATA[$F{ide_titulo_recval}]]></groupExpression>
 		<groupHeader>
@@ -391,7 +397,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="7"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tarifa}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sub_total}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="false">
 					<reportElement uuid="7ca2e2dd-b867-478f-9f87-66885c8b952c" key="textField" x="130" y="22" width="43" height="12"/>
@@ -501,7 +507,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="SansSerif" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total_revad}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{total_det}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
