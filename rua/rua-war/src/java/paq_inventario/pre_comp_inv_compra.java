@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Esta clase permite extraer las facturas para el registro de los inventarios que se encuentran registrados 
+ * solo la factura de compra
  */
 package paq_inventario;
 
@@ -36,7 +36,7 @@ import sistema.aplicacion.Pantalla;
  * @author user
  *
  */
-public class pre_comp_inv extends Pantalla {
+public class pre_comp_inv_compra extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
@@ -75,7 +75,7 @@ public class pre_comp_inv extends Pantalla {
     @EJB
     private final ServiciosAdquisiones ser_persona = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
 
-    public pre_comp_inv() {
+    public pre_comp_inv_compra() {
         //Recuperar el plan de cuentas activo
 
         //bar_botones.quitarBotonsNavegacion();
