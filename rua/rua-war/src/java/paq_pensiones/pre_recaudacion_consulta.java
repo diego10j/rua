@@ -18,6 +18,7 @@ import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     private Tabla tab_tabla1 = new Tabla();
     private AutoCompletar autAlumno = new AutoCompletar();
     private Dialogo dia_emision = new Dialogo();
+    private Dialogo dia_matricula = new Dialogo();
     private Calendario fecha = new Calendario();
     private Combo com_forma_pago = new Combo();
     private AreaTexto area_dialogo = new AreaTexto();
@@ -44,6 +46,18 @@ public class pre_recaudacion_consulta extends Pantalla {
     private final Etiqueta eti_cajero = new Etiqueta();
     private final Etiqueta eti_caja = new Etiqueta();
     private final Etiqueta eti_emision = new Etiqueta();
+    private final Combo com_alumno = new Combo();
+    private final Combo com_representante = new Combo();
+    private final Combo com_periodo_academico = new Combo();
+    private final Combo com_curso = new Combo();
+    private final Combo com_paralelo = new Combo();
+    private final Combo com_especialidad = new Combo();
+    private final Combo com_rubro = new Combo();
+    private Texto txt_cedula = new Texto();
+    private Texto txt_correo = new Texto();
+    private Texto txt_telefono = new Texto();
+    private Texto txt_direccion = new Texto();
+
     String alumno = "";
     String seleccion_alumno = "";
     String valor_pagar = "";
@@ -82,6 +96,12 @@ public class pre_recaudacion_consulta extends Pantalla {
             bot_clean.setTitle("Limpiar");
             bot_clean.setMetodo("limpiar");
             bar_botones.agregarComponente(bot_clean);
+
+            Boton bot_consultar = new Boton();
+            bot_consultar.setValue("Consultar");
+            bot_consultar.setIcon("ui-icon-search");
+            bot_consultar.setMetodo("ConsultarRepresentate");
+            //bar_botones.agregarBoton(bot_consultar);
 
             Boton bot_recaudar = new Boton();
             bot_recaudar.setTitle("Limpiar");
@@ -190,6 +210,81 @@ public class pre_recaudacion_consulta extends Pantalla {
             vipdf_cierre.setId("vipdf_cierre");
             vipdf_cierre.setTitle("REPORTE CIERRE DE RECAUDACIONES");
             agregarComponente(vipdf_cierre);
+
+            //Dialogo
+            dia_matricula.setId("dia_matricula");
+            dia_matricula.setTitle("ACTUALIZA DATOS");
+            dia_matricula.setWidth("50%");
+            dia_matricula.setHeight("60%");
+            dia_matricula.setResizable(false);
+
+            Grid gri_cuerpo = new Grid();
+
+            Grid gri_cabecera = new Grid();
+            gri_cabecera.setColumns(2);
+            gri_cabecera.setWidth("100%");
+            gri_cabecera.setStyle("width:100%;overflow: auto;display: block;");
+            gri_cabecera.getChildren().clear();
+            gri_cabecera.getChildren().add(new Etiqueta("ESTUDIANTE: "));
+            com_alumno.setCombo(ser_pensiones.getSqlComboAlumnos());
+            com_alumno.setDisabled(true);
+            gri_cabecera.getChildren().add(com_alumno);
+            gri_cabecera.getChildren().add(new Etiqueta("AÑO LECTIVO: "));
+            com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true,false"));
+            com_periodo_academico.setDisabled(true);
+            gri_cabecera.getChildren().add(com_periodo_academico);
+            gri_cabecera.getChildren().add(new Etiqueta("CURSO: "));
+            com_curso.setCombo(ser_pensiones.getCursos("true,false"));
+            com_curso.setDisabled(true);
+            gri_cabecera.getChildren().add(com_curso);
+            gri_cabecera.getChildren().add(new Etiqueta("ESPECIALIDAD: "));
+            com_especialidad.setCombo(ser_pensiones.getEspecialidad("true,false"));
+            gri_cabecera.getChildren().add(com_especialidad);
+            gri_cabecera.getChildren().add(new Etiqueta("PARALELO: "));
+            com_paralelo.setCombo(ser_pensiones.getParalelos("true,false"));
+            gri_cabecera.getChildren().add(com_paralelo);
+
+            Grid gri_representante = new Grid();
+            gri_representante.setId("gri_representante");
+            gri_representante.setColumns(3);
+            gri_representante.getChildren().add(new Etiqueta("REPRESENTANTE: "));
+            com_representante.setCombo(ser_pensiones.getSqlComboRepresentantes());
+            gri_representante.getChildren().add(com_representante);
+            gri_representante.getChildren().add(bot_consultar);
+
+            Grid gri_dato = new Grid();
+            gri_dato.setId("gri_dato");
+            gri_dato.setColumns(2);
+            gri_dato.getChildren().add(new Etiqueta("CEDULA: "));
+            txt_cedula.setId("txt_cedula");
+            txt_cedula.setDisabled(true);
+            gri_dato.getChildren().add(txt_cedula);
+            gri_dato.getChildren().add(new Etiqueta("CORREO ELECTRONICO: "));
+            txt_correo.setId("txt_correo");
+            txt_correo.setDisabled(true);
+            gri_dato.getChildren().add(txt_correo);
+            gri_dato.getChildren().add(new Etiqueta("TELEFONO: "));
+            txt_telefono.setId("txt_telefono");
+            txt_telefono.setDisabled(true);
+            gri_dato.getChildren().add(txt_telefono);
+            gri_dato.getChildren().add(new Etiqueta("DIRECCION: "));
+            txt_direccion.setId("txt_direccion");
+            txt_direccion.setStyle("with:100px");
+            txt_direccion.setDisabled(true);
+            gri_dato.getChildren().add(txt_direccion);
+            gri_dato.getChildren().add(new Etiqueta("RUBRO: "));
+            com_rubro.setDisabled(true);
+            com_rubro.setCombo(ser_pensiones.getSqlConceptos());
+            //com_rubro.setCombo("select ide_concepto_recon,des_concepto_recon from rec_concepto");
+            gri_dato.getChildren().add(com_rubro);
+
+            gri_cuerpo.getChildren().add(gri_cabecera);
+            gri_cuerpo.getChildren().add(gri_representante);
+            gri_cuerpo.getChildren().add(gri_dato);
+            dia_matricula.getBot_aceptar().setMetodo("aceptarDialogo");
+            dia_matricula.setDialogo(gri_cuerpo);
+            agregarComponente(dia_matricula);
+
         } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la facturacion. Consulte con el Administrador");
         }
@@ -200,6 +295,26 @@ public class pre_recaudacion_consulta extends Pantalla {
     String caja = "";
     String emision = "";
     String num_caja = "";
+
+    public void ConsultarRepresentate() {
+        TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where ide_geper=" + com_representante.getValue());
+        tab_representante.imprimirSql();
+        if (tab_representante.getTotalFilas() > 0) {
+            utilitario.agregarMensajeInfo("", "Estoy en el metodo");
+            txt_cedula.setValue(tab_representante.getValor("identificac_geper"));
+            txt_correo.setValue(tab_representante.getValor("correo_geper"));
+            txt_direccion.setValue(tab_representante.getValor("direccion_geper"));
+            txt_telefono.setValue(tab_representante.getValor("telefono_geper"));
+            utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono");
+        } else {
+            utilitario.agregarMensajeInfo("ADVERTENCIA,", "EL dato ingresado no esta registrado");
+            txt_cedula.setDisabled(false);
+            txt_correo.setDisabled(false);
+            txt_direccion.setDisabled(false);
+            txt_telefono.setDisabled(false);
+            utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono");
+        }
+    }
 
     private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
@@ -224,7 +339,14 @@ public class pre_recaudacion_consulta extends Pantalla {
     public void seleccionarAlumno(SelectEvent evt) {
         autAlumno.onSelect(evt);
         alumno = autAlumno.getValor();
-        if (autAlumno.getValor() != null) {
+        TablaGenerica tab_matricula = utilitario.consultar("select * from rec_reserva_cupo a left join gen_persona b on a.ide_geper=b.ide_geper  where matriculado_rerec=false and a.ide_geper =" + alumno);
+        if (tab_matricula.getTotalFilas() > 0) {
+            com_alumno.setValue(alumno);
+            com_periodo_academico.setValue(tab_matricula.getValor("ide_repea"));
+            com_curso.setValue(tab_matricula.getValor("ide_recur"));
+            com_rubro.setValue(utilitario.getVariable("p_pen_concepto"));
+            dia_matricula.dibujar();
+        } else if (autAlumno.getValor() != null) {
             TablaGenerica tab_nom_alumno = utilitario.consultar("select ide_geper, nom_geper  from gen_persona where ide_geper = " + alumno + "");
             nombre_alumno = tab_nom_alumno.getValor("nom_geper");
             tab_tabla1.setSql(ser_pensiones.getAlumnosDeudaConsulta(utilitario.getVariable("p_pen_deuda_activa")) + " and a.ide_geper = " + alumno + "");
@@ -277,7 +399,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     public void abrirDialogo() {
         TablaGenerica tab_caja = utilitario.consultar("select ide_ademple,ide_gtemp,ide_usua from adq_empleado where  ide_usua=" + utilitario.getVariable("IDE_USUA") + "");
         String recaudador = tab_caja.getValor("ide_gtemp");
-        
+
         if (recaudador == null) {
             utilitario.agregarNotificacionInfo("Notificación", "No puede recaudar por que no tiene un empleado registrado para recaudar");
         } else if (tab_tabla1.getTotalFilas() > 0) {

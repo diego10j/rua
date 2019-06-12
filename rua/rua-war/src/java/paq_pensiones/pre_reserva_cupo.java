@@ -68,6 +68,12 @@ public class pre_reserva_cupo extends Pantalla {
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("rec_reserva_cupo", "ide_rerec", 1);
         tab_tabla1.setCondicion("ide_rerec=-1");
+        tab_tabla1.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper,codigo_geper from gen_persona");
+        tab_tabla1.getColumna("ide_recur").setCombo(ser_pensiones.getCursos("true,false"));
+        tab_tabla1.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla1.getColumna("ide_geper").setNombreVisual("NOMBRE / CEDULA");
+        tab_tabla1.getColumna("ide_recur").setNombreVisual("CURSO");
+        tab_tabla1.getColumna("ide_repea").setVisible(false);
         tab_tabla1.dibujar();
         tab_tabla1.setRows(20);
 
@@ -83,18 +89,18 @@ public class pre_reserva_cupo extends Pantalla {
         dia_importar.setTitle("IMPORTAR ALUMNOS NUEVOS");
         dia_importar.setWidth("50%");
         dia_importar.setHeight("70%");
-        dia_importar.getBot_aceptar().setRendered(true);
-
+        dia_importar.getBot_aceptar().setRendered(false);
+        dia_importar.getBot_cancelar().setMetodo("limpiarMensaje");
         Grid gri_cuerpo = new Grid();
 
         Grid gri_impo = new Grid();
         gri_impo.setColumns(2);
 
         gri_impo.getChildren().add(new Etiqueta("Codigo ultimo del alumno: "));
+
         txt_texto.setId("txt_texto");
         txt_texto.setSoloNumeros();
         gri_impo.getChildren().add(txt_texto);
-
         gri_impo.getChildren().add(new Etiqueta("Seleccione el archivo: "));
         upl_archivo.setId("upl_archivo");
         upl_archivo.setMetodo("validarArchivo");
@@ -143,20 +149,19 @@ public class pre_reserva_cupo extends Pantalla {
 
         agregarComponente(dia_importar);
 
-        //CONFIRMAR
-        con_confirma.setId("con_confirma");
-        con_confirma.setMessage("Está seguro que desea continuar pese a las Alvertencias ");
-        con_confirma.setTitle("CONFIRMAR");
-        con_confirma.getBot_aceptar().setValue("Si");
-        con_confirma.getBot_cancelar().setValue("No");
-        agregarComponente(con_confirma);
-
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("gen_persona", "ide_geper", 2);
         //tab_tabla2.setTipoFormulario(true);
 
     }
 
+    public void limpiarMensaje(){
+        upl_archivo.limpiar();
+        edi_mensajes.setValue("");
+        dia_importar.cerrar();
+        utilitario.addUpdate("edi_mensajes");
+    }
+    
     public void mostrarAlumnos() {
         if (com_periodo_academico.getValue() == null) {
             tab_tabla1.setCondicion("ide_repea=-1");
@@ -172,6 +177,9 @@ public class pre_reserva_cupo extends Pantalla {
     public void abrirDialogoImportar() {
 
         if (com_periodo_academico.getValue() != null) {
+            TablaGenerica tab_maximo = utilitario.consultar("select 1 as codigo, cast(max(codigo_geper)as integer) + 1 as maximo from gen_persona where ide_vgtcl=1 group by ide_vgtcl");
+            txt_texto.setValue(tab_maximo.getValor("maximo"));
+            utilitario.addUpdate("txt_texto");
             dia_importar.dibujar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar un Periodo ", "");
@@ -187,6 +195,7 @@ public class pre_reserva_cupo extends Pantalla {
 
         //Leer el archivo
         int acumulador = 0;
+        int codigo = 0;
         String str_msg_info = "";
         String str_msg_adve = "";
         String str_msg_erro = "";
@@ -218,7 +227,7 @@ public class pre_reserva_cupo extends Pantalla {
 
                 TablaGenerica tab_cedula = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,ide_vgtcl from gen_persona where identificac_geper='" + str_cedula + "'");
                 TablaGenerica tab_tipo = utilitario.consultar("select ide_vgtcl,nombre_vgtcl from ven_tipo_cliente where ide_vgtcl=" + tab_cedula.getValor("ide_vgtcl"));
-                TablaGenerica tab_curso = utilitario.consultar("select ide_recur,CONCAT (UPPER (descripcion_recur)) as descripcion_recur from rec_curso  where descripcion_recur='" + str_curso.toUpperCase() + "'");
+                TablaGenerica tab_curso = utilitario.consultar("select ide_recur, descripcion_recur from rec_curso  where CONCAT (UPPER (descripcion_recur))='" + str_curso.toUpperCase() + "'");
                 //tab_curso.imprimirSql();
                 if (tab_curso.getTotalFilas() > 0) {
                     if (tab_cedula.getTotalFilas() > 0) {
@@ -257,13 +266,20 @@ public class pre_reserva_cupo extends Pantalla {
                     String str_cur = hoja.getCell(2, j).getContents();
                     str_cur = str_cur.trim();
 
-                    tab_tabla2.insertar();
-                    tab_tabla2.setValor("nom_geper", j + str_nom_ape.toUpperCase());
-                    tab_tabla2.setValor("identificac_geper", str_cedu);
+                    codigo = Integer.parseInt(txt_texto.getValue().toString()) + j;
 
+                    tab_tabla2.insertar();
+                    tab_tabla2.setValor("ide_vgecl", utilitario.getVariable("p_pen_estado_client"));
+                    tab_tabla2.setValor("ide_vgtcl", utilitario.getVariable("p_pen_tipo_client_alumno"));
+                    tab_tabla2.setValor("gen_ide_geper", utilitario.getVariable("p_pen_grupo_alumno"));
+                    tab_tabla2.setValor("nom_geper", str_nom_ape.toUpperCase());
+                    tab_tabla2.setValor("identificac_geper", str_cedu);
+                    tab_tabla2.setValor("codigo_geper", String.valueOf(codigo));
+                    tab_tabla2.setValor("nivel_geper", "HIJO");
                 }
                 tab_tabla2.guardar();
                 guardarPantalla();
+                tab_tabla1.actualizarCombos();
                 for (int k = 0; k < int_fin; k++) {
                     String str_cedu = hoja.getCell(0, k).getContents();
                     str_cedu = str_cedu.trim();
@@ -273,16 +289,17 @@ public class pre_reserva_cupo extends Pantalla {
 
                     String str_cur = hoja.getCell(2, k).getContents();
                     str_cur = str_cur.trim();
-                    TablaGenerica tab_curso = utilitario.consultar("select ide_recur,CONCAT (UPPER (descripcion_recur)) as descripcion_recur from rec_curso  where descripcion_recur='" + str_cur.toUpperCase() + "'");
+                    TablaGenerica tab_curso = utilitario.consultar("select ide_recur, descripcion_recur from rec_curso  where CONCAT (UPPER (descripcion_recur))='" + str_cur.toUpperCase() + "'");
                     TablaGenerica tab_consulta = utilitario.consultar("select ide_geper,nom_geper,identificac_geper from gen_persona where identificac_geper='" + str_cedu + "'");
                     tab_consulta.imprimirSql();
+                    System.out.println("IDE_GEPER " + tab_consulta.getValor("ide_geper"));
                     tab_tabla1.insertar();
                     tab_tabla1.setValor("ide_geper", tab_consulta.getValor("ide_geper"));
                     tab_tabla1.setValor("ide_repea", com_periodo_academico.getValue().toString());
                     tab_tabla1.setValor("ide_recur", tab_curso.getValor("ide_recur"));
                     tab_tabla1.setValor("fecha_registro_rerec", utilitario.getFechaActual());
                     tab_tabla1.setValor("matriculado_rerec", "false");
-                    
+
                 }
                 tab_tabla1.guardar();
                 guardarPantalla();
@@ -383,7 +400,7 @@ public class pre_reserva_cupo extends Pantalla {
 
     public void setDia_importar(Dialogo dia_importar) {
         this.dia_importar = dia_importar;
-    }
+    } 
 
     public Upload getUpl_archivo() {
         return upl_archivo;
