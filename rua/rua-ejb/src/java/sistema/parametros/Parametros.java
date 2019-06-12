@@ -511,6 +511,13 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_36", "Parametro por defecto", "36"));
         lis_parametros.add(new Parametro("15", "p_c", "Parametro por defecto", "C"));
         lis_parametros.add(new Parametro("15", "p_ciudad", "Parametro por defecto", "QUITO"));
+        lis_parametros.add(new Parametro("15", "p_pen_estado_client", "Indica el estado del cliente", "2", "ven_estado_client", "ide_vgecl", "nombre_vgecl"));
+        lis_parametros.add(new Parametro("15", "p_pen_tipo_client_alumno", "Indica el tipo de cliente alumno", "2", "ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl"));
+        lis_parametros.add(new Parametro("15", "p_pen_grupo_alumno", "Indica el grupo de alumnos", "2", "gen_persona", "ide_geper", "nom_geper"));
+        lis_parametros.add(new Parametro("15", "p_pen_tipo_client_representante", "Indica el tipo de cliente representante", "2", "ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl"));
+        lis_parametros.add(new Parametro("15", "p_pen_grupo_representante", "Indica el grupo de representante", "2", "gen_persona", "ide_geper", "nom_geper"));
+        lis_parametros.add(new Parametro("15", "p_pen_concepto", "Indica el concepto matricula", "2", "rec_concepto", "ide_concepto_recon", "des_concepto_recon"));
+        
         //NUMERO SECUENCIAL
         lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
 
