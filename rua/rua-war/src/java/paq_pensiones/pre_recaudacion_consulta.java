@@ -13,6 +13,7 @@ import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
@@ -46,17 +47,20 @@ public class pre_recaudacion_consulta extends Pantalla {
     private final Etiqueta eti_cajero = new Etiqueta();
     private final Etiqueta eti_caja = new Etiqueta();
     private final Etiqueta eti_emision = new Etiqueta();
-    private final Combo com_alumno = new Combo();
-    private final Combo com_representante = new Combo();
     private final Combo com_periodo_academico = new Combo();
     private final Combo com_curso = new Combo();
     private final Combo com_paralelo = new Combo();
     private final Combo com_especialidad = new Combo();
     private final Combo com_rubro = new Combo();
+    private final Combo com_tipo_documento = new Combo();
+    private Texto txt_cedula_alum = new Texto();
+    private Texto txt_nom_alum = new Texto();
+    private Texto txt_nom_repre = new Texto();
     private Texto txt_cedula = new Texto();
     private Texto txt_correo = new Texto();
     private Texto txt_telefono = new Texto();
     private Texto txt_direccion = new Texto();
+    private Texto txt_filtro = new Texto();
 
     String alumno = "";
     String seleccion_alumno = "";
@@ -134,6 +138,8 @@ public class pre_recaudacion_consulta extends Pantalla {
             tab_tabla1.setLectura(true);
             tab_tabla1.setTipoSeleccion(true);
             tab_tabla1.dibujar();
+            
+        
             PanelTabla pat_tabla1 = new PanelTabla();
             pat_tabla1.setId("pat_tabla1");
             pat_tabla1.setPanelTabla(tab_tabla1);
@@ -214,8 +220,8 @@ public class pre_recaudacion_consulta extends Pantalla {
             //Dialogo
             dia_matricula.setId("dia_matricula");
             dia_matricula.setTitle("ACTUALIZA DATOS");
-            dia_matricula.setWidth("50%");
-            dia_matricula.setHeight("60%");
+            dia_matricula.setWidth("40%");
+            dia_matricula.setHeight("70%");
             dia_matricula.setResizable(false);
 
             Grid gri_cuerpo = new Grid();
@@ -225,10 +231,14 @@ public class pre_recaudacion_consulta extends Pantalla {
             gri_cabecera.setWidth("100%");
             gri_cabecera.setStyle("width:100%;overflow: auto;display: block;");
             gri_cabecera.getChildren().clear();
-            gri_cabecera.getChildren().add(new Etiqueta("ESTUDIANTE: "));
-            com_alumno.setCombo(ser_pensiones.getSqlComboAlumnos());
-            com_alumno.setDisabled(true);
-            gri_cabecera.getChildren().add(com_alumno);
+            gri_cabecera.setHeader(new Etiqueta("DATOS DEL ALUMNO"));
+            gri_cabecera.getChildren().add(new Etiqueta("CEDULA: "));
+            txt_cedula_alum.setId("txt_cedula_alum");
+            gri_cabecera.getChildren().add(txt_cedula_alum);
+            gri_cabecera.getChildren().add(new Etiqueta("NOMBRE: "));
+            txt_nom_alum.setId("txt_nom_alum");
+            txt_nom_alum.setSize(50);
+            gri_cabecera.getChildren().add(txt_nom_alum);
             gri_cabecera.getChildren().add(new Etiqueta("AÑO LECTIVO: "));
             com_periodo_academico.setCombo(ser_pensiones.getPeriodoAcademico("true,false"));
             com_periodo_academico.setDisabled(true);
@@ -247,20 +257,27 @@ public class pre_recaudacion_consulta extends Pantalla {
             Grid gri_representante = new Grid();
             gri_representante.setId("gri_representante");
             gri_representante.setColumns(3);
-            gri_representante.getChildren().add(new Etiqueta("REPRESENTANTE: "));
-            com_representante.setCombo(ser_pensiones.getSqlComboRepresentantes());
-            gri_representante.getChildren().add(com_representante);
+            gri_representante.setHeader(new Etiqueta("DATOS DEL REPRESENTANTE"));
+            gri_representante.getChildren().add(new Etiqueta("TIPO DOCUMENTO: "));
+            com_tipo_documento.setCombo("select ide_getid,nombre_getid from gen_tipo_identifi");
+            gri_representante.getChildren().add(com_tipo_documento);
+            Espacio esp = new Espacio();
+            gri_representante.getChildren().add(esp);
+            gri_representante.getChildren().add(new Etiqueta("CEDULA: "));
+            txt_cedula.setId("txt_cedula");
+            gri_representante.getChildren().add(txt_cedula);
             gri_representante.getChildren().add(bot_consultar);
-
             Grid gri_dato = new Grid();
             gri_dato.setId("gri_dato");
             gri_dato.setColumns(2);
-            gri_dato.getChildren().add(new Etiqueta("CEDULA: "));
-            txt_cedula.setId("txt_cedula");
-            txt_cedula.setDisabled(true);
-            gri_dato.getChildren().add(txt_cedula);
+            gri_dato.getChildren().add(new Etiqueta("NOMBRE: "));
+            txt_nom_repre.setId("txt_nom_repre");
+            txt_nom_repre.setSize(50);
+            txt_nom_repre.setDisabled(true);
+            gri_dato.getChildren().add(txt_nom_repre);
             gri_dato.getChildren().add(new Etiqueta("CORREO ELECTRONICO: "));
             txt_correo.setId("txt_correo");
+            txt_correo.setSize(50);
             txt_correo.setDisabled(true);
             gri_dato.getChildren().add(txt_correo);
             gri_dato.getChildren().add(new Etiqueta("TELEFONO: "));
@@ -269,7 +286,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             gri_dato.getChildren().add(txt_telefono);
             gri_dato.getChildren().add(new Etiqueta("DIRECCION: "));
             txt_direccion.setId("txt_direccion");
-            txt_direccion.setStyle("with:100px");
+            txt_direccion.setSize(50);
             txt_direccion.setDisabled(true);
             gri_dato.getChildren().add(txt_direccion);
             gri_dato.getChildren().add(new Etiqueta("RUBRO: "));
@@ -296,26 +313,64 @@ public class pre_recaudacion_consulta extends Pantalla {
     String emision = "";
     String num_caja = "";
 
-    public void ConsultarRepresentate() {
-        TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where ide_geper=" + com_representante.getValue());
-        tab_representante.imprimirSql();
-        if (tab_representante.getTotalFilas() > 0) {
-            utilitario.agregarMensajeInfo("", "Estoy en el metodo");
-            txt_cedula.setValue(tab_representante.getValor("identificac_geper"));
-            txt_correo.setValue(tab_representante.getValor("correo_geper"));
-            txt_direccion.setValue(tab_representante.getValor("direccion_geper"));
-            txt_telefono.setValue(tab_representante.getValor("telefono_geper"));
-            utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono");
-        } else {
-            utilitario.agregarMensajeInfo("ADVERTENCIA,", "EL dato ingresado no esta registrado");
-            txt_cedula.setDisabled(false);
-            txt_correo.setDisabled(false);
-            txt_direccion.setDisabled(false);
-            txt_telefono.setDisabled(false);
-            utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono");
+    public boolean validarTipoDocumento(Texto cedula) {
+        System.out.println("ESTOY EN VALIDAR "+cedula.getValue());
+        if (cedula.getValue() != null && cedula.getValue().equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
+           System.out.println("ESTOY EN VALIDAR "+cedula.getValue());
+            if (utilitario.validarCedula(cedula.getValue().toString())) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
+                return false;
+            }
         }
+        if (cedula.getValue() != null && cedula.getValue().equals(utilitario.getVariable("p_gen_tipo_identificacion_ruc"))) {
+            if (utilitario.validarRUC(cedula.getValue().toString())) {
+            } else {
+                utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de ruc válido");
+                return false;
+            }
+        }
+        return true;
     }
 
+    public void ConsultarRepresentate() {
+
+        if (com_tipo_documento.getValue() != null) {
+            validarTipoDocumento(txt_cedula);
+            if (validarTipoDocumento(txt_cedula)) {
+                TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
+                tab_representante.imprimirSql();
+                if (tab_representante.getTotalFilas() > 0) {
+                    txt_nom_repre.setValue(tab_representante.getValor("nom_geper"));
+                    txt_correo.setValue(tab_representante.getValor("correo_geper"));
+                    txt_direccion.setValue(tab_representante.getValor("direccion_geper"));
+                    txt_telefono.setValue(tab_representante.getValor("telefono_geper"));
+                    utilitario.addUpdate("txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
+                } else {
+                    utilitario.agregarMensajeInfo("ADVERTENCIA,", "La cédula ingresada con el número " + txt_cedula.getValue() + " no esta registrado");
+                    txt_cedula.setDisabled(false);
+                    txt_nom_repre.setDisabled(false);
+                    txt_correo.setDisabled(false);
+                    txt_direccion.setDisabled(false);
+                    txt_telefono.setDisabled(false);
+                    txt_nom_repre.setPlaceHolder("txt_nom_repre");
+                    txt_nom_repre.limpiar();
+                    txt_correo.limpiar();
+                    txt_direccion.limpiar();
+                    txt_telefono.limpiar();
+                    utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
+                }
+            }
+        } else {
+            utilitario.agregarMensajeInfo("ADVERTENCIA", "Seleccione el tipo de documento");
+        }
+
+    }
+    
+    public void aceptarDialogo(){
+    
+    }
+    
     private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
 
@@ -341,10 +396,11 @@ public class pre_recaudacion_consulta extends Pantalla {
         alumno = autAlumno.getValor();
         TablaGenerica tab_matricula = utilitario.consultar("select * from rec_reserva_cupo a left join gen_persona b on a.ide_geper=b.ide_geper  where matriculado_rerec=false and a.ide_geper =" + alumno);
         if (tab_matricula.getTotalFilas() > 0) {
-            com_alumno.setValue(alumno);
             com_periodo_academico.setValue(tab_matricula.getValor("ide_repea"));
             com_curso.setValue(tab_matricula.getValor("ide_recur"));
             com_rubro.setValue(utilitario.getVariable("p_pen_concepto"));
+            txt_cedula_alum.setValue(tab_matricula.getValor("identificac_geper"));
+            txt_nom_alum.setValue(tab_matricula.getValor("nom_geper"));
             dia_matricula.dibujar();
         } else if (autAlumno.getValor() != null) {
             TablaGenerica tab_nom_alumno = utilitario.consultar("select ide_geper, nom_geper  from gen_persona where ide_geper = " + alumno + "");
