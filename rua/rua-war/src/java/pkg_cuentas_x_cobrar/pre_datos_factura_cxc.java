@@ -38,7 +38,7 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla.getColumna("activo_ccdaf").setValorDefecto("true");
         tab_tabla.setCondicionSucursal(true);
         tab_tabla.setCondicion("ide_cntdoc is null ");
-        tab_tabla.getColumna("ide_cntdoc").setVisible(false); 
+        tab_tabla.getColumna("ide_cntdoc").setVisible(false);
         tab_tabla.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();
@@ -48,7 +48,6 @@ public class pre_datos_factura_cxc extends Pantalla {
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("cxc_correo_doc", "ide_cccdo", 2);
         tab_tabla2.getColumna("ide_cntdo").setVisible(false);
-        tab_tabla2.getColumna("ide_cccdo").setVisible(false);
         tab_tabla2.setCondicionSucursal(true);
         tab_tabla2.getColumna("activo_cccdo").setValorDefecto("true");
         tab_tabla2.setValidarInsertar(true);
@@ -59,9 +58,8 @@ public class pre_datos_factura_cxc extends Pantalla {
 
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(pat_panel1, pat_panel, pat_panel2, "40%", "40%", "H");
+        div_division.dividir3(pat_panel1, pat_panel, pat_panel2, "29%", "22%", "H");
         agregarComponente(div_division);
-
     }
 
     public void seleccionarTipoDocumento(SelectEvent evt) {
