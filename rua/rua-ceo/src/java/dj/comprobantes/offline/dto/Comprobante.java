@@ -85,6 +85,8 @@ public final class Comprobante implements Serializable {
     private boolean sinFinesLucro = false;
     private String correoEmpresa;
     private String resolucionSri;
+    //11-06-2019 correos adicionales para enviar como copia 
+    private String correosCopia;
 
     public Comprobante() {
     }
@@ -204,8 +206,10 @@ public final class Comprobante implements Serializable {
                 e.printStackTrace();
             }
 
-            if (this.coddoc.equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
+            String codDocumento = "";
 
+            if (this.coddoc.equals(TipoComprobanteEnum.FACTURA.getCodigo())) {
+                codDocumento = TipoComprobanteEnum.FACTURA.getCodigo();  //FACTURA
                 cliente.setCorreo(resultado.getString("correo_srcom")); //correo de la factura
                 //Datos cliente de la factura 
                 try {
@@ -265,6 +269,7 @@ public final class Comprobante implements Serializable {
                 }
             } else if (this.coddoc.equals(TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo())) {
                 //Busca los detalles del Comprobante
+                codDocumento = TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo();  //NOTA DE CREDITO
                 try {
                     detalle = new ArrayList<>();
                     String sql = "select f.ide_inarti,codigo_inarti, COALESCE(nombre_inuni,'') ||' '|| observacion_cpdno as nombre_inarti,cantidad_cpdno as cantidad_ccdfa\n"
@@ -288,6 +293,7 @@ public final class Comprobante implements Serializable {
                 }
             } else if (this.coddoc.equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 //Busca datos de la guia de remision
+                codDocumento = TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo();  //GUIA DE REMISION
                 try {
                     String sql = "select c.identificac_geper,c.nom_geper,c.direccion_geper,nombre_cctgi,c.telefono_geper,c.correo_geper,\n"
                             + "h.coddoc_srcom,h.estab_srcom,h.ptoemi_srcom,h.secuencial_srcom,h.claveacceso_srcom,h.fechaemision_srcom\n"
@@ -333,6 +339,7 @@ public final class Comprobante implements Serializable {
                 }
             } else if (this.coddoc.equals(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo())) {
                 //Busca los detalles de impuestos del Comprobante
+                codDocumento = TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo();  //COMPROBANTE DE RETENCION
                 try {
                     impuesto = new ArrayList();
                     String sql = "select codigo_fe_cnimp,\n"
@@ -359,6 +366,30 @@ public final class Comprobante implements Serializable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+
+            //11-06-2019
+            //Busca si hay correos adicionales 
+            try {
+                Statement sentensia = con.getConnection().createStatement();
+                String sql = "SELECT correo_cccdo FROM cxc_correo_doc a "
+                        + "inner join con_tipo_document b on a.ide_cntdo=b.ide_cntdo "
+                        + " where alter_tribu_cntdo='" + codDocumento + "' and a.ide_sucu = " + this.oficina;
+                ResultSet res = sentensia.executeQuery(sql);
+                String acumulaCorreo = "";
+                while (res.next()) {
+                    if (acumulaCorreo.isEmpty() == false) {
+                        acumulaCorreo = ";";
+                    }
+                    acumulaCorreo += res.getString("correo_cccdo");
+                }
+                sentensia.close();
+                res.close();
+                if (acumulaCorreo.isEmpty() == false) {
+                    setCorreosCopia(acumulaCorreo);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -805,6 +836,13 @@ public final class Comprobante implements Serializable {
     public void setResolucionSri(String resolucionSri) {
         this.resolucionSri = resolucionSri;
     }
-    
+
+    public String getCorreosCopia() {
+        return correosCopia;
+    }
+
+    public void setCorreosCopia(String correosCopia) {
+        this.correosCopia = correosCopia;
+    }
 
 }

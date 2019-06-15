@@ -67,6 +67,7 @@ public class CPanelServiceImp implements CPanelService {
         params.put("TOTAL", comprobante.getImportetotal());
         params.put("CORREO_DOCUMENTO", comprobante.getCorreo()); //Para guardar el correo que se envio el comprobante
         params.put("CODIGO_EMPR", comprobante.getRucEmpresa()); //ruc empresa 
+        params.put("CORREOS_COPIA", comprobante.getCorreosCopia()); //Correos de copia 
         byte[] bxml = archivoService.getXml(comprobante);
         StringBuilder postData = new StringBuilder();
         postData.append("{");
