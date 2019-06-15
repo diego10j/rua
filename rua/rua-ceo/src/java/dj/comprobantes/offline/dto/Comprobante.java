@@ -379,7 +379,7 @@ public final class Comprobante implements Serializable {
                 String acumulaCorreo = "";
                 while (res.next()) {
                     if (acumulaCorreo.isEmpty() == false) {
-                        acumulaCorreo = ";";
+                        acumulaCorreo += ";";
                     }
                     acumulaCorreo += res.getString("correo_cccdo");
                 }
