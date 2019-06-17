@@ -482,12 +482,34 @@ public class ServiciosAdquisiones {
         }
                 return sql;
     }
+    public String getdetalleRecibeFacturaCompra (String tipo, String factura){
+        String sql = "";
+        sql += "select ide_cpdfa, b.nombre_inarti, c.nombre_accla, cantidad_cpdfa, precio_cpdfa, valor_cpdfa as subtotal\n" +
+               "from cxp_detall_factur a \n" +
+               "left join inv_articulo b on a.ide_inarti = b.ide_inarti and nivel_inarti = 'HIJO'\n" +
+               "left join (select a.ide_accla, a.ide_inarti, nombre_inarti, b.nombre_accla from ACT_CLASE_ARTICULO a\n" +
+               "left join ACT_CLASE_ACTIVO b on a.ide_accla = b.ide_accla\n" +
+               "left join inv_articulo c on a.ide_inarti = c.ide_inarti) c on a.ide_inarti = c.ide_inarti\n" +
+               "where recibido_compra_cpdfa = false";
+        if (tipo.equals("2")){
+        sql += " and a.ide_cpcfa = "+factura+"";
+        }
+                return sql;
+    }
 public String getUnidad() {
         String sql = "";
         sql = "select ide_inuni ,nombre_inuni from inv_unidad order by nombre_inuni";
         return sql;
           }
-    
+public String getFacturas(String numero) {
+        String sql = "";
+        sql ="select ide_cpcfa,numero_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n" +
+"                from cxp_cabece_factur a\n" +
+"                left join gen_persona b on a.ide_geper = b.ide_geper\n" +
+"                where numero_cpcfa like '%"+numero+"%'"
+;
+        return sql;
+          }    
     
 }
 
