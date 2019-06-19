@@ -467,4 +467,15 @@ public class ServicioPensiones extends ServicioBase {
         return sql;
     }
 
+    public String getConceptoRecaudacion(String concepto) {
+        String sql = "";
+        sql = "select ide_forma_impuesto_refim, b.ide_impuesto_reimp, b.des_impuesto_reimp, b.valor_reimp\n"
+                        + "from rec_forma_impuesto a\n"
+                        + "left join rec_impuesto b on a.ide_impuesto_reimp = b.ide_impuesto_reimp\n"
+                        + "where a.ide_concepto_recon = " + concepto + "";
+
+        return sql;
+
+    }
+    
 }
