@@ -17,7 +17,10 @@ import framework.componentes.Espacio;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
+import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import framework.componentes.VisualizarPDF;
@@ -36,10 +39,16 @@ public class pre_recaudacion_consulta extends Pantalla {
     private VisualizarPDF vipdf_recaudacion = new VisualizarPDF();
     private VisualizarPDF vipdf_cierre = new VisualizarPDF();
     private Tabla tab_tabla1 = new Tabla();
+    private Tabla tab_tabla2 = new Tabla();
+    private Tabla tab_alumno_periodo = new Tabla();
+    private Tabla tab_persona = new Tabla();
+    private Tabla tab_rec_valores = new Tabla();
     private AutoCompletar autAlumno = new AutoCompletar();
     private Dialogo dia_emision = new Dialogo();
+    private Dialogo dia_recaudacion = new Dialogo();
     private Dialogo dia_matricula = new Dialogo();
     private Calendario fecha = new Calendario();
+    private Calendario fechaConsulta = new Calendario();
     private Combo com_forma_pago = new Combo();
     private AreaTexto area_dialogo = new AreaTexto();
     private Etiqueta eti_fecha = new Etiqueta();
@@ -53,6 +62,8 @@ public class pre_recaudacion_consulta extends Pantalla {
     private final Combo com_especialidad = new Combo();
     private final Combo com_rubro = new Combo();
     private final Combo com_tipo_documento = new Combo();
+    private final Combo com_tipo_pago = new Combo();
+    private final Combo com_mes = new Combo();
     private Texto txt_cedula_alum = new Texto();
     private Texto txt_nom_alum = new Texto();
     private Texto txt_nom_repre = new Texto();
@@ -61,7 +72,11 @@ public class pre_recaudacion_consulta extends Pantalla {
     private Texto txt_telefono = new Texto();
     private Texto txt_direccion = new Texto();
     private Texto txt_filtro = new Texto();
-
+    private Reporte rep_reporte = new Reporte();
+    private Map parametro = new HashMap();
+    private SeleccionTabla sel_concepto = new SeleccionTabla();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    
     String alumno = "";
     String seleccion_alumno = "";
     String valor_pagar = "";
@@ -87,6 +102,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             bar_botones.quitarBotonInsertar();
             bar_botones.quitarBotonEliminar();
             bar_botones.quitarBotonGuardar();
+            //bar_botones.agregarReporte();
             autAlumno.setId("autAlumno");
             autAlumno.setAutoCompletar(ser_pensiones.getSqlComboAlumnos());
             autAlumno.setSize(75);
@@ -138,8 +154,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             tab_tabla1.setLectura(true);
             tab_tabla1.setTipoSeleccion(true);
             tab_tabla1.dibujar();
-            
-        
+
             PanelTabla pat_tabla1 = new PanelTabla();
             pat_tabla1.setId("pat_tabla1");
             pat_tabla1.setPanelTabla(tab_tabla1);
@@ -221,7 +236,7 @@ public class pre_recaudacion_consulta extends Pantalla {
             dia_matricula.setId("dia_matricula");
             dia_matricula.setTitle("ACTUALIZA DATOS");
             dia_matricula.setWidth("40%");
-            dia_matricula.setHeight("70%");
+            dia_matricula.setHeight("80%");
             dia_matricula.setResizable(false);
 
             Grid gri_cuerpo = new Grid();
@@ -280,27 +295,73 @@ public class pre_recaudacion_consulta extends Pantalla {
             txt_correo.setSize(50);
             txt_correo.setDisabled(true);
             gri_dato.getChildren().add(txt_correo);
-            gri_dato.getChildren().add(new Etiqueta("TELEFONO: "));
-            txt_telefono.setId("txt_telefono");
-            txt_telefono.setDisabled(true);
-            gri_dato.getChildren().add(txt_telefono);
             gri_dato.getChildren().add(new Etiqueta("DIRECCION: "));
             txt_direccion.setId("txt_direccion");
             txt_direccion.setSize(50);
             txt_direccion.setDisabled(true);
             gri_dato.getChildren().add(txt_direccion);
+            gri_dato.getChildren().add(new Etiqueta("TELEFONO: "));
+            txt_telefono.setId("txt_telefono");
+            txt_telefono.setDisabled(true);
+            gri_dato.getChildren().add(txt_telefono);
             gri_dato.getChildren().add(new Etiqueta("RUBRO: "));
             com_rubro.setDisabled(true);
             com_rubro.setCombo(ser_pensiones.getSqlConceptos());
-            //com_rubro.setCombo("select ide_concepto_recon,des_concepto_recon from rec_concepto");
             gri_dato.getChildren().add(com_rubro);
-
+            gri_dato.getChildren().add(new Etiqueta("FORMA DE PAGO: "));
+            com_tipo_pago.setCombo("select ide_cndfp,nombre_cndfp from con_deta_forma_pago");
+            gri_dato.getChildren().add(com_tipo_pago);
+            gri_dato.getChildren().add(new Etiqueta("MES: "));
+            com_mes.setCombo("select ide_gemes, nombre_gemes from gen_mes order by ide_gemes");
+            gri_dato.getChildren().add(com_mes);
             gri_cuerpo.getChildren().add(gri_cabecera);
             gri_cuerpo.getChildren().add(gri_representante);
             gri_cuerpo.getChildren().add(gri_dato);
             dia_matricula.getBot_aceptar().setMetodo("aceptarDialogo");
             dia_matricula.setDialogo(gri_cuerpo);
             agregarComponente(dia_matricula);
+
+            tab_alumno_periodo.setId("tab_alumno_periodo");
+            tab_alumno_periodo.setTabla("rec_alumno_periodo", "ide_recalp", 2);
+
+            tab_persona.setId("tab_persona");
+            tab_persona.setTabla("gen_persona", "ide_geper", 3);
+
+            tab_rec_valores.setId("tab_rec_valores");
+            tab_rec_valores.setTabla("rec_valores", "ide_titulo_recval", 4);
+
+            tab_tabla2.setId("tab_tabla2");
+            tab_tabla2.setTabla("rec_valor_detalle", "ide_valdet_revad", 5);
+
+            sel_concepto.setId("sel_concepto");
+            sel_concepto.setSeleccionTabla("select ide_concepto_recon,des_concepto_recon from rec_concepto", "ide_concepto_recon");
+            sel_concepto.setWidth("40%");
+            sel_concepto.setHeight("40%");
+            sel_concepto.getBot_aceptar().setMetodo("aceptarReporte");
+            agregarComponente(sel_concepto);
+
+            //DIALOGO
+            dia_recaudacion.setId("dia_recaudacion");
+            dia_recaudacion.setTitle("Seleccione la fecha");
+            dia_recaudacion.setWidth("25%");
+            dia_recaudacion.setHeight("25%");
+            dia_recaudacion.getBot_aceptar().setMetodo("aceptarReporte");
+            dia_recaudacion.setResizable(false);
+
+            gru_cuerpo.getChildren().add(new Etiqueta("Fecha"));
+            fechaConsulta.setId("fechaConsulta");
+            fechaConsulta.setTipoBoton(true);
+            gru_cuerpo.getChildren().add(fechaConsulta);
+
+            dia_recaudacion.setDialogo(gru_cuerpo);
+            agregarComponente(dia_recaudacion);
+
+            rep_reporte.setId("rep_reporte");
+            agregarComponente(rep_reporte);
+            bar_botones.agregarReporte();
+
+            sel_rep.setId("sel_rep");
+            agregarComponente(sel_rep);
 
         } else {
             utilitario.agregarNotificacionInfo("Mensaje", "EL usuario ingresado no registra permisos para la facturacion. Consulte con el Administrador");
@@ -314,9 +375,9 @@ public class pre_recaudacion_consulta extends Pantalla {
     String num_caja = "";
 
     public boolean validarTipoDocumento(Texto cedula) {
-        System.out.println("ESTOY EN VALIDAR "+cedula.getValue());
+        System.out.println("ESTOY EN VALIDAR " + cedula.getValue());
         if (cedula.getValue() != null && cedula.getValue().equals(utilitario.getVariable("p_gen_tipo_identificacion_cedula"))) {
-           System.out.println("ESTOY EN VALIDAR "+cedula.getValue());
+            System.out.println("ESTOY EN VALIDAR " + cedula.getValue());
             if (utilitario.validarCedula(cedula.getValue().toString())) {
             } else {
                 utilitario.agregarMensajeError("Error no puede guardar", "Debe ingresar el número de cédula válida");
@@ -332,45 +393,195 @@ public class pre_recaudacion_consulta extends Pantalla {
         }
         return true;
     }
+    int bandera = 0;
+
+    public void estadoTexto(boolean estado) {
+        //txt_cedula.setDisabled(estado);
+        txt_nom_repre.setDisabled(estado);
+        txt_correo.setDisabled(estado);
+        txt_direccion.setDisabled(estado);
+        txt_telefono.setDisabled(estado);
+    }
+
+    public void limpiartxt() {
+        txt_nom_repre.limpiar();
+        txt_correo.limpiar();
+        txt_direccion.limpiar();
+        txt_telefono.limpiar();
+    }
 
     public void ConsultarRepresentate() {
-
         if (com_tipo_documento.getValue() != null) {
-            validarTipoDocumento(txt_cedula);
-            if (validarTipoDocumento(txt_cedula)) {
-                TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
-                tab_representante.imprimirSql();
-                if (tab_representante.getTotalFilas() > 0) {
-                    txt_nom_repre.setValue(tab_representante.getValor("nom_geper"));
-                    txt_correo.setValue(tab_representante.getValor("correo_geper"));
-                    txt_direccion.setValue(tab_representante.getValor("direccion_geper"));
-                    txt_telefono.setValue(tab_representante.getValor("telefono_geper"));
-                    utilitario.addUpdate("txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
-                } else {
-                    utilitario.agregarMensajeInfo("ADVERTENCIA,", "La cédula ingresada con el número " + txt_cedula.getValue() + " no esta registrado");
-                    txt_cedula.setDisabled(false);
-                    txt_nom_repre.setDisabled(false);
-                    txt_correo.setDisabled(false);
-                    txt_direccion.setDisabled(false);
-                    txt_telefono.setDisabled(false);
-                    txt_nom_repre.setPlaceHolder("txt_nom_repre");
-                    txt_nom_repre.limpiar();
-                    txt_correo.limpiar();
-                    txt_direccion.limpiar();
-                    txt_telefono.limpiar();
-                    utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
+            if (txt_cedula.getValue() != null || txt_cedula.getValue().toString().isEmpty()) {
+                //validarTipoDocumento(txt_cedula);
+                if (validarTipoDocumento(txt_cedula)) {
+                    TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
+                    tab_representante.imprimirSql();
+                    if (tab_representante.getTotalFilas() > 0) {
+                        bandera = 0;
+                        txt_nom_repre.setValue(tab_representante.getValor("nom_geper"));
+                        txt_correo.setValue(tab_representante.getValor("correo_geper"));
+                        txt_direccion.setValue(tab_representante.getValor("direccion_geper"));
+                        txt_telefono.setValue(tab_representante.getValor("telefono_geper"));
+                        utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
+                        estadoTexto(true);
+                    } else {
+                        bandera = 1;
+                        utilitario.agregarMensajeInfo("ADVERTENCIA,", "La cédula ingresada con el número cédula " + txt_cedula.getValue() + " no esta registrado en la Base de Datos");
+                        txt_nom_repre.setPlaceHolder("txt_nom_repre");
+                        utilitario.addUpdate("txt_cedula,txt_correo,txt_direccion,txt_telefono,txt_nom_repre");
+                        estadoTexto(false);
+                        limpiartxt();
+                    }
                 }
+            } else {
+                utilitario.agregarMensajeInfo("ADVERTENCIA", "Ingrese el número de Cedula o Ruc del representante");
             }
         } else {
             utilitario.agregarMensajeInfo("ADVERTENCIA", "Seleccione el tipo de documento");
         }
+    }
 
+    public void insertaRecValore(String codigo, String representante) {
+        TablaGenerica tab_caja = utilitario.consultar("select ide_ademple,ide_gtemp,ide_usua from adq_empleado where  ide_usua=" + utilitario.getVariable("IDE_USUA") + "");
+        String recaudador = tab_caja.getValor("ide_gtemp");
+        TablaGenerica tab_secuencial = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_pen_num_sec_recibo_recaudacion")));
+        String secuencia = tab_secuencial.getValor("nuevo_secuencial");
+        TablaGenerica tab_concepto = utilitario.consultar(ser_pensiones.getConceptoRecaudacion(com_rubro.getValue().toString()));
+        tab_rec_valores.insertar();
+        tab_rec_valores.setValor("ide_concepto_recon", com_rubro.getValue().toString());
+        tab_rec_valores.setValor("ide_recest", utilitario.getVariable("p_pen_deuda_recaudada"));
+        tab_rec_valores.setValor("ide_geper", alumno);
+        tab_rec_valores.setValor("gen_ide_geper", representante);
+        tab_rec_valores.setValor("ide_gtemp", recaudador);
+        tab_rec_valores.setValor("gth_ide_gtemp", recaudador);
+        tab_rec_valores.setValor("ide_cocaj", num_caja);
+        tab_rec_valores.setValor("ide_cndfp", com_tipo_pago.getValue().toString());
+        tab_rec_valores.setValor("ide_gemes", com_mes.getValue().toString());
+        tab_rec_valores.setValor("ide_recalp", codigo);
+        tab_rec_valores.setValor("ide_empr", utilitario.getVariable("IDE_EMPR"));
+        tab_rec_valores.setValor("ide_sucu", utilitario.getVariable("IDE_SUCU"));
+        tab_rec_valores.setValor("detalle_recva", tab_concepto.getValor("des_impuesto_reimp"));
+        tab_rec_valores.setValor("fecha_emision_recva", utilitario.getFechaActual());
+        tab_rec_valores.setValor("fecha_vence_recva", utilitario.getFechaActual());
+        tab_rec_valores.setValor("fecha_pago_recva", utilitario.getFechaActual());
+        tab_rec_valores.setValor("valor_imponible_recva", "0");
+        tab_rec_valores.setValor("num_titulo_recva", secuencia);
+        tab_rec_valores.setValor("base_no_objeto_iva_recva", "0");
+        tab_rec_valores.setValor("base_tarifa0_recva", "0");
+        tab_rec_valores.setValor("base_grabada_recva", "0");
+        tab_rec_valores.setValor("valor_iva_recva", "0");
+        tab_rec_valores.setValor("total_recva", "0");
+        tab_rec_valores.setValor("tarifa_iva_recva", "0");
+        tab_rec_valores.setValor("valor_descuento_recva", "0");
+        tab_rec_valores.setValor("porcentaje_decuento_recva", "0");
+        tab_rec_valores.setValor("aplica_total_descuento_recva", "false");
+        tab_rec_valores.guardar();
+        for (int i = 0; i < tab_concepto.getTotalFilas(); i++) {
+            tab_tabla2.insertar();
+            tab_tabla2.setValor("ide_titulo_recval", tab_rec_valores.getValor("ide_titulo_recval"));
+            tab_tabla2.setValor("ide_impuesto_reimp", tab_concepto.getValor(i, "ide_impuesto_reimp"));
+            tab_tabla2.setValor("detalle_revad", tab_concepto.getValor(i, "des_impuesto_reimp"));
+            tab_tabla2.setValor("precio_revad", tab_concepto.getValor(i, "valor_reimp"));
+            tab_tabla2.setValor("cantidad_revad", "1");
+            calcular();
+            tab_tabla2.guardar();
+        }
+        guardarPantalla();
+        TablaGenerica tab_total = utilitario.consultar("select '1' as a,sum(total_revad) as total from rec_valor_detalle  where ide_titulo_recval=" + tab_rec_valores.getValor("ide_titulo_recval") + "");
+        utilitario.getConexion().ejecutarSql("update rec_valores set total_recva=" + tab_total.getValor("total") + " where ide_titulo_recval=" + tab_rec_valores.getValor("ide_titulo_recval") + "");
+        generarPDFrecaudacion(tab_rec_valores.getValor("ide_titulo_recval"));
     }
-    
-    public void aceptarDialogo(){
-    
+
+    public void calcular() {
+        //Variables para almacenar y calcular el total del detalle
+        double dou_cantidad = 0;
+        double dou_precio = 0;
+        double dou_total = 0;
+
+        try {
+            //Obtenemos el valor de la cantidad
+            dou_cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_revad"));
+        } catch (Exception e) {
+        }
+
+        try {
+            //Obtenemos el valor
+            dou_precio = Double.parseDouble(tab_tabla2.getValor("precio_revad"));
+        } catch (Exception e) {
+        }
+        //Calculamos el total
+        dou_total = dou_cantidad * dou_precio;
+        //Asignamos el total a la tabla detalle, con 2 decimales
+        tab_tabla2.setValor("total_revad", utilitario.getFormatoNumero(dou_total, 2));
+        tab_rec_valores.setValor("TOTAL_RECVA", "" + tab_tabla2.getSumaColumna("total_revad"));
+        tab_rec_valores.modificar(tab_rec_valores.getFilaActual());
+        //utilitario.addUpdateTabla(tab_tabla1, "TOTAL_RECVA", "tab_tabla1");
+        //utilitario.addUpdateTabla(tab_tabla2, "total_revad", "tab_tabla2");
+        //utilitario.addUpdate("tab_tabla1");
+        //utilitario.addUpdate("tab_tabla2");
     }
-    
+
+    public void aceptarDialogo() {
+        if (com_tipo_documento.getValue() != null) {
+            TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
+            //ACTUALIZO DATOS DEL ALUMNO
+            utilitario.getConexion().ejecutarSql("update gen_persona set identificac_geper='" + txt_cedula_alum.getValue() + "' ,nom_geper='" + txt_nom_alum.getValue() + "' where ide_geper=" + alumno + " ");
+            if (bandera == 0) {
+                tab_alumno_periodo.insertar();
+                tab_alumno_periodo.setValor("ide_geper", alumno);
+                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
+                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
+                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
+                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
+                tab_alumno_periodo.setValor("gen_ide_geper", tab_representante.getValor("ide_geper"));
+                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
+                tab_alumno_periodo.guardar();
+                guardarPantalla();
+                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
+                //ACTUALIZO TABLA RECERVA CUPO
+                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
+
+            } else if (bandera == 1) {
+                tab_persona.insertar();
+                tab_persona.setValor("ide_getid", com_tipo_documento.getValue().toString());
+                tab_persona.setValor("ide_vgecl", utilitario.getVariable("p_pen_estado_client"));
+                tab_persona.setValor("ide_vgtcl", utilitario.getVariable("p_pen_tipo_client_representante"));
+                tab_persona.setValor("gen_ide_geper", utilitario.getVariable("p_pen_grupo_representante"));
+                tab_persona.setValor("nom_geper", txt_nom_repre.getValue().toString());
+                tab_persona.setValor("identificac_geper", txt_cedula.getValue().toString());
+                tab_persona.setValor("direccion_geper", txt_direccion.getValue().toString());
+                tab_persona.setValor("telefono_geper", txt_telefono.getValue().toString());
+                tab_persona.setValor("correo_geper", txt_correo.getValue().toString());
+                tab_persona.setValor("nivel_geper", "HIJO");
+                tab_persona.guardar();
+                guardarPantalla();
+
+                tab_alumno_periodo.insertar();
+                tab_alumno_periodo.setValor("ide_geper", alumno);
+                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
+                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
+                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
+                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
+                tab_alumno_periodo.setValor("gen_ide_geper", tab_persona.getValor("ide_geper"));
+                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
+                tab_alumno_periodo.setValor("activo_recalp", "true");
+                tab_alumno_periodo.setValor("descuento_recalp", "false");
+                tab_alumno_periodo.setValor("retirado_recalp", "false");
+                tab_alumno_periodo.setValor("aplica_convenio_pago_recalp", "false");
+                tab_alumno_periodo.guardar();
+                guardarPantalla();
+                //ACTUALIZO TABLA RECERVA CUPO
+                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
+                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
+
+            }
+            dia_matricula.cerrar();
+        } else {
+            utilitario.agregarMensajeInfo("ADVERTENCIA,", "");
+        }
+    }
+
     private int tienePerfilSecretaria() {
         List sql = utilitario.getConexion().consultar(ser_adquisiciones.getUsuarioCaja(utilitario.getVariable("IDE_USUA")));
 
@@ -401,6 +612,12 @@ public class pre_recaudacion_consulta extends Pantalla {
             com_rubro.setValue(utilitario.getVariable("p_pen_concepto"));
             txt_cedula_alum.setValue(tab_matricula.getValor("identificac_geper"));
             txt_nom_alum.setValue(tab_matricula.getValor("nom_geper"));
+            com_especialidad.limpiar();
+            com_paralelo.limpiar();
+            com_tipo_documento.limpiar();
+            txt_cedula.limpiar();
+            txt_cedula.setDisabled(false);
+            limpiartxt();
             dia_matricula.dibujar();
         } else if (autAlumno.getValor() != null) {
             TablaGenerica tab_nom_alumno = utilitario.consultar("select ide_geper, nom_geper  from gen_persona where ide_geper = " + alumno + "");
@@ -422,9 +639,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     public void abrirRango() {
-
         sec_rango_fechas.dibujar();
-
     }
 
     public void aceptarRango() {
@@ -544,6 +759,38 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     @Override
+    public void abrirListaReportes() {
+//Se ejecuta cuando da click en el boton de Reportes de la Barra 
+        rep_reporte.dibujar();
+
+    }
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Recaudaciones")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                dia_recaudacion.dibujar();
+            } else if (sel_concepto.isVisible()) {
+                dia_recaudacion.cerrar();
+                sel_concepto.dibujar();
+                //curso = sel_cursos.getSeleccionados();
+                parametro = new HashMap();
+                parametro.put("pide_fecha", fechaConsulta.getValue());
+                parametro.put("pide_concepto", sel_concepto.getSeleccionados() + "");
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_concepto.cerrar();
+                sel_rep.dibujar();
+                utilitario.addUpdate("sel_rep");
+
+            }
+        } else {
+            utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
+        }
+    }
+
+    @Override
     public void insertar() {
         tab_tabla1.insertar();
     }
@@ -557,6 +804,38 @@ public class pre_recaudacion_consulta extends Pantalla {
     @Override
     public void eliminar() {
         tab_tabla1.eliminar();
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public Map getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(Map parametro) {
+        this.parametro = parametro;
+    }
+
+    public SeleccionTabla getSel_concepto() {
+        return sel_concepto;
+    }
+
+    public void setSel_concepto(SeleccionTabla sel_concepto) {
+        this.sel_concepto = sel_concepto;
+    }
+
+    public SeleccionFormatoReporte getSel_rep() {
+        return sel_rep;
+    }
+
+    public void setSel_rep(SeleccionFormatoReporte sel_rep) {
+        this.sel_rep = sel_rep;
     }
 
     public AutoCompletar getAutAlumno() {
@@ -613,6 +892,38 @@ public class pre_recaudacion_consulta extends Pantalla {
 
     public void setDia_emision(Dialogo dia_emision) {
         this.dia_emision = dia_emision;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
+    }
+
+    public Tabla getTab_alumno_periodo() {
+        return tab_alumno_periodo;
+    }
+
+    public void setTab_alumno_periodo(Tabla tab_alumno_periodo) {
+        this.tab_alumno_periodo = tab_alumno_periodo;
+    }
+
+    public Tabla getTab_persona() {
+        return tab_persona;
+    }
+
+    public void setTab_persona(Tabla tab_persona) {
+        this.tab_persona = tab_persona;
+    }
+
+    public Tabla getTab_rec_valores() {
+        return tab_rec_valores;
+    }
+
+    public void setTab_rec_valores(Tabla tab_rec_valores) {
+        this.tab_rec_valores = tab_rec_valores;
     }
 
 }
