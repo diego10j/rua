@@ -164,7 +164,7 @@ public class ServicioInventario {
         TablaGenerica tab_det_comp_inv = new TablaGenerica();
         tab_det_comp_inv.setTabla("inv_det_comp_inve", "ide_indci", 0);
         tab_det_comp_inv.setCondicion("ide_incci=" + ide_incci);
-        tab_det_comp_inv.ejecutarSql();
+        //tab_det_comp_inv.ejecutarSql();
         if (tab_cab_comp_inv.isEmpty()) {
             tab_cab_comp_inv.insertar();
         } else {
