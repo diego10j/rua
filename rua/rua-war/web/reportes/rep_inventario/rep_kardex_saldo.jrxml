@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb44e5d2-0078-40d7-b4da-6dbdcc6f19de">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="34"/>
+	<property name="ireport.x" value="74"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_sucu" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -22,7 +22,17 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[
+		<![CDATA[select a.ide_inarti,a.nom_geani,a.nombre_inarti,a.codigo_inarti,a.existencia_inicial_boart,a.costo_inicial_boart,precio,
+cantidad_indci,precio_indci,valor_indci,cant_egre,prec_egre,valor_egre,(case when cantidad1_indci is null then a.existencia_inicial_boart else cantidad1_indci end) as cantidad1_indci,
+(case when precio_promedio_indci is null then  a.costo_inicial_boart else precio_promedio_indci end) as precio_promedio_indci,
+	fecha_trans_incci,numero_incci,ide_indci
+from (
+select a.ide_inarti,a.nombre_inarti,b.existencia_inicial_boart,b.costo_inicial_boart,c.nom_geani,c.ide_geani,codigo_inarti
+from inv_articulo a,bodt_articulos b,gen_anio c
+where a.ide_inarti=b.ide_inarti
+and b.ide_geani=c.ide_geani
+) a
+left join (
 select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,
 	costo_inicial_boart,0 as precio,cantidad_indci,precio_indci,valor_indci,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad1_indci,precio_promedio_indci,
 	fecha_trans_incci,numero_incci,ide_indci
@@ -34,7 +44,7 @@ select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inart
 	left join inv_articulo f on e.ide_inarti=f.ide_inarti
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)
-		and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
+        and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
 union
 	select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,
 	precio_promedio_indci as precio,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,
@@ -48,16 +58,16 @@ union
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)
 	and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
-order by ide_inarti,fecha_trans_incci,ide_indci]]>
+
+) b on a.ide_geani= b.ide_geani and a.ide_inarti = b.ide_inarti
+where a.ide_geani= $P!{ide_geani}
+and a.ide_inarti in ($P!{ide_inarti})
+order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 	</queryString>
-	<field name="ide_intci" class="java.lang.Long"/>
-	<field name="ide_geani" class="java.lang.Integer">
-		<fieldDescription><![CDATA[ide_geani]]></fieldDescription>
-	</field>
-	<field name="nom_geani" class="java.lang.String"/>
 	<field name="ide_inarti" class="java.lang.Long"/>
-	<field name="codigo_inarti" class="java.lang.String"/>
+	<field name="nom_geani" class="java.lang.String"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
+	<field name="codigo_inarti" class="java.lang.String"/>
 	<field name="existencia_inicial_boart" class="java.math.BigDecimal"/>
 	<field name="costo_inicial_boart" class="java.math.BigDecimal"/>
 	<field name="precio" class="java.math.BigDecimal"/>
@@ -543,7 +553,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci]]>
 	</columnHeader>
 	<detail>
 		<band height="13" splitType="Stretch">
-			<textField pattern="" isBlankWhenNull="false">
+			<textField pattern="" isBlankWhenNull="true">
 				<reportElement uuid="644b0338-9259-4d27-a346-dd3d58fc095e" mode="Transparent" x="50" y="0" width="64" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
@@ -693,7 +703,7 @@ order by ide_inarti,fecha_trans_incci,ide_indci]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{precio_promedio_indci}]]></textFieldExpression>
 			</textField>
-			<textField pattern="yyyy/MM/dd" isBlankWhenNull="false">
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
 				<reportElement uuid="f1acbc09-6012-4e0c-9143-215311fa2441" mode="Transparent" x="0" y="0" width="50" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
