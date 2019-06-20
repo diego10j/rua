@@ -76,7 +76,7 @@ public class pre_recaudacion_consulta extends Pantalla {
     private Map parametro = new HashMap();
     private SeleccionTabla sel_concepto = new SeleccionTabla();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
-    
+
     String alumno = "";
     String seleccion_alumno = "";
     String valor_pagar = "";
@@ -337,24 +337,32 @@ public class pre_recaudacion_consulta extends Pantalla {
             sel_concepto.setSeleccionTabla("select ide_concepto_recon,des_concepto_recon from rec_concepto", "ide_concepto_recon");
             sel_concepto.setWidth("40%");
             sel_concepto.setHeight("40%");
-            sel_concepto.getBot_aceptar().setMetodo("aceptarReporte");
+            sel_concepto.getBot_aceptar().setMetodo("AceptarConcepto");
             agregarComponente(sel_concepto);
 
-            //DIALOGO
             dia_recaudacion.setId("dia_recaudacion");
             dia_recaudacion.setTitle("Seleccione la fecha");
             dia_recaudacion.setWidth("25%");
-            dia_recaudacion.setHeight("25%");
-            dia_recaudacion.getBot_aceptar().setMetodo("aceptarReporte");
-            dia_recaudacion.setResizable(false);
+            dia_recaudacion.setHeight("15%");
+            dia_recaudacion.getBot_aceptar().setMetodo("dialogoRecaudacion");
+            dia_recaudacion.setResizable(true);
 
-            gru_cuerpo.getChildren().add(new Etiqueta("Fecha"));
+            Grid gra_cuerpo = new Grid();
+            gra_cuerpo.setColumns(2);
+            Etiqueta eti_date = new Etiqueta();
+            eti_date.setValue("FECHA: ");
+            eti_date.setStyle("font-size: 13px;border: none;text-shadow: 0px 2px 3px #ccc;background: none;");
+            gra_cuerpo.getChildren().add(eti_date);
             fechaConsulta.setId("fechaConsulta");
             fechaConsulta.setTipoBoton(true);
-            gru_cuerpo.getChildren().add(fechaConsulta);
-
-            dia_recaudacion.setDialogo(gru_cuerpo);
+            gra_cuerpo.getChildren().add(fechaConsulta);
+            dia_recaudacion.setDialogo(gra_cuerpo);
             agregarComponente(dia_recaudacion);
+
+            sec_rango_reporte.setId("sec_rango_reporte");
+            sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+            sec_rango_reporte.setMultiple(false);
+            agregarComponente(sec_rango_reporte);
 
             rep_reporte.setId("rep_reporte");
             agregarComponente(rep_reporte);
@@ -523,62 +531,94 @@ public class pre_recaudacion_consulta extends Pantalla {
     }
 
     public void aceptarDialogo() {
-        if (com_tipo_documento.getValue() != null) {
-            TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
-            //ACTUALIZO DATOS DEL ALUMNO
-            utilitario.getConexion().ejecutarSql("update gen_persona set identificac_geper='" + txt_cedula_alum.getValue() + "' ,nom_geper='" + txt_nom_alum.getValue() + "' where ide_geper=" + alumno + " ");
-            if (bandera == 0) {
-                tab_alumno_periodo.insertar();
-                tab_alumno_periodo.setValor("ide_geper", alumno);
-                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
-                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
-                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
-                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
-                tab_alumno_periodo.setValor("gen_ide_geper", tab_representante.getValor("ide_geper"));
-                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
-                tab_alumno_periodo.guardar();
-                guardarPantalla();
-                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
-                //ACTUALIZO TABLA RECERVA CUPO
-                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
+        if (com_especialidad.getValue() != null) {
+            if (com_paralelo.getValue() != null) {
+                if (com_tipo_documento.getValue() != null) {
+                    if (txt_cedula.getValue() != null) {
+                        if (txt_nom_repre.getValue() != null) {
+                            if (txt_correo.getValue() != null) {
+                                if (txt_direccion.getValue() != null) {
+                                    if (com_tipo_pago.getValue() != null) {
+                                        if (com_mes.getValue() != null) {
+                                            TablaGenerica tab_representante = utilitario.consultar("select ide_geper,identificac_geper,nom_geper,direccion_geper,telefono_geper,correo_geper from gen_persona where identificac_geper='" + txt_cedula.getValue() + "'");
+                                            //ACTUALIZO DATOS DEL ALUMNO
+                                            utilitario.getConexion().ejecutarSql("update gen_persona set identificac_geper='" + txt_cedula_alum.getValue() + "' ,nom_geper='" + txt_nom_alum.getValue() + "' where ide_geper=" + alumno + " ");
+                                            if (bandera == 0) {
+                                                tab_alumno_periodo.insertar();
+                                                tab_alumno_periodo.setValor("ide_geper", alumno);
+                                                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
+                                                tab_alumno_periodo.setValor("gen_ide_geper", tab_representante.getValor("ide_geper"));
+                                                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
+                                                tab_alumno_periodo.guardar();
+                                                guardarPantalla();
+                                                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
+                                                //ACTUALIZO TABLA RECERVA CUPO
+                                                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
 
-            } else if (bandera == 1) {
-                tab_persona.insertar();
-                tab_persona.setValor("ide_getid", com_tipo_documento.getValue().toString());
-                tab_persona.setValor("ide_vgecl", utilitario.getVariable("p_pen_estado_client"));
-                tab_persona.setValor("ide_vgtcl", utilitario.getVariable("p_pen_tipo_client_representante"));
-                tab_persona.setValor("gen_ide_geper", utilitario.getVariable("p_pen_grupo_representante"));
-                tab_persona.setValor("nom_geper", txt_nom_repre.getValue().toString());
-                tab_persona.setValor("identificac_geper", txt_cedula.getValue().toString());
-                tab_persona.setValor("direccion_geper", txt_direccion.getValue().toString());
-                tab_persona.setValor("telefono_geper", txt_telefono.getValue().toString());
-                tab_persona.setValor("correo_geper", txt_correo.getValue().toString());
-                tab_persona.setValor("nivel_geper", "HIJO");
-                tab_persona.guardar();
-                guardarPantalla();
+                                            } else if (bandera == 1) {
+                                                tab_persona.insertar();
+                                                tab_persona.setValor("ide_getid", com_tipo_documento.getValue().toString());
+                                                tab_persona.setValor("ide_vgecl", utilitario.getVariable("p_pen_estado_client"));
+                                                tab_persona.setValor("ide_vgtcl", utilitario.getVariable("p_pen_tipo_client_representante"));
+                                                tab_persona.setValor("gen_ide_geper", utilitario.getVariable("p_pen_grupo_representante"));
+                                                tab_persona.setValor("nom_geper", txt_nom_repre.getValue().toString());
+                                                tab_persona.setValor("identificac_geper", txt_cedula.getValue().toString());
+                                                tab_persona.setValor("direccion_geper", txt_direccion.getValue().toString());
+                                                tab_persona.setValor("telefono_geper", txt_telefono.getValue().toString());
+                                                tab_persona.setValor("correo_geper", txt_correo.getValue().toString());
+                                                tab_persona.setValor("nivel_geper", "HIJO");
+                                                tab_persona.guardar();
+                                                guardarPantalla();
 
-                tab_alumno_periodo.insertar();
-                tab_alumno_periodo.setValor("ide_geper", alumno);
-                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
-                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
-                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
-                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
-                tab_alumno_periodo.setValor("gen_ide_geper", tab_persona.getValor("ide_geper"));
-                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
-                tab_alumno_periodo.setValor("activo_recalp", "true");
-                tab_alumno_periodo.setValor("descuento_recalp", "false");
-                tab_alumno_periodo.setValor("retirado_recalp", "false");
-                tab_alumno_periodo.setValor("aplica_convenio_pago_recalp", "false");
-                tab_alumno_periodo.guardar();
-                guardarPantalla();
-                //ACTUALIZO TABLA RECERVA CUPO
-                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
-                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
+                                                tab_alumno_periodo.insertar();
+                                                tab_alumno_periodo.setValor("ide_geper", alumno);
+                                                tab_alumno_periodo.setValor("ide_repea", com_periodo_academico.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_repar", com_paralelo.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_recur", com_curso.getValue().toString());
+                                                tab_alumno_periodo.setValor("ide_reces", com_especialidad.getValue().toString());
+                                                tab_alumno_periodo.setValor("gen_ide_geper", tab_persona.getValor("ide_geper"));
+                                                tab_alumno_periodo.setValor("correo_recalp", txt_correo.getValue().toString());
+                                                tab_alumno_periodo.setValor("activo_recalp", "true");
+                                                tab_alumno_periodo.setValor("descuento_recalp", "false");
+                                                tab_alumno_periodo.setValor("retirado_recalp", "false");
+                                                tab_alumno_periodo.setValor("aplica_convenio_pago_recalp", "false");
+                                                tab_alumno_periodo.guardar();
+                                                guardarPantalla();
+                                                //ACTUALIZO TABLA RECERVA CUPO
+                                                insertaRecValore(tab_alumno_periodo.getValor("ide_recalp"), tab_representante.getValor("ide_geper"));
+                                                utilitario.getConexion().ejecutarSql("update rec_reserva_cupo set fecha_matricula_rerec= '" + utilitario.getFechaActual() + "',matriculado_rerec=true where ide_geper=" + alumno);
 
+                                            }
+                                            dia_matricula.cerrar();
+                                        } else {
+                                            utilitario.agregarMensajeInfo("ADVERTENCIA,", "Seleccione el mes");
+                                        }
+                                    } else {
+                                        utilitario.agregarMensajeInfo("ADVERTENCIA,", "Seleccione el tipo de pago");
+                                    }
+                                } else {
+                                    utilitario.agregarMensajeInfo("ADVERTENCIA,", "Ingrese la direccion domiciliaria");
+                                }
+                            } else {
+                                utilitario.agregarMensajeInfo("ADVERTENCIA,", "Ingrese el correo eléctronico del representante");
+                            }
+                        } else {
+                            utilitario.agregarMensajeInfo("ADVERTENCIA,", "Ingrese el nombre del representante");
+                        }
+                    } else {
+                        utilitario.agregarMensajeInfo("ADVERTENCIA,", "Ingrese la cedula del representante");
+                    }
+                } else {
+                    utilitario.agregarMensajeInfo("ADVERTENCIA,", "Selecione el tipo de documento");
+                }
+            } else {
+                utilitario.agregarMensajeInfo("ADVERTENCIA,", "Selecione el paralelo");
             }
-            dia_matricula.cerrar();
         } else {
-            utilitario.agregarMensajeInfo("ADVERTENCIA,", "");
+            utilitario.agregarMensajeInfo("ADVERTENCIA,", "Selecione la especialidad");
         }
     }
 
@@ -765,26 +805,13 @@ public class pre_recaudacion_consulta extends Pantalla {
 
     }
 
+
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Recaudaciones")) {
-            if (rep_reporte.isVisible()) {
-                rep_reporte.cerrar();
-                dia_recaudacion.dibujar();
-            } else if (sel_concepto.isVisible()) {
-                dia_recaudacion.cerrar();
-                sel_concepto.dibujar();
-                //curso = sel_cursos.getSeleccionados();
-                parametro = new HashMap();
-                parametro.put("pide_fecha", fechaConsulta.getValue());
-                parametro.put("pide_concepto", sel_concepto.getSeleccionados() + "");
-                parametro.put("nombre", utilitario.getVariable("NICK"));
-                sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
-                sel_concepto.cerrar();
-                sel_rep.dibujar();
-                utilitario.addUpdate("sel_rep");
 
-            }
+            rep_reporte.cerrar();
+            sec_rango_reporte.dibujar();
         } else {
             utilitario.agregarMensajeInfo("No se puede continuar", "No ha seleccionado ningun registro");
         }
