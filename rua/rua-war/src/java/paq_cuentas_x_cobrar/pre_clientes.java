@@ -372,6 +372,18 @@ public class pre_clientes extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         gru.getChildren().add(pat_panel);
 
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setHeader("CORREOS ELECTRÓNICOS ADICIONALES");
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setTabla("gen_correo_persona", "ide_gecop", 14);
+        tab_tabla1.getColumna("ide_geper").setVisible(false);
+        tab_tabla1.setValidarInsertar(true);
+        tab_tabla1.setCondicion("ide_geper=" + aut_clientes.getValor());
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_tabla1);
+        gru.getChildren().add(pat_panel2);
+
         mep_menu.dibujar(1, "fa fa-user", "Datos generales del cliente.", gru, false);
     }
 
@@ -1065,21 +1077,43 @@ public class pre_clientes extends Pantalla {
 
     @Override
     public void insertar() {
+        if (mep_menu.getOpcion() == 1) {
+            if (tab_tabla1.isFocus()) {
+                tab_tabla1.insertar();
+                return;
+            }
+        }
 
         aut_clientes.limpiar();
         //FORMULARIO CLIENTE
         dibujarCliente();
-        tab_tabla.limpiar();
-        tab_tabla.insertar();
+        if (tab_tabla.isFocus()) {
+            tab_tabla.limpiar();
+            tab_tabla.insertar();
+
+        }
 
     }
 
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
+
+            if (tab_tabla1.isFilaInsertada() || tab_tabla1.isFilaModificada()) {
+                if (utilitario.isCorreoValido(tab_tabla1.getValor("correo_gecop")) == false) {
+                    utilitario.agregarMensajeInfo("El correo electrónico ingresado no es válido", "");
+                    return;
+                }
+            }
+
             //FORMULARIO CLIENTE
             if (ser_cliente.validarCliente(tab_tabla)) {
                 tab_tabla.guardar();
+                //Guarda correos adicionales
+                if (tab_tabla1.isFilaInsertada() || tab_tabla1.isFilaModificada()) {
+                    tab_tabla1.setValor("ide_geper", tab_tabla.getValor("ide_geper"));
+                    tab_tabla1.guardar();
+                }
                 if (guardarPantalla().isEmpty()) {
                     //Actualiza el autocompletar
                     aut_clientes.actualizar();
