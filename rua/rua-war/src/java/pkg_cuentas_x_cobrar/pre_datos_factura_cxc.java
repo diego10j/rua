@@ -86,7 +86,7 @@ public class pre_datos_factura_cxc extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tab_tabla2.isFilaInsertada()) {
+        if (tab_tabla2.isFilaInsertada() || tab_tabla2.isFilaModificada()) {
             if (utilitario.isCorreoValido(tab_tabla2.getValor("correo_cccdo")) == false) {
                 utilitario.agregarMensajeInfo("El correo electrónico ingresado no es válido", "");
                 return;
@@ -154,4 +154,28 @@ public class pre_datos_factura_cxc extends Pantalla {
  ;
  ALTER TABLE "public"."cxc_correo_doc"
  ADD CONSTRAINT "fk_correo_doc" FOREIGN KEY ("ide_cntdo") REFERENCES "public"."con_tipo_document" ("ide_cntdo");
+ */
+
+
+/*
+ CREATE TABLE gen_correo_persona (
+ "ide_gecop" int8 NOT NULL,
+ "ide_geper" int4,
+ "correo_gecop" varchar(120),
+ "activo_gecop" bool,
+ "descripcion_gecop" varchar(150),
+ "ide_empr" int2,
+ "ide_sucu" int2,
+ "usuario_ingre" varchar(50) ,
+ "fecha_ingre" date,
+ "hora_ingre" time(6),
+ "usuario_actua" varchar(50) ,
+ "fecha_actua" date,
+ "hora_actua" time(6),
+ PRIMARY KEY ("ide_gecop")
+ )
+ WITH (OIDS=FALSE)
+ ;
+ ALTER TABLE "public"."gen_correo_persona"
+ ADD CONSTRAINT "fk_correo_persona" FOREIGN KEY ("ide_geper") REFERENCES "public"."gen_persona" ("ide_geper");
  */
