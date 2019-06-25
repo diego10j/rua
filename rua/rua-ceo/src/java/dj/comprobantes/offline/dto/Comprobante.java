@@ -87,6 +87,7 @@ public final class Comprobante implements Serializable {
     private String resolucionSri;
     //11-06-2019 correos adicionales para enviar como copia 
     private String correosCopia;
+    private String ide_geper;
 
     public Comprobante() {
     }
@@ -183,13 +184,14 @@ public final class Comprobante implements Serializable {
             this.dirPartida = resultado.getString("direcion_partida_srcom");
 
             direccionFactura = resultado.getString("direcion_partida_srcom");
+            ide_geper = resultado.getString("ide_geper");
 
             //Busca el cliente 
             try {
                 Statement sentensia = con.getConnection().createStatement();
                 String sql = "SELECT ide_geper,identificac_geper,alterno2_getid,nom_geper,direccion_geper,telefono_geper,movil_geper,correo_geper FROM gen_persona a "
                         + "inner join gen_tipo_identifi b on a.ide_getid=b.ide_getid "
-                        + " where ide_geper=" + resultado.getString("ide_geper");
+                        + " where ide_geper=" + ide_geper;
                 ResultSet res = sentensia.executeQuery(sql);
                 if (res.next()) {
                     cliente = new Cliente(res);
@@ -370,13 +372,13 @@ public final class Comprobante implements Serializable {
 
             //11-06-2019
             //Busca si hay correos adicionales 
+            String acumulaCorreo = "";
             try {
                 Statement sentensia = con.getConnection().createStatement();
                 String sql = "SELECT correo_cccdo FROM cxc_correo_doc a "
                         + "inner join con_tipo_document b on a.ide_cntdo=b.ide_cntdo "
                         + " where alter_tribu_cntdo='" + codDocumento + "' and a.ide_sucu = " + this.oficina;
                 ResultSet res = sentensia.executeQuery(sql);
-                String acumulaCorreo = "";
                 while (res.next()) {
                     if (acumulaCorreo.isEmpty() == false) {
                         acumulaCorreo += ";";
@@ -385,11 +387,30 @@ public final class Comprobante implements Serializable {
                 }
                 sentensia.close();
                 res.close();
-                if (acumulaCorreo.isEmpty() == false) {
-                    setCorreosCopia(acumulaCorreo);
-                }
+
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            //25/06/2019
+            //Correos adicinales del cliente
+            try {
+                Statement sentensia = con.getConnection().createStatement();
+                String sql = "SELECT correo_gecop FROM gen_correo_persona a "
+                        + " where a.ide_geper=" + this.ide_geper;
+                ResultSet res = sentensia.executeQuery(sql);
+                while (res.next()) {
+                    if (acumulaCorreo.isEmpty() == false) {
+                        acumulaCorreo += ";";
+                    }
+                    acumulaCorreo += res.getString("correo_gecop");
+                }
+                sentensia.close();
+                res.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (acumulaCorreo.isEmpty() == false) {
+                setCorreosCopia(acumulaCorreo);
             }
         } catch (SQLException e) {
             e.printStackTrace();
