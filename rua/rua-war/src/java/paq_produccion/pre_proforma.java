@@ -108,13 +108,18 @@ public class pre_proforma extends Pantalla {
         tab_detalle_proforma.setId("tab_detalle_proforma");
         tab_detalle_proforma.setTabla("prod_detalle_proforma", "ide_prdep", 2);
         tab_detalle_proforma.getColumna("ide_inuni").setCombo(ser_persona.getUnidad());
+        tab_detalle_proforma.getColumna("ide_inuni").setAncho(-1);
+        tab_detalle_proforma.getColumna("ide_inuni").setLongitud(-1);
         tab_detalle_proforma.getColumna("cantidad_prdep").setMetodoChange("CalcularSuma");
         tab_detalle_proforma.getColumna("valor_unitario_prdep").setMetodoChange("CalcularSuma");
         tab_detalle_proforma.getColumna("valor_total_prdep").setEtiqueta();
         tab_detalle_proforma.getColumna("valor_total_prdep").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");
         tab_detalle_proforma.getColumna("cantidad_prdep").setValorDefecto("0");
         tab_detalle_proforma.getColumna("valor_unitario_prdep").setValorDefecto("0");
-        tab_detalle_proforma.getColumna("ide_inarti").setCombo(ser_persona.getMaterial("", ""));
+        tab_detalle_proforma.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_proforma")));
+        //tab_detalle_proforma.getColumna("ide_inarti").setCombo(ser_persona.getMaterial("", ""));
+        tab_detalle_proforma.getColumna("ide_inarti").setAncho(-1);
+        tab_detalle_proforma.getColumna("ide_inarti").setLongitud(-1);
         tab_detalle_proforma.getColumna("ide_inarti").setAutoCompletar();
         tab_detalle_proforma.getColumna("ide_inarti").setMetodoChange("valorUnitario");
         //Para visualizacion de datos en la pantalla nombres de etiquetas //
@@ -150,9 +155,9 @@ public class pre_proforma extends Pantalla {
     }//Metodo impresion PDF//
 
     public void valorUnitario() {
-        TablaGenerica tab_consulta=utilitario.consultar(ser_inventario.getExtraerAnio(tab_proforma.getValor("fecha_prpro")));
+        TablaGenerica tab_consulta = utilitario.consultar(ser_inventario.getExtraerAnio(tab_proforma.getValor("fecha_prpro")));
         double valor = ser_inventario.getValorUnitario(tab_detalle_proforma.getValor("ide_inarti"), tab_consulta.getValor("anio").toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
-        tab_detalle_proforma.setValor("valor_unitario_prdep", "" + valor); 
+        tab_detalle_proforma.setValor("valor_unitario_prdep", "" + valor);
         utilitario.addUpdate("tab_detalle_proforma");
     }
 

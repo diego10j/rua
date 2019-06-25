@@ -180,10 +180,16 @@ public class pre_orden_solictud extends Pantalla {
         tab_detalle_solicitud.setId("tab_detalle_solicitud");
         tab_detalle_solicitud.setTabla("prod_detalle_solicitud", "ide_prdes", 3);
         tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_solicitud")));
+        tab_detalle_solicitud.getColumna("ide_inarti").setAncho(-1);
+        tab_detalle_solicitud.getColumna("ide_inarti").setLongitud(-1);
         //tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_detalle_solicitud.getColumna("ide_inarti").setAutoCompletar();
         tab_detalle_solicitud.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+        tab_detalle_solicitud.getColumna("ide_prcol").setAncho(-1);
+        tab_detalle_solicitud.getColumna("ide_prcol").setLongitud(-1);
         tab_detalle_solicitud.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+        tab_detalle_solicitud.getColumna("ide_inuni").setAncho(-1);
+        tab_detalle_solicitud.getColumna("ide_inuni").setLongitud(-1);
         tab_detalle_solicitud.getColumna("inyectar_prdes").setValorDefecto("true");
         tab_detalle_solicitud.getColumna("cantidad_prdes").setMetodoChange("calculaRemanente");
         tab_detalle_solicitud.getColumna("ide_inuni").setAncho(10);

@@ -29,6 +29,7 @@ import org.primefaces.event.SelectEvent;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
 import paq_gestion.ejb.ServicioEmpleado;
 import paq_produccion.ejb.ServicioProduccion;
+import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
 
@@ -82,7 +83,11 @@ public class pre_orden_produccion extends Pantalla {
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
-           private VisualizarPDF vipdf_orden_produccion = new VisualizarPDF(); 
+    
+    @EJB
+    private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
+    
+    private VisualizarPDF vipdf_orden_produccion = new VisualizarPDF(); 
     
     public pre_orden_produccion() {
 
@@ -129,9 +134,16 @@ public class pre_orden_produccion extends Pantalla {
         tab_detalle_orden.setId("tab_detalle_orden");
         tab_detalle_orden.setTabla("prod_orden_detalle", "ide_prord", 2);
         tab_detalle_orden.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
-        tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+        tab_detalle_orden.getColumna("ide_inuni").setAncho(-1);
+        tab_detalle_orden.getColumna("ide_inuni").setLongitud(-1);
+        //tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+        tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_orden_produccion")));
+        tab_detalle_orden.getColumna("ide_inarti").setAncho(-1);
+        tab_detalle_orden.getColumna("ide_inarti").setLongitud(-1);
         tab_detalle_orden.getColumna("ide_inarti").setAutoCompletar();
         tab_detalle_orden.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+        tab_detalle_orden.getColumna("ide_prcol").setAncho(-1);
+        tab_detalle_orden.getColumna("ide_prcol").setLongitud(-1);
         tab_detalle_orden.getColumna("BULTO_PAQUETE_PRORD").setValorDefecto("0");
         tab_detalle_orden.getColumna("UNIDADES_PRORD").setValorDefecto("0");
         tab_detalle_orden.getColumna("TOTAL_PRORD").setValorDefecto("0");
@@ -144,6 +156,8 @@ public class pre_orden_produccion extends Pantalla {
         tab_detalle_orden.getColumna("TOTAL_PRORD").setEstilo("font-size:15px;font-weight: bold;color:blue");//Estilo
         tab_detalle_orden.getColumna("total_entregado_prord").setEstilo("font-size:15px;font-weight: bold;color:green");//Estilo
         tab_detalle_orden.getColumna("ide_prmaq").setCombo(ser_produccion.getMaquina());
+        tab_detalle_orden.getColumna("ide_prmaq").setAncho(-1);
+        tab_detalle_orden.getColumna("ide_prmaq").setLongitud(-1);
         // tab_detalle_orden.setTipoFormulario(true);
         //tab_detalle_orden.getGrid().setColumns(4);
         tab_detalle_orden.setHeader("ORDEN  DETALLE");

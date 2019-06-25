@@ -158,7 +158,10 @@ public class pre_comp_inv_reme extends Pantalla {
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_recepcion_mercaderia")));
+        tab_tabla2.getColumna("ide_inarti").setAncho(-1);
+        tab_tabla2.getColumna("ide_inarti").setLongitud(-1);
         //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
@@ -178,7 +181,11 @@ public class pre_comp_inv_reme extends Pantalla {
         tab_tabla2.getColumna("referencia_indci").setVisible(false);
         tab_tabla2.getColumna("referencia1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+        tab_tabla2.getColumna("ide_inuni").setAncho(-1);
+        tab_tabla2.getColumna("ide_inuni").setLongitud(-1);
         tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+        tab_tabla2.getColumna("ide_prcol").setAncho(-1);
+        tab_tabla2.getColumna("ide_prcol").setLongitud(-1);
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);

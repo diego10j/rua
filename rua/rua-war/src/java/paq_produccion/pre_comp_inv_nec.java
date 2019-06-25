@@ -121,7 +121,6 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla1.getColumna("ide_intti").setLectura(true);
         //tab_tabla1.getColumna("ide_inbod").setCombo("inv_bodega", "ide_inbod", "nombre_inbod", "nivel_inbod='HIJO'");
         tab_tabla1.getColumna("IDE_INBOD").setVisible(false);
-        tab_tabla1.getColumna("ide_inepi").setVisible(false);
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
@@ -161,9 +160,14 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
         //tab_tabla2.setCondicion("ide_incci=-1");
         tab_tabla2.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
+        tab_tabla2.getColumna("ide_prcol").setAncho(-1);
+        tab_tabla2.getColumna("ide_prcol").setLongitud(-1);
 
-        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_nota_entrega_cliente")));
         //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
+        tab_tabla2.getColumna("ide_inarti").setAncho(-1);
+        tab_tabla2.getColumna("ide_inarti").setLongitud(-1);
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
@@ -183,6 +187,8 @@ public class pre_comp_inv_nec extends Pantalla {
         tab_tabla2.getColumna("observacion_indci").setVisible(false);
         tab_tabla2.getColumna("secuencial_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
+        tab_tabla2.getColumna("ide_inuni").setAncho(-1);
+        tab_tabla2.getColumna("ide_inuni").setLongitud(-1);
         tab_tabla2.setRows(10);
 ////        tab_tabla2.getColumna("ide_cpcfa").setCombo("cxp_cabece_factur", "ide_cpcfa", "numero_cpcfa", "ide_cpcfa=-1");
 ////        tab_tabla2.getColumna("ide_cpcfa").setLectura(true);
