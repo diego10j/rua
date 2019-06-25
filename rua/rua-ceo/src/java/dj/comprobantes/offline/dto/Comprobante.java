@@ -184,7 +184,7 @@ public final class Comprobante implements Serializable {
             this.dirPartida = resultado.getString("direcion_partida_srcom");
 
             direccionFactura = resultado.getString("direcion_partida_srcom");
-            ide_geper = resultado.getString("ide_geper");
+            this.ide_geper = resultado.getString("ide_geper");
 
             //Busca el cliente 
             try {
