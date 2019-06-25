@@ -489,7 +489,14 @@ public class Parametros {
         lis_parametros.add(new Parametro("14", "p_prod_entregado_requerimiento", "Indica la persona que entrega el requerimiento de materia prima", "5", "gth_empleado", "ide_gtemp", "apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,documento_identidad_gtemp"));
         lis_parametros.add(new Parametro("14", "p_prod_grupo_requerimiento", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
         lis_parametros.add(new Parametro("14", "p_prod_grupo_solicitud", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
-         
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_proforma", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_nota_entrega_cliente", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_nota_devolucion", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_nota_entrega_interna", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_nota_recibido_interno", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_recepcion_mercaderia", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        lis_parametros.add(new Parametro("14", "p_prod_grupo_orden_produccion", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
+        
         //TIPOS DE COMPROBANTES
         lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
