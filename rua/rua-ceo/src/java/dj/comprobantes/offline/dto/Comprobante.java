@@ -256,7 +256,7 @@ public final class Comprobante implements Serializable {
                             + "inner join cxc_deta_factura c on a.ide_cccfa=c.ide_cccfa\n"
                             + "inner join  inv_articulo f on c.ide_inarti =f.ide_inarti\n"
                             + "left join  inv_unidad g on c.ide_inuni =g.ide_inuni\n"
-                            + "where a.ide_srcom=" + this.codigocomprobante;
+                            + "where a.ide_srcom=" + this.codigocomprobante + " ORDER BY ide_ccdfa";
                     Statement sentensia = con.getConnection().createStatement();
                     ResultSet res = sentensia.executeQuery(sql);
                     while (res.next()) {
@@ -326,7 +326,7 @@ public final class Comprobante implements Serializable {
                             + "inner join cxc_deta_factura c on a.ide_cccfa=c.ide_cccfa\n"
                             + "inner join  inv_articulo f on c.ide_inarti =f.ide_inarti\n"
                             + "left join  inv_unidad g on c.ide_inuni =g.ide_inuni\n"
-                            + "where a.ide_srcom=" + this.codigoComprobanteFactura;
+                            + "where a.ide_srcom=" + this.codigoComprobanteFactura + " ORDER BY ide_ccdfa";
                     Statement sentensia = con.getConnection().createStatement();
                     ResultSet res = sentensia.executeQuery(sql);
                     while (res.next()) {
