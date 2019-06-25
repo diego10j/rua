@@ -1184,6 +1184,13 @@ public class pre_clientes extends Pantalla {
     @Override
     public void eliminar() {
 
+        if (mep_menu.getOpcion() == 1) {
+            if (tab_tabla1.isFocus()) {
+                tab_tabla1.eliminar();
+                return;
+            }
+        }
+
         //FORMULARIO CLIENTE
         if (tab_tabla.eliminar()) {
             aut_clientes.actualizar();
