@@ -904,11 +904,16 @@ public class ServicioInventario {
                 + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
         return sql;
     }
-    
-    
+        
     public String getAplicaKardex(String articulo) {
         String sql = "";
         sql += "select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti="+articulo+"";
+        return sql;
+    }
+    
+    public String getConsultaUnidadMedida(String articulo) {
+        String sql = "";
+        sql += "select ide_inarti,ide_inuni,codigo_inarti,nombre_inarti from inv_articulo  where ide_inarti="+articulo+"";
         return sql;
     }
 }
