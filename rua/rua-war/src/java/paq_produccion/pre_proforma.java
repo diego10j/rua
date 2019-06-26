@@ -157,8 +157,10 @@ public class pre_proforma extends Pantalla {
     public void valorUnitario() {
         TablaGenerica tab_consulta = utilitario.consultar(ser_inventario.getExtraerAnio(tab_proforma.getValor("fecha_prpro")));
         double valor = ser_inventario.getValorUnitario(tab_detalle_proforma.getValor("ide_inarti"), tab_consulta.getValor("anio").toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+        TablaGenerica tab_unidad = utilitario.consultar(ser_inventario.getConsultaUnidadMedida(tab_detalle_proforma.getValor("ide_inarti")));
+        tab_detalle_proforma.setValor("ide_inuni", tab_unidad.getValor("ide_inuni"));
         tab_detalle_proforma.setValor("valor_unitario_prdep", "" + valor);
-        utilitario.addUpdate("tab_detalle_proforma");
+        utilitario.addUpdateTabla(tab_detalle_proforma, "ide_inuni,valor_unitario_prdep", "");
     }
 
     public void imprimir() {

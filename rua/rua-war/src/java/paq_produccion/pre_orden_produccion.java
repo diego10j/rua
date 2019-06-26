@@ -136,6 +136,7 @@ public class pre_orden_produccion extends Pantalla {
         tab_detalle_orden.getColumna("ide_inuni").setCombo(ser_produccion.getUnidad());
         tab_detalle_orden.getColumna("ide_inuni").setAncho(-1);
         tab_detalle_orden.getColumna("ide_inuni").setLongitud(-1);
+        tab_detalle_orden.getColumna("ide_inarti").setMetodoChange("cargarUnidadMedida");
         //tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_detalle_orden.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_orden_produccion")));
         tab_detalle_orden.getColumna("ide_inarti").setAncho(-1);
@@ -187,6 +188,12 @@ public class pre_orden_produccion extends Pantalla {
         
       }
      
+    public void cargarUnidadMedida(SelectEvent evt) {
+        tab_detalle_orden.modificar(evt);
+        TablaGenerica tab_unidad = utilitario.consultar(ser_inventario.getConsultaUnidadMedida(tab_detalle_orden.getValor("ide_inarti")));
+        tab_detalle_orden.setValor("ide_inuni", tab_unidad.getValor("ide_inuni"));
+        utilitario.addUpdateTabla(tab_detalle_orden, "ide_inuni", "");
+    }
       public void dibujaProforma(){
           int_opcion=3;
           tab_proforma_orden = new Tabla();

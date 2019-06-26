@@ -69,11 +69,11 @@ public class pre_orden_solictud extends Pantalla {
     double total_inyectar = 0;
     double peso_x_pieza = 0;
     double num_cavidades = 0;
-    
+
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
     @EJB
-    private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class); 
+    private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
     @EJB
     private final ServicioEmpleado ser_cargoempleado = (ServicioEmpleado) utilitario.instanciarEJB(ServicioEmpleado.class);
     @EJB
@@ -182,6 +182,7 @@ public class pre_orden_solictud extends Pantalla {
         tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_inventario.getInventarioGrupo(utilitario.getVariable("p_prod_grupo_solicitud")));
         tab_detalle_solicitud.getColumna("ide_inarti").setAncho(-1);
         tab_detalle_solicitud.getColumna("ide_inarti").setLongitud(-1);
+        tab_detalle_solicitud.getColumna("ide_inarti").setMetodoChange("cargarUnidadMedida");
         //tab_detalle_solicitud.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_detalle_solicitud.getColumna("ide_inarti").setAutoCompletar();
         tab_detalle_solicitud.getColumna("ide_prcol").setCombo(ser_produccion.getColor());
@@ -202,6 +203,13 @@ public class pre_orden_solictud extends Pantalla {
         div_solcitud.setId("div_solcitud");
         div_solcitud.dividir3(pat_orden_produccion, pat_solicitud, pat_detalle_solicitud, "20%", "40%", "H");
         agregarComponente(div_solcitud);
+    }
+
+    public void cargarUnidadMedida(SelectEvent evt) {
+        tab_detalle_solicitud.modificar(evt);
+        TablaGenerica tab_unidad = utilitario.consultar(ser_inventario.getConsultaUnidadMedida(tab_detalle_solicitud.getValor("ide_inarti")));
+        tab_detalle_solicitud.setValor("ide_inuni", tab_unidad.getValor("ide_inuni"));
+        utilitario.addUpdateTabla(tab_detalle_solicitud, "ide_inuni", "");
     }
 
     public void dibujaProforma() {

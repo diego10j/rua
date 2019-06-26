@@ -527,8 +527,10 @@ public class pre_comp_inv_rmp extends Pantalla {
         try {
             List<Double> lisSaldos = ser_producto.getSaldoPromedioProductoBodega(tab_tabla2.getValor("ide_inarti"), utilitario.getFechaActual(), tab_tabla1.getValor("ide_inbod"));
             double dou_precioi = lisSaldos.get(1);
+            TablaGenerica tab_unidad = utilitario.consultar(ser_inventario.getConsultaUnidadMedida(tab_tabla2.getValor("ide_inarti")));
+            tab_tabla2.setValor("ide_inuni", tab_unidad.getValor("ide_inuni"));
             tab_tabla2.setValor("precio_indci", utilitario.getFormatoNumero(dou_precioi));
-            utilitario.addUpdateTabla(tab_tabla2, "precio_indci", "");
+            utilitario.addUpdateTabla(tab_tabla2, "ide_inuni,precio_indci", "");
             double dou_existencia = ser_producto.getCantidadProductoBodega(tab_tabla2.getValor("ide_inarti"), tab_tabla1.getValor("ide_inbod"));
             if (dou_existencia <= 0) {
                 utilitario.agregarMensajeError("No hay existencia de " + tab_tabla2.getValorArreglo("ide_inarti", 1) + " en Bodega", "");
