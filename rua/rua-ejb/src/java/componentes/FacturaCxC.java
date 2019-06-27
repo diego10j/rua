@@ -993,14 +993,24 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
         tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
 
+        //27/06/2019
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setNombreVisual("% DESCUENTO");
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".calculaDescuentoDetalle");
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setOrden(5);
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
+        /*
+         ALTER TABLE "public"."cxc_deta_factura"
+         ADD COLUMN "porc_desc_ccdfa" numeric(12,2);        
+         */
+
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setCombo(ser_producto.getListaTipoIVA());
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setPermitirNullCombo(false);
-        tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(5);
+        tab_deta_factura.getColumna("iva_inarti_ccdfa").setOrden(6);
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setNombreVisual("IVA");
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
         tab_deta_factura.getColumna("iva_inarti_ccdfa").setLongitud(-1);
         tab_deta_factura.getColumna("total_ccdfa").setNombreVisual("TOTAL");
-        tab_deta_factura.getColumna("total_ccdfa").setOrden(6);
+        tab_deta_factura.getColumna("total_ccdfa").setOrden(7);
         tab_deta_factura.getColumna("OBSERVACION_CCDFA").setNombreVisual("NOMBRE IMPRIME");
         tab_deta_factura.getColumna("total_ccdfa").setEtiqueta();
         tab_deta_factura.getColumna("total_ccdfa").setEstilo("font-size:14px;font-weight: bold;");
@@ -1471,6 +1481,34 @@ public class FacturaCxC extends Dialogo {
         calcularTotalDetalleFactura();
     }
 
+    public void calculaDescuentoDetalle(AjaxBehaviorEvent evt) {
+        tab_deta_factura.modificar(evt);
+        calculaDescuentoDetalle();
+    }
+
+    //Calcula el valor de descuento en base a un porcentaje
+    private void calculaDescuentoDetalle() {
+        double precio = 0;
+        double porcentaje_desc = 0;
+        double descuento = 0;
+        try {
+            precio = Double.parseDouble(tab_deta_factura.getValor("precio_ccdfa"));
+        } catch (Exception e) {
+            precio = 0;
+        }
+        try {
+            porcentaje_desc = Double.parseDouble(tab_deta_factura.getValor("porc_desc_ccdfa"));
+        } catch (Exception e) {
+            porcentaje_desc = 0;
+        }
+        //calcula valor del decuento
+        descuento = (precio * (porcentaje_desc / 100));
+
+        tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
+        utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
+        calcularTotalDetalleFactura();
+    }
+
     /**
      * Calcula el valor total de cada detalle de la factura
      */
@@ -1676,13 +1714,12 @@ public class FacturaCxC extends Dialogo {
             if (auxGuardaGuia) {
                 if (tab_deta_factura.guardar()) {
                     //Guarda la cuenta por cobrar
-                     if (com_anticipo.getValue() == null) {
-                         ser_factura.generarTransaccionFactura(tab_cab_factura);
-                     }
-                     else{
-                          ser_factura.generarTransaccionFacturaAnticipo(tab_cab_factura,String.valueOf(com_anticipo.getValue()));
-                     }
-                    
+                    if (com_anticipo.getValue() == null) {
+                        ser_factura.generarTransaccionFactura(tab_cab_factura);
+                    } else {
+                        ser_factura.generarTransaccionFacturaAnticipo(tab_cab_factura, String.valueOf(com_anticipo.getValue()));
+                    }
+
                     //Transaccion de Inventario                
                     if (haceKardex) {
                         ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
