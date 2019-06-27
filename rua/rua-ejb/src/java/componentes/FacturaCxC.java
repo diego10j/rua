@@ -983,12 +983,12 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setRequerida(true);
         tab_deta_factura.getColumna("CANTIDAD_CCDFA").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
         tab_deta_factura.getColumna("PRECIO_CCDFA").setNombreVisual("PRECIO");
-        tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
+        tab_deta_factura.getColumna("PRECIO_CCDFA").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambiaPrecio");
         tab_deta_factura.getColumna("PRECIO_CCDFA").setOrden(3);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setRequerida(true);
         tab_deta_factura.getColumna("PRECIO_CCDFA").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
         tab_deta_factura.getColumna("descuento_ccdfa").setNombreVisual("DESCUENTO");
-        tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".cambioPrecioCantidadIva");
+        tab_deta_factura.getColumna("descuento_ccdfa").setMetodoChangeRuta(tab_deta_factura.getRuta() + ".calculaPorcentajeDescuentoDetalle");
         tab_deta_factura.getColumna("descuento_ccdfa").setOrden(4);
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
         tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
@@ -1507,6 +1507,39 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
         utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
         calcularTotalDetalleFactura();
+    }
+
+    public void calculaPorcentajeDescuentoDetalle(AjaxBehaviorEvent evt) {
+        tab_deta_factura.modificar(evt);
+        calculaPorcentajeDescuentoDetalle();
+    }
+
+    //Calcula el porcentaje de descuento en base al valor del descuento
+    private void calculaPorcentajeDescuentoDetalle() {
+        double precio = 0;
+        double porcentaje_desc = 0;
+        double descuento = 0;
+        try {
+            precio = Double.parseDouble(tab_deta_factura.getValor("precio_ccdfa"));
+        } catch (Exception e) {
+            precio = 0;
+        }
+        try {
+            descuento = Double.parseDouble(tab_deta_factura.getValor("descuento_ccdfa"));
+        } catch (Exception e) {
+            descuento = 0;
+        }
+        //calcula valor del decuento
+        porcentaje_desc = (descuento * 100) / precio;
+
+        tab_deta_factura.setValor("porc_desc_ccdfa", utilitario.getFormatoNumero(porcentaje_desc));
+        utilitario.addUpdateTabla(tab_deta_factura, "porc_desc_ccdfa", "");
+        calcularTotalDetalleFactura();
+    }
+
+    public void cambiaPrecio(AjaxBehaviorEvent evt) {
+        tab_deta_factura.modificar(evt);
+        calculaDescuentoDetalle();
     }
 
     /**
