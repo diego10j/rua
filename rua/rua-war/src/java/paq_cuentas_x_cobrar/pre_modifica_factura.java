@@ -200,6 +200,11 @@ public class pre_modifica_factura extends Pantalla {
         tab_deta_factura.getColumna("descuento_ccdfa").setRequerida(true);
         tab_deta_factura.getColumna("descuento_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
 
+        //27/06/2019
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setNombreVisual("% DESCUENTO");
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setMetodoChange("calculaDescuentoDetalle");
+        tab_deta_factura.getColumna("porc_desc_ccdfa").setValorDefecto(utilitario.getFormatoNumero("0"));
+
         tab_deta_factura.setScrollable(true);
         tab_deta_factura.setScrollHeight(utilitario.getAltoPantalla() - 350);
         tab_deta_factura.dibujar();
@@ -306,7 +311,6 @@ public class pre_modifica_factura extends Pantalla {
             tab_cab_factura.setCondicion("ide_ccdaf=" + com_pto_emision.getValue() + " and secuencial_cccfa='" + mas_num_factua.getValue() + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal"));//no anuladas
             tab_cab_factura.ejecutarSql();
 
-            
             if (tab_cab_factura.isEmpty()) {
                 tab_cab_factura.insertar();
                 tab_cab_factura.getFilaSeleccionada().setLectura(true);
@@ -386,7 +390,7 @@ public class pre_modifica_factura extends Pantalla {
             //SOLO GUARDA LA FACTURA
             tab_cab_factura.modificar(tab_cab_factura.getFilaActual());
             if (tab_cab_factura.guardar()) {
-                if (tab_deta_factura.guardar()) {                    
+                if (tab_deta_factura.guardar()) {
                     tab_inf_adi.guardar();
                     //Guarda la cuenta por cobrar
                     ser_factura.generarModificarTransaccionFactura(tab_cab_factura);
@@ -565,6 +569,34 @@ public class pre_modifica_factura extends Pantalla {
      */
     public void cambioPrecioCantidadIva(AjaxBehaviorEvent evt) {
         tab_deta_factura.modificar(evt);
+        calcularTotalDetalleFactura();
+    }
+
+    public void calculaDescuentoDetalle(AjaxBehaviorEvent evt) {
+        tab_deta_factura.modificar(evt);
+        calculaDescuentoDetalle();
+    }
+
+    //Calcula el valor de descuento en base a un porcentaje
+    private void calculaDescuentoDetalle() {
+        double precio = 0;
+        double porcentaje_desc = 0;
+        double descuento = 0;
+        try {
+            precio = Double.parseDouble(tab_deta_factura.getValor("precio_ccdfa"));
+        } catch (Exception e) {
+            precio = 0;
+        }
+        try {
+            porcentaje_desc = Double.parseDouble(tab_deta_factura.getValor("porc_desc_ccdfa"));
+        } catch (Exception e) {
+            porcentaje_desc = 0;
+        }
+        //calcula valor del decuento
+        descuento = (precio * (porcentaje_desc / 100));
+
+        tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
+        utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
         calcularTotalDetalleFactura();
     }
 
