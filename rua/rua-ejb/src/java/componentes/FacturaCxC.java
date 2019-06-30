@@ -1503,9 +1503,11 @@ public class FacturaCxC extends Dialogo {
         }
         //calcula valor del decuento
         descuento = (precio * (porcentaje_desc / 100));
+        if (porcentaje_desc != 0) {
+            tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
+            utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
+        }
 
-        tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
-        utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
         calcularTotalDetalleFactura();
     }
 
