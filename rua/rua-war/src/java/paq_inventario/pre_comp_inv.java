@@ -80,7 +80,7 @@ public class pre_comp_inv extends Pantalla {
 
         //bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
-        /*
+        
         //Busqueda del num de articulo
         tex_num_transaccion.setId("tex_num_transaccion");
         tex_num_transaccion.setSoloEnteros();
@@ -100,7 +100,7 @@ public class pre_comp_inv extends Pantalla {
         bar_botones.agregarComponente(tex_nomb_transaccion);
 
         bar_botones.agregarBoton(bot_buscar_transacciones);
-        */
+        
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
         tab_tabla1.setCampoOrden("ide_incci desc limit 200");
