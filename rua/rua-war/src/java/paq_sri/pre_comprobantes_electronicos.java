@@ -142,12 +142,16 @@ public class pre_comprobantes_electronicos extends Pantalla {
         if (tab_facturas.getValor("ide_srcom") != null) {
             //Valida que se encuentre en estado PENDIENTE o RECIBIDA
             if ((tab_facturas.getValor("ESTADO")) != null && (tab_facturas.getValor("ESTADO").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) || tab_facturas.getValor("ESTADO").equals(EstadoComprobanteEnum.RECIBIDA.getDescripcion())) {
-                ser_comprobante.enviarComprobante(tab_facturas.getValor("CLAVE_ACCESO"));
+                String mensaje = ser_comprobante.enviarComprobante(tab_facturas.getValor("CLAVE_ACCESO"));
 
-                String aux = tab_facturas.getValorSeleccionado();
-                actualizarConsulta();
-                tab_facturas.setFilaActual(aux);
-                tab_facturas.calcularPaginaActual();
+                if (mensaje.isEmpty()) {
+                    String aux = tab_facturas.getValorSeleccionado();
+                    actualizarConsulta();
+                    tab_facturas.setFilaActual(aux);
+                    tab_facturas.calcularPaginaActual();
+                } else {
+                    utilitario.agregarMensajeError(mensaje, "");
+                }
 
             } else {
                 utilitario.agregarMensajeInfo("El comprobante seleccionada no se encuentra en estado PENDIENTE o RECIBIDO", "");
