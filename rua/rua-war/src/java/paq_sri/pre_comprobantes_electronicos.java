@@ -66,6 +66,14 @@ public class pre_comprobantes_electronicos extends Pantalla {
         bot_rec.setMetodo("cambiaRecibido");
         bar_botones.agregarBoton(bot_rec);
 
+        bar_botones.agregarSeparador();
+
+        Boton bot_enviar = new Boton();
+        bot_enviar.setValue("Enviar al SRI");
+        bot_enviar.setMetodo("enviarSRI");
+        bot_enviar.setIcon("ui-icon-signal-diag");
+        bar_botones.agregarBoton(bot_enviar);
+
         tab_facturas.setId("tab_facturas");
         tab_facturas.setSql(ser_comprobante.getSqlComprobantesElectronicos(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha(), String.valueOf(com_estados.getValue())));
         tab_facturas.getColumna("ide_srcom").setVisible(false);
@@ -109,6 +117,7 @@ public class pre_comprobantes_electronicos extends Pantalla {
                 String aux = tab_facturas.getValorSeleccionado();
                 actualizarConsulta();
                 tab_facturas.setFilaActual(aux);
+                tab_facturas.calcularPaginaActual();
             }
         } else {
             utilitario.agregarMensajeInfo("Seleccione un comprobante", "");
@@ -122,6 +131,26 @@ public class pre_comprobantes_electronicos extends Pantalla {
                 String aux = tab_facturas.getValorSeleccionado();
                 actualizarConsulta();
                 tab_facturas.setFilaActual(aux);
+                tab_facturas.calcularPaginaActual();
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Seleccione un comprobante", "");
+        }
+    }
+
+    public void enviarSRI() {
+        if (tab_facturas.getValor("ide_srcom") != null) {
+            //Valida que se encuentre en estado PENDIENTE o RECIBIDA
+            if ((tab_facturas.getValor("ESTADO")) != null && (tab_facturas.getValor("ESTADO").equals(EstadoComprobanteEnum.PENDIENTE.getDescripcion())) || tab_facturas.getValor("ESTADO").equals(EstadoComprobanteEnum.RECIBIDA.getDescripcion())) {
+                ser_comprobante.enviarComprobante(tab_facturas.getValor("CLAVE_ACCESO"));
+
+                String aux = tab_facturas.getValorSeleccionado();
+                actualizarConsulta();
+                tab_facturas.setFilaActual(aux);
+                tab_facturas.calcularPaginaActual();
+
+            } else {
+                utilitario.agregarMensajeInfo("El comprobante seleccionada no se encuentra en estado PENDIENTE o RECIBIDO", "");
             }
         } else {
             utilitario.agregarMensajeInfo("Seleccione un comprobante", "");
