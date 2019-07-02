@@ -1491,10 +1491,17 @@ public class FacturaCxC extends Dialogo {
         double precio = 0;
         double porcentaje_desc = 0;
         double descuento = 0;
+        double cantidad = 0;
+        double subtotal = 0;
         try {
             precio = Double.parseDouble(tab_deta_factura.getValor("precio_ccdfa"));
         } catch (Exception e) {
             precio = 0;
+        }
+        try {
+            cantidad = Double.parseDouble(tab_deta_factura.getValor("CANTIDAD_CCDFA"));
+        } catch (Exception e) {
+            cantidad = 0;
         }
         try {
             porcentaje_desc = Double.parseDouble(tab_deta_factura.getValor("porc_desc_ccdfa"));
@@ -1502,7 +1509,8 @@ public class FacturaCxC extends Dialogo {
             porcentaje_desc = 0;
         }
         //calcula valor del decuento
-        descuento = (precio * (porcentaje_desc / 100));
+        subtotal=cantidad*precio;
+        descuento = (subtotal * (porcentaje_desc / 100));
         if (porcentaje_desc != 0) {
             tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
             utilitario.addUpdateTabla(tab_deta_factura, "descuento_ccdfa", "");
@@ -1521,10 +1529,17 @@ public class FacturaCxC extends Dialogo {
         double precio = 0;
         double porcentaje_desc = 0;
         double descuento = 0;
+        double cantidad = 0;
+        double subtotal = 0;
         try {
             precio = Double.parseDouble(tab_deta_factura.getValor("precio_ccdfa"));
         } catch (Exception e) {
             precio = 0;
+        }
+        try {
+            cantidad = Double.parseDouble(tab_deta_factura.getValor("CANTIDAD_CCDFA"));
+        } catch (Exception e) {
+            cantidad = 0;
         }
         try {
             descuento = Double.parseDouble(tab_deta_factura.getValor("descuento_ccdfa"));
@@ -1532,7 +1547,8 @@ public class FacturaCxC extends Dialogo {
             descuento = 0;
         }
         //calcula valor del decuento
-        porcentaje_desc = (descuento * 100) / precio;
+        subtotal=cantidad*precio;
+        porcentaje_desc = (descuento * 100) / subtotal;
 
         tab_deta_factura.setValor("porc_desc_ccdfa", utilitario.getFormatoNumero(porcentaje_desc));
         utilitario.addUpdateTabla(tab_deta_factura, "porc_desc_ccdfa", "");

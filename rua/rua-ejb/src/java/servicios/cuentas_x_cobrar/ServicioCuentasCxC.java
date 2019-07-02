@@ -744,6 +744,7 @@ public class ServicioCuentasCxC extends ServicioBase {
                 + "(select count(ide_cccfa) as num_facturas from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") " + condicion_vendedor + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
                 + "(select sum(base_grabada_cccfa) as ventas12 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") " + condicion_vendedor + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
                 + "(select sum(base_tarifa0_cccfa+base_no_objeto_iva_cccfa) as ventas0 from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") " + condicion_vendedor + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
+                + "(select sum(descuento_cccfa) as descuento_cccfa from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") " + condicion_vendedor + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
                 + "(select sum(valor_iva_cccfa) as iva from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") " + condicion_vendedor + " and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + "),"
                 + "(select sum(total_cccfa) as total from cxc_cabece_factura a where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa)in(" + anio + ") " + condicion_vendedor + "  and ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + ") "
                 + "from gen_mes "
@@ -827,7 +828,7 @@ public class ServicioCuentasCxC extends ServicioBase {
         String fechaFin = utilitario.getUltimaFechaMes(fechaInicio);
         return "select a.ide_cccfa,fecha_emisi_cccfa, secuencial_cccfa,"
                 + "nom_geper,identificac_geper,base_grabada_cccfa as ventas12,"
-                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,total_cccfa, "
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,valor_iva_cccfa,descuento_cccfa,total_cccfa, "
                 + "observacion_cccfa "
                 + "from cxc_cabece_factura a "
                 + "inner join gen_persona b on a.ide_geper=b.ide_geper "
