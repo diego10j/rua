@@ -695,6 +695,33 @@ public class ServicioComprobanteElectronico extends ServicioBase {
     public String getSqlComprobantesRecibidas() {
         return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc =1 and coddoc_srcom = '" + TipoComprobanteEnum.FACTURA.getCodigo() + "' order by ide_sresc";
     }
+
+    public String getSqlComprobantesElectronicos(String fechaInicio, String fechaFin, String ide_sresc) {
+        String condicionEstado = "";
+        if (ide_sresc == null) {
+            ide_sresc = "";
+        }
+        ide_sresc = ide_sresc.replace("null", "");
+        if (ide_sresc.isEmpty() == false) {
+            condicionEstado = " and a.ide_sresc = " + ide_sresc;
+        }
+        return "select a.ide_srcom,nombre_cntdo AS DOCUMENTO,fechaemision_srcom AS FECHA_EMISION,nombre_sresc AS ESTADO ,\n"
+                + "estab_srcom || '-' ||  ptoemi_srcom || '-' || secuencial_srcom AS SECUENCIAL,identificacion_srcom AS IDENTIFICACION,\n"
+                + "nom_geper AS CONTRIBUYENTE,claveacceso_srcom AS CLAVE_ACCESO\n"
+                + "from sri_comprobante a\n"
+                + "left join sri_estado_comprobante b on a.ide_sresc = b.ide_sresc\n"
+                + "left join con_tipo_document  d on d.ide_cntdo = a.ide_cntdo\n"
+                + "left join gen_persona e on a.ide_geper = e.ide_geper\n"
+                + "where fechaemision_srcom between '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + "and a.ide_sresc !=0 " + condicionEstado + " " //No anulados
+                + "order by fechaemision_srcom desc";
+    }
+
+    public String getSqlComboEstados() {
+        return "SELECT * FROM sri_estado_comprobante where ide_sresc !=0 order by nombre_sresc";
+    }
+
 }
 
 //ALTER TABLE "public"."sri_comprobante"
