@@ -12,6 +12,8 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import javax.ejb.EJB;
+import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -21,9 +23,12 @@ import sistema.aplicacion.Pantalla;
 public class pre_consulta_notas extends Pantalla {
 
     private Tabla tab_consulta = new Tabla();
+    private Tabla tab_tabla2 = new Tabla();
     private Calendario cal_fecha_inicio = new Calendario();
     private Calendario cal_fecha_final = new Calendario();
      private Combo com_tipo_trans = new Combo();
+    @EJB
+    private final ServicioProducto ser_producto = (ServicioProducto) utilitario.instanciarEJB(ServicioProducto.class);
 
     public pre_consulta_notas() {
          
@@ -83,17 +88,48 @@ public class pre_consulta_notas extends Pantalla {
         tab_consulta.getColumna("gth_ide_gtemp3").setVisible(false);
         tab_consulta.getColumna("maquina_incci").setVisible(false);
         tab_consulta.getColumna("ide_inepi").setVisible(false);
+        tab_consulta.agregarRelacion(tab_tabla2);
         tab_consulta.setLectura(true);
-        tab_consulta.setRows(20);
+       
         tab_consulta.dibujar();
+         tab_consulta.setRows(20);
         PanelTabla pat_consulta = new PanelTabla();
         pat_consulta.setId("pat_consulta");
         pat_consulta.setPanelTabla(tab_consulta);
 
-        Division div_consulta = new Division();
-        div_consulta.setId("div_consulta");
-        div_consulta.dividir1(pat_consulta);
-        agregarComponente(div_consulta);
+        
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
+        tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
+        tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
+        tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
+        tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
+        tab_tabla2.getColumna("cantidad_indci").setMetodoChange("calcularTotalDetalles");
+        tab_tabla2.getColumna("precio_indci").setMetodoChange("calcularTotalDetalles");
+        tab_tabla2.getColumna("cantidad_indci").setRequerida(true);
+        tab_tabla2.getColumna("cantidad_indci").setFormatoNumero(3);
+        tab_tabla2.getColumna("cantidad1_indci").setFormatoNumero(3);
+        tab_tabla2.getColumna("precio_indci").setRequerida(true);
+//        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
+        tab_tabla2.getColumna("valor_indci").setRequerida(true);
+        tab_tabla2.getColumna("valor_indci").setEtiqueta();
+        tab_tabla2.getColumna("valor_indci").setEstilo("font-size:13px;font-weight: bold;");
+        tab_tabla2.getColumna("referencia_indci").setVisible(false);
+        tab_tabla2.getColumna("referencia1_indci").setVisible(false);
+        
+        tab_tabla2.getColumna("precio_promedio_indci").setVisible(false);
+        tab_tabla2.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.setLectura(true);
+        tab_tabla2.dibujar();
+        tab_tabla2.setRows(10);
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_tabla2);
+
+        Division div_division = new Division();
+        div_division.dividir2(pat_consulta, pat_panel2, "50%", "H");
+        agregarComponente(div_division);
+
 
     }
 
@@ -138,6 +174,14 @@ public class pre_consulta_notas extends Pantalla {
 
     public void setTab_consulta(Tabla tab_consulta) {
         this.tab_consulta = tab_consulta;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
     }
 
 }

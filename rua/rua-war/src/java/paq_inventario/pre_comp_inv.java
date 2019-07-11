@@ -142,21 +142,14 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.getColumna("gth_ide_gtemp3").setAutoCompletar();
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
-        tab_tabla1.agregarRelacion(tab_tabla2);
-        tab_tabla1.agregarRelacion(tab_tabla3);
-        tab_tabla1.setRows(0);
+        tab_tabla1.agregarRelacion(tab_tabla2);        
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
 
-        Tabulador tab_tabulador = new Tabulador();
-        tab_tabulador.setId("tab_tabulador");
-
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
-        //tab_tabla2.setCondicion("ide_incci=-1");
         tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaArticulos());
-        //tab_tabla2.getColumna("ide_inarti").setCombo(ser_producto.getSqlListaProductos());
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
