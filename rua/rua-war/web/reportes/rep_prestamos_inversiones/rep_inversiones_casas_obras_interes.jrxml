@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_inversiones_casas_obras" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4b4f086b-9d93-4819-bbf4-60beda910ee1">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_inversiones_casas_obras" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4b4f086b-9d93-4819-bbf4-60beda910ee1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="750"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_usua" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -17,7 +17,31 @@
 		<![CDATA[SELECT ide_ipcer,a.ide_ipcai,c.nom_geper AS GRUPO,beneficiario_ipcai AS CASAS_OBRAS,num_certificado_ipcer AS NUM_CERTIFICADO,fecha_emision_ipcer AS FECHA_EMISION,fecha_vence_ipcer AS FECHA_VENCIMIENTO,
 ide_cnccc,capital_ipcer AS CAPITAL,interes_ipcer AS INTERES,valor_a_pagar_ipcer AS CAPITAL_MAS_INTERES ,
 nombre_ipein AS ESTADO,ide_cnccc_terminacion
-,(select nom_usua from sis_usuario where ide_usua=$P{ide_usua}) as nom_usua
+,(select nom_usua from sis_usuario where ide_usua=$P{ide_usua}) as nom_usua,
+tasa_ipcer,
+( case when fecha_vence_ipcer < to_date(extract(year from now())||'-12-31','yyyy-mm-dd') then fecha_vence_ipcer else
+to_date(extract(year from now())||'-12-31','yyyy-mm-dd') end) as fecha_fin,
+( case when fecha_vence_ipcer < to_date(extract(year from now())||'-12-31','yyyy-mm-dd') then fecha_vence_ipcer else
+to_date(extract(year from now())||'-12-31','yyyy-mm-dd') end) -
+( case when fecha_emision_ipcer < to_date(extract(year from now())||'-01-01','yyyy-mm-dd') then to_date(extract(year from now())||'-01-01','yyyy-mm-dd') else
+fecha_emision_ipcer end) +1 as nro_dias,
+( case when fecha_emision_ipcer < to_date(extract(year from now())||'-01-01','yyyy-mm-dd') then to_date(extract(year from now())||'-01-01','yyyy-mm-dd') else
+fecha_emision_ipcer end)  as fecha_inicio,
+(
+(
+( case when fecha_vence_ipcer < to_date(extract(year from now())||'-12-31','yyyy-mm-dd') then fecha_vence_ipcer else
+to_date(extract(year from now())||'-12-31','yyyy-mm-dd') end) -
+( case when fecha_emision_ipcer < to_date(extract(year from now())||'-01-01','yyyy-mm-dd') then to_date(extract(year from now())||'-01-01','yyyy-mm-dd') else
+fecha_emision_ipcer end) + 1
+) * capital_ipcer * tasa_ipcer)/36000 as nuevo_interes,
+capital_ipcer +
+(
+(
+( case when fecha_vence_ipcer < to_date(extract(year from now())||'-12-31','yyyy-mm-dd') then fecha_vence_ipcer else
+to_date(extract(year from now())||'-12-31','yyyy-mm-dd') end) -
+( case when fecha_emision_ipcer < to_date(extract(year from now())||'-01-01','yyyy-mm-dd') then to_date(extract(year from now())||'-01-01','yyyy-mm-dd') else
+fecha_emision_ipcer end)+ 1
+) * capital_ipcer * tasa_ipcer)/36000 as cap
 FROM iyp_certificado a
 left join iyp_estado_inversion d on a.ide_ipein=d.ide_ipein
 left join iyp_cab_inversion b on a.ide_ipcai=b.ide_ipcai
@@ -41,6 +65,12 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 	<field name="estado" class="java.lang.String"/>
 	<field name="ide_cnccc_terminacion" class="java.lang.Long"/>
 	<field name="nom_usua" class="java.lang.String"/>
+	<field name="tasa_ipcer" class="java.math.BigDecimal"/>
+	<field name="fecha_fin" class="java.sql.Date"/>
+	<field name="nro_dias" class="java.lang.Integer"/>
+	<field name="fecha_inicio" class="java.sql.Date"/>
+	<field name="nuevo_interes" class="java.math.BigDecimal"/>
+	<field name="cap" class="java.math.BigDecimal"/>
 	<variable name="capital_1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
 		<variableExpression><![CDATA[$F{capital}]]></variableExpression>
 	</variable>
@@ -58,6 +88,18 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 	</variable>
 	<variable name="capital_mas_interes_2" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{capital_mas_interes}]]></variableExpression>
+	</variable>
+	<variable name="inte1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{nuevo_interes}]]></variableExpression>
+	</variable>
+	<variable name="inte2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{nuevo_interes}]]></variableExpression>
+	</variable>
+	<variable name="cap1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{cap}]]></variableExpression>
+	</variable>
+	<variable name="cap2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cap}]]></variableExpression>
 	</variable>
 	<group name="GRUPO">
 		<groupExpression><![CDATA[$F{grupo}]]></groupExpression>
@@ -130,6 +172,34 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 					</textElement>
 					<text><![CDATA[TOTAL]]></text>
 				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="fcbb090a-376e-445c-ae82-3a2ac9e99b54" x="741" y="0" width="61" height="12"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{cap1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="3426dfc3-0029-4c4f-8127-50d8fffff1c0" x="683" y="0" width="58" height="12"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{inte1}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -139,7 +209,7 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 	<title>
 		<band height="106" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="ebc5fbea-6e76-447c-8357-0c87ef8b0291" x="275" y="33" width="244" height="24"/>
+				<reportElement uuid="ebc5fbea-6e76-447c-8357-0c87ef8b0291" x="363" y="34" width="244" height="24"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
@@ -163,12 +233,26 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="95fcc82e-8708-4d8a-ac90-6e1aa43e421f" x="275" y="14" width="244" height="20"/>
+				<reportElement uuid="95fcc82e-8708-4d8a-ac90-6e1aa43e421f" x="363" y="15" width="244" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8c44ce1b-a654-4e63-adf5-588b4fbc5e91" positionType="Float" stretchType="RelativeToTallestObject" x="363" y="58" width="244" height="25"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INTERESES GENERADOS"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -274,6 +358,76 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 				</textElement>
 				<text><![CDATA[CAPITAL MAS INTERES]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="f5a7f8da-b6d4-4646-b536-c088e7b98bed" x="555" y="0" width="52" height="29"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[FECHA INIC. CALCULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5a7f8da-b6d4-4646-b536-c088e7b98bed" x="607" y="0" width="52" height="29"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[FECHA FIN. CALCULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e637fae3-1728-48de-8282-1bffe4b4dec2" x="683" y="0" width="58" height="29"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[INTERES GENERADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e4805b5e-0d31-4054-aad2-ac68d16ce940" x="741" y="0" width="61" height="29"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CAPITAL(+) INT. GENERADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5a7f8da-b6d4-4646-b536-c088e7b98bed" x="659" y="0" width="24" height="29"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[NRO. DIAS]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -376,6 +530,76 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{capital_mas_interes}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="57a4e778-d0f0-4735-b843-73db0da1fb93" positionType="Float" stretchType="RelativeToTallestObject" x="555" y="0" width="52" height="12"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="57a4e778-d0f0-4735-b843-73db0da1fb93" positionType="Float" stretchType="RelativeToTallestObject" x="607" y="0" width="52" height="12"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2d772233-ff8b-46a9-ba70-b0d00e074700" positionType="Float" stretchType="RelativeToTallestObject" x="683" y="0" width="58" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nuevo_interes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="cf9738fe-477e-4ab8-bfdd-8a909517475b" positionType="Float" stretchType="RelativeToTallestObject" x="741" y="0" width="61" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="57a4e778-d0f0-4735-b843-73db0da1fb93" positionType="Float" stretchType="RelativeToTallestObject" x="659" y="0" width="24" height="12"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_dias}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
@@ -467,6 +691,34 @@ order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 				</textElement>
 				<text><![CDATA[TOTAL INVERSIONES]]></text>
 			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="476e7779-a996-4f73-acb6-eb28230e3aa0" x="741" y="0" width="61" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{cap2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="11a20d0e-346d-4fce-bf2b-77081cdb6e14" x="683" y="0" width="58" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{inte2}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>
