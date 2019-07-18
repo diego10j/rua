@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb44e5d2-0078-40d7-b4da-6dbdcc6f19de">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="74"/>
+	<property name="ireport.zoom" value="1.3636363636363635"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_sucu" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -21,11 +21,17 @@
 	<parameter name="ide_inarti" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pide_fecha_inicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_inarti,a.nom_geani,a.nombre_inarti,a.codigo_inarti,a.existencia_inicial_boart,a.costo_inicial_boart,precio,
 cantidad_indci,precio_indci,valor_indci,cant_egre,prec_egre,valor_egre,(case when cantidad1_indci is null then a.existencia_inicial_boart else cantidad1_indci end) as cantidad1_indci,
 (case when precio_promedio_indci is null then  a.costo_inicial_boart else precio_promedio_indci end) as precio_promedio_indci,
-	fecha_trans_incci,numero_incci,ide_indci
+	fecha_trans_incci,numero_incci,ide_indci,cast($P{pide_fecha_inicio} as date) as fec_ini
 from (
 select a.ide_inarti,a.nombre_inarti,b.existencia_inicial_boart,b.costo_inicial_boart,c.nom_geani,c.ide_geani,codigo_inarti
 from inv_articulo a,bodt_articulos b,gen_anio c
@@ -44,7 +50,8 @@ select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inart
 	left join inv_articulo f on e.ide_inarti=f.ide_inarti
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)
-        and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
+	and e.ide_geani=$P{ide_geani} and e.ide_inarti in ($P!{ide_inarti}) and fecha_trans_incci between cast($P{pide_fecha_inicio} as date) and cast($P{pide_fecha_fin}as date)
+
 union
 	select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,
 	precio_promedio_indci as precio,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,
@@ -57,10 +64,10 @@ union
 	left join inv_articulo f on e.ide_inarti=f.ide_inarti
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)
-	and e.ide_geani=$P!{ide_geani} and e.ide_inarti in ($P!{ide_inarti})
+	and e.ide_geani=$P{ide_geani} and e.ide_inarti in ($P!{ide_inarti}) and fecha_trans_incci between cast($P{pide_fecha_inicio} as date) and cast($P{pide_fecha_fin}as date)
 
 ) b on a.ide_geani= b.ide_geani and a.ide_inarti = b.ide_inarti
-where a.ide_geani= $P!{ide_geani}
+where a.ide_geani= $P{ide_geani}
 and a.ide_inarti in ($P!{ide_inarti})
 order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 	</queryString>
@@ -316,7 +323,7 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 					</textElement>
 					<text><![CDATA[Artículos:]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="152" y="8" width="256" height="13"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
@@ -419,107 +426,16 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="13" splitType="Stretch">
-				<staticText>
-					<reportElement uuid="8a1de082-833f-4ac8-9174-692a4d3103c1" mode="Transparent" x="0" y="0" width="114" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
-						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single" leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<text><![CDATA[Total ingresos]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="db63c248-1c51-4024-8e6a-596aa19545a3" mode="Transparent" x="163" y="0" width="98" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
-						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single" leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<text><![CDATA[Total egresos]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="c3c52820-ea14-4070-a6a4-54d3ce408c3f" mode="Transparent" x="310" y="0" width="98" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
-						<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-						<paragraph lineSpacing="Single" leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<text><![CDATA[Existencias]]></text>
-				</staticText>
-				<textField pattern="#,##0.0000;-#,##0.0000" isBlankWhenNull="true">
-					<reportElement uuid="ef282530-29e4-4ffd-9a58-3e27d0c04f77" x="114" y="0" width="49" height="13"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{total_ingreso}]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0.0000;-#,##0.0000" isBlankWhenNull="true">
-					<reportElement uuid="2feae9b7-13b0-448a-8076-72e1f10f5495" x="261" y="0" width="49" height="13"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="7" isBold="true" pdfFontName="Times-Roman"/>
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{total_egreso}]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0.0000;-#,##0.0000" isBlankWhenNull="true">
-					<reportElement uuid="927bb385-5d78-4d09-aeee-c574c3612cd2" x="408" y="0" width="49" height="13"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{total_saldo}]]></textFieldExpression>
-				</textField>
-			</band>
+			<band height="13" splitType="Stretch"/>
 		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="47" splitType="Stretch">
+		<band height="55" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="2b6bf6f7-aa14-48e7-a298-4268b7690b64" x="231" y="4" width="324" height="23"/>
+				<reportElement uuid="2b6bf6f7-aa14-48e7-a298-4268b7690b64" x="272" y="-3" width="283" height="23"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="18" isBold="true"/>
 				</textElement>
@@ -527,21 +443,68 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 			</staticText>
 			<subreport>
 				<reportElement uuid="21c59d19-55c8-4723-b4fe-443851352ed3" x="0" y="-6" width="200" height="42"/>
-				<subreportParameter name="ide_sucu">
-					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				<subreportParameter name="nombre">
+					<subreportParameterExpression><![CDATA[$P{nombre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="ide_empr">
 					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pide_fecha_fin">
+					<subreportParameterExpression><![CDATA[$P{pide_fecha_fin}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pide_fecha_inicio">
+					<subreportParameterExpression><![CDATA[$P{pide_fecha_inicio}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_inarti">
+					<subreportParameterExpression><![CDATA[$P{ide_inarti}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement uuid="07ad33af-ffcf-4f93-bdb6-02c0f2a4df5a" x="231" y="27" width="324" height="20"/>
+				<reportElement uuid="07ad33af-ffcf-4f93-bdb6-02c0f2a4df5a" x="272" y="20" width="283" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_geani}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3a3538a8-1eff-4b20-af00-dae483924714" x="272" y="39" width="57" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DESDE  "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3e283af0-deeb-4a20-9eb2-405cd77ff131" x="388" y="39" width="57" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["HASTA  "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="e3bc5fed-9059-4467-8645-3e9f665c1408" x="436" y="39" width="120" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_fecha_fin}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="83402e4c-7e09-4d2d-9179-a510d2c4d850" x="326" y="40" width="62" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pide_fecha_inicio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
