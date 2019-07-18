@@ -14,6 +14,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionArbol;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
@@ -33,6 +34,7 @@ public class pre_articulos extends Pantalla {
     private Arbol arb_arbol = new Arbol();
     private Combo com_anio = new Combo();
     private Combo com_bodegas = new Combo();
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private Reporte rep_reporte = new Reporte();
     private SeleccionTabla sel_tab = new SeleccionTabla();
     private SeleccionArbol sel_arbol = new SeleccionArbol();
@@ -116,6 +118,11 @@ public class pre_articulos extends Pantalla {
         agregarComponente(sel_arbol);
         sel_arbol.getBot_aceptar().setMetodo("aceptarReporte");
 
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.setMultiple(false);
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sec_rango_reporte);
+
     }
 
     public void recalcular() {
@@ -180,16 +187,26 @@ public class pre_articulos extends Pantalla {
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Kardex")) {
+
             if (rep_reporte.isVisible()) {
+
                 parametro = new HashMap();
                 rep_reporte.cerrar();
                 sel_arbol.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_arbol");
             } else if (sel_arbol.isVisible()) {
-                parametro.put("nombre", utilitario.getVariable("NICK"));
-                parametro.put("ide_geani", com_anio.getValue());
                 parametro.put("ide_inarti", sel_arbol.getSeleccionados());
+
                 sel_arbol.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+            } else if (sec_rango_reporte.isVisible()) {
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                parametro.put("ide_geani", Integer.parseInt(com_anio.getValue().toString()));
+                parametro.put("pide_fecha_inicio",  sec_rango_reporte.getFecha1());
+                parametro.put("pide_fecha_fin", sec_rango_reporte.getFecha2());
+                // System.out.println("seleccion..de arbol...ing" + sel_arbol.getSeleccionados());
+                sec_rango_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sef_formato.dibujar();
                 utilitario.addUpdate("sef_formato,sel_arbol");
@@ -253,6 +270,14 @@ public class pre_articulos extends Pantalla {
 
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
     }
 
     public Tabla getTab_tabla() {
