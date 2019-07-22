@@ -72,6 +72,39 @@ public class FacturaServiceImp implements FacturaService {
             } catch (Exception e) {
             }
 
+            //22-07-2019
+            //Corrección visualiza subtotales en RIDE del SRI
+            StringBuilder str_subtotales = new StringBuilder();
+            if (comprobante.getSubtotal().doubleValue() > 0) {
+                str_subtotales.append("				<totalImpuesto> \n")
+                        .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+                        .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(dou_porcentaje_iva)).append("</codigoPorcentaje> \n")
+                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
+                        .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotal())).append("</baseImponible> \n")
+                        .append("					<valor>").append(utilitario.getFormatoNumero(comprobante.getIva())).append("</valor> \n")
+                        .append("				</totalImpuesto> \n");
+            }
+
+            if (comprobante.getSubtotal0().doubleValue() > 0) {
+                str_subtotales.append("				<totalImpuesto> \n")
+                        .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+                        .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo()).append("</codigoPorcentaje> \n")
+                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
+                        .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotal0())).append("</baseImponible> \n")
+                        .append("					<valor>").append(utilitario.getFormatoNumero(0)).append("</valor> \n")
+                        .append("				</totalImpuesto> \n");
+            }
+
+            if (comprobante.getSubtotalNoObjeto().doubleValue() > 0) {
+                str_subtotales.append("				<totalImpuesto> \n")
+                        .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+                        .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo()).append("</codigoPorcentaje> \n")
+                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
+                        .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotalNoObjeto())).append("</baseImponible> \n")
+                        .append("					<valor>").append(utilitario.getFormatoNumero(0)).append("</valor> \n")
+                        .append("				</totalImpuesto> \n");
+            }
+
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                     .append("     <factura id=\"comprobante\" version=\"1.1.0\"> \n")
                     .append("		<infoTributaria> \n")
@@ -102,13 +135,7 @@ public class FacturaServiceImp implements FacturaService {
                     .append("			<totalSinImpuestos>").append(utilitario.getFormatoNumero(totalSinImpuestos)).append("</totalSinImpuestos> \n")
                     .append("			<totalDescuento>").append((utilitario.getFormatoNumero(dou_descuento))).append("</totalDescuento> \n")
                     .append("			<totalConImpuestos> \n")
-                    .append("				<totalImpuesto> \n")
-                    .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                    .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(dou_porcentaje_iva)).append("</codigoPorcentaje> \n")
-                    .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
-                    .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotal())).append("</baseImponible> \n")
-                    .append("					<valor>").append(utilitario.getFormatoNumero(comprobante.getIva())).append("</valor> \n")
-                    .append("				</totalImpuesto> \n")
+                    .append(str_subtotales)
                     .append("			</totalConImpuestos> \n")
                     .append("			<propina>").append(utilitario.getFormatoNumero(0)).append("</propina> \n")
                     .append("			<importeTotal>").append(utilitario.getFormatoNumero(comprobante.getImportetotal())).append("</importeTotal> \n")
