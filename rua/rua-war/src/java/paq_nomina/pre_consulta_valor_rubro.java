@@ -38,7 +38,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 		aut_empleado.setId("aut_empleado");
 		String str_sql_emp=ser_gestion.getSqlEmpleadosAutocompletar();
 		aut_empleado.setAutoCompletar(str_sql_emp);
-		aut_empleado.setMetodoChange("cambiaEmpleado");
+		//aut_empleado.setMetodoChange("cambiaEmpleado");
 
 
 		// boton limpiar
@@ -56,7 +56,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 
 
 		che_todos_emp.setId("che_todos_emp");
-		che_todos_emp.setMetodoChange("aplicarTodosEmpleados");
+		//che_todos_emp.setMetodoChange("aplicarTodosEmpleados");
 		
 		Etiqueta eti_todos_emp=new Etiqueta("Todos");
 		bar_botones.agregarComponente(eti_todos_emp);
@@ -67,7 +67,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 		// autocompletar empleado
 		com_rubros.setId("com_rubros");
 		com_rubros.setCombo("select ide_nrrub,detalle_nrrub from nrh_rubro order by detalle_nrrub");
-		com_rubros.setMetodo("cambiaRubro");
+		//com_rubros.setMetodo("cambiaRubro");
 
 		Etiqueta eti_rubro=new Etiqueta("Rubro:");
 		bar_botones.agregarComponente(eti_rubro);
@@ -82,7 +82,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 		bar_botones.agregarBoton(bot_consultar);
 
 		tab_consulta.setId("tab_consulta");
-		tab_consulta.setSql(ser_nomina.getSqlConsultaValorRubroPeriodo("-1", "-1", utilitario.getFechaActual(), utilitario.getFechaActual()));
+		tab_consulta.setSql(ser_nomina.getSqlConsultaValorRubroPeriodo("-1", "-1", "", ""));
 		tab_consulta.setCampoPrimaria("ide_nrrol");
 		tab_consulta.setColumnaSuma("valor");
 		tab_consulta.setLectura(true);
@@ -94,8 +94,6 @@ public class pre_consulta_valor_rubro extends Pantalla{
 
 		Division div1=new Division();
 		div1.dividir1(pat_tab);
-
-
 		agregarComponente(div1);
 
 		sec_rango.setId("sec_rango");
@@ -106,7 +104,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 	}
 
 	public void aplicarTodosEmpleados(){
-		System.out.println("che "+che_todos_emp.getValue());
+		//System.out.println("che "+che_todos_emp.getValue());
 		
 		if (che_todos_emp.getValue()!=null && !che_todos_emp.getValue().toString().isEmpty()
 				&& che_todos_emp.getValue().toString().equalsIgnoreCase("true")){
@@ -198,7 +196,8 @@ public class pre_consulta_valor_rubro extends Pantalla{
 	String str_fecha2="";
 	
 	public void consultar(){
-		if (che_todos_emp.getValue()==null){
+		if (che_todos_emp.getValue()==null||che_todos_emp.getValue().toString().isEmpty() 
+					|| che_todos_emp.getValue().toString().equalsIgnoreCase("false")){
 			if (aut_empleado.getValor()==null){
 				utilitario.agregarMensajeInfo("No se puede consultar", "Debe seleccionar un empleado");
 				return;
@@ -227,10 +226,6 @@ public class pre_consulta_valor_rubro extends Pantalla{
 				return;
 			}
 
-
-
-			System.out.println("che "+che_todos_emp.getValue());
-
 			str_fecha1=sec_rango.getFecha1String();
 			str_fecha2=sec_rango.getFecha2String();
 			if (che_todos_emp.getValue()==null || che_todos_emp.getValue().toString().isEmpty() 
@@ -239,6 +234,7 @@ public class pre_consulta_valor_rubro extends Pantalla{
 				tab_consulta.setSql(ser_nomina.getSqlConsultaValorRubroPeriodo(ide_geedp, com_rubros.getValue()+"",str_fecha1,str_fecha2 ));	
 			}else{
 				tab_consulta.setSql(ser_nomina.getSqlConsultaValorRubroPeriodo(com_rubros.getValue()+"",str_fecha1,str_fecha2 ));
+                                tab_consulta.imprimirSql();
 			}
 			tab_consulta.ejecutarSql();
 			tab_consulta.sumarColumnas();

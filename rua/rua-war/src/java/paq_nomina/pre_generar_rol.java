@@ -373,7 +373,7 @@ public class pre_generar_rol extends Pantalla{
 				if (IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_pago_decimos"))){
 
 					String fecha_final_gepro=ser_nomina.getPeriodoRol(com_periodo.getValue()+"").getValor("FECHA_FINAL_GEPRO");
-
+                                        
 					String sql=ser_nomina.getSqlEmpleadosTipoNomina(fila.getRowKey(),fecha_final_gepro);
 //					String sql=ser_nomina.getSqlEmpleadosNomina(ser_nomina.getRol(fila.getRowKey(),com_periodo.getValue()+"").getValor("IDE_NRROL"));
 
