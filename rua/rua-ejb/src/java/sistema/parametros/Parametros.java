@@ -471,6 +471,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("0", "p_con_impuesto_iva100", "Iva 100 ATS ", "14", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
         lis_parametros.add(new Parametro("0", "p_con_impuesto_iva10", "Iva 10 ATS ", "28", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
         lis_parametros.add(new Parametro("0", "p_con_impuesto_iva20", "Iva 20 ATS ", "33", "con_cabece_impues", "ide_cncim", "nombre_cncim"));
+        lis_parametros.add(new Parametro("0", "p_con_titulo_repre_bg", "Indica el titulo que se imprime en el pie de pagina ejem: Director, Economo Inspectorial", "Director"));
 
         // PRODUCCION = 14
         //NUMERO SECUENCIALES DE PRODUCCION
