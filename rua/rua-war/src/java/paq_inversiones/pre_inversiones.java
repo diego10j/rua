@@ -147,6 +147,12 @@ public class pre_inversiones extends Pantalla {
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
         }
+        else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic")) {
+            Map parametro = new HashMap();
+            rep_reporte.cerrar();
+            sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_formato.dibujar();
+        }
 
     }
 
