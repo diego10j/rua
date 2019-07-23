@@ -842,7 +842,7 @@ public class ServicioNomina {
 
 		if (ide_gepro.isEmpty()){
 			ide_gepro=getPeriodosRol(fecha_ini, fecha_fin);
-			if (ide_gepro.isEmpty()){
+			if (ide_gepro.isEmpty()||ide_gepro.equals("-")){
 				ide_gepro="-1";
 			}
 		}
@@ -894,13 +894,13 @@ public class ServicioNomina {
 		String ide_gepro="";
 
 		if (fecha_ini==null || fecha_ini.isEmpty()
-				|| fecha_fin==null || fecha_fin.isEmpty()){
+				|| fecha_fin==null || fecha_fin.isEmpty()||fecha_fin==""){
 			ide_gepro="-1";
 		}
 
 		if (ide_gepro.isEmpty()){
 			ide_gepro=getPeriodosRol(fecha_ini, fecha_fin);
-			if (ide_gepro.isEmpty()){
+			if (ide_gepro.isEmpty()||ide_gepro.equals("-")){
 				ide_gepro="-1";
 			}
 		}
@@ -1100,7 +1100,7 @@ public class ServicioNomina {
 			return str_ide_gepro;
 		}
 
-		return null;
+		return "-1";
 	}
 
 	public double getSumatoriaRubro1(String IDE_GEEDP,String IDE_NRRUB,String fecha_ini,String fecha_fin){
@@ -3825,11 +3825,7 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 					TablaGenerica rol_anterior=utilitario.consultar("select * from gen_perido_rol where ide_gepro="+ide_gepro);
 					TablaGenerica valor_base_mes_anterior=utilitario.consultar("select a.ide_nrrol,a.ide_gepro,valor_nrdro from nrh_rol a, nrh_detalle_rol b"
 							+" where a.ide_nrrol=b.ide_nrrol and ide_gepro="+rol_anterior.getValor("gen_ide_gepro")+" and ide_geedp in (select ide_geedp from gen_empleados_departamento_par where ide_gtemp in (select  ide_gtemp from gen_empleados_departamento_par where ide_geedp="+ide_geedp+" )) and ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub="+utilitario.getVariable("p_nrh_rubro_imponible_mes_anterior")+")");
-					
-					//System.out.println("imporatndo perido rol mes anterior");
-					//rol_anterior.imprimirSql();
-					//System.out.println("imporatndo valor mes anterior");
-					//valor_base_mes_anterior.imprimirSql();
+	
 					if(valor_base_mes_anterior.getTotalFilas()>0){
 						base_imponible_mes_anterior=valor_base_mes_anterior.getValor("valor_nrdro");
 						//System.out.println("valor vbase "+base_imponible_mes_anterior);
@@ -4588,15 +4584,6 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 	 * @return TablaGenerica  resultado
 	 */
 	private TablaGenerica getRubrosTipoNominaDecimos(String IDE_NRDTN,String IDE_NRDER_DECIMOS){
-		//		TablaGenerica tab_rubros=utilitario.consultar("SELECT ide_nrder,RUB.ide_nrrub,IDE_NRFOC,IDE_NRDTN,FORMULA_NRDER,FECHA_INICIAL_NRDER, " +
-		//				"FECHA_FINAL_NRDER,FECHA_PAGO_NRDER,ORDEN_NRDER " +
-		//				"FROM NRH_DETALLE_RUBRO DER " +
-		//				"INNER JOIN NRH_RUBRO RUB ON RUB.IDE_NRRUB=DER.IDE_NRRUB " +
-		//				"WHERE DER.IDE_NRDTN="+IDE_NRDTN+" " +
-		//				"AND DER.ACTIVO_NRDER=TRUE " +
-		//				"AND DER.IDE_NRDER IN ("+IDE_NRDER_DECIMOS+") "+
-		//"AND DER.IDE_NRRUB IN (select IDE_NRRUB from NRH_RUBRO where DECIMO_NRRUB=1) "+
-		//				"ORDER BY DER.ORDEN_NRDER DESC ");
 
 		TablaGenerica tab_rubros=utilitario.consultar("SELECT ide_nrder,der.ide_gereg,RUB.ide_nrrub,IDE_NRFOC,IDE_NRDTN,FORMULA_NRDER,FECHA_INICIAL_NRDER, FECHA_FINAL_NRDER,FECHA_PAGO_NRDER,ORDEN_NRDER,DECIMO_NRRUB " +
 				"FROM NRH_DETALLE_RUBRO DER " +
@@ -4926,10 +4913,14 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 				"and fecha_geedp <= to_date('"+fecha_fin_gepro+"','yyyy-mm-dd') "+
 				"AND EDP.ACTIVO_GEEDP=TRUE ";
 		if (IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_liquidacion"))){
-			sql+="AND EDP.LIQUIDACION_GEEDP=1 "+
+			sql+="AND EDP.LIQUIDACION_GEEDP=true "+
 					"and (EDP.EJECUTO_LIQUIDACION_GEEDP IS NULL OR EDP.EJECUTO_LIQUIDACION_GEEDP!=1) ";
 
-		}else{
+		}
+                else if(IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_pago_decimos"))){
+                        sql+=" EMP.acumula_decimo_gtemp=true ";
+                }
+                else{
 			sql+="AND (EDP.LIQUIDACION_GEEDP IS NULL OR EDP.LIQUIDACION_GEEDP!=1) ";
 		}
 
