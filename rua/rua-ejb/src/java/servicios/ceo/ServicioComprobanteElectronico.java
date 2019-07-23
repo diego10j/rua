@@ -614,7 +614,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             String realPath = (String) ec.getRealPath("/reportes");
-            File fil_reporte = new File(realPath + "/reporte" + utilitario.getVariable("IDE_USUA") + ".pdf");
+            File fil_reporte = new File(realPath + "/reporte" + utilitario.getVariable("IDE_USUA") + utilitario.getVariable("NICK") + ".pdf");
             FileOutputStream fileOuputStream = new FileOutputStream(fil_reporte);
             fileOuputStream.write(ar);
         } catch (NumberFormatException | GenericException | IOException e) {
