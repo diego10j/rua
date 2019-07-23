@@ -1011,6 +1011,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
                     TablaGenerica tab_balance = con.generarBalanceGeneral(false, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
                     parametro.put("titulo", "BALANCE GENERAL");
+                    parametro.put("ptit_director", utilitario.getVariable("p_con_titulo_repre_bg"));
                     if (tab_balance.getTotalFilas() > 0) {
                         List lis_totales = con.obtenerTotalesBalanceGeneral(false, fecha_inicio, fecha_fin);
                         double tot_activo = Double.parseDouble(lis_totales.get(0) + "");
