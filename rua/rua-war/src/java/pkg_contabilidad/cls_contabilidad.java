@@ -620,9 +620,9 @@ public class cls_contabilidad {
                 // sql += "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont where "
                 //         + "ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") ";
 
-                sql += "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont a inner join con_cab_comp_cont b on a.ide_cnccc=b.ide_cnccc   "
+                sql += "and ide_cndpc in( select a.ide_cndpc from con_det_plan_cuen a left join ( select ide_cndpc from con_det_comp_cont a inner join con_cab_comp_cont b on a.ide_cnccc=b.ide_cnccc   "
                         + "WHERE b.fecha_trans_cnccc between '" + utilitario.getAnio(fecha_fin) + "-01-01' and '" + fecha_fin + "' "
-                        + "and b.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + ") ";
+                        + "and b.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " ) b on a.ide_cndpc= b.ide_cndpc where b.ide_cndpc is null ) ";
             }
             sql += "and nivel_cndpc='PADRE' ) AS C2) "
                     + "order by codig_recur_cndpc ";
