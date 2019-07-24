@@ -166,7 +166,8 @@ public final class Comprobante implements Serializable {
             }
 
             if (resultado.getBigDecimal("base_grabada_srcom") == null) {
-                this.subtotal = this.totalsinimpuestos;
+                // this.subtotal = this.totalsinimpuestos;
+                this.subtotal = new BigDecimal("0"); //27/07/2019  imprimir totales ride 
             } else {
                 this.subtotal = resultado.getBigDecimal("base_grabada_srcom");
             }
