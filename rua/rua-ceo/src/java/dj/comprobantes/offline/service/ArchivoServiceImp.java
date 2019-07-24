@@ -288,9 +288,8 @@ public class ArchivoServiceImp implements ArchivoService {
             }
             parametros.put("VALOR_TOTAL", utilitario.getFormatoNumero(comprobante.getImportetotal()));
             parametros.put("DESCUENTO", utilitario.getValorEtiqueta(cadenaXML, "totalDescuento"));
-            String cadenaTotalImpuesto = utilitario.getValorEtiqueta(cadenaXML, "totalImpuesto");
-            parametros.put("IVA", utilitario.getValorEtiqueta(cadenaTotalImpuesto, "valor"));
-            parametros.put("IVA_12", utilitario.getValorEtiqueta(cadenaTotalImpuesto, "baseImponible"));
+            parametros.put("IVA", utilitario.getFormatoNumero(comprobante.getIva()));
+            parametros.put("IVA_12", utilitario.getFormatoNumero(comprobante.getSubtotal()));
             parametros.put("SUBTOTAL", utilitario.getValorEtiqueta(cadenaXML, "totalSinImpuestos"));
             parametros.put("NUM_FACT", utilitario.getValorEtiqueta(cadenaXML, "estab") + "-" + utilitario.getValorEtiqueta(cadenaXML, "ptoEmi") + "-"
                     + utilitario.getValorEtiqueta(cadenaXML, "secuencial"));
