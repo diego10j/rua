@@ -1237,6 +1237,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("codigo_recu_acafi").setVisible(false);
         tab_tabla.getColumna("sec_masivo_acafi").setVisible(false);
         tab_tabla.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla.getColumna("observacion_acafi").setMayusculas(true);
 //        tab_tabla.agregarRelacion(tab_tabla6);
 
         tab_tabla.getColumna("ide_accls").setCombo("act_clasificacion", "ide_accls", "nombre_accls", "");
