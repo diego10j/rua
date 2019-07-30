@@ -475,7 +475,6 @@ public class FacturaCxC extends Dialogo {
         tab_guia.getColumna("ide_ccgui").setVisible(false);
         tab_guia.getColumna("ide_cccfa").setVisible(false);
         tab_guia.getColumna("PUNTO_PARTIDA_CCGUI").setNombreVisual("PUNTO DE PARTIDA");
-
         tab_guia.getColumna("PUNTO_PARTIDA_CCGUI").setControl("Texto");
         tab_guia.getColumna("PUNTO_LLEGADA_CCGUI").setControl("Texto");
         tab_guia.getColumna("PUNTO_LLEGADA_CCGUI").setNombreVisual("PUNTO DE LLEGADA");
@@ -601,6 +600,7 @@ public class FacturaCxC extends Dialogo {
         tab_info_adi.getColumna("ide_srina").setVisible(false);
         tab_info_adi.getColumna("ide_srcom").setVisible(false);
         tab_info_adi.getColumna("nombre_srina").setNombreVisual("NOMBRE");
+        tab_info_adi.getColumna("nombre_srina").setMayusculas(true);
         tab_info_adi.getColumna("valor_srina").setNombreVisual("VALOR");
         tab_info_adi.setRecuperarLectura(true);
         tab_info_adi.dibujar();
@@ -714,13 +714,16 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setMetodoChangeRuta("pre_index.clase." + getId() + ".buscarCliente");
             tab_creacion_cliente.getColumna("NOM_GEPER").setNombreVisual("NOMBRE");
             tab_creacion_cliente.getColumna("NOM_GEPER").setOrden(3);
+            tab_creacion_cliente.getColumna("NOM_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setNombreVisual("NOMBRE COMERCIAL");
             tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setOrden(4);
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("IDE_CNTCO").setNombreVisual("TIPO DE CONTRIBUYENTE");
             tab_creacion_cliente.getColumna("IDE_CNTCO").setOrden(5);
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setNombreVisual("DIRECCION");
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setOrden(6);
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setNombreVisual("TELEFONO");
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setOrden(7);
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setRequerida(true);
@@ -732,6 +735,7 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_cliente.getColumna("CORREO_GEPER").setOrden(10);
             tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setNombreVisual("OBSERVACION");
             tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setOrden(11);
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setMayusculas(true);
 
             tab_creacion_cliente.setMostrarNumeroRegistros(false);
             tab_creacion_cliente.dibujar();
@@ -765,6 +769,7 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_producto.getColumna("nivel_inarti").setVisible(false);
             tab_creacion_producto.getColumna("NOMBRE_INARTI").setNombreVisual("NOMBRE");
             tab_creacion_producto.getColumna("NOMBRE_INARTI").setOrden(1);
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setMayusculas(true);
             tab_creacion_producto.getColumna("CODIGO_INARTI").setNombreVisual("CODIGO");
             tab_creacion_producto.getColumna("CODIGO_INARTI").setOrden(2);
             tab_creacion_producto.getColumna("IDE_INMAR").setNombreVisual("MARCA");
@@ -782,6 +787,7 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setVisible(false);
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACION");
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setMayusculas(true);
             tab_creacion_producto.getGrid().setColumns(2);
             tab_creacion_producto.dibujar();
             tab_creacion_producto.insertar();
@@ -909,8 +915,10 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setOrden(6);
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setNombreVisual("DIRECCIÓN");
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setRequerida(true);
+        tab_cab_factura.getColumna("DIRECCION_CCCFA").setMayusculas(true);
         //tab_cab_factura.getColumna("DIRECCION_CCCFA").setMetodoChangeRuta(tab_cab_factura.getRuta() + ".cambiaDireccion");
         tab_cab_factura.getColumna("OBSERVACION_CCCFA").setVisible(false);
+        
         //tab_cab_factura.getColumna("ide_cndfp").setValorDefecto(`parametros.get("p_con_deta_pago_efectivo"));
         tab_cab_factura.getColumna("solo_guardar_cccfa").setVisible(false);
         tab_cab_factura.getColumna("ide_geubi").setVisible(false);
@@ -1012,6 +1020,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.getColumna("total_ccdfa").setNombreVisual("TOTAL");
         tab_deta_factura.getColumna("total_ccdfa").setOrden(7);
         tab_deta_factura.getColumna("OBSERVACION_CCDFA").setNombreVisual("NOMBRE IMPRIME");
+        tab_deta_factura.getColumna("OBSERVACION_CCDFA").setMayusculas(true);
         tab_deta_factura.getColumna("total_ccdfa").setEtiqueta();
         tab_deta_factura.getColumna("total_ccdfa").setEstilo("font-size:14px;font-weight: bold;");
         tab_deta_factura.getColumna("total_ccdfa").alinearDerecha();
@@ -1055,6 +1064,7 @@ public class FacturaCxC extends Dialogo {
         Grid gri_observa = new Grid();
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong>"));
         ate_observacion.setCols(60);
+        ate_observacion.setStyle("text-transform: uppercase;");
         gri_observa.getChildren().add(ate_observacion);
         gri_total.getChildren().add(gri_observa);
 
@@ -1137,6 +1147,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_conta.getColumna("nom_geper").setEtiqueta();
         tab_cab_conta.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
         tab_cab_conta.getColumna("nom_geper").setOrden(2);
+        tab_cab_conta.getColumna("nom_geper").setMayusculas(true);
         tab_cab_conta.getColumna("nombre_cntcm").setEtiqueta();
         tab_cab_conta.getColumna("nombre_cntcm").setNombreVisual("TIPO COMPROBANTE");
         tab_cab_conta.getColumna("nombre_cntcm").setEstilo("width:100px");
@@ -1162,6 +1173,7 @@ public class FacturaCxC extends Dialogo {
         tab_deta_conta.getColumna("haber").alinearDerecha();
         tab_deta_conta.getColumna("haber").setLongitud(25);
         tab_deta_conta.getColumna("OBSERVACION_CNDCC").setNombreVisual("OBSERVACIÓN");
+        tab_deta_conta.getColumna("OBSERVACION_CNDCC").setMayusculas(true);
         tab_deta_conta.setScrollable(true);
         tab_deta_conta.setScrollHeight(getAltoPanel() - 240); //300
         tab_deta_conta.setScrollWidth(getAnchoPanel() - 15);
@@ -1187,6 +1199,8 @@ public class FacturaCxC extends Dialogo {
         ate_observacion_conta.setValue(tab_cab_conta.getValor("observacion_cnccc"));
         ate_observacion_conta.setCols(120);
         ate_observacion_conta.setDisabled(true);
+        ate_observacion_conta.setStyle("text-transform: uppercase;");
+    
         gri_observa.getChildren().add(ate_observacion_conta);
         if (tab_cab_factura.getValor("ide_cnccc") != null) {
             gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cab_conta.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cab_conta.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cab_conta.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
@@ -1216,9 +1230,11 @@ public class FacturaCxC extends Dialogo {
         tab_dto_prove.getColumna("nom_geper").setOrden(1);
         tab_dto_prove.getColumna("nom_geper").setNombreVisual("CLIENTE");
         tab_dto_prove.getColumna("nom_geper").setEtiqueta();
+         tab_dto_prove.getColumna("nom_geper").setMayusculas(true);
         tab_dto_prove.getColumna("direccion_geper").setNombreVisual("DIRECCIÓN");
         tab_dto_prove.getColumna("direccion_geper").setEtiqueta();
         tab_dto_prove.getColumna("direccion_geper").setOrden(2);
+        tab_dto_prove.getColumna("direccion_geper").setMayusculas(true);
         tab_dto_prove.getColumna("ide_geper").setVisible(false);
 
         tab_dto_prove.setNumeroTabla(-1);

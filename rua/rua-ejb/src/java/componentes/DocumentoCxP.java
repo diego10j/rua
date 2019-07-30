@@ -384,9 +384,11 @@ public class DocumentoCxP extends Dialogo {
         tab_dto_prove.getColumna("nom_geper").setOrden(1);
         tab_dto_prove.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
         tab_dto_prove.getColumna("nom_geper").setEtiqueta();
+        tab_dto_prove.getColumna("nom_geper").setMayusculas(true);
         tab_dto_prove.getColumna("direccion_geper").setNombreVisual("DIRECCIÓN");
         tab_dto_prove.getColumna("direccion_geper").setEtiqueta();
         tab_dto_prove.getColumna("direccion_geper").setOrden(2);
+        tab_dto_prove.getColumna("direccion_geper").setMayusculas(true);
         tab_dto_prove.getColumna("ide_geper").setVisible(false);
 
         tab_dto_prove.setNumeroTabla(-1);
@@ -566,13 +568,16 @@ public class DocumentoCxP extends Dialogo {
             tab_creacion_cliente.getColumna("IDENTIFICAC_GEPER").setOrden(2);
             tab_creacion_cliente.getColumna("NOM_GEPER").setNombreVisual("NOMBRE");
             tab_creacion_cliente.getColumna("NOM_GEPER").setOrden(3);
+            tab_creacion_cliente.getColumna("NOM_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setNombreVisual("NOMBRE COMERCIAL");
             tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setOrden(4);
+            tab_creacion_cliente.getColumna("NOMBRE_COMPL_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("IDE_CNTCO").setNombreVisual("TIPO DE CONTRIBUYENTE");
             tab_creacion_cliente.getColumna("IDE_CNTCO").setOrden(5);
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setNombreVisual("DIRECCIÓN");
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setOrden(6);
             tab_creacion_cliente.getColumna("DIRECCION_GEPER").setRequerida(true);
+            tab_creacion_cliente.getColumna("DIRECCION_GEPER").setMayusculas(true);
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setNombreVisual("TELÉFONO");
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setOrden(7);
             tab_creacion_cliente.getColumna("TELEFONO_GEPER").setRequerida(true);
@@ -584,6 +589,7 @@ public class DocumentoCxP extends Dialogo {
             tab_creacion_cliente.getColumna("CORREO_GEPER").setOrden(10);
             tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setNombreVisual("OBSERVACIÓN");
             tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setOrden(11);
+            tab_creacion_cliente.getColumna("OBSERVACION_GEPER").setMayusculas(true);
 
             tab_creacion_cliente.setMostrarNumeroRegistros(false);
             tab_creacion_cliente.dibujar();
@@ -617,6 +623,7 @@ public class DocumentoCxP extends Dialogo {
             tab_creacion_producto.getColumna("nivel_inarti").setVisible(false);
             tab_creacion_producto.getColumna("NOMBRE_INARTI").setNombreVisual("NOMBRE");
             tab_creacion_producto.getColumna("NOMBRE_INARTI").setOrden(1);
+            tab_creacion_producto.getColumna("NOMBRE_INARTI").setMayusculas(true);
             tab_creacion_producto.getColumna("CODIGO_INARTI").setNombreVisual("CÓDIGO");
             tab_creacion_producto.getColumna("CODIGO_INARTI").setOrden(2);
             tab_creacion_producto.getColumna("IDE_INMAR").setNombreVisual("MARCA");
@@ -634,6 +641,7 @@ public class DocumentoCxP extends Dialogo {
             tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setVisible(false);
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACIÓN");
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
+            tab_creacion_producto.getColumna("OBSERVACION_INARTI").setMayusculas(true);
             tab_creacion_producto.getGrid().setColumns(2);
             tab_creacion_producto.dibujar();
             tab_creacion_producto.insertar();
@@ -852,6 +860,7 @@ public class DocumentoCxP extends Dialogo {
         tab_det_documento.getColumna("valor_cpdfa").setNombreVisual("TOTAL");
         tab_det_documento.getColumna("observacion_cpdfa").setNombreVisual("OBSERVACIÓN");
         tab_det_documento.getColumna("observacion_cpdfa").setOrden(6);
+        tab_det_documento.getColumna("observacion_cpdfa").setMayusculas(true);
         tab_det_documento.getColumna("secuencial_cpdfa").setNombreVisual("SERIE / SECUENCIAL");
         tab_det_documento.getColumna("secuencial_cpdfa").setOrden(7);
         tab_det_documento.getColumna("devolucion_cpdfa").setValorDefecto("false");
@@ -988,6 +997,7 @@ public class DocumentoCxP extends Dialogo {
         Grid gri_observa = new Grid();
         gri_observa.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN:</strong> <span style='color:red;font-weight: bold;'> *</span>"));
         ate_observacion.setCols(70);
+        ate_observacion.setStyle("text-transform: uppercase;");
         gri_observa.getChildren().add(ate_observacion);
         gri_total.getChildren().add(gri_observa);
         Grid gri_valores = new Grid();
@@ -1184,6 +1194,7 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_conta.getColumna("nom_geper").setEtiqueta();
         tab_cab_conta.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
         tab_cab_conta.getColumna("nom_geper").setOrden(2);
+        tab_cab_conta.getColumna("nom_geper").setMayusculas(true);
         tab_cab_conta.getColumna("nombre_cntcm").setEtiqueta();
         tab_cab_conta.getColumna("nombre_cntcm").setNombreVisual("TIPO COMPROBANTE");
         tab_cab_conta.getColumna("nombre_cntcm").setEstilo("width:100px");
