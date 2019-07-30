@@ -362,6 +362,7 @@ public class pre_documentosCxP extends Pantalla {
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         //tab_tabla1.getColumna("nom_geper").setFiltroContenido();
         tab_tabla1.getColumna("nom_geper").setNombreVisual("PROVEEDOR");
+        tab_tabla1.getColumna("nom_geper").setMayusculas(true);
         //tab_tabla1.getColumna("identificac_geper").setFiltroContenido();
         tab_tabla1.getColumna("identificac_geper").setNombreVisual("IDENTIFICACIÓN");
         tab_tabla1.getColumna("fecha").setVisible(true);
