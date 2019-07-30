@@ -1088,6 +1088,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_utilidad", utilidad_perdida);
                     }
                     parametro.put("titulo", "ESTADO DE RESULTADOS CONSOLIDADO");
+                    parametro.put("ptit_director", utilitario.getVariable("p_con_titulo_repre_bg"));
                     ReporteDataSource data = new ReporteDataSource(tab_estado);
                     sel_tab_nivel.cerrar();
                     sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
@@ -1152,6 +1153,7 @@ public class pre_contabilidad extends Pantalla {
                     }
                     ReporteDataSource data = new ReporteDataSource(tab_estado);
                     parametro.put("titulo", "ESTADO DE RESULTADOS");
+                    parametro.put("ptit_director", utilitario.getVariable("p_con_titulo_repre_bg"));
                     sel_tab_nivel.cerrar();
                     sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
                     sel_rep.dibujar();
