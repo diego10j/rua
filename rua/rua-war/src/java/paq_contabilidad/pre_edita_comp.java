@@ -66,6 +66,7 @@ public class pre_edita_comp extends Pantalla {
         tab_tabla1.setCondicionSucursal(true);
         tab_tabla1.getColumna("ide_cneco").setCombo("con_estado_compro", "ide_cneco", "nombre_cneco", "");
         tab_tabla1.getColumna("fecha_siste_cnccc").setVisible(false);
+        tab_tabla1.getColumna("observacion_cnccc").setMayusculas(true);
         //tab_tabla1.getColumna("numero_cnccc").setEtiqueta();
         tab_tabla1.getColumna("numero_cnccc").setEstilo("font-size:11px;font-weight: bold");
         tab_tabla1.getColumna("fecha_siste_cnccc").setValorDefecto(utilitario.getFechaActual());
@@ -91,6 +92,7 @@ public class pre_edita_comp extends Pantalla {
         tab_tabla1.getColumna("ide_cneco").setVisible(true);
         tab_tabla1.getColumna("ide_cneco").setLectura(false);
         tab_tabla1.dibujar();
+        tab_tabla1.getColumna("observacion_cnccc").setMayusculas(true);
         tab_tabla1.getColumna("ide_cneco").setVisible(true);
         tab_tabla1.getColumna("ide_cneco").setLectura(false);
         PanelTabla pat_panel1 = new PanelTabla();
