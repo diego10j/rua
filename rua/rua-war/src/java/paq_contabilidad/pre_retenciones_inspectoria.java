@@ -695,6 +695,7 @@ public class pre_retenciones_inspectoria extends Pantalla {
         if (tab_tabla.getValor("ide_cncre") != null) {
             if (tab_tabla.getValor("ide_srcom") != null) {
                 if (tab_tabla.getValor("ESTADO") != null && tab_tabla.getValor("ESTADO").equals(EstadoComprobanteEnum.AUTORIZADO.getDescripcion())) {
+                    tex_correo.setValue(tab_tabla.getValor("CORREO")); // Carga correo enviado
                     dia_correo.dibujar();
                 } else {
                     utilitario.agregarMensajeError("No se puede reenviar el Comprobate de Retención", "El Comprobate de Retención debe estar en estado AUTORIZADO");
