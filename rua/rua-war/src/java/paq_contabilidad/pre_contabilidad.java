@@ -460,6 +460,8 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.getColumna("debe").alinearDerecha();
         tab_consulta.getColumna("haber").alinearDerecha();
         tab_consulta.setColumnaSuma("debe,haber");
+        tab_consulta.getColumna("nom_geper").setNombreVisual("BENEFICIARIO");
+        tab_consulta.getColumna("observacion_cndcc").setNombreVisual("OBSERVACION DETALLE");
         tab_consulta.setRows(20);
         tab_consulta.setOrdenar(false);
         tab_consulta.dibujar();
