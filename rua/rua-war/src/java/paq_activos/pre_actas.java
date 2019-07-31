@@ -333,6 +333,7 @@ public class pre_actas extends Pantalla {
         tab_acta_entrega.getColumna("act_ide_acuba").setNombreVisual("DEPARTAMENTO");
         tab_acta_entrega.getColumna("ide_geper").setNombreVisual("CUSTODIO ACTUAL");
         tab_acta_entrega.getColumna("observacion_acact").setNombreVisual("OBSERVACIONES");
+        tab_acta_entrega.getColumna("observacion_acact").setMayusculas(true);
         tab_acta_entrega.getColumna("fecha_asigna_acact").setNombreVisual("FECHA ACTA");
         tab_acta_entrega.getColumna("razon_anulado_acact").setVisible(false);
         tab_acta_entrega.getColumna("fecha_anulado_acact").setVisible(false);

@@ -686,6 +686,8 @@ public class cls_contabilidad {
                                     try {
                                         valor_acu = valor_acu + Double.parseDouble(tab_saldo.getValor(j, "valor"));
                                     } catch (Exception e) {
+                                        
+                                        System.out.println("Error Jessica"+ e);
                                     }
                                 }
                             }
@@ -705,6 +707,7 @@ public class cls_contabilidad {
                         try {
                             tab_saldo.setValor(j, "valor", lis_valor_padre.get(i).toString());
                         } catch (Exception e) {
+                            System.out.println(" Error Padre "+e);
                         }
                     }
                 }
@@ -729,6 +732,7 @@ public class cls_contabilidad {
                 }
                 espacio = "";
             } catch (Exception e) {
+                System.out.println("Error Tatiana"+ e);
             }
 
         }

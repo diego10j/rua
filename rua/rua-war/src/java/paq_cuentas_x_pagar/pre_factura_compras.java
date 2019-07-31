@@ -153,6 +153,7 @@ private Map<String, String> parametros;
         tab_cab_documento.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
         tab_cab_documento.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");
         tab_cab_documento.getColumna("observacion_cpcfa").setRequerida(false);
+        tab_cab_documento.getColumna("observacion_cpcfa").setMayusculas(true);
         tab_cab_documento.getColumna("pagado_cpcfa").setVisible(false);
         tab_cab_documento.getColumna("pagado_cpcfa").setValorDefecto("False");
         tab_cab_documento.getColumna("total_cpcfa").setNombreVisual("TOTAL:");

@@ -63,6 +63,7 @@ public class pre_activo_actas extends Pantalla {
                 tab_tabla1.getColumna("ide_accls").setCombo("act_clasificacion", "ide_accls", "nombre_accls",""); 
                 tab_tabla1.getColumna("ide_actac").setCombo("act_tipo_adquisicion", "ide_actac", "nombre_actac","");
                 tab_tabla1.getColumna("observacion_acafi").setFiltroContenido();
+                tab_tabla1.getColumna("observacion_acafi").setMayusculas(true);
                 tab_tabla1.getColumna("codigo_barras_acafi").setFiltroContenido();
                 tab_tabla1.getColumna("serie_acafi").setFiltroContenido();
                 tab_tabla1.getColumna("numero_factu_acafi").setFiltroContenido();
