@@ -455,9 +455,9 @@ public class pre_nota_credito extends Pantalla {
         tab_tabla2.getColumna("alter_tribu_cpdno").setVisible(false);
         tab_tabla2.getColumna("alter_tribu_cpdno").setValorDefecto("00");
         tab_tabla2.getColumna("cantidad_cpdno").setMetodoChange("cambioPrecioCantidadIva");
-        tab_tabla2.getColumna("cantidad_cpdno").setFormatoNumero(3);
+        tab_tabla2.getColumna("cantidad_cpdno").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
         tab_tabla2.getColumna("precio_cpdno").setMetodoChange("cambioPrecioCantidadIva");
-
+        tab_tabla2.getColumna("precio_cpdno").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
         tab_tabla2.getColumna("valor_cpdno").setEtiqueta();
         tab_tabla2.getColumna("valor_cpdno").setEstilo("font-size:14px;font-weight: bold;");
         tab_tabla2.getColumna("valor_cpdno").alinearDerecha();
