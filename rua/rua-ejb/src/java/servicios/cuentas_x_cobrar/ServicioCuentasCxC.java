@@ -10,8 +10,10 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Tabla;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import servicios.ServicioBase;
+import servicios.ceo.ServicioComprobanteElectronico;
 
 /**
  *
@@ -19,6 +21,9 @@ import servicios.ServicioBase;
  */
 @Stateless
 public class ServicioCuentasCxC extends ServicioBase {
+
+    @EJB
+    private ServicioComprobanteElectronico ser_comprobante_electronico;
 
     @PostConstruct
     public void init() {
@@ -353,7 +358,6 @@ public class ServicioCuentasCxC extends ServicioBase {
 
         if (tab_cab_factura != null) {
 
-   
             TablaGenerica tab_det_tran_cxc = new TablaGenerica();
 
             tab_det_tran_cxc.setTabla("cxc_detall_transa", "ide_ccdtr", -1);
@@ -1124,7 +1128,7 @@ public class ServicioCuentasCxC extends ServicioBase {
         }
 
         return utilitario.consultar("select ide_geper,fecha_emisi_cccfa,total_cccfa,base_grabada_cccfa,base_no_objeto_iva_cccfa,base_tarifa0_cccfa,valor_iva_cccfa,\n"
-                + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa,descuento_ccdfa\n"
+                + "ide_inarti,ide_inuni,cantidad_ccdfa,precio_ccdfa,total_ccdfa,iva_inarti_ccdfa,observacion_ccdfa,descuento_ccdfa,ide_cndfp\n"
                 + "from cxc_cabece_factura a\n"
                 + "inner join cxc_deta_factura b on a.ide_cccfa=b.ide_cccfa\n"
                 + "inner join cxc_datos_fac c on a.ide_ccdaf=c.ide_ccdaf\n"
@@ -1421,6 +1425,91 @@ public class ServicioCuentasCxC extends ServicioBase {
                 + "and b.ide_geper=" + ide_geper + "\n"
                 + "and b.ide_cccfa is null " //sin factura --ahun no se utiliza
                 + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU");
+    }
+
+    /**
+     * Genera una Nota de Credito (ANULACIÓN) a Partir de una Factura
+     *
+     * @param ide_ccdaf
+     * @param num_doc_mod_cpcno
+     */
+    public void generarNotaCreditodeFactura(String ide_ccdaf, String num_doc_mod_cpcno,double tarifaIVA, String fecha, String observacion) {
+       
+        String       num_a = num_doc_mod_cpcno.substring(0, 3) + "-" + num_doc_mod_cpcno.substring(3, 6) + "-" + num_doc_mod_cpcno.substring(6, num_doc_mod_cpcno.length());
+      
+
+        TablaGenerica tab_cab_nota = new TablaGenerica();
+        tab_cab_nota.setTabla("cxp_cabecera_nota", "ide_cpcno", -1);
+        tab_cab_nota.setCondicion("ide_cpcno=-1");
+        tab_cab_nota.getColumna("ide_cpcno").setExterna(false);
+        TablaGenerica tab_det_nota = new TablaGenerica();
+        tab_det_nota.setTabla("cxp_detalle_nota", "ide_cpdno", -1);
+        tab_det_nota.setCondicion("ide_cpdno=-1");
+        tab_det_nota.getColumna("ide_cpdno").setExterna(false);
+        tab_cab_nota.insertar();
+        TablaGenerica tab_fac = getFacturaPorSecuencial(num_doc_mod_cpcno);
+        tab_cab_nota.setValor("ide_geper", tab_fac.getValor("ide_geper"));
+        tab_cab_nota.setValor("fecha_emision_mod_cpcno", tab_fac.getValor("fecha_emisi_cccfa"));
+        tab_cab_nota.setValor("valor_mod_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("total_cccfa")));
+        tab_cab_nota.setValor("total_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("total_cccfa")));
+        tab_cab_nota.setValor("base_grabada_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("base_grabada_cccfa")));
+        tab_cab_nota.setValor("base_no_objeto_iva_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("base_no_objeto_iva_cccfa")));
+        tab_cab_nota.setValor("base_tarifa0_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("base_tarifa0_cccfa")));
+        tab_cab_nota.setValor("valor_iva_cpcno", utilitario.getFormatoNumero(tab_fac.getValor("valor_iva_cccfa")));
+        tab_cab_nota.setValor("ide_cndfp", tab_fac.getValor("ide_cndfp"));
+
+        tab_cab_nota.setValor("ide_cpeno", "1");//Estado normal por defecto  
+        tab_cab_nota.setValor("ide_cpmno", "1");//ANULACION por defecto  
+        tab_cab_nota.setValor("ide_cntdo", "0"); //nota de credito
+        tab_cab_nota.setValor("fecha_emisi_cpcno", fecha);
+        tab_cab_nota.setValor("fecha_trans_cpcno", utilitario.getFechaActual());
+        tab_cab_nota.setValor("ide_sucu", utilitario.getVariable("IDE_SUCU"));
+        tab_cab_nota.setValor("ide_empr", utilitario.getVariable("IDE_EMPR"));
+        tab_cab_nota.setValor("ide_ccdaf", ide_ccdaf);
+        tab_cab_nota.setValor("num_doc_mod_cpcno", num_a);
+        tab_cab_nota.setValor("observacion_cpcno", observacion);
+        tab_cab_nota.setValor("TARIFA_IVA_CPCNO", utilitario.getFormatoNumero((tarifaIVA * 100)));
+        
+
+        tab_cab_nota.guardar();
+        for (int i = 0; i < tab_fac.getTotalFilas(); i++) {
+            tab_det_nota.insertar();
+            tab_det_nota.setValor("ide_cpcno", tab_cab_nota.getValor("ide_cpcno"));
+            tab_det_nota.setValor("ide_inarti", tab_fac.getValor(i, "ide_inarti"));
+            tab_det_nota.setValor("ide_inuni", tab_fac.getValor(i, "ide_inuni"));
+            tab_det_nota.setValor("cantidad_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "cantidad_ccdfa"), 3));
+            tab_det_nota.setValor("precio_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "precio_ccdfa")));
+            tab_det_nota.setValor("valor_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "total_ccdfa")));
+            tab_det_nota.setValor("iva_inarti_cpdno", tab_fac.getValor(i, "iva_inarti_ccdfa"));
+            tab_det_nota.setValor("observacion_cpdno", tab_fac.getValor(i, "observacion_ccdfa"));
+            tab_det_nota.setValor("descuento_cpdno", utilitario.getFormatoNumero(tab_fac.getValor(i, "descuento_ccdfa")));
+            tab_det_nota.setValor("alter_tribu_cpdno", "00");
+            tab_det_nota.setValor("descuento_cpdno", utilitario.getFormatoNumero("0"));
+            tab_det_nota.setValor("ide_sucu", utilitario.getVariable("IDE_SUCU"));
+            tab_det_nota.setValor("ide_empr", utilitario.getVariable("IDE_EMPR"));
+        }
+        tab_det_nota.guardar();
+        if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
+            ser_comprobante_electronico.generarNotaCreditoElectronica(tab_cab_nota.getValor("ide_cpcno"));
+        }
+    }
+
+    public String getSqlFacturasAutorizadasNC(String fechaInicio, String fechaFin) {
+
+        return "select a.ide_cccfa,serie_ccdaf AS SERIE,secuencial_cccfa AS SECUENCIAL,nombre_sresc AS ESTADO, fecha_emisi_cccfa,nom_geper AS CLIENTE,identificac_geper AS IDENTIFICACION,base_grabada_cccfa as ventas12,"
+                + "base_tarifa0_cccfa+base_no_objeto_iva_cccfa as ventas0,descuento_cccfa as DESCUENTO,valor_iva_cccfa AS IVA,total_cccfa AS  TOTAL, "
+                + "claveacceso_srcom AS CLAVE_ACCESO,serie_ccdaf || secuencial_cccfa as num_doc_mod_cpcno "
+                + "from cxc_cabece_factura a "
+                + "inner join gen_persona b on a.ide_geper=b.ide_geper "
+                + "left join sri_comprobante d on a.ide_srcom=d.ide_srcom "
+                + "left join sri_estado_comprobante f on d.ide_sresc=f.ide_sresc "
+                + "inner join cxc_datos_fac g on a.ide_ccdaf=g.ide_ccdaf "
+                + "where fecha_emisi_cccfa BETWEEN  '" + fechaInicio + "' and '" + fechaFin + "' "
+                + "and a.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
+                + " and d.ide_sresc=  3 "//Solo Autorizadas
+                + "AND a.ide_ccefa =" + parametros.get("p_cxc_estado_factura_normal")
+                + " ORDER BY secuencial_cccfa desc,ide_cccfa desc";
+
     }
 
 }

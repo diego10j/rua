@@ -692,6 +692,10 @@ public class ServicioComprobanteElectronico extends ServicioBase {
         return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc in (5,1) and coddoc_srcom = '" + TipoComprobanteEnum.FACTURA.getCodigo() + "' order by ide_sresc";
     }
 
+    public String getSqlNotasPendienets() {
+        return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc in (5,1) and coddoc_srcom = '" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "' order by ide_sresc";
+    }
+
     public String getSqlComprobantesRecibidas() {
         return "select ide_sresc,claveacceso_srcom from sri_comprobante where ide_sresc =1 and coddoc_srcom = '" + TipoComprobanteEnum.FACTURA.getCodigo() + "' order by ide_sresc";
     }
