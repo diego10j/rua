@@ -8,9 +8,11 @@ package paq_cuentas_x_cobrar;
 import componentes.AsientoContable;
 import dj.comprobantes.offline.enums.EstadoComprobanteEnum;
 import dj.comprobantes.offline.enums.TipoComprobanteEnum;
+import framework.aplicacion.Fila;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Barra;
 import framework.componentes.Boton;
+import framework.componentes.BotonesCombo;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
@@ -18,6 +20,7 @@ import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.ItemMenu;
 import framework.componentes.Link;
 import framework.componentes.Mensaje;
 import framework.componentes.MenuPanel;
@@ -75,6 +78,9 @@ public class pre_nota_credito extends Pantalla {
 
     private AsientoContable asc_asiento = new AsientoContable();
 
+    private Texto tex_observacion = new Texto();
+    private Calendario cal_fecha = new Calendario();
+
     public pre_nota_credito() {
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
         bar_botones.quitarBotonsNavegacion();
@@ -105,7 +111,7 @@ public class pre_nota_credito extends Pantalla {
         mep_menu.agregarItem("Listado de Notas de Crédito", "dibujarNotaCredito", "ui-icon-note");  //2
         //  mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotaCreditoNoContabilizadas", "ui-icon-notice"); //3
         //mep_menu.agregarItem("Notas de Crédito Anuladas", "dibujarNotaCreditoAnuladas", "ui-icon-cancel"); //4
-
+        mep_menu.agregarItem("Generar Nota de Credito de Factura", "dibujarNotaCreditoFactura", "ui-icon-calculator");  //5
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotasNoContabilizadas", "ui-icon-notice");
 
@@ -143,6 +149,160 @@ public class pre_nota_credito extends Pantalla {
         asc_asiento.setId("asc_asiento");
         asc_asiento.getBot_aceptar().setMetodo("guardar");
         agregarComponente(asc_asiento);
+    }
+
+    public void dibujarNotaCreditoFactura() {
+
+        Grid gri_op = new Grid();
+        gri_op.setColumns(2);
+        gri_op.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN :</strong>"));
+        tex_observacion.limpiar();
+        tex_observacion.setSize(160);
+        gri_op.getChildren().add(tex_observacion);
+        gri_op.getChildren().add(new Etiqueta("<strong>FECHA :</strong>"));
+        cal_fecha.limpiar();
+        cal_fecha.setFechaActual();
+        cal_fecha.setMaxdate(utilitario.getFecha(utilitario.getFechaActual()));
+        gri_op.getChildren().add(cal_fecha);
+        Barra bar_menu = new Barra();
+        bar_menu.setId("bar_menu");
+        bar_menu.limpiar();
+
+        // boton seleccion inversa
+        BotonesCombo boc_seleccion_inversa = new BotonesCombo();
+        ItemMenu itm_todas = new ItemMenu();
+        ItemMenu itm_niguna = new ItemMenu();
+
+        itm_todas.setValue("Seleccion Inversa");
+        itm_todas.setIcon("ui-icon-circle-check");
+        itm_todas.setMetodo("seleccinarInversa");
+        itm_todas.setUpdate("tab_seleccion");
+        boc_seleccion_inversa.agregarBoton(itm_todas);
+
+        boc_seleccion_inversa.setValue("Selección Todo");
+        boc_seleccion_inversa.setIcon("ui-icon-check");
+        boc_seleccion_inversa.setMetodo("seleccionarTodas");
+        boc_seleccion_inversa.setUpdate("tab_seleccion");
+
+        itm_niguna.setValue("Seleccionar Ninguna");
+        itm_niguna.setIcon("ui-icon-minus");
+        itm_niguna.setMetodo("seleccionarNinguna");
+        itm_niguna.setUpdate("tab_seleccion");
+        bar_menu.agregarComponente(boc_seleccion_inversa);
+
+        Boton bot_asi = new Boton();
+        bot_asi.setValue("Generar Notas de Crédito");
+        bot_asi.setMetodo("generarNC");
+        bar_menu.agregarComponente(bot_asi);
+
+        bar_menu.agregarSeparador();
+        Boton bot_enviar = new Boton();
+        bot_enviar.setValue("Enviar Notas de Credito al SRI");
+        bot_enviar.setMetodo("enviarSRILote");
+        bot_enviar.setIcon("ui-icon-signal-diag");
+        bar_menu.agregarBoton(bot_enviar);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_seleccion");
+        tab_tabla1.setSql(ser_factura.getSqlFacturasAutorizadasNC(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+        tab_tabla1.setCampoPrimaria("ide_cccfa");
+        tab_tabla1.getColumna("ide_cccfa").setVisible(false);
+        tab_tabla1.getColumna("num_doc_mod_cpcno").setVisible(false);
+        tab_tabla1.getColumna("ESTADO").setLongitud(-1);
+        tab_tabla1.getColumna("CLIENTE").setFiltroContenido();
+        tab_tabla1.getColumna("IDENTIFICACION").setFiltroContenido();
+        tab_tabla1.getColumna("SECUENCIAL").setFiltroContenido();
+        tab_tabla1.getColumna("fecha_emisi_cccfa").setNombreVisual("FECHA");
+        tab_tabla1.getColumna("ventas12").alinearDerecha();
+        tab_tabla1.getColumna("ventas0").alinearDerecha();
+        tab_tabla1.getColumna("DESCUENTO").alinearDerecha();
+        tab_tabla1.getColumna("IVA").alinearDerecha();
+        tab_tabla1.getColumna("TOTAL").alinearDerecha();
+
+        tab_tabla1.setRows(15);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setSeleccionTabla("multiple");
+
+        tab_tabla1.dibujar();
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla1);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(gri_op);
+        gru.getChildren().add(bar_menu);
+        gru.getChildren().add(pat_panel);
+        mep_menu.dibujar(5, "GENERAR NOTAS DE CRÉDITO DE FACTURAS AUTORIZADAS", gru);
+        utilitario.buscarPermisosObjetos();
+    }
+
+    public void generarNC() {
+
+        if (tab_tabla1.getFilasSeleccionadas() != null && tab_tabla1.getFilasSeleccionadas().length() > 0) {
+            for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+                for (int j = 0; j < tab_tabla1.getSeleccionados().length; j++) {
+
+                    if (tab_tabla1.getSeleccionados()[j].equals(tab_tabla1.getFilas().get(i))) {
+                        //seleccionada
+                        String num_doc = tab_tabla1.getValor(i, "num_doc_mod_cpcno");
+
+                        ser_factura.generarNotaCreditodeFactura(com_pto_emision.getValue() + "", num_doc, tarifaIVA, cal_fecha.getFecha(), tex_observacion.getValue() + "");
+                    }
+
+                }
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos una Factura", "");
+        }
+    }
+
+    public void seleccionarTodas() {
+        tab_tabla1.setSeleccionados(null);
+        Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas()];
+        for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+            seleccionados[i] = tab_tabla1.getFilas().get(i);
+        }
+        tab_tabla1.setSeleccionados(seleccionados);
+    }
+
+    public void seleccinarInversa() {
+        if (tab_tabla1.getSeleccionados() == null) {
+            seleccionarTodas();
+        } else if (tab_tabla1.getSeleccionados().length == tab_tabla1.getTotalFilas()) {
+            seleccionarNinguna();
+        } else {
+            Fila seleccionados[] = new Fila[tab_tabla1.getTotalFilas() - tab_tabla1.getSeleccionados().length];
+            int cont = 0;
+            for (int i = 0; i < tab_tabla1.getFilas().size(); i++) {
+                boolean boo_selecionado = false;
+                for (int j = 0; j < tab_tabla1.getSeleccionados().length; j++) {
+                    if (tab_tabla1.getSeleccionados()[j].equals(tab_tabla1.getFilas().get(i))) {
+                        boo_selecionado = true;
+                        break;
+                    }
+                }
+                if (boo_selecionado == false) {
+                    seleccionados[cont] = tab_tabla1.getFilas().get(i);
+                    cont++;
+                }
+            }
+            tab_tabla1.setSeleccionados(seleccionados);
+        }
+
+    }
+
+    public void seleccionarNinguna() {
+        tab_tabla1.setSeleccionados(null);
+    }
+
+    public void  enviarSRILote () {
+        try {
+            TablaGenerica tag_com = utilitario.consultar(ser_comprobante_electronico.getSqlNotasPendienets());
+            for (int i = 0; i < tag_com.getTotalFilas(); i++) {
+                ser_comprobante_electronico.enviarComprobante(tag_com.getValor(i, "claveacceso_srcom"));
+            }
+        } catch (Exception e) {
+            utilitario.crearError("Error al enviar al SRI", "enviarSRI()", e);
+        }
     }
 
     public void dibujarNotasNoContabilizadas() {
@@ -344,7 +504,11 @@ public class pre_nota_credito extends Pantalla {
         } else if (mep_menu.getOpcion() == 3) {
             tab_tabla1.setSql(ser_factura.getSqlNotasNoContabilizadas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
             tab_tabla1.ejecutarSql();
+        } else if (mep_menu.getOpcion() == 5) {
+            tab_tabla1.setSql(ser_factura.getSqlFacturasAutorizadasNC(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
+            tab_tabla1.ejecutarSql();
         }
+
     }
 
     public void filtrarPendientes() {
