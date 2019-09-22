@@ -111,7 +111,7 @@ public class pre_nota_credito extends Pantalla {
         mep_menu.agregarItem("Listado de Notas de Crédito", "dibujarNotaCredito", "ui-icon-note");  //2
         //  mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotaCreditoNoContabilizadas", "ui-icon-notice"); //3
         //mep_menu.agregarItem("Notas de Crédito Anuladas", "dibujarNotaCreditoAnuladas", "ui-icon-cancel"); //4
-        mep_menu.agregarItem("Generar Nota de Credito de Factura", "dibujarNotaCreditoFactura", "ui-icon-calculator");  //5
+        mep_menu.agregarItem("Generar Nota de Crédito de Factura", "dibujarNotaCreditoFactura", "ui-icon-calculator");  //5
         mep_menu.agregarSubMenu("CONTABILIDAD");
         mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotasNoContabilizadas", "ui-icon-notice");
 
