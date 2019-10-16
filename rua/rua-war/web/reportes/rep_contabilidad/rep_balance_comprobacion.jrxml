@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="09b449b7-3a93-4ce8-97c7-b9553efa9387">
 	<property name="ireport.zoom" value="1.3636363636363653"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="34"/>
+	<property name="ireport.y" value="35"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="tot_debe" class="java.lang.Double"/>
 	<parameter name="tot_haber" class="java.lang.Double"/>
@@ -24,6 +24,7 @@
 	<parameter name="direccion" class="java.lang.String"/>
 	<parameter name="telefono" class="java.lang.String"/>
 	<parameter name="ruc" class="java.lang.String"/>
+	<parameter name="ptit_director" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -268,19 +269,11 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tot_acreedor}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="6d10b9ed-13a7-480d-b809-5b4bc8a9f520" x="73" y="70" width="145" height="15"/>
-				<box leftPadding="3"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[DIRECTOR]]></text>
-			</staticText>
 			<line>
 				<reportElement uuid="9ca1523a-aae6-470c-9bf7-02f72ffe6741" x="333" y="65" width="155" height="1"/>
 			</line>
 			<line>
-				<reportElement uuid="14835da1-d3b8-45d9-8b12-ed2db3d2225c" x="71" y="66" width="155" height="1"/>
+				<reportElement uuid="14835da1-d3b8-45d9-8b12-ed2db3d2225c" x="71" y="65" width="155" height="1"/>
 			</line>
 			<staticText>
 				<reportElement uuid="37a47b95-a037-4882-8934-ab434fdbbd05" x="334" y="68" width="153" height="15"/>
@@ -290,6 +283,20 @@
 				</textElement>
 				<text><![CDATA[CONTADOR]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c62b9739-1809-4503-b9da-54a3b85bb273" x="71" y="68" width="155" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ptit_director}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

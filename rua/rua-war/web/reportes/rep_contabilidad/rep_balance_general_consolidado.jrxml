@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01d31a08-32f1-407c-9b06-0b427192c894">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="80"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
 	<parameter name="p_patrimonio" class="java.lang.String"/>
@@ -21,6 +21,7 @@
 	<parameter name="fecha_inicio" class="java.lang.String"/>
 	<parameter name="fecha_fin" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ptit_director" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -255,14 +256,6 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<reportElement uuid="eb2b619c-d365-4673-a824-35da6bc532e2" x="334" y="129" width="155" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="d4382724-3800-46d7-8e78-ce904b4e7b7b" x="74" y="134" width="145" height="15"/>
-				<box leftPadding="3"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
-			</staticText>
-			<staticText>
 				<reportElement uuid="19850d85-6ac5-43b5-aff1-40f97c8973a9" x="335" y="132" width="145" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -270,6 +263,20 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				</textElement>
 				<text><![CDATA[CONTADOR]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c62b9739-1809-4503-b9da-54a3b85bb273" x="72" y="134" width="155" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ptit_director}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

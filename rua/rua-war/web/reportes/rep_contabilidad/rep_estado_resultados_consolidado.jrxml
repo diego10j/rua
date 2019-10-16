@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7419cf70-3380-4910-9d92-0e93830eb1fa">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="73"/>
 	<parameter name="p_ingresos" class="java.lang.String"/>
 	<parameter name="p_gastos" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
@@ -20,6 +20,7 @@
 	<parameter name="p_tot_ingresos" class="java.lang.Double"/>
 	<parameter name="p_tot_gastos" class="java.lang.Double"/>
 	<parameter name="p_tot_costos" class="java.lang.Double"/>
+	<parameter name="ptit_director" class="java.lang.String"/>
 	<field name="ide_cndpc" class="java.lang.String"/>
 	<field name="nombre_cndpc" class="java.lang.String"/>
 	<field name="valor" class="java.lang.String"/>
@@ -175,7 +176,7 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 				<textFieldExpression><![CDATA[$P{p_utilidad}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="8c47f083-74cd-432a-821b-54f0edd0c5c7" x="71" y="128" width="155" height="1"/>
+				<reportElement uuid="8c47f083-74cd-432a-821b-54f0edd0c5c7" x="72" y="128" width="155" height="1"/>
 			</line>
 			<staticText>
 				<reportElement uuid="45a33ce7-2c09-4ad2-bdf9-0a01e00843bb" x="334" y="130" width="145" height="15"/>
@@ -184,14 +185,6 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[CONTADOR]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="13c977bd-8eb2-4754-bfe6-a56143db78cb" x="73" y="132" width="145" height="15"/>
-				<box leftPadding="3"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[ECONOMO INSPECTORIAL]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="cab2e343-ed23-4693-9675-4d04f1445e31" x="333" y="127" width="155" height="1"/>
@@ -240,6 +233,20 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_tot_costos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c62b9739-1809-4503-b9da-54a3b85bb273" x="72" y="130" width="155" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ptit_director}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
