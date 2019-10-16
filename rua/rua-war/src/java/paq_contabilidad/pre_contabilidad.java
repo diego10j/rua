@@ -947,6 +947,7 @@ public class pre_contabilidad extends Pantalla {
                     parametro.put("fecha_fin", getFormatoFecha(fecha_fin));
                     TablaGenerica tab_balance = con.generarBalanceGeneral(true, fecha_inicio, fecha_fin, Integer.parseInt(sel_tab_nivel.getValorSeleccionado()));
                     parametro.put("titulo", "BALANCE GENERAL CONSOLIDADO");
+                    parametro.put("ptit_director", utilitario.getVariable("p_con_titulo_repre_bg"));
                     if (tab_balance.getTotalFilas() > 0) {
                         List lis_totales = con.obtenerTotalesBalanceGeneral(true, fecha_inicio, fecha_fin);
                         double tot_activo = Double.parseDouble(lis_totales.get(0) + "");
@@ -960,6 +961,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("p_tot_pasivo", tot_pasivo);
                         parametro.put("p_tot_patrimonio", (tot_patrimonio));
                     }
+                    
                     sel_tab_nivel.cerrar();
                     ReporteDataSource data = new ReporteDataSource(tab_balance);
                     sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
@@ -1255,6 +1257,7 @@ public class pre_contabilidad extends Pantalla {
                         parametro.put("tot_haber", suma_haber);
                         parametro.put("tot_deudor", suma_deudor);
                         parametro.put("tot_acreedor", suma_acreedor);
+                        parametro.put("ptit_director", utilitario.getVariable("p_con_titulo_repre_bg"));
                         ReporteDataSource data = new ReporteDataSource(tab_bal);
                         sel_rep.setSeleccionFormatoReporte(parametro, rep_reporte.getPath(), data);
                         sel_rep.dibujar();
