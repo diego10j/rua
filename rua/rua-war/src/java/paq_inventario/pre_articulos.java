@@ -98,7 +98,7 @@ public class pre_articulos extends Pantalla {
         mep_menu.agregarItem("Costo de Venta", "dibujarCosto", "ui-icon-calculator");
 
         mep_menu.agregarSubMenu("TRANSACCIONES");
-        mep_menu.agregarItem("Kardex", "dibujarKardex", "ui-icon-contact");
+        //mep_menu.agregarItem("Kardex", "dibujarKardex", "ui-icon-contact");
         mep_menu.agregarItem("Facturas de Ventas", "dibujarVentas", "ui-icon-calculator");
         mep_menu.agregarItem("Facturas de Compras", "dibujarCompras", "ui-icon-calculator");
         mep_menu.agregarSubMenu("CONTABILIDAD");
