@@ -529,6 +529,8 @@ public class pre_actas extends Pantalla {
             p_parametros.put("ide_acact", Integer.parseInt(tab_tabla.getValor("ide_acact")));
             p_parametros.put("nombre", utilitario.getVariable("NICK"));
             p_parametros.put("pres_activos", tab_empleado.getValor("nom_geper"));
+            p_parametros.put("pciudad", utilitario.getVariable("p_con_ciudad"));
+            p_parametros.put("porganizacion", utilitario.getVariable("p_con_organizacion"));
             String reporte = "";
 
             if (valor_combo.equals(utilitario.getVariable("p_act_acta_entrega_recep"))) {
@@ -541,7 +543,7 @@ public class pre_actas extends Pantalla {
                 reporte = "rep_activos/rep_acta_cambio.jasper";
             }
 
-            System.out.println(" " + p_parametros + " reportes " + reporte);
+            //System.out.println(" " + p_parametros + " reportes " + reporte);
             vipdf_actas.setVisualizarPDF(reporte, p_parametros);
             vipdf_actas.dibujar();
             utilitario.addUpdate("vipdf_actas");
