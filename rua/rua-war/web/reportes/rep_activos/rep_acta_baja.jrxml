@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="163"/>
+	<property name="ireport.y" value="63"/>
 	<parameter name="ide_acact" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -12,6 +12,8 @@
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="pciudad" class="java.lang.String"/>
+	<parameter name="porganizacion" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.ide_acact,secuencial_acact as codigo_acact,fecha_asigna_acact,codigo_gecas,nombre_gecas,
 codigo_geobr,nombre_geobr, b.codigo_acuba,b.nombre_acuba,g.nom_geper, b.nombre_acuba as dep_activo,
@@ -137,7 +139,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement textAlignment="Justified">
 					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["…. En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" quien RECIBE y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio} +" quien ENTREGA previa constatación y verificación, el bien detallado a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, se determinó que el mismo se encuentran DAÑADO y OBSOLETO, dejando  constancia de la conformidad de la presente"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["…. En la ciudad de "+$P{pciudad}+" a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" quien RECIBE y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio} +" quien ENTREGA previa constatación y verificación, el bien detallado a continuación perteneciente a "+$P{porganizacion}+", se determinó que el mismo se encuentran DAÑADO y OBSOLETO, dejando  constancia de la conformidad de la presente"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

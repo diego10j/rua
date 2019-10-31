@@ -13,6 +13,8 @@
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="nombre" class="java.lang.String"/>
 	<parameter name="pres_activos" class="java.lang.String"/>
+	<parameter name="pciudad" class="java.lang.String"/>
+	<parameter name="porganizacion" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.ide_acact,secuencial_acact as codigo_acact,fecha_asigna_acact,codigo_gecas,nombre_gecas,
 codigo_geobr,nombre_geobr, codigo_acuba,nombre_acuba,g.nom_geper,
@@ -132,7 +134,7 @@ order by nombre_inarti,a.ide_acact]]>
 				<textElement textAlignment="Justified">
 					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["… En la ciudad de San Francisco de Quito D.M a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a SOCIEDAD SALESIANA EN EL ECUADOR, dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["… En la ciudad de "+$P{pciudad}+" a los "+$F{dia}+" días del mes de "+$F{mes}+" del año "+$F{anio}+", se reunieron, el/la "+$F{denom_custodio}+" "+$F{nom_geper}+" Ex-Custodio de los bienes y por otra parte el/la "+$F{denom_nuevo_custodio}+" "+$F{nuevo_custodio}+" quien es el nuevo custodio de los bienes, detallados a continuación perteneciente a "+$P{porganizacion}+", dejando  constancia de la conformidad de la presente."]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
