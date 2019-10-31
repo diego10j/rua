@@ -35,6 +35,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("0", "p_con_patrimonio", "Indica la configuracion para la cuenta a la que se vamos a sumar el (superavit)  o restar el (Deficit) del Ejercicio Anterior ", "1487", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("0", "p_con_superavit_ejercicio_presente", "Indica la configuracion para la cuenta de Superavit del Ejercicio Presente ", "1500", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("0", "p_con_deficit_ejercicio_presente", "Indica la configuracion para la cuenta de Deficit del Ejercicio Presente ", "4481", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("0", "p_con_ciudad", "Indica la ciudad para la imprir en los reportes que menciona ciudad ", "Quito"));
+        lis_parametros.add(new Parametro("0", "p_con_organizacion", "Indica el nombre de la organización para impresion delos reportes actas ", "SOCIEDAD SALESIANA EN EL ECUADOR"));
 
         lis_parametros.add(new Parametro("0", "p_con_tipo_documento_nota_credito", "Comprobante tipo nota de credito ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
         lis_parametros.add(new Parametro("0", "p_con_tipo_documento_guia", "Documento guia de remision ", "7", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
