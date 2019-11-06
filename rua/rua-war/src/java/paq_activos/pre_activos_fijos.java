@@ -1481,6 +1481,7 @@ public class pre_activos_fijos extends Pantalla {
         if (ide_acafi != null && ide_acafi.isEmpty() == false) {
             Map parametros_rep = new HashMap();
             parametros_rep.put("ide_acafi", ide_acafi);
+            parametros_rep.put("porganizacion", utilitario.getVariable("p_con_nom_barra"));
             vipdf_acta.setTitle("CÓDIGO DE BARRAS");
             vipdf_acta.setVisualizarPDF("rep_activos/rep_cod_barras.jasper", parametros_rep);
             vipdf_acta.dibujar();
