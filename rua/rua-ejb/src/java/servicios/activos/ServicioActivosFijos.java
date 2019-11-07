@@ -80,18 +80,22 @@ public class ServicioActivosFijos extends ServicioBase {
     }
 
     public String getSqlListaBienesControl() {
-        return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,nombre_acuba as AREA_UBICACION,fecha_compra_acafi \n"
-                + " ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,nombre_geobr as OBRA,observacion_acafi\n"
-                + "from act_activo_fijo a \n"
-                + "left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n"
-                + "left join gen_persona c on a.ide_geper=c.ide_geper\n"
-                + "left join inv_articulo arti on arti.ide_inarti = a.ide_inarti "
-                + "left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n"
-                + "left join gen_casa e on a.ide_gecas=e.ide_gecas\n"
-                + "left join gen_obra f on a.ide_geobr=f.ide_geobr\n"
-                + "left join act_clase_activo g on a.ide_accla=g.ide_accla\n"
-                + "where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and ide_accls=2 "//BIENES DE CONTROL
-                + "order by nombre_gecas,nombre_geobr,nombre_accla,nombre_inarti,ide_acafi";
+        return "select ide_acafi,act_ide_acafi,(case when act_ide_acafi is null then ide_acafi||' 1' else act_ide_acafi||' '||sec_masivo_acafi  end) as SECUENCIAL,nombre_accla AS CLASE,\n" +
+"       h.nombre_inarti as especificaciones,arti.nombre_inarti as TIPO_ACTIVO,cantidad_acafi as CANTIDAD,codigo_barras_acafi,nombre_aceaf as ESTADO,nom_geper,d.nombre_acuba as AREA_UBICACION,i.nombre_acuba as SUB_AREA_UBICACION,fecha_compra_acafi \n" +
+"                 ,anos_uso_acafi,vida_util_acafi,valor_compra_acafi,valor_comercial_acafi,valor_remate_acafi,nombre_gecas as CASA,\n" +
+"                 nombre_geobr as OBRA,n_egreso_acafi as NRO_EGRESO,proveedor_acafi as PROVEEDOR,serie_acafi as serie,modelo_acafi as modelo,observacion_acafi\n" +
+"                from act_activo_fijo a \n" +
+"                left join act_estado_activo_fijo b on a.ide_aceaf=b.ide_aceaf\n" +
+"                left join gen_persona c on a.ide_geper=c.ide_geper\n" +
+"                left join inv_articulo arti on arti.ide_inarti = a.ide_inarti \n" +
+"                left join act_ubicacion_activo d on a.ide_acuba=d.ide_acuba\n" +
+"                left join gen_casa e on a.ide_gecas=e.ide_gecas\n" +
+"                left join gen_obra f on a.ide_geobr=f.ide_geobr\n" +
+"                left join act_clase_activo g on a.ide_accla=g.ide_accla\n" +
+"                left join inv_articulo h on h.ide_inarti = a.inv_ide_inarti \n" +
+"                left join act_ubicacion_activo i on a.act_ide_acuba=i.ide_acuba\n" +
+"                where a.ide_empr=" + utilitario.getVariable("IDE_EMPR") + " and  ide_accls=2" + //BIENES DE CONTROL\n" +
+"                order by nombre_gecas,nombre_geobr,nombre_accla,arti.nombre_inarti,ide_acafi";
     }
 
     public String getSqlActivoFijo(String ide_acafi) {
