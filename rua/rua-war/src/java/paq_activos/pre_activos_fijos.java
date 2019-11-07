@@ -1157,8 +1157,8 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("act_activo_fijo", "ide_acafi", 1);
         tab_tabla.getColumna("ide_acafi").setNombreVisual("CODIGO");
-        tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 and nivel_inarti='PADRE' order by codigo_inarti"); //SOLO ACTIVOS FIJOS
-        tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr=0 order by codigo_inarti"); //SOLO ACTIVOS FIJOS
+        tab_tabla.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr in (0,1) and nivel_inarti='PADRE' order by codigo_inarti"); //SOLO ACTIVOS FIJOS
+        tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr in (0,1) order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         //tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("ide_inarti").setMetodoChange("cargarDepartamentos");
         tab_tabla.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
