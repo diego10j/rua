@@ -370,7 +370,31 @@ public final class Comprobante implements Serializable {
                     e.printStackTrace();
                 }
             }
-
+            else if (this.coddoc.equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) { //12-11-2019 Liquidacion en compras 
+                //Busca los detalles del Comprobante
+                codDocumento = TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo();  //LIQUIDACION_DE_COMPRAS
+                try {
+                    detalle = new ArrayList<>();
+                    String sql = "select f.ide_inarti,codigo_inarti, COALESCE(nombre_inuni,'') ||' '|| observacion_cpdfa as nombre_inarti,cantidad_cpdfa as cantidad_ccdfa\n"
+                            + ",precio_cpdfa as precio_ccdfa,iva_inarti_cpdfa as iva_inarti_ccdfa,valor_cpdfa as total_ccdfa,nombre_inuni, tarifa_iva_cpcfa as tarifa_iva_cccfa,0 as descuento_ccdfa \n"
+                            + "from cxp_cabece_factur  a\n"
+                            + "inner join cxp_detall_factur c on a.ide_cpdfa=c.ide_cpdfa\n"
+                            + "inner join  inv_articulo f on c.ide_inarti =f.ide_inarti\n"
+                            + "left join  inv_unidad g on c.ide_inuni =g.ide_inuni\n"
+                            + "where a.ide_srcom=" + this.codigocomprobante;
+                    Statement sentensia = con.getConnection().createStatement();
+                    ResultSet res = sentensia.executeQuery(sql);
+                    while (res.next()) {
+                        DetalleComprobante dt = new DetalleComprobante(res);
+                        dt.setComprobante(this);
+                        detalle.add(dt);
+                    }
+                    sentensia.close();
+                    res.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             //11-06-2019
             //Busca si hay correos adicionales 
             String acumulaCorreo = "";
