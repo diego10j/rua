@@ -130,5 +130,13 @@
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
     </persistence-unit> 
-  
+    <!---14  MODULO GERENCIAL LUIS TOAPANTA/> -->
+    <persistence-unit name="rua_gerencial" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>rua_gerencial</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.level" value="SEVERE"/>
+        </properties>
+    </persistence-unit>   
 </persistence>
