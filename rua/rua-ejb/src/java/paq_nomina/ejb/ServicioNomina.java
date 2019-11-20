@@ -2986,8 +2986,9 @@ public class ServicioNomina {
 		}
 	}
 
-
 	public TablaGenerica generarDecimos(TablaGenerica tab_empleados_departamento,String ide_nrrol,Long ide_inicial,String ide_nrder_decimos,int nro_dia_comercial){	
+
+//	public TablaGenerica generarDecimos(TablaGenerica tab_empleados_departamento,String ide_nrrol,Long ide_inicial,String ide_nrder_decimos,int nro_dia_comercial, String ide_nrtin){	AGregado por Luis Toapanta
 		long inicio = System.currentTimeMillis();
                 //System.out.println("entre a generarDecimos ");
 		TablaGenerica tab_cab_rol=utilitario.consultar("SELECT * FROM NRH_ROL where IDE_NRROL="+ide_nrrol);					
@@ -3068,8 +3069,9 @@ public class ServicioNomina {
 		//System.out.println("======== Tiempo total (TODO EL PROCESO) guardar pantalla : " + (fin - inicio));
 		return tab_deta_rubros_rol;
 	}
-
 	public void calcularDecimoRolIndividual(TablaGenerica tab_rubros,String ide_gtemp,String ide_geedp,String ide_nrrol,String fecha_ingreso,String fecha_contrato,String IDE_GEREG,String RMU,String acumula_fondos,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String dias_pend_vacacion,Long ide_inicial,int nro_dias_comercial){
+
+	//public void calcularDecimoRolIndividual(TablaGenerica tab_rubros,String ide_gtemp,String ide_geedp,String ide_nrrol,String fecha_ingreso,String fecha_contrato,String IDE_GEREG,String RMU,String acumula_fondos,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String dias_pend_vacacion,Long ide_inicial,int nro_dias_comercial,String ide_nrtin){ Luis Toapanta para enviar parametro tipo nomina
 
 		boolean boo_tiene_anticipos=false;
 		tab_cuotas=serv_anticipo.getCuotasAnticipoPorPagarEmpleado(ide_gtemp, ide_gepro);
@@ -3664,7 +3666,8 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 	}
 
 	String str_ide_nramo_descontar="";
-	public String importarRubro(String ide_geedp,String ide_nrrub,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String dias_antiguedad,String fecha_subrogacion,String fecha_fin_subrogacion,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int NRO_DIAS_COMERCIAL_NRTIT,boolean es_liquidacion,String acumula_decimo,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago){
+       	public String importarRubro(String ide_geedp,String ide_nrrub,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String dias_antiguedad,String fecha_subrogacion,String fecha_fin_subrogacion,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int NRO_DIAS_COMERCIAL_NRTIT,boolean es_liquidacion,String acumula_decimo,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago){
+//	public String importarRubro(String ide_geedp,String ide_nrrub,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String dias_antiguedad,String fecha_subrogacion,String fecha_fin_subrogacion,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int NRO_DIAS_COMERCIAL_NRTIT,boolean es_liquidacion,String acumula_decimo,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago,String ide_nrtin){  Luis Toapanta para calcular nominas de decimos
 
 		// importacion beneficios de guarderia
 		if (boo_tiene_beneficio_guarderia){
@@ -3673,8 +3676,10 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 				return valor;
 			}
 		}
-
-
+                // importacion de lso décimos que tiene aculuado para la nomina de decimos Luis Toapanta para improtar la suma d elso decimos por rango d efechas
+                //if(ide_nrtin.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_pago_decimos"))){
+                    
+                //}
 		if (!es_liquidacion){
 			// importacion anticipos
 			if (boo_tiene_anticipos){
@@ -4080,6 +4085,7 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
             utilitario.getConexion().ejecutarSql(sql);
             
         }
+       	//public void insertarDetallesRolEmpleado(String ide_geedp,String ide_nrrol,TablaGenerica tab_rubros,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String fecha_subroga,String fecha_fin_subroga,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int nro_dias_comercial_nrtit,boolean es_liquidacion,String acumula_decimos,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago,String ide_nrtin){ Luis Toapanta para agregar nominas de decimos
 	public void insertarDetallesRolEmpleado(String ide_geedp,String ide_nrrol,TablaGenerica tab_rubros,boolean boo_tiene_beneficio_guarderia,boolean boo_tiene_anticipos,String IDE_GEREG,String RMU,String acumula_fondos,String fecha_ingreso,String fecha_contrato,String ide_gepro,String fecha_inicial_gepro,String fecha_final_gepro,String fecha_subroga,String fecha_fin_subroga,String RMU_CARGO_SUBROGA,String ajuste_sueldo,String fecha_ajuste_sueldo,String dias_pendientes_vacacion,int nro_dias_comercial_nrtit,boolean es_liquidacion,String acumula_decimos,String base_imponible_mes_anterior,String fondo_reserva_acum_pago,String fondo_reserva_nom_pago){
 
 		int dias_antiguedad=Integer.parseInt(getTotalDiasLaborados(fecha_ingreso,fecha_final_gepro));
@@ -5687,7 +5693,14 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 		return null;
 	}
 
-
+public String getSqlTipoDecimo(){
+		String sql="select 1 as codigo,'DECIMO TERCER SUELDO' as detalle union select 2 as codigo,'DECIMO CUARTO SUELDO' as detalle";
+		return sql;
+	}
+public String getSqlRegion(){
+		String sql="select ide_gereg,detalle_gereg from gen_region";
+		return sql;
+	}
 	public TablaGenerica getTab_deta_rubros_rol() {
 		return tab_deta_rubros_rol;
 	}
