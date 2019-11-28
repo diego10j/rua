@@ -304,5 +304,53 @@ public class ServicioGestion {
 		}
 		return null;
 	}
+        
+ public String saveAsientoNomina(String ide_usua, String fecha_trans_cnccc, String observacion_cnccc, String ide_cntcm, String ide_cneco, String fecha_siste_cnccc, String hora_sistem_cnccc, String numero_cnccc, String ide_modu, String ide_geper) {
+        String ide_titulo = "-1";
+        TablaGenerica tab_tabla1 = new TablaGenerica();
+        tab_tabla1.setTabla("con_cab_comp_cont", "ide_cnccc", -1);
+        tab_tabla1.setCondicion("ide_cnccc=-1");
+        tab_tabla1.ejecutarSql();
+        tab_tabla1.insertar();
+        tab_tabla1.setValor("ide_usua", ide_usua);
+        tab_tabla1.setValor("fecha_trans_cnccc", fecha_trans_cnccc);
+        tab_tabla1.setValor("observacion_cnccc", observacion_cnccc);
+        tab_tabla1.setValor("ide_cntcm", ide_cntcm);
+        tab_tabla1.setValor("ide_cneco", ide_cneco);
+        tab_tabla1.setValor("fecha_siste_cnccc", fecha_siste_cnccc);
+        tab_tabla1.setValor("hora_sistem_cnccc", hora_sistem_cnccc);
+        tab_tabla1.setValor("numero_cnccc", numero_cnccc);
+        tab_tabla1.setValor("ide_modu", ide_modu);
+        tab_tabla1.setValor("ide_geper", ide_geper);
+
+        if (tab_tabla1.guardar()) {
+            ide_titulo = tab_tabla1.getValor("ide_cnccc");
+        }
+        return ide_titulo;
+    }
+
+    /**
+     * Sirve cuando para la generacción de los detalles de impuesto nuevos
+     * titulos de crédito
+     *
+     * @param ide_titulo Año de emisión
+     * @return ide_titulo en caso de guardar correctamente
+     */
+    public String saveDetalleAsientoNomina(String ide_cnccc, String ide_cndpc, String ide_cnlap, String valor_cndcc) {
+        String ide_detalle = "-1";
+        TablaGenerica tab_tabla1 = new TablaGenerica();
+        tab_tabla1.setTabla("con_det_comp_cont", "ide_cndcc", -1);
+        tab_tabla1.setCondicion("ide_cndcc=-1");
+        tab_tabla1.ejecutarSql();
+        tab_tabla1.insertar();
+        tab_tabla1.setValor("ide_cnccc", ide_cnccc);
+        tab_tabla1.setValor("ide_cndpc", ide_cndpc);
+        tab_tabla1.setValor("ide_cnlap", ide_cnlap);
+        tab_tabla1.setValor("valor_cndcc", valor_cndcc);
+        if (tab_tabla1.guardar()) {
+            ide_detalle = tab_tabla1.getValor("ide_cnccc");
+        }
+        return ide_detalle;
+    }
 
 }

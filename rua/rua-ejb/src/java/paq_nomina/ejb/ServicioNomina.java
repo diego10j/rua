@@ -5566,7 +5566,7 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
                             "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d " +
                             "where a.ide_nrrub = b.ide_nrrub " +
                             "and b.ide_nrder = c.ide_nrder " +
-                            "and c.ide_nrrol = d.ide_nrrol " +
+                            "and c.ide_nrrol = d.ide_nrrol and valor_nrdro >0 " +
                             "and c.ide_nrrol in (" +periodo+")"+
                             ") a " +
                             "group by ide_gelua,ide_cndpc";
