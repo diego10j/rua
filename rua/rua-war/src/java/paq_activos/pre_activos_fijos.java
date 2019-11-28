@@ -54,7 +54,9 @@ public class pre_activos_fijos extends Pantalla {
     private VisualizarPDF vipdf_acta = new VisualizarPDF();
     private final Calendario cal_fecha = new Calendario();
     private final Calendario cal_fecha_depreciacion = new Calendario();
-    private VisualizarPDF vipdf_grupos_dpres = new VisualizarPDF(); 
+    private VisualizarPDF vipdf_grupos_dpres = new VisualizarPDF();
+    private VisualizarPDF vipdf_grupos_detalle = new VisualizarPDF();
+    private SeleccionTabla sel_cabece_clase_dep = new SeleccionTabla();
 
     @EJB
     private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
@@ -84,6 +86,7 @@ public class pre_activos_fijos extends Pantalla {
     private SeleccionTabla set_selecciona = new SeleccionTabla();
     private SeleccionTabla sel_clase_activos = new SeleccionTabla();
     private SeleccionTabla sel_activos_no_aprobados = new SeleccionTabla();
+    private SeleccionTabla sel_clase_act = new SeleccionTabla();
     private Confirmar con_confirma = new Confirmar();
 
     private Dialogo dia_foto = new Dialogo();
@@ -113,6 +116,18 @@ public class pre_activos_fijos extends Pantalla {
         vipdf_grupos_dpres.setId("vipdf_grupos_dpres");
         vipdf_grupos_dpres.setTitle("ACTA DEPRECIACION GRUPOS");
         agregarComponente(vipdf_grupos_dpres);
+        
+        vipdf_grupos_detalle.setId("vipdf_grupos_detalle");
+        vipdf_grupos_detalle.setTitle("ACTA DEPRECIACION DETALLE");
+        agregarComponente(vipdf_grupos_detalle);
+        
+        sel_clase_act.setId("sel_clase_act");
+        sel_clase_act.setSeleccionTabla("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla", "ide_accla");
+        sel_clase_act.setWidth("40%");
+        sel_clase_act.setHeight("60%");
+        sel_clase_act.setHeader("CLASES DE ACTIVOS FIJOS");
+        sel_clase_act.getBot_aceptar().setMetodo("imprimirDetalle");
+        agregarComponente(sel_clase_act);
         
         bar_botones.agregarReporte();
 
@@ -495,6 +510,11 @@ public class pre_activos_fijos extends Pantalla {
         bot_imprimir_depr.setMetodo("imprimirDepres");
         gra.getChildren().add(bot_imprimir_depr);
         
+        Boton bot_imprimir_grup = new Boton();
+        bot_imprimir_grup.setIcon("ui-icon-print");
+        bot_imprimir_grup.setValue("DETALLES GRUPOS");
+        bot_imprimir_grup.setMetodo("detalleGrupo");
+        gra.getChildren().add(bot_imprimir_grup);
         
         // grm.setWidth("0");
         grm.setStyle("font-size:14px;color:black;text-align:left;"  );
@@ -573,6 +593,26 @@ public class pre_activos_fijos extends Pantalla {
         utilitario.buscarPermisosObjetos();
     }
     
+    public void imprimirDetalle(){
+        String seleccionado = sel_clase_act.getSeleccionados();
+        if (seleccionado.equals("null") || seleccionado.isEmpty()) {
+            utilitario.agregarMensajeInfo("ADVERTENCIA,", "Seleccione al menos una clase de activos ");
+        } else {
+        Map map_parametros = new HashMap();
+        map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
+        map_parametros.put("fecha_ingresar",cal_fecha_depreciacion.getFecha());
+        map_parametros.put("grupo_dep", seleccionado);
+        
+        vipdf_grupos_detalle.setVisualizarPDF("rep_activos/rep_detalle_grupo_depre.jasper", map_parametros);
+        vipdf_grupos_detalle.dibujar();
+        utilitario.addUpdate("vipdf_grupos_detalle");
+           
+         }
+    }
+    
+    public void detalleGrupo(){
+       sel_clase_act.dibujar();
+    }
     public void imprimirDepres(){
         Map map_parametros = new HashMap();
         map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
@@ -582,7 +622,7 @@ public class pre_activos_fijos extends Pantalla {
         vipdf_grupos_dpres.dibujar();
         utilitario.addUpdate("vipdf_grupos_dpres");
         
-        System.out.println("fecha_ingresar" +cal_fecha_depreciacion.getFecha());
+        
     }
 
     public void aprobarActivos() {
@@ -1951,6 +1991,22 @@ public class pre_activos_fijos extends Pantalla {
     public void setVipdf_grupos_dpres(VisualizarPDF vipdf_grupos_dpres) {
         this.vipdf_grupos_dpres = vipdf_grupos_dpres;
     }
-    
 
+    public VisualizarPDF getVipdf_grupos_detalle() {
+        return vipdf_grupos_detalle;
+    }
+
+    public void setVipdf_grupos_detalle(VisualizarPDF vipdf_grupos_detalle) {
+        this.vipdf_grupos_detalle = vipdf_grupos_detalle;
+    }
+
+    public SeleccionTabla getSel_clase_act() {
+        return sel_clase_act;
+    }
+
+    public void setSel_clase_act(SeleccionTabla sel_clase_act) {
+        this.sel_clase_act = sel_clase_act;
+    }
+    
+    
 }
