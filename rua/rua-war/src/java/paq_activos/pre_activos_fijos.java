@@ -54,6 +54,7 @@ public class pre_activos_fijos extends Pantalla {
     private VisualizarPDF vipdf_acta = new VisualizarPDF();
     private final Calendario cal_fecha = new Calendario();
     private final Calendario cal_fecha_depreciacion = new Calendario();
+    private VisualizarPDF vipdf_grupos_dpres = new VisualizarPDF(); 
 
     @EJB
     private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
@@ -108,6 +109,11 @@ public class pre_activos_fijos extends Pantalla {
     private double valor_depreciado_final = 0;
 
     public pre_activos_fijos() {
+        
+        vipdf_grupos_dpres.setId("vipdf_grupos_dpres");
+        vipdf_grupos_dpres.setTitle("ACTA DEPRECIACION GRUPOS");
+        agregarComponente(vipdf_grupos_dpres);
+        
         bar_botones.agregarReporte();
 
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
@@ -478,8 +484,20 @@ public class pre_activos_fijos extends Pantalla {
     public void dibujarDepreciar() {
         Grid grm = new Grid();
         grm.setColumns(6);
+        
+        Grid gra = new Grid();
+        gra.setColumns(6);
+        
+        gra.setStyle("font-size:14px;color:black;text-align:left;");
+        Boton bot_imprimir_depr = new Boton();
+        bot_imprimir_depr.setIcon("ui-icon-print");
+        bot_imprimir_depr.setValue("REP.DEPRECIACION GRUPO");
+        bot_imprimir_depr.setMetodo("imprimirDepres");
+        gra.getChildren().add(bot_imprimir_depr);
+        
+        
         // grm.setWidth("0");
-        grm.setStyle("font-size:14px;color:black;text-align:left;");
+        grm.setStyle("font-size:14px;color:black;text-align:left;"  );
         grm.setMensajeInfo("Seleccione los parámetros para depreciar los activos");
         grm.getChildren().add(new Etiqueta("Fecha Valoración: "));
         cal_fecha_depreciacion.setId("cal_fecha_depreciacion");
@@ -546,12 +564,25 @@ public class pre_activos_fijos extends Pantalla {
         grm.getChildren().add(bot_valorar_individual);
         grm.getChildren().add(bot_validar_depre);
         Grupo gru_grupo = new Grupo();
+        gru_grupo.getChildren().add(gra);
         gru_grupo.getChildren().add(grm);
         gru_grupo.getChildren().add(pat_panel);
 
         mep_menu.dibujar(6, "DEPRECIAR ACTIVOS FIJOS", gru_grupo);
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
+    }
+    
+    public void imprimirDepres(){
+        Map map_parametros = new HashMap();
+        map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
+        map_parametros.put("fecha_ingresar",cal_fecha_depreciacion.getFecha());
+        
+        vipdf_grupos_dpres.setVisualizarPDF("rep_activos/rep_depreciacion_grupo.jasper", map_parametros);
+        vipdf_grupos_dpres.dibujar();
+        utilitario.addUpdate("vipdf_grupos_dpres");
+        
+        System.out.println("fecha_ingresar" +cal_fecha_depreciacion.getFecha());
     }
 
     public void aprobarActivos() {
@@ -1912,5 +1943,14 @@ public class pre_activos_fijos extends Pantalla {
     public void setAut_custodio_nuevo(AutoCompletar aut_custodio_nuevo) {
         this.aut_custodio_nuevo = aut_custodio_nuevo;
     }
+
+    public VisualizarPDF getVipdf_grupos_dpres() {
+        return vipdf_grupos_dpres;
+    }
+
+    public void setVipdf_grupos_dpres(VisualizarPDF vipdf_grupos_dpres) {
+        this.vipdf_grupos_dpres = vipdf_grupos_dpres;
+    }
+    
 
 }
