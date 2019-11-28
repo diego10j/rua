@@ -21,6 +21,7 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import java.util.Map;
 import paq_contabilidad.ejb.ServicioContabilidad;
+import paq_gestion.ejb.ServicioGestion;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
 import servicios.pensiones.ServicioPensiones;
 
@@ -49,6 +50,8 @@ public class pre_asiento_rua extends Pantalla {
         
         @EJB
         private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
+    @EJB
+        private final ServicioGestion ser_gestion = (ServicioGestion) utilitario.instanciarEJB(ServicioGestion.class);
 
     public pre_asiento_rua() {    
         
@@ -222,38 +225,28 @@ public void consultaDescuadre(){
        String valor_aplica = "";
        String valor_debe = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("debe_nrdea"),2);
        String valor_haber = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("haber_nrdea"),2);
-       // System.out.println("debe "+valor_debe);
-       // System.out.println("haber "+valor_haber);
+
        if (valor_debe.equals(valor_haber)){
       // String numero_secuencial = ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina");
        TablaGenerica tab_cabecera_asiento = utilitario.consultar("select IDE_NRCAA, FECHA_ASIENTO_NRCAA, OBSERVACION_NRCAA from nrh_cabecera_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
        TablaGenerica tab_detalle_asiento = utilitario.consultar("select ide_nrdea, IDE_NRCAA, ide_cndpc, ide_gelua, debe_nrdea, haber_nrdea  from nrh_detalle_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
-      // System.out.println("fecha: "+tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"));
-       TablaGenerica codigo_maximo_cabecera = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("con_cab_comp_cont", "ide_cnccc"));
-       maximo_cabecera = codigo_maximo_cabecera.getValor("maximo");
+
        
        try{
-       utilitario.getConexion().ejecutarSql("INSERT INTO con_cab_comp_cont(ide_cnccc, ide_usua, fecha_trans_cnccc, observacion_cnccc, ide_sucu, ide_empr, ide_cntcm, ide_cneco, fecha_siste_cnccc, hora_sistem_cnccc, usuario_ingre, numero_cnccc,ide_modu,ide_geper )\n" +
-                                            "VALUES ("+maximo_cabecera+", "+utilitario.getVariable("IDE_USUA")+", '"+tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA")+"', '"+tab_cabecera_asiento.getValor("OBSERVACION_NRCAA")+"'"
-                                                      + " , "+utilitario.getVariable("ide_sucu")+",  "+utilitario.getVariable("ide_empr")+", "+utilitario.getVariable("p_reh_tipo_comprobante_nomina")+", "+utilitario.getVariable("p_reh_estado_comprobante_nomina")+" "
-                                                      + " ,'"+utilitario.getFechaActual()+"', '"+utilitario.getHoraActual()+"', '"+utilitario.getVariable("NICK")+"', '"+ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina"))+"',"+utilitario.getVariable("p_nrh_mod_asiento_nomina")+","+utilitario.getVariable("p_nrh_persona_asiento_nomina")+"  )");
-       TablaGenerica tab_consulta_cabecera = utilitario.consultar("select 1 as codigo, max(ide_cnccc) as maximo from con_cab_comp_cont");
-      // int numero_ultimo = Integer.parseInt(tab_consulta_cabecera.getValor("maximo"));
-             
+          String ide_asiento_cncc= ser_gestion.saveAsientoNomina(utilitario.getVariable("IDE_USUA"), tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), tab_cabecera_asiento.getValor("OBSERVACION_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina"), utilitario.getVariable("p_reh_estado_comprobante_nomina"), utilitario.getFechaActual(), utilitario.getHoraActual(), ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina")), utilitario.getVariable("p_nrh_mod_asiento_nomina"), utilitario.getVariable("p_nrh_persona_asiento_nomina"));
+                
             for (int i =0; i<tab_detalle_asiento.getTotalFilas(); i++){
-                TablaGenerica codigo_maximo_detalle = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("con_det_comp_cont", "ide_cndcc"));
-                maximo_detalle = codigo_maximo_detalle.getValor("maximo");
+
                 if(tab_detalle_asiento.getValor(i, "ide_gelua").equals(p_con_lugar_debe)){
                     valor_aplica = tab_detalle_asiento.getValor(i, "debe_nrdea");
                 }
                 else {
                     valor_aplica = tab_detalle_asiento.getValor(i, "haber_nrdea");
                 }
-                utilitario.getConexion().ejecutarSql("INSERT INTO con_det_comp_cont(ide_cndcc, ide_empr, ide_sucu, ide_cnccc, ide_cndpc, ide_cnlap, valor_cndcc)\n" +
-                                                     "VALUES ( "+maximo_detalle+", "+utilitario.getVariable("ide_empr")+", "+utilitario.getVariable("ide_sucu")+", "+tab_consulta_cabecera.getValor("maximo")+", "+tab_detalle_asiento.getValor(i, "ide_cndpc")+"    "
-                                                             + ", "+tab_detalle_asiento.getValor(i, "ide_gelua")+", "+valor_aplica+")");
+                ser_gestion.saveDetalleAsientoNomina(ide_asiento_cncc, tab_detalle_asiento.getValor(i, "ide_cndpc"), tab_detalle_asiento.getValor(i, "ide_gelua"), valor_aplica);
             }
-            tab_tabla.setValor("IDE_ASIENTO_RUA", maximo_cabecera);
+             guardarPantalla();
+            tab_tabla.setValor("IDE_ASIENTO_RUA", ide_asiento_cncc);
             tab_tabla.setValor("TRASPASO_NRCAA", "true");
             tab_tabla.setValor("ESTADO_NRCAA", "false");
             tab_tabla.modificar(tab_tabla.getFilaActual());
