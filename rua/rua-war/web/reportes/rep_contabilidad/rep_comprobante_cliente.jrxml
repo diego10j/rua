@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_cliente" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e3bf814a-79ef-4776-b84f-247c21341cb5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select fecha_trans_teclb,numero_teclb,ide_cnccc,nombre_tettb,beneficiari_teclb,valor_teclb,
+                case when signo_tettb = 1 THEN valor_teclb  end as INGRESOS,case when signo_tettb = -1 THEN valor_teclb end as EGRESOS,
+                '' SALDO,observacion_teclb,ide_teclb,conciliado_teclb as conciliado
+                from tes_cab_libr_banc a
+                inner join tes_tip_tran_banc b on a.ide_tettb=b.ide_tettb
+                where ide_teclb =701]]>
+	</queryString>
+	<field name="fecha_trans_teclb" class="java.sql.Date"/>
+	<field name="numero_teclb" class="java.lang.String"/>
+	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="nombre_tettb" class="java.lang.String"/>
+	<field name="beneficiari_teclb" class="java.lang.String"/>
+	<field name="valor_teclb" class="java.math.BigDecimal"/>
+	<field name="ingresos" class="java.math.BigDecimal"/>
+	<field name="egresos" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.lang.String"/>
+	<field name="observacion_teclb" class="java.lang.String"/>
+	<field name="ide_teclb" class="java.lang.Long"/>
+	<field name="conciliado" class="java.lang.Boolean"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e9fd4739-441e-44c8-adce-a3b8279badd8" x="0" y="0" width="200" height="85"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="64a0e892-e86c-4b86-951e-c625b27b068b" x="348" y="18" width="181" height="46"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COMPROBANTE DE: "+ $F{nombre_tettb}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="162" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="089157a1-d3f1-4fc9-8352-b4a631bbe03e" x="0" y="8" width="62" height="20"/>
+				<textElement/>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="089157a1-d3f1-4fc9-8352-b4a631bbe03e" x="186" y="8" width="117" height="20"/>
+				<textElement/>
+				<text><![CDATA[NRO. DOCUMENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="089157a1-d3f1-4fc9-8352-b4a631bbe03e" x="0" y="28" width="84" height="20"/>
+				<textElement/>
+				<text><![CDATA[BENEFICIARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="089157a1-d3f1-4fc9-8352-b4a631bbe03e" x="0" y="48" width="84" height="20"/>
+				<textElement/>
+				<text><![CDATA[CONCEPTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="089157a1-d3f1-4fc9-8352-b4a631bbe03e" x="404" y="8" width="45" height="20"/>
+				<textElement/>
+				<text><![CDATA[VALOR:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="2cc7e633-a4de-41c5-9a9c-62268ca78b4a" x="62" y="8" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_trans_teclb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2cc7e633-a4de-41c5-9a9c-62268ca78b4a" x="303" y="8" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numero_teclb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2cc7e633-a4de-41c5-9a9c-62268ca78b4a" x="449" y="8" width="96" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_teclb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2cc7e633-a4de-41c5-9a9c-62268ca78b4a" x="86" y="28" width="469" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{beneficiari_teclb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2cc7e633-a4de-41c5-9a9c-62268ca78b4a" x="86" y="48" width="469" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_teclb}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c2e40b7d-74e9-4f25-b4a4-9fba7f873bc5" x="88" y="142" width="128" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[RECIBIDO POR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c2e40b7d-74e9-4f25-b4a4-9fba7f873bc5" x="305" y="142" width="144" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ENTREGADO POR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
