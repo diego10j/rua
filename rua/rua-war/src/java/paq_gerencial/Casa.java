@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package paq_gerencial;
+package paq_gerencial;     
 
 import framework.componentes.Boton;
 import paq_general.*;

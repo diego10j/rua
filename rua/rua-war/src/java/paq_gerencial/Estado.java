@@ -6,14 +6,14 @@
 package paq_gerencial;
 
 import framework.componentes.Division;
-import framework.componentes.PanelTabla;
+import framework.componentes.PanelTabla;      
 import framework.componentes.Tabla;
-import persistencia.Conexion;
+import persistencia.Conexion;     
 import sistema.aplicacion.Pantalla;
 
 /**
  *
- * @author CRISTIAN VEGA
+ * @author Luis Toapanta
  */
 public class Estado extends Pantalla {
 
@@ -72,6 +72,14 @@ public class Estado extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+            
+    public Conexion getConPostgres() {
+        return conPostgres;
+    }
+
+    public void setConPostgres(Conexion conPostgres) {
+        this.conPostgres = conPostgres;
     }
 
 }

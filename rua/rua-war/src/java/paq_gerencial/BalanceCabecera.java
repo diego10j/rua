@@ -15,8 +15,8 @@ import sistema.aplicacion.Pantalla;
 
 /**
  *
- * @author CRISTIAN VEGA
- */
+ * @author LUIS TOAPANTA
+ */    
 public class BalanceCabecera extends Pantalla {
 
     private Conexion conPostgres = new Conexion();
@@ -153,6 +153,14 @@ public class BalanceCabecera extends Pantalla {
 
     public void setTab_tabla3(Tabla tab_tabla3) {
         this.tab_tabla3 = tab_tabla3;
+    }
+            
+    public Conexion getConPostgres() {
+        return conPostgres;
+    }
+
+    public void setConPostgres(Conexion conPostgres) {
+        this.conPostgres = conPostgres;
     }
 
 }
