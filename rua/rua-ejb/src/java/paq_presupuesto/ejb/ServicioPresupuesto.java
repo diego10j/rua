@@ -453,7 +453,7 @@ public String getActualizaSaldosFinalesRua(){
     String sql="update pre_cedula_presupuestaria " +
             "set codificado_prcer =inicial_prcep+reforma_prcep, " +
             "saldo_devengar_prcep =(inicial_prcep+reforma_prcep) - (devengado_acumulado_prcep +devengado_periodo_prcep), " +
-            "saldo_comprometer_prcep = (devengado_acumulado_prcep +devengado_periodo_prcep) - (comprometido_prcep +comprometido_periodo_prcep) ";
+            "saldo_comprometer_prcep = (inicial_prcep+reforma_prcep) - (comprometido_prcep +comprometido_periodo_prcep) ";
     
     return sql;
 }
