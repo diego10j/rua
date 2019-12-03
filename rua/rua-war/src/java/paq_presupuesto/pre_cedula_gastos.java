@@ -199,9 +199,9 @@ public class pre_cedula_gastos extends Pantalla{
 +" group by pre_ide_prcla"
 +" ) a where a.pre_ide_prcla = pre_cedula_gastos.ide_prcla;"
 +" update pre_cedula_gastos"
-+" set saldo_comprometer_prcei=certificado_prcei-comprometido_prcei,"
-+" saldo_devengar_prcei=comprometido_prcei-devengado_prcei,"
-+" saldo_pagado_prcei=devengado_prcei-pagado_prcei;";
++" set saldo_comprometer_prcei=codificado-comprometido_prcei,"
++" saldo_devengar_prcei=codificado-devengado_prcei,"
++" saldo_pagado_prcei=codificado-pagado_prcei;";
 		utilitario.getConexion().ejecutarSql(sql);
 		tab_balance_inicial.ejecutarSql();
 		utilitario.addUpdate("tab_balance_inicial");
