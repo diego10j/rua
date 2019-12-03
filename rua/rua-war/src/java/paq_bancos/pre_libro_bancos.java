@@ -33,6 +33,7 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import framework.componentes.Upload;
+import framework.componentes.VisualizarPDF;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -135,9 +136,18 @@ public class pre_libro_bancos extends Pantalla {
     private SeleccionTabla set_tipo_transaccion = new SeleccionTabla();
 
     private Combo com_anticipos_anteriores;
+    //configuracion reporte
+    private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
+    private Reporte rep_reportecomprobante = new Reporte();
+    private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
+
 
     public pre_libro_bancos() {
 
+        vipdf_comprobante.setId("vipdf_comprobante");
+        vipdf_comprobante.setTitle("IMPRESION DE COMPROBANTE");
+        agregarComponente(vipdf_comprobante);
+            
         mep_menu.setMenuPanel("CONSULTAS", "20%");
         mep_menu.agregarItem("Posición Consolidada", "dibujarPosicion", "ui-icon-note");//1
         mep_menu.agregarItem("Consulta de Movimientos", "dibujarMovimienots", "ui-icon-note");//2
@@ -711,6 +721,12 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void dibujarMovimienots() {
+        
+            Boton bot_imprimir = new Boton();
+            bot_imprimir.setIcon("ui-icon-print");
+            bot_imprimir.setValue("IMPRIMIR COMPROBANTE");
+            bot_imprimir.setMetodo("generarPDF");
+            
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_tesoreria.getSqlTransaccionesCuenta(aut_cuentas.getValor(), cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -740,6 +756,7 @@ public class pre_libro_bancos extends Pantalla {
         tab_tabla1.dibujar();
         actualizarSaldos();
         PanelTabla pat_panel = new PanelTabla();
+        pat_panel.getChildren().add(bot_imprimir); 
         pat_panel.setPanelTabla(tab_tabla1);
 
         ItemMenu itemedita = new ItemMenu();
@@ -2858,6 +2875,18 @@ public class pre_libro_bancos extends Pantalla {
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
+public void generarPDF() {
+       // if (tab_tabla1.getFilaActual() >0) {
+            ///////////AQUI ABRE EL REPORTE
+            Map parametros = new HashMap();
+            //parametros.put("pide_cuenta", Integer.parseInt(tab_tabla1.getValor(tab_tabla1.getFilaActual(),"ide_teclb")));
+            vipdf_comprobante.setVisualizarPDF("rep_contabilidad/rep_comprobante_cliente.jasper", parametros);
+            vipdf_comprobante.dibujar();
+            utilitario.addUpdate("vipdf_comprobante");
+     //   } else {
+       //     utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
+        //}
+    }
 
     public void aceptarAnticipoCliente() {
         if (validarAnticipo()) {
@@ -3003,6 +3032,30 @@ public class pre_libro_bancos extends Pantalla {
 
     public void setSet_tipo_transaccion(SeleccionTabla set_tipo_transaccion) {
         this.set_tipo_transaccion = set_tipo_transaccion;
+    }
+
+    public SeleccionFormatoReporte getSef_reporte() {
+        return sef_reporte;
+    }
+
+    public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
+        this.sef_reporte = sef_reporte;
+    }
+
+    public Reporte getRep_reportecomprobante() {
+        return rep_reportecomprobante;
+    }
+
+    public void setRep_reportecomprobante(Reporte rep_reportecomprobante) {
+        this.rep_reportecomprobante = rep_reportecomprobante;
+    }
+
+    public VisualizarPDF getVipdf_comprobante() {
+        return vipdf_comprobante;
+    }
+
+    public void setVipdf_comprobante(VisualizarPDF vipdf_comprobante) {
+        this.vipdf_comprobante = vipdf_comprobante;
     }
 
 }
