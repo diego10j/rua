@@ -739,6 +739,7 @@ public class pre_activos_fijos extends Pantalla {
 
             valor_deprecia_dias = (valor_total - valor_recidual) / dias_a_depreciar;
             valor_depreciado = valor_deprecia_dias * num_dias;
+            //System.out.println("ide_acafi "+ide_acafi+" num_dias "+num_dias+" dias_a_depreciar "+dias_a_depreciar+" dias_depreciado "+dias_depreciado );
             int resultado = 0;
             if (dias_depreciado < dias_a_depreciar) {
                 resultado = dias_a_depreciar - dias_depreciado;
