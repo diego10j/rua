@@ -602,7 +602,8 @@ public class pre_activos_fijos extends Pantalla {
         map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
         map_parametros.put("fecha_ingresar",cal_fecha_depreciacion.getFecha());
         map_parametros.put("grupo_dep", seleccionado);
-        map_parametros.put("ide_usua", utilitario.getVariable("IDE_USUA"));
+        map_parametros.put("titulo", " DEPRECIACIÓN DETALLADA DE BIENES");
+        map_parametros.put("ide_usua", Integer.parseInt(utilitario.getVariable("IDE_USUA")));
         vipdf_grupos_detalle.setVisualizarPDF("rep_activos/rep_detalle_grupo_depre.jasper", map_parametros);
         vipdf_grupos_detalle.dibujar();
         utilitario.addUpdate("vipdf_grupos_detalle");
