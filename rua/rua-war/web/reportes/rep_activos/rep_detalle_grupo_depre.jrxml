@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_grupo_depre" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7f1c8ef8-b358-4e71-83a2-a4f55465b0af">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_grupo_depre" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7f1c8ef8-b358-4e71-83a2-a4f55465b0af">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -13,8 +13,14 @@
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="fecha_ingresar" class="java.lang.String"/>
 	<parameter name="grupo_dep" class="java.lang.String"/>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["DETALLE DE ACTIVOS"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select a.observacion_acafi, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr from act_activo_fijo a
+		<![CDATA[select a.observacion_acafi, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr, a.valor_compra_acafi, a.fecha_compra_acafi, a.codigo_barras_acafi, a.valor_reposicion_acafi
+,valor_compra_acafi-valor_acdepr as valor_residual
+from act_activo_fijo a
 left join act_depreciacion b on a.ide_acafi = b.ide_acafi
 left join act_clase_activo c on a.ide_accla = c.ide_accla
 where fecha_acdepr <= cast ($P{fecha_ingresar} as date) and a.ide_accla in ( $P!{grupo_dep})
@@ -25,10 +31,15 @@ order by c.ide_accla]]>
 	<field name="ide_accla" class="java.lang.Integer"/>
 	<field name="nombre_accla" class="java.lang.String"/>
 	<field name="valor_acdepr" class="java.math.BigDecimal"/>
+	<field name="valor_compra_acafi" class="java.math.BigDecimal"/>
+	<field name="fecha_compra_acafi" class="java.sql.Date"/>
+	<field name="codigo_barras_acafi" class="java.lang.String"/>
+	<field name="valor_reposicion_acafi" class="java.math.BigDecimal"/>
+	<field name="valor_residual" class="java.math.BigDecimal"/>
 	<variable name="contador" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Count">
 		<variableExpression><![CDATA[$F{ide_accla}]]></variableExpression>
 	</variable>
-	<variable name="suma_total" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Sum">
+	<variable name="suma_total_dep" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor_acdepr}]]></variableExpression>
 	</variable>
 	<variable name="total_totales_dep" class="java.math.BigDecimal" calculation="Sum">
@@ -37,19 +48,28 @@ order by c.ide_accla]]>
 	<variable name="total_detalles" class="java.math.BigDecimal" calculation="Count">
 		<variableExpression><![CDATA[$F{ide_accla}]]></variableExpression>
 	</variable>
+	<variable name="total_valor_compra" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_compra_acafi}]]></variableExpression>
+	</variable>
+	<variable name="total_valor_reps" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_reposicion_acafi}]]></variableExpression>
+	</variable>
+	<variable name="total_valor_residual" class="java.math.BigDecimal" resetType="Group" resetGroup="grupos" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_residual}]]></variableExpression>
+	</variable>
 	<group name="grupos" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{ide_accla}]]></groupExpression>
 		<groupHeader>
 			<band height="50">
 				<textField evaluationTime="Group" evaluationGroup="grupos">
-					<reportElement uuid="46694322-3a90-48be-94bc-357f22ace4da" x="83" y="10" width="384" height="14" printWhenGroupChanges="grupos"/>
+					<reportElement uuid="46694322-3a90-48be-94bc-357f22ace4da" x="73" y="10" width="387" height="14" printWhenGroupChanges="grupos"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["DETALLE DEL GRUPO: " + $F{nombre_accla}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="32808d0d-8f9b-4cf1-8b74-76ea2bec5af0" x="36" y="24" width="452" height="26"/>
+					<reportElement uuid="32808d0d-8f9b-4cf1-8b74-76ea2bec5af0" x="73" y="24" width="387" height="26"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -62,7 +82,7 @@ order by c.ide_accla]]>
 					<text><![CDATA[DETALLE DE LA CLASE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="67c470ef-5b97-4bb1-b44f-ec3c52babe65" x="488" y="24" width="57" height="26"/>
+					<reportElement uuid="67c470ef-5b97-4bb1-b44f-ec3c52babe65" x="688" y="24" width="57" height="26"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -75,7 +95,7 @@ order by c.ide_accla]]>
 					<text><![CDATA[VALOR DEPRECIACIÓN]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="014c87d5-0da4-41b6-b5ee-a6d9a5fae497" x="10" y="24" width="26" height="26"/>
+					<reportElement uuid="014c87d5-0da4-41b6-b5ee-a6d9a5fae497" x="0" y="24" width="26" height="26"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -87,12 +107,77 @@ order by c.ide_accla]]>
 					</textElement>
 					<text><![CDATA[Nro.]]></text>
 				</staticText>
+				<staticText>
+					<reportElement uuid="fe2a3dcc-e2ef-4760-9748-9a63cbbf49bb" x="26" y="24" width="47" height="26"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[IDE ACTIVO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6e050bc9-b107-425b-a8e0-321789a9ef5a" x="567" y="24" width="57" height="26"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR DE COMPRA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96744351-3389-4e56-87cd-80bccd03b5db" x="460" y="24" width="107" height="26"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CÓDIGO DE BARRAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3df622bd-68c0-4f19-956e-9aeefbeb9309" x="745" y="24" width="57" height="26"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR RESIDUAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f389b750-c556-4f79-8f6a-706fa3e4331e" x="624" y="24" width="64" height="26"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR DE  REPOSICIÓN]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="15">
+			<band height="16">
 				<textField>
-					<reportElement uuid="cdb7dbd6-347b-4e4e-a92f-b1b0b54eb0fa" x="488" y="0" width="57" height="12"/>
+					<reportElement uuid="cdb7dbd6-347b-4e4e-a92f-b1b0b54eb0fa" x="688" y="0" width="57" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -103,10 +188,10 @@ order by c.ide_accla]]>
 						<font size="7" isBold="true"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{suma_total}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{suma_total_dep}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="a5838699-17ae-4ce7-8002-0ca67e964e34" x="381" y="0" width="107" height="12"/>
+					<reportElement uuid="a5838699-17ae-4ce7-8002-0ca67e964e34" x="460" y="0" width="107" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -118,6 +203,48 @@ order by c.ide_accla]]>
 					</textElement>
 					<text><![CDATA[SUMA DE VALORES:]]></text>
 				</staticText>
+				<textField>
+					<reportElement uuid="5ab031c0-cec5-41e8-86a4-c211146d9a0c" x="567" y="0" width="57" height="12"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_valor_compra}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="17e2fc12-9e12-4626-b4f9-86b1cc97e902" x="624" y="0" width="64" height="12"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_valor_reps}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="bb1587ca-6ff2-431e-a788-8cd133034ede" x="745" y="0" width="57" height="12"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_valor_residual}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -125,11 +252,14 @@ order by c.ide_accla]]>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="60" splitType="Stretch">
+		<band height="80" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="d75463c1-5ca2-43a7-99f4-0a8ad047df13" x="0" y="0" width="240" height="60"/>
+				<reportElement uuid="d399078e-f59e-4d63-93a7-1fa49770d4a3" x="0" y="0" width="802" height="80"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="ide_empr">
 					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
@@ -146,22 +276,18 @@ order by c.ide_accla]]>
 				<subreportParameter name="p_usuario">
 					<subreportParameterExpression><![CDATA[$P{p_usuario}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_salesiana.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
 			</subreport>
-			<staticText>
-				<reportElement uuid="66b04eb2-8db1-4928-bf05-c9095d8c0055" x="240" y="37" width="315" height="23"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DETALLE POR GRUPOS ]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="fd207a9d-5ec0-44c8-83b1-a1321ec91623" stretchType="RelativeToBandHeight" x="36" y="0" width="452" height="12" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="fd207a9d-5ec0-44c8-83b1-a1321ec91623" stretchType="RelativeToBandHeight" x="73" y="0" width="387" height="12" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -175,7 +301,7 @@ order by c.ide_accla]]>
 				<textFieldExpression><![CDATA[$F{observacion_acafi}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="5c5f7f78-97f2-4ed5-9940-ba13e1c428ac" stretchType="RelativeToBandHeight" x="488" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="5c5f7f78-97f2-4ed5-9940-ba13e1c428ac" stretchType="RelativeToBandHeight" x="688" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -189,7 +315,7 @@ order by c.ide_accla]]>
 				<textFieldExpression><![CDATA[$F{valor_acdepr}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="bea891db-ea26-4b77-b01e-8d8490800e31" stretchType="RelativeToBandHeight" x="10" y="0" width="26" height="12" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="bea891db-ea26-4b77-b01e-8d8490800e31" stretchType="RelativeToBandHeight" x="0" y="0" width="26" height="12" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -201,50 +327,119 @@ order by c.ide_accla]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4b3e648d-5649-4ba9-a9cf-ee11a2708d3a" stretchType="RelativeToBandHeight" x="26" y="0" width="47" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_acafi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="02b8dfda-09be-4099-8fb2-4342db0c1480" stretchType="RelativeToBandHeight" x="460" y="0" width="107" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_barras_acafi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f48adeaf-1ecb-4ded-97ef-5d2d5a595875" stretchType="RelativeToBandHeight" x="567" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_compra_acafi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6a31c7ea-a0b4-4aec-8731-f2baa2cbef7c" stretchType="RelativeToBandHeight" x="745" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_residual}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="453f10bb-fa96-4fca-9830-4ed80f3ba239" stretchType="RelativeToBandHeight" x="624" y="0" width="64" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_reposicion_acafi}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="16" splitType="Stretch">
 			<line>
-				<reportElement uuid="2f42de69-fc62-4731-9144-59f1331acf9c" x="0" y="3" width="555" height="1"/>
+				<reportElement uuid="2f42de69-fc62-4731-9144-59f1331acf9c" x="0" y="3" width="802" height="1"/>
 			</line>
 			<textField pattern="dd/MM/yyyy h.mm a">
-				<reportElement uuid="78f068ab-c7ff-4a21-a6af-4ff733e6dead" x="251" y="4" width="66" height="11"/>
+				<reportElement uuid="78f068ab-c7ff-4a21-a6af-4ff733e6dead" x="401" y="5" width="66" height="11"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement uuid="1d738b8c-8545-4d84-98c0-725f234b4126" positionType="Float" x="517" y="3" width="38" height="12"/>
+				<reportElement uuid="1d738b8c-8545-4d84-98c0-725f234b4126" positionType="Float" x="764" y="5" width="38" height="11"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="b520851c-43e7-4a1f-8749-8dcc2165b96c" positionType="Float" x="467" y="3" width="48" height="12"/>
+				<reportElement uuid="b520851c-43e7-4a1f-8749-8dcc2165b96c" positionType="Float" x="714" y="5" width="48" height="11"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="711d70bd-0490-435a-a219-d5cdc2f27322" x="66" y="4" width="50" height="11"/>
+				<reportElement uuid="711d70bd-0490-435a-a219-d5cdc2f27322" x="66" y="5" width="50" height="11"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_usuario}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="d3105a83-6678-445c-aac5-cba4a6c4480a" x="226" y="4" width="25" height="11"/>
+				<reportElement uuid="d3105a83-6678-445c-aac5-cba4a6c4480a" x="376" y="5" width="25" height="11"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b91d48c0-6556-4fd4-bdfb-e4d90f548889" x="0" y="4" width="66" height="11"/>
+				<reportElement uuid="b91d48c0-6556-4fd4-bdfb-e4d90f548889" x="0" y="5" width="66" height="11"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
@@ -266,7 +461,7 @@ order by c.ide_accla]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["TOTAL DE DETALLES: " + $V{total_detalles} ]]></textFieldExpression>
+				<textFieldExpression><![CDATA["TOTAL DE DETALLES: " + $V{total_detalles}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
