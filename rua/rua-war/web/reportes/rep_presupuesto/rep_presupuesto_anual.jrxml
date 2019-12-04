@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b884a89-d067-4769-8f9b-d0eed3343e6f">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="104"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<parameter name="pide_anio" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select a.ide_pranu,a.ide_prpro,a.ide_geani,nom_geani,valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf,
-cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,detalle_prfuf
+cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,detalle_prfuf,
+valor_codificado_pranu - valor_eje_comprometido_pranu as saldo_compromiso, valor_codificado_pranu - valor_devengado_pranu as saldo_devengado
 from pre_anual a, (
 select a.ide_prpro,cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad
 from pre_programa a, (
@@ -32,14 +33,12 @@ and a.ide_geani =d.ide_geani
 and a.ide_geani =$P{pide_anio}
 order by cod_programa_prpro]]>
 	</queryString>
-	<field name="ide_pranu" class="java.lang.Long">
-		<fieldDescription><![CDATA[Define la clave primaria de la tabla pre_anual.]]></fieldDescription>
-	</field>
+	<field name="ide_pranu" class="java.lang.Long"/>
 	<field name="ide_prpro" class="java.lang.Long">
 		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla pre_programa]]></fieldDescription>
 	</field>
 	<field name="ide_geani" class="java.lang.Long">
-		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+		<fieldDescription><![CDATA[ide_geani]]></fieldDescription>
 	</field>
 	<field name="nom_geani" class="java.lang.String"/>
 	<field name="valor_reformado_pranu" class="java.math.BigDecimal"/>
@@ -59,6 +58,8 @@ order by cod_programa_prpro]]>
 	<field name="detalle_prfuf" class="java.lang.String">
 		<fieldDescription><![CDATA[detalle_prfuf]]></fieldDescription>
 	</field>
+	<field name="saldo_compromiso" class="java.math.BigDecimal"/>
+	<field name="saldo_devengado" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -174,7 +175,7 @@ order by cod_programa_prpro]]>
 				<text><![CDATA[ASIG. INICIAL:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="97998eaf-708c-4f9c-8a54-17543651df94" x="671" y="12" width="73" height="12"/>
+				<reportElement uuid="97998eaf-708c-4f9c-8a54-17543651df94" x="671" y="12" width="73" height="13"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
@@ -247,32 +248,60 @@ order by cod_programa_prpro]]>
 				<textFieldExpression><![CDATA[$F{detalle_subactividad}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="65712b7a-a7e5-40cc-a868-21df501e4047" x="741" y="13" width="60" height="12"/>
+				<reportElement uuid="65712b7a-a7e5-40cc-a868-21df501e4047" x="744" y="13" width="57" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_reformado_pranu}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="72a54fc4-089d-4782-8e5f-d4b9feaed854" x="586" y="25" width="88" height="12"/>
+				<reportElement uuid="72a54fc4-089d-4782-8e5f-d4b9feaed854" x="586" y="25" width="82" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_codificado_pranu}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="09a8a51a-f1c2-4b46-9576-7c7bee7d5727" x="586" y="37" width="88" height="12"/>
+				<reportElement uuid="09a8a51a-f1c2-4b46-9576-7c7bee7d5727" x="586" y="37" width="82" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_eje_comprometido_pranu}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="4e9dc17c-ef55-418d-ae21-ac1ec14af9e0" x="586" y="49" width="88" height="12"/>
+				<reportElement uuid="4e9dc17c-ef55-418d-ae21-ac1ec14af9e0" x="586" y="49" width="82" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_devengado_pranu}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f47a2e31-0bd1-4983-b520-b6b8ccc9af0a" x="671" y="37" width="70" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SAL. COMPROMISO: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8ddc682-632f-48df-b6d4-97f8f5b91183" x="671" y="49" width="70" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SAL. DEVENGADO: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="dc7de409-a979-47de-b3e2-982539d7c3ca" x="744" y="37" width="57" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4e61d078-d3e8-4c62-9a29-5886af340caa" x="744" y="49" width="56" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_devengado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
