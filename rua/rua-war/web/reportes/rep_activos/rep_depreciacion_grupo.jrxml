@@ -15,14 +15,15 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select  ide_acafi, ide_acdepr  ,ide_accla,nombre_accla, valor_compra_acafi, valor_reposicion_acafi, valor_acdepr, valor_compra_acafi+valor_reposicion_acafi-valor_acdepr as valor_residual
+		<![CDATA[select  ide_acafi, ide_acdepr  ,ide_accla,nombre_accla, valor_compra_acafi, valor_reposicion_acafi, valor_acdepr, valor_compra_acafi+valor_reposicion_acafi-valor_acdepr as valor_residual, vida_util_accla
 from (
-select b.ide_acdepr, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr, a.valor_compra_acafi, a.valor_reposicion_acafi from act_activo_fijo a
+select c.vida_util_accla,b.ide_acdepr, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr, a.valor_compra_acafi, a.valor_reposicion_acafi from act_activo_fijo a
 left join act_depreciacion b on a.ide_acafi = b.ide_acafi
 left join act_clase_activo c on a.ide_accla = c.ide_accla
 where fecha_acdepr <= cast ($P{fecha_ingresar} as date)
 order by c.ide_accla
-)a]]>
+)a
+]]>
 	</queryString>
 	<field name="ide_acafi" class="java.lang.Long"/>
 	<field name="ide_acdepr" class="java.lang.Long"/>
@@ -32,6 +33,7 @@ order by c.ide_accla
 	<field name="valor_reposicion_acafi" class="java.math.BigDecimal"/>
 	<field name="valor_acdepr" class="java.math.BigDecimal"/>
 	<field name="valor_residual" class="java.math.BigDecimal"/>
+	<field name="vida_util_accla" class="java.lang.Integer"/>
 	<variable name="total_totales_dep" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor_acdepr}]]></variableExpression>
 	</variable>
@@ -67,7 +69,7 @@ order by c.ide_accla
 		<groupFooter>
 			<band height="12">
 				<textField>
-					<reportElement uuid="6f65338a-8f84-4687-90c2-2f668ec03777" x="128" y="0" width="136" height="12"/>
+					<reportElement uuid="6f65338a-8f84-4687-90c2-2f668ec03777" x="100" y="0" width="136" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -81,7 +83,7 @@ order by c.ide_accla
 					<textFieldExpression><![CDATA[$F{nombre_accla}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="1a8d6b26-9fe6-4b24-a2f9-cfe1a9ed3af7" x="388" y="0" width="62" height="12"/>
+					<reportElement uuid="1a8d6b26-9fe6-4b24-a2f9-cfe1a9ed3af7" x="418" y="0" width="62" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -95,7 +97,7 @@ order by c.ide_accla
 					<textFieldExpression><![CDATA[$V{total_valor_depre}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="bc5f3ac2-d726-4ec1-9fa2-a357ccf58b2e" x="43" y="0" width="85" height="12"/>
+					<reportElement uuid="bc5f3ac2-d726-4ec1-9fa2-a357ccf58b2e" x="15" y="0" width="85" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -108,7 +110,7 @@ order by c.ide_accla
 					<textFieldExpression><![CDATA[$V{cantidad}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="bb6ebae5-6bf8-4fe9-897e-1b9a5b7a4f74" x="264" y="0" width="62" height="12"/>
+					<reportElement uuid="bb6ebae5-6bf8-4fe9-897e-1b9a5b7a4f74" x="294" y="0" width="62" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -122,7 +124,7 @@ order by c.ide_accla
 					<textFieldExpression><![CDATA[$V{total_valor_compra}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="a86148bb-dbae-41b1-9d56-f532d3dbff3c" x="326" y="0" width="62" height="12"/>
+					<reportElement uuid="a86148bb-dbae-41b1-9d56-f532d3dbff3c" x="356" y="0" width="62" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -136,7 +138,7 @@ order by c.ide_accla
 					<textFieldExpression><![CDATA[$V{total_valor_repos}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="e71296fc-98e1-46f6-88d8-6bc6aded2cce" x="450" y="0" width="61" height="12"/>
+					<reportElement uuid="e71296fc-98e1-46f6-88d8-6bc6aded2cce" x="480" y="0" width="61" height="12"/>
 					<box>
 						<topPen lineWidth="0.75"/>
 						<leftPen lineWidth="0.75"/>
@@ -148,6 +150,19 @@ order by c.ide_accla
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{total_valor_residual}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="a21a447a-ddd9-4a93-914a-e001706960fb" x="236" y="0" width="58" height="12"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vida_util_accla}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -196,7 +211,7 @@ order by c.ide_accla
 	<columnHeader>
 		<band height="31" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="12a14fdd-cbc7-4262-bef7-895c78a0d3f2" x="128" y="9" width="136" height="22"/>
+				<reportElement uuid="12a14fdd-cbc7-4262-bef7-895c78a0d3f2" x="100" y="9" width="136" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -209,7 +224,7 @@ order by c.ide_accla
 				<text><![CDATA[NOM. CLASE DE ACTIVOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="90be009f-3582-42a8-82fb-23c03e0660e0" x="388" y="9" width="62" height="22"/>
+				<reportElement uuid="90be009f-3582-42a8-82fb-23c03e0660e0" x="418" y="9" width="62" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -222,7 +237,7 @@ order by c.ide_accla
 				<text><![CDATA[VALOR DEPRECIACIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4cabde13-5504-4e13-b431-e0546375f7c2" x="43" y="9" width="85" height="22"/>
+				<reportElement uuid="4cabde13-5504-4e13-b431-e0546375f7c2" x="15" y="9" width="85" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -235,7 +250,7 @@ order by c.ide_accla
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="78aac8bb-cfca-48d3-8efd-4bcb687ef4d5" x="326" y="9" width="62" height="22"/>
+				<reportElement uuid="78aac8bb-cfca-48d3-8efd-4bcb687ef4d5" x="356" y="9" width="62" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -248,7 +263,7 @@ order by c.ide_accla
 				<text><![CDATA[VALOR DE REPOSICIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="18a51715-46ec-4177-9763-f3a470f8245b" x="264" y="9" width="62" height="22"/>
+				<reportElement uuid="18a51715-46ec-4177-9763-f3a470f8245b" x="294" y="9" width="62" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -261,7 +276,7 @@ order by c.ide_accla
 				<text><![CDATA[VALOR DE COMPRA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a687a423-904a-41cf-8b5c-2779a80591b7" x="450" y="9" width="61" height="22"/>
+				<reportElement uuid="a687a423-904a-41cf-8b5c-2779a80591b7" x="480" y="9" width="61" height="22"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -272,6 +287,19 @@ order by c.ide_accla
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VALOR RESIDUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="decdd00d-3520-4225-91c3-117b69e89f9b" x="236" y="9" width="58" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑOS DEPRECIO]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
