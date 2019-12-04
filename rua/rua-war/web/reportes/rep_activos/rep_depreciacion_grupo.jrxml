@@ -62,86 +62,7 @@ order by c.ide_accla
 	<group name="activo">
 		<groupExpression><![CDATA[$F{ide_accla}]]></groupExpression>
 		<groupHeader>
-			<band height="22">
-				<staticText>
-					<reportElement uuid="12a14fdd-cbc7-4262-bef7-895c78a0d3f2" x="128" y="0" width="136" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[NOM. CLASE DE ACTIVOS]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="90be009f-3582-42a8-82fb-23c03e0660e0" x="388" y="0" width="62" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[VALOR DEPRECIACIÓN]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="4cabde13-5504-4e13-b431-e0546375f7c2" x="43" y="0" width="85" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[CANTIDAD]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="78aac8bb-cfca-48d3-8efd-4bcb687ef4d5" x="326" y="0" width="62" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[VALOR DE REPOSICIÓN]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="18a51715-46ec-4177-9763-f3a470f8245b" x="264" y="0" width="62" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[VALOR DE COMPRA]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="a687a423-904a-41cf-8b5c-2779a80591b7" x="450" y="0" width="61" height="22"/>
-					<box>
-						<topPen lineWidth="0.75"/>
-						<leftPen lineWidth="0.75"/>
-						<bottomPen lineWidth="0.75"/>
-						<rightPen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="7" isBold="true"/>
-					</textElement>
-					<text><![CDATA[VALOR RESIDUAL]]></text>
-				</staticText>
-			</band>
+			<band/>
 		</groupHeader>
 		<groupFooter>
 			<band height="12">
@@ -273,7 +194,86 @@ order by c.ide_accla
 		</band>
 	</title>
 	<columnHeader>
-		<band height="8" splitType="Stretch"/>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="12a14fdd-cbc7-4262-bef7-895c78a0d3f2" x="128" y="9" width="136" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOM. CLASE DE ACTIVOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90be009f-3582-42a8-82fb-23c03e0660e0" x="388" y="9" width="62" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR DEPRECIACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4cabde13-5504-4e13-b431-e0546375f7c2" x="43" y="9" width="85" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78aac8bb-cfca-48d3-8efd-4bcb687ef4d5" x="326" y="9" width="62" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR DE REPOSICIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="18a51715-46ec-4177-9763-f3a470f8245b" x="264" y="9" width="62" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR DE COMPRA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a687a423-904a-41cf-8b5c-2779a80591b7" x="450" y="9" width="61" height="22"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR RESIDUAL]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<pageFooter>
 		<band height="15" splitType="Stretch">
