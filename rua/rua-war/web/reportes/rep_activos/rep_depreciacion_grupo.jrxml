@@ -355,7 +355,7 @@ order by c.ide_accla
 	<summary>
 		<band height="42" splitType="Stretch">
 			<textField>
-				<reportElement uuid="ee7ad9ac-0668-442f-b333-03b6362674b3" x="388" y="0" width="62" height="13"/>
+				<reportElement uuid="ee7ad9ac-0668-442f-b333-03b6362674b3" x="418" y="0" width="62" height="13"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -369,7 +369,7 @@ order by c.ide_accla
 				<textFieldExpression><![CDATA[$V{total_totales_dep}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e8044dba-860a-4d94-91ff-b07049c998ce" x="128" y="0" width="136" height="13"/>
+				<reportElement uuid="e8044dba-860a-4d94-91ff-b07049c998ce" x="100" y="0" width="194" height="13"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -382,7 +382,7 @@ order by c.ide_accla
 				<text><![CDATA[TOTAL DE TOTALES: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="a2aabda3-a077-4cde-9d53-ea445fd2aeff" x="264" y="0" width="62" height="13"/>
+				<reportElement uuid="a2aabda3-a077-4cde-9d53-ea445fd2aeff" x="294" y="0" width="62" height="13"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -396,7 +396,7 @@ order by c.ide_accla
 				<textFieldExpression><![CDATA[$V{total_totales_compra}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9bbd2c20-7d9b-4f87-a61e-5b9ec8cb1ddc" x="326" y="0" width="62" height="13"/>
+				<reportElement uuid="9bbd2c20-7d9b-4f87-a61e-5b9ec8cb1ddc" x="356" y="0" width="62" height="13"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -410,7 +410,7 @@ order by c.ide_accla
 				<textFieldExpression><![CDATA[$V{total_totales_reps}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="155dd071-6aa9-46d3-b65a-f5b702fcdc3a" x="450" y="0" width="61" height="13"/>
+				<reportElement uuid="155dd071-6aa9-46d3-b65a-f5b702fcdc3a" x="480" y="0" width="61" height="13"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
