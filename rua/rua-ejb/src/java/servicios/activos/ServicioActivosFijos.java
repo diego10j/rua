@@ -355,6 +355,7 @@ public class ServicioActivosFijos extends ServicioBase {
         sql += "select ide_acdepr,observacion_acafi,fecha_acdepr,valor_acdepr\n"
                 + "from act_depreciacion a, act_activo_fijo b\n"
                 + "where a.ide_acafi= b.ide_acafi and validado_depre_acdepr in (" + estado + ") order by observacion_acafi";
+      //System.out.println("  getsqlDepreciadosNoAprobados "+sql);
         return sql;
     }
 
