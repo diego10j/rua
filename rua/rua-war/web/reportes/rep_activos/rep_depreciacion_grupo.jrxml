@@ -15,18 +15,18 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select  ide_acafi, ide_acdepr  ,ide_accla,nombre_accla, valor_compra_acafi, valor_reposicion_acafi, valor_acdepr, valor_compra_acafi+valor_reposicion_acafi-valor_acdepr as valor_residual, vida_util_accla
+		<![CDATA[select  ide_acafi ,ide_accla,nombre_accla, valor_compra_acafi, valor_reposicion_acafi,sum( valor_acdepr) as valor_acdepr, valor_compra_acafi+valor_reposicion_acafi-sum(valor_acdepr) as valor_residual, vida_util_accla
 from (
 select c.vida_util_accla,b.ide_acdepr, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr, a.valor_compra_acafi, a.valor_reposicion_acafi from act_activo_fijo a
 left join act_depreciacion b on a.ide_acafi = b.ide_acafi
 left join act_clase_activo c on a.ide_accla = c.ide_accla
 where fecha_acdepr <= cast ($P{fecha_ingresar} as date)
 order by c.ide_accla
-)a
-]]>
+)a group by ide_acafi,ide_accla,nombre_accla,valor_compra_acafi, valor_reposicion_acafi,vida_util_accla
+
+order by ide_accla]]>
 	</queryString>
 	<field name="ide_acafi" class="java.lang.Long"/>
-	<field name="ide_acdepr" class="java.lang.Long"/>
 	<field name="ide_accla" class="java.lang.Integer"/>
 	<field name="nombre_accla" class="java.lang.String"/>
 	<field name="valor_compra_acafi" class="java.math.BigDecimal"/>
@@ -299,7 +299,7 @@ order by c.ide_accla
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[AÑOS DEPRECIO]]></text>
+				<text><![CDATA[AÑOS DEPRECIACIÓN]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

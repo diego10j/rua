@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_grupo_depre" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7f1c8ef8-b358-4e71-83a2-a4f55465b0af">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="106"/>
+	<property name="ireport.x" value="53"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\SISTEMA\\Documents\\rua_salesiana\\trunk\\rua\\rua-war\\web\\reportes\\rep_sistema\\"]]></defaultValueExpression>
@@ -21,7 +21,7 @@
 		<![CDATA[select a.observacion_acafi, a.ide_acafi, c.ide_accla, c.nombre_accla, b.valor_acdepr, a.valor_compra_acafi, a.fecha_compra_acafi, a.codigo_barras_acafi, a.valor_reposicion_acafi, c.vida_util_accla
 ,valor_compra_acafi+valor_reposicion_acafi-valor_acdepr as valor_residual
 from act_activo_fijo a
-left join (select ide_acafi,sum(valor_acdepr) as valor_acdepr from act_depreciacion where fecha_acdepr <= cast ($P{fecha_ingresar} as date) group by  ide_acafi ) b on a.ide_acafi = b.ide_acafi
+inner join (select ide_acafi,sum(valor_acdepr) as valor_acdepr from act_depreciacion where fecha_acdepr <= cast ($P{fecha_ingresar} as date) group by  ide_acafi ) b on a.ide_acafi = b.ide_acafi
 left join act_clase_activo c on a.ide_accla = c.ide_accla
 where a.ide_accla in ( $P!{grupo_dep})
 order by c.ide_accla]]>
