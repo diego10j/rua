@@ -632,15 +632,18 @@ public class pre_activos_fijos extends Pantalla {
 
         for (int i = 0; i < tab_no_aprobados.getTotalFilas(); i++) {
             utilitario.getConexion().ejecutarSql("update act_depreciacion set validado_depre_acdepr=true where ide_acdepr=" + tab_no_aprobados.getValor(i, "ide_acdepr"));
-            TablaGenerica tab_activo = utilitario.consultar("select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado,\n"
-                    + "(valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien,\n"
-                    + "( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre\n"
-                    + "from act_activo_fijo a,(\n"
-                    + "select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi") + " and validado_depre_acdepr=true group by ide_acafi\n"
-                    + ") b\n"
-                    + "where a.ide_acafi=b.ide_acafi");
+            String sql_aprueba="select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado, " +
+"                    (valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien, " +
+"                    ( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre " +
+"                    from act_activo_fijo a,( " +
+"                    select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi") + " and validado_depre_acdepr=true group by ide_acafi " +
+"                    ) b " +
+"                    where a.ide_acafi=b.ide_acafi";
+            TablaGenerica tab_activo = utilitario.consultar(sql_aprueba);
+           // System.out.println("  sql_aprueba "+sql_aprueba);
             String sql_activo = "update act_activo_fijo set valor_depreciado_acafi=" + tab_activo.getValor("valor_actual_bien") + ", deprecia_acafi ='" + tab_activo.getValor("finalizado_depre") + "' where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi");
             utilitario.getConexion().ejecutarSql(sql_activo);
+            utilitario.getConexion().desconectar(true);
             //System.out.println("  acualizadd "+sql_activo);
 
         }
