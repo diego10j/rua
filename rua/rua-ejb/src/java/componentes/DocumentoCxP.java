@@ -920,6 +920,7 @@ public class DocumentoCxP extends Dialogo {
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setAncho(13);
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setNombreVisual("RUC");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
+        tab_com_reembolso.getColumna("motivo_nc_cpcfa");
         ///////tab_com_reembolso.getColumna("motivo_nc_cpcfa").setComentario("CÉDULOA O R.U.C");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMetodoChangeRuta(tab_cab_documento.getRuta() + ".validarIdentificacionReembolso");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setRequerida(true);
