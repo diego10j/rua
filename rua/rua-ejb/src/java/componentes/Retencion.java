@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import paq_contabilidad.ejb.ServicioContabilidad;
 import servicios.ceo.ServicioComprobanteElectronico;
 import servicios.contabilidad.ServicioConfiguracion;
 import servicios.contabilidad.ServicioRetenciones;
@@ -64,6 +65,9 @@ public class Retencion extends Dialogo {
 
     @EJB
     private final ServicioCliente ser_cliente = (ServicioCliente) utilitario.instanciarEJB(ServicioCliente.class);
+    @EJB
+    private final ServicioContabilidad ser_contabilidad = (ServicioContabilidad) utilitario.instanciarEJB(ServicioContabilidad.class);
+
 
     private final AreaTexto ate_observacion = new AreaTexto();
     private final Texto tex_total = new Texto();
@@ -627,10 +631,10 @@ public class Retencion extends Dialogo {
         tab_cb_retencion.setValor("correo_cncre", correo_ret);
 
         tab_dt_retencion.setId("tab_dt_retencion");
-        tab_dt_retencion.setRuta("pre_index.clase." + getId());
+        tab_dt_retencion.setRuta("pre_index.clase." + getId());   
         tab_dt_retencion.setTabla("con_detall_retenc", "ide_cndre", 999);
         tab_dt_retencion.setCondicion("ide_cndre=-1");
-        tab_dt_retencion.getColumna("ide_cncim").setCombo("con_cabece_impues", "ide_cncim", "nombre_cncim,casillero_cncim", "");
+        tab_dt_retencion.getColumna("ide_cncim").setCombo(ser_contabilidad.getCodigosImpuestosSri("true"));       
         tab_dt_retencion.getColumna("ide_cncim").setAutoCompletar();
         tab_dt_retencion.getColumna("ide_cncim").setNombreVisual("IMPUESTO");
         tab_dt_retencion.getColumna("ide_cncim").setMetodoChangeRuta("pre_index.clase." + this.getId() + ".cambioImpuesto");
