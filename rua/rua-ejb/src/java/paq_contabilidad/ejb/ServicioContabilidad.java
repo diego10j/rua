@@ -600,4 +600,16 @@ public class ServicioContabilidad {
         return sql;
     }
 
+    /**
+     * Metodo que devuelve los impuestos activos e inactivos
+     *    
+     * @param estado recibe el estado del impuesto
+     * @return String sql de los impuestos del codigo del SRI
+     */
+    public String getCodigosImpuestosSri(String estado) {
+        String sql = "select ide_cncim, nombre_cncim, casillero_cncim from con_cabece_impues where activo_cncim in ("+estado+")";
+        return sql;
+    }
+
+
 }
