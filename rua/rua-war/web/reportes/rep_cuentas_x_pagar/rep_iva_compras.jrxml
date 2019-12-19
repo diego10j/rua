@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_ret_compras" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89fe452f-287d-4c3c-ade6-794101a2b484">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="317"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="579"/>
+	<property name="ireport.y" value="82"/>
 	<parameter name="ide_empr" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -16,11 +16,13 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/rua-war"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="sucursales" class="java.lang.String"/>
+	<parameter name="sucursales" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_cpcfa,nombre_cntdo,fecha_emisi_cpcfa, numero_cpcfa,
 nom_geper,identificac_geper,total_cpcfa,base_tarifa0_cpcfa, base_no_objeto_iva_cpcfa,
-base_grabada_cpcfa,valor_iva_cpcfa
+base_grabada_cpcfa,valor_iva_cpcfa, valor_ice_cpcfa
 from cxp_cabece_factur a
 inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join con_tipo_document c on a.ide_cntdo=c.ide_cntdo
@@ -31,7 +33,7 @@ and a.ide_sucu IN ($P!{sucursales})
 UNION
 select a.ide_cpcfa,nombre_cntdo,fecha_emisi_cpcfa, numero_cpcfa,
 nom_geper,identificac_geper,-1*total_cpcfa,-1*base_tarifa0_cpcfa,-1* base_no_objeto_iva_cpcfa,
--1*base_grabada_cpcfa,-1*valor_iva_cpcfa
+-1*base_grabada_cpcfa,-1*valor_iva_cpcfa, valor_ice_cpcfa
 from cxp_cabece_factur a
 inner join gen_persona b on a.ide_geper=b.ide_geper
 inner join con_tipo_document c on a.ide_cntdo=c.ide_cntdo
@@ -58,6 +60,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<field name="base_no_objeto_iva_cpcfa" class="java.math.BigDecimal"/>
 	<field name="base_grabada_cpcfa" class="java.math.BigDecimal"/>
 	<field name="valor_iva_cpcfa" class="java.math.BigDecimal"/>
+	<field name="valor_ice_cpcfa" class="java.math.BigDecimal"/>
 	<variable name="total_cpcfa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="impuesto" calculation="Sum">
 		<variableExpression><![CDATA[$F{total_cpcfa}]]></variableExpression>
 	</variable>
@@ -97,6 +100,12 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<variable name="base_grabada_cpcfa_3" class="java.math.BigDecimal" resetType="Group" resetGroup="impuesto" calculation="Sum">
 		<variableExpression><![CDATA[$F{base_grabada_cpcfa}]]></variableExpression>
 	</variable>
+	<variable name="valor_ice_cpcfa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="impuesto" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_ice_cpcfa}]]></variableExpression>
+	</variable>
+	<variable name="valor_ice_cpcfa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="impuesto" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_ice_cpcfa}]]></variableExpression>
+	</variable>
 	<group name="impuesto">
 		<groupExpression><![CDATA[$F{nombre_cntdo}]]></groupExpression>
 		<groupHeader>
@@ -112,33 +121,33 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="19">
+			<band height="18">
 				<line>
 					<reportElement uuid="a33c33b9-35c0-4df5-b0c6-c10b79cbb8d0" x="548" y="1" width="254" height="1"/>
 				</line>
 				<staticText>
-					<reportElement uuid="6ed089cf-0b3e-49c1-a285-dde1fd9db2b1" x="455" y="1" width="91" height="18"/>
+					<reportElement uuid="6ed089cf-0b3e-49c1-a285-dde1fd9db2b1" x="396" y="0" width="91" height="18"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[SubTotal :]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="068e2337-dbca-4d83-a2e2-4ec42acc647f" x="546" y="1" width="61" height="17"/>
+					<reportElement uuid="068e2337-dbca-4d83-a2e2-4ec42acc647f" x="488" y="0" width="61" height="17"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{total_cpcfa_1}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="7cdbf0ad-dcd8-4d7c-802a-cdac5fc3a14a" x="605" y="2" width="53" height="16"/>
+					<reportElement uuid="7cdbf0ad-dcd8-4d7c-802a-cdac5fc3a14a" x="548" y="1" width="53" height="16"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{base_tarifa0_cpcfa_1}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="f596507a-9a47-43a1-a56c-d02adfde70ea" x="658" y="1" width="47" height="17"/>
+					<reportElement uuid="f596507a-9a47-43a1-a56c-d02adfde70ea" x="600" y="1" width="47" height="17"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -152,11 +161,18 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<textFieldExpression><![CDATA[$V{valor_iva_cpcfa_2}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="b70606ce-4a96-42b3-bb44-961dea46378a" x="705" y="2" width="51" height="16"/>
+					<reportElement uuid="b70606ce-4a96-42b3-bb44-961dea46378a" x="646" y="2" width="51" height="16"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{base_grabada_cpcfa_3}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="0af4c74a-d976-41f2-bcd6-df5ec4b45a91" x="695" y="2" width="62" height="16"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{valor_ice_cpcfa_1}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -273,28 +289,28 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<text><![CDATA[NOMBRE DEL PROVEEDOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="35563fc6-5374-42a7-bb26-16568a7bbbd1" x="548" y="2" width="59" height="19"/>
+				<reportElement uuid="35563fc6-5374-42a7-bb26-16568a7bbbd1" x="490" y="0" width="59" height="19"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL + IVA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7518a1bc-e844-4a50-a26e-3cf9348d1009" x="607" y="2" width="51" height="19"/>
+				<reportElement uuid="7518a1bc-e844-4a50-a26e-3cf9348d1009" x="549" y="1" width="51" height="19"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[BASE 0%]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="127cc2b6-ac01-4a2a-9552-51eed35ba195" x="658" y="0" width="47" height="21"/>
+				<reportElement uuid="127cc2b6-ac01-4a2a-9552-51eed35ba195" x="600" y="0" width="47" height="21"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[BASE EXCENTA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4cb73bc9-464f-4040-9f63-453e9749b6a1" x="705" y="2" width="51" height="19"/>
+				<reportElement uuid="4cb73bc9-464f-4040-9f63-453e9749b6a1" x="647" y="1" width="51" height="19"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
@@ -312,6 +328,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9621d441-6f67-4f80-9413-b4a44d915f87" x="698" y="1" width="58" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE ICE]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -340,22 +363,22 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c737269a-cf11-4e12-ad80-f967698058dc" x="548" y="0" width="59" height="15"/>
+				<reportElement uuid="c737269a-cf11-4e12-ad80-f967698058dc" x="489" y="0" width="59" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{total_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8988c7d9-46c1-49c4-a494-7dc2a7b8a138" x="607" y="0" width="51" height="15"/>
+				<reportElement uuid="8988c7d9-46c1-49c4-a494-7dc2a7b8a138" x="549" y="0" width="51" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{base_tarifa0_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c6a0d0a1-773a-43b3-bdb9-04b870558919" x="658" y="0" width="47" height="15"/>
+				<reportElement uuid="c6a0d0a1-773a-43b3-bdb9-04b870558919" x="599" y="0" width="47" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{base_no_objeto_iva_cpcfa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="23704729-a5f7-474e-92e7-c94ee739b22e" x="705" y="0" width="51" height="15"/>
+				<reportElement uuid="23704729-a5f7-474e-92e7-c94ee739b22e" x="645" y="0" width="51" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{base_grabada_cpcfa}]]></textFieldExpression>
 			</textField>
@@ -363,6 +386,11 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<reportElement uuid="54c68937-54cd-40cd-9eb1-bd0f395060f9" x="756" y="0" width="45" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{valor_iva_cpcfa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="938b9d47-c446-48e1-bbe0-c989b197b9ae" x="697" y="0" width="60" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_ice_cpcfa}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -383,7 +411,7 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 	<summary>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="3fcc909c-f1d5-41a2-b2cd-3a677fab2ac7" x="455" y="1" width="91" height="18"/>
+				<reportElement uuid="3fcc909c-f1d5-41a2-b2cd-3a677fab2ac7" x="394" y="1" width="91" height="18"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
@@ -396,28 +424,28 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 				<reportElement uuid="e0e0bf6b-3a8a-4534-9576-7a4fc188d786" x="0" y="1" width="802" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="2e5cef2c-05cc-4179-b0e1-0d5e013a991e" x="546" y="2" width="61" height="16"/>
+				<reportElement uuid="2e5cef2c-05cc-4179-b0e1-0d5e013a991e" x="485" y="2" width="61" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{total_cpcfa_2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7c4b97f4-64c6-450e-a9d1-cbe325f9d9ba" x="607" y="2" width="51" height="16"/>
+				<reportElement uuid="7c4b97f4-64c6-450e-a9d1-cbe325f9d9ba" x="545" y="2" width="51" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{base_tarifa0_cpcfa_2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="abdabf8b-2e57-4a3c-9bd1-88203c36f090" x="658" y="2" width="47" height="16"/>
+				<reportElement uuid="abdabf8b-2e57-4a3c-9bd1-88203c36f090" x="595" y="2" width="50" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{base_no_objeto_iva_cpcfa_3}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="40580496-cbaa-4a5d-95fd-67817043555a" x="705" y="2" width="51" height="16"/>
+				<reportElement uuid="40580496-cbaa-4a5d-95fd-67817043555a" x="644" y="2" width="51" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
@@ -429,6 +457,13 @@ este campo es para guardar la cedula del empleado]]></fieldDescription>
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{valor_iva_cpcfa_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9b6e5cb4-c55a-4913-a63a-6d0f272b210f" x="694" y="2" width="62" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{valor_ice_cpcfa_2}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
