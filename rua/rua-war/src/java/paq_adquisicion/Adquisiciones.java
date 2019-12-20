@@ -459,16 +459,16 @@ public class Adquisiciones extends Pantalla {
         }
     }
 
-    public void imprimirSolicitud() {
+    public void imprimirSolicitud(){
         if (tab_adquisiones.getValorSeleccionado() != null) {
             ///////////AQUI ABRE EL REPORTE
             Map parametros = new HashMap();
             parametros.put("pide_requisicion", Integer.parseInt(tab_adquisiones.getValor("IDE_ADCOMP")));
             parametros.put("p_usuario", utilitario.getVariable("NICK"));
-            parametros.put("plocalidad", "SALESIANA");
+            parametros.put("ide_adcomp", Integer.parseInt(tab_adquisiones.getValor("ide_adcomp")));
             //System.out.println(" " + str_titulos);
             vipdf_solicitud.setVisualizarPDF("rep_compras/rep_solicitudcompra.jasper", parametros);
-            vipdf_solicitud.dibujar();
+            vipdf_solicitud.dibujar();           
             utilitario.addUpdate("vipdf_solicitud");
         } else {
             utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
