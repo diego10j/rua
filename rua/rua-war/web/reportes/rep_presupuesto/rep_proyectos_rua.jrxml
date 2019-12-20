@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_compromiso" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="231c2868-b028-4538-b501-b71df16fa373">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="35"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="130"/>
+	<property name="ireport.y" value="131"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -32,11 +32,11 @@
 		<defaultValueExpression><![CDATA["1,2,3"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select ide_producto,codigo_programa,detalle_programa,detalle_producto,detalle_actividad,detalle_subactividad,sum(comprometido_prpot) as comprometido
+		<![CDATA[select ide_producto,codigo_programa,detalle_programa,detalle_producto,detalle_actividad,detalle_subactividad,sum(comprometido_prmen) as comprometido,sum(devengado_prmen) as devengado
 from (
-select a.ide_pranu,ide_prtra,a.ide_prpro,a.ide_geani,nom_geani,valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf,
+select a.ide_pranu,a.ide_prpro,a.ide_geani,nom_geani,valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf,
 cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,detalle_prfuf,codigo_programa,ide_programa,
-observaciones_prtra,fecha_tramite_prtra,comprometido_prpot,codigo_actividad,codigo_subactividad,codigo_clasificador_prcla,descripcion_clasificador_prcla,ide_prcla,ide_producto
+comprometido_prmen,devengado_prmen,codigo_actividad,codigo_subactividad,codigo_clasificador_prcla,descripcion_clasificador_prcla,ide_prcla,ide_producto
 
 from (
 select a.ide_pranu,a.ide_prpro,a.ide_geani,nom_geani,valor_reformado_pranu,valor_inicial_pranu,valor_codificado_pranu,valor_devengado_pranu,valor_eje_comprometido_pranu,a.ide_prfuf,
@@ -69,16 +69,12 @@ and a.ide_geani =d.ide_geani
 and a.ide_geani = $P{panio}
 ) a
 left join (
-select t.ide_prtra, t.ide_geani, t.fecha_tramite_prtra, t.fecha_oficio_prtra, t.observaciones_prtra, t.total_compromiso_prtra,
-p.ide_prpot, p.comprometido_prpot, p.saldo_comprometido_prpot, p.ide_pranu
-from pre_tramite as t
-join pre_poa_tramite as p
-on t.ide_prtra = p.ide_prtra
+select a.ide_pranu,comprometido_prmen,devengado_prmen,ide_geani,fecha_ejecucion_prmen from pre_mensual a, pre_anual b where a.ide_pranu=b.ide_pranu
 ) b on a.ide_pranu = b.ide_pranu
 where a.ide_geani = b.ide_geani
 and ide_programa in ($P!{pprograma})
-and fecha_tramite_prtra between cast($P{pfecha_inicial} as date) and cast($P{pfecha_final} as date)
-order by detalle_programa,codigo_clasificador_prcla,codigo_subactividad,fecha_tramite_prtra
+and fecha_ejecucion_prmen between cast($P{pfecha_inicial} as date) and cast($P{pfecha_final} as date)
+order by detalle_programa,codigo_clasificador_prcla,codigo_subactividad,fecha_ejecucion_prmen
 ) a
 group by ide_producto,codigo_programa,detalle_producto,detalle_programa,detalle_actividad,detalle_subactividad
 order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad]]>
@@ -90,6 +86,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 	<field name="detalle_actividad" class="java.lang.String"/>
 	<field name="detalle_subactividad" class="java.lang.String"/>
 	<field name="comprometido" class="java.math.BigDecimal"/>
+	<field name="devengado" class="java.math.BigDecimal"/>
 	<variable name="vtotal_subactividad" class="java.math.BigDecimal" resetType="Group" resetGroup="subactividad" calculation="Sum">
 		<variableExpression><![CDATA[$F{comprometido}]]></variableExpression>
 	</variable>
@@ -98,6 +95,15 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 	</variable>
 	<variable name="vtotal_programa" class="java.math.BigDecimal" resetType="Group" resetGroup="programa" calculation="Sum">
 		<variableExpression><![CDATA[$F{comprometido}]]></variableExpression>
+	</variable>
+	<variable name="vtotal_subdeven" class="java.math.BigDecimal" resetType="Group" resetGroup="subactividad" calculation="Sum">
+		<variableExpression><![CDATA[$F{devengado}]]></variableExpression>
+	</variable>
+	<variable name="vtotal_partiddev" class="java.math.BigDecimal" resetType="Group" resetGroup="clasificador" calculation="Sum">
+		<variableExpression><![CDATA[$F{devengado}]]></variableExpression>
+	</variable>
+	<variable name="vtotal_progradev" class="java.math.BigDecimal" resetType="Group" resetGroup="programa" calculation="Sum">
+		<variableExpression><![CDATA[$F{devengado}]]></variableExpression>
 	</variable>
 	<group name="programa">
 		<groupExpression><![CDATA[$F{codigo_programa}]]></groupExpression>
@@ -134,7 +140,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 		<groupFooter>
 			<band height="20" splitType="Stretch">
 				<textField isBlankWhenNull="false">
-					<reportElement uuid="68324195-2776-438e-b39d-a89491fad856" key="textField" x="10" y="0" width="397" height="20"/>
+					<reportElement uuid="68324195-2776-438e-b39d-a89491fad856" key="textField" x="10" y="0" width="358" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -147,7 +153,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textFieldExpression><![CDATA["TOTAL: "+$F{detalle_programa}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="false">
-					<reportElement uuid="5ec6e920-a0c3-40e9-971c-a5f7ea765a05" key="textField" x="412" y="0" width="84" height="20"/>
+					<reportElement uuid="5ec6e920-a0c3-40e9-971c-a5f7ea765a05" key="textField" x="379" y="0" width="84" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -162,6 +168,19 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				<line>
 					<reportElement uuid="ea5753ac-a9e6-46af-bf9c-9c24ea625694" key="line-2" x="0" y="17" width="555" height="1"/>
 				</line>
+				<textField pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement uuid="5ec6e920-a0c3-40e9-971c-a5f7ea765a05" key="textField" x="463" y="0" width="84" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vtotal_progradev}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -200,7 +219,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 		<groupFooter>
 			<band height="20" splitType="Stretch">
 				<textField isBlankWhenNull="false">
-					<reportElement uuid="cf503e30-6fe9-4e8b-80b4-d1362f9238d3" key="textField" x="29" y="0" width="378" height="20"/>
+					<reportElement uuid="cf503e30-6fe9-4e8b-80b4-d1362f9238d3" key="textField" x="29" y="0" width="339" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -213,7 +232,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textFieldExpression><![CDATA["TOTAL: "+$F{detalle_producto}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="false">
-					<reportElement uuid="582e06b2-5cff-4fa0-8056-7371ebc67d68" key="textField" x="412" y="0" width="84" height="20"/>
+					<reportElement uuid="582e06b2-5cff-4fa0-8056-7371ebc67d68" key="textField" x="379" y="0" width="84" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -228,6 +247,19 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				<line>
 					<reportElement uuid="fea119c9-e612-4900-88a0-29166e169470" key="line-1" x="0" y="18" width="555" height="1"/>
 				</line>
+				<textField pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement uuid="582e06b2-5cff-4fa0-8056-7371ebc67d68" key="textField" x="463" y="0" width="84" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vtotal_partiddev}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -262,7 +294,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textFieldExpression><![CDATA[$F{detalle_actividad}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="057db066-673a-4ef2-8ae4-1e4ef7484a6d" key="staticText" x="46" y="27" width="358" height="15"/>
+					<reportElement uuid="057db066-673a-4ef2-8ae4-1e4ef7484a6d" key="staticText" x="31" y="27" width="337" height="15"/>
 					<box>
 						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -275,7 +307,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<text><![CDATA[SUB-ACTIVIDAD]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="3ac16b5e-8565-4645-8ca0-79602d02fa3a" key="staticText" x="407" y="27" width="89" height="15"/>
+					<reportElement uuid="3ac16b5e-8565-4645-8ca0-79602d02fa3a" key="staticText" x="377" y="27" width="89" height="15"/>
 					<box>
 						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -285,14 +317,27 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 					</textElement>
-					<text><![CDATA[V. COMPR.]]></text>
+					<text><![CDATA[COMPROMETIDO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3ac16b5e-8565-4645-8ca0-79602d02fa3a" key="staticText" x="466" y="27" width="86" height="15"/>
+					<box>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[DEVENGADO]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="40" splitType="Stretch">
 				<textField isBlankWhenNull="false">
-					<reportElement uuid="7adc0575-6e12-4497-a1d8-a4451aeaceb4" key="textField" x="32" y="4" width="375" height="20"/>
+					<reportElement uuid="7adc0575-6e12-4497-a1d8-a4451aeaceb4" key="textField" x="32" y="4" width="336" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -305,7 +350,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<textFieldExpression><![CDATA["TOTAL: "+$F{detalle_actividad}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="false">
-					<reportElement uuid="48dc59c3-aa44-4311-ac00-5cc39a287111" key="textField" x="412" y="4" width="84" height="20"/>
+					<reportElement uuid="48dc59c3-aa44-4311-ac00-5cc39a287111" key="textField" x="378" y="4" width="84" height="20"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -320,6 +365,19 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				<line>
 					<reportElement uuid="f0a9b8fd-3ff5-4a4b-8732-eced5dfc0d95" key="line" x="0" y="36" width="555" height="1"/>
 				</line>
+				<textField pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement uuid="48dc59c3-aa44-4311-ac00-5cc39a287111" key="textField" x="464" y="4" width="84" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vtotal_subdeven}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -385,7 +443,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="a611d7a9-a69b-4f90-b5e7-ef46cd141e41" key="textField" x="46" y="0" width="358" height="12"/>
+				<reportElement uuid="a611d7a9-a69b-4f90-b5e7-ef46cd141e41" key="textField" x="31" y="0" width="337" height="12"/>
 				<box>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -398,8 +456,8 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				<textFieldExpression><![CDATA[$F{detalle_subactividad}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="21ea8e55-c9fb-4a95-a345-b7efea8f706f" key="textField" x="407" y="0" width="89" height="12"/>
-				<box>
+				<reportElement uuid="21ea8e55-c9fb-4a95-a345-b7efea8f706f" key="textField" x="377" y="0" width="89" height="12"/>
+				<box rightPadding="3">
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -409,6 +467,19 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comprometido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="21ea8e55-c9fb-4a95-a345-b7efea8f706f" key="textField" x="466" y="0" width="86" height="12"/>
+				<box rightPadding="3">
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{devengado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
