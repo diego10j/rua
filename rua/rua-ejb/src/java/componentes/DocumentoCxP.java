@@ -267,7 +267,7 @@ public class DocumentoCxP extends Dialogo {
 
         tex_ice.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("valor_ice_cpcfa")));
         tex_otros.setValue(utilitario.getFormatoNumero(tab_cab_documento.getValor("otros_cpcfa")));
-        com_tipo_documento.setValue(tab_cab_factura.getValor("ide_cntdo")); 
+        com_tipo_documento.setValue(tab_cab_factura.getValor("ide_cntdo"));
         tab_det_documento.setCondicion("ide_cpcfa=" + ide_cpcfa);
         tab_det_documento.ejecutarSql();
         if (tab_cab_documento.getValor("ide_cncre") != null) {
@@ -1084,7 +1084,7 @@ public class DocumentoCxP extends Dialogo {
         utilitario.addUpdate("tab_creacion_cliente");
     }
 
-      public void seleccionarArchivoXML(FileUploadEvent event) {
+    public void seleccionarArchivoXML(FileUploadEvent event) {
 
         try {
 
@@ -1104,7 +1104,7 @@ public class DocumentoCxP extends Dialogo {
             } finally {
                 scanner.close();
             }
-            String xmlFactura =  fileContents.toString().replaceAll("&gt;", ">");
+            String xmlFactura = fileContents.toString().replaceAll("&gt;", ">");
             xmlFactura = xmlFactura.replaceAll("&lt;", "<");
             //Validaciones
             String codDoc = utilitario.getValorEtiqueta(xmlFactura, "codDoc");
@@ -1158,7 +1158,7 @@ public class DocumentoCxP extends Dialogo {
             utilitario.crearError("Error al Leer Factura XML", "en el método seleccionarArchivoXML()", ex);
         }
     }
-      
+
     public void abrirArchivoXML() {
         dia_cxp_xml.dibujar();
     }
@@ -1304,7 +1304,7 @@ public class DocumentoCxP extends Dialogo {
             tab_cab_documento.setValor("tarifa_iva_cpcfa", utilitario.getFormatoNumero(tarifaIVA));
             tab_cab_documento.setValor("dias_credito_cpcfa", String.valueOf(ser_cuentas_cxp.getDiasCreditoFormaPago(tab_cab_documento.getValor("ide_cndfp1"))));
 
-            if (validarDocumento()) { 
+            if (validarDocumento()) {
                 obteneAlterno104();
                 if (tab_cab_documento.guardar()) {
                     String ide_cccfa = tab_cab_documento.getValor("ide_cpcfa");
@@ -1670,9 +1670,9 @@ public class DocumentoCxP extends Dialogo {
                 tab_com_reembolso.setValor(i, "total_cpcfa", utilitario.getFormatoNumero(dou_baseiva + dou_base0 + dou_basenoobjeto + dou_iva));
             }
             //valida total factura con total reembolso
-            if (tab_cab_documento.getSumaColumna("total_cpcfa") != tab_com_reembolso.getSumaColumna("total_cpcfa")) {
+            if (!utilitario.getFormatoNumero(tab_cab_documento.getSumaColumna("total_cpcfa"), 2).equals(utilitario.getFormatoNumero(tab_com_reembolso.getSumaColumna("total_cpcfa"), 2))) {
 
-                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso : " + tab_cab_documento.getSumaColumna("total_cpcfa") + " es diferente que " + tab_com_reembolso.getSumaColumna("total_cpcfa"));
+                utilitario.agregarMensajeError("Error al guardar el Documento", "El total del Documento debe ser igual al total del Comprobante de Reembolso : " + utilitario.getFormatoNumero(tab_cab_documento.getSumaColumna("total_cpcfa"),2) + " es diferente que " + utilitario.getFormatoNumero(tab_com_reembolso.getSumaColumna("total_cpcfa"),2));
                 return false;
             }
 
