@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sup_presupuesto_mensual" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="12" bottomMargin="20" uuid="f7b03afe-3286-428f-94b5-1a0a83b77281">
+	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cnccc" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_prmen,a.ide_pranu,b.cuenta,devengado_prmen
+from pre_mensual a
+left join (
+select a.ide_pranu,cod_programa_prpro||' '||detalle_subactividad||' '||detalle_prfuf||' '||detalle_actividad as cuenta
+from pre_anual a, (
+                select a.ide_prpro,cod_programa_prpro,detalle_programa,detalle_proyecto,detalle_producto,detalle_actividad,detalle_subactividad,codigo_clasificador_prcla,descripcion_clasificador_prcla
+                from pre_programa a, (
+                select a.ide_prfup,codigo_subactividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto,
+                proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad,
+                detalle_prnfp as subactividad from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =5) a ,
+                (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_actividad,detalle_prfup as detalle_actividad,detalle_prnfp as actividad
+                from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =4) b,
+                (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_producto,detalle_prfup as detalle_producto,detalle_prnfp as producto
+                from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =3 ) c,
+                (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_proyecto,detalle_prfup as detalle_proyecto,detalle_prnfp as proyecto
+                from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =2) d,
+                (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_programa,detalle_prfup as detalle_programa,detalle_prnfp as programa
+                from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =1) e where a.pre_ide_prfup = b.ide_prfup
+                and b.pre_ide_prfup = c.ide_prfup and c.pre_ide_prfup = d.ide_prfup and d.pre_ide_prfup = e.ide_prfup
+                ) b,pre_clasificador c
+                where a.ide_prfup = b.ide_prfup
+                and a.ide_prcla = c.ide_prcla
+                ) b, pre_fuente_financiamiento c,gen_anio d
+                where a.ide_prpro = b.ide_prpro
+                and a.ide_prfuf = c.ide_prfuf
+                and a.ide_geani =d.ide_geani
+) b on a.ide_pranu=b.ide_pranu
+where ide_cnccc= $P{ide_cnccc}]]>
+	</queryString>
+	<field name="ide_prmen" class="java.lang.Long"/>
+	<field name="ide_pranu" class="java.lang.Long"/>
+	<field name="cuenta" class="java.lang.String"/>
+	<field name="devengado_prmen" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[este campo lleva el devengado tanto para ingresos como para gastos]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="03d4e426-2956-414f-b82d-a8deda4314ad" x="0" y="0" width="555" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EJECUCION PRESUPUESTARIA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="c0cc0b2d-15d8-4289-87f9-2b43954a5506" x="0" y="0" width="462" height="14"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRESUPUESTARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a61f0543-3696-49e3-a07e-bfcc3682d948" x="462" y="0" width="93" height="14"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVENGADO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="24c2b860-c5fc-422a-bb12-c45a0c8eb9b6" stretchType="RelativeToBandHeight" x="462" y="0" width="93" height="14"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{devengado_prmen}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="b7462142-a4b0-482d-827a-e502d214f795" stretchType="RelativeToBandHeight" x="0" y="0" width="462" height="14"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="128" splitType="Stretch">
+			<line>
+				<reportElement uuid="4f1b5975-87c0-4fc5-b453-a6f278f5a5d1" x="231" y="84" width="129" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="53" y="83" width="129" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="0d103a93-bf75-4e96-914e-cbd51f83d97a" x="231" y="84" width="129" height="13"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Vto Bueno Director]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2" x="404" y="85" width="129" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="49f0cf09-1c30-40c2-bf22-729fdfc640ea" x="10" y="117" width="49" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="79a34e4e-1481-4ff8-a0a3-0e308c5cfe04" x="59" y="117" width="103" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5" x="404" y="84" width="129" height="13"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Recibi Conforme]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="53" y="84" width="129" height="13"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

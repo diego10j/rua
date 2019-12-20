@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.2396694214876043"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="8"/>
+	<property name="ireport.y" value="3"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -42,7 +42,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 	<field name="nombre_cndpc" class="java.lang.String"/>
 	<field name="codig_recur_cndpc" class="java.lang.String"/>
 	<field name="nom_modu" class="java.lang.String"/>
-	<field name="ide_cnccc" class="java.lang.Long"/>
+	<field name="ide_cnccc" class="java.lang.Integer"/>
 	<field name="observacion_cndcc" class="java.lang.String"/>
 	<variable name="VALOR_HABER" class="java.lang.Double">
 		<variableExpression><![CDATA[new Double($F{ide_cnlap}.toString().equals($P{ide_cnlap_haber}) ?($F{valor_cndcc}.doubleValue()):(null))]]></variableExpression>
@@ -179,10 +179,10 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<reportElement uuid="51d4fdc0-16b0-4b16-a9fe-2a96d8bc4e22" x="0" y="0" width="86" height="13"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75" lineStyle="Solid"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
@@ -191,12 +191,12 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 			</staticText>
 			<staticText>
 				<reportElement uuid="c6d4584c-cb27-4b9e-a0f7-f3717e2939e4" x="300" y="0" width="81" height="12"/>
-				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
@@ -205,12 +205,12 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 			</staticText>
 			<staticText>
 				<reportElement uuid="025dc5aa-de40-4e46-ac8c-53e19da7eb8b" x="381" y="0" width="81" height="12"/>
-				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
@@ -221,10 +221,10 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="86" y="0" width="214" height="12"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75" lineStyle="Solid"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
@@ -235,170 +235,87 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="462" y="0" width="93" height="12"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIÓN]]></text>
 			</staticText>
-			<line>
-				<reportElement uuid="2cc15ccc-1bfc-4448-888e-47e3689655e6" x="0" y="0" width="555" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="fb36ff7c-a29e-4886-982b-417247e6c836" x="0" y="12" width="555" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="58114e6c-cec5-40bd-a5ce-822b090970dc" x="0" y="0" width="86" height="14"/>
-				<box leftPadding="3">
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" x="86" y="0" width="214" height="14"/>
-				<box leftPadding="3">
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new String($F{ide_cnlap}.equals($P{ide_cnlap_haber}) ?("      "+$F{nombre_cndpc}):($F{nombre_cndpc}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="da3513db-848c-4061-9c12-e7742474f256" x="300" y="0" width="81" height="14"/>
-				<box rightPadding="3">
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{VALOR_DEBE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="90af7bc0-7486-4a07-a195-f4b2d4d8fa37" x="381" y="0" width="81" height="14"/>
-				<box rightPadding="3">
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{VALOR_HABER}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement uuid="4c9fbcc4-bc28-44ba-a095-78c322826350" positionType="FixRelativeToBottom" x="0" y="13" width="555" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="60d9ab84-c78a-434b-8f98-2758f4a2c259" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="172e03c6-880c-48ca-89f1-587ca5eaabf4" positionType="Float" stretchType="RelativeToBandHeight" x="85" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="2eec49c2-bb07-4c76-bd54-6a676597fb38" positionType="Float" stretchType="RelativeToBandHeight" x="299" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="9bb38599-5924-40ef-8716-31ce3a938eca" positionType="Float" stretchType="RelativeToBandHeight" x="380" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="2efcf589-717e-4a4e-9c10-46c23be0b45d" positionType="Float" stretchType="RelativeToBandHeight" x="461" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="5c913cc9-5164-4554-8ed6-bd36363ab5f8" positionType="Float" stretchType="RelativeToBandHeight" x="555" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="aaeca1da-8578-4e32-b23e-5644d5d20141" x="0" y="-13" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="2316aa8a-345c-4700-b66f-849782c8bd19" x="85" y="-12" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="350b17c8-dc4b-4b2c-a0fb-0f5309daed5e" x="299" y="-13" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="410b16ec-9873-4cbe-883c-d04757f6ad8b" x="380" y="-13" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="2897259b-cf4c-44e0-8d0a-107a2b8cc959" x="461" y="-13" width="1" height="12"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="c964086f-2764-4e3d-84d0-0e231bc15ee2" x="555" y="-13" width="1" height="13"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="e4649824-fcb0-4a6f-911c-06809c81b1e7" x="462" y="0" width="93" height="14"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="6" isBold="false"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion_cndcc}]]></textFieldExpression>
 			</textField>
@@ -423,148 +340,69 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="128" splitType="Stretch">
+		<band height="52" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="fc3b279c-3c4b-4c16-9558-212e2085d93e" x="0" y="0" width="301" height="14"/>
+				<reportElement uuid="fc3b279c-3c4b-4c16-9558-212e2085d93e" x="0" y="0" width="300" height="14"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<text><![CDATA[TOTAL:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="50966d03-e99e-4c92-ab97-86cf12fce728" x="43" y="84" width="129" height="13"/>
-				<box topPadding="0"/>
-				<textElement textAlignment="Center">
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[Elaborado Por]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="0d103a93-bf75-4e96-914e-cbd51f83d97a" x="221" y="84" width="129" height="13"/>
-				<box topPadding="0"/>
-				<textElement textAlignment="Center">
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[Vto Bueno Director]]></text>
-			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="919e4047-9d25-49a3-af54-f7c26bb0eb1c" x="301" y="0" width="79" height="14"/>
-				<box rightPadding="3">
+				<reportElement uuid="919e4047-9d25-49a3-af54-f7c26bb0eb1c" x="300" y="0" width="81" height="14"/>
+				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_DEBE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="fa9c7618-56e3-4d62-877d-c21492f36df3" x="381" y="0" width="81" height="14"/>
-				<box rightPadding="3">
+				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL HABER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="4f846909-43c4-4fd9-b919-413c0b1bf4d5" x="394" y="84" width="129" height="13"/>
-				<box topPadding="0"/>
-				<textElement textAlignment="Center">
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[Recibi Conforme]]></text>
-			</staticText>
-			<line>
-				<reportElement uuid="09cfef29-1a43-4ea6-a061-327aa7d5bc97" x="43" y="83" width="129" height="1"/>
-			</line>
-			<line>
-				<reportElement uuid="4f1b5975-87c0-4fc5-b453-a6f278f5a5d1" x="221" y="84" width="129" height="1"/>
-			</line>
-			<line>
-				<reportElement uuid="7b1948f6-2690-44f8-a9e1-76d17167a2c2" x="394" y="85" width="129" height="1"/>
-			</line>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="79a34e4e-1481-4ff8-a0a3-0e308c5cfe04" x="49" y="117" width="103" height="11"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="49f0cf09-1c30-40c2-bf22-729fdfc640ea" x="0" y="117" width="49" height="11"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Impresión:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ece3e23e-0ac4-48e4-8c27-dfb23a7c2dde" x="463" y="0" width="92" height="14"/>
+				<reportElement uuid="ece3e23e-0ac4-48e4-8c27-dfb23a7c2dde" x="462" y="0" width="93" height="14"/>
 				<box>
 					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<line>
-				<reportElement uuid="61e27560-527b-44e1-8bce-670351d6a34d" x="0" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="8517e28b-a0d1-4c5e-8e7b-75b2e576a517" x="299" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="849c80be-c802-43d6-8981-4d708ac9a1c9" x="380" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="cd6d8d2b-8454-46e1-9fc6-66d13bc93628" x="462" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="91f78b21-4cdb-4d1f-a499-dea1bc99e6e0" x="555" y="0" width="1" height="14"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement uuid="ce7feb75-975c-419b-b43b-dfa07e2a19ad" x="0" y="14" width="555" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
 			<subreport>
-				<reportElement uuid="c3ee5993-6ef3-4033-9a4a-494018a907c6" x="-1" y="14" width="556" height="59"/>
+				<reportElement uuid="8a7566cd-6eaa-42ca-9e61-32427b551511" x="-19" y="15" width="556" height="37"/>
 				<subreportParameter name="ide_cnccc">
 					<subreportParameterExpression><![CDATA[$F{ide_cnccc}]]></subreportParameterExpression>
 				</subreportParameter>
