@@ -190,6 +190,8 @@ public class pre_anual_egresos extends Pantalla {
 		tab_mensual.getColumna("ide_prfuf").setVisible(false);
 		tab_mensual.getColumna("ide_prcer").setVisible(false);
 		tab_mensual.getColumna("ide_cndcc").setVisible(false);
+                tab_mensual.getColumna("ide_cnccc").setLectura(true); 
+                tab_mensual.getColumna("ide_comov").setVisible(false);
 		tab_mensual.getColumna("certificado_prmen").setVisible(false);
 		tab_mensual.getColumna("cobrado_prmen").setVisible(false);
 		tab_mensual.getColumna("cobradoc_prmen").setVisible(false);
