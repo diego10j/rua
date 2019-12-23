@@ -55,4 +55,21 @@ public class ServicioGerencial {
         String sql = "select ide_geani,nom_geani,activo_geani from gen_anio where activo_geani in ("+estado+") order by nom_geani";
         return sql;
     }    
+    /**
+     * Retorna sentencia SQL para obtener el nombre de Casa y la Obra
+     * 
+     * @param tipo  Si el tipo 1 requiere parametros ide obra
+     * @param ide_obra  Ide de las obras salesianas
+     * @return sql
+     */
+    public String getCasaObra(String tipo,String ide_obra) {
+        String sql = "SELECT a.ide_gerobr,a.ide_gercas,nombre_gercas,nombre_gerobr " +
+        "from ger_obra a,ger_casa b where a.ide_gercas= b.a.ide_gercas ";
+        if(tipo.equals("1")){
+            sql +=" and a.ide_gerobr in ("+ide_obra+")";
+        }
+               sql +="order by nombre_gercas,nombre_gerobr";
+               
+        return sql;
+    }    
 }   
