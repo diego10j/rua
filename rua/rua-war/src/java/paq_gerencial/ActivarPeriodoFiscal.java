@@ -5,10 +5,13 @@
  */
 package paq_gerencial;
 
+import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
 import paq_gerencial.ejb.ServicioGerencial;
@@ -25,7 +28,8 @@ public class ActivarPeriodoFiscal extends Pantalla {
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private Tabla tab_tabla3 = new Tabla();
-    private Combo com_anio=new Combo(); 
+    private Combo com_anio=new Combo();
+    private SeleccionTabla sel_casa_obra=new SeleccionTabla();
 
     @EJB
     private final ServicioGerencial ser_gerencial = (ServicioGerencial) utilitario.instanciarEJB(ServicioGerencial.class);
@@ -40,6 +44,11 @@ public class ActivarPeriodoFiscal extends Pantalla {
         com_anio.setMetodo("seleccionaElAnio");
 	bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
 	bar_botones.agregarComponente(com_anio);
+        
+        Boton bot_agregar=new Boton();
+		bot_agregar.setValue("Agregar Obras Salesianas");
+		bot_agregar.setMetodo("agregarObra");
+		bar_botones.agregarBoton(bot_agregar);        
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
@@ -66,8 +75,39 @@ public class ActivarPeriodoFiscal extends Pantalla {
         div_division.setId("div_division");
         div_division.dividir1(pat_panel1);
         agregarComponente(div_division);
+        
+        sel_casa_obra.setId("sel_casa_obra");
+        sel_casa_obra.getTab_seleccion().setConexion(conPostgres);
+	sel_casa_obra.setTitle("SELECCIONE UNA OBRA SALESIANA");
+	sel_casa_obra.setSeleccionTabla(ser_gerencial.getCasaObra("2",""), "ide_gerobr"); 
+	sel_casa_obra.getTab_seleccion().getColumna("ide_gercas").setVisible(false); 
+	sel_casa_obra.getTab_seleccion().getColumna("nombre_gercas").setNombreVisual("Casa");
+        sel_casa_obra.getTab_seleccion().getColumna("nombre_gerobr").setNombreVisual("Obra");
+	sel_casa_obra.getBot_aceptar().setMetodo("aceptarObra");
+	agregarComponente(sel_casa_obra);
 
     }
+public void aceptarObra(){
+			//si no selecciono ningun valor en el combo
+			if(com_anio.getValue()==null){
+				utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
+				return;
+			}
+                        else{
+			sel_casa_obra.dibujar();
+                        }
+		}    
+public void agregarObra(){
+    String str_selecccionados= sel_casa_obra.getSeleccionados();
+    TablaGenerica tab_obra = new TablaGenerica();
+            tab_obra.setConexion(conPostgres);
+            tab_obra=utilitario.consultar(ser_gerencial.getCasaObra("1", str_selecccionados));
+            for(int i=0; i <tab_obra.getTotalFilas();i++){
+                tab_tabla1.insertar();
+                tab_tabla1.setValor("ide_gerobr", tab_obra.getValor(i, "ide_gerobr"));
+            }
+    
+		}    
 	public void seleccionaElAnio (){
 		if(com_anio.getValue()!=null){
 			tab_tabla1.setCondicion("not ide_prcla is null and ide_geani="+com_anio.getValue());
@@ -144,6 +184,14 @@ public class ActivarPeriodoFiscal extends Pantalla {
 
     public void setConPostgres(Conexion conPostgres) {
         this.conPostgres = conPostgres;
+    }
+
+    public SeleccionTabla getSel_casa_obra() {
+        return sel_casa_obra;
+    }
+
+    public void setSel_casa_obra(SeleccionTabla sel_casa_obra) {
+        this.sel_casa_obra = sel_casa_obra;
     }
 
 }
