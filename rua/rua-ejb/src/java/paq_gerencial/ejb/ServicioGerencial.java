@@ -16,18 +16,6 @@ import javax.ejb.Stateless;
 public class ServicioGerencial {
 
     /**
-     * Retorna sentencia SQL para obtener los nombres de las casas, y obras
-     * salesianas para proceder a autorizar la conexión.
-     *
-     * @return sql
-     */
-    public String getSqlGerPermiso() {
-        String sql = "select ide_geperm,nom_casa_geperm,nom_persistencia_geperm from ger_permiso "
-                + "order by nom_casa_geperm";
-        return sql;
-    }
-
-    /**
      * Retorna sentencia SQL para obtener los estados en el que se encuentra, en
      * el balance general.
      *
@@ -48,9 +36,23 @@ public class ServicioGerencial {
         String sql = "select ide_gerobr, nombre_gerobr, codigo_gerobr, abreviatura_gerobr from ger_obra  ";
         return sql;
     }
-
+    /**
+     * Retorna sentencia SQL para obtener el tipo de balance sea Inicial o mensual
+     * 
+     * @return sql
+     */
     public String getTipoBalance() {
         String sql = "select ide_getiba, detalle_getiba from ger_tipo_balance ";
         return sql;
     }
+    /**
+     * Retorna sentencia SQL para obtener el Año
+     * 
+     * @param estado recibe el estado activo, pasivo
+     * @return sql
+     */
+    public String getAnio(String estado) {
+        String sql = "select ide_geani,nom_geani,activo_geani from gen_anio where activo_geani in ("+estado+") order by nom_geani";
+        return sql;
+    }    
 }   
