@@ -64,11 +64,11 @@ public class ServicioGerencial {
      */
     public String getCasaObra(String tipo,String ide_obra) {
         String sql = "SELECT a.ide_gerobr,a.ide_gercas,nombre_gercas,nombre_gerobr " +
-        "from ger_obra a,ger_casa b where a.ide_gercas= b.a.ide_gercas ";
-        if(tipo.equals("1")){
+        "from ger_obra a,ger_casa b where a.ide_gercas= b.ide_gercas ";
+        if(tipo.equals("1")){                 
             sql +=" and a.ide_gerobr in ("+ide_obra+")";
         }
-               sql +="order by nombre_gercas,nombre_gerobr";
+               sql +=" order by nombre_gercas,nombre_gerobr";            
                
         return sql;
     }    
