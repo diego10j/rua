@@ -47,7 +47,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
         
         Boton bot_agregar=new Boton();
 		bot_agregar.setValue("Agregar Obras Salesianas");
-		bot_agregar.setMetodo("agregarObra");
+		bot_agregar.setMetodo("aceptarObra");
 		bar_botones.agregarBoton(bot_agregar);        
 
         //Permite crear la tabla1 
@@ -83,7 +83,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
 	sel_casa_obra.getTab_seleccion().getColumna("ide_gercas").setVisible(false); 
 	sel_casa_obra.getTab_seleccion().getColumna("nombre_gercas").setNombreVisual("Casa");
         sel_casa_obra.getTab_seleccion().getColumna("nombre_gerobr").setNombreVisual("Obra");
-	sel_casa_obra.getBot_aceptar().setMetodo("aceptarObra");
+	sel_casa_obra.getBot_aceptar().setMetodo("agregarObra");
 	agregarComponente(sel_casa_obra);
 
     }
@@ -93,7 +93,7 @@ public void aceptarObra(){
 				utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
 				return;
 			}
-                        else{
+                        else{            
 			sel_casa_obra.dibujar();
                         }
 		}    
