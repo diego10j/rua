@@ -694,12 +694,19 @@ public class AsientoContable extends Dialogo {
         }
         ciudad = utilitario.getVariable("p_tes_ciudad_cheque");
         String reporte = "";
-
+        int contador=0;
         if (reporteComprobante == 1) {
+            TablaGenerica tab_presupuesto = utilitario.consultar("select * from pre_mensual  where ide_cnccc=" + ide_cnccc);
+            if (tab_presupuesto.getTotalFilas() > 0) {
+                contador = 1;
+            } else {
+                contador = 0;
+            }
             parametros_rep.put("ide_cnccc", Long.parseLong(ide_cnccc));
             parametros_rep.put("ide_cnlap_debe", parametros.get("p_con_lugar_debe"));
             parametros_rep.put("ide_cnlap_haber", parametros.get("p_con_lugar_haber"));
             parametros_rep.put("nombre", usuario);
+            parametros_rep.put("contador", contador);
             parametros_rep.put("pfactura", factura_imprime);
             parametros_rep.put("ptransaccion", tipo_transaccion_imprime);
             String p_con_repo_nivel = utilitario.getVariable("p_con_repo_nivel");
