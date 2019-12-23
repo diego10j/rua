@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
-	<property name="ireport.zoom" value="1.2396694214876043"/>
+	<property name="ireport.zoom" value="1.5000000000000016"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="3"/>
+	<property name="ireport.y" value="116"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -15,6 +15,9 @@
 	</parameter>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="contador" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select fecha_trans_cnccc,nom_geper,observacion_cnccc,numero_cnccc,nombre_cntcm,
 VALOR_CNDCC,detalle.ide_cnlap,(select a.nombre_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) )as nombre_cndpc,(select a.codig_recur_cndpc from con_det_plan_cuen a where codig_recur_cndpc = substring(cuenta.codig_recur_cndpc,0,15) ) as codig_recur_cndpc,nom_modu,cab.ide_cnccc,
@@ -190,7 +193,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[CÓDIGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c6d4584c-cb27-4b9e-a0f7-f3717e2939e4" x="300" y="0" width="81" height="12"/>
+				<reportElement uuid="c6d4584c-cb27-4b9e-a0f7-f3717e2939e4" x="300" y="0" width="81" height="13"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.75"/>
@@ -204,7 +207,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[DEBE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="025dc5aa-de40-4e46-ac8c-53e19da7eb8b" x="381" y="0" width="81" height="12"/>
+				<reportElement uuid="025dc5aa-de40-4e46-ac8c-53e19da7eb8b" x="381" y="0" width="81" height="13"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.75"/>
@@ -218,7 +221,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[HABER]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="86" y="0" width="214" height="12"/>
+				<reportElement uuid="afea7e78-b139-453b-b594-ea4ba89ca6be" x="86" y="0" width="214" height="13"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.75" lineStyle="Solid"/>
@@ -232,7 +235,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[DESCRIPCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="462" y="0" width="93" height="12"/>
+				<reportElement uuid="e7e8395b-93e5-4c24-9c3c-58220e3d68e4" x="462" y="0" width="93" height="13"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.75"/>
@@ -339,8 +342,11 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 			</textField>
 		</band>
 	</pageFooter>
+	<lastPageFooter>
+		<band splitType="Stretch"/>
+	</lastPageFooter>
 	<summary>
-		<band height="52" splitType="Stretch">
+		<band height="53" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="fc3b279c-3c4b-4c16-9558-212e2085d93e" x="0" y="0" width="300" height="14"/>
 				<box>
@@ -402,7 +408,12 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="8a7566cd-6eaa-42ca-9e61-32427b551511" x="-19" y="15" width="556" height="37"/>
+				<reportElement uuid="8a7566cd-6eaa-42ca-9e61-32427b551511" x="-19" y="15" width="556" height="37">
+					<printWhenExpression><![CDATA[$P{contador} == 0 || $P{contador} == 1]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="contador">
+					<subreportParameterExpression><![CDATA[$P{contador}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ide_cnccc">
 					<subreportParameterExpression><![CDATA[$F{ide_cnccc}]]></subreportParameterExpression>
 				</subreportParameter>
