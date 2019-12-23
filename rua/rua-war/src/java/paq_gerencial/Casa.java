@@ -36,7 +36,8 @@ public class Casa extends Pantalla {
         tab_tabla1.getColumna("nombre_gercas").setNombreVisual("NOMBRE");
         tab_tabla1.getColumna("codigo_gercas").setNombreVisual("CÓDIGO CASA");
         tab_tabla1.getColumna("abreviatura_gercas").setNombreVisual("ABREVIATURA");
-        tab_tabla1.dibujar();
+        tab_tabla1.agregarRelacion(tab_tabla2);
+        tab_tabla1.dibujar();         
 
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
