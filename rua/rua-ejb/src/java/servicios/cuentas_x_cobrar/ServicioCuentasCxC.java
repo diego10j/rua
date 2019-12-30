@@ -1433,10 +1433,9 @@ public class ServicioCuentasCxC extends ServicioBase {
      * @param ide_ccdaf
      * @param num_doc_mod_cpcno
      */
-    public void generarNotaCreditodeFactura(String ide_ccdaf, String num_doc_mod_cpcno,double tarifaIVA, String fecha, String observacion) {
-       
-        String       num_a = num_doc_mod_cpcno.substring(0, 3) + "-" + num_doc_mod_cpcno.substring(3, 6) + "-" + num_doc_mod_cpcno.substring(6, num_doc_mod_cpcno.length());
-      
+    public void generarNotaCreditodeFactura(String ide_ccdaf, String num_doc_mod_cpcno, double tarifaIVA, String fecha, String observacion) {
+
+        String num_a = num_doc_mod_cpcno.substring(0, 3) + "-" + num_doc_mod_cpcno.substring(3, 6) + "-" + num_doc_mod_cpcno.substring(6, num_doc_mod_cpcno.length());
 
         TablaGenerica tab_cab_nota = new TablaGenerica();
         tab_cab_nota.setTabla("cxp_cabecera_nota", "ide_cpcno", -1);
@@ -1469,7 +1468,6 @@ public class ServicioCuentasCxC extends ServicioBase {
         tab_cab_nota.setValor("num_doc_mod_cpcno", num_a);
         tab_cab_nota.setValor("observacion_cpcno", observacion);
         tab_cab_nota.setValor("TARIFA_IVA_CPCNO", utilitario.getFormatoNumero((tarifaIVA * 100)));
-        
 
         tab_cab_nota.guardar();
         for (int i = 0; i < tab_fac.getTotalFilas(); i++) {
