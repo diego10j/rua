@@ -843,9 +843,40 @@ ALTER TABLE "public"."sri_comprobante"
 ADD COLUMN "subtotal_no_objeto_srcom" numeric(12,2);
 
 
+--30-12-2019  LIQUIDACION DE COMPRAS ELECTRONICAS
+--Campos nuevos para liquidaciones electrónicas
+ALTER TABLE public.cxp_cabece_factur ADD ide_srcom int8 NULL;
+ALTER TABLE "public"."cxp_cabece_factur"
+ADD CONSTRAINT "fk_sri_cxp_cabece_factur" FOREIGN KEY ("ide_srcom") REFERENCES "public"."sri_comprobante" ("ide_srcom") ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+ALTER TABLE public.cxp_cabece_factur ADD ide_ccdaf int4 NULL;
+ALTER TABLE "public"."cxp_cabece_factur"
+ADD CONSTRAINT "fk_dtf_cxp_cabece_factur" FOREIGN KEY ("ide_ccdaf") REFERENCES "public"."cxc_datos_fac" ("ide_ccdaf") ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+--Tabla Reembolsos de liquidacion de compras
 
-
-
-
+CREATE TABLE cxp_reembo_liqc (
+"ide_reliq" int8 NOT NULL,
+"ide_cpcfa" int8,
+"ide_empr" int4,
+"ide_sucu" int4,
+"tipo_ident_prov_reliq" varchar(5),
+"ident_prov_reliq" varchar(30),
+"cod_pais_prov_reliq" varchar(3),
+"tipo_prov_reliq" varchar(3),
+"cod_doc_reliq" varchar(3),
+"cod_estb_reliq" varchar(3),
+"cod_ptemi_reliq" varchar(3),
+"secuencial_reliq" varchar(9),
+"fecha_emis_reliq" date,
+"autorizacion_reliq" varchar(50),
+"usuario_ingre" varchar(50),
+"fecha_ingre" date,
+"hora_ingre" time,
+"usuario_actua" varchar(50),
+"fecha_actua" date,
+"hora_actua" time,
+PRIMARY KEY ("ide_reliq"),
+CONSTRAINT "fk_fac_cxp_reembo_liqc" FOREIGN KEY ("ide_cpcfa") REFERENCES "public"."cxp_cabece_factur" ("ide_cpcfa"),
+CONSTRAINT "fk_emisor_sucursal" FOREIGN KEY ("ide_sucu") REFERENCES "public"."sis_sucursal" ("ide_sucu") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
