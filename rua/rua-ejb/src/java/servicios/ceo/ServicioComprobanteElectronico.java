@@ -638,6 +638,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
      * @param fecha_inicio
      * @param fecha_fin
      * @param tipoComprobante
+     * @param ide_ccdaf
      * @return
      */
     public String getSqlTotalComprobantesPorEstado(String fecha_inicio, String fecha_fin, TipoComprobanteEnum tipoComprobante, String ide_ccdaf) {
@@ -724,6 +725,111 @@ public class ServicioComprobanteElectronico extends ServicioBase {
 
     public String getSqlComboEstados() {
         return "SELECT * FROM sri_estado_comprobante where ide_sresc !=0 order by nombre_sresc";
+    }
+
+    /**
+     * Genera un comprobante electrónico a partir de una nota de crédito ya
+     * guardada
+     *
+     * @param ide_cpdfa
+     * @return
+     */
+    public String generarLiquidacionCompraElectronica(String ide_cpdfa) {
+        String ide_srcom = "-1";
+        TablaGenerica tab_liquidacion = utilitario.consultar("select a.ide_cpdfa,numero_cpcfa,fecha_emisi_cpcfa,serie_ccdaf,base_grabada_cpcfa\n"
+                + ",base_tarifa0_cpcfa,base_no_objeto_iva_cpcfa,valor_iva_cpcfa,total_cpcfa,alterno_ats,identificac_geper,\n"
+                + "a.ide_geper,ide_cntdo,ide_srcom,correo_geper,a.ide_ccdaf,observacion_cpcfa \n"
+                + "from cxp_cabece_factur  a \n"
+                + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
+                + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
+                + "inner join con_deta_forma_pago e on a.ide_cndfp=e.ide_cndfp\n"
+                + "where a.ide_cpdfa=" + ide_cpdfa);
+
+        if (tab_liquidacion.isEmpty() == false) {
+            if (tab_liquidacion.getValor("ide_srcom") != null) {
+                ide_srcom = tab_liquidacion.getValor("ide_srcom");
+            }
+            TablaGenerica tab_cabecara = new TablaGenerica();
+            tab_cabecara.setTabla("sri_comprobante", "ide_srcom");
+            tab_cabecara.setCondicion("ide_srcom=" + ide_srcom);
+            tab_cabecara.ejecutarSql();
+
+            //Inserta cabecera
+            if (tab_cabecara.isEmpty()) {
+                tab_cabecara.insertar();
+            } else {
+                tab_cabecara.modificar(tab_cabecara.getFilaActual());
+            }
+            double dou_base0 = 0;
+            double dou_base_no_objeto = 0;
+            double dou_basegraba = 0;
+            double dou_subtotal = 0;
+            try {
+                dou_base0 = Double.parseDouble(tab_liquidacion.getValor("base_tarifa0_cpcfa"));
+            } catch (Exception e) {
+            }
+            try {
+                dou_basegraba = Double.parseDouble(tab_liquidacion.getValor("base_grabada_cpcfa"));
+            } catch (Exception e) {
+            }
+            try {
+                dou_base_no_objeto = Double.parseDouble(tab_liquidacion.getValor("base_no_objeto_iva_cpcfa"));
+            } catch (Exception e) {
+            }
+
+            dou_subtotal = dou_base_no_objeto + dou_base0 + dou_basegraba;
+
+            tab_cabecara.setValor("ide_sresc", String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()));
+            tab_cabecara.setValor("coddoc_srcom", TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo());
+            tab_cabecara.setValor("tipoemision_srcom", TipoEmisionEnum.NORMAL.getCodigo());
+            tab_cabecara.setValor("estab_srcom", tab_liquidacion.getValor("serie_ccdaf").substring(0, 3));
+            tab_cabecara.setValor("ptoemi_srcom", tab_liquidacion.getValor("serie_ccdaf").substring(3, 6));
+            tab_cabecara.setValor("fechaemision_srcom", tab_liquidacion.getValor("fecha_emisi_cpcfa"));
+            tab_cabecara.setValor("reutiliza_srcom", "false");//no reutiliza por defecto
+            tab_cabecara.setValor("fecha_sistema_srcom", utilitario.getFechaActual());
+            tab_cabecara.setValor("ip_genera_srcom", utilitario.getIp());
+            tab_cabecara.setValor("subtotal0_srcom", utilitario.getFormatoNumero(dou_base0));
+            tab_cabecara.setValor("subtotal_no_objeto_srcom", utilitario.getFormatoNumero(dou_base_no_objeto));
+            tab_cabecara.setValor("base_grabada_srcom", utilitario.getFormatoNumero(dou_basegraba));
+            tab_cabecara.setValor("subtotal_srcom", utilitario.getFormatoNumero(dou_subtotal));
+            tab_cabecara.setValor("iva_srcom", tab_liquidacion.getValor("valor_iva_cpcfa"));
+            tab_cabecara.setValor("descuento_srcom", "0.00");
+            tab_cabecara.setValor("total_srcom", tab_liquidacion.getValor("total_cpcfa"));
+            tab_cabecara.setValor("identificacion_srcom", tab_liquidacion.getValor("identificac_geper"));
+            tab_cabecara.setValor("en_nube_srcom", "false");
+            tab_cabecara.setValor("ide_geper", tab_liquidacion.getValor("ide_geper"));
+            tab_cabecara.setValor("ide_cntdo", tab_liquidacion.getValor("ide_cntdo"));
+            tab_cabecara.setValor("forma_cobro_srcom", tab_liquidacion.getValor("alterno_ats"));
+            tab_cabecara.setValor("ide_empr", utilitario.getVariable("ide_empr"));
+            tab_cabecara.setValor("ide_sucu", utilitario.getVariable("ide_sucu"));
+            tab_cabecara.setValor("correo_srcom", tab_liquidacion.getValor("correo_geper"));
+            tab_cabecara.setValor("ide_ccdaf1", tab_liquidacion.getValor("ide_ccdaf"));
+            tab_cabecara.setValor("infoadicional1_srcom", tab_liquidacion.getValor("observacion_cpcfa"));
+
+            tab_cabecara.guardar();
+            ide_srcom = tab_cabecara.getValor("ide_srcom");
+
+            if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
+                //Si la Nota de Credito es nueva Asigna nuevo secuencial
+                if (tab_cabecara.getValor("secuencial_srcom") == null) {
+                    String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS, tab_liquidacion.getValor("ide_ccdaf"));
+                    utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
+                    utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "'");
+                    utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET  ide_srcom=" + ide_srcom + ", numero_cpcfa='" + strSecuencialF + "' where ide_cpdfa=" + ide_cpdfa);
+                }
+                //Si esta en estado PENDIENTE genero nueva clave de acceso por si se modifico la fecha
+                if (tab_cabecara.getValor("ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {
+                    try {
+                        Comprobante comprobanteNotaC = comprobanteService.getComprobantePorId(Long.parseLong(ide_srcom));
+                        String strClaveAcceso = comprobanteService.getClaveAcceso(comprobanteNotaC);
+                        utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET claveacceso_srcom='" + strClaveAcceso + "' where ide_srcom=" + ide_srcom);
+                    } catch (NumberFormatException | GenericException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return ide_srcom;
     }
 
 }
