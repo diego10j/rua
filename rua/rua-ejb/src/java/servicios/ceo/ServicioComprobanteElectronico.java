@@ -816,6 +816,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET  ide_srcom=" + ide_srcom + ", numero_cpcfa='" + strSecuencialF + "' where ide_cpdfa=" + ide_cpdfa);
+                    utilitario.getConexion().ejecutarSql("UPDATE cxp_reembo_liqc SET  ide_srcom=" + ide_srcom + " where ide_cpdfa=" + ide_cpdfa);
+
                 }
                 //Si esta en estado PENDIENTE genero nueva clave de acceso por si se modifico la fecha
                 if (tab_cabecara.getValor("ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {
