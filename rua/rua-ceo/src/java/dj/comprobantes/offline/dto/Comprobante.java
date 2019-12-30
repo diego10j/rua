@@ -89,6 +89,8 @@ public final class Comprobante implements Serializable {
     private String correosCopia;
     private String ide_geper;
 
+    private List<DetalleReembolso> detalleReembolso;
+
     public Comprobante() {
     }
 
@@ -369,8 +371,7 @@ public final class Comprobante implements Serializable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else if (this.coddoc.equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) { //12-11-2019 Liquidacion en compras 
+            } else if (this.coddoc.equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) { //12-11-2019 Liquidacion en compras 
                 //Busca los detalles del Comprobante
                 codDocumento = TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo();  //LIQUIDACION_DE_COMPRAS
                 try {
@@ -388,6 +389,26 @@ public final class Comprobante implements Serializable {
                         DetalleComprobante dt = new DetalleComprobante(res);
                         dt.setComprobante(this);
                         detalle.add(dt);
+                    }
+                    sentensia.close();
+                    res.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //Busca los detalles de Reembolso
+                try {
+                    detalleReembolso = new ArrayList<>();
+                    String sql = "select tipo_ident_prov_reliq,ident_prov_reliq,cod_pais_prov_reliq,tipo_prov_reliq,cod_doc_reliq,cod_estb_reliq,"
+                            + "cod_ptemi_reliq,secuencial_reliq,fecha_emis_reliq,autorizacion_reliq "
+                            + "from cxp_reembo_liqc "
+                            + "where ide_srcom=" + this.codigocomprobante;
+                    Statement sentensia = con.getConnection().createStatement();
+                    ResultSet res = sentensia.executeQuery(sql);
+                    while (res.next()) {
+                        DetalleReembolso dt = new DetalleReembolso(res);
+                        dt.setComprobante(this);
+                        detalleReembolso.add(dt);
                     }
                     sentensia.close();
                     res.close();
@@ -889,6 +910,14 @@ public final class Comprobante implements Serializable {
 
     public void setCorreosCopia(String correosCopia) {
         this.correosCopia = correosCopia;
+    }
+
+    public List<DetalleReembolso> getDetalleReembolso() {
+        return detalleReembolso;
+    }
+
+    public void setDetalleReembolso(List<DetalleReembolso> detalleReembolso) {
+        this.detalleReembolso = detalleReembolso;
     }
 
 }
