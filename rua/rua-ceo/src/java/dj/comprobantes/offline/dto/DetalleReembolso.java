@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -62,7 +61,7 @@ public class DetalleReembolso implements Serializable {
 
             if (resultado.getBigDecimal("base_grabada_reliq") == null) {
                 // this.subtotal = this.totalsinimpuestos;
-                this.subtotal = new BigDecimal("0"); //27/07/2019  imprimir totales ride 
+                this.subtotal = new BigDecimal("0");
             } else {
                 this.subtotal = resultado.getBigDecimal("base_grabada_reliq");
             }
