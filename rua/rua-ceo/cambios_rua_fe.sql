@@ -857,6 +857,7 @@ ADD CONSTRAINT "fk_dtf_cxp_cabece_factur" FOREIGN KEY ("ide_ccdaf") REFERENCES "
 
 CREATE TABLE cxp_reembo_liqc (
 "ide_reliq" int8 NOT NULL,
+"ide_srcom" int8,
 "ide_cpcfa" int8,
 "ide_empr" int4,
 "ide_sucu" int4,
@@ -877,6 +878,7 @@ CREATE TABLE cxp_reembo_liqc (
 "fecha_actua" date,
 "hora_actua" time,
 PRIMARY KEY ("ide_reliq"),
-CONSTRAINT "fk_fac_cxp_reembo_liqc" FOREIGN KEY ("ide_cpcfa") REFERENCES "public"."cxp_cabece_factur" ("ide_cpcfa"),
-CONSTRAINT "fk_emisor_sucursal" FOREIGN KEY ("ide_sucu") REFERENCES "public"."sis_sucursal" ("ide_sucu") ON DELETE RESTRICT ON UPDATE RESTRICT
+CONSTRAINT "fk_fac_cxp_reembo_liqc" FOREIGN KEY ("ide_cpcfa") REFERENCES "public"."cxp_cabece_factur" ("ide_cpcfa")ON DELETE RESTRICT ON UPDATE RESTRICT,
+CONSTRAINT "fk_emisor_sucursal" FOREIGN KEY ("ide_sucu") REFERENCES "public"."sis_sucursal" ("ide_sucu") ON DELETE RESTRICT ON UPDATE RESTRICT,
+CONSTRAINT "fk_sri_cxp_reembo_liqc" FOREIGN KEY ("ide_srcom") REFERENCES "public"."sri_comprobante" ("ide_srcom") ON DELETE RESTRICT ON UPDATE RESTRICT
 );
