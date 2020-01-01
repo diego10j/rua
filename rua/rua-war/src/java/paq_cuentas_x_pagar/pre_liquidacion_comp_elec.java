@@ -21,6 +21,7 @@ import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Link;
 import framework.componentes.Mensaje;
+import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
@@ -74,9 +75,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
     private AsientoContable asc_asiento = new AsientoContable();
 
-    private Division div = new Division();
-    private Grupo gr_vista = new Grupo();
-    private int opcionActual = 1;
+    private final MenuPanel mep_menu = new MenuPanel();
 
     public pre_liquidacion_comp_elec() {
         tarifaIVA = ser_configuracion.getPorcentajeIva(utilitario.getFechaActual());
@@ -128,9 +127,15 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         dia_correo.setDialogo(gri);
         agregarComponente(dia_correo);
 
-        gr_vista.setId("gr_vista");
-        div.dividir1(gr_vista);
-        agregarComponente(div);
+        mep_menu.setMenuPanel("OPCIONES LIQUIDACIÓN DE COMPRAS", "20%");
+
+        mep_menu.agregarItem("Listado de Liquidaciones", "dibujarNotaCredito", "ui-icon-note");  //2
+        // mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotaCreditoNoContabilizadas", "ui-icon-notice"); //3
+        //mep_menu.agregarItem("Notas de Crédito Anuladas", "dibujarNotaCreditoAnuladas", "ui-icon-cancel"); //4
+        //mep_menu.agregarSubMenu("CONTABILIDAD");
+        //mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotasNoContabilizadas", "ui-icon-notice");
+
+        agregarComponente(mep_menu);
         dibujarLiquidacionCompra();
 
         asc_asiento.setId("asc_asiento");
@@ -263,7 +268,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     }
 
     public void actualizarLista() {
-        if (opcionActual == 1) {
+        if (mep_menu.getOpcion() == 2) {
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
             dibujarDashboard();
             tab_tabla1.setSql(ser_cxp.getSqlLiquidacionesElectronicas(com_pto_emision.getValue() + "", cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha()));
@@ -474,7 +479,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     }
 
     public void dibujarLiquidacionCompra() {
-        opcionActual = 1;
+        Grupo gr_vista = new Grupo();
         Barra bar_menu = new Barra();
         bar_menu.setId("bar_menu");
         bar_menu.limpiar();
@@ -572,6 +577,8 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         gr_vista.getChildren().add(gr);
         gr_vista.getChildren().add(bar_menu);
         gr_vista.getChildren().add(pat_panel);
+
+        mep_menu.dibujar(2, "LISTADO DE NOTAS DE CRÉDITO", gr_vista);
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
@@ -701,7 +708,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
     @Override
     public void insertar() {
-        if (opcionActual == 2) {
+        if (mep_menu.getOpcion() == 1) {
             tab_tabla2.insertar();
         } else {
             ide_cpcfa = null;
@@ -711,7 +718,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
     @Override
     public void guardar() {
-        if (opcionActual == 2) {
+        if (mep_menu.getOpcion() == 1) {
             //tab_tabla1.setValor("TARIFA_IVA_CPCNO", utilitario.getFormatoNumero((tarifaIVA * 100)));
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
@@ -730,7 +737,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
     @Override
     public void eliminar() {
-        if (opcionActual == 2) {
+        if (mep_menu.getOpcion() == 1) {
             tab_tabla2.eliminar();
             calcularTotalFactura();
         }
