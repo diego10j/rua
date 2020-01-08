@@ -492,18 +492,21 @@ public class FacturaCxC extends Dialogo {
         tab_guia.getColumna("ide_geper").setCombo(lisClientes);
         tab_guia.getColumna("ide_geper").setAutoCompletar();
         tab_guia.getColumna("ide_geper").setLectura(true);
-        tab_guia.getColumna("ide_geper").setNombreVisual("CLIENTE");
+       
+        tab_guia.getColumna("ide_geper").setAutoCompletar();
         tab_guia.getColumna("ide_geper").setOrden(2);
         tab_guia.getColumna("ide_geper").setLectura(true);
         tab_guia.getColumna("placa_gecam").setCombo("select placa_gecam,placa_gecam,descripcion_gecam from gen_camion  order by placa_gecam"); //*** poner observacion y filtrar activos
         tab_guia.getColumna("placa_gecam").setEstilo("width:180px");
         tab_guia.getColumna("placa_gecam").setNombreVisual("PLACA");
+        tab_guia.getColumna("placa_gecam").setAutoCompletar();
         tab_guia.getColumna("placa_gecam").setRequerida(true);
 
         tab_guia.getColumna("gen_ide_geper").setNombreVisual("TRANSPORTISTA");
         tab_guia.getColumna("gen_ide_geper").setRequerida(true);
-        tab_guia.getColumna("gen_ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
+        tab_guia.getColumna("gen_ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "1=1");
         tab_guia.getColumna("gen_ide_geper").setEstilo("width:350px");
+        tab_guia.getColumna("gen_ide_geper").setAutoCompletar();
 
         tab_guia.getColumna("fecha_emision_ccgui").setValorDefecto(utilitario.getFechaActual());
         tab_guia.getColumna("fecha_emision_ccgui").setNombreVisual("FECHA EMISION");
@@ -518,7 +521,7 @@ public class FacturaCxC extends Dialogo {
         } else {
             tab_guia.getColumna("numero_ccgui").setMascara("999999999");
             tab_guia.getColumna("numero_ccgui").setRequerida(true);
-        }
+        } 
         tab_guia.getColumna("numero_ccgui").setOrden(1);
         tab_guia.getColumna("numero_ccgui").setEstilo("font-size: 12px;font-weight: bold;text-align: right;");
         tab_guia.getColumna("numero_ccgui").setNombreVisual("SECUENCIAL GUIA");
