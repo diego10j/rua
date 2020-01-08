@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_contabilidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c0ae7b1-8d5c-4881-91f6-bb0920051fc1">
-	<property name="ireport.zoom" value="1.5000000000000016"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="116"/>
+	<property name="ireport.zoom" value="1.2396694214876045"/>
+	<property name="ireport.x" value="31"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_cnccc" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -253,7 +253,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="58114e6c-cec5-40bd-a5ce-822b090970dc" x="0" y="0" width="86" height="14"/>
+				<reportElement uuid="58114e6c-cec5-40bd-a5ce-822b090970dc" stretchType="RelativeToBandHeight" x="0" y="0" width="86" height="14"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -267,7 +267,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[$F{codig_recur_cndpc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" x="86" y="0" width="214" height="14"/>
+				<reportElement uuid="9ed49b18-ddd3-4fd1-9244-b1509906dbc4" stretchType="RelativeToBandHeight" x="86" y="0" width="214" height="14"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -281,7 +281,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[new String($F{ide_cnlap}.equals($P{ide_cnlap_haber}) ?("      "+$F{nombre_cndpc}):($F{nombre_cndpc}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="da3513db-848c-4061-9c12-e7742474f256" x="300" y="0" width="81" height="14"/>
+				<reportElement uuid="da3513db-848c-4061-9c12-e7742474f256" stretchType="RelativeToBandHeight" x="300" y="0" width="81" height="14"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -295,7 +295,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[$V{VALOR_DEBE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="90af7bc0-7486-4a07-a195-f4b2d4d8fa37" x="381" y="0" width="81" height="14"/>
+				<reportElement uuid="90af7bc0-7486-4a07-a195-f4b2d4d8fa37" stretchType="RelativeToBandHeight" x="381" y="0" width="81" height="14"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
@@ -309,7 +309,7 @@ ORDER BY ide_cnlap desc,codig_recur_cndpc asc]]>
 				<textFieldExpression><![CDATA[$V{VALOR_HABER}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e4649824-fcb0-4a6f-911c-06809c81b1e7" x="462" y="0" width="93" height="14"/>
+				<reportElement uuid="e4649824-fcb0-4a6f-911c-06809c81b1e7" stretchType="RelativeToBandHeight" x="462" y="0" width="93" height="14"/>
 				<box>
 					<topPen lineWidth="0.75"/>
 					<leftPen lineWidth="0.75"/>
