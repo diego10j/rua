@@ -561,7 +561,7 @@ public class AsientoContable extends Dialogo {
         calcularTotal();
         utilitario.addUpdate("gri_totales");
     }
-    String total_debe = "";
+    double total_debe = 0;
 
     /**
      * Calcula la sumatoria de debe vs haber
@@ -571,6 +571,7 @@ public class AsientoContable extends Dialogo {
     public boolean calcularTotal() {
         double dou_debe = 0;
         double dou_haber = 0;
+        total_debe = 0;
         for (int i = 0; i < tab_deta_asiento.getTotalFilas(); i++) {
             try {
                 if (tab_deta_asiento.getValor(i, "ide_cnlap").equals(parametros.get("p_con_lugar_debe"))) {
@@ -583,7 +584,7 @@ public class AsientoContable extends Dialogo {
         }
         eti_suma_debe.setValue("TOTAL DEBE : " + utilitario.getFormatoNumero(dou_debe));
         eti_suma_haber.setValue("TOTAL HABER : " + utilitario.getFormatoNumero(dou_haber));
-        total_debe = utilitario.getFormatoNumero(dou_debe);
+        total_debe = Double.parseDouble(utilitario.getFormatoNumero(dou_debe));
         double dou_diferencia = Double.parseDouble(utilitario.getFormatoNumero(dou_debe)) - Double.parseDouble(utilitario.getFormatoNumero(dou_haber));
         eti_suma_diferencia.setValue("DIFERENCIA : " + utilitario.getFormatoNumero(dou_diferencia));
         if (dou_diferencia != 0.0) {
@@ -694,7 +695,7 @@ public class AsientoContable extends Dialogo {
         }
         ciudad = utilitario.getVariable("p_tes_ciudad_cheque");
         String reporte = "";
-        int contador=0;
+        int contador = 0;
         if (reporteComprobante == 1) {
             TablaGenerica tab_presupuesto = utilitario.consultar("select * from pre_mensual  where ide_cnccc=" + ide_cnccc);
             if (tab_presupuesto.getTotalFilas() > 0) {
@@ -764,8 +765,9 @@ public class AsientoContable extends Dialogo {
         } else if (tab_presupuesto.isFocus()) {
             tab_presupuesto.insertar();
             tab_presupuesto.setValor("fecha_ejecucion_prmen", tab_cabe_asiento.getValor("fecha_trans_cnccc"));
+            tab_presupuesto.setValor("devengado_prmen", total_debe + "");
+
         }
-        tab_presupuesto.setValor("devengado_prmen", total_debe);
     }
 
     public void eliminar() {
