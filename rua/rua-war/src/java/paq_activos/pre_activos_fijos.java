@@ -57,6 +57,10 @@ public class pre_activos_fijos extends Pantalla {
     private VisualizarPDF vipdf_grupos_dpres = new VisualizarPDF();
     private VisualizarPDF vipdf_grupos_detalle = new VisualizarPDF();
     private SeleccionTabla sel_cabece_clase_dep = new SeleccionTabla();
+    private final Calendario cal_fecha_inicial = new Calendario();
+    private final Calendario cal_fecha_final = new Calendario();
+    private VisualizarPDF vipdf_depre_periodo = new VisualizarPDF();
+    private Map p_parametro = new HashMap();
 
     @EJB
     private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);
@@ -76,6 +80,7 @@ public class pre_activos_fijos extends Pantalla {
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private SeleccionArbol sel_arb = new SeleccionArbol();
     private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
+    private SeleccionCalendario sec_rango_fechas = new SeleccionCalendario();
 
     private final Etiqueta eti_cod_barras = new Etiqueta();
     private StreamedContent stcCodigoBarra;
@@ -112,15 +117,19 @@ public class pre_activos_fijos extends Pantalla {
     private double valor_depreciado_final = 0;
 
     public pre_activos_fijos() {
-        
+
         vipdf_grupos_dpres.setId("vipdf_grupos_dpres");
         vipdf_grupos_dpres.setTitle("ACTA DEPRECIACION GRUPOS");
         agregarComponente(vipdf_grupos_dpres);
-        
+
         vipdf_grupos_detalle.setId("vipdf_grupos_detalle");
         vipdf_grupos_detalle.setTitle("ACTA DEPRECIACION DETALLE");
         agregarComponente(vipdf_grupos_detalle);
-        
+
+        vipdf_depre_periodo.setId("vipdf_depre_periodo");
+        vipdf_depre_periodo.setTitle("REPORTE DEPRECIACION PERIODO");
+        agregarComponente(vipdf_depre_periodo);
+
         sel_clase_act.setId("sel_clase_act");
         sel_clase_act.setSeleccionTabla("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla", "ide_accla");
         sel_clase_act.setWidth("40%");
@@ -128,7 +137,7 @@ public class pre_activos_fijos extends Pantalla {
         sel_clase_act.setHeader("CLASES DE ACTIVOS FIJOS");
         sel_clase_act.getBot_aceptar().setMetodo("imprimirDetalle");
         agregarComponente(sel_clase_act);
-        
+
         bar_botones.agregarReporte();
 
         mep_menu.setMenuPanel("OPCIONES ACTIVOS FIJOS", "21%");
@@ -229,6 +238,11 @@ public class pre_activos_fijos extends Pantalla {
         gf.setStyle("width:" + (dia_foto.getAnchoPanel() - 5) + "px;height:" + (dia_foto.getAltoPanel() - 10) + "px;overflow: hidden;display: block;");
         dia_foto.setDialogo(gf);
         dia_foto.getBot_aceptar().setMetodo("aceptarGuardarFoto");
+
+        sec_rango_fechas.setId("sec_rango_fechas");
+        sec_rango_fechas.setMultiple(false);
+        sec_rango_fechas.getBot_aceptar().setMetodo("depreciacionPeriodo");
+        agregarComponente(sec_rango_fechas);
 
     }
 
@@ -499,25 +513,39 @@ public class pre_activos_fijos extends Pantalla {
     public void dibujarDepreciar() {
         Grid grm = new Grid();
         grm.setColumns(6);
-        
+
         Grid gra = new Grid();
         gra.setColumns(6);
-        
+
         gra.setStyle("font-size:14px;color:black;text-align:left;");
         Boton bot_imprimir_depr = new Boton();
         bot_imprimir_depr.setIcon("ui-icon-print");
         bot_imprimir_depr.setValue("REP.DEPRECIACION GRUPO");
         bot_imprimir_depr.setMetodo("imprimirDepres");
         gra.getChildren().add(bot_imprimir_depr);
-        
+
         Boton bot_imprimir_grup = new Boton();
         bot_imprimir_grup.setIcon("ui-icon-print");
         bot_imprimir_grup.setValue("DETALLES GRUPOS");
         bot_imprimir_grup.setMetodo("detalleGrupo");
         gra.getChildren().add(bot_imprimir_grup);
-        
+
+        Boton bot_imprimir_depre_peri = new Boton();
+        bot_imprimir_depre_peri.setIcon("ui-icon-print");
+        bot_imprimir_depre_peri.setValue("REP.DEPRECIACION PERIODO");
+        bot_imprimir_depre_peri.setMetodo("dialogoFechas");
+        gra.getChildren().add(bot_imprimir_depre_peri);
+
+        cal_fecha_inicial.setId("cal_fecha_inicial");
+        bar_botones.agregarComponente(new Etiqueta("FECHA INICIAL"));
+        bar_botones.agregarComponente(cal_fecha_inicial);
+
+        cal_fecha_final.setId("cal_fecha_final");
+        bar_botones.agregarComponente(new Etiqueta("FECHA FINAL"));
+        bar_botones.agregarComponente(cal_fecha_final);
+
         // grm.setWidth("0");
-        grm.setStyle("font-size:14px;color:black;text-align:left;"  );
+        grm.setStyle("font-size:14px;color:black;text-align:left;");
         grm.setMensajeInfo("Seleccione los parámetros para depreciar los activos");
         grm.getChildren().add(new Etiqueta("Fecha Valoración: "));
         cal_fecha_depreciacion.setId("cal_fecha_depreciacion");
@@ -592,38 +620,55 @@ public class pre_activos_fijos extends Pantalla {
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
-    
-    public void imprimirDetalle(){
+
+    public void dialogoFechas() {
+        sec_rango_fechas.setMultiple(true);
+        sec_rango_fechas.dibujar();
+    }
+
+    public void imprimirDetalle() {
         String seleccionado = sel_clase_act.getSeleccionados();
         if (seleccionado.equals("null") || seleccionado.isEmpty()) {
             utilitario.agregarMensajeInfo("ADVERTENCIA,", "Seleccione al menos una clase de activos ");
         } else {
+            Map map_parametros = new HashMap();
+            map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
+            map_parametros.put("fecha_ingresar", cal_fecha_depreciacion.getFecha());
+            map_parametros.put("grupo_dep", seleccionado);
+            map_parametros.put("titulo", " DEPRECIACIÓN DETALLADA DE BIENES");
+            map_parametros.put("ide_usua", Integer.parseInt(utilitario.getVariable("IDE_USUA")));
+            vipdf_grupos_detalle.setVisualizarPDF("rep_activos/rep_detalle_grupo_depre.jasper", map_parametros);
+            vipdf_grupos_detalle.dibujar();
+            utilitario.addUpdate("vipdf_grupos_detalle");
+
+        }
+    }
+
+    public void detalleGrupo() {
+        sel_clase_act.dibujar();
+    }
+
+    public void imprimirDepres() {
         Map map_parametros = new HashMap();
         map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
-        map_parametros.put("fecha_ingresar",cal_fecha_depreciacion.getFecha());
-        map_parametros.put("grupo_dep", seleccionado);
-        map_parametros.put("titulo", " DEPRECIACIÓN DETALLADA DE BIENES");
-        map_parametros.put("ide_usua", Integer.parseInt(utilitario.getVariable("IDE_USUA")));
-        vipdf_grupos_detalle.setVisualizarPDF("rep_activos/rep_detalle_grupo_depre.jasper", map_parametros);
-        vipdf_grupos_detalle.dibujar();
-        utilitario.addUpdate("vipdf_grupos_detalle");
-           
-         }
-    }
-    
-    public void detalleGrupo(){
-       sel_clase_act.dibujar();
-    }
-    public void imprimirDepres(){
-        Map map_parametros = new HashMap();
-        map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
-        map_parametros.put("fecha_ingresar",cal_fecha_depreciacion.getFecha());
-        
+        map_parametros.put("fecha_ingresar", cal_fecha_depreciacion.getFecha());
+
         vipdf_grupos_dpres.setVisualizarPDF("rep_activos/rep_depreciacion_grupo.jasper", map_parametros);
         vipdf_grupos_dpres.dibujar();
         utilitario.addUpdate("vipdf_grupos_dpres");
-        
-        
+    }
+
+    public void depreciacionPeriodo() {
+        sec_rango_fechas.cerrar();        
+        Map map_parametros = new HashMap();
+        map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
+        map_parametros.put("fecha_inicial", sec_rango_fechas.getFecha1String());
+        map_parametros.put("fecha_fin", sec_rango_fechas.getFecha2String());
+
+        vipdf_depre_periodo.setVisualizarPDF("rep_activos/rep_depreciacion_periodo.jasper", map_parametros);
+        vipdf_depre_periodo.dibujar();
+        utilitario.addUpdate("vipdf_depre_periodo");
+
     }
 
     public void aprobarActivos() {
@@ -632,15 +677,15 @@ public class pre_activos_fijos extends Pantalla {
 
         for (int i = 0; i < tab_no_aprobados.getTotalFilas(); i++) {
             utilitario.getConexion().ejecutarSql("update act_depreciacion set validado_depre_acdepr=true where ide_acdepr=" + tab_no_aprobados.getValor(i, "ide_acdepr"));
-            String sql_aprueba="select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado, " +
-"                    (valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien, " +
-"                    ( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre " +
-"                    from act_activo_fijo a,( " +
-"                    select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi") + " and validado_depre_acdepr=true group by ide_acafi " +
-"                    ) b " +
-"                    where a.ide_acafi=b.ide_acafi";
+            String sql_aprueba = "select a.ide_acafi,valor_compra_acafi+valor_reposicion_acafi as total_bien,recidual_acafi ,total_depreciado, "
+                    + "                    (valor_compra_acafi+valor_reposicion_acafi) -total_depreciado as valor_actual_bien, "
+                    + "                    ( case when ((valor_compra_acafi+valor_reposicion_acafi) -total_depreciado)=recidual_acafi then 'true' else 'false' end) as finalizado_depre "
+                    + "                    from act_activo_fijo a,( "
+                    + "                    select ide_acafi,sum(valor_acdepr) as total_depreciado from act_depreciacion where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi") + " and validado_depre_acdepr=true group by ide_acafi "
+                    + "                    ) b "
+                    + "                    where a.ide_acafi=b.ide_acafi";
             TablaGenerica tab_activo = utilitario.consultar(sql_aprueba);
-           // System.out.println("  sql_aprueba "+sql_aprueba);
+            // System.out.println("  sql_aprueba "+sql_aprueba);
             String sql_activo = "update act_activo_fijo set valor_depreciado_acafi=" + tab_activo.getValor("valor_actual_bien") + ", deprecia_acafi ='" + tab_activo.getValor("finalizado_depre") + "' where ide_acafi=" + tab_no_aprobados.getValor(i, "ide_acafi");
             utilitario.getConexion().ejecutarSql(sql_activo);
             utilitario.getConexion().desconectar(true);
@@ -2005,6 +2050,14 @@ public class pre_activos_fijos extends Pantalla {
         this.vipdf_grupos_detalle = vipdf_grupos_detalle;
     }
 
+    public VisualizarPDF getVipdf_depre_periodo() {
+        return vipdf_depre_periodo;
+    }
+
+    public void setVipdf_depre_periodo(VisualizarPDF vipdf_depre_periodo) {
+        this.vipdf_depre_periodo = vipdf_depre_periodo;
+    }
+
     public SeleccionTabla getSel_clase_act() {
         return sel_clase_act;
     }
@@ -2012,6 +2065,5 @@ public class pre_activos_fijos extends Pantalla {
     public void setSel_clase_act(SeleccionTabla sel_clase_act) {
         this.sel_clase_act = sel_clase_act;
     }
-    
-    
+
 }
