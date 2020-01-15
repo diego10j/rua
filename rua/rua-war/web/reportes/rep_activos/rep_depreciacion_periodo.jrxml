@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_depreciacion_periodo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="84da7a2b-d17b-42f6-a725-cc93fad30a3b">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="p_usuario" class="java.lang.String"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["C:\\Users\\SISTEMA\\Documents\\rua_salesiana\\trunk\\rua\\rua-war\\web\\reportes\\rep_sistema\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="ide_sucu" class="java.lang.Integer">
@@ -31,8 +31,7 @@ where fecha_acdepr between cast($P{p_fecha_inicio} as date) and cast($P{p_fecha_
 order by c.ide_accla
 )a group by ide_acafi,ide_accla,nombre_accla,valor_compra_acafi, valor_reposicion_acafi,vida_util_accla
 
-order by ide_accla
-]]>
+order by ide_accla]]>
 	</queryString>
 	<field name="ide_acafi" class="java.lang.Long"/>
 	<field name="ide_accla" class="java.lang.Integer"/>
@@ -213,10 +212,14 @@ order by ide_accla
 			</textField>
 			<subreport>
 				<reportElement uuid="d17a3e1d-9763-4ab0-bd39-0a221dc99929" x="0" y="0" width="277" height="43"/>
-				<subreportParameter name="ide_sucu"/>
-				<subreportParameter name="ide_empr"/>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_cabecera_salesiana.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_salesiana.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</title>
