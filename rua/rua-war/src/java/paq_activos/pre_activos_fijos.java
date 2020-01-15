@@ -662,8 +662,8 @@ public class pre_activos_fijos extends Pantalla {
         sec_rango_fechas.cerrar();        
         Map map_parametros = new HashMap();
         map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
-        map_parametros.put("fecha_inicial", sec_rango_fechas.getFecha1String());
-        map_parametros.put("fecha_fin", sec_rango_fechas.getFecha2String());
+        map_parametros.put("p_fecha_inicio", sec_rango_fechas.getFecha1String());
+        map_parametros.put("p_fecha_fin", sec_rango_fechas.getFecha2String());          
 
         vipdf_depre_periodo.setVisualizarPDF("rep_activos/rep_depreciacion_periodo.jasper", map_parametros);
         vipdf_depre_periodo.dibujar();
