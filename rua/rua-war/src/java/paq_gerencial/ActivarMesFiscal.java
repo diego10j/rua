@@ -27,7 +27,7 @@ import sistema.aplicacion.Pantalla;
  *
  * @author LUIS TOAPANTA
  */
-public class ActivarPeriodoFiscal extends Pantalla {
+public class ActivarMesFiscal extends Pantalla {
 
     private Conexion conPostgres = new Conexion();
     private Tabla tab_tabla1 = new Tabla();
@@ -48,7 +48,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
     @EJB
     private final ServicioGerencial ser_gerencial = (ServicioGerencial) utilitario.instanciarEJB(ServicioGerencial.class);
 
-    public ActivarPeriodoFiscal() {
+    public ActivarMesFiscal() {
 
         conPostgres.setUnidad_persistencia("rua_gerencial");
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
@@ -83,17 +83,37 @@ public class ActivarPeriodoFiscal extends Pantalla {
         tab_tabla1.getColumna("fecha_apert_gecobc").setNombreVisual("FECHA APERTURA");
         tab_tabla1.getColumna("fecha_cierre_gecobc").setNombreVisual("FECHA CIERRE");
         tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACION");
+        tab_tabla1.agregarRelacion(tab_tabla2);
+        tab_tabla1.setLectura(true);
         tab_tabla1.dibujar();
 
         //Es el contenedor de la tabla
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setId("pat_panel1");
         pat_panel1.setPanelTabla(tab_tabla1);
+        
+        //Permite crear la tabla2 
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setConexion(conPostgres);
+        tab_tabla2.setHeader("APERTURA MES FISCAL");
+        tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
+        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance());         
+        tab_tabla2.getColumna("responsable_gebame").setNombreVisual("RESPONSABLE");
+        tab_tabla2.getColumna("fecha_apert_gebame").setNombreVisual("FEHCA APERTURA");
+        tab_tabla2.getColumna("fecha_cierre_gebame").setNombreVisual("FECHA CIERRE");
+        tab_tabla2.getColumna("observacion_gebame").setNombreVisual("OBSERVACION");
+        tab_tabla2.dibujar();
+
+        //Es el contenedor de la tabla
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setId("pat_panel2");
+        pat_panel2.setPanelTabla(tab_tabla2);
+
 
         //Permite la dision de la pantalla
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir1(pat_panel1);
+        div_division.dividir2(pat_panel1,pat_panel2,"50%","H");
         agregarComponente(div_division);
 
         sel_casa_obra.setId("sel_casa_obra");
