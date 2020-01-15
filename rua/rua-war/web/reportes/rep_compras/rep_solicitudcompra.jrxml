@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="37"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -65,7 +65,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 	<pageHeader>
 		<band height="219">
 			<staticText>
-				<reportElement uuid="a962d7ca-bec2-4e81-93f5-a3408c457b8c" key="staticText-11" x="292" y="109" width="235" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="a962d7ca-bec2-4e81-93f5-a3408c457b8c" key="staticText-11" x="292" y="100" width="235" height="27" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -73,7 +73,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font fontName="Book Antiqua" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[SOLICITUD DE COMPRA]]></text>
 			</staticText>
@@ -86,7 +86,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font fontName="Book Antiqua" size="14"/>
+					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Nro. "+$F{numero_orden_adcomp}]]></textFieldExpression>
 			</textField>
@@ -99,12 +99,12 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font fontName="Book Antiqua" size="10"/>
+					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{plocalidad}+","+$F{fecha_solicitud_adcomp}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="eef818e9-67c6-4da2-a8c9-56a46b719662" key="staticText-37" mode="Transparent" x="5" y="147" width="140" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="eef818e9-67c6-4da2-a8c9-56a46b719662" key="staticText-37" mode="Transparent" x="5" y="141" width="140" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -112,7 +112,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Señor(a).-]]></text>
@@ -126,7 +126,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font fontName="Book Antiqua" size="8"/>
+					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Solicito a usted, se digne efectuar el tramite para el departamento "+$F{detalle_adarad}+", previo a la adquisicion y posterior pago de lo siguiente:"]]></textFieldExpression>
 			</textField>
@@ -139,7 +139,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Book Antiqua" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
 			</textField>
@@ -147,7 +147,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<reportElement uuid="da42dac0-70ef-4e7c-b5e8-3a6b9fff8ec1" key="rectangle-3" x="0" y="201" width="533" height="18" backcolor="#CCCCCC"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="aed9a80c-2ee7-482f-9911-33439b9881f1" key="staticText-25" mode="Transparent" x="4" y="204" width="69" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="aed9a80c-2ee7-482f-9911-33439b9881f1" key="staticText-25" mode="Transparent" x="4" y="204" width="69" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -155,13 +155,13 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3426bc41-4b6c-460d-be30-0d71ce04e794" key="staticText-26" mode="Transparent" x="97" y="204" width="187" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="3426bc41-4b6c-460d-be30-0d71ce04e794" key="staticText-26" mode="Transparent" x="97" y="204" width="187" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -169,13 +169,13 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[CONCEPTO  ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="338" y="204" width="108" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="338" y="204" width="108" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -183,7 +183,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[ESPECIFICACIONES]]></text>
@@ -202,19 +202,6 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
-			<textField isStretchWithOverflow="true" evaluationTime="Column" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="7e9a51e9-1c12-4f1d-98c0-fab699bc4922" key="textField-4" isPrintRepeatedValues="false" x="20" y="108" width="520" height="69" isPrintInFirstWholeBand="true"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font fontName="Book Antiqua" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{uso_adcomp}]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -222,14 +209,14 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 			<textField pattern="##0.00" isBlankWhenNull="true">
 				<reportElement uuid="0168db37-3a65-4767-9eb0-e9ace6740779" key="textField" x="0" y="2" width="49" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Book Antiqua" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad_adcobi}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="72fb903a-68ef-4a9f-be98-6785dcfb2cf9" key="textField" x="50" y="1" width="151" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Book Antiqua" size="7"/>
+					<font fontName="SansSerif" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
@@ -242,7 +229,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" x="202" y="0" width="333" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{especificaciones_adcobi}]]></textFieldExpression>
 			</textField>
@@ -265,7 +252,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Sr. Proveedor Proceda a obtener las cotizaciones previa a su calificacion y seleccion, siguiendo el procedimiento establecido para las adquisiciones,]]></text>
@@ -279,7 +266,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[DIR. DEPARTAMENTO SOLICITANTE]]></text>
@@ -291,7 +278,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<reportElement uuid="5dc80ca6-7535-49af-9769-6f2e0f7e0b6c" key="line-10" x="49" y="196" width="146" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="d91217d9-4c47-4a2d-9d6e-62238fc38bc8" key="staticText-39" mode="Transparent" x="8" y="18" width="108" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="d91217d9-4c47-4a2d-9d6e-62238fc38bc8" key="staticText-39" mode="Transparent" x="8" y="16" width="108" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -299,7 +286,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[DESTINO DEL BIEN]]></text>
@@ -368,7 +355,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font fontName="Book Antiqua" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
 			</textField>
@@ -381,7 +368,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right">
-					<font fontName="Book Antiqua" size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
@@ -394,7 +381,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font fontName="Book Antiqua" size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
@@ -410,7 +397,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Elaborado por:]]></text>
@@ -424,7 +411,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
@@ -437,7 +424,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_usuario}]]></textFieldExpression>
 			</textField>
@@ -450,11 +437,24 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
-					<font fontName="Book Antiqua" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Fecha impresión:]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" evaluationTime="Column" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="7e9a51e9-1c12-4f1d-98c0-fab699bc4922" key="textField-4" isPrintRepeatedValues="false" x="15" y="37" width="520" height="69" isPrintInFirstWholeBand="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{uso_adcomp}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
