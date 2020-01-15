@@ -57,9 +57,9 @@ public class pre_comp_inv_activos extends Pantalla{
         tab_tabla.getColumna("gen_ide_geper").setVisible(false);
         tab_tabla.getColumna("ide_rheor").setVisible(false);
         tab_tabla.getColumna("nombre_acafi").setVisible(false);
-        tab_tabla.getColumna("vida_util_acafi").setVisible(false);
+        //tab_tabla.getColumna("vida_util_acafi").setVisible(false);
         tab_tabla.getColumna("deprecia_acafi").setVisible(false);
-        tab_tabla.getColumna("recidual_acafi").setVisible(false);
+        //tab_tabla.getColumna("recidual_acafi").setVisible(false);
         tab_tabla.getColumna("serie_acafi").setVisible(false);
         tab_tabla.getColumna("observacion_acafi").setVisible(false);
         tab_tabla.getColumna("credi_tribu_acafi").setVisible(false);
