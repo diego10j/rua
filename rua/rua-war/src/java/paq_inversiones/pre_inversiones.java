@@ -56,12 +56,16 @@ public class pre_inversiones extends Pantalla {
     private double dou_capital_renova;
     private double dou_interes_renova;
     private Combo com_bancos;
-
+    private final Combo com_anio=new Combo();
     private Confirmar con_confirma_anular = new Confirmar();
 
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
+        
+        com_anio.setId("com_anio");
+        com_anio.setCombo(ser_inversion.getSqlComboAnio());
+        bar_botones.agregarComponente(com_anio);
 
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
@@ -150,6 +154,19 @@ public class pre_inversiones extends Pantalla {
         else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
+            sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_formato.dibujar();
+        } else if (rep_reporte.getReporteSelecionado().equals("Inversiones Bancarias no Canceladas Años")) {
+            Map parametro = new HashMap();
+            rep_reporte.cerrar();
+             parametro.put("pide_anio", com_anio.getValue());
+            sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+            sel_formato.dibujar();
+        }
+        else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic Años")) {
+            Map parametro = new HashMap();
+            rep_reporte.cerrar();
+            parametro.put("pide_anio", com_anio.getValue());
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
         }
