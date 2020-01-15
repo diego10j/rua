@@ -455,7 +455,7 @@ order by codigo_programa,detalle_producto,detalle_actividad,detalle_subactividad
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detalle_subactividad}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="false">
+			<textField pattern="" isBlankWhenNull="true">
 				<reportElement uuid="21ea8e55-c9fb-4a95-a345-b7efea8f706f" key="textField" x="377" y="0" width="89" height="12"/>
 				<box rightPadding="3">
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
