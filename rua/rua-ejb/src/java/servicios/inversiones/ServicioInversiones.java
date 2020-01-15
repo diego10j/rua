@@ -357,5 +357,12 @@ public class ServicioInversiones extends ServicioBase {
             utilitario.getConexion().agregarSqlPantalla("UPDATE con_det_comp_cont set valor_cndcc=0 where ide_cnccc=" + tab_busca.getValor("ide_cnccc"));
         }
     }
-
+    /**
+     * Retorna todas los nombres de los bancos
+     *
+     * @return
+     */
+    public String getSqlComboAnio() {
+        return "select nom_geani as ide, nom_geani from gen_anio order by nom_geani desc";
+    }
 }
