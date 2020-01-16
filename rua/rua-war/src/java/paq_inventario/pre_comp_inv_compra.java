@@ -29,6 +29,7 @@ import paq_adquisicion.ejb.ServiciosAdquisiones;
 import paq_produccion.ejb.ServicioProduccion;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
+import servicios.sistema.ServicioSistema;
 import sistema.aplicacion.Pantalla;
 
 /**
@@ -74,13 +75,18 @@ public class pre_comp_inv_compra extends Pantalla {
 
     @EJB
     private final ServiciosAdquisiones ser_persona = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    @EJB
+    private final ServicioSistema ser_sistema = (ServicioSistema) utilitario.instanciarEJB(ServicioSistema.class);
 
     public pre_comp_inv_compra() {
-        
+
         bar_botones.agregarReporte();
         tex_nomb_transaccion.setId("tex_nomb_transaccion");
-        bar_botones.agregarComponente(tex_nomb_transaccion);
-        
+        //bar_botones.agregarComponente(tex_nomb_transaccion);
+
+        TablaGenerica tab_responsable = ser_sistema.getUsuario(utilitario.getVariable("IDE_USUA"));
+        String ide_gtemp = tab_responsable.getValor("ide_gtemp");
+
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setTabla("inv_cab_comp_inve", "ide_incci", 1);
         tab_tabla1.setCampoOrden("ide_incci desc");
@@ -96,7 +102,9 @@ public class pre_comp_inv_compra extends Pantalla {
                 + "left join inv_tip_comp_inve b on a.ide_intci=b.ide_intci\n"
                 + "order by nombre_intci desc, nombre_intti");
         tab_tabla1.getColumna("ide_intti").setRequerida(true);
-        tab_tabla1.getColumna("ide_inbod").setVisible(true);
+        tab_tabla1.getColumna("ide_intti").setValorDefecto(utilitario.getVariable("p_inv_tipo_transaccion_compra"));
+        tab_tabla1.getColumna("ide_intti").setLectura(true);
+        tab_tabla1.getColumna("ide_inbod").setVisible(false);
         tab_tabla1.getColumna("ide_inepi").setValorDefecto(utilitario.getVariable("p_inv_estado_normal"));
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
@@ -110,6 +118,15 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("hora_sistem_incci").setVisible(false);
         tab_tabla1.getColumna("fec_cam_est_incci").setVisible(false);
         tab_tabla1.getColumna("fecha_efect_incci").setVisible(false);
+        //tab_tabla1.getColumna("ide_indod").setVisible(false);
+        tab_tabla1.getColumna("ide_georg").setVisible(false);
+        tab_tabla1.getColumna("ide_cnccc").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp2").setVisible(false);
+        tab_tabla1.getColumna("gth_ide_gtemp3").setVisible(false);
+        tab_tabla1.getColumna("maquina_incci").setVisible(false);
+        tab_tabla1.getColumna("codigo_documento_incci").setVisible(false);
+        tab_tabla1.getColumna("referencia_incci").setVisible(false);
         tab_tabla1.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("gth_ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("gth_ide_gtemp2").setCombo(ser_persona.getDatosEmpleado());
@@ -118,10 +135,17 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("gth_ide_gtemp").setAutoCompletar();
         tab_tabla1.getColumna("gth_ide_gtemp2").setAutoCompletar();
         tab_tabla1.getColumna("gth_ide_gtemp3").setAutoCompletar();
+        tab_tabla1.getColumna("ide_gtemp").setNombreVisual("RESPONSABLE DE REGISTRO");
+        tab_tabla1.getColumna("ide_gtemp").setValorDefecto(ide_gtemp);
+        tab_tabla1.getColumna("ide_incci").setNombreVisual("CODIGO");
+        tab_tabla1.getColumna("ide_inepi").setNombreVisual("ESTADO");
+        tab_tabla1.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
+        tab_tabla1.getColumna("ide_intti").setNombreVisual("TIPO TRANSACCIÓN");
+
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
-        tab_tabla1.agregarRelacion(tab_tabla3);
+        //tab_tabla1.agregarRelacion(tab_tabla3);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -258,15 +282,25 @@ public class pre_comp_inv_compra extends Pantalla {
     }
 
     public void generarPDFnota() {
-        String reporte = "";
-        Map parametros = new HashMap();
-        parametros.put("ide_incci", Integer.parseInt(tab_tabla1.getValor("ide_incci")));
-        reporte = "rep_inventario/rep_comprob_inv_kennedy.jasper";
-        String nom_rep = "Comprobante";
-        vipdf_comprobante.setVisualizarPDF(reporte, parametros);
-        vipdf_comprobante.dibujar();
-        utilitario.addUpdate("vipdf_comprobante");
-
+        if (tab_tabla1.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("No se puede imprimir", "Primero debe guardar el registro que esta trabajando");
+            return;
+        } else if (tab_tabla2.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("No se puede imprimir", "Primero debe guardar el registro que esta trabajando");
+            return;
+        } else if (tab_tabla1.getTotalFilas() > 0) {
+            String reporte = "";
+            Map parametros = new HashMap();
+            parametros.put("ide_incci", Integer.parseInt(tab_tabla1.getValor("ide_incci")));
+            reporte = "rep_inventario/rep_comprob_inv_kennedy.jasper";
+            String nom_rep = "Comprobante";
+            vipdf_comprobante.setVisualizarPDF(reporte, parametros);
+            vipdf_comprobante.dibujar();
+            utilitario.addUpdate("vipdf_comprobante");
+        } else {
+            utilitario.agregarMensajeInfo("No se puede imprimir", "Primero registre una factura");
+            return;
+        }
     }
 
     public void registrarInventario() {
@@ -336,12 +370,19 @@ public class pre_comp_inv_compra extends Pantalla {
         TablaGenerica tab_consulta = utilitario.consultar(" select * from inv_det_comp_inve where ide_incci=" + tab_tabla1.getValor("ide_incci") + " ");
         if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
             utilitario.agregarMensajeInfo("Información", "El comprobante de invetario ya esta aprobada");
+        } else if (tab_tabla1.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("Información", "Primero debe guardar el registro que esta trabajando");
+            return;
+        } else if (tab_tabla2.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("Información", "Primero debe guardar el registro que esta trabajando");
+            return;
         } else if (tab_consulta.getTotalFilas() > 0) {
             con_confirma.getBot_aceptar().setMetodo("registrarInventario");
             utilitario.addUpdate("con_confirma");
             con_confirma.dibujar();
         } else {
             utilitario.agregarMensajeInfo("Información", "Debe insertar productos ");
+            return;
         }
     }
 
@@ -388,11 +429,18 @@ public class pre_comp_inv_compra extends Pantalla {
         TablaGenerica tab_fact_cabera = utilitario.consultar("select ide_cpcfa, a.ide_geper, nom_geper from cxp_cabece_factur a\n"
                 + "left join gen_persona b on a.ide_geper = b.ide_geper \n"
                 + "where ide_cpcfa = " + factura + "");
+
+        TablaGenerica tab_responsable = ser_sistema.getUsuario(utilitario.getVariable("IDE_USUA"));
+        String ide_gtemp = tab_responsable.getValor("ide_gtemp");
+
         for (int i = 0; i < tab_fact_cabera.getTotalFilas(); i++) {
             if (tab_tabla1.isFilaInsertada() == false) {
                 tab_tabla1.insertar();
             }
             tab_tabla1.setValor("ide_geper", tab_fact_cabera.getValor(i, "ide_geper"));
+            tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_inv_tipo_transaccion_compra"));
+            tab_tabla1.setValor("ide_inbod", utilitario.getVariable("p_inv_bodega_defecto"));
+            tab_tabla1.setValor("ide_gtemp", ide_gtemp);
         }
         // tab_tabla1.guardar();
         // guardarPantalla();
@@ -812,7 +860,5 @@ public class pre_comp_inv_compra extends Pantalla {
     public void setSel_detalle_orden_prod(SeleccionTabla sel_detalle_orden_prod) {
         this.sel_detalle_orden_prod = sel_detalle_orden_prod;
     }
-
-    
 
 }
