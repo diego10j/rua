@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_inversiones_bancarias" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c7fb9df8-c1d1-4434-b95d-a38fbb945f64">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="113"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_usua" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -32,7 +32,9 @@ left join  iyp_estado_inversion d on a.ide_ipein=d.ide_ipein
 left join tes_cuenta_banco b on a.ide_tecba=b.ide_tecba
 left join tes_banco c on a.ide_teban=c.ide_teban
 where ((extract(year from fecha_emision_ipcer))||'')=$P{pide_anio}
+and cancelado=false
 and ide_iptin=0
+and nuevo=true
 order by nombre_teban,num_certificado_ipcer,fecha_vence_ipcer]]>
 	</queryString>
 	<field name="ide_ipcer" class="java.lang.Long"/>

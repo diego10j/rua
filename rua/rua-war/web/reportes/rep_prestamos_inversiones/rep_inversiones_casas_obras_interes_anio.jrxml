@@ -42,6 +42,7 @@ left join iyp_cab_inversion b on a.ide_ipcai=b.ide_ipcai
 left join gen_persona c on b.ide_geper = c.ide_geper
 where (extract(year from fecha_emision_ipcer)||'')=$P{pide_anio}
 and b.ide_iptin=1
+and cancelado=false
 order by c.nom_geper,beneficiario_ipcai,fecha_emision_ipcer]]>
 	</queryString>
 	<field name="ide_ipcer" class="java.lang.Long"/>
