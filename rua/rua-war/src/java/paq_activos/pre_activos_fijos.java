@@ -1322,7 +1322,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("VALOR_REPOSICION_ACAFI").setValorDefecto("0");
         tab_tabla.getColumna("deprecia_acafi").setValorDefecto("false");
         tab_tabla.getColumna("deprecia_acafi").setLectura(true);
-        tab_tabla.getColumna("recidual_acafi").setLectura(true);
+        //tab_tabla.getColumna("recidual_acafi").setLectura(true);
 
         tab_tabla.getColumna("ide_actac").setVisible(true);
         tab_tabla.getColumna("ide_actac").setCombo("act_tipo_adquisicion", "ide_actac", "nombre_actac", "");
