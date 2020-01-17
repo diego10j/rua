@@ -2,9 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitudcompra" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="7795c415-8e01-4cb3-9d59-eb418a49a601">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.2100000000000009"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="37"/>
+	<property name="ireport.y" value="226"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -27,7 +27,7 @@
 	<queryString>
 		<![CDATA[select a.ide_adcomp,numero_orden_adcomp,fecha_solicitud_adcomp,detalle_adarad,
 nombre_inarti,cantidad_adcobi,especificaciones_adcobi,solicita,generador_gasto,firma_solicita,firma_gasto,
-uso_adcomp,destino_del_bien_adcomp,detalle_adcarg,detalle_adapro
+uso_adcomp,destino_del_bien_adcomp,detalle_adcarg,detalle_adapro,nombre_oferente1_adcomp,valor_proforma_of1_adcomp,nombre_oferente2_adcomp , valor_proforma_of2_adcomp
 from ADQ_COMPRA a
 left join ADQ_AREA_ADMINISTRATIVA b on a.IDE_ADARAD = b.IDE_ADARAD
 left join ( select a.IDE_ADCOBI,a.IDE_ADCOMP,nombre_inarti,CANTIDAD_ADCOBI,especificaciones_adcobi
@@ -56,6 +56,10 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 	<field name="destino_del_bien_adcomp" class="java.lang.String"/>
 	<field name="detalle_adcarg" class="java.lang.String"/>
 	<field name="detalle_adapro" class="java.lang.String"/>
+	<field name="nombre_oferente1_adcomp" class="java.lang.String"/>
+	<field name="valor_proforma_of1_adcomp" class="java.math.BigDecimal"/>
+	<field name="nombre_oferente2_adcomp" class="java.lang.String"/>
+	<field name="valor_proforma_of2_adcomp" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -63,7 +67,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 		<band/>
 	</title>
 	<pageHeader>
-		<band height="219">
+		<band height="250">
 			<staticText>
 				<reportElement uuid="a962d7ca-bec2-4e81-93f5-a3408c457b8c" key="staticText-11" x="292" y="100" width="235" height="27" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
@@ -115,10 +119,10 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Señor(a).-]]></text>
+				<text><![CDATA[Estimado(a).-]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="ffa5b65d-63ea-4f8d-b21d-02b5877818bc" key="textField" x="6" y="177" width="514" height="25"/>
+				<reportElement uuid="ffa5b65d-63ea-4f8d-b21d-02b5877818bc" key="textField" x="6" y="177" width="514" height="27"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -128,7 +132,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textElement>
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Solicito a usted, se digne efectuar el tramite para el departamento "+$F{detalle_adarad}+", previo a la adquisicion y posterior pago de lo siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Mediante el presente, se presenta el análisis para la compra del bien solicitado por el área de "+$F{detalle_adarad}+" para su respectiva autorización:"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement uuid="ffa5b65d-63ea-4f8d-b21d-02b5877818bc" key="textField" x="5" y="159" width="396" height="18"/>
@@ -144,45 +148,45 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="da42dac0-70ef-4e7c-b5e8-3a6b9fff8ec1" key="rectangle-3" x="0" y="201" width="533" height="18" backcolor="#CCCCCC"/>
+				<reportElement uuid="da42dac0-70ef-4e7c-b5e8-3a6b9fff8ec1" key="rectangle-3" x="0" y="232" width="533" height="18" backcolor="#CCCCCC"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="aed9a80c-2ee7-482f-9911-33439b9881f1" key="staticText-25" mode="Transparent" x="4" y="204" width="69" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="aed9a80c-2ee7-482f-9911-33439b9881f1" key="staticText-25" mode="Transparent" x="4" y="233" width="69" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3426bc41-4b6c-460d-be30-0d71ce04e794" key="staticText-26" mode="Transparent" x="97" y="204" width="187" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="3426bc41-4b6c-460d-be30-0d71ce04e794" key="staticText-26" mode="Transparent" x="97" y="233" width="187" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[CONCEPTO  ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="338" y="204" width="108" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="338" y="233" width="108" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
@@ -202,6 +206,33 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="8f252a0c-b121-4329-9098-7787811cea1c" key="textField" x="292" y="55" width="235" height="18" forecolor="#FF0000"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_adapro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="0" y="210" width="535" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[OFERENTE GANADOR]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<detail>
@@ -235,16 +266,40 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 			</textField>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="278" splitType="Stretch">
+	<columnFooter>
+		<band height="185">
 			<rectangle>
-				<reportElement uuid="990f32d3-66b8-4ee8-bae2-1252eb9f5e6c" key="rectangle-2" x="14" y="106" width="507" height="133"/>
+				<reportElement uuid="da42dac0-70ef-4e7c-b5e8-3a6b9fff8ec1" key="rectangle-3" x="0" y="29" width="533" height="18" backcolor="#CCCCCC"/>
 			</rectangle>
-			<line>
-				<reportElement uuid="5996667c-3b21-45cf-badb-caba144ecc5b" key="line-7" x="15" y="132" width="502" height="1"/>
-			</line>
 			<staticText>
-				<reportElement uuid="5400c232-2a0b-4431-aa1c-3cd2c9473215" key="staticText-31" mode="Transparent" x="0" y="115" width="528" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="3426bc41-4b6c-460d-be30-0d71ce04e794" key="staticText-26" mode="Transparent" x="3" y="29" width="120" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO  ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="72fb903a-68ef-4a9f-be98-6785dcfb2cf9" key="textField" stretchType="RelativeToBandHeight" x="0" y="47" width="123" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="123" y="32" width="215" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -252,13 +307,156 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
-					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Sr. Proveedor Proceda a obtener las cotizaciones previa a su calificacion y seleccion, siguiendo el procedimiento establecido para las adquisiciones,]]></text>
+				<text><![CDATA[ESPECIFICACIONES]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="123" y="47" width="203" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{especificaciones_adcobi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="0" y="7" width="535" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PROFORMAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="96861984-a43f-4baf-b6e4-218aded0d64c" key="staticText-32" mode="Transparent" x="20" y="215" width="205" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="326" y="29" width="108" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[EMPRESA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea388c32-5e59-4c0a-887b-85381c1e7c18" key="staticText-27" mode="Transparent" x="446" y="32" width="87" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="326" y="47" width="120" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_oferente1_adcomp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="446" y="47" width="87" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_proforma_of1_adcomp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="72fb903a-68ef-4a9f-be98-6785dcfb2cf9" key="textField" stretchType="RelativeToBandHeight" x="0" y="67" width="123" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="326" y="67" width="120" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_oferente2_adcomp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="446" y="67" width="87" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_proforma_of2_adcomp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f8e9e949-6704-4ec7-872b-ae79b3cab072" key="textField-7" stretchType="RelativeToBandHeight" x="123" y="67" width="203" height="20"/>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{especificaciones_adcobi}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="201" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="990f32d3-66b8-4ee8-bae2-1252eb9f5e6c" key="rectangle-2" x="14" y="27" width="507" height="134"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="5996667c-3b21-45cf-badb-caba144ecc5b" key="line-7" x="15" y="53" width="502" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="96861984-a43f-4baf-b6e4-218aded0d64c" key="staticText-32" mode="Transparent" x="21" y="136" width="155" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -269,33 +467,33 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[DIR. DEPARTAMENTO SOLICITANTE]]></text>
+				<text><![CDATA[SOLICITANTE]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="b7f99f7b-e8f1-4b76-98e4-0bbf818fa4d5" key="line-8" x="244" y="134" width="1" height="106"/>
+				<reportElement uuid="b7f99f7b-e8f1-4b76-98e4-0bbf818fa4d5" key="line-8" x="181" y="55" width="1" height="106"/>
 			</line>
 			<line>
-				<reportElement uuid="5dc80ca6-7535-49af-9769-6f2e0f7e0b6c" key="line-10" x="49" y="196" width="146" height="1"/>
+				<reportElement uuid="5dc80ca6-7535-49af-9769-6f2e0f7e0b6c" key="line-10" x="25" y="117" width="146" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="d91217d9-4c47-4a2d-9d6e-62238fc38bc8" key="staticText-39" mode="Transparent" x="8" y="16" width="108" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="d91217d9-4c47-4a2d-9d6e-62238fc38bc8" key="staticText-39" mode="Transparent" x="15" y="7" width="108" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[DESTINO DEL BIEN]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="70ddaa21-5c63-48f5-8df5-26a976f296bd" key="line-11" x="315" y="196" width="146" height="1"/>
+				<reportElement uuid="70ddaa21-5c63-48f5-8df5-26a976f296bd" key="line-11" x="361" y="117" width="146" height="1"/>
 			</line>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="1be020f8-4fcd-4d0a-af76-850f28f13d18" key="textField" x="18" y="202" width="212" height="18"/>
+				<reportElement uuid="1be020f8-4fcd-4d0a-af76-850f28f13d18" key="textField" x="21" y="123" width="154" height="18"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -308,33 +506,20 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[$F{solicita}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="cf162601-eb28-42a7-ac51-9160723cc77c" key="textField" x="123" y="16" width="359" height="18"/>
+				<reportElement uuid="cf162601-eb28-42a7-ac51-9160723cc77c" key="textField" x="123" y="7" width="398" height="20"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{destino_del_bien_adcomp}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement uuid="8f252a0c-b121-4329-9098-7787811cea1c" key="textField" x="0" y="0" width="535" height="18" forecolor="#FF0000"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{detalle_adapro}]]></textFieldExpression>
-			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="2627ab0c-061a-4135-ae48-55ff465c34c7" key="textField" x="292" y="202" width="190" height="20"/>
+				<reportElement uuid="2627ab0c-061a-4135-ae48-55ff465c34c7" key="textField" x="351" y="123" width="165" height="20"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -347,7 +532,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[$F{generador_gasto}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a1290933-c663-4804-98d0-137f461ba52e" key="textField" x="282" y="214" width="207" height="20"/>
+				<reportElement uuid="a1290933-c663-4804-98d0-137f461ba52e" key="textField" x="351" y="135" width="165" height="20"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -360,7 +545,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="ea942e5e-559b-4643-a2c7-cf13371e72ff" key="textField-2" x="326" y="259" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="ea942e5e-559b-4643-a2c7-cf13371e72ff" key="textField-2" x="326" y="180" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -373,7 +558,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
-				<reportElement uuid="dca5d872-b93d-47e6-b996-4a70c6c2dcfb" key="textField-3" x="497" y="259" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="dca5d872-b93d-47e6-b996-4a70c6c2dcfb" key="textField-3" x="497" y="180" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -386,10 +571,10 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="aa42f087-12c4-43f5-9c32-bcac2a80bb37" key="line-12" x="18" y="256" width="502" height="1"/>
+				<reportElement uuid="aa42f087-12c4-43f5-9c32-bcac2a80bb37" key="line-12" x="18" y="177" width="502" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="e1d49abd-935d-4b50-9e07-4f90f21fb28a" key="staticText-41" mode="Transparent" x="8" y="260" width="78" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="e1d49abd-935d-4b50-9e07-4f90f21fb28a" key="staticText-41" mode="Transparent" x="8" y="181" width="78" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -403,7 +588,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<text><![CDATA[Elaborado por:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="d9abb061-4147-433b-87c6-9cea6d2f5dbb" key="textField-5" x="260" y="262" width="111" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="d9abb061-4147-433b-87c6-9cea6d2f5dbb" key="textField-5" x="260" y="183" width="111" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -416,7 +601,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="8581146a-b133-4ab7-918c-e032b0b904ab" key="textField" x="79" y="261" width="96" height="15"/>
+				<reportElement uuid="8581146a-b133-4ab7-918c-e032b0b904ab" key="textField" x="79" y="182" width="96" height="15"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -429,7 +614,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textFieldExpression><![CDATA[$P{p_usuario}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e1d49abd-935d-4b50-9e07-4f90f21fb28a" key="staticText-41" mode="Transparent" x="175" y="261" width="94" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="e1d49abd-935d-4b50-9e07-4f90f21fb28a" key="staticText-41" mode="Transparent" x="175" y="182" width="94" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -442,19 +627,39 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				</textElement>
 				<text><![CDATA[Fecha impresión:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" evaluationTime="Column" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="7e9a51e9-1c12-4f1d-98c0-fab699bc4922" key="textField-4" isPrintRepeatedValues="false" x="15" y="37" width="520" height="69" isPrintInFirstWholeBand="true"/>
+			<line>
+				<reportElement uuid="b7f99f7b-e8f1-4b76-98e4-0bbf818fa4d5" key="line-8" x="346" y="54" width="1" height="106"/>
+			</line>
+			<staticText>
+				<reportElement uuid="96861984-a43f-4baf-b6e4-218aded0d64c" key="staticText-32" mode="Transparent" x="186" y="136" width="155" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
-					<font fontName="SansSerif" size="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{uso_adcomp}]]></textFieldExpression>
+				<text><![CDATA[CONTADORA GENERAL]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="1be020f8-4fcd-4d0a-af76-850f28f13d18" key="textField" x="186" y="123" width="154" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lorena Sánchez"]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="5dc80ca6-7535-49af-9769-6f2e0f7e0b6c" key="line-10" x="191" y="117" width="146" height="1"/>
+			</line>
 		</band>
 	</pageFooter>
 	<summary>
