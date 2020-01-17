@@ -15,7 +15,6 @@ import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
 import framework.componentes.Dialogo;
-import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -32,6 +31,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.panel.Panel;
 import servicios.ceo.ServicioComprobanteElectronico;
 import servicios.contabilidad.ServicioConfiguracion;
+import servicios.cuentas_x_cobrar.ServicioCuentasCxC;
 import servicios.cuentas_x_pagar.ServicioCuentasCxP;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
@@ -53,6 +53,8 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     private final ServicioComprobanteElectronico ser_comprobante_electronico = (ServicioComprobanteElectronico) utilitario.instanciarEJB(ServicioComprobanteElectronico.class);
     @EJB
     private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
+    @EJB
+    private final ServicioCuentasCxC ser_factura = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
 
     private final Combo com_pto_emision = new Combo();
     private final Calendario cal_fecha_inicio = new Calendario();
@@ -307,110 +309,165 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     }
 
     public void dibujarNuevaLiquidacion() {
-//        tab_tabla1 = new Tabla();
-//        tab_tabla1.setId("tab_tabla1");
-//        tab_tabla2 = new Tabla();
-//        tab_tabla2.setId("tab_tabla2");
-//        tab_tabla1.setTabla("cxp_cabecera_nota", "ide_cpcno", 1);
-//        tab_tabla1.setCondicion("ide_cpcno=" + ide_cpcno);
-//        tab_tabla1.getGrid().setColumns(6);
-//        tab_tabla1.setMostrarNumeroRegistros(false);
-//        tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_cliente_geper=TRUE AND nivel_geper='HIJO'");
-//        tab_tabla1.getColumna("ide_geper").setAutoCompletar();
-//        tab_tabla1.getColumna("ide_cpmno").setCombo("cxp_motivo_nota", "ide_cpmno", "nombre_cpmno", "");
-//        tab_tabla1.getColumna("ide_cpmno").setRequerida(true);
-//        tab_tabla1.getColumna("ide_cpeno").setValorDefecto("1");//Estado normal por defecto         
-//        tab_tabla1.getColumna("ide_cpeno").setVisible(false);
-//        tab_tabla1.getColumna("ide_cpcno").setVisible(false);
-//        tab_tabla1.getColumna("ide_srcom").setVisible(false);
-//        tab_tabla1.getColumna("TARIFA_IVA_CPCNO").setVisible(false);
-//
-//        if (ser_factura.isFacturaElectronica(String.valueOf(com_pto_emision.getValue()))) {
-//            tab_tabla1.getColumna("NUMERO_CPCNO").setLectura(true);
-//        }
-//        tab_tabla1.getColumna("ide_cntdo").setVisible(false);
-//        tab_tabla1.getColumna("ide_cntdo").setValorDefecto("0"); //nota de credito
-//        tab_tabla1.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
-//        tab_tabla1.getColumna("ide_cndfp").setRequerida(true);
-//        tab_tabla1.getColumna("fecha_trans_cpcno").setValorDefecto(utilitario.getFechaActual());
-//        tab_tabla1.getColumna("fecha_trans_cpcno").setVisible(false);
-//        tab_tabla1.getColumna("valor_ice_cpcno").setVisible(false);
-//        tab_tabla1.getColumna("ide_cnccc").setVisible(false);
-//        tab_tabla1.getColumna("total_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("base_no_objeto_iva_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("base_tarifa0_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("base_grabada_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("valor_iva_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("total_cpcno").setLectura(true);
-//        tab_tabla1.getColumna("ide_ccdaf").setVisible(false);
-//        tab_tabla1.getColumna("fecha_emisi_cpcno").setValorDefecto(utilitario.getFechaActual());
-//        tab_tabla1.getColumna("fecha_emisi_cpcno").setRequerida(true);
-//        tab_tabla1.getColumna("num_doc_mod_cpcno").setMascara("999-999-999999999");
-//        tab_tabla1.getColumna("num_doc_mod_cpcno").setMetodoChange("buscaFactura");
-//        tab_tabla1.getColumna("num_doc_mod_cpcno").setRequerida(true);
-//        tab_tabla1.getColumna("valor_mod_cpcno").setRequerida(true);
-//        tab_tabla1.setTipoFormulario(true);
-//        tab_tabla1.agregarRelacion(tab_tabla2);
-//        tab_tabla1.dibujar();
-//        if (tab_tabla1.isEmpty()) {
-//            tab_tabla1.insertar();
-//            tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
-//        }
-//
-//        if (ser_factura.isFacturaElectronica(String.valueOf(com_pto_emision.getValue())) == false) {
-//            tab_tabla1.setValor("NUMERO_CPCNO", String.valueOf(ser_factura.getSecuencialFactura(String.valueOf(com_pto_emision.getValue()))));
-//        }
-//        PanelTabla pat_panel1 = new PanelTabla();
-//        pat_panel1.setPanelTabla(tab_tabla1);
-//        pat_panel1.getMenuTabla().getItem_insertar().setRendered(false);
-//        pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
-//        pat_panel1.getMenuTabla().getItem_actualizar().setRendered(false);
-//        pat_panel1.getMenuTabla().getItem_buscar().setRendered(false);
-//
-//        tab_tabla2.setTabla("cxp_detalle_nota", "ide_cpdno", 2);
-//        if (ide_cpcno != null) {
-//            tab_tabla2.setCondicion("ide_cpcno=" + ide_cpcno);
-//        } else {
-//            tab_tabla2.setCondicionForanea("ide_cpdno=-1");
-//        }
-//
-//        tab_tabla2.getColumna("ide_cpdno").setVisible(false);
-//        tab_tabla2.getColumna("ide_cpcno").setVisible(false);
-//        tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
-//        tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
-//        tab_tabla2.getColumna("credi_tribu_cpdno").setVisible(false);
-//        tab_tabla2.getColumna("devolucion_cpdno").setVisible(false);
-//        tab_tabla2.getColumna("alter_tribu_cpdno").setVisible(false);
-//        tab_tabla2.getColumna("alter_tribu_cpdno").setValorDefecto("00");
-//        tab_tabla2.getColumna("cantidad_cpdno").setMetodoChange("cambioPrecioCantidadIva");
-//        tab_tabla2.getColumna("cantidad_cpdno").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
-//        tab_tabla2.getColumna("precio_cpdno").setMetodoChange("cambioPrecioCantidadIva");
-//        tab_tabla2.getColumna("precio_cpdno").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
-//        tab_tabla2.getColumna("valor_cpdno").setEtiqueta();
-//        tab_tabla2.getColumna("valor_cpdno").setEstilo("font-size:14px;font-weight: bold;");
-//        tab_tabla2.getColumna("valor_cpdno").alinearDerecha();
-//        tab_tabla2.getColumna("descuento_cpdno").alinearDerecha();
-//        tab_tabla2.getColumna("descuento_cpdno").setValorDefecto(utilitario.getFormatoNumero("0"));
-//
-//        tab_tabla2.setScrollable(true);
-//        tab_tabla2.getColumna("iva_inarti_cpdno").setCombo(ser_producto.getListaTipoIVA());
-//        tab_tabla2.getColumna("iva_inarti_cpdno").setPermitirNullCombo(false);
-//        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
-//        tab_tabla2.getColumna("ide_inuni").setCombo("inv_unidad", "ide_inuni", "nombre_inuni", "");
-//        tab_tabla2.getColumna("ide_inuni").setLongitud(-1);
-//        tab_tabla2.getColumna("iva_inarti_cpdno").setMetodoChange("cambioPrecioCantidadIva");
-//        tab_tabla2.getColumna("iva_inarti_cpdno").setLongitud(-1);
-//        tab_tabla2.setScrollHeight(utilitario.getAltoPantalla() - 350);
-//        tab_tabla2.dibujar();
-//        PanelTabla pat_panel2 = new PanelTabla();
-//        pat_panel2.setPanelTabla(tab_tabla2);
-//        pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
-//        pat_panel2.getMenuTabla().getItem_buscar().setRendered(false);
-//
-//        Grupo gru = new Grupo();
-//        gru.getChildren().add(pat_panel1);
-//        gru.getChildren().add(pat_panel2);
-//        mep_menu.dibujar(1, "CONFIGURACIÓN FACTURAS ELECTRÓNICAS", gru);
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla2 = new Tabla();
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla1.setTabla("cxp_cabece_factur", "ide_cpcfa", 1);
+        tab_tabla1.setCondicion("ide_cpcfa=" + ide_cpcfa);
+        tab_tabla1.setTipoFormulario(true);
+        tab_tabla1.getGrid().setColumns(6);
+
+        tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("ide_cntdo").setVisible(false);
+        tab_tabla1.getColumna("ide_cpefa").setValorDefecto(utilitario.getVariable("p_cxp_estado_factura_normal"));
+        tab_tabla1.getColumna("ide_cpefa").setVisible(false);
+        tab_tabla1.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
+        tab_tabla1.getColumna("ide_cndfp").setRequerida(true);
+        tab_tabla1.getColumna("TARIFA_IVA_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
+        tab_tabla1.getColumna("ide_cndfp").setOrden(5);
+        tab_tabla1.getColumna("dias_credito_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("dias_credito_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("dias_credito_cpcfa").setValorDefecto("0");
+
+        tab_tabla1.getColumna("ide_cndfp1").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp!=3");
+        tab_tabla1.getColumna("ide_cndfp1").setOrden(50);
+        tab_tabla1.getColumna("ide_cndfp1").setNombreVisual("DÍAS CREDITO");
+        tab_tabla1.getColumna("ide_cndfp1").setEstilo("width:140px");
+        tab_tabla1.getColumna("ide_cndfp1").setRequerida(true);
+
+        tab_tabla1.getColumna("RECIBIDO_COMPRA_CPCFA").setVisible(false);  //Campo Luis
+        tab_tabla1.getColumna("RECIBIDO_COMPRA_CPCFA").setValorDefecto("FALSE");
+
+        tab_tabla1.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_tabla1.getColumna("ide_usua").setVisible(false);
+        tab_tabla1.getColumna("MONTO_COM_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("IDE_CNTIC").setVisible(false);
+        tab_tabla1.getColumna("fecha_trans_cpcfa").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla1.getColumna("fecha_trans_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("fecha_emisi_cpcfa").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla1.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA EMISIÓN");
+        tab_tabla1.getColumna("fecha_emisi_cpcfa").setOrden(1);
+        tab_tabla1.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO'");
+        tab_tabla1.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla1.getColumna("ide_geper").setRequerida(true);
+        tab_tabla1.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
+        tab_tabla1.getColumna("ide_geper").setOrden(3);
+        tab_tabla1.getColumna("autorizacio_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("ide_srtst").setRequerida(true);
+        tab_tabla1.getColumna("autorizacio_cpcfa").setOrden(5);
+        tab_tabla1.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
+        tab_tabla1.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");
+        tab_tabla1.getColumna("observacion_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("observacion_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("pagado_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("pagado_cpcfa").setValorDefecto("False");
+        tab_tabla1.getColumna("total_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("IDE_ADCOMP").setVisible(false);  //CAMPO LUIS
+        tab_tabla1.getColumna("ide_srcom").setVisible(false);  //30/12/2019 
+        tab_tabla1.getColumna("ide_ccdaf").setVisible(false);  //30/12/2019 
+
+        tab_tabla1.getColumna("total_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("numero_cpcfa").setEstilo("font-size: 12px;font-weight: bold");
+        tab_tabla1.getColumna("numero_cpcfa").setNombreVisual("NÚMERO");
+        tab_tabla1.getColumna("numero_cpcfa").setOrden(4);
+        tab_tabla1.getColumna("numero_cpcfa").setAncho(10);
+        tab_tabla1.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
+        tab_tabla1.getColumna("numero_cpcfa").setMascara("999-999-999999999");
+        tab_tabla1.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
+        tab_tabla1.getColumna("numero_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("base_grabada_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("base_grabada_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("valor_iva_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("valor_iva_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("base_no_objeto_iva_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("base_no_objeto_iva_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("base_tarifa0_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("base_tarifa0_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("otros_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("ide_srtst").setCombo("sri_tipo_sustento_tributario", "ide_srtst", "alterno_srtst,nombre_srtst", "");
+        tab_tabla1.getColumna("ide_srtst").setValorDefecto(utilitario.getVariable("p_sri_tip_sus_tri02"));
+        tab_tabla1.getColumna("ide_srtst").setNombreVisual("SUSTENTO TRIBUTARIO");
+        tab_tabla1.getColumna("ide_srtst").setOrden(7);
+        tab_tabla1.getColumna("ide_cncre").setVisible(false);
+        tab_tabla1.getColumna("ide_cnccc").setVisible(false);
+        tab_tabla1.getColumna("valor_ice_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("valor_ice_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("OTROS_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("DESCUENTO_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("PORCEN_DESC_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("liquida_nota_cpcfa").setValorDefecto("0");
+        tab_tabla1.getColumna("motivo_nc_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("numero_nc_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
+
+        tab_tabla1.getColumna("motivo_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("autorizacio_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("numero_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("fecha_emision_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("ide_cntdo_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("motivo_nc_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("liquida_nota_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("ide_cndfp1").setVisible(false);
+        tab_tabla1.getColumna("ide_cndfp1").setValorDefecto("3"); //EFECTIVO
+        tab_tabla1.dibujar();
+        if (tab_tabla1.isEmpty()) {
+            tab_tabla1.insertar();
+            tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
+        }
+
+        PanelTabla pat_panel1 = new PanelTabla();
+        pat_panel1.setPanelTabla(tab_tabla1);
+        pat_panel1.getMenuTabla().getItem_insertar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_buscar().setRendered(false);
+
+        tab_tabla2.setTabla("cxp_detall_factur", "ide_cpdfa", 2);
+        if (ide_cpcfa != null) {
+            tab_tabla2.setCondicion("ide_cpcfa=" + ide_cpcfa);
+        } else {
+            tab_tabla2.setCondicionForanea("ide_cpcfa=-1");
+        }
+
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
+        tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
+        tab_tabla2.getColumna("credi_tribu_cpdfa").setVisible(false);
+        tab_tabla2.getColumna("devolucion_cpdfa").setVisible(false);
+        tab_tabla2.getColumna("alter_tribu_cpdfa").setVisible(false);
+        tab_tabla2.getColumna("alter_tribu_cpdfa").setValorDefecto("00");
+        tab_tabla2.getColumna("cantidad_cpdfa").setMetodoChange("cambioPrecioCantidadIva");
+        tab_tabla2.getColumna("cantidad_cpdfa").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
+        tab_tabla2.getColumna("precio_cpdfa").setMetodoChange("cambioPrecioCantidadIva");
+        tab_tabla2.getColumna("precio_cpdfa").setDecimales(ser_factura.getDecimalesPrecioUnitario()); //DFJ
+        tab_tabla2.getColumna("valor_cpdfa").setEtiqueta();
+        tab_tabla2.getColumna("valor_cpdfa").setEstilo("font-size:14px;font-weight: bold;");
+        tab_tabla2.getColumna("valor_cpdfa").alinearDerecha();
+
+        tab_tabla2.setScrollable(true);
+        tab_tabla2.getColumna("iva_inarti_cpdfa").setCombo(ser_producto.getListaTipoIVA());
+        tab_tabla2.getColumna("iva_inarti_cpdfa").setPermitirNullCombo(false);
+        tab_tabla2.getColumna("ide_inarti").setRequerida(true);
+        tab_tabla2.getColumna("ide_inuni").setCombo("inv_unidad", "ide_inuni", "nombre_inuni", "");
+        tab_tabla2.getColumna("ide_inuni").setLongitud(-1);
+        tab_tabla2.getColumna("iva_inarti_cpdfa").setMetodoChange("cambioPrecioCantidadIva");
+        tab_tabla2.getColumna("iva_inarti_cpdfa").setLongitud(-1);
+        tab_tabla2.setScrollHeight(utilitario.getAltoPantalla() - 350);
+        tab_tabla2.dibujar();
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setPanelTabla(tab_tabla2);
+        pat_panel2.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel2.getMenuTabla().getItem_buscar().setRendered(false);
+
+        Grupo gru = new Grupo();
+        gru.getChildren().add(pat_panel1);
+        gru.getChildren().add(pat_panel2);
+        mep_menu.dibujar(1, "CONFIGURACIÓN FACTURAS ELECTRÓNICAS", gru);
 
     }
 
@@ -433,18 +490,18 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double precio = 0;
         double total = 0;
         try {
-            cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_cpdno"));
+            cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_cpdfa"));
         } catch (Exception e) {
             cantidad = 0;
         }
         try {
-            precio = Double.parseDouble(tab_tabla2.getValor("precio_cpdno"));
+            precio = Double.parseDouble(tab_tabla2.getValor("precio_cpdfa"));
         } catch (Exception e) {
             precio = 0;
         }
         total = cantidad * precio;
-        tab_tabla2.setValor("valor_cpdno", utilitario.getFormatoNumero(utilitario.getFormatoNumero(total, 4)));
-        utilitario.addUpdateTabla(tab_tabla2, "valor_cpdno", "");
+        tab_tabla2.setValor("valor_cpdfa", utilitario.getFormatoNumero(utilitario.getFormatoNumero(total, 4)));
+        utilitario.addUpdateTabla(tab_tabla2, "valor_cpdfa", "");
         calcularTotalFactura();
     }
 
@@ -459,23 +516,23 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double porcentaje_iva = 0;
 
         for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-            String iva = tab_tabla2.getValor(i, "iva_inarti_cpdno");
+            String iva = tab_tabla2.getValor(i, "iva_inarti_cpcfa");
             if (iva.equals("1")) { //SI IVA
-                base_grabada = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdno")) + base_grabada;
+                base_grabada = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_grabada;
                 porcentaje_iva = tarifaIVA;
                 valor_iva = base_grabada * porcentaje_iva; //0.12
             } else if (iva.equals("-1")) { // NO IVA
-                base_tarifa0 = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdno")) + base_tarifa0;
+                base_tarifa0 = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_tarifa0;
             } else if (iva.equals("0")) { // NO OBJETO
-                base_no_objeto = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdno")) + base_no_objeto;
+                base_no_objeto = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_no_objeto;
             }
         }
-        tab_tabla1.setValor("base_grabada_cpcno", utilitario.getFormatoNumero(base_grabada));
-        tab_tabla1.setValor("base_no_objeto_iva_cpcno", utilitario.getFormatoNumero(base_no_objeto));
-        tab_tabla1.setValor("valor_iva_cpcno", utilitario.getFormatoNumero(valor_iva));
-        tab_tabla1.setValor("base_tarifa0_cpcno", utilitario.getFormatoNumero(base_tarifa0));
-        tab_tabla1.setValor("total_cpcno", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva));
-        utilitario.addUpdateTabla(tab_tabla1, "ide_geper,VALOR_MOD_CPCNO,FECHA_EMISION_MOD_CPCNO,base_grabada_cpcno,base_no_objeto_iva_cpcno,valor_iva_cpcno,base_tarifa0_cpcno,total_cpcno", "");
+        tab_tabla1.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
+        tab_tabla1.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
+        tab_tabla1.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
+        tab_tabla1.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
+        tab_tabla1.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva));
+        utilitario.addUpdateTabla(tab_tabla1, "ide_geper,base_grabada_cpcfa,base_no_objeto_iva_cpcfa,valor_iva_cpcfa,base_tarifa0_cpcfa,total_cpcfa", "");
     }
 
     public void dibujarLiquidacionCompra() {
@@ -493,7 +550,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         Boton bot_anular = new Boton();
         bot_anular.setValue("Anular");
         bot_anular.setTitle("Anular Liquidación de Compra");
-        bot_anular.setMetodo("abrirAnularNotas");
+        bot_anular.setMetodo("abrirAnularLiquidacion");
         bot_anular.setIcon("ui-icon-cancel");
         bar_menu.agregarComponente(bot_anular);
         bar_menu.agregarSeparador();
@@ -516,7 +573,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         Boton bot_reenviar = new Boton();
         bot_reenviar.setValue("Reenviar");
         bot_reenviar.setTitle("Enviar nuevamente al correo");
-        bot_reenviar.setMetodo("reenviarNota");
+        bot_reenviar.setMetodo("reenviarLiquidacion");
         bot_reenviar.setIcon("ui-icon-mail-closed");
         bar_menu.agregarBoton(bot_reenviar);
 
@@ -583,7 +640,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         utilitario.buscarPermisosObjetos();
     }
 
-    public void reenviarNota() {
+    public void reenviarLiquidacion() {
         //Valida que la factura este AUTORIZADA
         if (tab_tabla1.getValor("ide_cpcfa") != null) {
             if (tab_tabla1.getValor("ide_srcom") != null) {
@@ -610,7 +667,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         }
     }
 
-    public void abrirAnularNotas() {
+    public void abrirAnularLiquidacion() {
         if (tab_tabla1.getValor("ide_cpcfa") != null) {
             //valida que este en estado PENDIENTE o AUTORIZADA  
             if (tab_tabla1.getValor("nombre_cpefa") != null) {
@@ -719,11 +776,11 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     @Override
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
-            //tab_tabla1.setValor("TARIFA_IVA_CPCNO", utilitario.getFormatoNumero((tarifaIVA * 100)));
+            tab_tabla1.setValor("TARIFA_IVA_CPCFA", utilitario.getFormatoNumero((tarifaIVA * 100)));
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
                     if (guardarPantalla().isEmpty()) {
-                        ser_comprobante_electronico.generarLiquidacionCompraElectronica(tab_tabla1.getValor("ide_cpdfa"));
+                        ser_comprobante_electronico.generarLiquidacionCompraElectronica(tab_tabla1.getValor("ide_cpcfa"));
                         String aux = tab_tabla1.getValor("ide_cpcfa");
                         dibujarLiquidacionCompra();
                         tab_tabla1.setFilaActual(aux);
