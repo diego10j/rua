@@ -82,7 +82,7 @@ public class pre_comp_inv_compra extends Pantalla {
 
         bar_botones.agregarReporte();
         tex_nomb_transaccion.setId("tex_nomb_transaccion");
-        //bar_botones.agregarComponente(tex_nomb_transaccion);
+        bar_botones.agregarComponente(tex_nomb_transaccion);
 
         TablaGenerica tab_responsable = ser_sistema.getUsuario(utilitario.getVariable("IDE_USUA"));
         String ide_gtemp = tab_responsable.getValor("ide_gtemp");
