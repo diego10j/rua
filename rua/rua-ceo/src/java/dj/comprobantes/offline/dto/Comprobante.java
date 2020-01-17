@@ -395,26 +395,25 @@ public final class Comprobante implements Serializable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                //Busca los detalles de Reembolso
-                try {
-                    detalleReembolso = new ArrayList<>();
-                    String sql = "select tipo_ident_prov_reliq,ident_prov_reliq,cod_pais_prov_reliq,tipo_prov_reliq,cod_doc_reliq,cod_estb_reliq,"
-                            + "cod_ptemi_reliq,secuencial_reliq,fecha_emis_reliq,autorizacion_reliq "
-                            + "from cxp_reembo_liqc "
-                            + "where ide_srcom=" + this.codigocomprobante;
-                    Statement sentensia = con.getConnection().createStatement();
-                    ResultSet res = sentensia.executeQuery(sql);
-                    while (res.next()) {
-                        DetalleReembolso dt = new DetalleReembolso(res);
-                        dt.setComprobante(this);
-                        detalleReembolso.add(dt);
-                    }
-                    sentensia.close();
-                    res.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//////////                //Busca los detalles de Reembolso
+//////////                try {
+//////////                    detalleReembolso = new ArrayList<>();
+//////////                    String sql = "select tipo_ident_prov_reliq,ident_prov_reliq,cod_pais_prov_reliq,tipo_prov_reliq,cod_doc_reliq,cod_estb_reliq,"
+//////////                            + "cod_ptemi_reliq,secuencial_reliq,fecha_emis_reliq,autorizacion_reliq "
+//////////                            + "from cxp_reembo_liqc "
+//////////                            + "where ide_srcom=" + this.codigocomprobante;
+//////////                    Statement sentensia = con.getConnection().createStatement();
+//////////                    ResultSet res = sentensia.executeQuery(sql);
+//////////                    while (res.next()) {
+//////////                        DetalleReembolso dt = new DetalleReembolso(res);
+//////////                        dt.setComprobante(this);
+//////////                        detalleReembolso.add(dt);
+//////////                    }
+//////////                    sentensia.close();
+//////////                    res.close();
+//////////                } catch (Exception e) {
+//////////                    e.printStackTrace();
+//////////                }
             }
             //11-06-2019
             //Busca si hay correos adicionales 

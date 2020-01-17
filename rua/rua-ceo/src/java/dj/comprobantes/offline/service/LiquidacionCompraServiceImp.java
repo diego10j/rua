@@ -101,7 +101,7 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompra {
             }
 
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                    .append("     <liquidacionCompra id=\"comprobante\" version=\"1.1.0\"> \n")
+                    .append("     <liquidacionCompra id=\"comprobante\" version=\"1.0.0\"> \n")
                     .append("		<infoTributaria> \n")
                     .append("			<ambiente>").append(emisor.getAmbiente()).append("</ambiente> \n")
                     .append("			<tipoEmision>").append(comprobante.getTipoemision()).append("</tipoEmision> \n")
@@ -157,81 +157,81 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompra {
                         .append("				</impuestos> \n")
                         .append("			</detalle> \n");
             }
-            str_xml.append("		</detalles> \n")
-                    .append("		<reembolsos> \n");
-            for (DetalleReembolso detalleReembolso : comprobante.getDetalleReembolso()) {
-
-                double dou_base_no_objeto_iva_rem = 0;
-                double dou_base_tarifa0_rem = 0;
-                double dou_base_grabada_rem = 0;
-                try {
-                    dou_base_no_objeto_iva_rem = detalleReembolso.getSubtotalNoObjeto().doubleValue();
-                } catch (Exception e) {
-                }
-                try {
-                    dou_base_tarifa0_rem = detalleReembolso.getSubtotal0().doubleValue();
-                } catch (Exception e) {
-                }
-                try {
-                    dou_base_grabada_rem = detalleReembolso.getSubtotal().doubleValue();
-                } catch (Exception e) {
-                }
-
-                double totalSinImpuestos_rem = dou_base_no_objeto_iva_rem + dou_base_tarifa0_rem + dou_base_grabada_rem;
-                double dou_porcentaje_iva_rem = 0;
-                try {
-                    dou_porcentaje_iva_rem = (detalleReembolso.getIva().doubleValue() * 100) / totalSinImpuestos_rem;
-                } catch (Exception e) {
-                }
-
-                StringBuilder str_subtotales_rem = new StringBuilder();
-                if (detalleReembolso.getSubtotal().doubleValue() > 0) {
-                    str_subtotales_rem.append("				<detalleImpuesto> \n")
-                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(dou_porcentaje_iva_rem)).append("</codigoPorcentaje> \n")
-                            .append("					<tarifa>").append(utilitario.getFormatoNumero(dou_porcentaje_iva_rem, 0)).append("</tarifa> \n")
-                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotal())).append("</baseImponibleReembolso> \n")
-                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getIva())).append("</impuestoReembolso> \n")
-                            .append("				</detalleImpuesto> \n");
-                }
-
-                if (detalleReembolso.getSubtotal0().doubleValue() > 0) {
-                    str_subtotales_rem.append("				<detalleImpuesto> \n")
-                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo()).append("</codigoPorcentaje> \n")
-                            .append("					<tarifa>").append("0").append("</tarifa> \n")
-                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotal0())).append("</baseImponibleReembolso> \n")
-                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(0)).append("</impuestoReembolso> \n")
-                            .append("				</detalleImpuesto> \n");
-                }
-
-                if (detalleReembolso.getSubtotalNoObjeto().doubleValue() > 0) {
-                    str_subtotales_rem.append("				<detalleImpuesto> \n")
-                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
-                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo()).append("</codigoPorcentaje> \n")
-                            .append("					<tarifa>").append("0").append("</tarifa> \n")
-                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotalNoObjeto())).append("</baseImponibleReembolso> \n")
-                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(0)).append("</impuestoReembolso> \n")
-                            .append("				</detalleImpuesto> \n");
-                }
-
-                str_xml.append("			<reembolsoDetalle> \n")
-                        .append("				<tipoIdentificacionProveedorReembolso>").append(detalleReembolso.getTipoIdentificacionProveedorReembolso()).append("</tipoIdentificacionProveedorReembolso> \n")
-                        .append("				<identificacionProveedorReembolso>").append(detalleReembolso.getIdentificacionProveedorReembolso()).append("</identificacionProveedorReembolso> \n")
-                        .append("				<codPaisPagoProveedorReembolso>").append(detalleReembolso.getCodPaisPagoProveedorReembolso()).append("</codPaisPagoProveedorReembolso> \n")
-                        .append("				<tipoProveedorReembolso>").append(detalleReembolso.getTipoProveedorReembolso()).append("</tipoProveedorReembolso> \n")
-                        .append("				<codDocReembolso>").append(detalleReembolso.getCodDocReembolso()).append("</codDocReembolso> \n")
-                        .append("				<estabDocReembolso>").append(detalleReembolso.getEstabDocReembolso()).append("</estabDocReembolso> \n")
-                        .append("				<ptoEmiDocReembolso>").append(detalleReembolso.getPtoEmiDocReembolso()).append("</ptoEmiDocReembolso> \n")
-                        .append("				<secuencialDocReembolso>").append(detalleReembolso.getSecuencialDocReembolso()).append("</secuencialDocReembolso> \n")
-                        .append("				<fechaEmisionDocReembolso>").append(utilitario.getFormatoFecha(detalleReembolso.getFechaEmisionDocReembolso(), "dd/MM/yyyy")).append("</fechaEmisionDocReembolso> \n")
-                        .append("				<numeroautorizacionDocReemb>").append(detalleReembolso.getNumeroautorizacionDocReemb()).append("</numeroautorizacionDocReemb> \n")
-                        .append("			<detalleImpuestos> \n")
-                        .append(str_subtotales)
-                        .append("			</detalleImpuestos> \n")
-                        .append("			</reembolsoDetalle> \n");
-            }
-            str_xml.append("		</reembolsos> \n");
+            str_xml.append("		</detalles> \n");
+////////                    .append("		<reembolsos> \n");
+////////            for (DetalleReembolso detalleReembolso : comprobante.getDetalleReembolso()) {
+////////
+////////                double dou_base_no_objeto_iva_rem = 0;
+////////                double dou_base_tarifa0_rem = 0;
+////////                double dou_base_grabada_rem = 0;
+////////                try {
+////////                    dou_base_no_objeto_iva_rem = detalleReembolso.getSubtotalNoObjeto().doubleValue();
+////////                } catch (Exception e) {
+////////                }
+////////                try {
+////////                    dou_base_tarifa0_rem = detalleReembolso.getSubtotal0().doubleValue();
+////////                } catch (Exception e) {
+////////                }
+////////                try {
+////////                    dou_base_grabada_rem = detalleReembolso.getSubtotal().doubleValue();
+////////                } catch (Exception e) {
+////////                }
+////////
+////////                double totalSinImpuestos_rem = dou_base_no_objeto_iva_rem + dou_base_tarifa0_rem + dou_base_grabada_rem;
+////////                double dou_porcentaje_iva_rem = 0;
+////////                try {
+////////                    dou_porcentaje_iva_rem = (detalleReembolso.getIva().doubleValue() * 100) / totalSinImpuestos_rem;
+////////                } catch (Exception e) {
+////////                }
+////////
+////////                StringBuilder str_subtotales_rem = new StringBuilder();
+////////                if (detalleReembolso.getSubtotal().doubleValue() > 0) {
+////////                    str_subtotales_rem.append("				<detalleImpuesto> \n")
+////////                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+////////                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(dou_porcentaje_iva_rem)).append("</codigoPorcentaje> \n")
+////////                            .append("					<tarifa>").append(utilitario.getFormatoNumero(dou_porcentaje_iva_rem, 0)).append("</tarifa> \n")
+////////                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotal())).append("</baseImponibleReembolso> \n")
+////////                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getIva())).append("</impuestoReembolso> \n")
+////////                            .append("				</detalleImpuesto> \n");
+////////                }
+////////
+////////                if (detalleReembolso.getSubtotal0().doubleValue() > 0) {
+////////                    str_subtotales_rem.append("				<detalleImpuesto> \n")
+////////                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+////////                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo()).append("</codigoPorcentaje> \n")
+////////                            .append("					<tarifa>").append("0").append("</tarifa> \n")
+////////                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotal0())).append("</baseImponibleReembolso> \n")
+////////                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(0)).append("</impuestoReembolso> \n")
+////////                            .append("				</detalleImpuesto> \n");
+////////                }
+////////
+////////                if (detalleReembolso.getSubtotalNoObjeto().doubleValue() > 0) {
+////////                    str_subtotales_rem.append("				<detalleImpuesto> \n")
+////////                            .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
+////////                            .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo()).append("</codigoPorcentaje> \n")
+////////                            .append("					<tarifa>").append("0").append("</tarifa> \n")
+////////                            .append("					<baseImponibleReembolso>").append(utilitario.getFormatoNumero(detalleReembolso.getSubtotalNoObjeto())).append("</baseImponibleReembolso> \n")
+////////                            .append("					<impuestoReembolso>").append(utilitario.getFormatoNumero(0)).append("</impuestoReembolso> \n")
+////////                            .append("				</detalleImpuesto> \n");
+////////                }
+////////
+////////                str_xml.append("			<reembolsoDetalle> \n")
+////////                        .append("				<tipoIdentificacionProveedorReembolso>").append(detalleReembolso.getTipoIdentificacionProveedorReembolso()).append("</tipoIdentificacionProveedorReembolso> \n")
+////////                        .append("				<identificacionProveedorReembolso>").append(detalleReembolso.getIdentificacionProveedorReembolso()).append("</identificacionProveedorReembolso> \n")
+////////                        .append("				<codPaisPagoProveedorReembolso>").append(detalleReembolso.getCodPaisPagoProveedorReembolso()).append("</codPaisPagoProveedorReembolso> \n")
+////////                        .append("				<tipoProveedorReembolso>").append(detalleReembolso.getTipoProveedorReembolso()).append("</tipoProveedorReembolso> \n")
+////////                        .append("				<codDocReembolso>").append(detalleReembolso.getCodDocReembolso()).append("</codDocReembolso> \n")
+////////                        .append("				<estabDocReembolso>").append(detalleReembolso.getEstabDocReembolso()).append("</estabDocReembolso> \n")
+////////                        .append("				<ptoEmiDocReembolso>").append(detalleReembolso.getPtoEmiDocReembolso()).append("</ptoEmiDocReembolso> \n")
+////////                        .append("				<secuencialDocReembolso>").append(detalleReembolso.getSecuencialDocReembolso()).append("</secuencialDocReembolso> \n")
+////////                        .append("				<fechaEmisionDocReembolso>").append(utilitario.getFormatoFecha(detalleReembolso.getFechaEmisionDocReembolso(), "dd/MM/yyyy")).append("</fechaEmisionDocReembolso> \n")
+////////                        .append("				<numeroautorizacionDocReemb>").append(detalleReembolso.getNumeroautorizacionDocReemb()).append("</numeroautorizacionDocReemb> \n")
+////////                        .append("			<detalleImpuestos> \n")
+////////                        .append(str_subtotales)
+////////                        .append("			</detalleImpuestos> \n")
+////////                        .append("			</reembolsoDetalle> \n");
+////////            }
+////////            str_xml.append("		</reembolsos> \n");
             str_xml.append("		<infoAdicional> \n");
             if (comprobante.getCliente().getCorreo() != null && utilitario.isCorreoValido(comprobante.getCliente().getCorreo())) {
                 str_xml.append("      		<campoAdicional nombre=\"Email\">").append(comprobante.getCliente().getCorreo()).append("</campoAdicional> \n");
