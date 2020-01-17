@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d633b53b-6456-4b76-abbc-0aeac7eb6055">
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="20"/>
-	<property name="ireport.y" value="155"/>
+	<property name="ireport.y" value="149"/>
 	<parameter name="p_ingresos" class="java.lang.String"/>
 	<parameter name="p_gastos" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
@@ -187,12 +187,12 @@ $P{p_costos}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableExpres
 	<summary>
 		<band height="132" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="4c74305b-e7fd-46b1-91e2-2070c96c7c65" x="112" y="55" width="155" height="16"/>
+				<reportElement uuid="4c74305b-e7fd-46b1-91e2-2070c96c7c65" x="72" y="55" width="195" height="16"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Utilidad/Perdida del Ejercicio:]]></text>
+				<text><![CDATA[Excedente/Deficít del Ejercicio:]]></text>
 			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="9dcc300f-9568-4c65-aed2-d8c0a8c47b95" x="266" y="55" width="150" height="16"/>

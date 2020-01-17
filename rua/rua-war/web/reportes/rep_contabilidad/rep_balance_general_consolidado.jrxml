@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01d31a08-32f1-407c-9b06-0b427192c894">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="130"/>
 	<property name="ireport.y" value="80"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
@@ -175,12 +175,12 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 	<summary>
 		<band height="158" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="5c416a70-83f7-447f-bd04-d21b8bf7f1b2" x="280" y="39" width="147" height="15"/>
+				<reportElement uuid="5c416a70-83f7-447f-bd04-d21b8bf7f1b2" x="150" y="39" width="277" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Utilidad/Perdida del Ejercicio:]]></text>
+				<text><![CDATA[Excedente/Deficít del Ejercicio:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="b985b2cb-377c-4163-811a-e03ab36047e1" x="0" y="10" width="82" height="15"/>
@@ -191,12 +191,12 @@ $P{p_patrimonio}.equals($F{ide_cntcu})?new Double($F{valor}):null]]></variableEx
 				<text><![CDATA[Total Activos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a0b502eb-91b2-4180-84de-08451c653a30" x="126" y="56" width="301" height="15"/>
+				<reportElement uuid="a0b502eb-91b2-4180-84de-08451c653a30" x="83" y="56" width="344" height="15"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total (Pasivos + Patrimonio + Utilidad/Perdida del Ejercicio):]]></text>
+				<text><![CDATA[Total (Pasivos + Patrimonio + Excedente/Deficít del Ejercicio):]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
 				<reportElement uuid="e86ef527-4982-4813-b100-08f6800d87f9" x="83" y="10" width="120" height="15"/>
