@@ -129,6 +129,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("5", "p_com_estado_proveedor", "Indica el estado del Proveedor", "0", "com_estado_provee", "ide_coepr", "nombre_coepr"));
         lis_parametros.add(new Parametro("5", "p_com_sisfinanciero_forma_pago", "Indica qel tipo de compra y pago con sistema financiero", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
         lis_parametros.add(new Parametro("5", "p_com_sustento_bodega", "Indica el sustento tributario por defecto regsitran desde bodegas ", "1", "sri_tipo_sustento_tributario", "ide_srtst", "nombre_srtst"));
+        lis_parametros.add(new Parametro("5", "p_localidad", "Indica la localidad para imprimir las solicitudes de compras", "Quito"));
 
         /*
          * NOMINA =6
