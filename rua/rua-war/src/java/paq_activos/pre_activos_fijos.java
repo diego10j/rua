@@ -1282,18 +1282,19 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla.getColumna("inv_ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from  inv_articulo  where ide_intpr in (0,1) order by codigo_inarti"); //SOLO ACTIVOS FIJOS
         //tab_tabla.getColumna("ide_inarti").setMetodoChange("generarCodigoBarras");
         tab_tabla.getColumna("ide_inarti").setMetodoChange("cargarDepartamentos");
-        tab_tabla.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
+        //tab_tabla.getColumna("ide_geper").setCombo("select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true");
         tab_tabla.getColumna("ide_rheor").setVisible(false);
         tab_tabla.getColumna("alterno_acafi").setVisible(false);
         tab_tabla.getColumna("fo_acafi").setVisible(false);
-        tab_tabla.getColumna("ide_geubi").setCombo("gen_ubicacion", "ide_geubi", "nombre_geubi", "nivel_geubi='HIJO'");
+        //--tab_tabla.getColumna("ide_geubi").setCombo("gen_ubicacion", "ide_geubi", "nombre_geubi", "nivel_geubi='HIJO'");
         tab_tabla.getColumna("ide_usua").setVisible(false);
         tab_tabla.getColumna("ide_aceaf").setCombo("act_estado_activo_fijo", "ide_aceaf", "nombre_aceaf", "");
         tab_tabla.getColumna("ide_aceaf").setRequerida(true);
         tab_tabla.getColumna("ide_inmar").setCombo("inv_marca", "ide_inmar", "nombre_invmar", "");
-        //tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
-        //tab_tabla.getColumna("ide_geper").setLectura(true);
-        tab_tabla.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_empleado_geper=true");
+        //tab_tabla.getColumna("ide_geper").setLectura(true); ------>>>>
+        //<<-- OJO //
+        //--tab_tabla.getColumna("ide_geper").setAutoCompletar();
         tab_tabla.getColumna("gen_ide_geper").setVisible(false);
         tab_tabla.getColumna("valor_depreciado_acafi").setValorDefecto("0");
         tab_tabla.getColumna("valor_depreciado_acafi").setEtiqueta();
