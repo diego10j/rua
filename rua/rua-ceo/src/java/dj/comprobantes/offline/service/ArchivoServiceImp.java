@@ -232,6 +232,9 @@ public class ArchivoServiceImp implements ArchivoService {
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo())) {
             reporte = generarReporte.crearPDF(parametros, "comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
         }
+        else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+            reporte = generarReporte.crearPDF(parametros, "liquidacionCompra.jasper", parametros.get("CLAVE_ACC") + "");
+        }
 
         try {
             InputStream myInputStream = new FileInputStream(reporte);
