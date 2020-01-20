@@ -68,7 +68,7 @@ public class ArchivoServiceImp implements ArchivoService {
     @EJB
     private GuiaRemisionService guiaRemisionService;
     @EJB
-    private LiquidacionCompraServicio liquidacionCompraService;
+    private LiquidacionCompraService liquidacionCompraService;
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
 
     @Override

@@ -23,7 +23,7 @@ import javax.ejb.Stateless;
  * @author djacome
  */
 @Stateless
-public class LiquidacionCompraServiceImp implements LiquidacionCompra {
+public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
 
     @EJB
     private EmisorService emisorService;

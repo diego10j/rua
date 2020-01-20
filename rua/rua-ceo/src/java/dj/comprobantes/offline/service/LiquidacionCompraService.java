@@ -14,7 +14,7 @@ import javax.ejb.Local;
  * @author djacome
  */
 @Local
-public interface LiquidacionCompra {
+public interface LiquidacionCompraService {
 
     /**
      * Genera el squema xml de una Guia de Remision Offline
