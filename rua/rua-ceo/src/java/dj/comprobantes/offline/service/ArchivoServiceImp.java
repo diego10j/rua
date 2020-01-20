@@ -67,6 +67,8 @@ public class ArchivoServiceImp implements ArchivoService {
     private RetencionService retencionService;
     @EJB
     private GuiaRemisionService guiaRemisionService;
+    @EJB
+    private LiquidacionCompraServicio liquidacionCompraService;
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
 
     @Override
@@ -114,6 +116,9 @@ public class ArchivoServiceImp implements ArchivoService {
                 cadenaXML = retencionService.getXmlRetencion(comprobante);
             } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 cadenaXML = guiaRemisionService.getXmlGuiaRemision(comprobante);
+            }
+            else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                cadenaXML = liquidacionCompraService.getXmlLiquidacionCompra(comprobante);
             }
         } else {
             cadenaXML = sriComprobante.getXmlcomprobante();
