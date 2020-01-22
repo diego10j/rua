@@ -516,7 +516,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double porcentaje_iva = 0;
 
         for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-            String iva = tab_tabla2.getValor(i, "iva_inarti_cpcfa");
+            String iva = tab_tabla2.getValor(i, "iva_cpcfa");
             if (iva.equals("1")) { //SI IVA
                 base_grabada = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_grabada;
                 porcentaje_iva = tarifaIVA;
