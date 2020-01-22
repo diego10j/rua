@@ -516,15 +516,15 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double porcentaje_iva = 0;
 
         for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-            String iva = tab_tabla2.getValor(i, "iva_cpcfa");
+            String iva = tab_tabla2.getValor(i, "iva_inarti_cpdfa");
             if (iva.equals("1")) { //SI IVA
-                base_grabada = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_grabada;
+                base_grabada = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")) + base_grabada;
                 porcentaje_iva = tarifaIVA;
                 valor_iva = base_grabada * porcentaje_iva; //0.12
             } else if (iva.equals("-1")) { // NO IVA
-                base_tarifa0 = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_tarifa0;
+                base_tarifa0 = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")) + base_tarifa0;
             } else if (iva.equals("0")) { // NO OBJETO
-                base_no_objeto = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpcfa")) + base_no_objeto;
+                base_no_objeto = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")) + base_no_objeto;
             }
         }
         tab_tabla1.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
