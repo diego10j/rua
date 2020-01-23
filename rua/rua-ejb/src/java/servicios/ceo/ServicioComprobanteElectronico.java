@@ -736,14 +736,14 @@ public class ServicioComprobanteElectronico extends ServicioBase {
      */
     public String generarLiquidacionCompraElectronica(String ide_cpdfa) {
         String ide_srcom = "-1";
-        TablaGenerica tab_liquidacion = utilitario.consultar("select a.ide_cpdfa,numero_cpcfa,fecha_emisi_cpcfa,serie_ccdaf,base_grabada_cpcfa\n"
+        TablaGenerica tab_liquidacion = utilitario.consultar("select a.ide_cpcfa,numero_cpcfa,fecha_emisi_cpcfa,serie_ccdaf,base_grabada_cpcfa\n"
                 + ",base_tarifa0_cpcfa,base_no_objeto_iva_cpcfa,valor_iva_cpcfa,total_cpcfa,alterno_ats,identificac_geper,\n"
                 + "a.ide_geper,ide_cntdo,ide_srcom,correo_geper,a.ide_ccdaf,observacion_cpcfa \n"
                 + "from cxp_cabece_factur  a \n"
                 + "inner join gen_persona b on a.ide_geper = b.ide_geper  \n"
                 + "inner join cxc_datos_fac d on a.ide_ccdaf=d.ide_ccdaf\n"
                 + "inner join con_deta_forma_pago e on a.ide_cndfp=e.ide_cndfp\n"
-                + "where a.ide_cpdfa=" + ide_cpdfa);
+                + "where a.ide_cpcfa=" + ide_cpdfa);
 
         if (tab_liquidacion.isEmpty() == false) {
             if (tab_liquidacion.getValor("ide_srcom") != null) {
