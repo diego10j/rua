@@ -317,7 +317,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.setCondicion("ide_cpcfa=" + ide_cpcfa);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(6);
-
+         tab_tabla1.getColumna("IDE_REM_CPCFA").setVisible(false);
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cntdo").setVisible(false);
         tab_tabla1.getColumna("ide_cpefa").setValorDefecto(utilitario.getVariable("p_cxp_estado_factura_normal"));
@@ -440,6 +440,16 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla2.getColumna("credi_tribu_cpdfa").setVisible(false);
         tab_tabla2.getColumna("devolucion_cpdfa").setVisible(false);
         tab_tabla2.getColumna("alter_tribu_cpdfa").setVisible(false);
+        tab_tabla2.getColumna("SECUENCIAL_CPDFA").setVisible(false);
+        tab_tabla2.getColumna("RECIBIDO_COMPRA_CPDFA").setVisible(false);
+        tab_tabla2.getColumna("IDE_CPDFA").setVisible(false);
+        tab_tabla2.getColumna("ide_inarti").setNombreVisual("ARTICULO");
+        tab_tabla2.getColumna("CANTIDAD_CPDFA").setNombreVisual("CANTIDAD");
+        tab_tabla2.getColumna("PRECIO_CPDFA").setNombreVisual("PRECIO");
+        tab_tabla2.getColumna("VALOR_CPDFA").setNombreVisual("VALOR");
+        tab_tabla2.getColumna("IVA_INARTI_CPDFA").setNombreVisual("APLICA IVA");
+        tab_tabla2.getColumna("IDE_INUNI").setNombreVisual("UNIDAD MEDIDA");
+        tab_tabla2.getColumna("OBSERVACION_CPDFA").setNombreVisual("OBSERVACIONES");
         tab_tabla2.getColumna("alter_tribu_cpdfa").setValorDefecto("00");
         tab_tabla2.getColumna("cantidad_cpdfa").setMetodoChange("cambioPrecioCantidadIva");
         tab_tabla2.getColumna("cantidad_cpdfa").setDecimales(ser_factura.getDecimalesCantidad()); //DFJ
