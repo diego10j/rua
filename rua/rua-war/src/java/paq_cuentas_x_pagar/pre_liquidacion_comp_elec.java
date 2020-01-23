@@ -398,11 +398,11 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("DESCUENTO_CPCFA").setVisible(false);
         tab_tabla1.getColumna("PORCEN_DESC_CPCFA").setVisible(false);
         tab_tabla1.getColumna("liquida_nota_cpcfa").setValorDefecto("0");
-        tab_tabla1.getColumna("motivo_nc_cpcfa").setRequerida(true);
-        tab_tabla1.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
-        tab_tabla1.getColumna("numero_nc_cpcfa").setRequerida(true);
+        //.getColumna("motivo_nc_cpcfa").setRequerida(true);
+        //tab_tabla1.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
+        //tab_tabla1.getColumna("numero_nc_cpcfa").setRequerida(true);
         //tab_tabla1.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
-        tab_tabla1.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
+        //tab_tabla1.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
 
         tab_tabla1.getColumna("motivo_nc_cpcfa").setVisible(false);
         tab_tabla1.getColumna("autorizacio_nc_cpcfa").setVisible(false);
