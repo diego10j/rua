@@ -251,9 +251,9 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
             if (comprobante.getInfoAdicional3() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional3()).append("</campoAdicional> \n");
             }
-            for (InfoAdicional inf : comprobante.getInfoAdicional()) {
-                str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
-            }
+            //for (InfoAdicional inf : comprobante.getInfoAdicional()) {
+              //  str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
+            //}
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </liquidacionCompra>");
         }
