@@ -868,7 +868,7 @@ public class ServicioCuentasCxP extends ServicioBase {
      * @return
      */
     public String getSqlLiquidacionesElectronicas(String ide_ccdaf, String fechaInicio, String fechaFin) {
-        return "select a.ide_cpcfa, numero_cpcfa,ide_cnccc,a.ide_cpefa,nombre_sresc as nombre_cpefa, fecha_emisi_cpcfa,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,"
+        String sql ="select a.ide_cpcfa, numero_cpcfa,ide_cnccc,a.ide_cpefa,nombre_sresc as nombre_cpefa, fecha_emisi_cpcfa,nom_geper,identificac_geper,base_grabada_cpcfa as ventas12,"
                 + "base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa as ventas0,valor_iva_cpcfa,total_cpcfa, "
                 + "claveacceso_srcom as CLAVE_ACCESO, fecha_trans_cpcfa,d.ide_srcom,a.ide_geper ,observacion_cpcfa as OBSERVACION,a.ide_cntdo "
                 + "from cxp_cabece_factur a "
@@ -879,6 +879,8 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + "and ide_ccdaf=" + ide_ccdaf + " "
                 + " and a.ide_cntdo=" + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + " "
                 + "ORDER BY numero_cpcfa desc,ide_cpcfa desc";
+        //System.out.println(" lituidiocnd e ocmpras "+sql);
+        return sql;
     }
 
     public String getSqlLiquidacionesElectronicasPorEstado(String ide_ccdaf, String fechaInicio, String fechaFin, EstadoComprobanteEnum estado) {
