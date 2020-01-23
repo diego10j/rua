@@ -131,7 +131,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
         mep_menu.setMenuPanel("OPCIONES LIQUIDACIÓN DE COMPRAS", "20%");
 
-        mep_menu.agregarItem("Listado de Liquidaciones", "dibujarNotaCredito", "ui-icon-note");  //2
+        mep_menu.agregarItem("Listado de Liquidaciones", "dibujarLiquidacionCompra", "ui-icon-note");  //2
         // mep_menu.agregarItem("Generar Asiento Contable", "dibujarNotaCreditoNoContabilizadas", "ui-icon-notice"); //3
         //mep_menu.agregarItem("Notas de Crédito Anuladas", "dibujarNotaCreditoAnuladas", "ui-icon-cancel"); //4
         //mep_menu.agregarSubMenu("CONTABILIDAD");
@@ -645,7 +645,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         gr_vista.getChildren().add(bar_menu);
         gr_vista.getChildren().add(pat_panel);
 
-        mep_menu.dibujar(2, "LISTADO DE NOTAS DE CRÉDITO", gr_vista);
+        mep_menu.dibujar(2, "LISTADO DE LIQUIDACIONES", gr_vista);
         //metodo of mauricio
         utilitario.buscarPermisosObjetos();
     }
