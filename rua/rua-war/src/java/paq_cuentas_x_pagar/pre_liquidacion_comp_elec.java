@@ -360,7 +360,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
         tab_tabla1.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");
         tab_tabla1.getColumna("observacion_cpcfa").setRequerida(true);
-        tab_tabla1.getColumna("observacion_cpcfa").setVisible(false);
+        //tab_tabla1.getColumna("observacion_cpcfa").setVisible(false);
         tab_tabla1.getColumna("pagado_cpcfa").setVisible(false);
         tab_tabla1.getColumna("pagado_cpcfa").setValorDefecto("False");
         tab_tabla1.getColumna("total_cpcfa").setVisible(false);
@@ -401,7 +401,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("motivo_nc_cpcfa").setRequerida(true);
         tab_tabla1.getColumna("autorizacio_nc_cpcfa").setRequerida(true);
         tab_tabla1.getColumna("numero_nc_cpcfa").setRequerida(true);
-        tab_tabla1.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
+        //tab_tabla1.getColumna("fecha_emision_nc_cpcfa").setRequerida(true);
         tab_tabla1.getColumna("ide_cntdo_nc_cpcfa").setRequerida(true);
 
         tab_tabla1.getColumna("motivo_nc_cpcfa").setVisible(false);
