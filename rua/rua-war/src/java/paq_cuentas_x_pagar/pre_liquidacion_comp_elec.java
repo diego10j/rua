@@ -320,6 +320,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
          tab_tabla1.getColumna("IDE_REM_CPCFA").setVisible(false);
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cntdo").setVisible(false);
+        tab_tabla1.getColumna("ide_cntdo").setValorDefecto(utilitario.getVariable("p_con_tipo_documento_liquidacion_compra"));
         tab_tabla1.getColumna("ide_cpefa").setValorDefecto(utilitario.getVariable("p_cxp_estado_factura_normal"));
         tab_tabla1.getColumna("ide_cpefa").setVisible(false);
         tab_tabla1.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
@@ -628,7 +629,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         //COLOR VERDE FACTURAS NO CONTABILIZADAS
         //COLOR ROJO FACTURAS ANULADAS
         // ok tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[3] eq '0' ? 'text-red' : fila.campos[2] eq null  ? 'text-green' : null");
-        tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[3] eq '0' ? 'text-red' : null");
+        tab_tabla1.setValueExpression("rowStyleClass", "fila.campos[3] eq '1' ? 'text-red' : null");
         tab_tabla1.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
