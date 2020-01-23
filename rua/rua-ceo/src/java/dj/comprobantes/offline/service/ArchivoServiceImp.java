@@ -116,8 +116,7 @@ public class ArchivoServiceImp implements ArchivoService {
                 cadenaXML = retencionService.getXmlRetencion(comprobante);
             } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 cadenaXML = guiaRemisionService.getXmlGuiaRemision(comprobante);
-            }
-            else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+            } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
                 cadenaXML = liquidacionCompraService.getXmlLiquidacionCompra(comprobante);
             }
         } else {
@@ -144,7 +143,7 @@ public class ArchivoServiceImp implements ArchivoService {
         } catch (Exception e) {
         }
         // Recorre todos los detalles de factura o nota de credito
-        if (comprobante.getCoddoc().equals(TipoComprobanteEnum.FACTURA.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo())) {
+        if (comprobante.getCoddoc().equals(TipoComprobanteEnum.FACTURA.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
             // Detalles
             String cadenaDetalles = utilitario.getValorEtiqueta(cadenaXML, "detalles");
             // //Forma un arreglo de todos los detalles
@@ -236,8 +235,7 @@ public class ArchivoServiceImp implements ArchivoService {
             reporte = generarReporte.crearPDF(parametros, "guiaRemisionFinal.jasper", parametros.get("CLAVE_ACC") + "");
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo())) {
             reporte = generarReporte.crearPDF(parametros, "comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
-        }
-        else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+        } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
             reporte = generarReporte.crearPDF(parametros, "liquidacionCompra.jasper", parametros.get("CLAVE_ACC") + "");
         }
 
