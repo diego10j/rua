@@ -354,7 +354,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setRequerida(true);
         tab_tabla1.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
         tab_tabla1.getColumna("ide_geper").setOrden(3);
-        tab_tabla1.getColumna("autorizacio_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("autorizacio_cpcfa").setLectura(true);
         tab_tabla1.getColumna("ide_srtst").setRequerida(true);
         tab_tabla1.getColumna("autorizacio_cpcfa").setOrden(5);
         tab_tabla1.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
@@ -376,7 +376,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("numero_cpcfa").setComentario("Debe ingresar el numero de serie - establecimiento y numero secuencial");
         tab_tabla1.getColumna("numero_cpcfa").setMascara("999-999-999999999");
         tab_tabla1.getColumna("numero_cpcfa").setQuitarCaracteresEspeciales(true);
-        tab_tabla1.getColumna("numero_cpcfa").setRequerida(true);
+        tab_tabla1.getColumna("numero_cpcfa").setLectura(true);
         tab_tabla1.getColumna("base_grabada_cpcfa").setVisible(false);
         tab_tabla1.getColumna("base_grabada_cpcfa").setValorDefecto("0");
         tab_tabla1.getColumna("valor_iva_cpcfa").setVisible(false);
