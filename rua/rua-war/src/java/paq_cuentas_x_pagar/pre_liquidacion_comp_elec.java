@@ -419,6 +419,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
             tab_tabla1.insertar();
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
         }
+        //tab_tabla1.agregarRelacion(tab_tabla2);
 
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -428,9 +429,12 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         pat_panel1.getMenuTabla().getItem_buscar().setRendered(false);
 
         tab_tabla2.setTabla("cxp_detall_factur", "ide_cpdfa", 2);
+        //System.out.println(" impirmir ide_cpcfa "+ide_cpcfa);
         if (ide_cpcfa != null) {
+            //System.out.println(" impirmir ide_cpcfaxxxx "+ide_cpcfa);
             tab_tabla2.setCondicion("ide_cpcfa=" + ide_cpcfa);
         } else {
+            //System.out.println(" impirmir ide_cpcfayyyy "+ide_cpcfa);
             tab_tabla2.setCondicionForanea("ide_cpcfa=-1");
         }
 
