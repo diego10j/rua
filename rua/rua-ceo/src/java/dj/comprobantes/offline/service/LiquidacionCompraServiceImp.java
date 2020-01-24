@@ -126,9 +126,9 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                     .append("			<direccionProveedor>").append(comprobante.getCliente().getDireccion()).append("</direccionProveedor> \n")
                     .append("			<totalSinImpuestos>").append(utilitario.getFormatoNumero(totalSinImpuestos)).append("</totalSinImpuestos> \n")
                     .append("			<totalDescuento>").append((utilitario.getFormatoNumero(dou_descuento))).append("</totalDescuento> \n")
-                    .append("                   <codDocReembolso>41</codDocReembolso>") //**?????
-                    .append("                   <totalComprobantesReembolso>0.00</totalComprobantesReembolso>")
-                    .append("                   <totalBaseImponibleReembolso>0.00</totalBaseImponibleReembolso>")
+                    //.append("                   <codDocReembolso>41</codDocReembolso>") //**?????
+                    //.append("                   <totalComprobantesReembolso>0.00</totalComprobantesReembolso>")
+                    //.append("                   <totalBaseImponibleReembolso>0.00</totalBaseImponibleReembolso>")
                     //.append("                   <totalImpuestoReembolso>0.00</totalImpuestoReembolso>")
                     .append("			<totalConImpuestos> \n")
                     .append(str_subtotales)
