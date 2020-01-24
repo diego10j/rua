@@ -243,7 +243,7 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                 str_xml.append("      		<campoAdicional nombre=\"Dirección\">").append(comprobante.getCliente().getDireccion()).append("</campoAdicional> \n");
             }
             if (comprobante.getInfoAdicional1() != null) {
-                str_xml.append("      		<campoAdicional nombre=\"Usuario\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
+                str_xml.append("      		<campoAdicional nombre=\"Detalle\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
             }
             if (comprobante.getInfoAdicional2() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Forma de Pago\">").append(comprobante.getInfoAdicional2()).append("</campoAdicional> \n");
