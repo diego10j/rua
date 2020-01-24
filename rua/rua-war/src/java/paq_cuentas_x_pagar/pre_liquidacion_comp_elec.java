@@ -29,6 +29,7 @@ import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.panel.Panel;
+import org.primefaces.event.SelectEvent;
 import servicios.ceo.ServicioComprobanteElectronico;
 import servicios.contabilidad.ServicioConfiguracion;
 import servicios.cuentas_x_cobrar.ServicioCuentasCxC;
@@ -357,7 +358,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setOrden(3);
         tab_tabla1.getColumna("autorizacio_cpcfa").setLectura(true);
         tab_tabla1.getColumna("ide_srtst").setRequerida(true);
-        tab_tabla1.getColumna("autorizacio_cpcfa").setOrden(5);
+        tab_tabla1.getColumna("autorizacio_cpcfa").setOrden(7);
         tab_tabla1.getColumna("autorizacio_cpcfa").setNombreVisual("NUM. AUTORIZACIÓN");
         tab_tabla1.getColumna("autorizacio_cpcfa").setEstilo("font-weight: bold");
         tab_tabla1.getColumna("observacion_cpcfa").setRequerida(true);
@@ -390,7 +391,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("ide_srtst").setCombo("sri_tipo_sustento_tributario", "ide_srtst", "alterno_srtst,nombre_srtst", "");
         tab_tabla1.getColumna("ide_srtst").setValorDefecto(utilitario.getVariable("p_sri_tip_sus_tri02"));
         tab_tabla1.getColumna("ide_srtst").setNombreVisual("SUSTENTO TRIBUTARIO");
-        tab_tabla1.getColumna("ide_srtst").setOrden(7);
+        tab_tabla1.getColumna("ide_srtst").setOrden(6);
         tab_tabla1.getColumna("ide_cncre").setVisible(false);
         tab_tabla1.getColumna("ide_cnccc").setVisible(false);
         tab_tabla1.getColumna("valor_ice_cpcfa").setValorDefecto("0");
@@ -443,6 +444,13 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
         tab_tabla2.getColumna("ide_inarti").setAutoCompletar();
+        tab_tabla2.getColumna("ide_inarti").setOrden(1);
+        tab_tabla2.getColumna("IDE_INUNI").setOrden(2);
+        tab_tabla2.getColumna("IVA_INARTI_CPDFA").setOrden(3);
+        tab_tabla2.getColumna("CANTIDAD_CPDFA").setOrden(4);
+        tab_tabla2.getColumna("PRECIO_CPDFA").setOrden(5);
+        tab_tabla2.getColumna("VALOR_CPDFA").setOrden(6);
+        tab_tabla2.getColumna("ide_inarti").setMetodoChange("seleccionarProducto");
         tab_tabla2.getColumna("credi_tribu_cpdfa").setVisible(false);
         tab_tabla2.getColumna("devolucion_cpdfa").setVisible(false);
         tab_tabla2.getColumna("alter_tribu_cpdfa").setVisible(false);
@@ -486,7 +494,24 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         mep_menu.dibujar(1, "LIQUIDACIÓN DE BIENES Y SERVICIOS ", gru);
 
     }
+    public void seleccionarProducto(SelectEvent evt) {
+        tab_tabla2.modificar(evt);
+        String cod_prod = null;
+        if (tab_tabla2.getValor("ide_inarti") != null) {
 
+            TablaGenerica tab_producto = ser_producto.getProducto(tab_tabla2.getValor("ide_inarti"));
+            if (!tab_producto.isEmpty()) {
+                //Carga la configuracion de iva del producto seleccionado
+                //tab_tabla2.setValor("iva_inarti_ccdfa", tab_producto.getValor("iva_inarti"));
+                //Carga la Unidad del producto seleccionado
+                //tab_tabla2.setValor("ide_inuni", tab_producto.getValor("ide_inuni"));
+                cod_prod = tab_producto.getValor("codigo_inarti");
+            }
+            tab_tabla2.setValor("observacion_cpdfa", tab_producto.getValor("NOMBRE_inarti"));
+          
+        } 
+        utilitario.addUpdateTabla(tab_tabla2, "observacion_cpdfa,ide_inuni", "");
+    }
     /**
      * Se ejecuta cuando cambia el Precio o la Cantidad de un detalle de la
      * factura
