@@ -74,8 +74,7 @@ public class ComprobanteServiceImp implements ComprobanteService {
                     xml = retencionService.getXmlRetencion(comprobanteActual);
                 } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                     xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
-                }
-                else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
                     xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
                 }
                 xml = utilitario.reemplazarCaracteresEspeciales(xml);
@@ -106,7 +105,7 @@ public class ComprobanteServiceImp implements ComprobanteService {
     }
 
     @Override
-    public String getClaveAcceso(Comprobante comprobante) throws GenericException {        
+    public String getClaveAcceso(Comprobante comprobante) throws GenericException {
         String fechaEmision = utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy");
         String tipoComprobante = comprobante.getCoddoc();
         Emisor emisor = emisorService.getEmisor(comprobante.getOficina());
@@ -241,6 +240,8 @@ public class ComprobanteServiceImp implements ComprobanteService {
                 xml = retencionService.getXmlRetencion(comprobanteActual);
             } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
+            } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
             }
             xml = utilitario.reemplazarCaracteresEspeciales(xml);
             recepcionService.enviarRecepcionOfflineSRI(comprobanteActual, xml);
