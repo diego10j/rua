@@ -646,7 +646,7 @@ public class pre_nota_credito extends Pantalla {
         Grupo gru = new Grupo();
         gru.getChildren().add(pat_panel1);
         gru.getChildren().add(pat_panel2);
-        mep_menu.dibujar(1, "CONFIGURACIÓN FACTURAS ELECTRÓNICAS", gru);
+        mep_menu.dibujar(1, "NOTA DE CREDITO", gru);
 
     }
 
