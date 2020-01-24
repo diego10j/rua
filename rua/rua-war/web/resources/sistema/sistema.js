@@ -22,9 +22,10 @@ $(function () {
         if ($('#formulario\\:menu').length) {
             var code = (e.keyCode ? e.keyCode : e.which);
             //if(code == 116 || code == 13) {
-            if (code == 13) {
-                e.preventDefault();
-            }
+            //if (code == 13) {
+            //    e.preventDefault();
+            //}
+            
             if (code == 40) {
                 teclaAbajo();
                 e.preventDefault();
