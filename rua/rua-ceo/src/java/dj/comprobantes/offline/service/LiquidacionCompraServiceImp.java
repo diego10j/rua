@@ -129,7 +129,7 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                     .append("                   <codDocReembolso>41</codDocReembolso>") //**?????
                     .append("                   <totalComprobantesReembolso>0.00</totalComprobantesReembolso>")
                     .append("                   <totalBaseImponibleReembolso>0.00</totalBaseImponibleReembolso>")
-                    .append("                   <totalImpuestoReembolso>0.00</totalImpuestoReembolso>")
+                    //.append("                   <totalImpuestoReembolso>0.00</totalImpuestoReembolso>")
                     .append("			<totalConImpuestos> \n")
                     .append(str_subtotales)
                     .append("			</totalConImpuestos> \n")
