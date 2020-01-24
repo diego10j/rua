@@ -322,6 +322,11 @@ public class ArchivoServiceImp implements ArchivoService {
                 parametros.put("FECHA_FIN_TRANSPORTE", utilitario.getValorEtiqueta(cadenaXML, "fechaFinTransporte"));
             }
 
+            if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                parametros.put("RS_COMPRADOR", utilitario.getValorEtiqueta(cadenaXML, "razonSocialProveedor"));
+                parametros.put("RUC_COMPRADOR", utilitario.getValorEtiqueta(cadenaXML, "identificacionProveedor"));
+            }
+
             // Porcentaje iva
             double dou_base_no_objeto_iva = 0;
             double dou_base_tarifa0 = 0;
