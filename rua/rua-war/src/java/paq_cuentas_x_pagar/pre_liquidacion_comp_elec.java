@@ -414,12 +414,13 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.getColumna("liquida_nota_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cndfp1").setVisible(false);
         tab_tabla1.getColumna("ide_cndfp1").setValorDefecto("3"); //EFECTIVO
+        tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.dibujar();
         if (tab_tabla1.isEmpty()) {
             tab_tabla1.insertar();
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
         }
-        //tab_tabla1.agregarRelacion(tab_tabla2);
+        
 
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
