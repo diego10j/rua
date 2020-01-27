@@ -318,7 +318,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         tab_tabla1.setCondicion("ide_cpcfa=" + ide_cpcfa);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(6);
-         tab_tabla1.getColumna("IDE_REM_CPCFA").setVisible(false);
+        tab_tabla1.getColumna("IDE_REM_CPCFA").setVisible(false);
         tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
         tab_tabla1.getColumna("ide_cntdo").setVisible(false);
         tab_tabla1.getColumna("ide_cntdo").setValorDefecto(utilitario.getVariable("p_con_tipo_documento_liquidacion_compra"));
@@ -421,7 +421,6 @@ public class pre_liquidacion_comp_elec extends Pantalla {
             tab_tabla1.insertar();
             tab_tabla1.setValor("ide_ccdaf", String.valueOf(com_pto_emision.getValue()));
         }
-        
 
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -494,6 +493,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         mep_menu.dibujar(1, "LIQUIDACIÓN DE BIENES Y SERVICIOS ", gru);
 
     }
+
     public void seleccionarProducto(SelectEvent evt) {
         tab_tabla2.modificar(evt);
         String cod_prod = null;
@@ -508,10 +508,11 @@ public class pre_liquidacion_comp_elec extends Pantalla {
                 cod_prod = tab_producto.getValor("codigo_inarti");
             }
             tab_tabla2.setValor("observacion_cpdfa", tab_producto.getValor("NOMBRE_inarti"));
-          
-        } 
+
+        }
         utilitario.addUpdateTabla(tab_tabla2, "observacion_cpdfa,ide_inuni", "");
     }
+
     /**
      * Se ejecuta cuando cambia el Precio o la Cantidad de un detalle de la
      * factura
@@ -788,10 +789,6 @@ public class pre_liquidacion_comp_elec extends Pantalla {
                     mensje += "<p>NÚMERO DE AUTORIZACION : <span style='font-size:12px;font-weight: bold;'>" + tab_tabla1.getValor("CLAVE_ACCESO") + "</span> </p>";
                     men_factura.setMensajeExito("LIQUIDACIÓN DE COMPRA ELECTRÓNICA AUTORIZADA", mensje);
                     men_factura.dibujar();
-                    //generar transaccion nota de credito a cliente
-                    //Guarda la cuenta por pagar                            
-                    ser_cxp.generarTransaccionCompra(tab_tabla1);
-                    utilitario.getConexion().ejecutarListaSql();
                 } else {
                     utilitario.agregarMensajeError(mensaje, "");
                 }
@@ -821,6 +818,11 @@ public class pre_liquidacion_comp_elec extends Pantalla {
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
                     if (guardarPantalla().isEmpty()) {
+
+                        //generar transaccion liquidacion 
+                        //Guarda la cuenta por pagar                            
+                        ser_cxp.generarTransaccionCompra(tab_tabla1);
+
                         ser_comprobante_electronico.generarLiquidacionCompraElectronica(tab_tabla1.getValor("ide_cpcfa"));
                         String aux = tab_tabla1.getValor("ide_cpcfa");
                         dibujarLiquidacionCompra();
