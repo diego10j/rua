@@ -825,7 +825,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
 
                         //generar transaccion liquidacion 
                         //Guarda la cuenta por pagar                            
-                        //ser_cxp.generarTransaccionCompra(tab_tabla1);
+                        ser_cxp.generarTransaccionCompra(tab_tabla1);
 
                         ser_comprobante_electronico.generarLiquidacionCompraElectronica(tab_tabla1.getValor("ide_cpcfa"));
                         String aux = tab_tabla1.getValor("ide_cpcfa");
