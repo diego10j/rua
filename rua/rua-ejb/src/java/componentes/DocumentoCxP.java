@@ -1312,11 +1312,11 @@ public class DocumentoCxP extends Dialogo {
                     String ide_cccfa = tab_cab_documento.getValor("ide_cpcfa");
                     for (int i = 0; i < tab_det_documento.getTotalFilas(); i++) {
                         tab_det_documento.setValor(i, "ide_cpcfa", ide_cccfa);
-                        if (haceKardex == false) {
+                        /*if (haceKardex == false) {
                             if (ser_inventario.isHaceKardex(tab_det_documento.getValor(i, "ide_inarti"))) {
                                 haceKardex = true;
                             }
-                        }
+                        } comentado luis 2010-0129 para realizar ingreso desde inventario*/
                     }
                     if (tab_det_documento.guardar()) {
                         if (tab_com_reembolso.isRendered()) {
@@ -1333,9 +1333,9 @@ public class DocumentoCxP extends Dialogo {
                             }
 
                             //Transaccion de Inventario
-                            if (haceKardex) {
+                          /*  if (haceKardex) {
                                 ser_inventario.generarComprobanteTransaccionCompra(tab_cab_documento, tab_det_documento);
-                            }
+                            } comentado luis 2010-0129 para realizar ingreso desde inventario*/ 
                             if (utilitario.getConexion().guardarPantalla().isEmpty()) {
                                 this.cerrar();
                             }
