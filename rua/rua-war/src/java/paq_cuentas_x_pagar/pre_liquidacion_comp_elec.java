@@ -531,6 +531,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double cantidad = 0;
         double precio = 0;
         double total = 0;
+         System.out.println("calculando detalle");
         try {
             cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_cpdfa"));
         } catch (Exception e) {
@@ -556,7 +557,7 @@ public class pre_liquidacion_comp_elec extends Pantalla {
         double base_tarifa0 = 0;
         double valor_iva = 0;
         double porcentaje_iva = 0;
-
+        System.out.println("calculando totales");
         for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
             String iva = tab_tabla2.getValor(i, "iva_inarti_cpdfa");
             if (iva.equals("1")) { //SI IVA
@@ -569,12 +570,14 @@ public class pre_liquidacion_comp_elec extends Pantalla {
                 base_no_objeto = Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")) + base_no_objeto;
             }
         }
+        System.out.println("base_grabada + base_no_objeto + base_tarifa0 + valor_iva "+base_grabada+" " + " "+base_no_objeto+" " + base_tarifa0+" " + valor_iva);
         tab_tabla1.setValor("base_grabada_cpcfa", utilitario.getFormatoNumero(base_grabada));
         tab_tabla1.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_tabla1.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_tabla1.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
         tab_tabla1.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva));
-        utilitario.addUpdateTabla(tab_tabla1, "ide_geper,base_grabada_cpcfa,base_no_objeto_iva_cpcfa,valor_iva_cpcfa,base_tarifa0_cpcfa,total_cpcfa", "");
+        utilitario.addUpdateTabla(tab_tabla1, "base_grabada_cpcfa,base_no_objeto_iva_cpcfa,valor_iva_cpcfa,base_tarifa0_cpcfa,total_cpcfa", "");
+        tab_tabla1.modificar(tab_tabla1.getFilaActual());
     }
 
     public void dibujarLiquidacionCompra() {
@@ -815,13 +818,14 @@ public class pre_liquidacion_comp_elec extends Pantalla {
     public void guardar() {
         if (mep_menu.getOpcion() == 1) {
             tab_tabla1.setValor("TARIFA_IVA_CPCFA", utilitario.getFormatoNumero((tarifaIVA * 100)));
+            
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
                     if (guardarPantalla().isEmpty()) {
 
                         //generar transaccion liquidacion 
                         //Guarda la cuenta por pagar                            
-                        ser_cxp.generarTransaccionCompra(tab_tabla1);
+                        //ser_cxp.generarTransaccionCompra(tab_tabla1);
 
                         ser_comprobante_electronico.generarLiquidacionCompraElectronica(tab_tabla1.getValor("ide_cpcfa"));
                         String aux = tab_tabla1.getValor("ide_cpcfa");
