@@ -64,7 +64,7 @@ WHERE CERTI.ide_ipcer=$P{ide_ipcer}  AND CERTI.ide_empr=$P{ide_empr} and CERTI.i
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isItalic="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[PAPEL COMERCIAL]]></text>
+				<text><![CDATA[CERTIFICADO DEPÓSITO REEMBOLSABLE - DON BOSCO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="dc41138b-22f5-4dc8-815a-eea93692aafb" positionType="Float" x="1" y="1" width="387" height="41"/>
