@@ -324,7 +324,7 @@ public final class Comprobante implements Serializable {
                 try {
                     detalle = new ArrayList<>();
                     String sql = "select f.ide_inarti,codigo_inarti,observacion_ccdfa,COALESCE(nombre_inuni,'') ||' '|| observacion_ccdfa as nombre_inarti,cantidad_ccdfa\n"
-                            + ",precio_ccdfa,iva_inarti_ccdfa,total_ccdfa,nombre_inuni,(tarifa_iva_cccfa*100)as tarifa_iva_cccfa \n"
+                            + ",precio_ccdfa,iva_inarti_ccdfa,total_ccdfa,nombre_inuni,(tarifa_iva_cccfa*100)as tarifa_iva_cccfa, descuento_ccdfa \n"
                             + "from cxc_cabece_factura  a\n"
                             + "inner join cxc_deta_factura c on a.ide_cccfa=c.ide_cccfa\n"
                             + "inner join  inv_articulo f on c.ide_inarti =f.ide_inarti\n"
