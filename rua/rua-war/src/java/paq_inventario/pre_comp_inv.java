@@ -103,7 +103,7 @@ public class pre_comp_inv extends Pantalla {
         //bar_botones.agregarBoton(bot_buscar_transacciones);
 
         tex_nomb_transaccion.setId("tex_nomb_transaccion");
-        bar_botones.agregarComponente(tex_nomb_transaccion);
+        // bar_botones.agregarComponente(tex_nomb_transaccion);
 
         TablaGenerica tab_responsable = ser_sistema.getUsuario(utilitario.getVariable("IDE_USUA"));
         String ide_gtemp = tab_responsable.getValor("ide_gtemp");
@@ -160,6 +160,7 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.getColumna("ide_inbod").setVisible(false);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
+        tab_tabla1.setCampoOrden("ide_incci desc");
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
@@ -192,7 +193,7 @@ public class pre_comp_inv extends Pantalla {
 
         tab_tabla2.getColumna("ide_cccfa").setVisible(false);
         tab_tabla2.getColumna("ide_cpcfa").setVisible(false);
-
+        tab_tabla2.getColumna("ide_ccdfa").setVisible(false);
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -234,13 +235,13 @@ public class pre_comp_inv extends Pantalla {
         bot_busca_solici.setValue("BUSCAR FACTURA");
         bot_busca_solici.setIcon("ui-icon-search");
         bot_busca_solici.setMetodo("dibujaSolicitud");
-        bar_botones.agregarBoton(bot_busca_solici);
+        //bar_botones.agregarBoton(bot_busca_solici);
 
         Boton bot_aprobar_ingreso = new Boton();
         bot_aprobar_ingreso.setValue("APROBAR INGRESO");
         bot_aprobar_ingreso.setIcon("ui-icon-search");
         bot_aprobar_ingreso.setMetodo("aprobarIngreso");
-        bar_botones.agregarBoton(bot_aprobar_ingreso);
+        //bar_botones.agregarBoton(bot_aprobar_ingreso);
 
         Boton bot_imprimir = new Boton();
         bot_imprimir.setValue("IMPRIMIR");
@@ -448,8 +449,11 @@ public class pre_comp_inv extends Pantalla {
                 tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_inv_tipo_transaccion_compra"));
                 tab_tabla1.setValor("ide_inbod", utilitario.getVariable("p_inv_bodega_defecto"));
                 tab_tabla1.setValor("ide_gtemp", ide_gtemp);
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+                tab_tabla1.setValor("referencia_incci", tab_fact_cabera.getValor(i, "numero_cpcfa"));
+                tab_tabla1.setValor("observacion_incci", ".");
             }
-            // tab_tabla1.guardar();
+            tab_tabla1.guardar();
             // guardarPantalla();
             sel_detalle_compra.cerrar();
             utilitario.addUpdate("tab_tabla1");
@@ -481,8 +485,8 @@ public class pre_comp_inv extends Pantalla {
         } else {
             utilitario.getConexion().ejecutarSql("update cxp_cabece_factur set recibido_compra_cpcfa = true where ide_cpcfa = " + factura + "");
         }
-        // tab_tabla2.guardar();
-        // guardarPantalla();
+        tab_tabla2.guardar();
+        guardarPantalla();
         utilitario.addUpdate("tab_tabla2");
     }
 

@@ -111,8 +111,11 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
         tab_tabla1.getColumna("numero_incci").setLectura(true);
+        tab_tabla1.getColumna("fecha_trans_incci").setLectura(true);
+        tab_tabla1.getColumna("fecha_trans_incci").setNombreVisual("FECHA TRANSACCION");
         tab_tabla1.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
         tab_tabla1.getColumna("observacion_incci").setRequerida(true);
+        tab_tabla1.getColumna("observacion_incci").setNombreVisual("OBSERVACION");
         tab_tabla1.getColumna("observacion_incci").setControl("AreaTexto");
         tab_tabla1.getColumna("sis_ide_usua").setVisible(false);
         tab_tabla1.getColumna("fecha_siste_incci").setVisible(false);
@@ -128,6 +131,7 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("maquina_incci").setVisible(false);
         tab_tabla1.getColumna("codigo_documento_incci").setVisible(false);
         tab_tabla1.getColumna("referencia_incci").setNombreVisual("NUMERO FACTURA");
+        tab_tabla1.getColumna("referencia_incci").setLectura(true);
         tab_tabla1.getColumna("ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("gth_ide_gtemp").setCombo(ser_persona.getDatosEmpleado());
         tab_tabla1.getColumna("gth_ide_gtemp2").setCombo(ser_persona.getDatosEmpleado());
@@ -137,12 +141,15 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("gth_ide_gtemp2").setAutoCompletar();
         tab_tabla1.getColumna("gth_ide_gtemp3").setAutoCompletar();
         tab_tabla1.getColumna("ide_gtemp").setNombreVisual("RESPONSABLE DE REGISTRO");
+        tab_tabla1.getColumna("ide_gtemp").setLectura(true);
+        tab_tabla1.getColumna("ide_inepi").setLectura(true);
         tab_tabla1.getColumna("ide_gtemp").setValorDefecto(ide_gtemp);
         tab_tabla1.getColumna("ide_incci").setNombreVisual("CODIGO");
         tab_tabla1.getColumna("ide_inepi").setNombreVisual("ESTADO");
         tab_tabla1.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
+        tab_tabla1.getColumna("ide_geper").setLectura(true);
         tab_tabla1.getColumna("ide_intti").setNombreVisual("TIPO TRANSACCIÓN");
-
+        tab_tabla1.setCampoOrden("ide_incci desc");
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
@@ -181,7 +188,7 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla2.getColumna("valor_indci").setNombreVisual("TOTAL");
         tab_tabla2.getColumna("secuencial_indci").setNombreVisual("SECUENCIAL");
         tab_tabla2.getColumna("observacion_indci").setNombreVisual("OBSERVACIÓN");
-
+        tab_tabla2.getColumna("ide_ccdfa").setVisible(false);
         tab_tabla2.dibujar();
         PanelTabla pat_panel2 = new PanelTabla();
         pat_panel2.setPanelTabla(tab_tabla2);
@@ -331,7 +338,7 @@ public class pre_comp_inv_compra extends Pantalla {
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarIngreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
                     } else {
                         utilitario.getConexion().ejecutarSql(ser_inventario.getInsertarBodegaArticulos(tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_detalle.getValor(i, "ide_inarti")));
@@ -340,7 +347,7 @@ public class pre_comp_inv_compra extends Pantalla {
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulos.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarIngreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
 
                     }
@@ -356,7 +363,7 @@ public class pre_comp_inv_compra extends Pantalla {
                         //utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
 
                     } else {
@@ -366,7 +373,7 @@ public class pre_comp_inv_compra extends Pantalla {
                         //utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulos.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_tabla1.getValor("ide_incci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), tab_tabla1.getValor("ide_incci")));
 
                     }
@@ -376,6 +383,7 @@ public class pre_comp_inv_compra extends Pantalla {
         con_confirma.cerrar();
         tab_tabla1.actualizar();
         utilitario.agregarMensaje("Se aprobo correctamente", "");
+        bloquearModificacion();
     }
 
     public void bloquearModificacion() {
@@ -462,7 +470,7 @@ public class pre_comp_inv_compra extends Pantalla {
         if (selec_productos.equals("null") || selec_productos.isEmpty()) {
             utilitario.agregarMensajeInfo("ADVERTENCIA,", "Seleccione al menos un registro");
         } else {
-            TablaGenerica tab_fact_cabera = utilitario.consultar("select ide_cpcfa, a.ide_geper, nom_geper from cxp_cabece_factur a\n"
+            TablaGenerica tab_fact_cabera = utilitario.consultar("select ide_cpcfa, a.ide_geper,numero_cpcfa, nom_geper from cxp_cabece_factur a\n"
                     + "left join gen_persona b on a.ide_geper = b.ide_geper \n"
                     + "where ide_cpcfa = " + factura + "");
 
@@ -477,8 +485,11 @@ public class pre_comp_inv_compra extends Pantalla {
                 tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_inv_tipo_transaccion_compra"));
                 tab_tabla1.setValor("ide_inbod", utilitario.getVariable("p_inv_bodega_defecto"));
                 tab_tabla1.setValor("ide_gtemp", ide_gtemp);
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+                tab_tabla1.setValor("referencia_incci", tab_fact_cabera.getValor(i, "numero_cpcfa"));
+                tab_tabla1.setValor("observacion_incci", ".");
             }
-            // tab_tabla1.guardar();
+            tab_tabla1.guardar();
             // guardarPantalla();
             sel_detalle_compra.cerrar();
             utilitario.addUpdate("tab_tabla1");
@@ -510,8 +521,8 @@ public class pre_comp_inv_compra extends Pantalla {
         } else {
             utilitario.getConexion().ejecutarSql("update cxp_cabece_factur set recibido_compra_cpcfa = true where ide_cpcfa = " + factura + "");
         }
-        // tab_tabla2.guardar();
-        // guardarPantalla();
+        tab_tabla2.guardar();
+        guardarPantalla();
         utilitario.addUpdate("tab_tabla2");
     }
 
