@@ -125,6 +125,7 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setCombo(ser_adquisiciones.getEmpleadoDepartamento("3", "1", "1", "1"));
             tab_adquisiones.getColumna("IDE_ADARAD ").setCombo(ser_adquisiciones.getAreaAdministrativa("0", "0"));
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setNombreVisual("APROBADOR DE GASTO");
+            tab_adquisiones.getColumna("ADQ_IDE_ADEMDE").setValorDefecto(utilitario.getVariable("p_aprobador_gastos"));
             tab_adquisiones.getColumna("ADQ_IDE_ADEMDE2").setNombreVisual("APROBADOR DE EXISTENCIA");
             tab_adquisiones.agregarRelacion(tab_presupuesto);
             tab_adquisiones.agregarRelacion(tab_compra_bienes);
