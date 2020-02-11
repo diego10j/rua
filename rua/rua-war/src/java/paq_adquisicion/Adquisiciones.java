@@ -144,7 +144,7 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.getColumna("FECHA_SOLICITUD_ADCOMP").setNombreVisual("FECHA DE SOLICITUD");
             tab_adquisiones.getColumna("VALOR_PRESUPUESTADO_ADCOMP").setNombreVisual("VALOR PRESUPUESTADO");
             tab_adquisiones.getColumna("VALOR_ADCOMP").setNombreVisual("VALOR");
-            tab_adquisiones.getColumna("VALOR_ADCOMP").setEtiqueta();
+            //tab_adquisiones.getColumna("VALOR_ADCOMP").setEtiqueta();
             tab_adquisiones.getColumna("VALOR_ADCOMP").setEstilo("font-size:15px;font-weight: bold;text-decoration: underline;color:red");//Estilo
             tab_adquisiones.getColumna("FECHA_ADJUDICADO_ADCOMP").setNombreVisual("FECHA ADJUDICADO");
             tab_adquisiones.getColumna("ADJUDICADOR_ADCOMP").setNombreVisual("ADJUDICADOR");
