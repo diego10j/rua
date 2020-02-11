@@ -51,7 +51,7 @@ public class Adquisiciones extends Pantalla {
 
             rep_reporte.setId("rep_reporte");
             agregarComponente(rep_reporte);
-            bar_botones.agregarReporte();
+            //bar_botones.agregarReporte();
 
             Boton bot_agregar_solicitante = new Boton();
 
@@ -92,6 +92,8 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.setId("tab_adquisiones");   //identificador
             tab_adquisiones.setTabla("adq_compra", "ide_adcomp", 1);
             //tab_adquisiones.setCondicion("ide_adcomp=-1");
+            tab_adquisiones.setCampoOrden("ide_adcomp desc");     
+
             List lista = new ArrayList();
             List lista1 = new ArrayList();
             List lista2 = new ArrayList();
@@ -356,7 +358,7 @@ public class Adquisiciones extends Pantalla {
             agregarComponente(sel_tab_presupuesto);
 
             sel_rep.setId("sel_rep");
-            agregarComponente(sel_rep);
+            //agregarComponente(sel_rep);       
 
             vipdf_comprobante.setId("vipdf_comprobante");
             vipdf_comprobante.setTitle("SOLICITUD DE COMPRA");
@@ -459,7 +461,7 @@ public class Adquisiciones extends Pantalla {
         }
     }
 
-    public void imprimirSolicitud(){
+    public void imprimirSolicitud() {
         if (tab_adquisiones.getValorSeleccionado() != null) {
             ///////////AQUI ABRE EL REPORTE
             Map parametros = new HashMap();
@@ -469,7 +471,7 @@ public class Adquisiciones extends Pantalla {
             parametros.put("plocalidad", utilitario.getVariable("p_localidad"));
             //System.out.println(" " + str_titulos);
             vipdf_solicitud.setVisualizarPDF("rep_compras/rep_solicitudcompra.jasper", parametros);
-            vipdf_solicitud.dibujar();           
+            vipdf_solicitud.dibujar();
             utilitario.addUpdate("vipdf_solicitud");
         } else {
             utilitario.agregarMensajeInfo("Seleccione una Solititud de compra", "");
@@ -558,7 +560,7 @@ public class Adquisiciones extends Pantalla {
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Solicitu de Compra")) {
-            rep_reporte.cerrar();
+            rep_reporte.cerrar();      
             map_parametros.clear();
             map_parametros.put("pide_requisicion", Integer.parseInt(tab_adquisiones.getValor("ide_adcomp")));
 
@@ -567,7 +569,7 @@ public class Adquisiciones extends Pantalla {
             sel_rep.dibujar();
         }
     }
-
+      
     @Override
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
