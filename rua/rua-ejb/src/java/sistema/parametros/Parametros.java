@@ -61,9 +61,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_tipo_egreso", "Permite conocer si es de tipo egreso para ejecutar el kardex", "1", "inv_tip_comp_inve", "ide_intci", "nombre_intci"));
         lis_parametros.add(new Parametro("1", "p_inv_valor_base", "Permite conocer el valor base del articulo", "1"));
         lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
-        lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2","inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
-        lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0","inv_tip_tran_inve", "ide_intti", "nombre_intti"));
- 
+        lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2", "inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
+        lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
+
         /*
          * CUENTAS POR PAGAR MODULO =2
          */
@@ -130,6 +130,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("5", "p_com_sisfinanciero_forma_pago", "Indica qel tipo de compra y pago con sistema financiero", "2", "con_deta_forma_pago", "ide_cndfp", "nombre_cndfp"));
         lis_parametros.add(new Parametro("5", "p_com_sustento_bodega", "Indica el sustento tributario por defecto regsitran desde bodegas ", "1", "sri_tipo_sustento_tributario", "ide_srtst", "nombre_srtst"));
         lis_parametros.add(new Parametro("5", "p_localidad", "Indica la localidad para imprimir las solicitudes de compras", "Quito"));
+        lis_parametros.add(new Parametro("5", "p_aprobador_gastos", "Indica al responsable de aprobar los gastos de compra en adquisiciones", "1", "adq_empleado", "ide_ademple", "cedula_ademple,nombres_ademple"));
 
         /*
          * NOMINA =6
@@ -502,7 +503,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("14", "p_prod_grupo_nota_recibido_interno", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
         lis_parametros.add(new Parametro("14", "p_prod_grupo_recepcion_mercaderia", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
         lis_parametros.add(new Parametro("14", "p_prod_grupo_orden_produccion", "Indica los articulos solo de las bodegas seleccionadas", "5", "inv_articulo", "ide_inarti", "nombre_inarti"));
-        
+
         //TIPOS DE COMPROBANTES
         lis_parametros.add(new Parametro("14", "p_prod_requerimiento_materia_prima", "Indica que el tipo de transaccion de requerimiento de materia prima", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("14", "p_prod_nota_entrega_interna", "Indica que el tipo de transaccion de nota de entrega interna", "5", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
@@ -530,7 +531,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_pen_tipo_client_representante", "Indica el tipo de cliente representante", "2", "ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl"));
         lis_parametros.add(new Parametro("15", "p_pen_grupo_representante", "Indica el grupo de representante", "2", "gen_persona", "ide_geper", "nom_geper"));
         lis_parametros.add(new Parametro("15", "p_pen_concepto", "Indica el concepto matricula", "2", "rec_concepto", "ide_concepto_recon", "des_concepto_recon"));
-        
+
         //NUMERO SECUENCIAL
         lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
 
