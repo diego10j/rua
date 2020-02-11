@@ -775,6 +775,7 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_producto.getColumna("NOMBRE_INARTI").setMayusculas(true);
             tab_creacion_producto.getColumna("CODIGO_INARTI").setNombreVisual("CODIGO");
             tab_creacion_producto.getColumna("CODIGO_INARTI").setOrden(2);
+            tab_creacion_producto.getColumna("CODIGO_INARTI").setRequerida(true);
             tab_creacion_producto.getColumna("IDE_INMAR").setNombreVisual("MARCA");
             tab_creacion_producto.getColumna("IDE_INMAR").setOrden(3);
             tab_creacion_producto.getColumna("IDE_INUNI").setNombreVisual("UNIDAD");
@@ -787,7 +788,7 @@ public class FacturaCxC extends Dialogo {
             tab_creacion_producto.getColumna("ICE_INARTI").setNombreVisual("APLICA ICE ?");
             tab_creacion_producto.getColumna("ICE_INARTI").setOrden(7);
             tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setNombreVisual("HACE KARDEX ?");
-            tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setVisible(false);
+            //tab_creacion_producto.getColumna("HACE_KARDEX_INARTI").setVisible(false); 
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setNombreVisual("OBSERVACION");
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setOrden(9);
             tab_creacion_producto.getColumna("OBSERVACION_INARTI").setMayusculas(true);
