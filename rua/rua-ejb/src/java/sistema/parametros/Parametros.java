@@ -63,7 +63,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
         lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2", "inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
         lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-
+        
         /*
          * CUENTAS POR PAGAR MODULO =2
          */
@@ -447,6 +447,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("12", "p_amortizacion_cada", "Indica que la amortizacion se la realizara cada 30 dias", "30"));
         lis_parametros.add(new Parametro("12", "p_tasa_interes", "Indica la tasa de interes anticipo que se la realizara", "0"));
         lis_parametros.add(new Parametro("12", "p_tasa_interes_efectiva", "Indica la tasa  efectiva anticipo de interes que se la realizara", "0"));
+        lis_parametros.add(new Parametro("12", "p_aplica_stock", "Indica si se aplica el control del stock para las ventas", "false"));
+        
         // hasta aqui luis toapanta parametros generales
         /*
          * GESTION DE TALENTO HUMANO MODULO =13
