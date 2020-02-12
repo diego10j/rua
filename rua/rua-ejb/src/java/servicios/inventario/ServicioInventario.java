@@ -729,6 +729,28 @@ public class ServicioInventario {
         return sql;
     }
 
+    /**
+     * Devuelve el stock actual de un producto de bodega
+     *
+     * @param articulo
+     * @param anio
+     * @param sucu
+     * @param empr
+     * @return
+     */
+    public double getStockArticulo(String articulo, String anio, String sucu, String empr) {
+        double stock = 0;
+        TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
+                + "from bodt_articulos \n"
+                + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ");
+        tab_stock.imprimirSql();
+        try {
+            stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
+        } catch (Exception e) {
+        }
+        return stock;
+    }
+
     public String getInventarioAnio(String anio) {
         String sql = "";
         sql += "select ide_geani,nom_geani from gen_anio \n"
@@ -772,7 +794,7 @@ public class ServicioInventario {
 
     public String getDetalleInventario(String codigo, String sucu, String empr) {
         String sql = "";
-        
+
         sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
                 + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
                 + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
@@ -798,7 +820,7 @@ public class ServicioInventario {
 
     public double getPrecioPonderado(Double stock, Double costa_actual, Double cantidad, Double valor_total) {
         //System.out.println("PARAMETROS: " + stock + " " + costa_actual + " " + cantidad + " " + valor_total);
-        double costo_actual = 0; 
+        double costo_actual = 0;
         double total = (stock * costa_actual);
         costo_actual = ((total + valor_total) / (stock + cantidad));
         return costo_actual;
@@ -868,7 +890,7 @@ public class ServicioInventario {
                 + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)\n"
-                + "		and e.ide_geani="+anio+" and e.ide_inarti in ("+articulo+")\n"
+                + "		and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
                 + "union\n"
                 + "	select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,\n"
                 + "	0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,\n"
@@ -881,7 +903,7 @@ public class ServicioInventario {
                 + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n"
-                + "	and e.ide_geani="+anio+" and e.ide_inarti in ("+articulo+")\n"
+                + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
                 + "order by ide_inarti,fecha_trans_incci,ide_indci ";
         return sql;
     }
@@ -893,27 +915,27 @@ public class ServicioInventario {
                 + "	egreso_material_boart=0,\n"
                 + "	costo_anterior_boart=0,\n"
                 + "	costo_actual_boart=0\n"
-                + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
+                + "where ide_geani=" + anio + " and ide_inarti=" + articulo + " ";
         return sql;
     }
-    
+
     public String getActualizarCostoInicial(String anio, String articulo) {
         String sql = "";
         sql += "update bodt_articulos set \n"
                 + "	costo_actual_boart=costo_inicial_boart\n"
-                + "where ide_geani="+anio+" and ide_inarti="+articulo+" ";
+                + "where ide_geani=" + anio + " and ide_inarti=" + articulo + " ";
         return sql;
     }
-        
+
     public String getAplicaKardex(String articulo) {
         String sql = "";
-        sql += "select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti="+articulo+"";
+        sql += "select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti=" + articulo + "";
         return sql;
     }
-    
+
     public String getConsultaUnidadMedida(String articulo) {
         String sql = "";
-        sql += "select ide_inarti,ide_inuni,codigo_inarti,nombre_inarti from inv_articulo  where ide_inarti="+articulo+"";
+        sql += "select ide_inarti,ide_inuni,codigo_inarti,nombre_inarti from inv_articulo  where ide_inarti=" + articulo + "";
         return sql;
     }
 }
