@@ -130,7 +130,8 @@ public class pre_comp_inv extends Pantalla {
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
-        tab_tabla1.getColumna("numero_incci").setLectura(true);
+        tab_tabla1.getColumna("numero_incci").setEtiqueta();
+        tab_tabla1.getColumna("numero_incci").setEstilo("font-size:12px;font-weight: bold;color:red");
         tab_tabla1.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
         tab_tabla1.getColumna("observacion_incci").setRequerida(true);
         tab_tabla1.getColumna("observacion_incci").setControl("AreaTexto");
@@ -571,7 +572,9 @@ public class pre_comp_inv extends Pantalla {
     public void guardar() {
         if (validar()) {
             if (tab_tabla1.isFilaInsertada()) {
-                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+                TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(utilitario.getFechaActual()));
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialCompInventario(tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_intti"), tab_anio.getValor("anio")));
+                //tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
             }
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {

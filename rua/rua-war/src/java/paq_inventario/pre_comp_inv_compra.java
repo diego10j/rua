@@ -110,7 +110,7 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("fecha_trans_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("fecha_siste_incci").setValorDefecto(utilitario.getFechaActual());
         tab_tabla1.getColumna("hora_sistem_incci").setValorDefecto(utilitario.getHoraActual());
-        tab_tabla1.getColumna("numero_incci").setLectura(true);
+        //tab_tabla1.getColumna("numero_incci").setLectura(true);
         tab_tabla1.getColumna("fecha_trans_incci").setLectura(true);
         tab_tabla1.getColumna("fecha_trans_incci").setNombreVisual("FECHA TRANSACCION");
         tab_tabla1.getColumna("numero_incci").setNombreVisual("SECUENCIAL");
@@ -148,6 +148,8 @@ public class pre_comp_inv_compra extends Pantalla {
         tab_tabla1.getColumna("ide_inepi").setNombreVisual("ESTADO");
         tab_tabla1.getColumna("ide_geper").setNombreVisual("PROVEEDOR");
         tab_tabla1.getColumna("ide_geper").setLectura(true);
+        tab_tabla1.getColumna("numero_incci").setEtiqueta();
+        tab_tabla1.getColumna("numero_incci").setEstilo("font-size:12px;font-weight: bold;color:red");
         tab_tabla1.getColumna("ide_intti").setNombreVisual("TIPO TRANSACCIÓN");
         tab_tabla1.setCampoOrden("ide_incci desc");
         tab_tabla1.setTipoFormulario(true);
@@ -388,16 +390,18 @@ public class pre_comp_inv_compra extends Pantalla {
 
     public void bloquearModificacion() {
         //BLOQUEOS
-        if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
-            for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
-                tab_tabla2.getFilas().get(i).setLectura(true);
+        if (tab_tabla1.getTotalFilas() > 0) {
+            if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
+                for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
+                    tab_tabla2.getFilas().get(i).setLectura(true);
+                }
+                tab_tabla1.getFilaSeleccionada().setLectura(true);
+                utilitario.addUpdate("tab_tabla2,tab_tabla1");
+            } else {
+                tab_tabla1.setLectura(false);
+                tab_tabla2.setLectura(false);
+                utilitario.addUpdate("tab_tabla2,tab_tabla1");
             }
-            tab_tabla1.getFilaSeleccionada().setLectura(true);
-            utilitario.addUpdate("tab_tabla2,tab_tabla1");
-        } else {
-            tab_tabla1.setLectura(false);
-            tab_tabla2.setLectura(false);
-            utilitario.addUpdate("tab_tabla2,tab_tabla1");
         }
     }
 
@@ -477,6 +481,8 @@ public class pre_comp_inv_compra extends Pantalla {
             TablaGenerica tab_responsable = ser_sistema.getUsuario(utilitario.getVariable("IDE_USUA"));
             String ide_gtemp = tab_responsable.getValor("ide_gtemp");
 
+            TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(utilitario.getFechaActual()));
+
             for (int i = 0; i < tab_fact_cabera.getTotalFilas(); i++) {
                 if (tab_tabla1.isFilaInsertada() == false) {
                     tab_tabla1.insertar();
@@ -485,7 +491,8 @@ public class pre_comp_inv_compra extends Pantalla {
                 tab_tabla1.setValor("ide_intti", utilitario.getVariable("p_inv_tipo_transaccion_compra"));
                 tab_tabla1.setValor("ide_inbod", utilitario.getVariable("p_inv_bodega_defecto"));
                 tab_tabla1.setValor("ide_gtemp", ide_gtemp);
-                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialCompInventario(utilitario.getVariable("p_inv_tipo_transaccion_compra"), tab_anio.getValor("anio")));
+                //tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
                 tab_tabla1.setValor("referencia_incci", tab_fact_cabera.getValor(i, "numero_cpcfa"));
                 tab_tabla1.setValor("observacion_incci", ".");
             }
@@ -607,7 +614,9 @@ public class pre_comp_inv_compra extends Pantalla {
     public void guardar() {
         if (validar()) {
             if (tab_tabla1.isFilaInsertada()) {
-                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
+                TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(utilitario.getFechaActual()));
+                tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialCompInventario(utilitario.getVariable("p_inv_tipo_transaccion_compra"), tab_anio.getValor("anio")));
+                //tab_tabla1.setValor("numero_incci", ser_inventario.getSecuencialComprobanteInventario(String.valueOf(tab_tabla1.getValor("ide_inbod"))));
             }
             if (tab_tabla1.guardar()) {
                 if (tab_tabla2.guardar()) {
