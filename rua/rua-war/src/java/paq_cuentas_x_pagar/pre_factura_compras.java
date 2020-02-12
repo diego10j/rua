@@ -215,6 +215,7 @@ public class pre_factura_compras extends Pantalla {
             tab_cab_documento.getColumna("numero_nc_cpcfa").setQuitarCaracteresEspeciales(true);
             tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setNombreVisual("AUTORIZACIÓN DOC. MODI.");
             tab_cab_documento.getColumna("autorizacio_nc_cpcfa").setOrden(11);
+            tab_cab_documento.getColumna("autorizacio_cpcfa").setMetodoChange("validarAutorizacion");
 
             tab_cab_documento.getColumna("motivo_nc_cpcfa").setOrden(12);
             tab_cab_documento.getColumna("motivo_nc_cpcfa").setNombreVisual("MOTIVO");
@@ -348,6 +349,53 @@ public class pre_factura_compras extends Pantalla {
     public void seleccionarArchivoXML(FileUploadEvent event) {
 
         doc_cuenta_pagar.seleccionarArchivoXML(event);
+    }
+
+    /*
+     * Valida numero de autorizacion
+     */
+    public void validarAutorizacion() {
+        String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
+        if (autorizacion != null) {
+            boolean correcto = false;
+            if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                correcto = true;
+            }
+            if (correcto == false) {
+                utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
+            }
+        }
+        if (tab_cab_documento.getColumna("autorizacio_nc_cpcfa").isVisible()) {
+            autorizacion = tab_cab_documento.getValor("autorizacio_nc_cpcfa");
+            if (autorizacion != null) {
+                boolean correcto = false;
+                if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+                    correcto = true;
+                }
+                if (correcto == false) {
+                    utilitario.agregarMensajeInfo("La longitud del Número de Autorización del Documento Modificado no es válido", autorizacion);
+                }
+            }
+        }
+    }
+
+    /**
+     * Valida Factura CxP para poder guardar
+     *
+     * @return
+     */
+    public boolean validarDocumento() {
+
+        String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
+        boolean correcto = false;
+        if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+            correcto = true;
+        } else {
+            correcto = false;
+            utilitario.agregarMensajeInfo("La longitud del Número de Autorización no es válido", autorizacion);
+            return false;
+        }
+        return correcto;
     }
 
     public void calcularTotalDocumento() {
@@ -546,9 +594,11 @@ public class pre_factura_compras extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tab_cab_documento.guardar()) {
-            if (tab_det_documento.guardar()) {
-                guardarPantalla();
+        if (validarDocumento()) {
+            if (tab_cab_documento.guardar()) {
+                if (tab_det_documento.guardar()) {
+                    guardarPantalla();
+                }
             }
         }
 
