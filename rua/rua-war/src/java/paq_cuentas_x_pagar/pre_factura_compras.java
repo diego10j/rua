@@ -243,7 +243,7 @@ public class pre_factura_compras extends Pantalla {
             tab_cab_documento.getColumna("ide_cntdo_nc_cpcfa").setRequerida(false);
             tab_cab_documento.getColumna("ide_srcom").setVisible(false);
             tab_cab_documento.getColumna("ide_ccdaf").setVisible(false);
-            tab_cab_documento.getColumna("recibido_activo_cpcfa").setVisible(false);
+            //tab_cab_documento.getColumna("recibido_activo_cpcfa").setVisible(false);
 
             tab_cab_documento.setTipoFormulario(true);
             tab_cab_documento.getGrid().setColumns(4);
