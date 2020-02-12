@@ -419,7 +419,7 @@ public class pre_modifica_documento extends Pantalla {
         tab_com_reembolso.getColumna("fecha_trans_cpcfa").setValorDefecto(utilitario.getFechaActual());
         tab_com_reembolso.setScrollable(true);
         tab_com_reembolso.setScrollHeight(55);
-        tab_com_reembolso.setRecuperarLectura(true);
+        //tab_com_reembolso.setRecuperarLectura(true);
         tab_com_reembolso.setCondicion("ide_cpcfa=-1");
         tab_com_reembolso.getColumna("motivo_nc_cpcfa").setMascara("9999999999999");
         tab_com_reembolso.dibujar();
