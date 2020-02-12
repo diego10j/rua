@@ -112,7 +112,7 @@ public class ServicioProducto {
      * @return
      */
     public String getSqlProductosCombo() {
-        return "SELECT ide_inarti,nombre_inarti from inv_articulo arti "
+        return "SELECT ide_inarti,codigo_inarti,nombre_inarti from inv_articulo arti "
                 + "where arti.ide_empr=" + utilitario.getVariable("ide_empr") + " and nivel_inarti='HIJO' ORDER BY nombre_inarti ";
     }
 
