@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fb172335-c9a5-42cb-81bf-214fb7d19b6d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -12,9 +12,9 @@
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[SELECT TIPOCOM.nombre_intci,CAB.numero_incci,ESTADO.nombre_inepi,TIPOTRA.nombre_intti, 
+		<![CDATA[SELECT TIPOCOM.nombre_intci,CAB.numero_incci,ESTADO.nombre_inepi,TIPOTRA.nombre_intti,
 CAB.fecha_trans_incci,PERSONA.nom_geper,ARTICULO.nombre_inarti,UNIDAD.nombre_inuni,
-DET.cantidad_indci,DET.precio_indci,DET.valor_indci 
+DET.cantidad_indci,DET.precio_indci,DET.valor_indci
 FROM inv_cab_comp_inve  CAB
 INNER JOIN inv_tip_tran_inve  TIPOTRA ON CAB.ide_intti=TIPOTRA.ide_intti
 INNER JOIN inv_tip_comp_inve  TIPOCOM ON TIPOTRA.ide_intci=TIPOCOM.ide_intci
@@ -51,23 +51,23 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<title>
 		<band height="85" splitType="Stretch">
 			<staticText>
-				<reportElement x="180" y="15" width="233" height="29"/>
+				<reportElement uuid="4f792af7-d132-4500-8507-b4b579e8aafb" x="236" y="15" width="275" height="29"/>
 				<box rightPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="16" isBold="true" isItalic="false" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[COMPROBANTE DE]]></text>
+				<text><![CDATA[RECEPCION DE MERCADERIA]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="412" y="15" width="142" height="29"/>
+				<reportElement uuid="43c67d5e-a9f7-4e04-84dd-09350d86e845" x="236" y="44" width="276" height="29"/>
 				<box leftPadding="3"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isItalic="false" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_intci}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="0" width="180" height="85"/>
+				<reportElement uuid="f838ccd9-8275-47e6-a806-dadeea0564d3" x="0" y="0" width="180" height="85"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -85,26 +85,26 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<pageHeader>
 		<band height="84" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="103" height="20"/>
+				<reportElement uuid="988f85d4-9ca8-4ac2-b6a2-5d9760fb860f" x="0" y="0" width="103" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Comprobante N°:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="102" y="0" width="84" height="20"/>
+				<reportElement uuid="949ada75-51d0-48f6-9773-995faeb75d6f" x="102" y="0" width="84" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="308" y="0" width="43" height="20"/>
+				<reportElement uuid="edd5d79b-bf3e-4a57-a422-171f2578e4c7" x="308" y="0" width="43" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Estado:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="38" width="227" height="20"/>
+				<reportElement uuid="ebca44b4-94d4-479d-989e-8a3ba92f9290" x="0" y="38" width="227" height="20"/>
 				<box rightPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
@@ -112,52 +112,52 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[Concepto:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="226" y="38" width="329" height="20"/>
+				<reportElement uuid="94b92919-594d-46be-afaf-3ed3863c1e80" x="226" y="38" width="329" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_intti}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="408" y="57" width="39" height="20"/>
+				<reportElement uuid="ba4d7474-f656-41c8-8bda-9224102b0bc4" x="408" y="57" width="39" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="446" y="57" width="109" height="20"/>
+				<reportElement uuid="c7481c74-ba94-47da-97a0-336c2e460e23" x="446" y="57" width="109" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="57" width="68" height="20"/>
+				<reportElement uuid="bc6068a0-021c-495c-95e1-be58ca36756b" x="0" y="57" width="68" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[PERSONA:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="67" y="57" width="342" height="20"/>
+				<reportElement uuid="b4bf95f0-2a2b-4256-b39c-f7bbd6514c69" x="67" y="57" width="342" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="19" width="103" height="20"/>
+				<reportElement uuid="e65b0b50-f285-4694-bbef-a6effcba7c4e" x="0" y="19" width="103" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha de impresión: ]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="102" y="19" width="206" height="20"/>
+				<reportElement uuid="39735d58-5bb0-473a-84c4-e87be589199b" x="102" y="19" width="206" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="350" y="0" width="205" height="20"/>
+				<reportElement uuid="b24ce1d7-d80d-4f88-9343-17886f15a48f" x="350" y="0" width="205" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nombre_inepi}]]></textFieldExpression>
 			</textField>
@@ -166,7 +166,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<columnHeader>
 		<band height="12" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="299" height="12"/>
+				<reportElement uuid="7524ee90-e470-402c-a837-46f9d4054473" x="0" y="0" width="299" height="12"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -180,7 +180,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[ARTICULO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="299" y="0" width="99" height="12"/>
+				<reportElement uuid="676f5677-8de0-4017-b0eb-7d5c17f0a97a" x="299" y="0" width="99" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -194,7 +194,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[UNIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="398" y="0" width="57" height="12"/>
+				<reportElement uuid="0c99e8b6-77c3-4724-a812-4bbec39d6c22" x="398" y="0" width="57" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -208,7 +208,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="455" y="0" width="45" height="12"/>
+				<reportElement uuid="f1067336-34d4-4eea-9f55-dd5627474abc" x="455" y="0" width="45" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -222,7 +222,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[PRECIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="500" y="0" width="55" height="12"/>
+				<reportElement uuid="4a9df587-6c03-4500-899e-5eb62e06dcc4" x="500" y="0" width="55" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -240,7 +240,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="0" width="299" height="12"/>
+				<reportElement uuid="92e963cd-0616-4e54-8f1b-486b1467b468" x="0" y="0" width="299" height="12"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -254,7 +254,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="299" y="0" width="99" height="12"/>
+				<reportElement uuid="ff09bada-d013-4123-9411-778da4365cc6" x="299" y="0" width="99" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -268,7 +268,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="398" y="0" width="57" height="12"/>
+				<reportElement uuid="5a74d685-318c-4463-8bbe-a9b7eb6757ff" x="398" y="0" width="57" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -282,7 +282,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000">
-				<reportElement x="455" y="0" width="45" height="12"/>
+				<reportElement uuid="877f9579-84ad-4984-9506-7133c09fefaa" x="455" y="0" width="45" height="12"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -296,7 +296,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{precio_indci}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000">
-				<reportElement x="500" y="0" width="55" height="12"/>
+				<reportElement uuid="003ae411-1dd3-4dd5-a8a8-f42f5e0476e1" x="500" y="0" width="55" height="12"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -314,14 +314,14 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<pageFooter>
 		<band height="20">
 			<textField evaluationTime="Report">
-				<reportElement x="512" y="3" width="40" height="15"/>
+				<reportElement uuid="33d764f5-b484-40b8-a759-8ad5646faa4c" x="512" y="3" width="40" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="423" y="3" width="88" height="15"/>
+				<reportElement uuid="4a266bc1-b1e6-480e-9ac4-071b64ccf296" x="423" y="3" width="88" height="15"/>
 				<textElement textAlignment="Right">
 					<font size="10"/>
 				</textElement>
@@ -332,7 +332,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 	<summary>
 		<band height="103" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="398" height="20"/>
+				<reportElement uuid="4c415d13-245e-4594-baf2-0c2f4c71d865" x="0" y="0" width="398" height="20"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -346,7 +346,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<text><![CDATA[TOTAL:]]></text>
 			</staticText>
 			<textField pattern="###0.000" isBlankWhenNull="true">
-				<reportElement x="500" y="0" width="55" height="20"/>
+				<reportElement uuid="0c2ba1f0-2712-4579-90c0-d4f134edca85" x="500" y="0" width="55" height="20"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -360,7 +360,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$V{valor_indci_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000" isBlankWhenNull="true">
-				<reportElement x="455" y="0" width="45" height="20"/>
+				<reportElement uuid="c50f2bf8-7aa8-4c56-a0bc-bb7bb97930e9" x="455" y="0" width="45" height="20"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -374,7 +374,7 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$V{precio_indci_1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="398" y="0" width="57" height="20"/>
+				<reportElement uuid="34996e71-b581-4448-957b-c8e3c246e3ae" x="398" y="0" width="57" height="20"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -388,24 +388,24 @@ WHERE CAB.ide_incci=$P{ide_incci}]]>
 				<textFieldExpression><![CDATA[$V{cantidad_indci_1}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="22" y="79" width="164" height="1"/>
+				<reportElement uuid="d4049882-3504-4e12-a739-27661f9c2d7a" x="22" y="79" width="164" height="1"/>
 			</line>
 			<staticText>
-				<reportElement x="22" y="80" width="164" height="20"/>
+				<reportElement uuid="a10d9525-fd1b-42c6-b4e5-eda433adc2a6" x="22" y="80" width="164" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[INGRESA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="367" y="80" width="164" height="20"/>
+				<reportElement uuid="b2d8393d-f893-43d5-ae81-84899d568e8d" x="367" y="80" width="164" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[REVISA]]></text>
 			</staticText>
 			<line>
-				<reportElement x="367" y="79" width="164" height="1"/>
+				<reportElement uuid="949e0cea-6fae-4a6a-83f6-ce09d579052b" x="367" y="79" width="164" height="1"/>
 			</line>
 		</band>
 	</summary>
