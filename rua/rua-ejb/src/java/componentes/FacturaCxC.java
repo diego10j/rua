@@ -492,7 +492,7 @@ public class FacturaCxC extends Dialogo {
         tab_guia.getColumna("ide_geper").setCombo(lisClientes);
         tab_guia.getColumna("ide_geper").setAutoCompletar();
         tab_guia.getColumna("ide_geper").setLectura(true);
-       
+
         tab_guia.getColumna("ide_geper").setAutoCompletar();
         tab_guia.getColumna("ide_geper").setOrden(2);
         tab_guia.getColumna("ide_geper").setLectura(true);
@@ -521,7 +521,7 @@ public class FacturaCxC extends Dialogo {
         } else {
             tab_guia.getColumna("numero_ccgui").setMascara("999999999");
             tab_guia.getColumna("numero_ccgui").setRequerida(true);
-        } 
+        }
         tab_guia.getColumna("numero_ccgui").setOrden(1);
         tab_guia.getColumna("numero_ccgui").setEstilo("font-size: 12px;font-weight: bold;text-align: right;");
         tab_guia.getColumna("numero_ccgui").setNombreVisual("SECUENCIAL GUIA");
@@ -922,7 +922,7 @@ public class FacturaCxC extends Dialogo {
         tab_cab_factura.getColumna("DIRECCION_CCCFA").setMayusculas(true);
         //tab_cab_factura.getColumna("DIRECCION_CCCFA").setMetodoChangeRuta(tab_cab_factura.getRuta() + ".cambiaDireccion");
         tab_cab_factura.getColumna("OBSERVACION_CCCFA").setVisible(false);
-        
+
         //tab_cab_factura.getColumna("ide_cndfp").setValorDefecto(`parametros.get("p_con_deta_pago_efectivo"));
         tab_cab_factura.getColumna("solo_guardar_cccfa").setVisible(false);
         tab_cab_factura.getColumna("ide_geubi").setVisible(false);
@@ -1204,7 +1204,7 @@ public class FacturaCxC extends Dialogo {
         ate_observacion_conta.setCols(120);
         ate_observacion_conta.setDisabled(true);
         ate_observacion_conta.setStyle("text-transform: uppercase;");
-    
+
         gri_observa.getChildren().add(ate_observacion_conta);
         if (tab_cab_factura.getValor("ide_cnccc") != null) {
             gri_observa.getChildren().add(new Etiqueta("<table style='padding-left:10px;'><tr><td><strong>USUARIO CREADOR :</strong></td><td>" + tab_cab_conta.getValor("nom_usua") + " </td></tr><td><strong>FECHA SISTEMA :</strong></td><td>" + utilitario.getFormatoFecha(tab_cab_conta.getValor("fecha_siste_cnccc")) + " </td><tr> </tr><td><strong>HORA SISTEMA :</strong></td><td>" + utilitario.getFormatoHora(tab_cab_conta.getValor("hora_sistem_cnccc")) + " </td><tr> </tr></table>"));
@@ -1234,7 +1234,7 @@ public class FacturaCxC extends Dialogo {
         tab_dto_prove.getColumna("nom_geper").setOrden(1);
         tab_dto_prove.getColumna("nom_geper").setNombreVisual("CLIENTE");
         tab_dto_prove.getColumna("nom_geper").setEtiqueta();
-         tab_dto_prove.getColumna("nom_geper").setMayusculas(true);
+        tab_dto_prove.getColumna("nom_geper").setMayusculas(true);
         tab_dto_prove.getColumna("direccion_geper").setNombreVisual("DIRECCIÓN");
         tab_dto_prove.getColumna("direccion_geper").setEtiqueta();
         tab_dto_prove.getColumna("direccion_geper").setOrden(2);
@@ -1463,8 +1463,19 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.modificar(evt);
         String cod_prod = null;
         if (tab_deta_factura.getValor("ide_inarti") != null) {
-            tab_deta_factura.setValor("precio_ccdfa", utilitario.getFormatoNumero(ser_producto.getUltimoPrecioProductoCliente(tab_cab_factura.getValor("ide_geper"), tab_deta_factura.getValor("ide_inarti")), tab_deta_factura.getColumna("precio_ccdfa").getDecimales()));
 
+            /**
+             * PRECIO METODO NUEVO INICIO
+             */
+            //extraer año
+            TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(tab_cab_factura.getValor("fecha_emisi_cccfa")));
+            tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario(tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("anio"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
+            /**
+             * **PRECIO FIN****
+             */
+
+            //comente esta linea del precio
+            //tab_deta_factura.setValor("precio_ccdfa", utilitario.getFormatoNumero(ser_producto.getUltimoPrecioProductoCliente(tab_cab_factura.getValor("ide_geper"), tab_deta_factura.getValor("ide_inarti")), tab_deta_factura.getColumna("precio_ccdfa").getDecimales()));
             TablaGenerica tab_producto = ser_producto.getProducto(tab_deta_factura.getValor("ide_inarti"));
             if (!tab_producto.isEmpty()) {
                 //Carga la configuracion de iva del producto seleccionado
@@ -1529,7 +1540,7 @@ public class FacturaCxC extends Dialogo {
             porcentaje_desc = 0;
         }
         //calcula valor del decuento
-        subtotal=cantidad*precio;
+        subtotal = cantidad * precio;
         descuento = (subtotal * (porcentaje_desc / 100));
         if (porcentaje_desc != 0) {
             tab_deta_factura.setValor("descuento_ccdfa", utilitario.getFormatoNumero(descuento));
@@ -1567,7 +1578,7 @@ public class FacturaCxC extends Dialogo {
             descuento = 0;
         }
         //calcula valor del decuento
-        subtotal=cantidad*precio;
+        subtotal = cantidad * precio;
         porcentaje_desc = (descuento * 100) / subtotal;
 
         tab_deta_factura.setValor("porc_desc_ccdfa", utilitario.getFormatoNumero(porcentaje_desc));
@@ -1608,20 +1619,27 @@ public class FacturaCxC extends Dialogo {
         tab_deta_factura.setValor("total_ccdfa", utilitario.getFormatoNumero(utilitario.getFormatoNumero(total, 4)));
         utilitario.addUpdateTabla(tab_deta_factura, "total_ccdfa", "");
 
-        //DFJ
-        //Valida existencia en stock 
-        double saldo = ser_inventario.getSaldoProducto(null, tab_deta_factura.getValor("ide_inarti"));
-        if (saldo <= 0) {
-            utilitario.agregarMensajeInfo("No existe stock en inventario", tab_deta_factura.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
-        } else if (cantidad > saldo) {
-            dia_mensaje_fac.getChildren().clear();
-            dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
-            Grid g = new Grid();
-            g.setWidth("100%");
-            g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_deta_factura.getValorArreglo("ide_inarti", 1) + "</strong> stock = " + saldo + " </div>"));
-            dia_mensaje_fac.getChildren().add(g);
-            utilitario.addUpdate("dia_mensaje_fac");
-            utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
+        if (utilitario.getVariable("p_aplica_stock").equals("true")) {
+            //DFJ
+            //Valida existencia en stock 
+            //double saldo = ser_inventario.getSaldoProducto(null, tab_deta_factura.getValor("ide_inarti"));
+            //extraer año
+            TablaGenerica tab_fecha = utilitario.consultar(ser_inventario.getExtraerAnio(tab_cab_factura.getValor("fecha_emisi_cccfa")));
+            TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getInventarioAnio(tab_fecha.getValor("anio")));
+
+            double saldo = ser_inventario.getStockArticulo(tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+            if (saldo <= 0) {
+                utilitario.agregarMensajeInfo("No existe stock en inventario", tab_deta_factura.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
+            } else if (cantidad > saldo) {
+                dia_mensaje_fac.getChildren().clear();
+                dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
+                Grid g = new Grid();
+                g.setWidth("100%");
+                g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_deta_factura.getValorArreglo("ide_inarti", 1) + "</strong> stock = " + saldo + " </div>"));
+                dia_mensaje_fac.getChildren().add(g);
+                utilitario.addUpdate("dia_mensaje_fac");
+                utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
+            }
         }
 
         calcularTotalFactura();
@@ -1792,9 +1810,9 @@ public class FacturaCxC extends Dialogo {
                     }
 
                     //Transaccion de Inventario                
-                    if (haceKardex) {
+                    /*if (haceKardex) {
                         ser_inventario.generarComprobnateTransaccionVenta(tab_cab_factura, tab_deta_factura);
-                    }
+                    }*/ //->> comentado la linea de hace kardex
                     //Actualiza informacion del cliente
 //                    tab_creacion_cliente.setCondicion("ide_geper=" + tab_cab_factura.getValor("ide_geper"));
 //                    tab_creacion_cliente.ejecutarSql();
