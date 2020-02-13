@@ -516,7 +516,7 @@ public class ServiciosAdquisiones {
         sql = "select ide_cpcfa,numero_cpcfa, fecha_emisi_cpcfa, b.identificac_geper, b.nom_geper, total_cpcfa\n"
                 + "                from cxp_cabece_factur a\n"
                 + "                left join gen_persona b on a.ide_geper = b.ide_geper\n"
-                + "                where numero_cpcfa like '%" + numero + "%' and recibido_compra_cpcfa=false";
+                + "                where numero_cpcfa like '%" + numero + "%' and recibido_compra_cpcfa=false and ide_cpefa="+utilitario.getVariable("p_cxp_estado_factura_normal");
         return sql;
     }
 
@@ -527,7 +527,7 @@ public class ServiciosAdquisiones {
                 + "left join gen_persona b on a.ide_geper = b.ide_geper\n"
                 + "where \n"
                 + "ide_cccfa not in (select b.ide_cccfa from inv_det_comp_inve a\n"
-                + "join cxc_deta_factura b on a.ide_ccdfa=b.ide_ccdfa) and " + condicion + "";
+                + "join cxc_deta_factura b on a.ide_ccdfa=b.ide_ccdfa) and ide_ccefa =" +utilitario.getVariable("p_cxc_estado_factura_normal")+" and " + condicion + "";
         return sql;
     }
 
