@@ -118,8 +118,10 @@ public class pre_factura_compras extends Pantalla {
             tab_cab_documento.getColumna("ide_cntdo").setValorDefecto(utilitario.getVariable("p_con_tipo_documento_factura"));
             tab_cab_documento.getColumna("ide_cntdo").setLectura(true);
             tab_cab_documento.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
-            tab_cab_documento.getColumna("ide_cpefa").setVisible(false);
+            tab_cab_documento.getColumna("ide_cpefa").setCombo("select ide_cpefa,nombre_cpefa from cxp_estado_factur");
             tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
+            tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("ESTADO");
+            tab_cab_documento.getColumna("ide_cndfp").setLectura(true);
             tab_cab_documento.getColumna("ide_cndfp").setRequerida(false);
             tab_cab_documento.getColumna("TARIFA_IVA_CPCFA").setVisible(false);
             tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
@@ -489,8 +491,8 @@ public class pre_factura_compras extends Pantalla {
         tab_cab_documento.setValor("ide_adcomp", tab_cabece_fac.getValor("ide_adcomp"));
 
         tab_cab_documento.guardar();
-        guardarPantalla();
         ser_cuentas_cxp.generarTransaccionCompra(tab_cab_documento);
+        guardarPantalla();
         sel_tab_detalle_compra.cerrar();
         utilitario.addUpdate("tab_cab_documento");
         generaDetalle();
@@ -595,8 +597,12 @@ public class pre_factura_compras extends Pantalla {
 
     @Override
     public void guardar() {
+
         if (validarDocumento()) {
             if (tab_cab_documento.guardar()) {
+                if (tab_cab_documento.isFilaInsertada()) {
+                    ser_cuentas_cxp.generarTransaccionCompra(tab_cab_documento);
+                }
                 if (tab_det_documento.guardar()) {
                     guardarPantalla();
                 }
