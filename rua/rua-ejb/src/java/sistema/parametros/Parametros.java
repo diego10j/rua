@@ -63,7 +63,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
         lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2", "inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
         lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-        
+
         /*
          * CUENTAS POR PAGAR MODULO =2
          */
@@ -131,6 +131,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("5", "p_com_sustento_bodega", "Indica el sustento tributario por defecto regsitran desde bodegas ", "1", "sri_tipo_sustento_tributario", "ide_srtst", "nombre_srtst"));
         lis_parametros.add(new Parametro("5", "p_localidad", "Indica la localidad para imprimir las solicitudes de compras", "Quito"));
         lis_parametros.add(new Parametro("5", "p_aprobador_gastos", "Indica al responsable de aprobar los gastos de compra en adquisiciones", "1", "adq_empleado", "ide_ademple", "cedula_ademple,nombres_ademple"));
+        lis_parametros.add(new Parametro("5", "p_modulo_secuencialaquisicion", "Indica el secuencial de adquisiciones solicitud de credito", "1", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
 
         /*
          * NOMINA =6
@@ -448,12 +449,12 @@ public class Parametros {
         lis_parametros.add(new Parametro("12", "p_tasa_interes", "Indica la tasa de interes anticipo que se la realizara", "0"));
         lis_parametros.add(new Parametro("12", "p_tasa_interes_efectiva", "Indica la tasa  efectiva anticipo de interes que se la realizara", "0"));
         lis_parametros.add(new Parametro("12", "p_aplica_stock", "Indica si se aplica el control del stock para las ventas", "false"));
-        
+        lis_parametros.add(new Parametro("12", "p_varias_bodegas", "Indica si el regitro de ingresos y egresos va ser a una sola bodega o varias", "false"));
+
         // hasta aqui luis toapanta parametros generales
         /*
          * GESTION DE TALENTO HUMANO MODULO =13
          */
-
         lis_parametros.add(new Parametro("13", "p_gth_tipo_sindicato", "Indica el tipo de sindicato que pertenece", "1", "gth_tipo_sindicato", "ide_gttsi", "detalle_gttsi"));
         lis_parametros.add(new Parametro("13", "p_gth_tipo_contrato_nombramiento", "Indica el tipo de documento de contrato NOMBRAMIENTO", "0", "GTH_TIPO_CONTRATO", "IDE_GTTCO", "DETALLE_GTTCO"));
         lis_parametros.add(new Parametro("13", "p_gth_tipo_sangre", "Indica el tipo de sangre del empleado", "11", "gth_tipo_sangre", "ide_gttis", "detalle_gttis"));
