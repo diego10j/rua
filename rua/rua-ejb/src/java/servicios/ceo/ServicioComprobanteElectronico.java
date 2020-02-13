@@ -810,22 +810,23 @@ public class ServicioComprobanteElectronico extends ServicioBase {
             ide_srcom = tab_cabecara.getValor("ide_srcom");
 
             if (utilitario.getConexion().ejecutarListaSql().isEmpty()) {
-                //Si la Nota de Credito es nueva Asigna nuevo secuencial
+                //Si la Liq es nueva Asigna nuevo secuencial
                 if (tab_cabecara.getValor("secuencial_srcom") == null) {
                     String strSecuencialF = getSecuencialComprobante(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS, tab_liquidacion.getValor("ide_ccdaf"));
                     String serie = tab_liquidacion.getValor("serie_ccdaf");
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "'");
                     utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET  ide_srcom=" + ide_srcom + ", numero_cpcfa='" + serie+strSecuencialF + "' where ide_cpcfa=" + ide_cpdfa);
-                    utilitario.getConexion().ejecutarSql("UPDATE cxp_reembo_liqc SET  ide_srcom=" + ide_srcom + " where ide_cpcfa=" + ide_cpdfa);
+                    //utilitario.getConexion().ejecutarSql("UPDATE cxp_reembo_liqc SET  ide_srcom=" + ide_srcom + " where ide_cpcfa=" + ide_cpdfa);
 
                 }
-                //Si esta en estado PENDIENTE genero nueva clave de acceso por si se modifico la fecha
+                //Si esta en estado PENDIENTE genero nueva clave de acceso por si se modifico la Liq
                 if (tab_cabecara.getValor("ide_sresc").equals(String.valueOf(EstadoComprobanteEnum.PENDIENTE.getCodigo()))) {
                     try {
-                        Comprobante comprobanteNotaC = comprobanteService.getComprobantePorId(Long.parseLong(ide_srcom));
-                        String strClaveAcceso = comprobanteService.getClaveAcceso(comprobanteNotaC);
+                        Comprobante comprobanteLiq = comprobanteService.getComprobantePorId(Long.parseLong(ide_srcom));
+                        String strClaveAcceso = comprobanteService.getClaveAcceso(comprobanteLiq);
                         utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET claveacceso_srcom='" + strClaveAcceso + "' where ide_srcom=" + ide_srcom);
+                        utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET autorizacio_cpcfa='" + strClaveAcceso + "' where ide_srcom=" + ide_srcom);
                     } catch (NumberFormatException | GenericException e) {
                         e.printStackTrace();
                     }
