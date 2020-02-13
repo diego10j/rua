@@ -23,6 +23,7 @@ import javax.ejb.EJB;
 import javax.faces.event.AjaxBehaviorEvent;
 import static paq_adquisicion.AdquisicionesOrdenadorGasto.par_aprueba_gasto;
 import paq_adquisicion.ejb.ServiciosAdquisiones;
+import paq_produccion.ejb.ServicioProduccion;
 import sistema.aplicacion.Pantalla;
 
 public class Adquisiciones extends Pantalla {
@@ -44,6 +45,8 @@ public class Adquisiciones extends Pantalla {
 
     @EJB
     private final ServiciosAdquisiones ser_adquisiciones = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
+    @EJB
+    private final ServicioProduccion ser_produccion = (ServicioProduccion) utilitario.instanciarEJB(ServicioProduccion.class);
 
     public Adquisiciones() {
 
@@ -59,20 +62,17 @@ public class Adquisiciones extends Pantalla {
             bot_anular.setIcon("ui-icon-search");
             bot_anular.setValue("ANULAR LA SOLICITUD");
             bot_anular.setMetodo("anular");
-
             bar_botones.agregarBoton(bot_anular);
 
             Boton bot_imprimir = new Boton();
             bot_imprimir.setIcon("ui-icon-print");
             bot_imprimir.setValue("IMPRIMIR SOLICITUD");
             bot_imprimir.setMetodo("generarPDF");
-
-            Boton bot_importar = new Boton();
-            bot_importar.setIcon("ui-icon-print");
-            bot_imprimir.setValue("IMPORTAR PROVEEDOR");
-            bot_imprimir.setMetodo("abrirDialogoProveedor");
-
-            bar_botones.agregarBoton(bot_imprimir);
+            //bar_botones.agregarBoton(bot_imprimir);
+            //Boton bot_importar = new Boton();
+            //bot_importar.setIcon("ui-icon-print");
+            //bot_imprimir.setValue("IMPORTAR PROVEEDOR");
+            //bot_imprimir.setMetodo("abrirDialogoProveedor");
 
             Boton bot_actualizar = new Boton();
             bot_actualizar.setIcon("ui-icon-print");
@@ -92,7 +92,7 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.setId("tab_adquisiones");   //identificador
             tab_adquisiones.setTabla("adq_compra", "ide_adcomp", 1);
             //tab_adquisiones.setCondicion("ide_adcomp=-1");
-            tab_adquisiones.setCampoOrden("ide_adcomp desc");     
+            tab_adquisiones.setCampoOrden("ide_adcomp desc");
 
             List lista = new ArrayList();
             List lista1 = new ArrayList();
@@ -141,6 +141,8 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.getColumna("EXISTE_ADCOMP").setNombreVisual("EXISTE");
             tab_adquisiones.getColumna("APRUEBA_ADCOMP").setNombreVisual("APRUEBA");
             tab_adquisiones.getColumna("NUMERO_ORDEN_ADCOMP").setNombreVisual("NUMERO DE ORDEN");
+            tab_adquisiones.getColumna("NUMERO_ORDEN_ADCOMP").setEtiqueta();
+            tab_adquisiones.getColumna("NUMERO_ORDEN_ADCOMP").setEstilo("font-size:15px;font-weight: bold;color:red");
             tab_adquisiones.getColumna("FECHA_SOLICITUD_ADCOMP").setNombreVisual("FECHA DE SOLICITUD");
             tab_adquisiones.getColumna("VALOR_PRESUPUESTADO_ADCOMP").setNombreVisual("VALOR PRESUPUESTADO");
             tab_adquisiones.getColumna("VALOR_ADCOMP").setNombreVisual("VALOR");
@@ -561,7 +563,7 @@ public class Adquisiciones extends Pantalla {
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Solicitu de Compra")) {
-            rep_reporte.cerrar();      
+            rep_reporte.cerrar();
             map_parametros.clear();
             map_parametros.put("pide_requisicion", Integer.parseInt(tab_adquisiones.getValor("ide_adcomp")));
 
@@ -570,7 +572,7 @@ public class Adquisiciones extends Pantalla {
             sel_rep.dibujar();
         }
     }
-      
+
     @Override
     public void insertar() {
         if (tab_adquisiones.isFocus()) {
@@ -587,14 +589,22 @@ public class Adquisiciones extends Pantalla {
 
     @Override
     public void guardar() {
+
         if (tab_adquisiones.isFocus()) {
-            tab_adquisiones.guardar();
+            if (tab_adquisiones.isFilaInsertada()) {
+                TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+                String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+                tab_adquisiones.setValor("numero_orden_adcomp", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano"))) + tab_secuen.getValor("nuevo_secuencial"));
+                utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+            }
+
         } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.guardar();
         } else if (tab_presupuesto.isFocus()) {
             tab_presupuesto.guardar();
         }
         guardarPantalla();
+
     }
 
     @Override
