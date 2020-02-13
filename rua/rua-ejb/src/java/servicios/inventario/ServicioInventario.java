@@ -19,9 +19,9 @@ import sistema.aplicacion.Utilitario;
  */
 @Stateless
 public class ServicioInventario {
-    
+
     private final Utilitario utilitario = new Utilitario();
-    
+
     @EJB
     private ServicioProducto ser_producto;
     @EJB
@@ -43,15 +43,15 @@ public class ServicioInventario {
                 + " inner join inv_cab_formula b on a.ide_incfo = b.ide_incfo  inner join inv_articulo c on b.ide_inarti= c.ide_inarti   "
                 + " where a.ide_sucu = " + utilitario.getVariable("IDE_SUCU") + " order by num_orden_inorp desc";
     }
-    
+
     public TablaGenerica getDetalleFormula(String ide_incfo) {
         return utilitario.consultar("select * from inv_deta_formula where ide_incfo=" + ide_incfo);
     }
-    
+
     public String getProductoFormula(String ide_incfo) {
         return utilitario.consultar("select ide_incfo,ide_inarti from inv_cab_formula where ide_incfo=" + ide_incfo).getValor("ide_inarti");
     }
-    
+
     public String getSecuencialFormula() {
         List list = utilitario.getConexion().consultar("SELECT max(num_formula_incfo) FROM inv_cab_formula "
                 + "WHERE ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
@@ -66,10 +66,10 @@ public class ServicioInventario {
         String num_max = String.valueOf(Integer.parseInt(str_maximo) + 1);
         String ceros = utilitario.generarCero(9 - num_max.length());
         str_maximo = ceros.concat(num_max);
-        
+
         return str_maximo;
     }
-    
+
     public String getSecuencialOrden() {
         List list = utilitario.getConexion().consultar("SELECT max(substring(num_orden_inorp from 3)) FROM inv_orden_prod "
                 + "WHERE ide_sucu=" + utilitario.getVariable("IDE_SUCU"));
@@ -84,7 +84,7 @@ public class ServicioInventario {
         String num_max = String.valueOf(Integer.parseInt(str_maximo) + 1);
         String ceros = utilitario.generarCero(7 - num_max.length());
         str_maximo = "OP" + ceros.concat(num_max);
-        
+
         return str_maximo;
     }
 
@@ -111,7 +111,7 @@ public class ServicioInventario {
         tab_det_comp_inv.setTabla("inv_det_comp_inve", "ide_indci", 0);
         tab_det_comp_inv.setCondicion("ide_indci=-1");
         tab_det_comp_inv.ejecutarSql();
-        
+
         tab_cab_comp_inv.insertar();
         tab_cab_comp_inv.setValor("ide_geper", tab_factura_cxc.getValor("ide_geper"));
         tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inv);  /////variable estado normal de inventario
@@ -127,7 +127,7 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
 //        tab_cab_comp_inv.setValor("ide_cnccc", ide_cnccc);
         tab_cab_comp_inv.guardar();
-        
+
         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
             tab_det_comp_inv.insertar();
             tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
@@ -138,22 +138,22 @@ public class ServicioInventario {
             double cant_convertida = ser_producto.getConversionCantidadProducto(tab_detalle.getValor(i, "ide_inarti"), tab_detalle.getValor(i, "ide_inuni"), Double.parseDouble(tab_detalle.getValor(i, "cantidad_ccdfa")));
             double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_ccdfa"));
             double total = cant_convertida * precio;
-            
+
             tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
             tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_ccdfa"));
-            
+
         }
         tab_det_comp_inv.guardar();
     }
-    
+
     public void generarModificarComprobnateTransaccionVenta(Tabla tab_factura_cxc, Tabla tab_detalle) {
         String ide_incci = utilitario.consultar("select ide_incci,ide_cccfa from inv_det_comp_inve where ide_cccfa=" + tab_factura_cxc.getValor("ide_cccfa") + " limit 1").getValor("ide_incci");
         if (ide_incci == null || ide_incci.isEmpty()) {
             ide_incci = "-1";
         }
-        
+
         String p_estado_normal_inv = utilitario.getVariable("p_inv_estado_normal");
         String p_tipo_transaccion_inv_venta = utilitario.getVariable("p_inv_tipo_transaccion_venta");
         TablaGenerica tab_cab_comp_inv = new TablaGenerica();
@@ -187,7 +187,7 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
 //        tab_cab_comp_inv.setValor("ide_cnccc", ide_cnccc);
         tab_cab_comp_inv.guardar();
-        
+
         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
             tab_det_comp_inv.insertar();
             tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
@@ -198,29 +198,29 @@ public class ServicioInventario {
             double cant_convertida = ser_producto.getConversionCantidadProducto(tab_detalle.getValor(i, "ide_inarti"), tab_detalle.getValor(i, "ide_inuni"), Double.parseDouble(tab_detalle.getValor(i, "cantidad_ccdfa")));
             double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_ccdfa"));
             double total = cant_convertida * precio;
-            
+
             tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
             tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
-            
+
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_ccdfa"));
-            
+
         }
         tab_det_comp_inv.guardar();
     }
-    
+
     public void generarModificarComprobnateTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
         String ide_incci = utilitario.consultar("select ide_incci,ide_cpcfa from inv_det_comp_inve where ide_cpcfa=" + tab_factura_cxp.getValor("ide_cpcfa") + " limit 1").getValor("ide_incci");
         if (ide_incci == null || ide_incci.isEmpty()) {
             ide_incci = "-1";
         }
-        
+
         String p_estado_normal_inv = utilitario.getVariable("p_inv_estado_normal");
         String p_tipo_transaccion_inv_compra = utilitario.getVariable("p_inv_tipo_transaccion_compra"); //factura        
         if (tab_factura_cxp.getValor("ide_cntdo").equals("0")) {
             p_tipo_transaccion_inv_compra = "13"; //nota de credito --13= reversa menos        
         }
-        
+
         TablaGenerica tab_cab_comp_inv = new TablaGenerica();
         tab_cab_comp_inv.setTabla("inv_cab_comp_inve", "ide_incci", 0);
         tab_cab_comp_inv.setCondicion("ide_incci=" + ide_incci);
@@ -251,7 +251,7 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
         tab_cab_comp_inv.setValor("ide_cnccc", tab_factura_cxp.getValor("ide_cnccc"));
         tab_cab_comp_inv.guardar();
-        
+
         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
             tab_det_comp_inv.insertar();
             tab_det_comp_inv.setValor("ide_inarti", tab_detalle.getValor(i, "ide_inarti"));
@@ -261,7 +261,7 @@ public class ServicioInventario {
             tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(tab_detalle.getValor(i, "precio_cpdfa"), getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", tab_detalle.getValor(i, "valor_cpdfa"));
             tab_det_comp_inv.setValor("observacion_indci", tab_detalle.getValor(i, "observacion_cpdfa"));
-            
+
         }
         tab_det_comp_inv.guardar();
     }
@@ -278,15 +278,15 @@ public class ServicioInventario {
         }
         return ide_inbod;
     }
-    
+
     public String getMaterialInventario(String nivel) {
         String ide_inbod = "SELECT ide_inarti,nombre_inarti FROM inv_articulo  WHERE  nivel_inarti in (" + nivel + ")";
         return ide_inbod;
     }
-    
+
     public void generarComprobanteTransaccionCompra(Tabla tab_factura_cxp, Tabla tab_detalle) {
         String p_estado_normal_inventario = utilitario.getVariable("p_inv_estado_normal");
-        
+
         String p_tipo_transaccion_inv_compra = utilitario.getVariable("p_inv_tipo_transaccion_compra"); //factura
         String observación = tab_factura_cxp.getValor("observacion_cpcfa");
         if (tab_factura_cxp.getValor("ide_cntdo").equals("0")) {
@@ -318,16 +318,16 @@ public class ServicioInventario {
         tab_det_comp_inv.setCondicion("ide_indci=-1");
         tab_det_comp_inv.ejecutarSql();
         tab_cab_comp_inv.guardar();
-        
+
         double porce_descuento = 0;
         if (tab_factura_cxp.getValor("porcen_desc_cpcfa") != null) {
             try {
                 porce_descuento = Double.parseDouble(tab_factura_cxp.getValor("porcen_desc_cpcfa"));
             } catch (Exception e) {
             }
-            
+
         }
-        
+
         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
 
 //                if (haceKardex(tab_tabla2.getValor(i, "ide_inarti"))) {
@@ -358,7 +358,7 @@ public class ServicioInventario {
                 } catch (Exception e) {
                 }
             } else {
-                
+
                 double precio = Double.parseDouble(tab_detalle.getValor(i, "precio_cpdfa"));
                 if (porce_descuento > 0) {
                     ///aplico &  descuento                                
@@ -366,7 +366,7 @@ public class ServicioInventario {
                     precio = precio - (precio * (porce_descuento / 100));
                 }
                 double valor = Double.parseDouble(tab_detalle.getValor(i, "cantidad_cpdfa")) * precio;
-                
+
                 tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
                 tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(valor));
 //                String precio_promedio = in.getPrecioPromedioTransaccionPositiva(tab_tabla2.getValor(i, "ide_inarti"), "1", Double.parseDouble(tab_tabla2.getValor(i, "valor_cpdfa")), Double.parseDouble(tab_tabla2.getValor(i, "cantidad_cpdfa")));
@@ -393,7 +393,7 @@ public class ServicioInventario {
      * @return
      */
     public String getSecuencialComprobanteInventario(String ide_inbod) {
-        
+
         List list = utilitario.getConexion().consultar("SELECT max(NUMERO_INCCI) FROM inv_cab_comp_inve "
                 + "WHERE ide_inbod=" + ide_inbod);
         String str_maximo = "0";
@@ -407,12 +407,12 @@ public class ServicioInventario {
         String num_max = String.valueOf(Integer.parseInt(str_maximo) + 1);
         String ceros = utilitario.generarCero(10 - num_max.length());
         str_maximo = ceros.concat(num_max);
-        
+
         return str_maximo;
     }
-    
+
     public String getSecuencialCompInventario(String ide_intti, String anio) {
-        
+
         TablaGenerica tab_secuencial = utilitario.consultar("select 1 as codigo,count(ide_incci) as secuencial\n"
                 + "from (\n"
                 + "select ide_incci,abreviatura_intti,extract(year from fecha_trans_incci) anio,a.ide_intti  \n"
@@ -455,7 +455,7 @@ public class ServicioInventario {
     public void eliminarComprobanteInventario(String ide_incci) {
         utilitario.getConexion().agregarSqlPantalla("delete from  inv_det_comp_inve where ide_incci=" + ide_incci);
         utilitario.getConexion().agregarSqlPantalla("delete from  inv_cab_comp_inve where ide_incci=" + ide_incci);
-        
+
     }
 
     /**
@@ -477,7 +477,7 @@ public class ServicioInventario {
     public void cambiarEstadoComprobanteInventario(String ide_incci, String ide_inepi) {
         utilitario.getConexion().agregarSqlPantalla("update inv_cab_comp_inve set ide_inepi=" + ide_inepi + "where ide_incci=" + ide_incci);
     }
-    
+
     public String getSqlComprobantesInventario(String ide_inbod, String fecha_inicio, String fecha_fin) {
         return "select a.ide_incci as cod,a.ide_incci,ide_inepi,a.ide_geper,fecha_trans_incci,a.ide_cnccc,numero_incci,nombre_intti,nom_geper,identificac_geper,\n"
                 + "case when signo_intci = 1 THEN sum(valor_indci)  end as INGRESO,\n"
@@ -493,7 +493,7 @@ public class ServicioInventario {
                 + "group by a.ide_incci,ide_inepi,a.ide_geper,numero_incci,fecha_trans_incci,nombre_intti,nom_geper,identificac_geper,signo_intci"
                 + " order by fecha_trans_incci ";
     }
-    
+
     public String getSqlComprobantesInventarioNoConta(String ide_inbod, String fecha_inicio, String fecha_fin) {
         return "select a.ide_incci,ide_inepi,a.ide_geper,fecha_trans_incci,numero_incci,nombre_intti,nom_geper,identificac_geper,\n"
                 + "case when signo_intci = 1 THEN sum(valor_indci)  end as INGRESO,\n"
@@ -525,7 +525,7 @@ public class ServicioInventario {
                 + "group by ide_cccfa,ide_incci";
         return utilitario.consultar(sql).getValor("ide_incci");
     }
-    
+
     public String getSqlSaldoProductos(String ide_inbod, String fecha) {
         return "SELECT ARTICULO.ide_inarti,BODEGA.nombre_inbod AS BODEGA,ARTICULO.nombre_inarti AS ARTICULO,ARTICULO.codigo_inarti as CODIGO,nombre_invmar AS MARCA, UNIDAD.nombre_inuni AS UNIDAD, \n"
                 + "sum(DETA.cantidad_indci * TIPO.signo_intci) AS EXISTENCIA, \n"
@@ -544,9 +544,9 @@ public class ServicioInventario {
                 + "GROUP BY ARTICULO.ide_inarti,BODEGA.nombre_inbod,UNIDAD.ide_inuni,nombre_invmar\n"
                 + "ORDER BY BODEGA.nombre_inbod, ARTICULO.nombre_inarti";
     }
-    
+
     public double getSaldoProducto(String ide_inbod, String ide_inarti) {
-        
+
         if (ide_inbod == null) {
             //Busca sucursal x defecto
             ide_inbod = getBodegaSucursal();
@@ -560,7 +560,7 @@ public class ServicioInventario {
                 + "where dci.ide_inarti=" + ide_inarti + " "
                 + "and ide_inepi=" + utilitario.getVariable("p_inv_estado_normal") + " "
                 + "and cci.ide_inbod=" + ide_inbod + " GROUP BY dci.ide_inarti");
-        
+
         try {
             saldo = Double.parseDouble(utilitario.getFormatoNumero(tag.getValor("saldo_cantidad")));
         } catch (Exception e) {
@@ -593,7 +593,7 @@ public class ServicioInventario {
         TablaGenerica tab_deta_nota = utilitario.consultar("select * from cxp_detalle_nota where ide_cpcno=" + ide_cpcno);
         String p_estado_normal_inv = utilitario.getVariable("p_inv_estado_normal");
         String p_tipo_transaccion_inv_venta = utilitario.getVariable("p_inv_tipo_transaccion_reversa_mas");
-        
+
         TablaGenerica tab_cab_comp_inv = new TablaGenerica();
         tab_cab_comp_inv.setTabla("inv_cab_comp_inve", "ide_incci", 0);
         tab_cab_comp_inv.setCondicion("ide_incci=-1");
@@ -603,7 +603,7 @@ public class ServicioInventario {
         tab_det_comp_inv.setTabla("inv_det_comp_inve", "ide_indci", 0);
         tab_det_comp_inv.setCondicion("ide_indci=-1");
         tab_det_comp_inv.ejecutarSql();
-        
+
         tab_cab_comp_inv.insertar();
         tab_cab_comp_inv.setValor("ide_geper", tab_cab_nota.getValor("ide_geper"));
         tab_cab_comp_inv.setValor("ide_inepi", p_estado_normal_inv);  /////variable estado normal de inventario
@@ -619,7 +619,7 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("hora_sistem_incci", utilitario.getHoraActual());
 //        tab_cab_comp_inv.setValor("ide_cnccc", ide_cnccc);
         tab_cab_comp_inv.guardar();
-        
+
         for (int i = 0; i < tab_deta_nota.getTotalFilas(); i++) {
             tab_det_comp_inv.insertar();
             tab_det_comp_inv.setValor("ide_inarti", tab_deta_nota.getValor(i, "ide_inarti"));
@@ -629,16 +629,16 @@ public class ServicioInventario {
             double cant_convertida = ser_producto.getConversionCantidadProducto(tab_deta_nota.getValor(i, "ide_inarti"), tab_deta_nota.getValor(i, "ide_inuni"), Double.parseDouble(tab_deta_nota.getValor(i, "cantidad_cpdno")));
             double precio = Double.parseDouble(tab_deta_nota.getValor(i, "precio_cpdno"));
             double total = cant_convertida * precio;
-            
+
             tab_det_comp_inv.setValor("cantidad_indci", utilitario.getFormatoNumero(cant_convertida, getDecimalesCantidad()));
             tab_det_comp_inv.setValor("precio_indci", utilitario.getFormatoNumero(precio, getDecimalesPrecioUnitario()));
             tab_det_comp_inv.setValor("valor_indci", utilitario.getFormatoNumero(total));
             tab_det_comp_inv.setValor("observacion_indci", tab_cab_comp_inv.getValor("observacion_incci"));
-            
+
         }
         tab_det_comp_inv.guardar();
     }
-    
+
     public String getTipoProducto(String ide_arti) {
         // devuelve el tipo de articulo ya sea activo fijo,bien, o otro
         String ide_art = ide_arti;
@@ -650,24 +650,24 @@ public class ServicioInventario {
                     inv_ide_arti = utilitario.getConexion().consultar("select inv_ide_inarti from inv_articulo where ide_inarti=" + ide_art);
                 } while (inv_ide_arti.get(0) != null);
             }
-            
+
         } catch (Exception e) {
         }
         return ide_art;
     }
-    
+
     public String getSqlComboEmpleados() {
         return "select ide_geper,identificac_geper,nom_geper from gen_persona where es_empleado_geper=true order by nom_geper ";
     }
-    
+
     public String getSqlComboOrganigrama() {
         return "select ide_georg,nombre_georg from gen_organigrama order by nombre_georg";
     }
-    
+
     public String getSqlComboProductosKardex() {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
     }
-    
+
     public String getSqlConsultaInventario() {
         return "select ide_inarti,nombre_inarti from inv_articulo where  nivel_inarti='HIJO' order by nombre_inarti ";
     }
@@ -724,29 +724,33 @@ public class ServicioInventario {
                 + "from bodt_articulos where ide_boart in (" + articulos + ")";
         return sql;
     }
-    
+
     public String bodegasProductos(String articulos, String anio, String bodega) {
         return "completar para pruebas de buscar bodega";
     }
-    
+
     public String getTipoTransaccion() {
         String sql = "";
         sql += "select ide_intti, nombre_intti, nombre_intci from inv_tip_tran_inve a inner join inv_tip_comp_inve b on a.ide_intci=b.ide_intci order by nombre_intci desc, nombre_intti";
         return sql;
     }
-    
+
     public String getBodtCostoArticulo(String articulo, String sucu, String empr) {
         String sql = "";
         sql += "select ide_bocoa,ide_inarti,ide_empr,ide_sucu,tipo_aplica_bocoa,valor_bocoa,porcentaje_bocoa from bodt_costo_articulo  \n"
                 + "where ide_inarti = " + articulo + " and ide_sucu =" + sucu + " and ide_empr =" + empr + " and activo_bocoa=true";
         return sql;
     }
-    
-    public String getBodtArticulo(String articulo, String anio, String sucu, String empr) {
+
+    public String getBodtArticulo(String tipo, String articulo, String anio, String sucu, String empr) {
         String sql = "";
         sql += "select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
                 + "from bodt_articulos \n"
-                + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ";
+                + "where ide_inarti=" + articulo + " and ide_geani = " + anio;
+        if (tipo.equals("1")) {
+            sql += " and ide_sucu=" + sucu + " and ide_empr=" + empr;
+        }
+        //System.out.println("consulta bodega >>>>>>>>> "+sql);
         return sql;
     }
 
@@ -771,21 +775,21 @@ public class ServicioInventario {
         }
         return stock;
     }
-    
+
     public String getInventarioAnio(String anio) {
         String sql = "";
         sql += "select ide_geani,nom_geani from gen_anio \n"
                 + "where nom_geani='" + anio + "'";
         return sql;
     }
-    
+
     public String getExtraerAnio(String fecha) {
         String sql = "";
         sql += "select 1,cast(extract(year from date '" + fecha + "') as text) as anio";
         return sql;
     }
-    
-    public double getValorUnitario(String articulo, String anio, String sucu, String empr) {
+
+    public double getValorUnitario(String tipo, String articulo, String anio, String sucu, String empr) {
         double valor = 0;
         TablaGenerica tab_costo = utilitario.consultar(this.getBodtCostoArticulo(articulo, sucu, empr));
         if (tab_costo.getTotalFilas() > 0) {
@@ -793,7 +797,7 @@ public class ServicioInventario {
                 valor = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("valor_bocoa"), 2));
             } else if (tab_costo.getValor("tipo_aplica_bocoa").equals("2")) {
                 TablaGenerica tab_anio = utilitario.consultar(this.getInventarioAnio(anio));
-                TablaGenerica tab_articulo = utilitario.consultar(this.getBodtArticulo(articulo, tab_anio.getValor("ide_geani"), sucu, empr));
+                TablaGenerica tab_articulo = utilitario.consultar(this.getBodtArticulo(tipo, articulo, tab_anio.getValor("ide_geani"), sucu, empr));
                 double porcentaje = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("porcentaje_bocoa"), 2));
                 double valor_actual = Double.parseDouble(utilitario.getFormatoNumero(tab_articulo.getValor("costo_actual_boart"), 2));
                 valor = (((porcentaje * valor_actual) / 100) + valor_actual);
@@ -801,10 +805,10 @@ public class ServicioInventario {
         } else {
             valor = 0;
         }
-        
+
         return valor;
     }
-    
+
     public String getInventarioGrupo(String grupo) {
         String sql = "";
         sql += "select ide_inarti,codigo_inarti,nombre_inarti \n"
@@ -812,33 +816,46 @@ public class ServicioInventario {
                 + "where inv_ide_inarti in (" + grupo + ") ";
         return sql;
     }
-    
-    public String getDetalleInventario(String codigo, String sucu, String empr) {
+
+    public String getDetalleInventario(String tipo, String codigo, String sucu, String empr) {
         String sql = "";
-        
+
         sql += "select ide_indci, ide_sucu, ide_inarti, ide_cpcfa, ide_empr, ide_cccfa, \n"
                 + "       ide_incci, secuencial_indci, cantidad_indci, cantidad1_indci, \n"
                 + "       precio_indci, valor_indci, observacion_indci, referencia_indci, \n"
                 + "       referencia1_indci, precio_promedio_indci, usuario_ingre, fecha_ingre, \n"
                 + "       hora_ingre, usuario_actua, fecha_actua, hora_actua \n"
                 + "from inv_det_comp_inve  \n"
-                + "where ide_incci=" + codigo + " and ide_sucu=" + sucu + " and ide_empr=" + empr + "";
-        
+                + "where ide_incci=" + codigo;
+
+        if (tipo.equals("1")) {
+            sql += " and ide_sucu=" + sucu + " and ide_empr=" + empr;
+        }
+
         return sql;
     }
-    
-    public String getInsertarBodegaArticulos(String anio, String sucu, String empr, String articulo) {
+
+    public String getInsertarBodegaArticulos(String tipo, String anio, String sucu, String empr, String articulo) {
         TablaGenerica tab_maximo = utilitario.consultar(ser_pensiones.getCodigoMaximoTabla("bodt_articulos", "ide_boart"));
         String sql = "";
+        if (tipo.equals("1")) {
+            sql += "INSERT INTO bodt_articulos(\n"
+                    + "            ide_boart, ide_geani, ide_sucu, ide_empr, ide_inarti,ingreso_material_boart, \n"
+                    + "            egreso_material_boart, existencia_inicial_boart,costo_inicial_boart, costo_anterior_boart, \n"
+                    + "            costo_actual_boart \n"
+                    + "            )\n"
+                    + "VALUES (" + tab_maximo.getValor("maximo") + ", " + anio + ", " + sucu + ", " + empr + ", " + articulo + ", 0, 0, 0, 0, 0, 0 );";
+        }
         sql += "INSERT INTO bodt_articulos(\n"
-                + "            ide_boart, ide_geani, ide_sucu, ide_empr, ide_inarti,ingreso_material_boart, \n"
+                + "            ide_boart, ide_geani, ide_inarti,ingreso_material_boart, \n"
                 + "            egreso_material_boart, existencia_inicial_boart,costo_inicial_boart, costo_anterior_boart, \n"
                 + "            costo_actual_boart \n"
                 + "            )\n"
-                + "VALUES (" + tab_maximo.getValor("maximo") + ", " + anio + ", " + sucu + ", " + empr + ", " + articulo + ", 0, 0, 0, 0, 0, 0 );";
+                + "VALUES (" + tab_maximo.getValor("maximo") + ", " + anio + ", " + articulo + ", 0, 0, 0, 0, 0, 0 );";
+
         return sql;
     }
-    
+
     public double getPrecioPonderado(Double stock, Double costa_actual, Double cantidad, Double valor_total) {
         //System.out.println("PARAMETROS: " + stock + " " + costa_actual + " " + cantidad + " " + valor_total);
         double costo_actual = 0;
@@ -846,7 +863,7 @@ public class ServicioInventario {
         costo_actual = ((total + valor_total) / (stock + cantidad));
         return costo_actual;
     }
-    
+
     public String getConsultarTipoTransaccion(String codigo) {
         String sql = "";
         sql += "select ide_intti, nombre_intti, nombre_intci,a.ide_intci from inv_tip_tran_inve a\n"
@@ -855,7 +872,7 @@ public class ServicioInventario {
                 + "order by nombre_intci desc, nombre_intti";
         return sql;
     }
-    
+
     public String getActualizarBodegaArticulos(String costo_actual, Double precio, String articulo, String anio) {
         String sql = "";
         sql += "UPDATE bodt_articulos   SET \n"
@@ -864,7 +881,7 @@ public class ServicioInventario {
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
         return sql;
     }
-    
+
     public String getActualizarIngreso(String cantidad, String articulo, String anio) {
         String sql = "";
         sql += "UPDATE bodt_articulos   SET \n"
@@ -872,7 +889,7 @@ public class ServicioInventario {
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
         return sql;
     }
-    
+
     public String getActualizarEgreso(String cantidad, String articulo, String anio) {
         String sql = "";
         sql += "UPDATE bodt_articulos   SET \n"
@@ -880,7 +897,7 @@ public class ServicioInventario {
                 + " WHERE ide_inarti=" + articulo + " and ide_geani=" + anio + " ";
         return sql;
     }
-    
+
     public String getActualizarDetalleStock(String stock, Double precio, String codigo, String articulo) {
         String sql = "";
         sql += "UPDATE inv_det_comp_inve SET \n"
@@ -889,7 +906,7 @@ public class ServicioInventario {
                 + " WHERE ide_indci=" + codigo + " and ide_inarti=" + articulo + " ";
         return sql;
     }
-    
+
     public String getActualizarEstadoInventario(String estado, String codigo) {
         String sql = "";
         sql += "UPDATE inv_cab_comp_inve\n"
@@ -897,7 +914,7 @@ public class ServicioInventario {
                 + " WHERE ide_incci=" + codigo + " ";
         return sql;
     }
-    
+
     public String getReporteOrdenado(String anio, String articulo) {
         String sql = "";
         sql += "select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,\n"
@@ -926,9 +943,10 @@ public class ServicioInventario {
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n"
                 + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
                 + "order by ide_inarti,fecha_trans_incci,ide_indci ";
-        return sql;
+        //System.out.println("REPORTES >>>>> " + sql);
+        return sql; 
     }
-    
+
     public String getActualizarBdt(String anio, String articulo) {
         String sql = "";
         sql += "update bodt_articulos set \n"
@@ -939,7 +957,7 @@ public class ServicioInventario {
                 + "where ide_geani=" + anio + " and ide_inarti=" + articulo + " ";
         return sql;
     }
-    
+
     public String getActualizarCostoInicial(String anio, String articulo) {
         String sql = "";
         sql += "update bodt_articulos set \n"
@@ -947,16 +965,119 @@ public class ServicioInventario {
                 + "where ide_geani=" + anio + " and ide_inarti=" + articulo + " ";
         return sql;
     }
-    
+
     public String getAplicaKardex(String articulo) {
         String sql = "";
         sql += "select ide_inarti,codigo_inarti,nombre_inarti,hace_kardex_inarti from inv_articulo where ide_inarti=" + articulo + "";
         return sql;
     }
-    
+
     public String getConsultaUnidadMedida(String articulo) {
         String sql = "";
         sql += "select ide_inarti,ide_inuni,codigo_inarti,nombre_inarti from inv_articulo  where ide_inarti=" + articulo + "";
         return sql;
+    }
+
+    /**
+     * Permite registrar los ingreso y egresos al bodegas para generar el kardex
+     *
+     * @param tipo indica si aplica el inreso por sucursales y empresas
+     * @param ide_incci
+     * @param sucu
+     * @param empr
+     * @param anio
+     */
+    public void getRegistrarInventario(String tipo, String ide_incci, String ide_intti, String sucu, String empr, String anio) {
+        TablaGenerica tab_anio = utilitario.consultar(getInventarioAnio(anio));
+        TablaGenerica tab_detalle = utilitario.consultar(getDetalleInventario(tipo, ide_incci, sucu, empr));
+        TablaGenerica tab_transaccion = utilitario.consultar(getConsultarTipoTransaccion(ide_intti));
+        double costo_actual = 0;
+        if (tab_transaccion.getValor("ide_intci").equals(utilitario.getVariable("p_inv_tipo_ingreso"))) {
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                TablaGenerica tab_kardex = utilitario.consultar(getAplicaKardex(tab_detalle.getValor(i, "ide_inarti")));
+                if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
+                    TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                    if (tab_articulo.getTotalFilas() > 0) {
+                        costo_actual = getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
+                        utilitario.getConexion().ejecutarSql(getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        utilitario.getConexion().ejecutarSql(getActualizarIngreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
+                    } else {
+                        utilitario.getConexion().ejecutarSql(getInsertarBodegaArticulos(tipo, tab_anio.getValor("ide_geani"), sucu, empr, tab_detalle.getValor(i, "ide_inarti")));
+                        TablaGenerica tab_articulos = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        costo_actual = getPrecioPonderado(Double.parseDouble(tab_articulos.getValor("stock")), Double.parseDouble(tab_articulos.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
+                        utilitario.getConexion().ejecutarSql(getActualizarBodegaArticulos(tab_articulos.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        utilitario.getConexion().ejecutarSql(getActualizarIngreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
+                    }
+                }
+            }
+        } else if (tab_transaccion.getValor("ide_intci").equals(utilitario.getVariable("p_inv_tipo_egreso"))) {
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                TablaGenerica tab_kardex = utilitario.consultar(getAplicaKardex(tab_detalle.getValor(i, "ide_inarti")));
+                if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
+                    TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                    if (tab_articulo.getTotalFilas() > 0) {
+                        utilitario.getConexion().ejecutarSql(getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
+
+                    } else {
+                        utilitario.getConexion().ejecutarSql(getInsertarBodegaArticulos(tipo, tab_anio.getValor("ide_geani"), sucu, empr, tab_detalle.getValor(i, "ide_inarti")));
+                        TablaGenerica tab_articulos = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarEgreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
+                        utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Medoto que permite recalcular los ingresos y egresos de un articulo
+     *
+     * @param tipo 1 = todas las bodegas 0=una solo bodega
+     * @param anio
+     * @param ide_inarti
+     * @param sucu
+     * @param empr
+     */
+    public void getRecalcularInventario(String tipo, String anio, String ide_inarti, String sucu, String empr) {
+        System.out.println("SQL RECALCULAR>>>> " + anio + "  articulo >> " + ide_inarti);
+        TablaGenerica tab_consulta = utilitario.consultar(getReporteOrdenado(anio, ide_inarti));
+        double costo_actual = 0;
+        utilitario.getConexion().ejecutarSql(getActualizarBdt(anio, ide_inarti));
+        utilitario.getConexion().ejecutarSql(getActualizarCostoInicial(anio, ide_inarti));
+        for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
+            if (tab_consulta.getValor(j, "ide_intci") != null) {
+                if (tab_consulta.getValor(j, "ide_intci").equals(utilitario.getVariable("p_inv_tipo_ingreso"))) {
+                    TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_consulta.getValor(j, "ide_inarti"), anio, sucu, empr));
+                    if (tab_articulo.getTotalFilas() > 0) {
+                        costo_actual = getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_consulta.getValor(j, "cantidad_indci")), Double.parseDouble(tab_consulta.getValor(j, "valor_indci")));
+                        utilitario.getConexion().ejecutarSql(getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_consulta.getValor(j, "ide_inarti"), anio));
+                        utilitario.getConexion().ejecutarSql(getActualizarIngreso(tab_consulta.getValor(j, "cantidad_indci"), tab_consulta.getValor(j, "ide_inarti"), anio));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_consulta.getValor(j, "ide_inarti"), anio, sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_consulta.getValor(j, "ide_indci"), tab_consulta.getValor(j, "ide_inarti")));
+                    }
+
+                } else if (tab_consulta.getValor(j, "ide_intci").equals(utilitario.getVariable("p_inv_tipo_egreso"))) {
+
+                    TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_consulta.getValor(j, "ide_inarti"), anio, sucu, empr));
+                    if (tab_articulo.getTotalFilas() > 0) {
+                        utilitario.getConexion().ejecutarSql(getActualizarEgreso(tab_consulta.getValor(j, "cant_egre"), tab_consulta.getValor(j, "ide_inarti"), anio));
+                        TablaGenerica tab_arti2 = utilitario.consultar(getBodtArticulo(tipo, tab_consulta.getValor(j, "ide_inarti"), anio, sucu, empr));
+                        utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_consulta.getValor(j, "ide_indci"), tab_consulta.getValor(j, "ide_inarti")));
+                    }
+                }
+            }
+        }
+
     }
 }
