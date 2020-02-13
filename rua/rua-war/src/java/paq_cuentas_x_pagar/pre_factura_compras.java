@@ -490,6 +490,7 @@ public class pre_factura_compras extends Pantalla {
 
         tab_cab_documento.guardar();
         guardarPantalla();
+        ser_cuentas_cxp.generarTransaccionCompra(tab_cab_documento);
         sel_tab_detalle_compra.cerrar();
         utilitario.addUpdate("tab_cab_documento");
         generaDetalle();
