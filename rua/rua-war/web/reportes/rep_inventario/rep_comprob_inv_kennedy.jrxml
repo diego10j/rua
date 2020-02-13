@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e15014dc-220f-4175-b23a-94d14bb10f71">
 	<property name="ireport.zoom" value="1.3636363636363635"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="42"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_incci" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -13,7 +13,7 @@
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT nombre_intci,numero_incci,nombre_inepi,nombre_intti,fecha_trans_incci,nom_geper,telefono_geper,direccion_geper,codigo_inarti,nombre_inarti,nombre_inuni,
-cantidad_indci,precio_indci,valor_indci
+cantidad_indci,precio_indci,valor_indci,referencia_incci
 FROM inv_cab_comp_inve  a
 INNER JOIN inv_tip_tran_inve b ON a.ide_intti=b.ide_intti
 INNER JOIN inv_tip_comp_inve c ON b.ide_intci=c.ide_intci
@@ -44,6 +44,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 	<field name="cantidad_indci" class="java.math.BigDecimal"/>
 	<field name="precio_indci" class="java.math.BigDecimal"/>
 	<field name="valor_indci" class="java.math.BigDecimal"/>
+	<field name="referencia_incci" class="java.lang.String"/>
 	<variable name="cantidad_indci_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$F{cantidad_indci}]]></variableExpression>
 	</variable>
@@ -57,9 +58,9 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="29" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="dab73b49-9eac-4628-9adb-745b95ba543b" x="309" y="0" width="233" height="18"/>
+				<reportElement uuid="dab73b49-9eac-4628-9adb-745b95ba543b" x="375" y="7" width="167" height="18"/>
 				<box rightPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true" isItalic="false" isUnderline="false"/>
@@ -67,7 +68,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<text><![CDATA[RECEPCIÓN MERCADERIA]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="4d8845a7-01c0-4b09-8f9f-b866537b5cf2" x="375" y="10" width="167" height="19"/>
+				<reportElement uuid="4d8845a7-01c0-4b09-8f9f-b866537b5cf2" x="375" y="17" width="167" height="19"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="12" isBold="true" isItalic="false" isUnderline="false"/>
@@ -147,7 +148,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 					<font size="9"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{referencia_incci}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="5bc6cd9b-037d-4b84-b78c-8f0c2c9acf5c" x="273" y="14" width="82" height="14"/>
@@ -194,6 +195,13 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				</textElement>
 				<text><![CDATA[Stock]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="70eeecab-e6cb-4e57-abc1-9f6cf4872a68" x="375" y="-51" width="167" height="20" forecolor="#FF3300"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -287,7 +295,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="34c36a9f-b20a-498f-9903-ae3327907aea" x="70" y="0" width="225" height="12"/>
+				<reportElement uuid="34c36a9f-b20a-498f-9903-ae3327907aea" stretchType="RelativeToBandHeight" x="70" y="0" width="225" height="12"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -301,7 +309,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="39411f58-7a22-4cd6-838c-b83b7beef52a" x="295" y="0" width="80" height="12"/>
+				<reportElement uuid="39411f58-7a22-4cd6-838c-b83b7beef52a" stretchType="RelativeToBandHeight" x="295" y="0" width="80" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -315,7 +323,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{nombre_inuni}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.0000">
-				<reportElement uuid="cff996e1-813f-4c3f-bc6e-37ae40d51c80" x="375" y="0" width="60" height="12"/>
+				<reportElement uuid="cff996e1-813f-4c3f-bc6e-37ae40d51c80" stretchType="RelativeToBandHeight" x="375" y="0" width="60" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -330,7 +338,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{cantidad_indci}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.0000">
-				<reportElement uuid="46b51b1f-7154-4f81-ad79-e8d823108aa1" x="435" y="0" width="60" height="12"/>
+				<reportElement uuid="46b51b1f-7154-4f81-ad79-e8d823108aa1" stretchType="RelativeToBandHeight" x="435" y="0" width="60" height="12"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -344,7 +352,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{precio_indci}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.0000">
-				<reportElement uuid="5c024c37-d726-4791-9a2e-5f1b57bdc321" x="495" y="0" width="60" height="12"/>
+				<reportElement uuid="5c024c37-d726-4791-9a2e-5f1b57bdc321" stretchType="RelativeToBandHeight" x="495" y="0" width="60" height="12"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -358,7 +366,7 @@ WHERE a.ide_incci=$P!{ide_incci}]]>
 				<textFieldExpression><![CDATA[$F{valor_indci}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="34c36a9f-b20a-498f-9903-ae3327907aea" x="0" y="0" width="70" height="12"/>
+				<reportElement uuid="34c36a9f-b20a-498f-9903-ae3327907aea" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="12"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
