@@ -1469,7 +1469,11 @@ public class FacturaCxC extends Dialogo {
              */
             //extraer año
             TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(tab_cab_factura.getValor("fecha_emisi_cccfa")));
-            tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario(tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("anio"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
+            if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
+                tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario("1", tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("anio"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
+            } else {
+                tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario("0", tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("anio"), "0", "0"));
+            }
             /**
              * **PRECIO FIN****
              */
