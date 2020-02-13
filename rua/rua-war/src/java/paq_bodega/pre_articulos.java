@@ -129,38 +129,18 @@ public class pre_articulos extends Pantalla {
         if (com_anio.getValue() == null) {
             utilitario.agregarMensajeInfo("Mensaje,", "Seleccione el Periodo Fiscal y consultar");
         } else {
-            TablaGenerica tab_consulta = utilitario.consultar(ser_inventario.getReporteOrdenado(com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti")));
-            double costo_actual = 0;
-            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBdt(com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti")));
-            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarCostoInicial(com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti")));
-            for (int j = 0; j < tab_consulta.getTotalFilas(); j++) {
-                if (tab_consulta.getValor(j, "ide_intci") != null) {
-                    if (tab_consulta.getValor(j, "ide_intci").equals(utilitario.getVariable("p_inv_tipo_ingreso"))) {
-                        TablaGenerica tab_articulo = utilitario.consultar(ser_inventario.getBodtArticulo(tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        if (tab_articulo.getTotalFilas() > 0) {
-                            costo_actual = ser_inventario.getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_consulta.getValor(j, "cantidad_indci")), Double.parseDouble(tab_consulta.getValor(j, "valor_indci")));
-                            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString()));
-                            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarIngreso(tab_consulta.getValor(j, "cantidad_indci"), tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString()));
-                            TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_consulta.getValor(j, "ide_indci"), tab_consulta.getValor(j, "ide_inarti")));
-                        }
-
-                    } else if (tab_consulta.getValor(j, "ide_intci").equals(utilitario.getVariable("p_inv_tipo_egreso"))) {
-
-                        TablaGenerica tab_articulo = utilitario.consultar(ser_inventario.getBodtArticulo(tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                        if (tab_articulo.getTotalFilas() > 0) {
-                            //costo_actual = 
-                            //utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString()));
-                            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarEgreso(tab_consulta.getValor(j, "cant_egre"), tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString()));
-                            TablaGenerica tab_arti2 = utilitario.consultar(ser_inventario.getBodtArticulo(tab_consulta.getValor(j, "ide_inarti"), com_anio.getValue().toString(), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
-                            utilitario.getConexion().ejecutarSql(ser_inventario.getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_consulta.getValor(j, "ide_indci"), tab_consulta.getValor(j, "ide_inarti")));
-                        }
-
-                    }
-                }
+            /**
+             * parametro aplica bodega True permite el registrar el ingreso y
+             * egresos pos sucursales y empresas es decir varias bodegas False
+             * permite regitrar por defecto en una solo bodega
+             */
+            if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
+                ser_inventario.getRecalcularInventario("1", com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+            } else {
+                ser_inventario.getRecalcularInventario("0", com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti"), "0", "0");
             }
-            utilitario.agregarMensajeInfo("Mensaje,", "Se recalculo corecctamente");
-            utilitario.addUpdate("tab_tabla");
+            utilitario.agregarMensaje("", "Se recalculo corecctamente");
+            utilitario.addUpdateTabla(tab_tabla, "", "");
         }
 
     }
@@ -203,7 +183,7 @@ public class pre_articulos extends Pantalla {
             } else if (sec_rango_reporte.isVisible()) {
                 parametro.put("nombre", utilitario.getVariable("NICK"));
                 parametro.put("ide_geani", Integer.parseInt(com_anio.getValue().toString()));
-                parametro.put("pide_fecha_inicio",  sec_rango_reporte.getFecha1());
+                parametro.put("pide_fecha_inicio", sec_rango_reporte.getFecha1());
                 parametro.put("pide_fecha_fin", sec_rango_reporte.getFecha2());
                 // System.out.println("seleccion..de arbol...ing" + sel_arbol.getSeleccionados());
                 sec_rango_reporte.cerrar();
