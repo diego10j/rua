@@ -120,8 +120,8 @@ public class pre_factura_compras extends Pantalla {
             tab_cab_documento.getColumna("ide_cpefa").setValorDefecto(parametros.get("p_cxp_estado_factura_normal"));
             tab_cab_documento.getColumna("ide_cpefa").setCombo("select ide_cpefa,nombre_cpefa from cxp_estado_factur");
             tab_cab_documento.getColumna("ide_cndfp").setCombo("con_deta_forma_pago", "ide_cndfp", "nombre_cndfp", "ide_cncfp=3");
-            tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("ESTADO");
-            tab_cab_documento.getColumna("ide_cndfp").setLectura(true);
+            tab_cab_documento.getColumna("ide_cpefa").setNombreVisual("ESTADO");
+            tab_cab_documento.getColumna("ide_cpefa").setLectura(true);
             tab_cab_documento.getColumna("ide_cndfp").setRequerida(false);
             tab_cab_documento.getColumna("TARIFA_IVA_CPCFA").setVisible(false);
             tab_cab_documento.getColumna("ide_cndfp").setNombreVisual("FORMA DE PAGO");
