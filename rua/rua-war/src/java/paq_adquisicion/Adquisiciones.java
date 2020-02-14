@@ -497,6 +497,12 @@ public class Adquisiciones extends Pantalla {
             tab_adquisiones.modificar(tab_adquisiones.getFilaActual());
         }
         sel_tab_actualiza_proveedor.cerrar();
+        if (tab_adquisiones.isFilaInsertada()) {
+            TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+            tab_adquisiones.setValor("numero_orden_adcomp", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano"))) + tab_secuen.getValor("nuevo_secuencial"));
+            utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+        }
         tab_adquisiones.guardar();
         guardarPantalla();
         utilitario.addUpdate("tab_adquisiones");
@@ -590,14 +596,14 @@ public class Adquisiciones extends Pantalla {
     @Override
     public void guardar() {
 
+        if (tab_adquisiones.isFilaInsertada()) {
+            TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+            String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
+            tab_adquisiones.setValor("numero_orden_adcomp", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano"))) + tab_secuen.getValor("nuevo_secuencial"));
+            utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_modulo_secuencialaquisicion")));
+        }
         if (tab_adquisiones.isFocus()) {
-            if (tab_adquisiones.isFilaInsertada()) {
-                TablaGenerica tab_secuen = utilitario.consultar(ser_produccion.getSecuencialModulo(utilitario.getVariable("p_modulo_secuencialaquisicion")));
-                String tipo_aplica = tab_secuen.getValor("aplica_abreviatura_gemos");
-                tab_adquisiones.setValor("numero_orden_adcomp", ser_produccion.getSecuencialNumero(tipo_aplica, Integer.parseInt(tab_secuen.getValor("longitud_secuencial_gemos")), Integer.parseInt(tab_secuen.getValor("tamano"))) + tab_secuen.getValor("nuevo_secuencial"));
-                utilitario.getConexion().ejecutarSql(ser_produccion.getActualizarSecuencial(utilitario.getVariable("p_modulo_secuencialaquisicion")));
-            }
-
+            tab_adquisiones.guardar();
         } else if (tab_compra_bienes.isFocus()) {
             tab_compra_bienes.guardar();
         } else if (tab_presupuesto.isFocus()) {
