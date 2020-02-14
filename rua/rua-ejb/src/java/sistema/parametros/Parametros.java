@@ -63,7 +63,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_porcenatje_utilidad", "Permite conocer el porcentaje de utilidad del articulo", "2"));
         lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2", "inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
         lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
-
+        lis_parametros.add(new Parametro("1", "p_inv_grupo_entrega_productos", "Indica los articulos solo de los grupos seleccionados", "1", "inv_articulo", "ide_inarti", "nombre_inarti"));
         /*
          * CUENTAS POR PAGAR MODULO =2
          */
