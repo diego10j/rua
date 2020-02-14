@@ -763,16 +763,28 @@ public class ServicioInventario {
      * @param empr
      * @return
      */
-    public double getStockArticulo(String articulo, String anio, String sucu, String empr) {
+    public double getStockArticulo(String tipo, String articulo, String anio, String sucu, String empr) {
         double stock = 0;
-        TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
-                + "from bodt_articulos \n"
-                + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ");
-        tab_stock.imprimirSql();
-        try {
-            stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
-        } catch (Exception e) {
+        if (tipo.equals("1")) {
+            TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
+                    + "from bodt_articulos \n"
+                    + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ");
+            tab_stock.imprimirSql();
+            try {
+                stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
+            } catch (Exception e) {
+            }
+        } else {
+            TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
+                    + "from bodt_articulos \n"
+                    + "where ide_inarti=" + articulo + " and ide_geani = " + anio);
+            tab_stock.imprimirSql();
+            try {
+                stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
+            } catch (Exception e) {
+            }
         }
+
         return stock;
     }
 
@@ -944,7 +956,7 @@ public class ServicioInventario {
                 + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
                 + "order by ide_inarti,fecha_trans_incci,ide_indci ";
         //System.out.println("REPORTES >>>>> " + sql);
-        return sql; 
+        return sql;
     }
 
     public String getActualizarBdt(String anio, String articulo) {
