@@ -1631,18 +1631,34 @@ public class FacturaCxC extends Dialogo {
             TablaGenerica tab_fecha = utilitario.consultar(ser_inventario.getExtraerAnio(tab_cab_factura.getValor("fecha_emisi_cccfa")));
             TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getInventarioAnio(tab_fecha.getValor("anio")));
 
-            double saldo = ser_inventario.getStockArticulo(tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
-            if (saldo <= 0) {
-                utilitario.agregarMensajeInfo("No existe stock en inventario", tab_deta_factura.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
-            } else if (cantidad > saldo) {
-                dia_mensaje_fac.getChildren().clear();
-                dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
-                Grid g = new Grid();
-                g.setWidth("100%");
-                g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_deta_factura.getValorArreglo("ide_inarti", 1) + "</strong> stock = " + saldo + " </div>"));
-                dia_mensaje_fac.getChildren().add(g);
-                utilitario.addUpdate("dia_mensaje_fac");
-                utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
+            if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
+                double saldo = ser_inventario.getStockArticulo("1", tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+                if (saldo <= 0) {
+                    utilitario.agregarMensajeInfo("No existe stock en inventario", tab_deta_factura.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
+                } else if (cantidad > saldo) {
+                    dia_mensaje_fac.getChildren().clear();
+                    dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
+                    Grid g = new Grid();
+                    g.setWidth("100%");
+                    g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_deta_factura.getValorArreglo("ide_inarti", 1) + "</strong> stock = " + saldo + " </div>"));
+                    dia_mensaje_fac.getChildren().add(g);
+                    utilitario.addUpdate("dia_mensaje_fac");
+                    utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
+                }
+            } else {
+                double saldo = ser_inventario.getStockArticulo("0", tab_deta_factura.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+                if (saldo <= 0) {
+                    utilitario.agregarMensajeInfo("No existe stock en inventario", tab_deta_factura.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
+                } else if (cantidad > saldo) {
+                    dia_mensaje_fac.getChildren().clear();
+                    dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
+                    Grid g = new Grid();
+                    g.setWidth("100%");
+                    g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_deta_factura.getValorArreglo("ide_inarti", 1) + "</strong> stock = " + saldo + " </div>"));
+                    dia_mensaje_fac.getChildren().add(g);
+                    utilitario.addUpdate("dia_mensaje_fac");
+                    utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
+                }
             }
         }
 
