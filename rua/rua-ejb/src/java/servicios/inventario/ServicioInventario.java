@@ -769,7 +769,7 @@ public class ServicioInventario {
             TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
                     + "from bodt_articulos \n"
                     + "where ide_inarti=" + articulo + " and ide_geani = " + anio + " and ide_sucu = " + sucu + " and ide_empr = " + empr + "  ");
-            tab_stock.imprimirSql();
+            //tab_stock.imprimirSql();
             try {
                 stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
             } catch (Exception e) {
@@ -778,7 +778,7 @@ public class ServicioInventario {
             TablaGenerica tab_stock = utilitario.consultar("select ide_boart,ide_inarti,ide_geani,ide_sucu,ide_empr,ingreso_material_boart,egreso_material_boart,existencia_inicial_boart,costo_inicial_boart,costo_anterior_boart,costo_actual_boart,(ingreso_material_boart + existencia_inicial_boart - egreso_material_boart) as stock\n"
                     + "from bodt_articulos \n"
                     + "where ide_inarti=" + articulo + " and ide_geani = " + anio);
-            tab_stock.imprimirSql();
+            //tab_stock.imprimirSql();
             try {
                 stock = Double.parseDouble(utilitario.getFormatoNumero(tab_stock.getValor("stock")));
             } catch (Exception e) {
