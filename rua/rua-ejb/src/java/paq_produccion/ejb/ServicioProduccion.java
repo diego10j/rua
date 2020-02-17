@@ -75,7 +75,7 @@ public String getSecuencialNumero(String tipo, int longitud, int tamaño) {
 public String getActualizarSecuencial(String ide_gemos) {
         String sql = "";
         sql = "update gen_modulo_secuencial set  numero_secuencial_gemos=numero_secuencial_gemos+1 where ide_gemos="+ide_gemos;
-        System.out.println("actualiza modulo "+sql);
+        //System.out.println("actualiza modulo "+sql);
         return sql;
     }
 public String getColor() {
