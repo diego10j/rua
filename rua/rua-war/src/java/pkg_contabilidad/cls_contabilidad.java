@@ -613,7 +613,7 @@ public class cls_contabilidad {
             sql += "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
                     + " GROUP BY dpc.ide_cndpc,codig_recur_cndpc, nombre_cndpc,con_ide_cndpc "
                     + "HAVING (sum(dcc.valor_cndcc*sc.signo_cnscu) <>0) ) as C1 "
-                    + "UNION SELECT * FROM(Select ide_cndpc,nombre_cndpc,ide_cnncu , '0' as valor, "
+                    + "UNION SELECT * FROM(Select ide_cndpc,nombre_cndpc,ide_cnncu , 0 as valor, "
                     + "codig_recur_cndpc,con_ide_cndpc,ide_cntcu "
                     + "from  con_det_plan_cuen where ide_cntcu in (" + p_tipo_cuentas + ") ";
             if (!es_consolidado) {
