@@ -502,7 +502,6 @@ public class pre_comp_inv_entrega extends Pantalla {
                     utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
                 }
             }
-
         }
     }
 
