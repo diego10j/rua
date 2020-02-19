@@ -604,7 +604,7 @@ public class cls_formulario104 {
                 + "where ide_cpefa=0 and ide_rem_cpcfa is null  \n"
                 + "and ide_cntdo not in (0,5)  " //NO NOTAS DE CREDITO NI NOTAS DE VENTA
                 + "and fecha_emisi_cpcfa  BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "'\n"
-                + "and ide_srtst = 1"); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
+                + "and ide_srtst in (1,4) "); //  COSTO O GASTO PARA DECLARACIÓN DE IMP. A LA RENTA (SERVICIOS Y BIENES DISTINTOS DE INVENTARIOS Y ACTIVOS FIJOS )
 
         if (lis_sql != null && !lis_sql.isEmpty()) {
             try {
