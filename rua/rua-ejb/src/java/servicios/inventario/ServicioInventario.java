@@ -1095,9 +1095,9 @@ public class ServicioInventario {
 
     public String getDetalleTransacciones(String fecha_inicio, String fecha_fin, String transaccion) {
         String sql = "";
-        sql += "select a.ide_incci, referencia_incci, fecha_trans_incci, apellido_paterno_gtemp || ' ' || apellido_materno_gtemp || ' ' || primer_nombre_gtemp || ' ' || segundo_nombre_gtemp as responsable,  \n"
-                + "nom_geper, total, nombre_intti, nombre_intci\n"
-                + "from inv_cab_comp_inve a \n"
+        sql += "select a.ide_incci, (numero_incci) as secuencial, (referencia_incci) as num_factura, (nom_geper) as provedor_distribuidor, (fecha_trans_incci) as fecha_transaccion, apellido_paterno_gtemp || ' ' || apellido_materno_gtemp || ' ' || primer_nombre_gtemp || ' ' || segundo_nombre_gtemp as responsable,  \n"
+                + "total, nombre_intti, nombre_intci, (gth_ide_gtemp) as empleado_recibe\n"
+                + "from inv_cab_comp_inve a  \n"
                 + "left join gen_persona b on a.ide_geper = b.ide_geper\n"
                 + "left join gth_empleado c on a.ide_gtemp = c.ide_gtemp \n"
                 + "left join inv_tip_tran_inve d on a.ide_intti = d.ide_intti\n"
@@ -1108,6 +1108,6 @@ public class ServicioInventario {
                 + " group by ide_incci\n"
                 + ") f on a.ide_incci= f.ide_incci\n"
                 + "where fecha_trans_incci between cast('" +fecha_inicio+ "' as date) and cast ('" +fecha_fin+ "' as date) and a.ide_intti in(" +transaccion+ ")";
-        return sql;
-    }     
+        return sql;     
+    }
 }
