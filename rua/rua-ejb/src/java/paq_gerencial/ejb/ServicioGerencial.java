@@ -92,5 +92,13 @@ public class ServicioGerencial {
                sql +=" order by nombre_gercas,nombre_gerobr";            
                
         return sql;
-    }    
+    }
+
+    public String getDatoEmpleado(String ide_usua) {
+        String sql = "Select a.ide_usua,b.ide_gtemp,a.nom_usua,a.nick_usua, b.documento_identidad_gtemp from Sis_usuario a\n"
+                + "left join gth_empleado b on a.ide_gtemp = b.ide_gtemp\n"
+                + "where ide_usua in(" + ide_usua + ")  ";
+        return sql;
+
+    }
 }   
