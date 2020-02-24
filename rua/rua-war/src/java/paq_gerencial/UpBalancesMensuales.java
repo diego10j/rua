@@ -42,6 +42,7 @@ public class UpBalancesMensuales extends Pantalla {
     private Combo com_balance = new Combo();
     private Combo com_ano = new Combo();
     private Tabla tab_tabla1 = new Tabla();
+    private Tabla tab_tabla2 = new Tabla();
     private Conexion conPostgres = new Conexion();
     private Upload upl_archivo = new Upload();
     private Editor edi_mensajes = new Editor();
@@ -60,9 +61,6 @@ public class UpBalancesMensuales extends Pantalla {
     public UpBalancesMensuales() {
         if (tienePerfil()) {
             
-            bar_botones.getBot_insertar().setRendered(false);
-            bar_botones.getBot_eliminar().setRendered(false);
-            bar_botones.quitarBotonsNavegacion();
             
             conPostgres.setUnidad_persistencia("rua_gerencial");
             conPostgres.NOMBRE_MARCA_BASE = "postgres";
@@ -84,11 +82,27 @@ public class UpBalancesMensuales extends Pantalla {
             com_balance.setMetodo("filtroComboPeriodo");
             bar_botones.agregarComponente(new Etiqueta("Tipo Balance:"));
             bar_botones.agregarComponente(com_balance);
-                               
+            
+            tab_tabla1.setId("tab_tabla1");
             tab_tabla1.setConexion(conPostgres);
             tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
             tab_tabla1.setCondicion("ide_geani=-1");
             
+            tab_tabla2.setId("tab_tabla2");
+            tab_tabla2.setConexion(conPostgres);
+            tab_tabla2.setTabla("ger_balance_detalle", "ide_gebade", 2);
+            //tab_tabla2.setCondicion("ide_gebade=-1");
+            tab_tabla2.dibujar();
+            
+            PanelTabla pat_tabla2 = new PanelTabla();
+            pat_tabla2.setId("pat_tabla2");
+            pat_tabla2.setPanelTabla(tab_tabla2);
+            
+            Division div_division = new Division();
+            div_division.setId("div_division");
+            div_division.dividir1(pat_tabla2);
+            
+            agregarComponente(div_division);
 
             Boton bot_archivo = new Boton();
             bot_archivo.setValue("Cargar Archivo");
@@ -234,16 +248,23 @@ public class UpBalancesMensuales extends Pantalla {
                 String Cuenta = hoja.getCell(2, i).getContents();
                 Cuenta = Cuenta.trim();
 
-                String Debe = hoja.getCell(3, i).getContents();
-                Debe = Debe.trim();
+                String valor_debe_gebade = hoja.getCell(3, i).getContents();
+                valor_debe_gebade = valor_debe_gebade.trim();
 
-                String Haber = hoja.getCell(4, i).getContents();
-                Haber = Haber.trim();
+                String valor_haber_gebade = hoja.getCell(4, i).getContents();
+                valor_haber_gebade = valor_haber_gebade.trim();
 
                 
-                System.out.println("Informacion: "+ i+" "+año+" "+periodo+" "+Cuenta+" "+Debe+" "+Haber);            
+                System.out.println("Informacion: "+ i+" "+año+" "+periodo+" "+Cuenta+" "+valor_debe_gebade+" "+valor_haber_gebade);
+                
+                tab_tabla2.insertar();
+                tab_tabla2.setValor("valor_debe_gebade",valor_debe_gebade);
+                tab_tabla2.setValor("valor_haber_gebade", valor_haber_gebade);
+                
+                //String ide_gebade= ser_gerencial.getInsertarDatos(valor_debe_gebade, valor_haber_gebade);
             }
-             //guardarPantalla();
+            tab_tabla2.guardar();
+            conPostgres.guardarPantalla();
             String str_resultado = "";
             if (!str_msg_info.isEmpty()) {
                 str_resultado = "<strong><font color='#3333ff'>INFORMACION</font></strong>" + str_msg_info;
@@ -255,13 +276,12 @@ public class UpBalancesMensuales extends Pantalla {
             utilitario.addUpdate("edi_mensajes");
 
             archivoExcel.close();
-            //tab_tabla1.actualizar();
+            tab_tabla2.actualizar();
         } catch (Exception e) {
             // TODO: handle exception
             System.out.println("ERROR AL SUBIR ARHCIVO " + e);
         }
      }
-     
      
     private String getFormatoInformacion(String mensaje) {
         return "<div><font color='#3333ff'><strong>*&nbsp;</strong>" + mensaje + "</font></div>";
@@ -274,17 +294,18 @@ public class UpBalancesMensuales extends Pantalla {
 
     @Override
     public void insertar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        tab_tabla2.insertar();
     }
 
     @Override
     public void guardar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       tab_tabla2.guardar();
+       guardarPantalla();
     }
 
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        tab_tabla2.eliminar();
     }
 
     public Combo getCom_ano() {
@@ -318,6 +339,15 @@ public class UpBalancesMensuales extends Pantalla {
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
+    
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
+    }
+     
 
     public Conexion getConPostgres() {
         return conPostgres;
