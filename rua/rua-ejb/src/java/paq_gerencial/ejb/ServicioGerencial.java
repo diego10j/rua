@@ -5,7 +5,9 @@
  */
 package paq_gerencial.ejb;
 
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
+import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -55,6 +57,23 @@ public class ServicioGerencial {
         String sql = "select ide_geani,nom_geani,(case when activo_geani=true then 'ACTIVO' else 'INACTIVO' end) as activo_geani from gen_anio where activo_geani in ("+estado+") order by nom_geani";
         return sql;
     }
+    
+    //RETORNA LOS MESES DE 
+    public String getMes(String tipo,String ide_mes){
+        String sql = "select ide_gemes,nombre_gemes from gen_mes";
+          if(tipo.equals("0")){                 
+            sql +=" where ide_gemes in ("+ide_mes+")";
+        }
+               sql +=" order by ide_gemes";            
+               
+        return sql;       
+    }
+    
+    public String getMes1(){
+        String sql = "select ide_gemes,nombre_gemes from gen_mes";
+        return sql;
+    }
+    
     /**
      * Retorna sentencia SQL para obtener el Año
      * 
@@ -101,4 +120,5 @@ public class ServicioGerencial {
         return sql;
 
     }
+    
 }   
