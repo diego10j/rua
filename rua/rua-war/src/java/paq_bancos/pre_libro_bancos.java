@@ -676,7 +676,7 @@ public class pre_libro_bancos extends Pantalla {
     public void dibujarPosicion() {
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setSql(ser_tesoreria.getSqlPosicionConsolidada());
+        tab_tabla1.setSql(ser_tesoreria.getSqlPosicionConsolidada(cal_fecha_inicio.getFecha()));
         tab_tabla1.setLectura(true);
         tab_tabla1.setRows(50);
         tab_tabla1.getColumna("ide_tecba").setVisible(false);
