@@ -558,9 +558,10 @@ public class ServicioTesoreria {
     /**
      * Sql con las cuentas que tiene la empresa
      *
+     * @param fecha_inicio_periodo  corresponde a la fecha de inicio del pariodo fiscal
      * @return
      */
-    public String getSqlPosicionConsolidada() {
+    public String getSqlPosicionConsolidada(String fecha_inicio_periodo) {
         return "select a.ide_tecba,nombre_teban,nombre_tecba,nombre_tetcb,ide_cndpc, \n"
                 + "(Select sum(dcc.valor_cndcc*sc.signo_cnscu) as valor \n"
                 + "from con_cab_comp_cont ccc \n"
@@ -569,12 +570,12 @@ public class ServicioTesoreria {
                 + "inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu \n"
                 + "inner  join con_signo_cuenta sc on tc.ide_cntcu=sc.ide_cntcu and dcc.ide_cnlap=sc.ide_cnlap \n"
                 + "WHERE  ccc.ide_cneco in (" + utilitario.getVariable("p_con_estado_comp_inicial") + "," + utilitario.getVariable("p_con_estado_comprobante_normal") + "," + utilitario.getVariable("p_con_estado_comp_final") + ") \n"
-                + "and dpc.ide_cndpc=a.ide_cndpc\n"
+                + "  and fecha_trans_cnccc > '"+fecha_inicio_periodo+"' and dpc.ide_cndpc=a.ide_cndpc\n"
                 + "GROUP BY dpc.ide_cndpc ) as saldo_contable, \n"
                 + "(select sum(valor_teclb * signo_tettb) as valor \n"
                 + "from tes_cab_libr_banc aa \n"
                 + "inner join tes_tip_tran_banc bb on aa.ide_tettb=bb.ide_tettb \n"
-                + "where ide_tecba=a.ide_tecba and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + "\n"
+                + "where ide_tecba=a.ide_tecba and fecha_trans_teclb > '"+fecha_inicio_periodo+"' and ide_teelb=" + utilitario.getVariable("p_tes_estado_lib_banco_normal") + "\n"
                 + "group by ide_tecba) as saldo_disponible \n"
                 + "from tes_cuenta_banco a\n"
                 + "inner join tes_banco b on a.ide_teban= b.ide_teban\n"
