@@ -1027,7 +1027,7 @@ public class ServicioNomina {
 	}
 
 	public String getPeriodosRol(String fecha_inicial,String fecha_final){
-               // System.out.println("entre a getPeriodosRol "+fecha_inicial+ " fecha final "+fecha_final);
+                //System.out.println("entre a getPeriodosRol "+fecha_inicial+ " fecha final "+fecha_final);
 		int mes_ini=0;
 		int mes_fin=0;
 		int anio_ini=0;
@@ -1049,19 +1049,19 @@ public class ServicioNomina {
                     //System.out.println("Entre if despues de validar fechas ");
 			int diferencia_anios=anio_fin-anio_ini;
 			TablaGenerica tab_gen_per=new TablaGenerica();
-			String str_ide_gepro="-2";
+			String str_ide_gepro=""; //antes estaba -2 luis toapanta 2020-02-27
 			if (diferencia_anios==0){
-				str_ide_gepro="-3";
+				str_ide_gepro=""; //antes estaba -3 luis toapanta 2020-02-27
 				tab_gen_per=utilitario.consultar("select * from GEN_PERIDO_ROL " +
 						"where ((IDE_GEMES BETWEEN "+mes_ini+" and "+mes_fin+") " +
 						"and IDE_GEANI=(SELECT IDE_GEANI FROM GEN_ANIO WHERE lower (nom_geani) like '"+anio_ini+"'))");
-				//System.out.println("tab_gen_per if 1");
-                                tab_gen_per.imprimirSql();
+		//		System.out.println("tab_gen_per if 1");
+                 //               tab_gen_per.imprimirSql();
                                 for (int j = 0; j < tab_gen_per.getTotalFilas(); j++) {
 					str_ide_gepro+=tab_gen_per.getValor(j, "IDE_GEPRO")+",";
 				}
 			}else{
-				str_ide_gepro="-4";
+				str_ide_gepro=""; //antes estaba -4 luis toapanta 2020-02-27
 				for (int i = 0; i <= diferencia_anios; i++) {
 					if (i==0){
 						ide_gemes_ini_aux=mes_ini;
@@ -1133,7 +1133,9 @@ public class ServicioNomina {
 							"AND RUB.IDE_NRRUB in ("+IDE_NRRUB+") " +
 							"and PRO.IDE_GEPRO IN ("+ide_gepro+") " +
 							"group by ide_geedp ) a";
-                                                        //System.out.println(" bbbbbb "+str_sql);
+                                        if(IDE_GEEDP.equals("134")){
+                                        //System.out.println(" bbbbbb "+str_sql);
+                                        }
 					TablaGenerica tab_det_rub2=utilitario.consultar(str_sql);
 					if (tab_det_rub2.getTotalFilas()>0){
 						if (tab_det_rub2.getValor("sumatoria_rubro")!=null && !tab_det_rub2.getValor("sumatoria_rubro").isEmpty()){
@@ -1892,14 +1894,14 @@ public class ServicioNomina {
 			BigDecimal big_irm=new BigDecimal(dou_irm);
 			big_irm=big_irm.setScale(2, RoundingMode.HALF_UP);
 
-			if (ide_geedp.equalsIgnoreCase("57")){
+			if (ide_geedp.equalsIgnoreCase("134")){
                             /*
 				System.out.println("t. rec antes "+dou_tot_recibir);
 				System.out.println("t. egr antes "+dou_tot_egresos);
 				System.out.println("imp antes "+dou_irm);
 				System.out.println("ide_geedp "+ide_geedp);
                             */
-			}
+                        }
 
 			if (dou_irm<=0){
 				// ACTUALIZO EL TOTAL A RECIBIR
@@ -1966,19 +1968,19 @@ public class ServicioNomina {
                                 //System.out.println("calculo dou_tot_aportes_acumul "+str_fecha_ini_calculo+" fecha final "+str_fecha_fin_calculo);    
 
 				double dou_tot_aportes_acumul=getSumatoriaRubro1(ide_geedp,utilitario.getVariable("p_nrh_rubro_aportes_personales"), str_fecha_ini_calculo,str_fecha_fin_calculo);
-
+                                    
 				// calculo de proyeccion de aportes 
 				double dou_proyeccion_aportes=dou_seguro_social_proyeccion*(12-Integer.parseInt(ide_gemes));
 
 				// FORMULA DEDUCCION IESS (aportes_acumu + aporte del mes + proyeccion de aportes)
 				dou_deduccion_iess=dou_tot_aportes_acumul+dou_aporte_personal_del_mes+dou_proyeccion_aportes;
 
-                                if (ide_geedp.equalsIgnoreCase("57")){/*
-
+                                if (ide_geedp.equalsIgnoreCase("134")){
+/*
 									System.out.println("xxxdou_tot_aportes_acumul "+dou_tot_aportes_acumul);
 									System.out.println("xxxxdou_aporte_personal_del_mes "+dou_aporte_personal_del_mes);
 									System.out.println("xxxdou_proyeccion_aportes "+dou_proyeccion_aportes);
-				*/		
+*/						
                                     }
                                 
 				// 3.- CALCULO DEDUCCION DE GASTOS
@@ -2122,11 +2124,10 @@ public class ServicioNomina {
 
 
 
-				if (ide_geedp.equalsIgnoreCase("57")){
+				if (ide_geedp.equalsIgnoreCase("134")){
                                     /*
 					System.out.println("IDE GEEDP EMPLEADO ***** "+ide_geedp);
 					System.out.println("edad ***** "+edad);
-
 					System.out.println("total ing proyectado "+dou_tot_ing_proy);
 					System.out.println("total ing mensual "+dou_tot_ing_mensual);
 					System.out.println("base imponible "+dou_base_imponible);
@@ -2134,7 +2135,6 @@ public class ServicioNomina {
 					System.out.println("deduccion iess "+dou_deduccion_iess);
 					System.out.println("deduccion gastos "+dou_deduccion_gastos);
 					System.out.println("deduccion gastos discapacitado "+dou_deduccion_gasto_discapacitado);
-
 					System.out.println("base calculo final impuesto renta "+dou_base_calculo_final);
 					System.out.println("excedente "+dou_dif_sueldo_basico);
 					System.out.println("porcentaje "+dou_imp_exc);
