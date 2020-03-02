@@ -151,7 +151,7 @@ public class pre_comp_inv_entrega extends Pantalla {
         tab_tabla1.getColumna("ide_geper").setNombreVisual("CLIENTE");
         tab_tabla1.getColumna("ide_geper").setVisible(false);
         tab_tabla1.getColumna("observacion_incci").setNombreVisual("OBSERVACION");
-        tab_tabla1.getColumna("fecha_trans_incci").setLectura(true);
+        //tab_tabla1.getColumna("fecha_trans_incci").setLectura(true);
         tab_tabla1.getColumna("fecha_trans_incci").setNombreVisual("FECHA TRANSACCION");
         tab_tabla1.getColumna("ide_intti").setNombreVisual("TIPO TRANSACCIÓN");
         tab_tabla1.getColumna("ide_incci").setOrden(0);
