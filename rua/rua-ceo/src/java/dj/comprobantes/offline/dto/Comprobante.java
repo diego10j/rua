@@ -357,7 +357,7 @@ public final class Comprobante implements Serializable {
                             + "inner join con_cabece_retenc d on a.ide_cncre=d.ide_cncre\n"
                             + "inner join cxp_cabece_factur e on d.ide_cncre=e.ide_cncre\n"
                             + "inner join con_tipo_document g on e.ide_cntdo=g.ide_cntdo\n"
-                            + "where  ide_srcom=" + this.codigocomprobante;
+                            + "where  d.ide_srcom=" + this.codigocomprobante;//modifique 8/1/2020  agregre el alias d
                     Statement sentensia = con.getConnection().createStatement();
                     ResultSet res = sentensia.executeQuery(sql);
                     while (res.next()) {
