@@ -81,7 +81,7 @@ public class ServicioRetenciones extends ServicioBase {
         }
         ide_ccdaf = ide_ccdaf.replace("null", "-1").trim();
         if (ide_ccdaf.isEmpty() == false) {
-            ide_ccdaf = " and ide_ccdaf='" + ide_ccdaf + "' ";
+            ide_ccdaf = " and a.ide_ccdaf='" + ide_ccdaf + "' "; // 8/1/2020 agregue alias a
         }
         return "SELECT a.ide_cncre,ide_cnere,fecha_emisi_cncre,a.ide_cnccc,nombre_sresc as ESTADO,observacion_cncre as OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
                 + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
@@ -169,7 +169,7 @@ public class ServicioRetenciones extends ServicioBase {
         }
         ide_ccdaf = ide_ccdaf.replace("null", "-1").trim();
         if (ide_ccdaf.isEmpty() == false) {
-            ide_ccdaf = " and ide_ccdaf='" + ide_ccdaf + "' ";
+            ide_ccdaf = " and a.ide_ccdaf='" + ide_ccdaf + "' ";// 8/1/2020 agrege alias a
         }
         return "SELECT a.ide_cncre,fecha_emisi_cncre,observacion_cncre AS OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,numero_cpcfa AS NUM_FACTURA,nom_geper AS PROVEEDOR\n"
                 + "FROM con_cabece_retenc a\n"
@@ -526,7 +526,7 @@ public class ServicioRetenciones extends ServicioBase {
         }
         ide_ccdaf = ide_ccdaf.replace("null", "-1").trim();
         if (ide_ccdaf.isEmpty() == false) {
-            ide_ccdaf = " and ide_ccdaf='" + ide_ccdaf + "' "; 
+            ide_ccdaf = " and a.ide_ccdaf='" + ide_ccdaf + "' "; //8/1/2020 agrege el alias a
         }
         return "SELECT b.ide_cpcfa,fecha_emisi_cncre AS FECHA_EMISION,nombre_sresc as ESTADO,observacion_cncre as OBSERVACION,numero_cncre AS NUMERO,autorizacion_cncre AS AUTORIZACION,"
                 + "(select sum(base_cndre) from con_detall_retenc where ide_cncre=a.ide_cncre)AS BASE_IMPONIBLE,"
