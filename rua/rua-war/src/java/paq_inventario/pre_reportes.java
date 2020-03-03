@@ -22,11 +22,12 @@ import sistema.aplicacion.Pantalla;
 
 /**
  *
- * @author IORI YAGAMI
+ * @author CRISTIAN VEGA
  */
 public class pre_reportes extends Pantalla {
 
     private Tabla tab_tabla1 = new Tabla();
+    private Tabla tab_tabla2 = new Tabla();
 
     private final Calendario cal_fecha1 = new Calendario();
     private final Calendario cal_fecha2 = new Calendario();
@@ -63,6 +64,8 @@ public class pre_reportes extends Pantalla {
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setSql(ser_inventario.getDetalleTransacciones("1-1-2000", "1-1-2000", "-1"));
         tab_tabla1.setRecuperarLectura(true);
+        tab_tabla1.setCampoPrimaria("ide_incci");
+        tab_tabla1.agregarRelacion(tab_tabla2);     
         tab_tabla1.imprimirSql();
         tab_tabla1.dibujar();
 
@@ -70,8 +73,20 @@ public class pre_reportes extends Pantalla {
         pat_panel1.setId("pat_panel1");
         pat_panel1.setPanelTabla(tab_tabla1);
 
+        tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("inv_det_comp_inve", "ide_indci", 2);
+        tab_tabla2.getColumna("ide_indci").setNombreVisual("CODIGO");
+        tab_tabla2.getColumna("ide_inarti").setNombreVisual("COD. ARTI");
+        tab_tabla2.getColumna("cantidad_indci").setNombreVisual("CANTIDAD");
+        tab_tabla2.getColumna("precio_indci").setNombreVisual("PRECIO");
+        tab_tabla2.getColumna("valor_indci").setNombreVisual("VALOR");
+
+        PanelTabla pat_panel2 = new PanelTabla();
+        pat_panel2.setId("pat_panel2");
+        pat_panel2.setPanelTabla(tab_tabla2);
+
         Division div_division = new Division();
-        div_division.dividir1(pat_panel1);
+        div_division.dividir2(pat_panel1, pat_panel2, "50%", "H");
         agregarComponente(div_division);
 
         sel_tipo_trans.setId("sel_tipo_trans");
@@ -90,7 +105,7 @@ public class pre_reportes extends Pantalla {
     public void limpiar() {
         cal_fecha1.limpiar();
         cal_fecha2.limpiar();
-        tab_tabla1.limpiar();       
+        tab_tabla1.limpiar();
     }
 
     public void selecioneTransaccion() {
@@ -99,6 +114,8 @@ public class pre_reportes extends Pantalla {
             //String seleccionados = sel_tipo_trans.getSeleccionados();
             tab_tabla1.setSql(ser_inventario.getDetalleTransacciones(cal_fecha1.getFecha(), cal_fecha2.getFecha(), seleccionados));
             tab_tabla1.ejecutarSql();
+            tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            utilitario.addUpdate("tab_tabla1, tabla2");     
             sel_tipo_trans.cerrar();
         } else {
             utilitario.agregarMensajeInfo("Advertencia", "Eliga por lo menos un registro");
@@ -130,6 +147,14 @@ public class pre_reportes extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public Tabla getTab_tabla2() {
+        return tab_tabla2;
+    }
+
+    public void setTab_tabla2(Tabla tab_tabla2) {
+        this.tab_tabla2 = tab_tabla2;
     }
 
     public Combo getCom_reporte() {
