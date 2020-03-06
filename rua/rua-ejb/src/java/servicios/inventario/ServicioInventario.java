@@ -735,10 +735,13 @@ public class ServicioInventario {
         return sql;
     }
 
-    public String getBodtCostoArticulo(String articulo, String sucu, String empr) {
+    public String getBodtCostoArticulo(String tipo, String articulo, String sucu, String empr) {
         String sql = "";
         sql += "select ide_bocoa,ide_inarti,ide_empr,ide_sucu,tipo_aplica_bocoa,valor_bocoa,porcentaje_bocoa from bodt_costo_articulo  \n"
-                + "where ide_inarti = " + articulo + " and ide_sucu =" + sucu + " and ide_empr =" + empr + " and activo_bocoa=true";
+                + "where ide_inarti = " + articulo + " and activo_bocoa=true";
+        if (tipo.equals("1")) {
+            sql += " and ide_sucu=" + sucu + " and ide_empr=" + empr;
+        }
         return sql;
     }
 
@@ -803,15 +806,17 @@ public class ServicioInventario {
 
     public double getValorUnitario(String tipo, String articulo, String anio, String sucu, String empr) {
         double valor = 0;
-        TablaGenerica tab_costo = utilitario.consultar(this.getBodtCostoArticulo(articulo, sucu, empr));
+        TablaGenerica tab_costo = utilitario.consultar(this.getBodtCostoArticulo(tipo, articulo, sucu, empr));
+        tab_costo.imprimirSql();
         if (tab_costo.getTotalFilas() > 0) {
             if (tab_costo.getValor("tipo_aplica_bocoa").equals("1")) {
-                valor = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("valor_bocoa"), 2));
+                valor = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("valor_bocoa"), 4));
             } else if (tab_costo.getValor("tipo_aplica_bocoa").equals("2")) {
-                TablaGenerica tab_anio = utilitario.consultar(this.getInventarioAnio(anio));
-                TablaGenerica tab_articulo = utilitario.consultar(this.getBodtArticulo(tipo, articulo, tab_anio.getValor("ide_geani"), sucu, empr));
+                //TablaGenerica tab_anio = utilitario.consultar(this.getInventarioAnio(anio));
+                TablaGenerica tab_articulo = utilitario.consultar(this.getBodtArticulo(tipo, articulo, anio, sucu, empr));
+                tab_articulo.imprimirSql();
                 double porcentaje = Double.parseDouble(utilitario.getFormatoNumero(tab_costo.getValor("porcentaje_bocoa"), 2));
-                double valor_actual = Double.parseDouble(utilitario.getFormatoNumero(tab_articulo.getValor("costo_actual_boart"), 2));
+                double valor_actual = Double.parseDouble(utilitario.getFormatoNumero(tab_articulo.getValor("costo_actual_boart"), 4));
                 valor = (((porcentaje * valor_actual) / 100) + valor_actual);
             }
         } else {
@@ -1107,7 +1112,7 @@ public class ServicioInventario {
                 + " from inv_det_comp_inve\n"
                 + " group by ide_incci\n"
                 + ") f on a.ide_incci= f.ide_incci\n"
-                + "where fecha_trans_incci between cast('" +fecha_inicio+ "' as date) and cast ('" +fecha_fin+ "' as date) and a.ide_intti in(" +transaccion+ ")";
-        return sql;     
+                + "where fecha_trans_incci between cast('" + fecha_inicio + "' as date) and cast ('" + fecha_fin + "' as date) and a.ide_intti in(" + transaccion + ")";
+        return sql;
     }
 }
