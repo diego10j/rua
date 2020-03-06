@@ -1471,9 +1471,9 @@ public class FacturaCxC extends Dialogo {
             TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getExtraerAnio(tab_cab_factura.getValor("fecha_emisi_cccfa")));
             TablaGenerica tab_gen_anio = utilitario.consultar("select * from gen_anio  where nom_geani='" + tab_anio.getValor("anio") + "'");
             if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
-                tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario("1", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")));
+                tab_deta_factura.setValor("precio_ccdfa", "" + utilitario.getFormatoNumero(ser_inventario.getValorUnitario("1", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")), 4));
             } else {
-                tab_deta_factura.setValor("precio_ccdfa", "" + ser_inventario.getValorUnitario("0", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), "0", "0"));
+                tab_deta_factura.setValor("precio_ccdfa", "" + utilitario.getFormatoNumero(ser_inventario.getValorUnitario("0", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), "0", "0"), 4));
             }
             /**
              * **PRECIO FIN****
