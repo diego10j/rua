@@ -337,7 +337,7 @@ public class ServicioContabilidadGeneral {
                 + "and dpc.ide_cntcu in (" + p_tipo_cuentas + ") "
                 + " GROUP BY dpc.ide_cndpc,codig_recur_cndpc, nombre_cndpc,con_ide_cndpc "
                 + "HAVING (sum(dcc.valor_cndcc*sc.signo_cnscu) <>0) ) as C1 "
-                + "UNION SELECT * FROM(Select ide_cndpc,codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || nombre_cndpc,ide_cnncu , '0' as valor, "
+                + "UNION SELECT * FROM(Select ide_cndpc,codig_recur_cndpc,repeat('  ', ide_cnncu::int ) || nombre_cndpc,ide_cnncu ,cast ( '0' as numeric) as valor, "
                 + "con_ide_cndpc,ide_cntcu "
                 + "from  con_det_plan_cuen where ide_cntcu in (" + p_tipo_cuentas + ") "
                 + "and ide_cndpc not in(select ide_cndpc from con_det_comp_cont a inner join con_cab_comp_cont b on a.ide_cnccc=b.ide_cnccc   "
