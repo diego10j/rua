@@ -284,9 +284,9 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setLectura(true);
         tab_consulta.getColumna("ide_cnccc").setNombreVisual("N. ASIENTO");
         tab_consulta.getColumna("ide_cnccc").setFiltro(true);
-        tab_consulta.getColumna("IDE_CNCCC").setLink();
-        tab_consulta.getColumna("IDE_CNCCC").setMetodoChange("abrirAsiento");
-        tab_consulta.getColumna("IDE_CNCCC").alinearCentro();
+        tab_consulta.getColumna("ide_cnccc").setLink();
+        tab_consulta.getColumna("ide_cnccc").setMetodoChange("abrirAsiento");
+        tab_consulta.getColumna("ide_cnccc").alinearCentro();
         tab_consulta.getColumna("fecha_trans_cnccc").setNombreVisual("FECHA");
         tab_consulta.getColumna("ide_cnlap").setVisible(false);
         tab_consulta.getColumna("debe").setLongitud(20);
@@ -387,7 +387,7 @@ public class pre_contabilidad extends Pantalla {
             if (dou_saldo_inicial > 0) {
                 tab_consulta.insertar();
                 tab_consulta.setValor("saldo", utilitario.getFormatoNumero(dou_saldo_inicial));
-                tab_consulta.setValor("OBSERVACION", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
+                tab_consulta.setValor("observacion", "SALDO INICIAL AL " + cal_fecha_inicio.getFecha());
                 tab_consulta.setValor("fecha_trans_cnccc", cal_fecha_inicio.getFecha());
                 tab_consulta.setLectura(true);
             }
@@ -598,7 +598,7 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setScrollHeight(280);
         tab_consulta.setLectura(true);
         tab_consulta.setOrdenar(false);
-        tab_consulta.getColumna("CODIG_RECUR_CNDPC").setNombreVisual("CODIGO CUENTA CONTABLE");
+        tab_consulta.getColumna("codig_recur_cndpc").setNombreVisual("CODIGO CUENTA CONTABLE");
         tab_consulta.getColumna("nombre_cndpc").setNombreVisual("CUENTA CONTABLE");
         tab_consulta.getColumna("ide_cndpc").setVisible(false);
         tab_consulta.getColumna("ide_cnncu").setVisible(false);
@@ -777,7 +777,7 @@ public class pre_contabilidad extends Pantalla {
         tab_consulta.setScrollHeight(280);
         tab_consulta.setLectura(true);
         tab_consulta.setOrdenar(false);
-        tab_consulta.getColumna("CODIG_RECUR_CNDPC").setNombreVisual("CODIGO CUENTA CONTABLE");
+        tab_consulta.getColumna("codig_recur_cndpc").setNombreVisual("CODIGO CUENTA CONTABLE");
         tab_consulta.getColumna("nombre_cndpc").setNombreVisual("CUENTA CONTABLE");
         tab_consulta.getColumna("ide_cndpc").setVisible(false);
         tab_consulta.getColumna("ide_cnncu").setVisible(false);
