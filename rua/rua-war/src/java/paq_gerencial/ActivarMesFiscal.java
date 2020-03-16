@@ -33,7 +33,6 @@ import sistema.aplicacion.Pantalla;
  */
 public class ActivarMesFiscal extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private Tabla tab_tabla3 = new Tabla();
@@ -61,17 +60,12 @@ public class ActivarMesFiscal extends Pantalla {
 
     public ActivarMesFiscal() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
-
-        com_anio.setConexion(conPostgres);
+        
         com_anio.setCombo(ser_gerencial.getAnio("true,false"));
         com_anio.setMetodo("seleccionaElAnio");
 
-        com_anios.setConexion(conPostgres);
         com_anios.setCombo(ser_gerencial.getAnios("true,false"));
 
-        com_tipo_balance.setConexion(conPostgres);
         com_tipo_balance.setCombo(ser_gerencial.getTipoBalance());
 
         bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
@@ -99,7 +93,6 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIODO FISCAL");
         tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
         tab_tabla1.setCondicion("ide_geani=-1");
@@ -122,7 +115,6 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Permite crear la tabla2 
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setConexion(conPostgres);
         tab_tabla2.setHeader("APERTURA MES FISCAL");
         tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
         tab_tabla2.getColumna("ide_gecobc").setVisible(true);
@@ -148,7 +140,7 @@ public class ActivarMesFiscal extends Pantalla {
 
         //DIALOGO DEL MES APERTURA
         sel_mes_apertura.setId("sel_mes_apertura");
-        sel_mes_apertura.getTab_seleccion().setConexion(conPostgres);
+        sel_mes_apertura.getTab_seleccion();
         sel_mes_apertura.setTitle("SELECCIONE EL MES DE APERTURA");
         sel_mes_apertura.setSeleccionTabla(ser_gerencial.getMes("1", ""), "ide_gemes");
         sel_mes_apertura.setRadio();
@@ -159,7 +151,7 @@ public class ActivarMesFiscal extends Pantalla {
 
         //DIALOGO DE TIPO DE BALANCE
         sel_tipo_balance.setId("sel_tipo_balance");
-        sel_tipo_balance.getTab_seleccion().setConexion(conPostgres);
+        sel_tipo_balance.getTab_seleccion();
         sel_tipo_balance.setTitle("SELECCIONE EL TIPO DE BALANCE");
         sel_tipo_balance.setSeleccionTabla(ser_gerencial.getTipoBalance(), "ide_getiba");
         sel_tipo_balance.setRadio();
@@ -169,7 +161,7 @@ public class ActivarMesFiscal extends Pantalla {
         agregarComponente(sel_tipo_balance);
 
         sel_casa_obra.setId("sel_casa_obra");
-        sel_casa_obra.getTab_seleccion().setConexion(conPostgres);
+        sel_casa_obra.getTab_seleccion();
         sel_casa_obra.setTitle("SELECCIONE UNA OBRA SALESIANA");
         sel_casa_obra.setSeleccionTabla(ser_gerencial.getCasaObra("2", ""), "ide_gerobr");
         sel_casa_obra.getTab_seleccion().getColumna("ide_gercas").setVisible(false);
@@ -227,7 +219,7 @@ public class ActivarMesFiscal extends Pantalla {
 
         // CIERRE DE PERIODO FISCAL
         sel_casa_obra_cierre.setId("sel_casa_obra_cierre");
-        sel_casa_obra_cierre.getTab_seleccion().setConexion(conPostgres);
+        sel_casa_obra_cierre.getTab_seleccion();
         sel_casa_obra_cierre.setTitle("SELECCIONE UNA OBRA SALESIANA");
         sel_casa_obra_cierre.setSeleccionTabla(ser_gerencial.getCasaObraPeriodoFiscal("-1", "-1", "-1", "-1"), "ide_gecobc");
         sel_casa_obra_cierre.getTab_seleccion().getColumna("nombre_gercas").setNombreVisual("Casa");
@@ -284,10 +276,8 @@ public class ActivarMesFiscal extends Pantalla {
             sel_tipo_balance.cerrar();
             str_selecccionados = sel_tipo_balance.getValorSeleccionado();
             TablaGenerica tab_obra = new TablaGenerica();
-            tab_obra.setConexion(conPostgres);
             List list_balance = tab_obra.getConexion().consultar(ser_gerencial.getTipoBalance());
             if (list_balance.size() > 0) {
-                tab_tabla2.setConexion(conPostgres);
                 tab_tabla2.insertar();
                 tab_tabla2.setValor("ide_gemes", mes);
                 tab_tabla2.setValor("ide_getiba", sel_tipo_balance.getValorSeleccionado());
@@ -297,7 +287,7 @@ public class ActivarMesFiscal extends Pantalla {
                 tab_tabla2.setValor("ide_gerest", utilitario.getVariable("p_ger_estado_activo"));
             }
             tab_tabla2.guardar();
-            conPostgres.guardarPantalla();
+            guardarPantalla();
         }
     }
 
@@ -339,7 +329,6 @@ public class ActivarMesFiscal extends Pantalla {
             sel_casa_obra.cerrar();
             str_selecccionados = sel_casa_obra.getValorSeleccionado();
             TablaGenerica tab_obra = new TablaGenerica();
-            tab_obra.setConexion(conPostgres);
             List list_obras = tab_obra.getConexion().consultar(ser_gerencial.getCasaObra("1", str_selecccionados));
             if (list_obras.size() > 0) {
                 for (Object li : list_obras) {
@@ -363,7 +352,6 @@ public class ActivarMesFiscal extends Pantalla {
             sel_mes_apertura.cerrar();
             str_selecccionados = sel_mes_apertura.getValorSeleccionado();
             TablaGenerica tab_obra = new TablaGenerica();
-            tab_obra.setConexion(conPostgres);
             List list_mes = tab_obra.getConexion().consultar(ser_gerencial.getMes("1", str_selecccionados));
             if (list_mes.size() > 0) {
                 mes = sel_mes_apertura.getValorSeleccionado();
@@ -387,7 +375,6 @@ public class ActivarMesFiscal extends Pantalla {
             sel_casa_obra_cierre.cerrar();
             str_selecccionados = sel_casa_obra_cierre.getSeleccionados();
             TablaGenerica tab_obra = new TablaGenerica();
-            tab_obra.setConexion(conPostgres);
             List list_obras = tab_obra.getConexion().consultar(ser_gerencial.getCasaObraPeriodoFiscal("-1", "-1", "2", str_selecccionados));
             if (list_obras.size() > 0) {
                 for (Object li : list_obras) {
@@ -424,7 +411,7 @@ public class ActivarMesFiscal extends Pantalla {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
                 if (tab_tabla3.guardar()) {
-                    conPostgres.guardarPantalla();
+                    guardarPantalla();
                     //guardarPantalla();
                 }
             }
@@ -464,14 +451,6 @@ public class ActivarMesFiscal extends Pantalla {
 
     public void setTab_tabla3(Tabla tab_tabla3) {
         this.tab_tabla3 = tab_tabla3;
-    }
-
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
     public SeleccionTabla getSel_casa_obra() {
