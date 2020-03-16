@@ -29,7 +29,6 @@ import sistema.aplicacion.Pantalla;
  */
 public class ActivarPeriodoFiscal extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
     private Tabla tab_tabla3 = new Tabla();
@@ -50,10 +49,6 @@ public class ActivarPeriodoFiscal extends Pantalla {
 
     public ActivarPeriodoFiscal() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
-
-        com_anio.setConexion(conPostgres);
         com_anio.setCombo(ser_gerencial.getAnio("true,false"));
         com_anio.setMetodo("seleccionaElAnio");
         bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
@@ -71,7 +66,6 @@ public class ActivarPeriodoFiscal extends Pantalla {
         
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIODO FISCAL");
         tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
         tab_tabla1.setCondicion("ide_geani=-1");
@@ -97,7 +91,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
         agregarComponente(div_division);
 
         sel_casa_obra.setId("sel_casa_obra");
-        sel_casa_obra.getTab_seleccion().setConexion(conPostgres);
+        sel_casa_obra.getTab_seleccion();
         sel_casa_obra.setTitle("SELECCIONE UNA OBRA SALESIANA");
         sel_casa_obra.setSeleccionTabla(ser_gerencial.getCasaObra("2", ""), "ide_gerobr");
         sel_casa_obra.getTab_seleccion().getColumna("ide_gercas").setVisible(false);
@@ -133,7 +127,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
         
         // CIERRE DE PERIODO FISCAL
         sel_casa_obra_cierre.setId("sel_casa_obra_cierre");
-        sel_casa_obra_cierre.getTab_seleccion().setConexion(conPostgres);
+        sel_casa_obra_cierre.getTab_seleccion();
         sel_casa_obra_cierre.setTitle("SELECCIONE UNA OBRA SALESIANA");
         sel_casa_obra_cierre.setSeleccionTabla(ser_gerencial.getCasaObraPeriodoFiscal("-1", "-1","-1","-1"), "ide_gecobc");
         sel_casa_obra_cierre.getTab_seleccion().getColumna("nombre_gercas").setNombreVisual("Casa");
@@ -198,7 +192,6 @@ public class ActivarPeriodoFiscal extends Pantalla {
                 sel_casa_obra.cerrar();
                 str_selecccionados = sel_casa_obra.getSeleccionados();
                 TablaGenerica tab_obra = new TablaGenerica();
-                tab_obra.setConexion(conPostgres);
                 List list_obras = tab_obra.getConexion().consultar(ser_gerencial.getCasaObra("1", str_selecccionados));
                 if (list_obras.size() > 0) {
                     for (Object li : list_obras) {
@@ -231,7 +224,6 @@ public void agregarCerrarObra() {
                 sel_casa_obra_cierre.cerrar();
                 str_selecccionados = sel_casa_obra_cierre.getSeleccionados();
                 TablaGenerica tab_obra = new TablaGenerica(); 
-                tab_obra.setConexion(conPostgres);
                 List list_obras = tab_obra.getConexion().consultar(ser_gerencial.getCasaObraPeriodoFiscal("-1","-1","2", str_selecccionados));
                 if (list_obras.size() > 0) {
                     for (Object li : list_obras) {
@@ -268,7 +260,7 @@ public void agregarCerrarObra() {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
                 if (tab_tabla3.guardar()) {
-                    conPostgres.guardarPantalla();
+                    guardarPantalla();
                     //guardarPantalla();
                 }
             }
@@ -308,14 +300,6 @@ public void agregarCerrarObra() {
 
     public void setTab_tabla3(Tabla tab_tabla3) {
         this.tab_tabla3 = tab_tabla3;
-    }
-
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
     public SeleccionTabla getSel_casa_obra() {
