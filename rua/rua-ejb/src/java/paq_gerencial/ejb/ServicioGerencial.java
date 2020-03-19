@@ -58,6 +58,14 @@ public class ServicioGerencial {
         return sql;
     }
     
+    //retorna el año sin los estados
+     public String getAnios(String estado) {
+        String sql = "select ide_geani,nom_geani from gen_anio";
+        return sql;
+    }
+    
+    
+    
     //RETORNA LOS MESES DE 
     public String getMes(String tipo,String ide_mes){
         String sql = "select ide_gemes,nombre_gemes from gen_mes";
