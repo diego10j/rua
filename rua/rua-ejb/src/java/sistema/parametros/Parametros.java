@@ -537,7 +537,12 @@ public class Parametros {
 
         //NUMERO SECUENCIAL
         lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
+        
+          /*
+         *MODULO GERENCIAL = 16
+         */
 
+        lis_parametros.add(new Parametro("16","p_estado_gerencial","Indica el estado en ACTIVO","0","ger_estado", "ide_gerest","detalle_gerest"));
         return lis_parametros;
 
     }
