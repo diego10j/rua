@@ -542,7 +542,9 @@ public class Parametros {
          *MODULO GERENCIAL = 16
          */
 
-        lis_parametros.add(new Parametro("16","p_estado_gerencial","Indica el estado en ACTIVO","0","ger_estado", "ide_gerest","detalle_gerest"));
+        lis_parametros.add(new Parametro("16","p_ger_estado_activo","Indica el estado en ACTIVO","0","ger_estado", "ide_gerest","detalle_gerest"));
+        lis_parametros.add(new Parametro("16","p_ger_imprimir_admin","Indica el estado del adminsitrador para imprimir todos los reportes","true"));
+
         return lis_parametros;
 
     }
