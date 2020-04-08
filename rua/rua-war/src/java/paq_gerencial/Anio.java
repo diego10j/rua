@@ -17,17 +17,13 @@ import sistema.aplicacion.Pantalla;
  */
 public class Anio extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     Tabla tab_tabla1 = new Tabla();
 
     public Anio() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
         //Permite crear la tabla          
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("AÑO");
         tab_tabla1.setTabla("gen_anio", "ide_geani", 1);
         tab_tabla1.getColumna("ide_geani").setNombreVisual("CODIGO");
@@ -58,8 +54,7 @@ public class Anio extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla1.guardar();
-        conPostgres.guardarPantalla();
-        //guardarPantalla();
+        guardarPantalla();
     }
 
     @Override
@@ -75,12 +70,5 @@ public class Anio extends Pantalla {
         this.tab_tabla1 = tab_tabla1;
     }
 
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
-    }
 
 }

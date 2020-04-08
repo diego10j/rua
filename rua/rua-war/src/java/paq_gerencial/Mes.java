@@ -8,6 +8,8 @@ package paq_gerencial;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import javax.ejb.EJB;
+import paq_gerencial.ejb.ServicioGerencial;
 import persistencia.Conexion;
 import sistema.aplicacion.Pantalla;
 
@@ -17,19 +19,16 @@ import sistema.aplicacion.Pantalla;
  */
 public class Mes extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     Tabla tab_tabla1 = new Tabla();
     Tabla tab_tabla2 = new Tabla();
+    @EJB
+    private final ServicioGerencial ser_gerencial = (ServicioGerencial) utilitario.instanciarEJB(ServicioGerencial.class);
 
     public Mes() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
-
         //Permite crear la tabla 
-        tab_tabla1.setId("tab_tabla2");
-        tab_tabla1.setConexion(conPostgres);
-        tab_tabla1.setHeader("MES");
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setHeader("REGISTRO DE MESES");
         tab_tabla1.setTabla("gen_mes", "ide_gemes", 1);
         tab_tabla1.getColumna("ide_gemes").setNombreVisual("CODIGO");
         tab_tabla1.getColumna("nombre_gemes").setNombreVisual("NOMBRE");
@@ -46,12 +45,11 @@ public class Mes extends Pantalla {
 
         //Permite crear la tabla            
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setConexion(conPostgres);
-        tab_tabla2.setHeader("TIPO BALANCE MES");
+        tab_tabla2.setHeader("TIPO BALANCE POR MES");
         tab_tabla2.setTabla("ger_tipo_balance_mes", "ide_getibm", 2);
         tab_tabla2.getColumna("ide_getibm").setNombreVisual("CODIGO");
-        tab_tabla2.getColumna("ide_getiba");
-        tab_tabla2.getColumna("ide_gemes");
+        tab_tabla2.getColumna("ide_getiba").setNombreVisual("TIPO DE BALANCE");
+        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance("-1",""));
 
         tab_tabla2.dibujar();
 
@@ -82,8 +80,7 @@ public class Mes extends Pantalla {
     public void guardar() {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
-                conPostgres.guardarPantalla();
-                //guardarPantalla();
+                guardarPantalla();
             }
         }
     }
@@ -111,14 +108,6 @@ public class Mes extends Pantalla {
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
-    }
-
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
 }

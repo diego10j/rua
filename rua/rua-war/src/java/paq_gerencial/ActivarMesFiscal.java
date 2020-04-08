@@ -61,12 +61,12 @@ public class ActivarMesFiscal extends Pantalla {
     public ActivarMesFiscal() {
 
         
-        com_anio.setCombo(ser_gerencial.getAnio("true,false"));
+        com_anio.setCombo(ser_gerencial.getAnio("true,false","1",""));
         com_anio.setMetodo("seleccionaElAnio");
 
-        com_anios.setCombo(ser_gerencial.getAnios("true,false"));
+        com_anios.setCombo(ser_gerencial.getAnio("true,false","1",""));
 
-        com_tipo_balance.setCombo(ser_gerencial.getTipoBalance());
+        com_tipo_balance.setCombo(ser_gerencial.getTipoBalance("-1",""));
 
         bar_botones.agregarComponente(new Etiqueta("Seleccione El Año:"));
         bar_botones.agregarComponente(com_anio);
@@ -77,12 +77,12 @@ public class ActivarMesFiscal extends Pantalla {
 
         //BOTONES
         Boton bot_agregar = new Boton();
-        bot_agregar.setValue("Apertura Periodo Fiscal");
+        bot_agregar.setValue("Apertura Mes Fiscal");
         bot_agregar.setMetodo("aceptarObra");
         bar_botones.agregarBoton(bot_agregar);
 
         Boton bot_cierre = new Boton();
-        bot_cierre.setValue("Cierre Periodo Fiscal");
+        bot_cierre.setValue("Cierre Mes Fiscal");
         bot_cierre.setMetodo("cerrarObra");
         bar_botones.agregarBoton(bot_cierre);
 
@@ -99,7 +99,9 @@ public class ActivarMesFiscal extends Pantalla {
         tab_tabla1.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
         tab_tabla1.getColumna("ide_geani").setVisible(false);
         tab_tabla1.getColumna("ide_gerobr").setCombo(ser_gerencial.getObra());
-        tab_tabla1.getColumna("responsable_gecobc").setEtiqueta();
+        tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CODIGO");
+        tab_tabla1.getColumna("ide_gerest").setNombreVisual("ESTADO");
+        tab_tabla1.getColumna("ide_gerobr").setNombreVisual("OBRAS SALESIANAS");
         tab_tabla1.getColumna("responsable_gecobc").setNombreVisual("RESPONSABLE");
         tab_tabla1.getColumna("fecha_apert_gecobc").setNombreVisual("FECHA APERTURA");
         tab_tabla1.getColumna("fecha_cierre_gecobc").setNombreVisual("FECHA CIERRE");
@@ -115,12 +117,22 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Permite crear la tabla2 
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setHeader("APERTURA MES FISCAL");
+        tab_tabla2.setHeader("REGISTRO DE APERTURA MES FISCAL");
         tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
         tab_tabla2.getColumna("ide_gecobc").setVisible(true);
         tab_tabla2.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
-        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance());
-        tab_tabla2.getColumna("ide_gemes").setCombo(ser_gerencial.getMes1());
+        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance("-1",""));
+        tab_tabla2.getColumna("ide_gemes").setCombo(ser_gerencial.getMes("-1", "-1"));
+        tab_tabla2.getColumna("ide_gecobc").setUnico(true);
+        tab_tabla2.getColumna("ide_gerest").setUnico(true);
+        tab_tabla2.getColumna("ide_getiba").setUnico(true);
+        tab_tabla2.getColumna("ide_gemes").setUnico(true);
+        tab_tabla2.getColumna("responsable_gebame").setLectura(true);
+        tab_tabla2.getColumna("responsable_gebame").setValorDefecto(utilitario.getVariable("NICK"));
+        tab_tabla2.getColumna("ide_gebame").setNombreVisual("CODIGO");
+        tab_tabla2.getColumna("ide_gerest").setNombreVisual("ESTADO");
+        tab_tabla2.getColumna("ide_getiba").setNombreVisual("TIPO BALANCE");
+        tab_tabla2.getColumna("ide_gemes").setNombreVisual("MES");
         tab_tabla2.getColumna("responsable_gebame").setNombreVisual("RESPONSABLE");
         tab_tabla2.getColumna("fecha_apert_gebame").setNombreVisual("FEHCA APERTURA");
         tab_tabla2.getColumna("fecha_cierre_gebame").setNombreVisual("FECHA CIERRE");
@@ -146,25 +158,24 @@ public class ActivarMesFiscal extends Pantalla {
         sel_mes_apertura.setRadio();
         sel_mes_apertura.getTab_seleccion().getColumna("ide_gemes").setVisible(false);
         sel_mes_apertura.getTab_seleccion().getColumna("nombre_gemes").setNombreVisual("Mes");
-        sel_mes_apertura.getBot_aceptar().setMetodo("agregarMes");
+        sel_mes_apertura.getBot_aceptar().setMetodo("agregarObra");
         agregarComponente(sel_mes_apertura);
 
         //DIALOGO DE TIPO DE BALANCE
         sel_tipo_balance.setId("sel_tipo_balance");
         sel_tipo_balance.getTab_seleccion();
         sel_tipo_balance.setTitle("SELECCIONE EL TIPO DE BALANCE");
-        sel_tipo_balance.setSeleccionTabla(ser_gerencial.getTipoBalance(), "ide_getiba");
+        sel_tipo_balance.setSeleccionTabla(ser_gerencial.getTipoBalance("-1",""), "ide_getiba");
         sel_tipo_balance.setRadio();
         sel_tipo_balance.getTab_seleccion().getColumna("ide_getiba").setVisible(false);
         sel_tipo_balance.getTab_seleccion().getColumna("detalle_getiba").setNombreVisual("Tipo Balance");
-        sel_tipo_balance.getBot_aceptar().setMetodo("agregarTipoBalance");
+        sel_tipo_balance.getBot_aceptar().setMetodo("agregarObra");
         agregarComponente(sel_tipo_balance);
 
         sel_casa_obra.setId("sel_casa_obra");
         sel_casa_obra.getTab_seleccion();
         sel_casa_obra.setTitle("SELECCIONE UNA OBRA SALESIANA");
-        sel_casa_obra.setSeleccionTabla(ser_gerencial.getCasaObra("2", ""), "ide_gerobr");
-        sel_casa_obra.getTab_seleccion().getColumna("ide_gercas").setVisible(false);
+        sel_casa_obra.setSeleccionTabla(ser_gerencial.getCasaObraMensual("-1", "-1","-1","-1","-1"), "ide_gecobc");
         sel_casa_obra.getTab_seleccion().getColumna("nombre_gercas").setNombreVisual("Casa");
         sel_casa_obra.getTab_seleccion().getColumna("nombre_gerobr").setNombreVisual("Obra");
         sel_casa_obra.getBot_aceptar().setMetodo("agregarObra");
@@ -194,7 +205,7 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Dialogo
         dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("REGISTRO DE INFORMACION PARA APERTURA DE PERIODO FISCAL CONTABLE");
+        dia_dialogo.setTitle("REGISTRO DE INFORMACION PARA APERTURA DEL MES FISCAL CONTABLE");
         dia_dialogo.setWidth("40%");
         dia_dialogo.setHeight("30%");
         dia_dialogo.setResizable(false);
@@ -271,33 +282,20 @@ public class ActivarMesFiscal extends Pantalla {
         }
     }
 
-    public void agregarTipoBalance() {
-        if (sel_tipo_balance.isVisible()) {
-            sel_tipo_balance.cerrar();
-            str_selecccionados = sel_tipo_balance.getValorSeleccionado();
-            TablaGenerica tab_obra = new TablaGenerica();
-            List list_balance = tab_obra.getConexion().consultar(ser_gerencial.getTipoBalance());
-            if (list_balance.size() > 0) {
-                tab_tabla2.insertar();
-                tab_tabla2.setValor("ide_gemes", mes);
-                tab_tabla2.setValor("ide_getiba", sel_tipo_balance.getValorSeleccionado());
-                tab_tabla2.setValor("fecha_apert_gebame", str_fecha);
-                tab_tabla2.setValor("responsable_gebame", utilitario.getVariable("NICK"));
-                tab_tabla2.setValor("observacion_gebame", str_observacion);
-                tab_tabla2.setValor("ide_gerest", utilitario.getVariable("p_ger_estado_activo"));
-            }
-            tab_tabla2.guardar();
-            guardarPantalla();
-        }
-    }
-
-    public void aceptarObra() {
+       public void aceptarObra() {
         //si no selecciono ningun valor en el combo
         if (com_anio.getValue() == null) {
             utilitario.agregarMensajeInfo("Debe seleccionar un Año", "");
             return;
         } else {
+            TablaGenerica tab_anio= utilitario.consultar(ser_gerencial.getAnio("", "2", com_anio.getValue().toString()));
+            if(tab_anio.getValor("activo_geani").equals("INACTIVO")){
+                utilitario.agregarMensajeError("INACTIVO", "El año seleccionado se encuentra inactivo no puede activar el mes físcal");
+                return;
+            }
+            else{
             dia_dialogo.dibujar();
+            }
         }
     }
 
@@ -310,9 +308,10 @@ public class ActivarMesFiscal extends Pantalla {
             dia_dialogo_cierre.dibujar();
         }
     }
-
+    String str_mes_seleccionado="";
+    String str_tipo_balance_seleccionado="";
     public void agregarObra() {
-
+        
         if (cal_fecha_emision.getValue() == null || cal_fecha_emision.getValue().toString().isEmpty()) {
             utilitario.agregarMensajeInfo("ADVERTENCIA,", "Ingrese la Fecha de Apertura");
             return;
@@ -324,40 +323,65 @@ public class ActivarMesFiscal extends Pantalla {
             str_observacion = txt_resolucion.getValue().toString();
             dia_dialogo.cerrar();
 
-            sel_casa_obra.dibujar();
-        } else if (sel_casa_obra.isVisible()) {
-            sel_casa_obra.cerrar();
-            str_selecccionados = sel_casa_obra.getValorSeleccionado();
-            TablaGenerica tab_obra = new TablaGenerica();
-            List list_obras = tab_obra.getConexion().consultar(ser_gerencial.getCasaObra("1", str_selecccionados));
-            if (list_obras.size() > 0) {
-                for (Object li : list_obras) {
-                    Object[] fila = (Object[]) li;
-                    tab_tabla1.insertar();
-                    tab_tabla1.setValor("ide_gerobr", String.valueOf(fila[0]));
-                    tab_tabla1.setValor("responsable_gecobc", utilitario.getVariable("NICK"));
-                    tab_tabla1.setValor("ide_geani", com_anio.getValue() + "");
-                    tab_tabla1.setValor("ide_gerest", utilitario.getVariable("p_ger_estado_activo"));
-                    tab_tabla1.setValor("fecha_apert_gecobc", str_fecha);
-                    tab_tabla1.setValor("observacion_gecobc", str_observacion);
-                }
-            }
             sel_mes_apertura.dibujar();
-        }
-    }
-
-    public void agregarMes() {
-
-        if (sel_mes_apertura.isVisible()) {
+        } 
+        else if(sel_mes_apertura.isVisible()) {
+            
+            str_mes_seleccionado = sel_mes_apertura.getValorSeleccionado();
+            if(str_mes_seleccionado==null){
+                utilitario.agregarMensajeError("Seleccione un valor", "Seleccione un mes");
+            }
+            else{
             sel_mes_apertura.cerrar();
-            str_selecccionados = sel_mes_apertura.getValorSeleccionado();
-            TablaGenerica tab_obra = new TablaGenerica();
-            List list_mes = tab_obra.getConexion().consultar(ser_gerencial.getMes("1", str_selecccionados));
-            if (list_mes.size() > 0) {
-                mes = sel_mes_apertura.getValorSeleccionado();
+            sel_tipo_balance.getTab_seleccion().setSql(ser_gerencial.getTipoBalance("1", str_mes_seleccionado));
+            sel_tipo_balance.getTab_seleccion().ejecutarSql();
+            sel_tipo_balance.dibujar();
             }
         }
-        sel_tipo_balance.dibujar();
+        else if (sel_tipo_balance.isVisible()) {
+            
+            str_tipo_balance_seleccionado = sel_tipo_balance.getValorSeleccionado();
+            if(str_tipo_balance_seleccionado==null){
+                utilitario.agregarMensajeError("Seleccione un valor", "Seleccione el tipo de balance");
+            }
+            else{
+            sel_tipo_balance.cerrar();    
+            sel_casa_obra.getTab_seleccion().setSql(ser_gerencial.getCasaObraMensual("1",com_anio.getValue().toString(),str_mes_seleccionado, str_tipo_balance_seleccionado,""));
+            sel_casa_obra.getTab_seleccion().ejecutarSql();
+            sel_casa_obra.dibujar();
+            }
+        }
+        else if (sel_casa_obra.isVisible()) {
+            
+            str_selecccionados = sel_casa_obra.getSeleccionados();
+            if(str_selecccionados==null){
+                utilitario.agregarMensajeError("Seleccione un valor", "Seleccione una casa u obra");
+            }
+            else{
+            sel_casa_obra.cerrar();
+            TablaGenerica tab_obras_mensual=utilitario.consultar(ser_gerencial.getCasaObraMensual("2",com_anio.getValue().toString(),str_mes_seleccionado, str_tipo_balance_seleccionado,str_selecccionados));
+            if(tab_obras_mensual.getTotalFilas()>0){
+                for(int i=0;i<tab_obras_mensual.getTotalFilas();i++){
+                    tab_tabla2.insertar();
+                    tab_tabla2.setValor("ide_gecobc", tab_obras_mensual.getValor(i, "ide_gecobc"));
+                    tab_tabla2.setValor("ide_gemes", str_mes_seleccionado);
+                    tab_tabla2.setValor("ide_getiba", str_tipo_balance_seleccionado);
+                    tab_tabla2.setValor("fecha_apert_gebame", str_fecha);
+                    tab_tabla2.setValor("responsable_gebame", utilitario.getVariable("NICK"));
+                    tab_tabla2.setValor("observacion_gebame", str_observacion);
+                    tab_tabla2.setValor("ide_gerest", utilitario.getVariable("p_ger_estado_activo"));
+                }
+            tab_tabla2.guardar();
+            guardarPantalla();
+            tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            utilitario.addUpdate("tab_tabla2");
+            }
+            
+            }
+            
+        }
+        
+        
     }
 
     public void agregarCerrarObra() {

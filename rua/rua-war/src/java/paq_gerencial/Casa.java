@@ -19,17 +19,13 @@ import sistema.aplicacion.Pantalla;
  */
 public class Casa extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();       
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
 
     public Casa() {             
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";           
-        
+
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("CASA SALESIANA");
         tab_tabla1.setTabla("ger_casa", "ide_gercas", 0);
         tab_tabla1.getColumna("ide_gercas").setNombreVisual("CÓDIGO");    
@@ -44,7 +40,6 @@ public class Casa extends Pantalla {
         pat_tabla1.setPanelTabla(tab_tabla1);
 
         tab_tabla2.setId("tab_tabla2");            
-        tab_tabla2.setConexion(conPostgres);             
         tab_tabla2.setHeader("OBRA SALESIANA");           
         tab_tabla2.setTabla("ger_obra", "ide_gerobr", 1);
         tab_tabla2.getColumna("ide_gerobr").setNombreVisual("CÓDIGO");
@@ -80,8 +75,7 @@ public class Casa extends Pantalla {
     public void guardar() {  
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
-                conPostgres.guardarPantalla();
-                //guardarPantalla();
+                guardarPantalla();
                 
             }
         }
@@ -110,14 +104,6 @@ public class Casa extends Pantalla {
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
-    }
-
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
 }

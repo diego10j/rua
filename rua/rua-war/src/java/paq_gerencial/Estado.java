@@ -18,17 +18,13 @@ import sistema.aplicacion.Pantalla;
  */
 public class Estado extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     Tabla tab_tabla1 = new Tabla();
 
     public Estado() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
         //Permite crear la tabla 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("ESTADO");
         tab_tabla1.setTabla("ger_estado", "ide_gerest", 1);
         tab_tabla1.getColumna("ide_gerest").setNombreVisual("CODIGO");
@@ -58,8 +54,7 @@ public class Estado extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla1.guardar();
-        conPostgres.guardarPantalla();
-        //guardarPantalla();
+        guardarPantalla();
     }
 
     @Override
@@ -73,14 +68,6 @@ public class Estado extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
-    }
-            
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
 }

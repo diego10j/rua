@@ -20,18 +20,14 @@ public class Clasificador extends Pantalla {
 
     Tabla tab_tabla1 = new Tabla();
 
-    private Conexion conPostgres = new Conexion();
     private Division div_division1 = new Division();
     private Arbol arb_arbol = new Arbol();
 
     public Clasificador() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
         
         //Permite crear la tabla          
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setTabla("pre_clasificador", "ide_prcla", 1);
         tab_tabla1.setCampoPadre("pre_ide_prcla");
         tab_tabla1.setCampoNombre("descripcion_clasificador_prcla");
@@ -53,9 +49,7 @@ public class Clasificador extends Pantalla {
         pat_panel1.setId("pat_panel1");
         pat_panel1.setPanelTabla(tab_tabla1);
 
-        arb_arbol.setId("arb_arbol");
-        arb_arbol.setConexion(conPostgres);        
-        
+        arb_arbol.setId("arb_arbol");        
         arb_arbol.dibujar();
 
         //Permite la dision de la pantalla             
@@ -104,14 +98,6 @@ public class Clasificador extends Pantalla {
 
     public void setArb_arbol(Arbol arb_arbol) {
         this.arb_arbol = arb_arbol;
-    }
-
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
 }

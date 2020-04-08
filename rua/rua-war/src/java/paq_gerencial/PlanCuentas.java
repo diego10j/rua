@@ -30,18 +30,15 @@ public class PlanCuentas extends Pantalla {
 
     Tabla tab_tabla1 = new Tabla();
 
-    private Conexion conPostgres = new Conexion();
     private Division div_division = new Division();
     private Arbol arb_arbol = new Arbol();
 
     public PlanCuentas() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
+
 
         //Configurar tabla2        
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setCampoPadre("con_ide_cndpc");
         tab_tabla1.setCampoNombre("nombre_cndpc");
         tab_tabla1.setTabla("con_det_plan_cuen", "ide_cndpc", 1);
@@ -54,7 +51,6 @@ public class PlanCuentas extends Pantalla {
         pat_panel1.setPanelTabla(tab_tabla1);
 
         arb_arbol.setId("arb_arbol");
-        arb_arbol.setConexion(conPostgres);
 
         arb_arbol.dibujar();         
 
@@ -73,7 +69,6 @@ public class PlanCuentas extends Pantalla {
     @Override
     public void guardar() {
         tab_tabla1.guardar();
-        conPostgres.guardarPantalla();
         //guardarPantalla();        
     }
 
@@ -90,13 +85,6 @@ public class PlanCuentas extends Pantalla {
         this.tab_tabla1 = tab_tabla1;
     }
 
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
-    }
 
     public Arbol getArb_arbol() {
         return arb_arbol;

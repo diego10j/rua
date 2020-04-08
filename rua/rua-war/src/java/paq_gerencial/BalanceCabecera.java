@@ -19,7 +19,6 @@ import sistema.aplicacion.Pantalla;
  */    
 public class BalanceCabecera extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     Tabla tab_tabla1 = new Tabla();
     Tabla tab_tabla2 = new Tabla();
     Tabla tab_tabla3 = new Tabla();
@@ -29,12 +28,10 @@ public class BalanceCabecera extends Pantalla {
 
     public BalanceCabecera() {
 
-        conPostgres.setUnidad_persistencia("rua_gerencial");
-        conPostgres.NOMBRE_MARCA_BASE = "postgres";
+
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setConexion(conPostgres);
         tab_tabla1.setHeader("CONT BALANCE CABECERA");
         tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
         tab_tabla1.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
@@ -55,11 +52,10 @@ public class BalanceCabecera extends Pantalla {
 
         //Permite crear la tabla2 
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setConexion(conPostgres);
         tab_tabla2.setHeader("BALANCE MENSUAL");
         tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
         tab_tabla2.getColumna("ide_gecobc").setNombreVisual("COD.CAB.BAL");
-        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance());         
+        tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance("-1",""));         
         tab_tabla2.getColumna("responsable_gebame").setNombreVisual("RESPONSABLE");
         tab_tabla2.getColumna("fecha_apert_gebame").setNombreVisual("FEHCA APERTURA");
         tab_tabla2.getColumna("fecha_cierre_gebame").setNombreVisual("FECHA CIERRE");
@@ -74,7 +70,6 @@ public class BalanceCabecera extends Pantalla {
 
         //Permite crear la tabla3      
         tab_tabla3.setId("tab_tabla3");
-        tab_tabla3.setConexion(conPostgres);            
         tab_tabla3.setHeader("BALANCE");
         tab_tabla3.setTabla("ger_balance", "ide_gerbal", 3);
         tab_tabla3.getColumna("ide_gebame").setNombreVisual("BALANCE MENSUAL");
@@ -113,8 +108,7 @@ public class BalanceCabecera extends Pantalla {
         if (tab_tabla1.guardar()) {
             if (tab_tabla2.guardar()) {
                 if (tab_tabla3.guardar()) {
-                    conPostgres.guardarPantalla();
-                    //guardarPantalla();
+                    guardarPantalla();
                 }
             }
         }
@@ -153,14 +147,6 @@ public class BalanceCabecera extends Pantalla {
 
     public void setTab_tabla3(Tabla tab_tabla3) {
         this.tab_tabla3 = tab_tabla3;
-    }
-            
-    public Conexion getConPostgres() {
-        return conPostgres;
-    }
-
-    public void setConPostgres(Conexion conPostgres) {
-        this.conPostgres = conPostgres;
     }
 
 }
