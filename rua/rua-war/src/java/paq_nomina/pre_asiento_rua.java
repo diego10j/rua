@@ -233,7 +233,7 @@ public void consultaDescuadre(){
 
        
        try{
-          String ide_asiento_cncc= ser_gestion.saveAsientoNomina(utilitario.getVariable("IDE_USUA"), tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), tab_cabecera_asiento.getValor("OBSERVACION_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina"), utilitario.getVariable("p_reh_estado_comprobante_nomina"), utilitario.getFechaActual(), utilitario.getHoraActual(), ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina")), utilitario.getVariable("p_nrh_mod_asiento_nomina"), utilitario.getVariable("p_nrh_persona_asiento_nomina"));
+          String ide_asiento_cncc= ser_gestion.saveAsientoNomina(utilitario.getVariable("IDE_USUA"), tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), tab_cabecera_asiento.getValor("OBSERVACION_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina"), utilitario.getVariable("p_reh_estado_comprobante_nomina"), utilitario.getFechaActual(), utilitario.getHoraActual(), ser_comprobante.getSecuencial(tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina")), utilitario.getVariable("p_nrh_mod_asiento_nomina"), utilitario.getVariable("p_nrh_persona_asiento_nomina"));
                 
             for (int i =0; i<tab_detalle_asiento.getTotalFilas(); i++){
 
