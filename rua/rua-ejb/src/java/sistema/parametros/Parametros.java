@@ -534,6 +534,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("15", "p_pen_tipo_client_representante", "Indica el tipo de cliente representante", "2", "ven_tipo_cliente", "ide_vgtcl", "nombre_vgtcl"));
         lis_parametros.add(new Parametro("15", "p_pen_grupo_representante", "Indica el grupo de representante", "2", "gen_persona", "ide_geper", "nom_geper"));
         lis_parametros.add(new Parametro("15", "p_pen_concepto", "Indica el concepto matricula", "2", "rec_concepto", "ide_concepto_recon", "des_concepto_recon"));
+        lis_parametros.add(new Parametro("15", "p_pen_dat_adicional", "Indica si aplica un nuevo adicional en factura", "true"));
+        lis_parametros.add(new Parametro("15", "p_pen_nom_adicional", "Indica el nomber del la informacion adicional", "Descuento Especial por Emercencia"));
+        lis_parametros.add(new Parametro("15", "p_pen_val_adicional", "Indica el el valor de la informacion adicional", "20% Desc. Marzo, 20% Desc Abril, como se indica en esta factura"));
 
         //NUMERO SECUENCIAL
         lis_parametros.add(new Parametro("15", "p_pen_num_sec_recibo_recaudacion", "Indica el numero secuencial para el recibo de recaudaciones", "2", "gen_modulo_secuencial", "ide_gemos", "abreviatura_gemos"));
