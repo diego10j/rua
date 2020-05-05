@@ -7,7 +7,6 @@ package paq_gerencial.ejb;
 
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
-import sistema.aplicacion.Utilitario;
 
 /**
  *
@@ -111,7 +110,7 @@ public class ServicioGerencial {
         String sql = "select ide_gecobc,nombre_gercas,nombre_gerobr from ger_cont_balance_cabecera a,(select a.ide_gercas,nombre_gercas,ide_gerobr,nombre_gerobr "
                 + " from ger_casa a, ger_obra b where a.ide_gercas=b.ide_gercas ) b where a.ide_gerobr=b.ide_gerobr ";
         if (tipo.equals("1")) {
-            sql += " and a.ide_geani=" + anio + " and a.ide_gerest=" + estado;
+            sql += " and a.ide_geani=" + anio + " and a.ide_gerest in (" + estado+")";
         }
         if (tipo.equals("2")) {
             sql += " and ide_gecobc in (" + codigo + ")";
@@ -228,7 +227,6 @@ public class ServicioGerencial {
     public String getCalTemBalance(String usuario,String nivel) {
         String sql = "select con_ide_cndpc,sum(valor_debe_geteba) as debe,sum(valor_haber_geteba) as haber " +
                         "from ger_temp_balance a, con_det_plan_cuen b where a.ide_cndpc=b.ide_cndpc and ide_cnncu in ("+nivel+") and ide_usua="+usuario+" group by con_ide_cndpc";
-        System.out.println("sql "+sql);
         return sql;
     }
     /**
@@ -253,4 +251,149 @@ public class ServicioGerencial {
         }
         return ide_patide;
     }
+             /**
+     * Retorna sentencia SQL resumen meses
+     *
+     * @return sql
+     */
+    public String getResumenMes(String mes,String valor,String condicion) {
+        String sql = "select 1 as ide, "+valor+" as valor from (" ;
+                sql+=getMes("0", mes);
+                sql+=" ) a "+condicion;
+        return sql;
+    }   
+     /**
+     * Retorna sentencia SQL resumen de obras horizontal
+     *
+     * @return sql
+     */
+    public String getObrasHorizontal(String ide_obra) {
+        String sql = "SELECT 1 as codigo,'OBRAS: '|| list(nombre_gerobr) as obra FROM ger_obra where ide_gerobr in (select ide_gerobr from ger_cont_balance_cabecera where ide_gecobc in ("+ide_obra+"))" ;
+        return sql;
+    }
+     /**
+     * Retorna sentencia SQL valores para el caculo de valores activo, pasivo patrimonio, utilidad
+     *
+     * @return sql
+     */
+    public String getResultadoBalanceGeneral(String ide_geani,String ide_obra,String activo,String pasivo,String patrimonio) {
+        String sql = "SELECT a.ide_gemes,nombre_gemes,(case when b.debe is null then 0 else b.debe end) as activo,(case when c.haber is null then 0 else c.haber end) as pasivo,(case when d.haber is null then 0 else d.haber end) as patrimonio from gen_mes a left join ( " +
+                 getBalanceGeneral(ide_geani, ide_obra, "1,2","1,2,3,4,5,6,7,8,9,10,11,12", "1", "1", "1",activo ) +" ) b on a.ide_gemes=b.ide_gemes "+
+                 " left join ("+
+                 getBalanceGeneral(ide_geani, ide_obra, "1,2","1,2,3,4,5,6,7,8,9,10,11,12", "1", "1", "1",pasivo ) +" ) c on a.ide_gemes=c.ide_gemes "+
+                  " left join ("+
+                 getBalanceGeneral(ide_geani, ide_obra, "1,2","1,2,3,4,5,6,7,8,9,10,11,12", "1", "1", "1",patrimonio ) +" ) d on a.ide_gemes=d.ide_gemes "+
+                 " order by ide_gemes ";
+        return sql;
+    }
+     /**
+     * Retorna sentencia SQL balance general
+     *
+     * @return sql
+     */
+    public String getBalanceGeneral(String ide_geani,String ide_obra,String tipo_balance,String mes,String nivel_inicial,String nivel_final,String tipo,String cuenta) {
+        String sql = "select a.ide_cndpc,codig_recur_cndpc,nombre_cndpc,(case when apli_saldo_cndpc=1 then debe-haber else 0 end) as debe, " +
+                    "(case when apli_saldo_cndpc=2 then haber-debe else 0 end) as haber " ;
+                    if(tipo.equals("1")){
+                         sql+=" ,ide_gemes ";
+                     }
+                    sql+=" from con_det_plan_cuen a ,( " +
+                    "select ide_cndpc,sum(valor_debe_gebade) as debe,sum(valor_haber_gebade) as haber " ;
+                    if(tipo.equals("1")){
+                         sql+=" ,ide_gemes ";
+                     }
+                    sql+=" from ( " +
+                    " select a.ide_gecobc,nombre_gercas,nombre_gerobr,codigo_gerobr,ide_geani,ide_cndpc,valor_debe_gebade,valor_haber_gebade " ;
+                    if(tipo.equals("1")){
+                         sql+=" ,c.ide_gemes ";
+                     }
+                    sql +=" from ger_cont_balance_cabecera a,(select a.ide_gercas,nombre_gercas,ide_gerobr,nombre_gerobr,codigo_gerobr " +
+                    " from ger_casa a, ger_obra b where a.ide_gercas=b.ide_gercas ) b,ger_balance_mensual c ,ger_balance_detalle d " +
+                    "where a.ide_gerobr=b.ide_gerobr " +
+                    "and a.ide_gecobc= c.ide_gecobc " +
+                    "and c.ide_gebame=d.ide_gebame " +
+                    "and ide_geani in ("+ide_geani+")" +
+                    "and a.ide_gecobc in ("+ide_obra+") " +
+                    "and c.ide_getiba in ("+tipo_balance+") " +
+                    " and c.ide_gemes in ( "+mes+") ";
+                     if(tipo.equals("1")){
+                         sql+=" and ide_cndpc in ("+cuenta+") ";
+                     }
+                    sql +=" ) a group by ide_cndpc " ;
+                    if(tipo.equals("1")){
+                         sql+=" ,ide_gemes ";
+                     }        
+                    sql+=" ) b where a.ide_cndpc= b.ide_cndpc " +
+                    " and ((case when apli_saldo_cndpc=1 then debe-haber else 0 end) + (case when apli_saldo_cndpc=2 then haber-debe else 0 end)) !=0 " +
+                    " and ide_cnncu between "+nivel_inicial+" and " +nivel_final+
+                    " order by codig_recur_cndpc " ;               
+        return sql;
+    }   
+     /**
+     * Retorna sentencia SQL totales balance de comprobacion
+     *
+     * @return sql
+     */
+    public String getTotalBalanceComprobacion(String ide_geani,String bal_inicial,String bal_mensual,String ide_obras,String ide_mes,String tipo_balance,String mes_periodo) {
+        String sql = "select  sum (debe_inicial) as tot_debe_inicial,sum(haber_inicial) as tot_haber_incial,sum(debe_periodo) as tot_debe_per,sum(haber_periodo) as tot_haber_per,\n" +
+"sum(debe_acum) as tot_debe_acum,sum(haber_acum) as tot_haber_acum,sum(debe_saldo) as tot_debe_sal,sum(haber_saldo) as tot_haber_sal from (\n" +
+"select a.ide_cndpc,codig_recur_cndpc,nombre_cndpc,(case when debe_inicial is null then 0 else debe_inicial end) as debe_inicial,\n" +
+"(case when haber_inicial is null then 0 else haber_inicial end) as haber_inicial,\n" +
+"(case when debe_periodo is null then 0 else debe_periodo end) as debe_periodo,\n" +
+"(case when haber_periodo is null then 0 else haber_periodo end) as haber_periodo,\n" +
+"(case when debe_acum is null then 0 else debe_acum end) as debe_acum,\n" +
+"(case when haber_acum is null then 0 else haber_acum end) as haber_acum,\n" +
+"(case when apli_saldo_cndpc=1 then (case when debe_acum is null then 0 else debe_acum end)-(case when haber_acum is null then 0 else haber_acum end) else 0 end) as debe_saldo,\n" +
+"(case when apli_saldo_cndpc=2 then (case when haber_acum is null then 0 else haber_acum end)-(case when debe_acum is null then 0 else debe_acum end) else 0 end) as haber_saldo " +
+"from con_det_plan_cuen a \n" +
+"left join (\n" +
+"select ide_cndpc,sum(valor_debe_gebade) as debe_inicial,sum(valor_haber_gebade) as haber_inicial \n" +
+"from (\n" +
+"select a.ide_gecobc,nombre_gercas,nombre_gerobr,codigo_gerobr,ide_geani,ide_cndpc,valor_debe_gebade,valor_haber_gebade \n" +
+"from ger_cont_balance_cabecera a,(select a.ide_gercas,nombre_gercas,ide_gerobr,nombre_gerobr,codigo_gerobr \n" +
+"from ger_casa a, ger_obra b where a.ide_gercas=b.ide_gercas ) b,ger_balance_mensual c ,ger_balance_detalle d \n" +
+"where a.ide_gerobr=b.ide_gerobr \n" +
+"and a.ide_gecobc= c.ide_gecobc\n" +
+"and c.ide_gebame=d.ide_gebame\n" +
+"and ide_geani in ("+ide_geani+")\n" +
+"and a.ide_gecobc in ("+ide_obras+")\n" +
+"and c.ide_getiba in ("+bal_inicial+")\n" +
+") a group by ide_cndpc\n" +
+") b on a.ide_cndpc = b.ide_cndpc\n" +
+"left join (\n" +
+"select ide_cndpc,sum(valor_debe_gebade) as debe_periodo,sum(valor_haber_gebade) as haber_periodo \n" +
+"from (\n" +
+"select a.ide_gecobc,nombre_gercas,nombre_gerobr,codigo_gerobr,ide_geani,ide_cndpc,valor_debe_gebade,valor_haber_gebade \n" +
+"from ger_cont_balance_cabecera a,(select a.ide_gercas,nombre_gercas,ide_gerobr,nombre_gerobr,codigo_gerobr \n" +
+"from ger_casa a, ger_obra b where a.ide_gercas=b.ide_gercas ) b,ger_balance_mensual c ,ger_balance_detalle d \n" +
+"where a.ide_gerobr=b.ide_gerobr \n" +
+"and a.ide_gecobc= c.ide_gecobc\n" +
+"and c.ide_gebame=d.ide_gebame\n" +
+"and ide_geani in ("+ide_geani+")\n" +
+"and a.ide_gecobc in ("+ide_obras+")\n" +
+"and c.ide_getiba in ("+bal_mensual+")\n" +
+"and c.ide_gemes in ("+mes_periodo+")\n" +
+") a group by ide_cndpc\n" +
+") c on a.ide_cndpc = c.ide_cndpc\n" +
+"left join (\n" +
+"select ide_cndpc,sum(valor_debe_gebade) as debe_acum,sum(valor_haber_gebade) as haber_acum \n" +
+"from (\n" +
+"select a.ide_gecobc,nombre_gercas,nombre_gerobr,codigo_gerobr,ide_geani,ide_cndpc,valor_debe_gebade,valor_haber_gebade ,c.ide_gemes\n" +
+"from ger_cont_balance_cabecera a,(select a.ide_gercas,nombre_gercas,ide_gerobr,nombre_gerobr,codigo_gerobr \n" +
+"from ger_casa a, ger_obra b where a.ide_gercas=b.ide_gercas ) b,ger_balance_mensual c ,ger_balance_detalle d \n" +
+"where a.ide_gerobr=b.ide_gerobr \n" +
+"and a.ide_gecobc= c.ide_gecobc\n" +
+"and c.ide_gebame=d.ide_gebame\n" +
+"and ide_geani in ("+ide_geani+")\n" +
+"and a.ide_gecobc in ("+ide_obras+")\n" +
+"and c.ide_getiba in ("+tipo_balance+")\n" +
+"and c.ide_gemes in ("+ide_mes+")\n" +
+") a group by ide_cndpc\n" +
+") d on a.ide_cndpc = d.ide_cndpc\n" +
+"where ide_cnncu between 1 and 1\n" +
+"order by codig_recur_cndpc\n" +
+") a" ;
+        //System.out.println(sql);
+        return sql;
+    }    
 }
