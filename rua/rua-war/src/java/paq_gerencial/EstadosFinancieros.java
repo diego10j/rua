@@ -32,6 +32,8 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.VisualizarPDF;
+import framework.componentes.graficos.GraficoCartesiano;
+import framework.componentes.graficos.GraficoPastel;
 import framework.reportes.ReporteDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,8 +72,11 @@ public class EstadosFinancieros extends Pantalla {
     private Etiqueta eti_mes = new Etiqueta();
     private Etiqueta eti_estado_detalle = new Etiqueta();
     private Tabla tab_consulta;
+    private Tabla tab_tabla;
     private Tabla tab_tabla3=new Tabla();
     private cls_contabilidad con = new cls_contabilidad();
+     private GraficoCartesiano gca_utilidad;
+     private GraficoPastel gpa_utilidad;
     //Consultas
     private Calendario cal_fecha_inicio;
     private Calendario cal_fecha_fin;
@@ -95,10 +100,12 @@ public class EstadosFinancieros extends Pantalla {
     private Combo com_tipo_balance=new Combo();
     private Combo com_periodo;
     private Combo com_periodo_financiero;
+    private Combo com_periodo_grafico;
     private ListaSeleccion lis_tipo_balance = new ListaSeleccion();
     private ListaSeleccion lis_meses = new ListaSeleccion();
     private Radio rad_nivel_inicial = new Radio();
      private Radio rad_nivel_final = new Radio();
+     private Etiqueta eti_casa=new Etiqueta();
     String ide_gebame="-1";
     String str_impresion="-1";
     public EstadosFinancieros() {
@@ -117,19 +124,106 @@ public class EstadosFinancieros extends Pantalla {
         mep_menu.setMenuPanel("ESTADOS FINANCIEROS CONTABLES CONSOLIDADOS", "20%");
         mep_menu.agregarItem("Transferir Balance", "dibujarTransferirBalance", "ui-icon-bookmark"); //1
         mep_menu.agregarItem("Estados Financieros", "dibujarEstadosFinancieros", "ui-icon-bookmark");//2
-        mep_menu.agregarItem("Balance General", "dibujarBalanceGeneral", "ui-icon-bookmark");//3
-        mep_menu.agregarItem("Estado de Resultados", "dibujarEstadoResultados", "ui-icon-bookmark");//4
         mep_menu.agregarSubMenu("GRAFICOS");
-        mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-bookmark");
+        mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-clock");
         agregarComponente(mep_menu);
-        tipoImpresion();
-
+        tipoImpresion();//Inicializo el tipo de impresión
+        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
+        //SELECCION DE OBRAS
+        sel_casa_obras.setId("sel_casa_obras");
+	sel_casa_obras.setTitle("SELECCIONE DE OBRAS");
+	sel_casa_obras.setSeleccionTabla(ser_gerencial.getCasaObraPeriodoFiscal("-1", "-1", "-1", "-1"),"ide_gecobc");
+	sel_casa_obras.getBot_aceptar().setMetodo("actualizarGraficos");
+        //
+        agregarComponente(sel_casa_obras);
     }
 
     public void dibujarGrafico() {
+        Grupo grupo = new Grupo();
+        
+        gca_utilidad = new GraficoCartesiano();
+        gca_utilidad.setId("gca_utilidad");
+        
+        gpa_utilidad = new GraficoPastel();
+        gpa_utilidad.setId("gpa_utilidad");
+        gpa_utilidad.setShowDataLabels(true);
+        gpa_utilidad.setStyle("width:300px;");
+        
+        com_periodo_grafico = new Combo();
+        com_periodo_grafico.setCombo(ser_gerencial.getAnio("-1", "-1", "-1"));
+        com_periodo_grafico.eliminarVacio();
+        
+        Boton bot_imprimir_cuentas = new Boton();
+        bot_imprimir_cuentas.setIcon("ui-icon-print");
+        bot_imprimir_cuentas.setValue("FILTRAR OBRAS SALESIANAS");
+        bot_imprimir_cuentas.setMetodo("abrirObras");
+        eti_casa.setStyle("font-size:10px;font-weight: bold;");
 
+        
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setHeader(eti_casa);
+        tab_tabla.setSql(ser_gerencial.getResultadoBalanceGeneral("-1", "-1", utilitario.getVariable("p_ger_cuenta_activo"), utilitario.getVariable("p_ger_cuenta_pasivo"), utilitario.getVariable("p_ger_cuenta_patrimonio")));
+        tab_tabla.setLectura(true);
+        tab_tabla.getColumna("nombre_gemes").setNombreVisual("MES");
+        tab_tabla.setColumnaSuma("activo,pasivo,patrimonio");
+        tab_tabla.getColumna("activo").alinearDerecha();
+        tab_tabla.getColumna("pasivo").alinearDerecha();
+        tab_tabla.getColumna("patrimonio").alinearDerecha();       
+        tab_tabla.dibujar();
+        
+        Grid gri_opciones = new Grid();
+        gri_opciones.setColumns(3);
+        gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
+        gri_opciones.getChildren().add(com_periodo_grafico);
+        gri_opciones.getChildren().add(bot_imprimir_cuentas);
+        
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.getChildren().add(gri_opciones);
+        pat_panel.setPanelTabla(tab_tabla);
+        
+        Grid gri = new Grid();
+        gri.setWidth("100%");
+        gri.setColumns(2);
+        gpa_utilidad.agregarSerie(tab_tabla, "nombre_gemes", "activo");
+        gri.getChildren().add(pat_panel);
+        gri.getChildren().add(gpa_utilidad);
+        grupo.getChildren().add(gri);
+        
+        gca_utilidad.setTitulo("RESULTADO EJERCICIO MENSUAL");
+        gca_utilidad.agregarSerie(tab_tabla, "nombre_gemes", "activo", "TOTAL " + String.valueOf(com_periodo_grafico.getValue()));
+        grupo.getChildren().add(gca_utilidad);
+        
+        mep_menu.dibujar(3, "fa fa-bar-chart", "Gráficos estadísticos Resultado del Ejercicio Mensual", grupo, true);
     }
-
+    public void abrirObras(){
+        sel_casa_obras.getTab_seleccion().setSql(ser_gerencial.getCasaObraPeriodoFiscal(utilitario.getVariable("p_ger_estado_activo")+","+utilitario.getVariable("p_ger_estado_cerrado"),com_periodo_grafico.getValue().toString(), "1", "-1"));
+	sel_casa_obras.getTab_seleccion().ejecutarSql();
+        sel_casa_obras.dibujar();
+    }
+    public void actualizarGraficos(){
+        if(mep_menu.getOpcion() == 3){
+            String seleccionados= sel_casa_obras.getSeleccionados();
+            if (seleccionados!=null){
+            
+            tab_tabla.setSql(ser_gerencial.getResultadoBalanceGeneral(com_periodo_grafico.getValue().toString(),seleccionados, utilitario.getVariable("p_ger_cuenta_activo"), utilitario.getVariable("p_ger_cuenta_pasivo"), utilitario.getVariable("p_ger_cuenta_patrimonio")));
+            tab_tabla.ejecutarSql();
+            gca_utilidad.limpiar();
+            gca_utilidad.agregarSerie(tab_tabla, "nombre_gemes", "activo", "total " + String.valueOf(com_periodo_grafico.getValue()));
+            gpa_utilidad.limpiar();
+            gpa_utilidad.agregarSerie(tab_tabla, "nombre_gemes", "activo");
+            TablaGenerica tab_obras=utilitario.consultar(ser_gerencial.getObrasHorizontal(seleccionados));
+            eti_casa.setValue(tab_obras.getValor("obra"));
+            sel_casa_obras.cerrar();
+            utilitario.addUpdate("gca_utilidad,gpa_utilidad,eti_casa");
+            }
+            else {
+                utilitario.agregarMensajeError("Seleccione Obra", "Debe seleccionar al menos una obra");
+            }
+        }
+    }
     public void dibujarTransferirBalance() {
         com_periodo = new Combo();
         com_periodo.setCombo(ser_gerencial.getAnio("true,false", "1", ""));
@@ -343,11 +437,23 @@ public void actualizarTipoBalance(){
     }
 
     public void dibujarEstadosFinancieros() {
+        
+        // BOTONES REPORTES
+        Boton bot_imp_balance_general = new Boton();
+        bot_imp_balance_general.setIcon("ui-icon-print");
+        bot_imp_balance_general.setValue("Balance General");
+        bot_imp_balance_general.setMetodo("imprimirBalanceGeneral");
+        
+        Boton bot_imp_bal_comprobacion = new Boton();
+        bot_imp_bal_comprobacion.setIcon("ui-icon-print");
+        bot_imp_bal_comprobacion.setValue("Balance Comprobación");
+        bot_imp_bal_comprobacion.setMetodo("imprimirBalanceComprobacion");
+        
         Grupo gru_grupo = new Grupo();
 
         Fieldset fis_consulta = new Fieldset();
         Grid gri_fechas = new Grid();
-        gri_fechas.setColumns(3);
+        gri_fechas.setColumns(6);
 
         com_periodo_financiero = new Combo();
         com_periodo_financiero.setCombo(ser_gerencial.getAnio("true,false", "1", ""));
@@ -356,12 +462,18 @@ public void actualizarTipoBalance(){
         gri_fechas.getChildren().add(new Etiqueta("<strong>AÑO FÍSCAL </strong>"));
         gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Etiqueta("<strong>TIPO BALANCE </strong>"));
-        gri_fechas.getChildren().add(com_periodo_financiero);       
+        gri_fechas.getChildren().add(new Espacio("3", "1"));
+        gri_fechas.getChildren().add(bot_imp_balance_general);
+        gri_fechas.getChildren().add(bot_imp_bal_comprobacion);
+        gri_fechas.getChildren().add(com_periodo_financiero);     
         //GENERANDO LISTA TIPO BALANCE
         lis_tipo_balance.setId("lis_tipo_balance");
         lis_tipo_balance.setListaSeleccion(ser_gerencial.getTipoBalance("-1", "-1"));
         gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(lis_tipo_balance); 
+        gri_fechas.getChildren().add(new Espacio("1", "1"));
+        gri_fechas.getChildren().add(new Espacio("1", "1"));
+        gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Etiqueta("<strong>NIVEL INICIAL  </strong>"));
        
         //NIVEL INICIAL
@@ -389,6 +501,9 @@ public void actualizarTipoBalance(){
         rad_nivel_inicial.setId("rad_nivel_inicial");
        rad_nivel_inicial.setRadio(lista);
        gri_fechas.getChildren().add(rad_nivel_inicial);
+       gri_fechas.getChildren().add(new Espacio("1", "1"));
+       gri_fechas.getChildren().add(new Espacio("1", "1"));
+       gri_fechas.getChildren().add(new Espacio("1", "1"));
        gri_fechas.getChildren().add(new Espacio("1", "1"));
        gri_fechas.getChildren().add(new Etiqueta("<strong>NIVEL FINAL </strong>"));
        rad_nivel_final.setId("rad_nivel_final");
@@ -463,7 +578,196 @@ public void actualizarTipoBalance(){
         tab_consulta.setSql(ser_gerencial.getCasaObraScursal(utilitario.getVariable("ide_sucu"), com_periodo_financiero.getValue().toString(), str_impresion));
         tab_consulta.ejecutarSql();
     }
-   
+     public void imprimirBalanceGeneral() {
+        if(lis_tipo_balance.getSeleccionados() == ""){
+            utilitario.agregarMensajeError("Tipo Balance", "Seleccione el tipo de balance que desea incluir en la impresión del Balance General");
+            return;
+        }
+        if(rad_nivel_inicial.getValue()==null){
+            utilitario.agregarMensajeError("Nivel Inicial", "Seleccione el nivel inicial");
+            return;
+        }
+        if(rad_nivel_final.getValue()==null){
+            utilitario.agregarMensajeError("Nivel Final", "Seleccione el nivel final");
+            return;
+        }
+        if(Integer.parseInt(rad_nivel_inicial.getValue().toString()) > Integer.parseInt(rad_nivel_final.getValue().toString())){
+            utilitario.agregarMensajeError("Diferencia de Niveles", "El nivel inicial es superior al nivel final");
+            return;
+        }
+        if(lis_meses.getSeleccionados() == ""){
+            utilitario.agregarMensajeError("Meses", "Seleccione los meses que desea incluir en la impresión del Balance General");
+            return;
+        }
+        String seleccionado = tab_consulta.getFilasSeleccionadas().toString();
+        if (seleccionado.equals("null") || seleccionado.isEmpty()) {
+            utilitario.agregarMensajeError("Obras y Casas", "Debe seleccionar al menos una Obra Salesiana");
+            return;
+        }
+        //Extraer Casas y obras
+        TablaGenerica tab_obras=utilitario.consultar(ser_gerencial.getObrasHorizontal(seleccionado));
+        // Extraer mes inicial
+        TablaGenerica tab_mes_min = utilitario.consultar(ser_gerencial.getResumenMes(lis_meses.getSeleccionados(), " min(ide_gemes) ", " where 1=1 "));
+        TablaGenerica tab_mesi_desc= utilitario.consultar(ser_gerencial.getMes("0", tab_mes_min.getValor("valor")));
+        // Extraer mes final
+        TablaGenerica tab_mes_max = utilitario.consultar(ser_gerencial.getResumenMes(lis_meses.getSeleccionados(), " max(ide_gemes) ", " where 1=1 "));
+        TablaGenerica tab_mesf_desc= utilitario.consultar(ser_gerencial.getMes("0", tab_mes_max.getValor("valor")));    
+        // Extraer periodo
+        TablaGenerica tab_periodo=utilitario.consultar(ser_gerencial.getAnio("true,false", "2", com_periodo_financiero.getValue().toString()));
+        //Extraer Valores Totales
+        TablaGenerica tab_totales=utilitario.consultar(ser_gerencial.getBalanceGeneral(com_periodo_financiero.getValue().toString(),seleccionado,lis_tipo_balance.getSeleccionados(), lis_meses.getSeleccionados(), "1", "1","-1","-1"));
+        
+        double tot_activo = 0;
+        double tot_pasivo = 0;
+        double tot_patrimonio = 0;              
+        if(tab_totales.getTotalFilas()>0){
+            for(int i=0;i<tab_totales.getTotalFilas();i++){
+                if(tab_totales.getValor(i, "ide_cndpc").equals(utilitario.getVariable("p_ger_cuenta_activo"))){
+                    tot_activo=Double.parseDouble(tab_totales.getValor(i, "debe"));
+                }
+                if(tab_totales.getValor(i, "ide_cndpc").equals(utilitario.getVariable("p_ger_cuenta_pasivo"))){
+                    tot_pasivo=Double.parseDouble(tab_totales.getValor(i, "haber"));
+                }
+                if(tab_totales.getValor(i, "ide_cndpc").equals(utilitario.getVariable("p_ger_cuenta_patrimonio"))){
+                    tot_patrimonio=Double.parseDouble(tab_totales.getValor(i, "haber"));
+                }
+            }
+        }
+        double utilidad_perdida = tot_activo - tot_pasivo - tot_patrimonio;
+        double total = tot_pasivo + tot_patrimonio + utilidad_perdida;
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                   if (tab_datos.getTotalFilas() > 0) {
+                            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+                            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+                        }   
+                        
+        parametro.put("titulo", "BALANCE GENERAL CONSOLIDADO");
+        parametro.put("pmeses", lis_meses.getSeleccionados());
+        parametro.put("pmes_inicial", tab_mesi_desc.getValor("nombre_gemes"));
+        parametro.put("pmes_final", tab_mesf_desc.getValor("nombre_gemes"));
+        parametro.put("pnivel_inicial", Integer.parseInt(rad_nivel_inicial.getValue().toString()));
+        parametro.put("pnivel_final", Integer.parseInt(rad_nivel_final.getValue().toString()));
+        parametro.put("pperiodo",tab_periodo.getValor("nom_geani") );
+        parametro.put("ptipo_balance",lis_tipo_balance.getSeleccionados() );
+        parametro.put("pusuario",utilitario.getVariable("nick") );
+        parametro.put("pobra",tab_obras.getValor("obra"));
+        parametro.put("pide_obra",seleccionado );
+        parametro.put("pide_geani", Integer.parseInt(com_periodo_financiero.getValue().toString()));
+        parametro.put("p_tot_activo", tot_activo);
+        parametro.put("p_total", total);
+        parametro.put("p_utilidad_perdida", utilidad_perdida);
+        parametro.put("p_tot_pasivo", tot_pasivo);
+        parametro.put("p_tot_patrimonio", (tot_patrimonio));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
+        vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_balance_general_ger.jasper", parametro);
+        vipdf_mayor.dibujar();
+
+    }  
+     public void imprimirBalanceComprobacion() {
+        if(lis_tipo_balance.getSeleccionados() == ""){
+            utilitario.agregarMensajeError("Tipo Balance", "Seleccione el tipo de balance que desea incluir en la impresión del Balance General");
+            return;
+        }
+        if(rad_nivel_inicial.getValue()==null){
+            utilitario.agregarMensajeError("Nivel Inicial", "Seleccione el nivel inicial");
+            return;
+        }
+        if(rad_nivel_final.getValue()==null){
+            utilitario.agregarMensajeError("Nivel Final", "Seleccione el nivel final");
+            return;
+        }
+        if(Integer.parseInt(rad_nivel_inicial.getValue().toString()) > Integer.parseInt(rad_nivel_final.getValue().toString())){
+            utilitario.agregarMensajeError("Diferencia de Niveles", "El nivel inicial es superior al nivel final");
+            return;
+        }
+        if(lis_meses.getSeleccionados() == ""){
+            utilitario.agregarMensajeError("Meses", "Seleccione los meses que desea incluir en la impresión del Balance General");
+            return;
+        }
+        String seleccionado = tab_consulta.getFilasSeleccionadas().toString();
+        if (seleccionado.equals("null") || seleccionado.isEmpty()) {
+            utilitario.agregarMensajeError("Obras y Casas", "Debe seleccionar al menos una Obra Salesiana");
+            return;
+        }
+        //Extraer Casas y obras
+        TablaGenerica tab_obras=utilitario.consultar(ser_gerencial.getObrasHorizontal(seleccionado));
+        // Extraer mes inicial
+        TablaGenerica tab_mes_min = utilitario.consultar(ser_gerencial.getResumenMes(lis_meses.getSeleccionados(), " min(ide_gemes) ", " where 1=1 "));
+        TablaGenerica tab_mesi_desc= utilitario.consultar(ser_gerencial.getMes("0", tab_mes_min.getValor("valor")));
+        // Extraer mes final
+        TablaGenerica tab_mes_max = utilitario.consultar(ser_gerencial.getResumenMes(lis_meses.getSeleccionados(), " max(ide_gemes) ", " where 1=1 "));
+        TablaGenerica tab_mesf_desc= utilitario.consultar(ser_gerencial.getMes("0", tab_mes_max.getValor("valor")));    
+        // Extraer periodo
+        TablaGenerica tab_periodo=utilitario.consultar(ser_gerencial.getAnio("true,false", "2", com_periodo_financiero.getValue().toString()));
+        //Extraer tipo Balance
+        String bal_inicial="-1";
+        String bal_mensual="-2";
+        TablaGenerica tab_lista=utilitario.consultar(ser_gerencial.getTipoBalance("2", lis_tipo_balance.getSeleccionados()));
+        for(int i=0;i <tab_lista.getTotalFilas();i++){
+            if(tab_lista.getValor(i, "ide_getiba").equals("1")){
+                bal_inicial="1";
+            } 
+            if(tab_lista.getValor(i, "ide_getiba").equals("2")){
+                bal_mensual="2";
+            } 
+        }
+        //Extraer Valores Totales
+        TablaGenerica tab_totales=utilitario.consultar(ser_gerencial.getTotalBalanceComprobacion(com_periodo_financiero.getValue().toString(), bal_inicial, bal_mensual, seleccionado, lis_meses.getSeleccionados(), lis_tipo_balance.getSeleccionados(), tab_mes_max.getValor("valor")));
+
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+                   if (tab_datos.getTotalFilas() > 0) {
+                            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+                            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+                            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+                            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+                            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+                            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+                        }   
+                        
+        parametro.put("titulo", "BALANCE GENERAL CONSOLIDADO");
+        parametro.put("pmeses", lis_meses.getSeleccionados());
+        parametro.put("pmes_inicial", tab_mesi_desc.getValor("nombre_gemes"));
+        parametro.put("pmes_final", tab_mesf_desc.getValor("nombre_gemes"));
+        parametro.put("pnivel_inicial", Integer.parseInt(rad_nivel_inicial.getValue().toString()));
+        parametro.put("pnivel_final", Integer.parseInt(rad_nivel_final.getValue().toString()));
+        parametro.put("pperiodo",tab_periodo.getValor("nom_geani") );
+        parametro.put("ptipo_balance",lis_tipo_balance.getSeleccionados() );
+        parametro.put("pbal_inicial",bal_inicial);
+        parametro.put("pbal_mes",bal_mensual);
+        parametro.put("pmes_periodo",tab_mes_max.getValor("valor") );
+        parametro.put("pusuario",utilitario.getVariable("nick") );
+        parametro.put("pobra",tab_obras.getValor("obra"));
+        parametro.put("pide_obra",seleccionado );
+        parametro.put("pide_geani", Integer.parseInt(com_periodo_financiero.getValue().toString()));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2")); 
+        parametro.put("pdebe_ini",Double.parseDouble(tab_totales.getValor("tot_debe_inicial")));
+        parametro.put("phaber_ini", Double.parseDouble(tab_totales.getValor("tot_haber_incial")));
+        parametro.put("pdebe_per", Double.parseDouble(tab_totales.getValor("tot_debe_per")));
+        parametro.put("phaber_per", Double.parseDouble(tab_totales.getValor("tot_haber_per")));
+        parametro.put("pdebe_acum", Double.parseDouble(tab_totales.getValor("tot_debe_acum")));
+        parametro.put("phaber_acum", Double.parseDouble(tab_totales.getValor("tot_haber_acum")));
+        parametro.put("pdebe_sal", Double.parseDouble(tab_totales.getValor("tot_debe_sal")));
+        parametro.put("phaber_sal", Double.parseDouble(tab_totales.getValor("tot_haber_sal")));
+        vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_balance_compro_ger.jasper", parametro);
+        vipdf_mayor.dibujar();
+
+    }  
+     
+     
+     
+
  public void seleccionarTodas() {
         tab_consulta.setSeleccionados(null);
         Fila seleccionados[] = new Fila[tab_consulta.getTotalFilas()];
@@ -612,6 +916,38 @@ public void actualizarTipoBalance(){
 
     public void setLis_meses(ListaSeleccion lis_meses) {
         this.lis_meses = lis_meses;
+    }
+
+    public Tabla getTab_tabla() {
+        return tab_tabla;
+    }
+
+    public void setTab_tabla(Tabla tab_tabla) {
+        this.tab_tabla = tab_tabla;
+    }
+
+    public GraficoCartesiano getGca_utilidad() {
+        return gca_utilidad;
+    }
+
+    public void setGca_utilidad(GraficoCartesiano gca_utilidad) {
+        this.gca_utilidad = gca_utilidad;
+    }
+
+    public GraficoPastel getGpa_utilidad() {
+        return gpa_utilidad;
+    }
+
+    public void setGpa_utilidad(GraficoPastel gpa_utilidad) {
+        this.gpa_utilidad = gpa_utilidad;
+    }
+
+    public SeleccionTabla getSel_casa_obras() {
+        return sel_casa_obras;
+    }
+
+    public void setSel_casa_obras(SeleccionTabla sel_casa_obras) {
+        this.sel_casa_obras = sel_casa_obras;
     }
 
 }
