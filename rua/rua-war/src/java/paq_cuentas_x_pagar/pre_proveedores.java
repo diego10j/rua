@@ -89,6 +89,7 @@ public class pre_proveedores extends Pantalla {
         bar_botones.agregarBoton(bot_clean);
 
         mep_menu.setMenuPanel("OPCIONES PROVEEDOR", "20%");
+        mep_menu.agregarItem("Listado de Proveedores", "dibujarDashBoard", "ui-icon-home");//15
         mep_menu.agregarItem("Información Proveedor", "dibujarProveedor", "ui-icon-person");
         mep_menu.agregarItem("Clasificación Proveedores", "dibujarEstructura", "ui-icon-arrow-4-diag");
         mep_menu.agregarItem("Grupos de Proveedores", "dibujarGrupoProveedores", "ui-icon-person");
@@ -108,8 +109,35 @@ public class pre_proveedores extends Pantalla {
         agregarComponente(mep_menu);
         asc_asiento.setId("asc_asiento");
         agregarComponente(asc_asiento);
+        dibujarDashBoard();
     }
+public void dibujarDashBoard() {
 
+        tab_tabla = new Tabla();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setNumeroTabla(115);
+        tab_tabla.setSql(ser_proveedor.getSqlListaProveedores());
+        tab_tabla.setLectura(true);
+        tab_tabla.setCampoPrimaria("ide_geper");
+        tab_tabla.setRows(20);
+        tab_tabla.getColumna("ide_geper").setVisible(false);
+        tab_tabla.getColumna("nom_geper").setNombreVisual("NOMBRE");
+        tab_tabla.getColumna("nom_geper").setFiltroContenido();
+        tab_tabla.getColumna("codigo_geper").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("codigo_geper").setFiltro(true);
+        tab_tabla.getColumna("identificac_geper").setNombreVisual("IDENTIDICACIÓN");
+        tab_tabla.getColumna("correo_geper").setNombreVisual("CORREO");
+        tab_tabla.getColumna("direccion_geper").setNombreVisual("DIRECCIÓN");
+        tab_tabla.getColumna("telefono_geper").setNombreVisual("TELÉFONO");
+        tab_tabla.getColumna("contacto_geper").setNombreVisual("CONTACTO");
+
+        tab_tabla.dibujar();
+
+        PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setPanelTabla(tab_tabla);
+
+        mep_menu.dibujar(15, "LISTADO DE CLIENTES", pat_panel);
+    }
     /**
      * Selecciona un Proveedor en el autocompletar
      *
