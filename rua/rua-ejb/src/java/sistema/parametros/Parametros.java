@@ -547,6 +547,14 @@ public class Parametros {
 
         lis_parametros.add(new Parametro("16","p_ger_estado_activo","Indica el estado en ACTIVO","0","ger_estado", "ide_gerest","detalle_gerest"));
         lis_parametros.add(new Parametro("16","p_ger_imprimir_admin","Indica el estado del adminsitrador para imprimir todos los reportes","true"));
+        lis_parametros.add(new Parametro("16","p_ger_cuenta_activo","Indica el codigo de la cuenta activo","1", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("16","p_ger_cuenta_pasivo","Indica el codigo de la cuenta pasivo","367", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("16","p_ger_cuenta_patrimonio","Indica el codigo de la cuenta patrimonio","759", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("16","p_ger_nom_firma1","Indica el nombre de la firma numero 1","PDR. MARFFEO PATEGUINI"));
+        lis_parametros.add(new Parametro("16","p_ger_cargo_firma1","Indica el cargo de la firma numero 1","ECONOMO"));
+        lis_parametros.add(new Parametro("16","p_ger_nom_firma2","Indica el nombre de la firma numero 2","LIC. LORENA SANCHEZ"));
+        lis_parametros.add(new Parametro("16","p_ger_cargo_firma2","Indica el cargo de la firma numero 2","CONTADORA"));
+        lis_parametros.add(new Parametro("16","p_ger_estado_cerrado","Indica el estado en CERRADO","1","ger_estado", "ide_gerest","detalle_gerest"));
 
         return lis_parametros;
 
