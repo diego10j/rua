@@ -512,7 +512,7 @@ public class ServicioCuentasCxP extends ServicioBase {
                 + utilitario.getVariable("p_con_tipo_documento_liquidacion_compra") + ","
                 + utilitario.getVariable("p_con_tipo_documento_nota_venta") + ","
                 + utilitario.getVariable("p_con_tipo_documento_reembolso") + ","
-                + utilitario.getVariable("p_con_tipo_documento_nota_credito") + ",10,11)"; //10 pasajes aereos , 11 documentos emitidos por ins finaciera
+                + utilitario.getVariable("p_con_tipo_documento_nota_credito") + ",10,11,1)"; //10 pasajes aereos , 11 documentos emitidos por ins finaciera, notas de debito
     }
 
     /**
