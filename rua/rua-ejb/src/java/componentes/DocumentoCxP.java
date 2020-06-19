@@ -511,7 +511,7 @@ public class DocumentoCxP extends Dialogo {
             dia_cxp_xml.getBot_cancelar().setMetodoRuta("pre_index.clase." + getId() + ".cerrarDialogos");
 
             Boton bt_panel = new Boton();
-            bt_panel.setValue("Cargar XML");
+            bt_panel.setValue("Cargar XML (solo facturas compras)");
             bt_panel.setIcon("ui-icon-folder-open");
             bt_panel.setTitle("Seleccionar una Factura Electrónica en formato XML");
             bt_panel.setMetodoRuta("pre_index.clase." + getId() + ".abrirArchivoXML");
