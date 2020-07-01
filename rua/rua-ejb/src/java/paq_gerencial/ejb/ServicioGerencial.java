@@ -187,6 +187,15 @@ public class ServicioGerencial {
         return sql;
     }
         /**
+     * Retorna sentencia SQL para obtener el plan de cuentas presupuestarias
+     *
+     * @return sql
+     */
+    public String getPlanPresupuestario() {
+        String sql = "select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_clasificador order by codigo_clasificador_prcla";
+        return sql;
+    }
+        /**
      * Retorna sentencia SQL tranferir las cuentas contables al modulo gerencial
      *
      * @return sql
