@@ -735,7 +735,7 @@ public void actualizarTipoBalance(){
                             parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
                         }   
                         
-        parametro.put("titulo", "BALANCE GENERAL CONSOLIDADO");
+        parametro.put("titulo", "BALANCE COMPROBACIÓN CONSOLIDADO");
         parametro.put("pmeses", lis_meses.getSeleccionados());
         parametro.put("pmes_inicial", tab_mesi_desc.getValor("nombre_gemes"));
         parametro.put("pmes_final", tab_mesf_desc.getValor("nombre_gemes"));
