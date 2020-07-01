@@ -262,12 +262,12 @@ public class EstadosFinancieros extends Pantalla {
         
 
         
-        Etiqueta eti_des_a = new Etiqueta("Estado Año Fiscal:");
+        Etiqueta eti_des_a = new Etiqueta("Estado Año Contable:");
             Etiqueta eti_des_c = new Etiqueta("Casa-Obra:");
             Etiqueta eti_des_t = new Etiqueta("Tipo Balance:");
             Etiqueta eti_des_esta_ba = new Etiqueta("Mes:");
-            Etiqueta eti_des_s = new Etiqueta("Estado Mes Fiscal:");
-            Etiqueta eti_anio = new Etiqueta("Año Fiscal:");
+            Etiqueta eti_des_s = new Etiqueta("Estado Mes Contable:");
+            Etiqueta eti_anio = new Etiqueta("Año Contable:");
             eti_anio.setStyle("font-size:14px;font-weight: bold;color:black");
             eti_des_a.setStyle("font-size:14px;font-weight: bold;color:black");
             eti_des_c.setStyle("font-size:14px;font-weight: bold;color:black");
@@ -311,7 +311,7 @@ public class EstadosFinancieros extends Pantalla {
         fis_consulta.getChildren().add(gr_dato_titulo);
         fis_consulta.getChildren().add(gr_dato_obra);
         gp.getChildren().add(bot_imprimir_cuentas);
-        gp.getChildren().add(bot_loquear);
+        //gp.getChildren().add(bot_loquear); comentado omentaeamente luis t habilitar para cerrar
         gp.getChildren().add(new Etiqueta(""));
 
         fis_consulta.getChildren().add(gp);
@@ -355,11 +355,13 @@ public class EstadosFinancieros extends Pantalla {
     }
     public void transferirBalance(){
         if(cal_fecha_inicio.getFecha()==null||cal_fecha_fin.getFecha()==null){
-            utilitario.agregarMensajeError("Fechas no validas", "Necesita seleccionar la fecha inicial o fecha final");
+            utilitario.agregarMensajeError("Fechas no válidas", "Necesita seleccionar la fecha inicial o fecha final");
             return;
         }
-        if(utilitario.isFechasValidas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha())){
-            utilitario.agregarMensajeError("Fechas no validas", "Las fecha final del reporte es mayor a la fecha inicial");
+        //System.out.println("cal_fecha_inicio.getFecha() "+cal_fecha_inicio.getFecha());
+        //System.out.println("cal_fecha_fin.getFecha() "+cal_fecha_fin.getFecha());
+        if(!utilitario.isFechasValidas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha())){
+            utilitario.agregarMensajeError("Fechas no válidas", "Las fecha final del reporte es mayor a la fecha inicial");
             return;
         }
         if(com_estado_mes_fiscal.getValue().toString().equals(utilitario.getVariable("p_ger_estado_activo"))){

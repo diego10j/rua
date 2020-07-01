@@ -55,18 +55,18 @@ public class ActivarPeriodoFiscal extends Pantalla {
         bar_botones.agregarComponente(com_anio);
 
         Boton bot_agregar = new Boton();
-        bot_agregar.setValue("Apertura Periodo Fiscal");
+        bot_agregar.setValue("Apertura Periódo Contable");
         bot_agregar.setMetodo("aceptarObra");
         bar_botones.agregarBoton(bot_agregar);
 
         Boton bot_cierre = new Boton();
-        bot_cierre.setValue("Cierre Periodo Fiscal");
+        bot_cierre.setValue("Cierre Periódo Contable");
         bot_cierre.setMetodo("cerrarObra");
         bar_botones.agregarBoton(bot_cierre);
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIODO FISCAL");
+        tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIÓDO CONTABLE");
         tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
         tab_tabla1.setCondicion("ide_geani=-1");
         tab_tabla1.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
@@ -75,13 +75,13 @@ public class ActivarPeriodoFiscal extends Pantalla {
         tab_tabla1.getColumna("responsable_gecobc").setEtiqueta();
         tab_tabla1.getColumna("responsable_gecobc").setLongitud(25);
         tab_tabla1.getColumna("responsable_gecobc").setValorDefecto(utilitario.getVariable("NICK"));
-        tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CODIGO");
+        tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CÓDIGO");
         tab_tabla1.getColumna("ide_gerest").setNombreVisual("ESTADO");
         tab_tabla1.getColumna("ide_gerobr").setNombreVisual("OBRAS SALESIANAS");
         tab_tabla1.getColumna("responsable_gecobc").setNombreVisual("RESPONSABLE");
         tab_tabla1.getColumna("fecha_apert_gecobc").setNombreVisual("FECHA APERTURA");
         tab_tabla1.getColumna("fecha_cierre_gecobc").setNombreVisual("FECHA CIERRE");
-        tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACION");
+        tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACIÓN");
         tab_tabla1.dibujar();
 
         //Es el contenedor de la tabla
@@ -107,7 +107,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
 
         //Dialogo
         dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("REGISTRO DE INFORMACION PARA APERTURA DE PERIODO FISCAL CONTABLE");
+        dia_dialogo.setTitle("REGISTRO DE INFORMACIÓN PARA APERTURA DE PERIODO CONTABLE");
         dia_dialogo.setWidth("40%");
         dia_dialogo.setHeight("30%");
         dia_dialogo.setResizable(false);
@@ -143,7 +143,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
 
         //Dialogo CIERRE
         dia_dialogo_cierre.setId("dia_dialogo_cierre");
-        dia_dialogo_cierre.setTitle("REGISTRO DE INFORMACION PARA EL CIERRE DE PERIODO FISCAL CONTABLE");
+        dia_dialogo_cierre.setTitle("REGISTRO DE INFORMACIÓN PARA EL CIERRE DE PERIODO CONTABLE");
         dia_dialogo_cierre.setWidth("40%");
         dia_dialogo_cierre.setHeight("30%");
         dia_dialogo_cierre.setResizable(false);
@@ -251,7 +251,7 @@ public class ActivarPeriodoFiscal extends Pantalla {
                 if (list_obras.size() > 0) {
                     for (Object li : list_obras) {
                         Object[] fila = (Object[]) li;
-                        utilitario.getConexion().setUnidad_persistencia("rua_gerencial");
+                        //utilitario.getConexion().setUnidad_persistencia("rua_gerencial");
                         utilitario.getConexion().ejecutarSql("update ger_cont_balance_cabecera set fecha_cierre_gecobc='" + str_fecha_cierre + "' where ide_gecobc=" + String.valueOf(fila[0]));
                     }
                     tab_tabla1.ejecutarSql();

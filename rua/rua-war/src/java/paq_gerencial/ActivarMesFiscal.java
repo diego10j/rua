@@ -73,16 +73,16 @@ public class ActivarMesFiscal extends Pantalla {
 
         vipdf_rep_mes_fiscal.setId("vipdf_rep_mes_fiscal");
         vipdf_rep_mes_fiscal.setTitle("REPORTE MES FISCAL");
-        agregarComponente(vipdf_rep_mes_fiscal);
+        //agregarComponente(vipdf_rep_mes_fiscal);
 
         //BOTONES
         Boton bot_agregar = new Boton();
-        bot_agregar.setValue("Apertura Mes Fiscal");
+        bot_agregar.setValue("Apertura Mes");
         bot_agregar.setMetodo("aceptarObra");
         bar_botones.agregarBoton(bot_agregar);
 
         Boton bot_cierre = new Boton();
-        bot_cierre.setValue("Cierre Mes Fiscal");
+        bot_cierre.setValue("Cierre Mes");
         bot_cierre.setMetodo("cerrarObra");
         bar_botones.agregarBoton(bot_cierre);
 
@@ -93,19 +93,19 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");
-        tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIODO FISCAL");
+        tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIÓDO CONTABLE");
         tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
         tab_tabla1.setCondicion("ide_geani=-1");
         tab_tabla1.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
         tab_tabla1.getColumna("ide_geani").setVisible(false);
         tab_tabla1.getColumna("ide_gerobr").setCombo(ser_gerencial.getObra());
-        tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CODIGO");
+        tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CÓDIGO");
         tab_tabla1.getColumna("ide_gerest").setNombreVisual("ESTADO");
         tab_tabla1.getColumna("ide_gerobr").setNombreVisual("OBRAS SALESIANAS");
         tab_tabla1.getColumna("responsable_gecobc").setNombreVisual("RESPONSABLE");
         tab_tabla1.getColumna("fecha_apert_gecobc").setNombreVisual("FECHA APERTURA");
         tab_tabla1.getColumna("fecha_cierre_gecobc").setNombreVisual("FECHA CIERRE");
-        tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACION");
+        tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACIÓN");
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.setLectura(true);
         tab_tabla1.dibujar();
@@ -117,7 +117,7 @@ public class ActivarMesFiscal extends Pantalla {
 
         //Permite crear la tabla2 
         tab_tabla2.setId("tab_tabla2");
-        tab_tabla2.setHeader("REGISTRO DE APERTURA MES FISCAL");
+        tab_tabla2.setHeader("REGISTRO DE APERTURA MES");
         tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
         tab_tabla2.getColumna("ide_gecobc").setVisible(true);
         tab_tabla2.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
@@ -129,14 +129,14 @@ public class ActivarMesFiscal extends Pantalla {
         tab_tabla2.getColumna("ide_gemes").setUnico(true);
         tab_tabla2.getColumna("responsable_gebame").setLectura(true);
         tab_tabla2.getColumna("responsable_gebame").setValorDefecto(utilitario.getVariable("NICK"));
-        tab_tabla2.getColumna("ide_gebame").setNombreVisual("CODIGO");
+        tab_tabla2.getColumna("ide_gebame").setNombreVisual("CÓDIGO");
         tab_tabla2.getColumna("ide_gerest").setNombreVisual("ESTADO");
         tab_tabla2.getColumna("ide_getiba").setNombreVisual("TIPO BALANCE");
         tab_tabla2.getColumna("ide_gemes").setNombreVisual("MES");
         tab_tabla2.getColumna("responsable_gebame").setNombreVisual("RESPONSABLE");
         tab_tabla2.getColumna("fecha_apert_gebame").setNombreVisual("FEHCA APERTURA");
         tab_tabla2.getColumna("fecha_cierre_gebame").setNombreVisual("FECHA CIERRE");
-        tab_tabla2.getColumna("observacion_gebame").setNombreVisual("OBSERVACION");
+        tab_tabla2.getColumna("observacion_gebame").setNombreVisual("OBSERVACIÓN");
         tab_tabla2.dibujar();
 
         //Es el contenedor de la tabla

@@ -35,7 +35,7 @@ import sistema.aplicacion.Pantalla;
  *
  * @author Luis Toapanta
  */
-public class UpBalancesMensuales extends Pantalla {
+public class UpCedulasMensuales extends Pantalla {
 
     private Etiqueta eti_perfil = new Etiqueta();
     private Combo com_balance = new Combo();
@@ -60,7 +60,7 @@ public class UpBalancesMensuales extends Pantalla {
     @EJB
     private final ServiciosAdquisiones ser_persona = (ServiciosAdquisiones) utilitario.instanciarEJB(ServiciosAdquisiones.class);
 
-    public UpBalancesMensuales() {
+    public UpCedulasMensuales() {
         if (tienePerfil()) {
 
             bar_botones.getBot_guardar().setRendered(false);
@@ -78,23 +78,23 @@ public class UpBalancesMensuales extends Pantalla {
             bar_botones.agregarComponente(com_ano);
 
             tab_tabla1.setId("tab_tabla1");
-            tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIÓDO CONTABLE ANUAL");
-            tab_tabla1.setTabla("ger_cont_balance_cabecera", "ide_gecobc", 1);
+            tab_tabla1.setHeader("CASAS SALESIANAS REGISTRADAS EN EL PERIODO FISCAL");
+            tab_tabla1.setTabla("ger_cedula_cabecera", "ide_gececa", 1);
             tab_tabla1.setCondicion("ide_geani=-1");
             tab_tabla1.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
             tab_tabla1.getColumna("ide_geani").setVisible(false);
             tab_tabla1.getColumna("ide_gerobr").setCombo(ser_gerencial.getObra());
-            tab_tabla1.getColumna("responsable_gecobc").setEtiqueta();
-            tab_tabla1.getColumna("responsable_gecobc").setLongitud(25);
-            tab_tabla1.getColumna("responsable_gecobc").setValorDefecto(utilitario.getVariable("NICK"));
-            tab_tabla1.getColumna("ide_gecobc").setNombreVisual("CÓDIGO");
+            tab_tabla1.getColumna("responsable_gececa").setEtiqueta();
+            tab_tabla1.getColumna("responsable_gececa").setLongitud(25);
+            tab_tabla1.getColumna("responsable_gececa").setValorDefecto(utilitario.getVariable("NICK"));
+            tab_tabla1.getColumna("ide_gececa").setNombreVisual("CODIGO");
             tab_tabla1.getColumna("ide_gerest").setNombreVisual("ESTADO");
             tab_tabla1.getColumna("ide_gerobr").setNombreVisual("OBRAS SALESIANAS");
-            tab_tabla1.getColumna("responsable_gecobc").setNombreVisual("RESPONSABLE");
-            tab_tabla1.getColumna("fecha_apert_gecobc").setNombreVisual("FECHA APERTURA");
-            tab_tabla1.getColumna("fecha_cierre_gecobc").setNombreVisual("FECHA CIERRE");
-            tab_tabla1.getColumna("observacion_gecobc").setNombreVisual("OBSERVACIÓN");
-            tab_tabla1.getColumna("observacion_gecobc").setVisible(false);
+            tab_tabla1.getColumna("responsable_gececa").setNombreVisual("RESPONSABLE");
+            tab_tabla1.getColumna("fecha_apertura_gececa").setNombreVisual("FECHA APERTURA");
+            tab_tabla1.getColumna("fecha_cierre_gececa").setNombreVisual("FECHA CIERRE");
+            tab_tabla1.getColumna("observacion_gececa").setNombreVisual("OBSERVACION");
+            tab_tabla1.getColumna("observacion_gececa").setVisible(false);
             tab_tabla1.agregarRelacion(tab_tabla2);
             tab_tabla1.setTipoFormulario(true);
             tab_tabla1.getGrid().setColumns(6);
@@ -106,25 +106,24 @@ public class UpBalancesMensuales extends Pantalla {
             pat_tabla1.setPanelTabla(tab_tabla1);
 
             tab_tabla2.setId("tab_tabla2");
-            tab_tabla2.setTabla("ger_balance_mensual", "ide_gebame", 2);
-            tab_tabla2.getColumna("ide_gecobc").setVisible(true);
+            tab_tabla2.setTabla("ger_cedula_mensual", "ide_geceme", 2);
             tab_tabla2.getColumna("ide_gerest").setCombo(ser_gerencial.getEstado());
             tab_tabla2.getColumna("ide_getiba").setCombo(ser_gerencial.getTipoBalance("-1", ""));
             tab_tabla2.getColumna("ide_gemes").setCombo(ser_gerencial.getMes("-1", "-1"));
-            tab_tabla2.getColumna("ide_gecobc").setUnico(true);
+            tab_tabla2.getColumna("ide_gececa").setUnico(true);
             tab_tabla2.getColumna("ide_gerest").setUnico(true);
             tab_tabla2.getColumna("ide_getiba").setUnico(true);
             tab_tabla2.getColumna("ide_gemes").setUnico(true);
-            tab_tabla2.getColumna("responsable_gebame").setLectura(true);
-            tab_tabla2.getColumna("responsable_gebame").setValorDefecto(utilitario.getVariable("NICK"));
-            tab_tabla2.getColumna("ide_gebame").setNombreVisual("CÓDIGO");
+            tab_tabla2.getColumna("responsable_geceme").setLectura(true);
+            tab_tabla2.getColumna("responsable_geceme").setValorDefecto(utilitario.getVariable("NICK"));
+            tab_tabla2.getColumna("ide_geceme").setNombreVisual("CODIGO");
             tab_tabla2.getColumna("ide_gerest").setNombreVisual("ESTADO");
             tab_tabla2.getColumna("ide_getiba").setNombreVisual("TIPO BALANCE");
             tab_tabla2.getColumna("ide_gemes").setNombreVisual("MES");
-            tab_tabla2.getColumna("responsable_gebame").setNombreVisual("RESPONSABLE");
-            tab_tabla2.getColumna("fecha_apert_gebame").setNombreVisual("FEHCHA APERTURA");
-            tab_tabla2.getColumna("fecha_cierre_gebame").setNombreVisual("FECHA CIERRE");
-            tab_tabla2.getColumna("observacion_gebame").setNombreVisual("OBSERVACIÓN");
+            tab_tabla2.getColumna("responsable_geceme").setNombreVisual("RESPONSABLE");
+            tab_tabla2.getColumna("fecha_apertura_geceme").setNombreVisual("FEHCHA APERTURA");
+            tab_tabla2.getColumna("fecha_cierre_geceme").setNombreVisual("FECHA CIERRE");
+            tab_tabla2.getColumna("observacion_geceme").setNombreVisual("OBSERVACION");
             tab_tabla2.agregarRelacion(tab_tabla3);
             //tab_tabla2.setTipoFormulario(true);
             //tab_tabla2.getGrid().setColumns(6);
@@ -136,16 +135,20 @@ public class UpBalancesMensuales extends Pantalla {
             pat_tabla2.setPanelTabla(tab_tabla2);
 
             tab_tabla3.setId("tab_tabla3");
-            tab_tabla3.setTabla("ger_balance_detalle", "ide_gebade", 3);
-            tab_tabla3.getColumna("ide_cndpc").setCombo(ser_gerencial.getPlanCuentas());
-            tab_tabla3.getColumna("ide_cndpc").setAutoCompletar();
-            tab_tabla3.getColumna("ide_cndpc").setLectura(true);
-            tab_tabla3.getColumna("valor_debe_gebade").setLectura(true);
-            tab_tabla3.getColumna("valor_haber_gebade").setLectura(true);
-            tab_tabla3.getColumna("ide_gebade").setNombreVisual("CÓDIGO");
-            tab_tabla3.getColumna("ide_cndpc").setNombreVisual("CUENTA CONTABLE");
-            tab_tabla3.getColumna("valor_debe_gebade").setNombreVisual("VALOR DEBE");
-            tab_tabla3.getColumna("valor_haber_gebade").setNombreVisual("VALOR HABER");
+            tab_tabla3.setTabla("ger_cedula", "ide_gerced", 3);
+            tab_tabla3.getColumna("ide_prcla").setCombo(ser_gerencial.getPlanPresupuestario());
+            tab_tabla3.getColumna("ide_prcla").setAutoCompletar();
+            tab_tabla3.getColumna("ide_prcla").setLectura(true);
+            tab_tabla3.getColumna("inicial_gerced").setLectura(true);
+            tab_tabla3.getColumna("reforma_gerced").setLectura(true);
+            tab_tabla3.getColumna("devengado_gerced").setLectura(true);
+            tab_tabla3.getColumna("comprometido_gerced").setLectura(true);
+            tab_tabla3.getColumna("ide_gerced").setNombreVisual("CODIGO");
+            tab_tabla3.getColumna("ide_prcla").setNombreVisual("PARTIDA PRESUPUESTARIA");
+            tab_tabla3.getColumna("inicial_gerced").setNombreVisual("ASIG. INICIAL");
+            tab_tabla3.getColumna("reforma_gerced").setNombreVisual("VAL- REFORMADO");
+            tab_tabla3.getColumna("devengado_gerced").setNombreVisual("DEVENGADO");
+            tab_tabla3.getColumna("comprometido_gerced").setNombreVisual("COMPROMETIDO");
             //tab_tabla3.setColumnaSuma("valor_debe_gebade,valor_haber_gebade");
             tab_tabla3.dibujar();
 
@@ -172,7 +175,6 @@ public class UpBalancesMensuales extends Pantalla {
 		dia_importar.setWidth("50%");
 		dia_importar.setHeight("85%");
 		dia_importar.getBot_aceptar().setRendered(false);
-                dia_importar.getBot_cancelar().setLabel("Cerrar");
             Grid gri_cuerpo_archivo = new Grid();
             // GRID CARGA DATOS DE LA OBRA A SUBIR
             eti_anio.setStyle("font-size:14px;font-weight: bold;color:green");
@@ -183,7 +185,7 @@ public class UpBalancesMensuales extends Pantalla {
             Etiqueta eti_des_a = new Etiqueta("Año:");
             Etiqueta eti_des_c = new Etiqueta("Casa-Obra:");
             Etiqueta eti_des_t = new Etiqueta("Tipo Balance:");
-            Etiqueta eti_des_m = new Etiqueta("Mes:");
+            Etiqueta eti_des_m = new Etiqueta("Año:");
             Etiqueta eti_des_s = new Etiqueta("Seleccione el archivo: ");
             eti_des_a.setStyle("font-size:14px;font-weight: bold;color:black");
             eti_des_c.setStyle("font-size:14px;font-weight: bold;color:black");
@@ -212,7 +214,7 @@ public class UpBalancesMensuales extends Pantalla {
             upl_archivo.setAuto(false);
             upl_archivo.setAllowTypes("/(\\.|\\/)(xls)$/");
             upl_archivo.setUploadLabel("Validar");
-            upl_archivo.setCancelLabel("Cancelar Selección");
+            upl_archivo.setCancelLabel("Cancelar Seleccion");
 
             gri_impo.getChildren().add(upl_archivo);
             gri_impo.setWidth("100%");
@@ -388,7 +390,7 @@ public class UpBalancesMensuales extends Pantalla {
             }
 
             if (!str_msg_info.isEmpty()) {
-                str_resultado = "<strong><font color='#3333ff'>INFORMACIÓN</font></strong>" + str_msg_info;
+                str_resultado = "<strong><font color='#3333ff'>INFORMACION</font></strong>" + str_msg_info;
             }
             //inicio insertando y calculando en la tabla
             int nivel_nuevo=0;
@@ -467,7 +469,7 @@ public class UpBalancesMensuales extends Pantalla {
                     dou_tot_debe +=dou_valor_debe;
 		} catch (Exception e) {
                     // TODO: handle exception
-                    str_msg_erro+=getFormatoError("Valor numerico no válido as debe, columna (G), fila "+(i+1));
+                    str_msg_erro+=getFormatoError("Valor numerico no valido as debe, columna (G), fila "+(i+1));
 		}
                 String valor_haber = hoja.getCell(7, i).getContents();
                 valor_haber = valor_haber.replaceAll(",", ".");
@@ -478,7 +480,7 @@ public class UpBalancesMensuales extends Pantalla {
                     dou_tot_haber +=dou_valor_haber;
 		} catch (Exception e) {
                     // TODO: handle exception
-                    str_msg_erro+=getFormatoError("Valor numerico no válido al haber, columna (H), fila "+(i+1));
+                    str_msg_erro+=getFormatoError("Valor numerico no valido al haber, columna (H), fila "+(i+1));
 		}
 
                 if (casa_obra == null || casa_obra.isEmpty()) {
