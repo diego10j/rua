@@ -236,6 +236,7 @@ public class ArchivoServiceImp implements ArchivoService {
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo())) {
             reporte = generarReporte.crearPDF(parametros, "comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+            System.out.println(" parametro liqui "+parametros.toString());
             reporte = generarReporte.crearPDF(parametros, "liquidacionCompra.jasper", parametros.get("CLAVE_ACC") + "");
         }
 
@@ -302,8 +303,7 @@ public class ArchivoServiceImp implements ArchivoService {
             parametros.put("TOTAL_DESCUENTO", utilitario.getValorEtiqueta(cadenaXML, "totalDescuento"));
             parametros.put("AMBIENTE", utilitario.getValorEtiqueta(cadenaXML, "ambiente"));
             parametros.put("NOM_COMERCIAL", utilitario.getValorEtiqueta(cadenaXML, "nombreComercial"));
-
-            parametros.put("FORMA_PAGO", utilitario.getValorEtiqueta(cadenaXML, "formaPago"));
+            parametros.put("FORMA_PAGO", "20");//utilitario.getValorEtiqueta(cadenaXML, "formaCobro"));
             parametros.put("PLAZO", utilitario.getValorEtiqueta(cadenaXML, "plazo"));
             parametros.put("UNIDAD_TIEMPO", utilitario.getValorEtiqueta(cadenaXML, "unidadTiempo"));
 
