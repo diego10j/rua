@@ -35,20 +35,16 @@ left join (select ide_gtemp, documento_identidad_gtemp, apellido_paterno_gtemp||
                 from gth_empleado) d on d.ide_gtemp=a.gth_ide_gtemp
 left join inv_articulo e on e.ide_inarti=c.ide_inarti
 where a.fecha_trans_incci between $P{fecha_inicio} and $P{fecha_fin}
-and c.ide_inarti in ($P!{ide_inarti}) and  b.ide_georg in ($P!{ide_georg}) and d.ide_geper in($P!{ide_geper})
 group by b.ide_georg,b.nombre_georg,d.ide_gtemp,nombres_empleado,e.nombre_inarti,fecha_trans_incci
 order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 	</queryString>
 	<field name="ide_georg" class="java.lang.Long"/>
 	<field name="nombre_georg" class="java.lang.String"/>
-	<field name="ide_geper" class="java.lang.Long"/>
-	<field name="nom_geper" class="java.lang.String">
-		<fieldDescription><![CDATA[cliente, proveedor, empleado]]></fieldDescription>
-	</field>
+	<field name="ide_geper" class="java.lang.Integer"/>
+	<field name="nom_geper" class="java.lang.String"/>
 	<field name="nombre_inarti" class="java.lang.String"/>
 	<field name="cantidad" class="java.math.BigDecimal"/>
 	<field name="valor" class="java.math.BigDecimal"/>
-	<field name="nom_usua" class="java.lang.String"/>
 	<field name="fecha_trans_incci" class="java.sql.Date"/>
 	<variable name="cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
 		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
