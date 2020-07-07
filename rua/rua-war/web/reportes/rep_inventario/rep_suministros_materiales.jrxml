@@ -24,17 +24,20 @@
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select b.ide_georg,b.nombre_georg,d.ide_geper,d.nom_geper,e.nombre_inarti, sum(c.cantidad_indci)as cantidad,sum (c.valor_indci) as valor
-,(select nom_usua from sis_usuario where ide_usua=$P{ide_usua}) as nom_usua,fecha_trans_incci
+		<![CDATA[select b.ide_georg,b.nombre_georg,d.ide_gtemp as ide_geper,nombres_empleado as nom_geper,e.nombre_inarti, sum(c.cantidad_indci)as cantidad,sum (c.valor_indci) as valor
+,(select nom_usua from sis_usuario where ide_usua=$P{ide_usua}) as nom_usua
+,fecha_trans_incci
 from inv_cab_comp_inve as a
 left join gen_organigrama b on b.ide_georg=a.ide_georg
 left join inv_det_comp_inve as c on a.ide_incci=c.ide_incci
-left join gen_persona d on d.ide_geper=a.ide_geper
+left join (select ide_gtemp, documento_identidad_gtemp, apellido_paterno_gtemp||' '||(case when apellido_materno_gtemp is null then '' else apellido_materno_gtemp end)||' '||primer_nombre_gtemp ||' '||
+                (case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as nombres_empleado
+                from gth_empleado) d on d.ide_gtemp=a.gth_ide_gtemp
 left join inv_articulo e on e.ide_inarti=c.ide_inarti
 where a.fecha_trans_incci between $P{fecha_inicio} and $P{fecha_fin}
 and c.ide_inarti in ($P!{ide_inarti}) and  b.ide_georg in ($P!{ide_georg}) and d.ide_geper in($P!{ide_geper})
-group by b.ide_georg,b.nombre_georg,d.ide_geper,d.nom_geper,e.nombre_inarti,fecha_trans_incci
-order by b.nombre_georg,fecha_trans_incci,d.nom_geper,e.nombre_inarti]]>
+group by b.ide_georg,b.nombre_georg,d.ide_gtemp,nombres_empleado,e.nombre_inarti,fecha_trans_incci
+order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 	</queryString>
 	<field name="ide_georg" class="java.lang.Long"/>
 	<field name="nombre_georg" class="java.lang.String"/>
