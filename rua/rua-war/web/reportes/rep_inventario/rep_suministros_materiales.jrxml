@@ -24,9 +24,10 @@
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select b.ide_georg,b.nombre_georg,d.ide_gtemp as ide_geper,nombres_empleado as nom_geper,e.nombre_inarti, sum(c.cantidad_indci)as cantidad,sum (c.valor_indci) as valor
+		<![CDATA[
+select b.ide_georg,b.nombre_georg,d.ide_gtemp as ide_geper,nombres_empleado as nom_geper,e.nombre_inarti, sum(c.cantidad_indci)as cantidad,sum (c.valor_indci) as valor
 ,(select nom_usua from sis_usuario where ide_usua=$P{ide_usua}) as nom_usua
-,fecha_trans_incci
+,fecha_trans_incci,e.inv_ide_inarti,(case when f.nombre_inarti is null then 'Grupo no asigando revisar la entrega ' else f.nombre_inarti end) as grupo,c.ide_inarti,a.ide_incci,numero_incci
 from inv_cab_comp_inve as a
 left join gen_organigrama b on b.ide_georg=a.ide_georg
 left join inv_det_comp_inve as c on a.ide_incci=c.ide_incci
@@ -34,9 +35,11 @@ left join (select ide_gtemp, documento_identidad_gtemp, apellido_paterno_gtemp||
                 (case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as nombres_empleado
                 from gth_empleado) d on d.ide_gtemp=a.gth_ide_gtemp
 left join inv_articulo e on e.ide_inarti=c.ide_inarti
+left join inv_articulo f on e.inv_ide_inarti=f.ide_inarti
 where a.fecha_trans_incci between $P{fecha_inicio} and $P{fecha_fin}
-group by b.ide_georg,b.nombre_georg,d.ide_gtemp,nombres_empleado,e.nombre_inarti,fecha_trans_incci
-order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
+and  ide_intti=27
+group by b.ide_georg,b.nombre_georg,d.ide_gtemp,nombres_empleado,e.nombre_inarti,fecha_trans_incci,e.inv_ide_inarti,f.nombre_inarti,c.ide_inarti,a.ide_incci,numero_incci
+order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 	</queryString>
 	<field name="ide_georg" class="java.lang.Long"/>
 	<field name="nombre_georg" class="java.lang.String"/>
@@ -46,6 +49,11 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 	<field name="cantidad" class="java.math.BigDecimal"/>
 	<field name="valor" class="java.math.BigDecimal"/>
 	<field name="fecha_trans_incci" class="java.sql.Date"/>
+	<field name="inv_ide_inarti" class="java.lang.Long"/>
+	<field name="grupo" class="java.lang.String"/>
+	<field name="ide_inarti" class="java.lang.Long"/>
+	<field name="ide_incci" class="java.lang.Long"/>
+	<field name="numero_incci" class="java.lang.String"/>
 	<variable name="cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
 		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
 	</variable>
@@ -53,6 +61,9 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
 	<variable name="total_reporte" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="sumgrupo" class="java.math.BigDecimal" resetType="Group" resetGroup="grupo_material" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
 	<group name="DEPARTAMENTO">
@@ -111,6 +122,71 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{valor_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupo_material">
+		<groupExpression><![CDATA[$F{inv_ide_inarti}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<staticText>
+					<reportElement uuid="5ab2fb1e-3353-49eb-97ea-3e2877f81686" x="64" y="4" width="57" height="21"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[GRUPO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="131" y="4" width="304" height="21"/>
+					<box leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_georg}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="168" y="5" width="304" height="21"/>
+					<box leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total consumo: "+$F{nombre_georg}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="476" y="9" width="78" height="16"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumgrupo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -185,9 +261,9 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 		<band height="9" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="17" splitType="Stretch">
+		<band height="12" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="5ab2fb1e-3353-49eb-97ea-3e2877f81686" x="54" y="0" width="209" height="12"/>
+				<reportElement uuid="5ab2fb1e-3353-49eb-97ea-3e2877f81686" x="121" y="0" width="176" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -229,7 +305,7 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 				<text><![CDATA[Valor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2d32b75d-7dab-4e2f-bc17-e8889ac4e172" x="263" y="0" width="212" height="12"/>
+				<reportElement uuid="2d32b75d-7dab-4e2f-bc17-e8889ac4e172" x="297" y="0" width="178" height="12"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -256,12 +332,26 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 				</textElement>
 				<text><![CDATA[Fecha]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="9c09aae2-0dca-4cd6-aa9f-4967d473669b" x="54" y="0" width="67" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nro. Transacc.]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="fb1192d6-2fff-4827-859c-3908724810ec" positionType="Float" stretchType="RelativeToTallestObject" x="54" y="0" width="209" height="12"/>
+				<reportElement uuid="fb1192d6-2fff-4827-859c-3908724810ec" positionType="Float" stretchType="RelativeToTallestObject" x="121" y="0" width="176" height="12"/>
 				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -303,7 +393,7 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a46b8ad1-c7ea-438a-909c-5464c03fb4bf" positionType="Float" stretchType="RelativeToTallestObject" x="263" y="0" width="212" height="12"/>
+				<reportElement uuid="a46b8ad1-c7ea-438a-909c-5464c03fb4bf" positionType="Float" stretchType="RelativeToTallestObject" x="297" y="0" width="178" height="12"/>
 				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -329,6 +419,20 @@ order by b.nombre_georg,fecha_trans_incci,nombres_empleado,e.nombre_inarti]]>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_trans_incci}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3e49952b-2dbd-4bf3-a7e6-8d7aabaeb953" positionType="Float" stretchType="RelativeToTallestObject" x="54" y="0" width="67" height="12"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_incci}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
