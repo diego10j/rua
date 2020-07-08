@@ -515,9 +515,15 @@ public class pre_comp_inv_entrega extends Pantalla {
                 //tab_cantida.imprimirSql();
                 TablaGenerica tab_valor= utilitario.consultar(ser_inventario.getBodtArticulo("0", tab_tabla2.getValor("ide_inarti"), tab_cantida.getValor("ide_geani"), "0", "0"));
                 //tab_valor.imprimirSql();
-                tab_tabla2.setValor("precio_indci", tab_valor.getValor("costo_actual_boart"));
+                if(tab_valor.getTotalFilas()>0){
+                    tab_tabla2.setValor("precio_indci", tab_valor.getValor("costo_actual_boart"));
+                    utilitario.addUpdate("tab_tabla2");
+                }
+                else{
+                    utilitario.agregarMensajeError("EL articulo seleccionado", "Verificar si se encuentra en el inventario inicial y tiene valor de compra");
+                    return;
+                }
                 
-                utilitario.addUpdate("tab_tabla2");
             }
         }
     }
