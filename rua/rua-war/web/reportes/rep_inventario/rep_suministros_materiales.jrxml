@@ -54,10 +54,10 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 	<field name="ide_inarti" class="java.lang.Long"/>
 	<field name="ide_incci" class="java.lang.Long"/>
 	<field name="numero_incci" class="java.lang.String"/>
-	<variable name="cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
+	<variable name="cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ubicacion" calculation="Sum">
 		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
 	</variable>
-	<variable name="valor_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DEPARTAMENTO" calculation="Sum">
+	<variable name="valor_1" class="java.math.BigDecimal" resetType="Group" resetGroup="ubicacion" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
 	<variable name="total_reporte" class="java.math.BigDecimal" calculation="Sum">
@@ -66,72 +66,12 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 	<variable name="sumgrupo" class="java.math.BigDecimal" resetType="Group" resetGroup="grupo_material" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
-	<group name="DEPARTAMENTO">
-		<groupExpression><![CDATA[$F{nombre_georg}]]></groupExpression>
-		<groupHeader>
-			<band height="12">
-				<staticText>
-					<reportElement uuid="c888a562-a9ed-4716-a6ca-b1c559a20aad" x="0" y="0" width="49" height="12"/>
-					<box>
-						<pen lineWidth="0.0"/>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Middle">
-						<font size="7"/>
-					</textElement>
-					<text><![CDATA[Area:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="49" y="0" width="506" height="12"/>
-					<textElement verticalAlignment="Middle">
-						<font size="7"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nombre_georg}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupHeader>
-		<groupFooter>
-			<band height="12">
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="1094eddc-f27c-4f98-b2fc-a815bfd750d1" x="475" y="0" width="40" height="12"/>
-					<box rightPadding="2">
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{cantidad_1}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="515" y="0" width="40" height="12"/>
-					<box rightPadding="2">
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{valor_1}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupFooter>
-	</group>
 	<group name="grupo_material">
 		<groupExpression><![CDATA[$F{inv_ide_inarti}]]></groupExpression>
 		<groupHeader>
-			<band height="32">
+			<band height="26">
 				<staticText>
-					<reportElement uuid="5ab2fb1e-3353-49eb-97ea-3e2877f81686" x="64" y="4" width="57" height="21"/>
+					<reportElement uuid="5ab2fb1e-3353-49eb-97ea-3e2877f81686" x="85" y="0" width="57" height="21"/>
 					<box leftPadding="3">
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -145,7 +85,7 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 					<text><![CDATA[GRUPO]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="131" y="4" width="304" height="21"/>
+					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="153" y="0" width="319" height="21"/>
 					<box leftPadding="3">
 						<topPen lineWidth="0.5"/>
 						<leftPen lineWidth="0.5"/>
@@ -155,27 +95,14 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 					<textElement verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{nombre_georg}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{grupo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="30">
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="168" y="5" width="304" height="21"/>
-					<box leftPadding="3">
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA["Total consumo: "+$F{nombre_georg}]]></textFieldExpression>
-				</textField>
+			<band height="27">
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="476" y="9" width="78" height="16"/>
+					<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="475" y="6" width="78" height="16"/>
 					<box rightPadding="2">
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -188,7 +115,51 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 					</textElement>
 					<textFieldExpression><![CDATA[$V{sumgrupo}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="171" y="2" width="304" height="21"/>
+					<box leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total consumo: "+$F{grupo}]]></textFieldExpression>
+				</textField>
 			</band>
+		</groupFooter>
+	</group>
+	<group name="ubicacion">
+		<groupExpression><![CDATA[$F{ide_georg}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<staticText>
+					<reportElement uuid="c888a562-a9ed-4716-a6ca-b1c559a20aad" x="2" y="0" width="49" height="12"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Area:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d2c8bb5d-77b5-42ae-b209-64b263dd6cf4" x="51" y="0" width="502" height="12"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_georg}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
 		</groupFooter>
 	</group>
 	<background>
@@ -258,7 +229,7 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 		</band>
 	</title>
 	<pageHeader>
-		<band height="9" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="12" splitType="Stretch">
@@ -467,27 +438,6 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 	<summary>
 		<band height="75" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="f2d6e882-a036-4929-9509-93f419fe375c" x="330" y="0" width="142" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total Consumo de Período:]]></text>
-			</staticText>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="475" y="5" width="78" height="12"/>
-				<box rightPadding="2">
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{total_reporte}]]></textFieldExpression>
-			</textField>
-			<staticText>
 				<reportElement uuid="f12de0a2-86fb-4dc9-9427-901a98a7edb6" x="75" y="55" width="164" height="20"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -503,6 +453,27 @@ order by e.inv_ide_inarti,b.nombre_georg,fecha_trans_incci,nombres_empleado,e.no
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Revisado Por:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="f2d6e882-a036-4929-9509-93f419fe375c" x="330" y="1" width="142" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Consumo de Período:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a51f4570-a8f2-4b94-bd54-fd32cb5d3c45" x="475" y="6" width="78" height="12"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_reporte}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>
