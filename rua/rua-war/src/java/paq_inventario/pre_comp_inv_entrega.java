@@ -182,7 +182,7 @@ public class pre_comp_inv_entrega extends Pantalla {
         tab_tabla2.getColumna("cantidad1_indci").setVisible(false);
         tab_tabla2.getColumna("ide_inarti").setMetodoChange("cargarPrecio");
         tab_tabla2.getColumna("cantidad_indci").setMetodoChange("calcularTotalDetalles");
-        //tab_tabla2.getColumna("precio_indci").setMetodoChange("calcularTotalDetalles");
+        tab_tabla2.getColumna("cantidad_indci").setValorDefecto("0");
         tab_tabla2.getColumna("cantidad_indci").setRequerida(true);
         tab_tabla2.getColumna("precio_indci").setValorDefecto("0");
         tab_tabla2.getColumna("valor_indci").setValorDefecto("0");
@@ -450,14 +450,33 @@ public class pre_comp_inv_entrega extends Pantalla {
 
     public void calcularTotalDetalles(AjaxBehaviorEvent evt) {
         tab_tabla2.modificar(evt);
-        verificarStock();
+        calcularDetalle();
     }
 
     public void cargarPrecio(SelectEvent evt) {
         tab_tabla2.modificar(evt);
         verificarStock();
+        calcularDetalle();
     }
-
+    private void calcularDetalle() {
+        double cantidad = 0;
+        double precio = 0;
+        double total = 0;
+        try {
+            cantidad = Double.parseDouble(tab_tabla2.getValor("cantidad_indci"));
+        } catch (Exception e) {
+            cantidad = 0;
+        }
+        try {
+            precio = Double.parseDouble(tab_tabla2.getValor("precio_indci"));
+        } catch (Exception e) {
+            precio = 0;
+        }
+        total=cantidad*precio;
+        tab_tabla2.setValor("valor_indci", utilitario.getFormatoNumero(total, 2));
+                
+        utilitario.addUpdate("tab_tabla2");
+    }
     private void verificarStock() {
         double cantidad = 0;
         try {
@@ -465,6 +484,7 @@ public class pre_comp_inv_entrega extends Pantalla {
         } catch (Exception e) {
             cantidad = 0;
         }
+        //System.out.println("entre averifuicar stock ");
         if (utilitario.getVariable("p_aplica_stock").equals("true")) {
             //DFJ
             //Valida existencia en stock 
@@ -472,12 +492,14 @@ public class pre_comp_inv_entrega extends Pantalla {
             //extraer año
             TablaGenerica tab_fecha = utilitario.consultar(ser_inventario.getExtraerAnio(tab_tabla1.getValor("fecha_trans_incci")));
             TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getInventarioAnio(tab_fecha.getValor("anio")));
-
+//System.out.println("entre averifuicar stockyyyyy ");
             if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
+                System.out.println("entre averifuicar stockhhhhh ");
                 double saldo = ser_inventario.getStockArticulo("1", tab_tabla2.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
                 if (saldo <= 0) {
                     utilitario.agregarMensajeInfo("No existe stock en inventario", tab_tabla2.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
                 } else if (cantidad > saldo) {
+                   // System.out.println("entre averifuicar stock bbbbb");
                     dia_mensaje_fac.getChildren().clear();
                     dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
                     Grid g = new Grid();
@@ -488,19 +510,14 @@ public class pre_comp_inv_entrega extends Pantalla {
                     utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
                 }
             } else {
-                double saldo = ser_inventario.getStockArticulo("0", tab_tabla2.getValor("ide_inarti"), tab_anio.getValor("ide_geani"), "0", "0");
-                if (saldo <= 0) {
-                    utilitario.agregarMensajeInfo("No existe stock en inventario", tab_tabla2.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
-                } else if (cantidad > saldo) {
-                    dia_mensaje_fac.getChildren().clear();
-                    dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
-                    Grid g = new Grid();
-                    g.setWidth("100%");
-                    g.getChildren().add(new Etiqueta("<div align='center'> <strong>" + tab_tabla2.getValorArreglo("ide_inarti", 1) + " " + tab_tabla2.getValorArreglo("ide_inarti", 2) + "</strong> stock = " + saldo + " </div>"));
-                    dia_mensaje_fac.getChildren().add(g);
-                    utilitario.addUpdate("dia_mensaje_fac");
-                    utilitario.ejecutarJavaScript("dia_mensaje_fac.show();");
-                }
+                //System.out.println("entre averifuicar stock ggggggg");
+                TablaGenerica tab_cantida=utilitario.consultar("select * from gen_anio where nom_geani in (extract(year from cast('"+tab_tabla1.getValor("fecha_trans_incci")+"' as date))||'')");
+                //tab_cantida.imprimirSql();
+                TablaGenerica tab_valor= utilitario.consultar(ser_inventario.getBodtArticulo("0", tab_tabla2.getValor("ide_inarti"), tab_cantida.getValor("ide_geani"), "0", "0"));
+                //tab_valor.imprimirSql();
+                tab_tabla2.setValor("precio_indci", tab_valor.getValor("costo_actual_boart"));
+                
+                utilitario.addUpdate("tab_tabla2");
             }
         }
     }
