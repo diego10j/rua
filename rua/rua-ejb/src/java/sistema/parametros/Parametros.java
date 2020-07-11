@@ -555,7 +555,7 @@ public class Parametros {
         lis_parametros.add(new Parametro("16","p_ger_nom_firma2","Indica el nombre de la firma numero 2","LIC. LORENA SANCHEZ"));
         lis_parametros.add(new Parametro("16","p_ger_cargo_firma2","Indica el cargo de la firma numero 2","CONTADORA"));
         lis_parametros.add(new Parametro("16","p_ger_estado_cerrado","Indica el estado en CERRADO","1","ger_estado", "ide_gerest","detalle_gerest"));
-
+        lis_parametros.add(new Parametro("16","p_ger_casa_principal","Indica si es la casa principal para que no transfiera asiento","true"));
         return lis_parametros;
 
     }
