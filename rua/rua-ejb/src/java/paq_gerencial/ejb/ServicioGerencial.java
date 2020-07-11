@@ -219,7 +219,7 @@ public class ServicioGerencial {
         //System.out.println(" insert "+sql);
         return sql;
     }
-         /**
+     /**
      * Retorna sentencia SQL delete tabla temporal balances contables
      *
      * @return sql
@@ -228,6 +228,24 @@ public class ServicioGerencial {
         String sql = "delete from ger_temp_balance where ide_usua="+usuario;
                         return sql;
     }
+     /**
+     * Retorna sentencia SQL delete tabla detalle de balances que no has sido cerradas
+     *
+     * @return sql
+     */
+    public String deleteBalanceDetalle(String ide_balance_mensual) {
+        String sql = "delete from ger_balance_detalle where ide_gebame ="+ide_balance_mensual;
+                        return sql;
+    }  
+     /**
+     * Retorna sentencia SQL update tabla detalle de balances que han sido cerradas
+     *
+     * @return sql
+     */
+    public String UpdateEstadoBalanceCerrado(String ide_balance_mensual,String ide_estado) {
+        String sql = "update ger_balance_mensual set ide_gerest="+ide_estado+"  where ide_gebame in ("+ide_balance_mensual+");";
+                        return sql;
+    }    
              /**
      * Retorna sentencia SQL calcula tabla temporal balances contables
      *
