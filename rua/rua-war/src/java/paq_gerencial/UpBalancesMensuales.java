@@ -172,7 +172,7 @@ public class UpBalancesMensuales extends Pantalla {
 		dia_importar.setWidth("50%");
 		dia_importar.setHeight("85%");
 		dia_importar.getBot_aceptar().setRendered(false);
-                dia_importar.getBot_cancelar().setLabel("Cerrar");
+                dia_importar.getBot_cancelar().setValue("Cerrar");
             Grid gri_cuerpo_archivo = new Grid();
             // GRID CARGA DATOS DE LA OBRA A SUBIR
             eti_anio.setStyle("font-size:14px;font-weight: bold;color:green");
@@ -403,6 +403,7 @@ public class UpBalancesMensuales extends Pantalla {
                 
             }
             TablaGenerica tab_temporal_insert=utilitario.consultar(ser_gerencial.getCalTemBalance(utilitario.getVariable("ide_usua"), "2,3,4,5,6"));
+            utilitario.getConexion().ejecutarSql(ser_gerencial.deleteBalanceDetalle(tab_tabla2.getValor(tab_tabla2.getFilaActual(), "ide_gebame")));
             for(int k=0;k<tab_temporal_insert.getTotalFilas();k++){        
             tab_tabla3.insertar();
                 tab_tabla3.setValor("ide_cndpc",tab_temporal_insert.getValor(k,"con_ide_cndpc"));

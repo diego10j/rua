@@ -74,6 +74,7 @@ public class EstadosFinancieros extends Pantalla {
     private Tabla tab_consulta;
     private Tabla tab_tabla;
     private Tabla tab_tabla3=new Tabla();
+    private Tabla tab_tabla_traspaso=new Tabla();
     private cls_contabilidad con = new cls_contabilidad();
      private GraficoCartesiano gca_utilidad;
      private GraficoPastel gpa_utilidad;
@@ -106,15 +107,32 @@ public class EstadosFinancieros extends Pantalla {
     private Radio rad_nivel_inicial = new Radio();
      private Radio rad_nivel_final = new Radio();
      private Etiqueta eti_casa=new Etiqueta();
+    private Dialogo dia_cerrar_balance = new Dialogo();
+    private Etiqueta eti_cerrar_balance=new Etiqueta();    
     String ide_gebame="-1";
     String str_impresion="-1";
+    private Conexion conPostgres = new Conexion();
     public EstadosFinancieros() {
+        
+        conPostgres.setUnidad_persistencia("rua_gerencial");
+        conPostgres.NOMBRE_MARCA_BASE = "postgres";
+        
+         tab_tabla_traspaso.setId("tab_tabla_traspaso");
+        tab_tabla_traspaso.setConexion(conPostgres);
+        tab_tabla_traspaso.setHeader("CEDULA CABECERA");
+        tab_tabla_traspaso.setTabla("ger_balance_detalle", "ide_gebade", 10);
+        tab_tabla_traspaso.setCondicion("ide_gebade=-1");
+        tab_tabla_traspaso.dibujar();
+        //agregarComponente(tab_tabla_traspaso);
+        
+        
         bar_botones.limpiar();
 
         // Etiquetas de la obra
         eti_anio_estado.setStyle("font-size:14px;font-weight: bold;color:green");
         eti_obra.setStyle("font-size:14px;font-weight: bold;color:green");
         eti_tip_balance.setStyle("font-size:14px;font-weight: bold;color:green");
+        eti_cerrar_balance.setStyle("font-size:18px;font-weight: bold;color:red");
         eti_mes.setStyle("font-size:14px;font-weight: bold;color:green");
         eti_estado_detalle.setStyle("font-size:14px;font-weight: bold;color:green");
         
@@ -138,6 +156,17 @@ public class EstadosFinancieros extends Pantalla {
 	sel_casa_obras.getBot_aceptar().setMetodo("actualizarGraficos");
         //
         agregarComponente(sel_casa_obras);
+
+            //Dialogo para importar 
+		dia_cerrar_balance.setId("dia_cerrar_balance");		
+		dia_cerrar_balance.setTitle("CONFIRMACIÓN DE BLOQUEO Y TRANSFERECIA DE BALANCES");
+		//dia_importar.setPosition("left");
+		dia_cerrar_balance.setWidth("50%");
+		dia_cerrar_balance.setHeight("20%");
+                eti_cerrar_balance.setValue("Está seguro de bloquear y transferir el presente balance a la Casa Salesiana");
+		dia_cerrar_balance.setDialogo(eti_cerrar_balance);
+                dia_cerrar_balance.getBot_aceptar().setMetodo("bloquearTransferir");
+        agregarComponente(dia_cerrar_balance);
     }
 
     public void dibujarGrafico() {
@@ -300,18 +329,18 @@ public class EstadosFinancieros extends Pantalla {
         Boton bot_imprimir_cuentas = new Boton();
         bot_imprimir_cuentas.setIcon("ui-icon-print");
         bot_imprimir_cuentas.setTitle("Imprimir");
-        bot_imprimir_cuentas.setValue("Transferir Balance General");
+        bot_imprimir_cuentas.setValue("Importar Balance General");
         bot_imprimir_cuentas.setMetodo("transferirBalance");
         
         Boton bot_loquear = new Boton();
         bot_loquear.setIcon("ui-icon-print");
-        bot_loquear.setValue("Bloquear Transacción");
-        bot_loquear.setMetodo("transferirBalance");
+        bot_loquear.setValue("Bloquear y Transferir");
+        bot_loquear.setMetodo("bloquearTransferir");
         
         fis_consulta.getChildren().add(gr_dato_titulo);
         fis_consulta.getChildren().add(gr_dato_obra);
         gp.getChildren().add(bot_imprimir_cuentas);
-        //gp.getChildren().add(bot_loquear); comentado omentaeamente luis t habilitar para cerrar
+        gp.getChildren().add(bot_loquear); //comentado omentaeamente luis t habilitar para cerrar
         gp.getChildren().add(new Etiqueta(""));
 
         fis_consulta.getChildren().add(gp);
@@ -358,8 +387,6 @@ public class EstadosFinancieros extends Pantalla {
             utilitario.agregarMensajeError("Fechas no válidas", "Necesita seleccionar la fecha inicial o fecha final");
             return;
         }
-        //System.out.println("cal_fecha_inicio.getFecha() "+cal_fecha_inicio.getFecha());
-        //System.out.println("cal_fecha_fin.getFecha() "+cal_fecha_fin.getFecha());
         if(!utilitario.isFechasValidas(cal_fecha_inicio.getFecha(), cal_fecha_fin.getFecha())){
             utilitario.agregarMensajeError("Fechas no válidas", "Las fecha final del reporte es mayor a la fecha inicial");
             return;
@@ -393,6 +420,7 @@ public class EstadosFinancieros extends Pantalla {
                 
             }
             TablaGenerica tab_temporal_insert=utilitario.consultar(ser_gerencial.getCalTemBalance(utilitario.getVariable("ide_usua"), "2,3,4,5,6"));
+            utilitario.getConexion().ejecutarSql(ser_gerencial.deleteBalanceDetalle(ide_gebame));
             for(int k=0;k<tab_temporal_insert.getTotalFilas();k++){        
             tab_tabla3.insertar();
                 tab_tabla3.setValor("ide_cndpc",tab_temporal_insert.getValor(k,"con_ide_cndpc"));
@@ -409,6 +437,40 @@ public class EstadosFinancieros extends Pantalla {
             utilitario.agregarMensajeError("Periódo no habilitado", "NO se puede realizar la transferencia, el período se encuentra inhabilitado");
         }
         
+    }
+    public void bloquearTransferir(){
+        if(dia_cerrar_balance.isVisible()){
+            
+        if(utilitario.getVariable("p_ger_casa_principal").equals("true")){ // si es la casa principal solo cerramos el asiento, caso contrario hacemos el traspaso
+            utilitario.getConexion().ejecutarSql(ser_gerencial.UpdateEstadoBalanceCerrado(ide_gebame, utilitario.getVariable("p_ger_estado_cerrado")));
+            actualizarTipoBalance();
+        }else{
+            utilitario.getConexion().ejecutarSql(ser_gerencial.UpdateEstadoBalanceCerrado(ide_gebame, utilitario.getVariable("p_ger_estado_cerrado")));
+            for(int i=0; i<tab_tabla3.getTotalFilas();i++){
+                tab_tabla_traspaso.insertar();
+                tab_tabla_traspaso.setValor("ide_cndpc",tab_tabla3.getValor(i,"ide_cndpc"));
+                tab_tabla_traspaso.setValor("ide_gebame",ide_gebame);
+                tab_tabla_traspaso.setValor("valor_debe_gebade",tab_tabla3.getValor(i,"valor_debe_gebade"));
+                tab_tabla_traspaso.setValor("valor_haber_gebade",tab_tabla3.getValor(i,"valor_haber_gebade"));
+            }
+            tab_tabla_traspaso.guardar();
+            conPostgres.guardarPantalla();
+            actualizarTipoBalance();
+        }
+        utilitario.agregarMensaje("Balance Tranferido", "Se cerro el balance y fue tranferido con éxito");
+        dia_cerrar_balance.cerrar();
+        }
+        else{
+            if(tab_tabla3.getTotalFilas()>0){
+                if(com_estado_mes_fiscal.getValue().equals(utilitario.getVariable("p_ger_estado_activo"))){
+                dia_cerrar_balance.dibujar();
+                } else{
+                     utilitario.agregarMensajeError("No se puede continuar", "El mes contable debe encontrarse en estado activo para poder continuar");
+                }
+            } else{
+               utilitario.agregarMensajeError("No existe datos", "No existen datos no puede cerrar el balance general");
+            }
+        }
     }
 public void actualizarEstadoBalance(){
     TablaGenerica tab_casa_obra = utilitario.consultar(ser_gerencial.getCasaObraScursal(utilitario.getVariable("ide_sucu"),com_periodo.getValue().toString(),"1"));
@@ -950,6 +1012,22 @@ public void actualizarTipoBalance(){
 
     public void setSel_casa_obras(SeleccionTabla sel_casa_obras) {
         this.sel_casa_obras = sel_casa_obras;
+    }
+
+    public Dialogo getDia_cerrar_balance() {
+        return dia_cerrar_balance;
+    }
+
+    public void setDia_cerrar_balance(Dialogo dia_cerrar_balance) {
+        this.dia_cerrar_balance = dia_cerrar_balance;
+    }
+
+    public Tabla getTab_tabla_traspaso() {
+        return tab_tabla_traspaso;
+    }
+
+    public void setTab_tabla_traspaso(Tabla tab_tabla_traspaso) {
+        this.tab_tabla_traspaso = tab_tabla_traspaso;
     }
 
 }
