@@ -141,6 +141,7 @@ public class ArchivoServiceImp implements ArchivoService {
             }
             parametros.put("col_name", col_name);
         } catch (Exception e) {
+            System.out.println("metodo getPdf "+e);
         }
         // Recorre todos los detalles de factura o nota de credito
         if (comprobante.getCoddoc().equals(TipoComprobanteEnum.FACTURA.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
