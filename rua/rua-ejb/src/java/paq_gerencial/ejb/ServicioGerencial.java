@@ -295,7 +295,7 @@ public class ServicioGerencial {
      * @return sql
      */
     public String getObrasHorizontal(String ide_obra) {
-        String sql = "SELECT 1 as codigo,'OBRAS: '|| list(nombre_gerobr) as obra FROM ger_obra where ide_gerobr in (select ide_gerobr from ger_cont_balance_cabecera where ide_gecobc in ("+ide_obra+"))" ;
+        String sql = "SELECT 1 as codigo,' '|| list(nombre_gerobr) as obra from ( SELECT cast(codigo_gerobr as integer) as codigo_orden,nombre_gerobr FROM ger_obra where ide_gerobr in (select ide_gerobr from ger_cont_balance_cabecera where ide_gecobc in ("+ide_obra+") ) order by cast(codigo_gerobr as integer) ) a" ;
         return sql;
     }
      /**
