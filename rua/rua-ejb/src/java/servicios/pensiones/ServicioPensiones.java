@@ -135,13 +135,16 @@ public class ServicioPensiones extends ServicioBase {
             tab_info_adicional.setValor("nombre_srina", "Período Lectivo");
             tab_info_adicional.setValor("valor_srina", tag.getValor("periodo_lectivo_petlf"));
             tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
+            TablaGenerica tag_descuento = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
+" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
+            if(tag_descuento.getTotalFilas()>0){
             if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
             tab_info_adicional.insertar();// para el porcentaje de descuento
             tab_info_adicional.setValor("nombre_srina", utilitario.getVariable("p_pen_nom_adicional"));
             tab_info_adicional.setValor("valor_srina", utilitario.getVariable("p_pen_val_adicional"));
             tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
             }
-            
+            }
             tab_info_adicional.insertar();
             tab_info_adicional.setValor("nombre_srina", "Usuario");
             tab_info_adicional.setValor("valor_srina", utilitario.getVariable("NICK"));
