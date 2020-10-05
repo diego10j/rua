@@ -82,8 +82,19 @@ public class ServicioPensiones extends ServicioBase {
             tab_cab_fac.setValor("fecha_emisi_cccfa", tag.getValor("fecha_petlf"));
             tab_cab_fac.setValor("dias_credito_cccfa", "0");
             tab_cab_fac.setValor("ide_cndfp", "13");//13=OTROS SIN UTILIZAR SITEMA FINANCIERO
+             
+            if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
+                TablaGenerica tag_descuento_aplica = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
+" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
+            if(tag_descuento_aplica.getTotalFilas()>0){
+                tab_cab_fac.setValor("ide_cndfp1", "3");//8=CRÉDITO 10 DÍAS
+            tab_cab_fac.setValor("dias_credito_cccfa", "0");//10 DÍAS
+            }
+            }
+            else{
             tab_cab_fac.setValor("ide_cndfp1", "8");//8=CRÉDITO 10 DÍAS
             tab_cab_fac.setValor("dias_credito_cccfa", "10");//10 DÍAS
+            }
             tab_cab_fac.setValor("DIRECCION_CCCFA", tag.getValor("direccion_petlf"));
             tab_cab_fac.setValor("base_grabada_cccfa", "0");
             tab_cab_fac.setValor("base_no_objeto_iva_cccfa", "0");
@@ -135,10 +146,11 @@ public class ServicioPensiones extends ServicioBase {
             tab_info_adicional.setValor("nombre_srina", "Período Lectivo");
             tab_info_adicional.setValor("valor_srina", tag.getValor("periodo_lectivo_petlf"));
             tab_info_adicional.setValor("ide_cccfa", String.valueOf(ide_cccfa));
-            TablaGenerica tag_descuento = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
+            
+            if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
+                TablaGenerica tag_descuento = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
 " from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
             if(tag_descuento.getTotalFilas()>0){
-            if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
             tab_info_adicional.insertar();// para el porcentaje de descuento
             tab_info_adicional.setValor("nombre_srina", utilitario.getVariable("p_pen_nom_adicional"));
             tab_info_adicional.setValor("valor_srina", utilitario.getVariable("p_pen_val_adicional"));
