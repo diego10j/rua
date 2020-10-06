@@ -86,7 +86,7 @@ public class ServicioPensiones extends ServicioBase {
             if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
                 //System.out.println("entre a escribir pensiione ");
                 TablaGenerica tag_descuento_aplica = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
-" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
+" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and a.ide_titulo_recval="+ tag.getValor("cod_factura_petlf"));
             //tag_descuento_aplica.imprimirSql();
                 if(tag_descuento_aplica.getTotalFilas()>0){
                 tab_cab_fac.setValor("ide_cndfp1", "3");//8=CRÉDITO 10 DÍAS
@@ -155,7 +155,7 @@ public class ServicioPensiones extends ServicioBase {
             
             if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
                 TablaGenerica tag_descuento = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
-" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
+" from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and a.ide_titulo_recval="+ tag.getValor("cod_factura_petlf"));
             if(tag_descuento.getTotalFilas()>0){
             tab_info_adicional.insertar();// para el porcentaje de descuento
             tab_info_adicional.setValor("nombre_srina", utilitario.getVariable("p_pen_nom_adicional"));
