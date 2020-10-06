@@ -84,11 +84,17 @@ public class ServicioPensiones extends ServicioBase {
             tab_cab_fac.setValor("ide_cndfp", "13");//13=OTROS SIN UTILIZAR SITEMA FINANCIERO
              
             if(utilitario.getVariable("p_pen_dat_adicional").equals("true")){
+                //System.out.println("entre a escribir pensiione ");
                 TablaGenerica tag_descuento_aplica = utilitario.consultar("select a.ide_titulo_recval,valor_descuento_revad " +
 " from rec_valores a, rec_valor_detalle b where a.ide_titulo_recval= b.ide_titulo_recval and valor_descuento_revad >0 and ide_cccfa="+String.valueOf(ide_cccfa));
-            if(tag_descuento_aplica.getTotalFilas()>0){
+            //tag_descuento_aplica.imprimirSql();
+                if(tag_descuento_aplica.getTotalFilas()>0){
                 tab_cab_fac.setValor("ide_cndfp1", "3");//8=CRÉDITO 10 DÍAS
             tab_cab_fac.setValor("dias_credito_cccfa", "0");//10 DÍAS
+            }
+            else{
+            tab_cab_fac.setValor("ide_cndfp1", "8");//8=CRÉDITO 10 DÍAS
+            tab_cab_fac.setValor("dias_credito_cccfa", "10");//10 DÍAS
             }
             }
             else{
