@@ -88,6 +88,9 @@ public final class Comprobante implements Serializable {
     //11-06-2019 correos adicionales para enviar como copia 
     private String correosCopia;
     private String ide_geper;
+    //07-10-2020
+    private String agenteRetRes;
+    private String regMicroEmpresa;
 
     private List<DetalleReembolso> detalleReembolso;
 
@@ -149,6 +152,13 @@ public final class Comprobante implements Serializable {
             this.setCorreoEmpresa(resultado.getString("mail_empr"));
             this.setResolucionSri(resultado.getString("RESOLUCION_EMPR"));
             //fin
+
+            if (resultado.getString("AGENTE_RET_RES_EMPR") != null) {
+                this.agenteRetRes = resultado.getString("AGENTE_RET_RES_EMPR");
+            }
+            if (resultado.getString("REG_MICRO_EMPR") != null) {
+                this.regMicroEmpresa = resultado.getString("REG_MICRO_EMPR");
+            }
 
             this.motivo = resultado.getString("motivo_srcom");
             if (resultado.getString("ide_srfid") != null) {
@@ -917,6 +927,22 @@ public final class Comprobante implements Serializable {
 
     public void setDetalleReembolso(List<DetalleReembolso> detalleReembolso) {
         this.detalleReembolso = detalleReembolso;
+    }
+
+    public String getAgenteRetRes() {
+        return agenteRetRes;
+    }
+
+    public void setAgenteRetRes(String agenteRetRes) {
+        this.agenteRetRes = agenteRetRes;
+    }
+
+    public String getRegMicroEmpresa() {
+        return regMicroEmpresa;
+    }
+
+    public void setRegMicroEmpresa(String regMicroEmpresa) {
+        this.regMicroEmpresa = regMicroEmpresa;
     }
 
 }
