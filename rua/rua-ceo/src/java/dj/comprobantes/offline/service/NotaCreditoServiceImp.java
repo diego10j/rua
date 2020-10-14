@@ -137,6 +137,14 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
             if (comprobante.getInfoAdicional1() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional1()).append("</campoAdicional> \n");
             }
+            if (utilitario.isFechaMayor(comprobante.getFechaemision(), utilitario.getFecha("2020-10-01"))) {
+                if (comprobante.getAgenteRetRes() != null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Agente de Retención\">").append(comprobante.getAgenteRetRes()).append("</campoAdicional> \n");
+                }
+                if (comprobante.getRegMicroEmpresa()!= null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Régimen Microempresa\">").append(comprobante.getRegMicroEmpresa()).append("</campoAdicional> \n");
+                }
+            }
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </notaCredito>");
         }

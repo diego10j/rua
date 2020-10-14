@@ -201,6 +201,15 @@ public class FacturaServiceImp implements FacturaService {
             if (comprobante.getInfoAdicional3() != null) {
                 str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional3()).append("</campoAdicional> \n");
             }
+            if (utilitario.isFechaMayor(comprobante.getFechaemision(), utilitario.getFecha("2020-10-01"))) {
+                if (comprobante.getAgenteRetRes() != null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Agente de Retención\">").append(comprobante.getAgenteRetRes()).append("</campoAdicional> \n");
+                }
+                if (comprobante.getRegMicroEmpresa()!= null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Régimen Microempresa\">").append(comprobante.getRegMicroEmpresa()).append("</campoAdicional> \n");
+                }
+            }
+
             for (InfoAdicional inf : comprobante.getInfoAdicional()) {
                 str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
             }

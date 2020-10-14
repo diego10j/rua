@@ -85,6 +85,14 @@ public class RetencionServiceImp implements RetencionService {
             if (comprobante.getCliente().getDireccion() != null && comprobante.getCliente().getDireccion().isEmpty() == false) {
                 str_xml.append("      		<campoAdicional nombre=\"Dirección\">").append(comprobante.getCliente().getDireccion()).append("</campoAdicional> \n");
             }
+            if (utilitario.isFechaMayor(comprobante.getFechaemision(), utilitario.getFecha("2020-10-01"))) {
+                if (comprobante.getAgenteRetRes() != null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Agente de Retención\">").append(comprobante.getAgenteRetRes()).append("</campoAdicional> \n");
+                }
+                if (comprobante.getRegMicroEmpresa()!= null) {
+                    str_xml.append("      		<campoAdicional nombre=\"Régimen Microempresa\">").append(comprobante.getRegMicroEmpresa()).append("</campoAdicional> \n");
+                }
+            }
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </comprobanteRetencion>");
         }
