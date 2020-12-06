@@ -16,32 +16,28 @@ import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import servicios.activos.ServicioActivosFijos;
 import sistema.aplicacion.Pantalla;
 
 public class pre_clase_articulo extends Pantalla{
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    
+ @EJB
+    private final ServicioActivosFijos ser_activos = (ServicioActivosFijos) utilitario.instanciarEJB(ServicioActivosFijos.class);    
     public pre_clase_articulo (){
         tab_tabla1.setId("tab_tabla1");   //identificador
         tab_tabla1.setTabla("ACT_CLASE_ACTIVO", "IDE_ACCLA", 1);
-        tab_tabla1.agregarRelacion(tab_tabla2);
+        tab_tabla1.getColumna("ide_accls").setCombo(ser_activos.getSqlClaseActivo());
+        
         tab_tabla1.dibujar();
         PanelTabla pat_tabla1 = new PanelTabla();
         pat_tabla1.setId("pat_tabla1");
         pat_tabla1.setPanelTabla(tab_tabla1);
-        
-        tab_tabla2.setId("tab_tabla2");   //identificador
-        tab_tabla2.setTabla("ACT_CLASE_ARTICULO", "IDE_ACCLAR", 2);
-        tab_tabla2.getColumna("ide_inarti").setCombo("inv_articulo", "ide_inarti", "nombre_inarti", "nivel_inarti='HIJO'");
-        tab_tabla2.dibujar();
-        PanelTabla pat_tabla2 = new PanelTabla();
-        pat_tabla2.setId("pat_tabla2");
-        pat_tabla2.setPanelTabla(tab_tabla2);
+       
         
         Division div_tabla1 = new Division();
         div_tabla1.setId("div_tabla1");
-        div_tabla1.dividir2(pat_tabla1, pat_tabla2, "50%", "H");
+        div_tabla1.dividir1(pat_tabla1);
         agregarComponente(div_tabla1);
         
     }
@@ -50,9 +46,7 @@ public class pre_clase_articulo extends Pantalla{
         if (tab_tabla1.isFocus()){
         tab_tabla1.insertar();
         }
-        else if (tab_tabla2.isFocus()){
-            tab_tabla2.insertar();
-        }
+       
     }
 
     @Override
@@ -60,9 +54,7 @@ public class pre_clase_articulo extends Pantalla{
         if (tab_tabla1.isFocus()){
         tab_tabla1.guardar();
         }
-        else if (tab_tabla2.isFocus()){
-            tab_tabla2.guardar();
-        }
+        
         guardarPantalla();
     }
 
@@ -71,9 +63,7 @@ public class pre_clase_articulo extends Pantalla{
        if (tab_tabla1.isFocus()){
         tab_tabla1.eliminar();
         }
-        else if (tab_tabla2.isFocus()){
-            tab_tabla2.eliminar();
-        }
+    
     }
 
     public Tabla getTab_tabla1() {
