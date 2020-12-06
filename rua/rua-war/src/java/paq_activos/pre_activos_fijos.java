@@ -189,7 +189,7 @@ public class pre_activos_fijos extends Pantalla {
         agregarComponente(set_selecciona);
 
         sel_clase_activos.setId("sel_clase_activos");
-        sel_clase_activos.setSeleccionTabla("select ide_accla,nombre_accla,codigo_accla from act_clase_activo order by codigo_accla", "ide_accla");
+        sel_clase_activos.setSeleccionTabla("select ide_accla,nombre_accla,codigo_accla from act_clase_activo where ide_accls=1 order by codigo_accla", "ide_accla");
         sel_clase_activos.setWidth("40%");
         sel_clase_activos.setHeight("60%");
         sel_clase_activos.setHeader("CLASES DE ACTIVOS FIJOS");
