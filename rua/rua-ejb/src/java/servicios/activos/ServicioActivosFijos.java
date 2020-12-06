@@ -364,6 +364,11 @@ public class ServicioActivosFijos extends ServicioBase {
         sql += "select * from act_clase_activo where ide_accla in (" + codigo + ")";
         return sql;
     }
+    public String getSqlClaseActivo() { // motodo creado Luz Iza tesis UPS
+        String sql = "";
+        sql += "select * from act_clasificacion";
+        return sql;
+    }
 
     public String updateDiasDeprecia(String codigo) {
         String sql = "";
