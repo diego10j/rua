@@ -101,9 +101,9 @@ public class pre_articulos extends Pantalla {
         //mep_menu.agregarItem("Kardex", "dibujarKardex", "ui-icon-contact");
         mep_menu.agregarItem("Facturas de Ventas", "dibujarVentas", "ui-icon-calculator");
         mep_menu.agregarItem("Facturas de Compras", "dibujarCompras", "ui-icon-calculator");
-        mep_menu.agregarSubMenu("CONTABILIDAD");
-        mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
-        mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
+       // mep_menu.agregarSubMenu("CONTABILIDAD");
+       // mep_menu.agregarItem("Configura Cuenta Contable", "dibujarConfiguraCuenta", "ui-icon-wrench");
+       // mep_menu.agregarItem("Movimientos Contables", "dibujarMovimientos", "ui-icon-note");
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Gráfico de Ventas", "dibujarGraficoVentas", "ui-icon-bookmark");
         mep_menu.agregarItem("Gráfico de Compras", "dibujarGraficoCompras", "ui-icon-bookmark");
