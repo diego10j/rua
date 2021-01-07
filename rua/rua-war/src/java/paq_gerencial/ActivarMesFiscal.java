@@ -89,7 +89,7 @@ public class ActivarMesFiscal extends Pantalla {
         Boton bot_reporte = new Boton();
         bot_reporte.setValue("Imprmir reporte");
         bot_reporte.setMetodo("DibujarDialogo");
-        bar_botones.agregarComponente(bot_reporte);
+        //bar_botones.agregarComponente(bot_reporte);
 
         //Permite crear la tabla1 
         tab_tabla1.setId("tab_tabla1");

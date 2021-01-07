@@ -475,6 +475,8 @@ public class EstadosFinancieros extends Pantalla {
 public void actualizarEstadoBalance(){
     TablaGenerica tab_casa_obra = utilitario.consultar(ser_gerencial.getCasaObraScursal(utilitario.getVariable("ide_sucu"),com_periodo.getValue().toString(),"1"));
     TablaGenerica tab_detalle=utilitario.consultar("select * from ger_balance_mensual  where ide_gecobc="+tab_casa_obra.getValor("ide_gecobc")+" and ide_getiba="+com_tipo_balance.getValue());
+    //System.out.println("sql_tabla ");
+    //tab_detalle.imprimirSql();
     com_estado_mes_fiscal.setValue(tab_detalle.getValor("ide_gerest"));
     ide_gebame=tab_detalle.getValor("ide_gebame");
     tab_tabla3.setCondicion("ide_gebame="+ide_gebame);
