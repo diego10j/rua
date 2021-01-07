@@ -87,7 +87,22 @@ public class cls_anexo_transaccional {
                     //System.out.println("COMPRAS:  " + tab_compras.getSql());
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
-                    String ideRetenciones = tab_compras.getStringColumna("ide_cncre");
+                    String ideRetenciones = "";
+                    for (int i = 0; i < tab_compras.getTotalFilas(); i++) {
+                        String act_ret = "";
+                        if (tab_compras.getValor(i, "ide_cncre") != null) {
+                            act_ret = tab_compras.getValor(i, "ide_cncre") + "";
+                        }
+                        act_ret = act_ret.replace("null", ""); //si hay documentos sin retenciones    
+
+                        if (act_ret.isEmpty() == false) {
+                            if (ideRetenciones.isEmpty() == false) {
+                                ideRetenciones += ",";
+                            }
+                            ideRetenciones += act_ret;
+                        }
+
+                    }
                     ideRetenciones = ideRetenciones.replace("'null',", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("'null'", ""); //si hay documentos sin retenciones 
                     ideRetenciones = ideRetenciones.replace("null,", ""); //si hay documentos sin retenciones  
@@ -384,7 +399,7 @@ public class cls_anexo_transaccional {
                                             detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));                                    //========================                                   
                                             //detalleCompras.appendChild(crearElemento("fechaEmiRet1", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cpcfa"))));
                                         }
-                                    } 
+                                    }
 //////                                    else {
 //////                                        para las retenciones q no se imprimen las de % 0
 //////                                        detalleCompras.appendChild(crearElemento("estabRetencion1", null, "000"));

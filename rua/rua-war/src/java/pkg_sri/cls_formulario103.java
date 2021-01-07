@@ -28,7 +28,7 @@ public class cls_formulario103 {
     private final String[] nom_mes = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     private String fecha_inicio = "";
     private String fecha_fin = "";
-    private String v302, v303, v304, v307, v308, v309, v310, v311, v312, v319, v320, v322, v323, v325, v327, v328, v332, v333, v340, v341, v342, v343, v344, v349, v352, v353, v354, v357, v358, v359, v360, v362, v369, v370, v372, v373, v375, v377, v378, v390, v391, v392, v393, v394, v399;
+    private String v302, v303, v304, v307, v308, v309, v310, v311, v312, v319, v320, v322, v323, v325, v327, v328, v332, v333, v340, v341, v342, v343, v344, v3440, v346, v349, v352, v353, v354, v357, v358, v359, v360, v362, v369, v370, v372, v373, v375, v377, v378, v390, v391, v392, v393, v394, v399;
     private String v401, v403, v405, v421, v427, v429, v451, v453, v455, v471, v498, v499;
     private String v890, v897, v898, v899, v880;
     private String v902, v903, v904, v999, v905, v907, v908, v909, v910, v911, v912, v913, v915;
@@ -86,8 +86,10 @@ public class cls_formulario103 {
                 v340 = consultarBaseCasillero("340");
                 v341 = consultarBaseCasillero("341");
                 v342 = consultarBaseCasillero("342");
-                v343 = consultarBaseCasillero("343,343A");
+                v343 = consultarBaseCasillero("343,343A,343B");
                 v344 = consultarBaseCasillero("344");
+                v3440 = consultarBaseCasillero("3440");
+                v346 = consultarBaseCasillero("346");
                 v349 = utilitario.getFormatoNumero(Double.parseDouble(v302)
                         + Double.parseDouble(v303) + Double.parseDouble(v304)
                         + Double.parseDouble(v307) + Double.parseDouble(v308)
@@ -98,7 +100,8 @@ public class cls_formulario103 {
                         + Double.parseDouble(v327) + Double.parseDouble(v328)
                         + Double.parseDouble(v332) + Double.parseDouble(v340) + Double.parseDouble(v333)
                         + Double.parseDouble(v341) + Double.parseDouble(v342)
-                        + Double.parseDouble(v343) + Double.parseDouble(v344));
+                        + Double.parseDouble(v343) + Double.parseDouble(v344)
+                        + Double.parseDouble(v3440) + Double.parseDouble(v346));
 
                 //cuadra con ats por facturas que no generan retencion 332 
                 double dou_total_ats = Double.parseDouble(consultarComprasAts());
@@ -178,6 +181,8 @@ public class cls_formulario103 {
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "342"}, v342));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "343"}, v343));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "344"}, v344));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "3440"}, v3440));
+                detalle.appendChild(crearElemento("campo", new String[]{"numero", "346"}, v346));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "349"}, v349));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "352"}, v352));
                 detalle.appendChild(crearElemento("campo", new String[]{"numero", "353"}, v353));
