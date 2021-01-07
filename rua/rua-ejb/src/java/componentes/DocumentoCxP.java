@@ -1866,7 +1866,7 @@ public class DocumentoCxP extends Dialogo {
         String autorizacion = tab_cab_documento.getValor("autorizacio_cpcfa");
         if (autorizacion != null) {
             boolean correcto = false;
-            if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10) {
+            if (autorizacion.length() == 37 || autorizacion.length() == 49 || autorizacion.length() == 10 || autorizacion.length() == 11) {
                 correcto = true;
             }
             if (correcto == false) {
