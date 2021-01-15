@@ -1473,7 +1473,7 @@ public class FacturaCxC extends Dialogo {
             if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
                 tab_deta_factura.setValor("precio_ccdfa", "" + utilitario.getFormatoNumero(ser_inventario.getValorUnitario("1", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")), 4));
             } else {
-                tab_deta_factura.setValor("precio_ccdfa", "" + utilitario.getFormatoNumero(ser_inventario.getValorUnitario("0", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), "0", "0"), 4));
+                tab_deta_factura.setValor("precio_ccdfa", "" + utilitario.getFormatoNumero(ser_inventario.getValorUnitario("0", tab_deta_factura.getValor("ide_inarti"), tab_gen_anio.getValor("ide_geani"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR")), 4));
             }
             /**
              * **PRECIO FIN****
