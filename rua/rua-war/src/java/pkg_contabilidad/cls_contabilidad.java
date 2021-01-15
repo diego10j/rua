@@ -529,11 +529,11 @@ public class cls_contabilidad {
         double tot_pasivo = Double.parseDouble(lis_totales.get(1) + "");
         double tot_patrimonio = Double.parseDouble(lis_totales.get(2) + "");
         utilidad_perdida = tot_activo - tot_pasivo - tot_patrimonio;
-
+        /*
         System.out.println("utilidad/perdida ejercicio anterior " + str_valor_utilidad_perdida_anterior);
         System.out.println("valor patrimonio anterior " + str_valor_patrimonio_anterior);
         System.out.println("utilidad/perdida " + utilidad_perdida);
-        System.out.println("nuevo_patrimonio " + nuevo_patrimonio);
+        System.out.println("nuevo_patrimonio " + nuevo_patrimonio);*/
         if (utilidad_perdida > 0) {
             lista_detalles.add(new cls_det_comp_cont(utilitario.getVariable("p_con_lugar_haber"), utilitario.getVariable("p_con_superavit_ejercicio_anterior"), utilidad_perdida, ""));
         } else {
