@@ -805,15 +805,21 @@ public class pre_articulos extends Pantalla {
 
     public void dibujarGraficoVentas() {
         Grupo gru_grupo = new Grupo();
+        
         if (isProductoSeleccionado()) {
             gca_grafico = new GraficoCartesiano();
             gca_grafico.setId("gca_grafico");
 
             com_periodo = new Combo();
-            com_periodo.setMetodo("actualizarGraficoVentas");
+            //com_periodo.setMetodo("actualizarGraficoVentas");
             com_periodo.setCombo(ser_factura.getSqlAniosFacturacion());
-            com_periodo.eliminarVacio();
+            //com_periodo.eliminarVacio();
             com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+            //actualizarGraficoVentas();
+            Boton bot_consultar = new Boton();
+             bot_consultar.setValue("Consultar");
+            bot_consultar.setMetodo("actualizarGraficoVentas");
+            bot_consultar.setIcon("ui-icon-search");
 
             tab_tabla = new Tabla();
             tab_tabla.setId("tab_tabla");
@@ -826,9 +832,10 @@ public class pre_articulos extends Pantalla {
             tab_tabla.dibujar();
 
             Grid gri_opciones = new Grid();
-            gri_opciones.setColumns(2);
+            gri_opciones.setColumns(3);
             gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
             gri_opciones.getChildren().add(com_periodo);
+            gri_opciones.getChildren().add(bot_consultar);
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.getChildren().add(gri_opciones);
             pat_panel.setPanelTabla(tab_tabla);
@@ -849,10 +856,15 @@ public class pre_articulos extends Pantalla {
             gca_grafico.setId("gca_grafico");
 
             com_periodo = new Combo();
-            com_periodo.setMetodo("actualizarGraficoCompras");
+            //com_periodo.setMetodo("actualizarGraficoCompras");
             com_periodo.setCombo(ser_factura.getSqlAniosFacturacion());
-            com_periodo.eliminarVacio();
+            //com_periodo.eliminarVacio();
             com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+            Boton bot_consultar = new Boton();
+             bot_consultar.setValue("Consultar");
+            bot_consultar.setMetodo("actualizarGraficoCompras");
+            bot_consultar.setIcon("ui-icon-search");
+
 
             tab_tabla = new Tabla();
             tab_tabla.setId("tab_tabla");
@@ -865,9 +877,10 @@ public class pre_articulos extends Pantalla {
             tab_tabla.dibujar();
 
             Grid gri_opciones = new Grid();
-            gri_opciones.setColumns(2);
+            gri_opciones.setColumns(3);
             gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
             gri_opciones.getChildren().add(com_periodo);
+            gri_opciones.getChildren().add(bot_consultar);
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.getChildren().add(gri_opciones);
             pat_panel.setPanelTabla(tab_tabla);
