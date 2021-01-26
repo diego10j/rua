@@ -126,6 +126,7 @@ public class DocumentoCxP extends Dialogo {
                 "p_sri_tip_sus_tri02",
                 "p_con_tipo_documento_factura",
                 "p_con_tipo_documento_nota_credito",
+                "p_con_tipo_documento_nota_debito", //26-01-2021 DFJ
                 "p_con_tipo_documento_reembolso",
                 "p_con_tipo_documento_factura",
                 "p_con_tipo_documento_nota_venta",
@@ -307,7 +308,7 @@ public class DocumentoCxP extends Dialogo {
         }
 
         boolean bol_esnota = false;
-        if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+        if (tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_credito")) ||  tab_cab_documento.getValor("ide_cntdo").equals(parametros.get("p_con_tipo_documento_nota_debito")) ) {
             bol_esnota = true;
             tab_det_documento.setScrollHeight(getAltoPanel() - 415);
         }
@@ -1688,7 +1689,7 @@ public class DocumentoCxP extends Dialogo {
      */
     public void cambiarTipoDocumento() {
         boolean bol_esnota = false;
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))|| com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_debito"))) {
             bol_esnota = true;
             tab_det_documento.setScrollHeight(getAltoPanel() - 415);
         } else {
@@ -1750,7 +1751,7 @@ public class DocumentoCxP extends Dialogo {
 
     public void cargarProveedores() {
         // solo ruc 
-        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10") || com_tipo_documento.getValue().equals(parametros.get("p_cxp_doc_instituciones_finan"))) {
+        if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_factura"))|| com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_debito"))  || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito")) || com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_venta")) || com_tipo_documento.getValue().equals("10") || com_tipo_documento.getValue().equals(parametros.get("p_cxp_doc_instituciones_finan"))) {
             tab_cab_documento.getColumna("ide_geper").setCombo("gen_persona", "ide_geper", "nom_geper,identificac_geper", "es_proveedo_geper=TRUE AND nivel_geper='HIJO' and ide_getid=" + parametros.get("p_gen_tipo_iden_ruc"));
             tab_cab_documento.setValor("ide_geper", null);
             tab_cab_documento.setValor("autorizacio_cpcfa", "");
@@ -1989,7 +1990,7 @@ public class DocumentoCxP extends Dialogo {
     public void obteneAlterno104() {
         try {
             //Para notas de credito no cambiamos alterno
-            if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))) {
+            if (com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_credito"))|| com_tipo_documento.getValue().equals(parametros.get("p_con_tipo_documento_nota_debito"))) {
                 return;
             }
             String tipo_articulo = "";

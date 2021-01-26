@@ -87,6 +87,10 @@ public class cls_anexo_transaccional {
                     //System.out.println("COMPRAS:  " + tab_compras.getSql());
                     String p_con_tipo_documento_reembolso = utilitario.getVariable("p_con_tipo_documento_reembolso");
                     String p_con_tipo_documento_nota_credito = utilitario.getVariable("p_con_tipo_documento_nota_credito");
+                    String p_con_tipo_documento_nota_debito = utilitario.getVariable("p_con_tipo_documento_nota_debito"); //26-01-2021 DFJ
+                    if (p_con_tipo_documento_nota_debito == null) {
+                        p_con_tipo_documento_nota_debito = "";
+                    }
                     String ideRetenciones = "";
                     for (int i = 0; i < tab_compras.getTotalFilas(); i++) {
                         String act_ret = "";
@@ -433,7 +437,7 @@ public class cls_anexo_transaccional {
 //                        detalleCompras.appendChild(crearElemento("autModificado", null, "0000"));
 
                         //Si es nota de credito aumento estos campos     
-                        if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
+                        if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))|| p_con_tipo_documento_nota_debito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
                             //fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa
                             String numero_doc_modificado = tab_compras.getValor(i, "numero_nc_cpcfa");
                             numero_doc_modificado = numero_doc_modificado.replace("-", "");

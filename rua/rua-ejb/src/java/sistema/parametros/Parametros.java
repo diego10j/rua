@@ -42,6 +42,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("0", "p_con_tipo_documento_nota_credito", "Comprobante tipo nota de credito ", "0", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
         lis_parametros.add(new Parametro("0", "p_con_tipo_documento_guia", "Documento guia de remision ", "7", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));
         lis_parametros.add(new Parametro("0", "p_con_usa_presupuesto", "Indica si la empresa maneja el módulo de presupuesto", "false"));
+        lis_parametros.add(new Parametro("0", "p_con_tipo_documento_nota_debito", "Comprobante tipo nota de debito ", "1", "con_tipo_document", "ide_cntdo", "nombre_cntdo"));//26-01-2021 DFJ
+
         /*
          * INVENTARIO MODULO =1
          */
