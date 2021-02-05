@@ -95,7 +95,7 @@ public class pre_articulos extends Pantalla {
         mep_menu.setMenuPanel("OPCIONES PRODUCTO", "20%");
         mep_menu.agregarItem("Información Producto", "dibujarProducto", "ui-icon-cart");
         mep_menu.agregarItem("Clasificación Productos", "dibujarEstructura", "ui-icon-arrow-4-diag");
-        mep_menu.agregarItem("Costo de Venta", "dibujarCosto", "ui-icon-calculator");
+        mep_menu.agregarItem("Precio de Venta", "dibujarCosto", "ui-icon-calculator");
 
         mep_menu.agregarSubMenu("TRANSACCIONES");
         //mep_menu.agregarItem("Kardex", "dibujarKardex", "ui-icon-contact");
