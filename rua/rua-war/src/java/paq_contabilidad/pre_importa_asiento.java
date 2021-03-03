@@ -159,6 +159,7 @@ public class pre_importa_asiento extends Pantalla {
         rad_nuevo_asiento.setRadio(utilitario.getListaPregunta());
         rad_nuevo_asiento.setValue(true);
         gri.getChildren().add(rad_nuevo_asiento);
+        gri.getChildren().add(tex_num_asiento);
 
         Boton bot_subir = new Boton();
         bot_subir.setValue("Generar Asiento Contable");
