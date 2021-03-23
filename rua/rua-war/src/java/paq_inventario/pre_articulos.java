@@ -19,6 +19,7 @@ import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,9 @@ import servicios.cuentas_x_cobrar.ServicioFacturaCxC;
 import servicios.inventario.ServicioInventario;
 import servicios.inventario.ServicioProducto;
 import sistema.aplicacion.Pantalla;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @author DIEGOFERNANDOJACOMEG
@@ -44,6 +47,8 @@ public class pre_articulos extends Pantalla {
 
     private final MenuPanel mep_menu = new MenuPanel();
     private AutoCompletar aut_productos = new AutoCompletar();
+        private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
+
     //opcion 1
     private Tabla tab_tabla;
     //opcion 2
@@ -91,6 +96,13 @@ public class pre_articulos extends Pantalla {
         bot_clean.setTitle("Limpiar");
         bot_clean.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_clean);
+        
+        Boton bot_imprimir = new Boton();
+        bot_imprimir.setIcon("ui-icon-print");
+        bot_imprimir.setTitle("Imprimir");
+         bot_imprimir.setValue("IMPRIMIR COSTO VENTA");
+        bot_imprimir.setMetodo("imprimirVenta");
+        bar_botones.agregarBoton(bot_imprimir);
 
         mep_menu.setMenuPanel("OPCIONES PRODUCTO", "20%");
         mep_menu.agregarItem("Información Producto", "dibujarProducto", "ui-icon-cart");
@@ -110,6 +122,10 @@ public class pre_articulos extends Pantalla {
         mep_menu.agregarItem("Últimos Precios", "dibujarPrecios", "ui-icon-cart");
 
         agregarComponente(mep_menu);
+        
+        vipdf_comprobante.setId("vipdf_comprobante");
+        vipdf_comprobante.setTitle("IMPRIMIR COSTO DE VENTA");
+        agregarComponente(vipdf_comprobante);
 
     }
 
@@ -1017,6 +1033,16 @@ public class pre_articulos extends Pantalla {
             }
         }
 
+    }
+public void imprimirVenta() {
+        
+            String reporte = "";
+            Map parametros = new HashMap();
+            reporte = "rep_inventario/rep_costo_venta.jasper";
+            vipdf_comprobante.setVisualizarPDF(reporte, parametros);
+            vipdf_comprobante.dibujar();
+            utilitario.addUpdate("vipdf_comprobante");
+      
     }
 
     /**
