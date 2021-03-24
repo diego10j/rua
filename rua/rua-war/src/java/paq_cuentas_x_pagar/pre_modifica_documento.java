@@ -1010,7 +1010,7 @@ public class pre_modifica_documento extends Pantalla {
                         //Guarda la cuenta por pagar  
                         ser_cuentas_cxp.generarModificaTransaccionCompra(tab_cab_documento);
                         //Modifica comprobante de inventario 
-                        ser_inventario.generarModificarComprobnateTransaccionCompra(tab_cab_documento, tab_det_documento);
+                       // ser_inventario.generarModificarComprobnateTransaccionCompra(tab_cab_documento, tab_det_documento);
                         guardarPantalla();
                     }
                 }
