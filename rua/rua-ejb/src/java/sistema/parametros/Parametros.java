@@ -226,6 +226,9 @@ public class Parametros {
         lis_parametros.add(new Parametro("6", "p_liquidacion_aprobado_por", "Indica el nombre de la persona encargada de Aprobar la Liquidacion para el reporte de Liquidacion de Haberes", "Ing. Marco Egas"));
         lis_parametros.add(new Parametro("6", "p_nrh_rubro_vacaciones_liquidacion", "Indica el rubro en el cual se va a calcular el valor correspondiente a vacaciones ", "28", "NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
         lis_parametros.add(new Parametro("6", "p_nrh_tipo_garante", "Indica el tipo de garante EMPLEADO DE EMGIRS", "1", "nrh_tipo_garante", "ide_nrtig", "detalle_nrtig"));
+        lis_parametros.add(new Parametro("6", "p_nrh_pagod3", "Indica el rubro pago d3 en nomina de decimos ", "277", "NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+        lis_parametros.add(new Parametro("6", "p_nrh_pagod4", "Indica el rubro pago d4 en nomina de decimos ", "277", "NRH_RUBRO", "IDE_NRRUB", "DETALLE_NRRUB"));
+
 // hasta aqui lusi toapanta paramteros nomina
         /*
          * TESORERIA =7
