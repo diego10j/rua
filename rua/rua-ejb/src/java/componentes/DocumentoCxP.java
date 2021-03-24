@@ -1446,7 +1446,8 @@ public class DocumentoCxP extends Dialogo {
         }
 
         //base_grabada = base_grabada - descuento;
-        valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
+        //valor_iva = (base_grabada - descuento) * tarifaIVA; //0.12
+        valor_iva = base_grabada * tarifaIVA; //0.12
 
         if (valor_ice > 0) {
             valor_iva += (valor_ice * tarifaIVA); //0.12
@@ -1461,12 +1462,12 @@ public class DocumentoCxP extends Dialogo {
         tab_cab_documento.setValor("base_no_objeto_iva_cpcfa", utilitario.getFormatoNumero(base_no_objeto));
         tab_cab_documento.setValor("valor_iva_cpcfa", utilitario.getFormatoNumero(valor_iva));
         tab_cab_documento.setValor("base_tarifa0_cpcfa", utilitario.getFormatoNumero(base_tarifa0));
-        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
+        tab_cab_documento.setValor("total_cpcfa", utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros -descuento));
 
         tex_subtotal12.setValue(utilitario.getFormatoNumero(base_grabada));
         tex_subtotal0.setValue(utilitario.getFormatoNumero(base_no_objeto + base_tarifa0));
         tex_iva.setValue(utilitario.getFormatoNumero(valor_iva));
-        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros));
+        tex_total.setValue(utilitario.getFormatoNumero(base_grabada + base_no_objeto + base_tarifa0 + valor_iva + valor_ice + valor_otros - descuento));
         utilitario.addUpdate("tab_documenoCxP:0:gri_valores");
     }
 
