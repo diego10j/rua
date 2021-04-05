@@ -643,12 +643,17 @@ public class pre_actas extends Pantalla {
 
     @Override
     public void guardar() {
+        valor_combo = com_tipo_acta.getValue().toString();
         if (tab_tabla.getValor("bloqueado_acact").equals("true") || tab_tabla.getValor("anulado_acact").equals("true")) {
             utilitario.agregarMensajeError("No se puede guardar", "El acta se encuentra validado y bloqueado, no se puede proceder con la modificación");
         } else {
             if (tab_tabla.guardar()) {
                 if (tab_tabla2.guardar()) {
                     guardarPantalla();
+                    // damos d ebaja a todos los actovos que se dan de baja en elacta
+                    if (valor_combo.equals(utilitario.getVariable("p_act_acta_baja"))&&tab_tabla.getValor("bloqueado_acact").equals("true")) {
+                        utilitario.getConexion().ejecutarSql("update act_activo_fijo set ide_aceaf=4 where ide_acafi in (select ide_acafi from act_movimiento where ide_acact= "+tab_tabla.getValor("ide_acact")+")");
+                    }
                 }
             }
         }

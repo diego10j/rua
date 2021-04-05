@@ -93,6 +93,7 @@ public class pre_activos_fijos extends Pantalla {
     private SeleccionTabla sel_activos_no_aprobados = new SeleccionTabla();
     private SeleccionTabla sel_clase_act = new SeleccionTabla();
     private Confirmar con_confirma = new Confirmar();
+    private Confirmar con_confirma_bien = new Confirmar();
 
     private Dialogo dia_foto = new Dialogo();
     private Tabla tab_foto = new Tabla();
@@ -210,6 +211,13 @@ public class pre_activos_fijos extends Pantalla {
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
+        
+        con_confirma_bien.setId("con_confirma_bien");
+        con_confirma_bien.setMessage("Está seguro que desea cambiar el Activo Fijo Seleccionado a bien de Control?");
+        con_confirma_bien.setTitle("CAMBIAR ACTIVO FIJO");
+        con_confirma_bien.getBot_aceptar().setValue("Si");
+        con_confirma_bien.getBot_cancelar().setValue("No");
+        agregarComponente(con_confirma_bien);
 
         dia_foto.setId("dia_foto");
         dia_foto.setTitle("AGREGAR FOTO");
@@ -659,11 +667,11 @@ public class pre_activos_fijos extends Pantalla {
     }
 
     public void depreciacionPeriodo() {
-        sec_rango_fechas.cerrar();        
+        sec_rango_fechas.cerrar();
         Map map_parametros = new HashMap();
         map_parametros.put("p_usuario", utilitario.getVariable("NICK"));
         map_parametros.put("p_fecha_inicio", sec_rango_fechas.getFecha1String());
-        map_parametros.put("p_fecha_fin", sec_rango_fechas.getFecha2String());          
+        map_parametros.put("p_fecha_fin", sec_rango_fechas.getFecha2String());
 
         vipdf_depre_periodo.setVisualizarPDF("rep_activos/rep_depreciacion_periodo.jasper", map_parametros);
         vipdf_depre_periodo.dibujar();
@@ -1214,6 +1222,16 @@ public class pre_activos_fijos extends Pantalla {
         bot_elimina.setIcon("ui-icon-cancel");
         bot_elimina.setMetodo("abrirEliminarActivoFijo");
         bar_menu.agregarComponente(bot_elimina);
+        
+        // boton creado por luz iza para actualizar activos a bienes de ocntrol
+        Boton bot_bien_control = new Boton();
+        bot_bien_control.setId("bot_bien_control");
+        bot_bien_control.setValue("Cambiar a Bien de Control");
+        bot_bien_control.setIcon("ui-icon-cancel");
+        bot_bien_control.setMetodo("cambiarBienCntrol");
+        bar_menu.agregarComponente(bot_bien_control);
+        
+        
 
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
@@ -1431,14 +1449,14 @@ public class pre_activos_fijos extends Pantalla {
         pat_panel4.setHeader(gri1);
         pat_panel4.setPanelTabla(tab_tabla4);
         pat_panel4.getMenuTabla().getItem_eliminar().setRendered(false);
-        tab_tabulador.agregarTab("FOTOS", pat_panel4);
+        // tab_tabulador.agregarTab("FOTOS", pat_panel4); COmentado Por luz Iza no se requiere cargar fotos menu innecesario
 
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
         tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo("-1"));
-        tab_tabla2.setCampoPrimaria("ide_acaaf");
-        tab_tabla2.getColumna("ide_acaaf").setVisible(false);
+        tab_tabla2.setCampoPrimaria("ide_acact");
+        tab_tabla2.getColumna("ide_acact").setVisible(false);
         tab_tabla2.setLectura(true);
         tab_tabla2.setRows(10);
         tab_tabla2.dibujar();
@@ -1515,6 +1533,32 @@ public class pre_activos_fijos extends Pantalla {
         }
         generarCodigoBarras();
     }
+    public void cambiarBienCntrol() {
+        if (tab_tabla.getValor("ide_acafi") != null) {
+            con_confirma_bien.getBot_aceptar().setMetodo("cambiarBien");
+            con_confirma_bien.dibujar();
+        } else {
+            utilitario.agregarMensajeError("Debe seleccionar un Activo Fijo", "");
+        }
+    }
+public void cambiarBien() {
+        String ide_acafi = tab_tabla.getValor("ide_acafi");
+        String act_ide_acafi = tab_tabla.getValor("act_ide_acafi");
+        if (ide_acafi != null) {
+            con_confirma_bien.cerrar();
+            //borra los hijos primero 
+            
+            utilitario.getConexion().agregarSql("update act_activo_fijo set ide_accls=2 where ide_acafi=" + ide_acafi);
+            //borra activo
+         
+            if (guardarPantalla().isEmpty()) {
+                tab_tabla.actualizar();
+            }
+
+        } else {
+            utilitario.agregarMensaje("Debe seleccionar un Activo", "");
+        }
+    }
 
     public void abrirEliminarActivoFijo() {
         if (tab_tabla.getValor("ide_acafi") != null) {
@@ -1531,9 +1575,12 @@ public class pre_activos_fijos extends Pantalla {
         if (ide_acafi != null) {
             con_confirma.cerrar();
             //borra los hijos primero 
+            
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE act_ide_acafi=" + ide_acafi);
+            utilitario.getConexion().agregarSql("DELETE FROM act_movimiento WHERE ide_acafi=" + ide_acafi);
             //borra activo
             utilitario.getConexion().agregarSql("DELETE FROM act_activo_fijo WHERE ide_acafi=" + ide_acafi);
+           
 
             if (act_ide_acafi != null) {
                 //Modifica la cantidad si elimino un hijo
@@ -1558,8 +1605,8 @@ public class pre_activos_fijos extends Pantalla {
             tab_tabla.ejecutarSql();
             tab_tabla.modificar(tab_tabla.getFilaActual()); //dfj 
             tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
-            //System.out.println(" pase tabla 2 activo fijo ");
 
+            //System.out.println(" pase tabla 2 activo fijo ");
             tab_tabla2.ejecutarSql();
             //System.out.println(" antes tabla 5 activo fijo ");
 
@@ -1977,6 +2024,14 @@ public class pre_activos_fijos extends Pantalla {
 
     public void setSet_selecciona(SeleccionTabla set_selecciona) {
         this.set_selecciona = set_selecciona;
+    }
+//
+    public Confirmar getCon_confirma_bien() {
+        return con_confirma_bien;
+    }
+
+    public void setCon_confirma_bien(Confirmar con_confirma_bien) {
+        this.con_confirma_bien = con_confirma_bien;
     }
 
     public Confirmar getCon_confirma() {
