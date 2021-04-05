@@ -121,11 +121,48 @@ public class ServicioActivosFijos extends ServicioBase {
      * @return
      */
     public String getSqlHistoriaAsignacionActivo(String ide_acafi) {
-        return "select ide_acaaf,ide_acafi,nom_geper,fecha_acaaf,observacion_acaaf,nom_usua from act_asignacion_activo a "
+        /* comenatod por luz IZa se procede a optimizar la carga d ehistorial
+        String sql= "select ide_acaaf,ide_acafi,nom_geper,fecha_acaaf,observacion_acaaf,nom_usua from act_asignacion_activo a "
                 + "left join gen_persona per on per.ide_geper=a.ide_geper "
                 + "left join sis_usuario u on u.ide_usua=a.ide_usua "
                 + "where a.ide_acafi=" + ide_acafi + " "
                 + "order by a.fecha_acaaf DESC";
+        */
+         String sql="select a.ide_acact,secuencial_acact as codigo_acact,fecha_asigna_acact,codigo_gecas,nombre_gecas,\n" +
+"codigo_geobr,nombre_geobr, b.codigo_acuba,b.nombre_acuba,g.nom_geper, b.nombre_acuba as dep_activo,\n" +
+"serie_acafi,codigo_barras_acafi,cantidad_acafi,nombre_inarti,\n" +
+"observacion_acafi,nombre_aceaf,cod_anterior_acafi,observacion_acact,k.nom_geper as nuevo_custodio,\n" +
+"(case when extract(month from fecha_asigna_acact) =1 then 'Enero'\n" +
+"when extract(month from fecha_asigna_acact) =2 then 'Febrero'\n" +
+"when extract(month from fecha_asigna_acact) =3 then 'Marzo'\n" +
+"when extract(month from fecha_asigna_acact) =4 then 'Abril'\n" +
+"when extract(month from fecha_asigna_acact) =5 then 'Mayo'\n" +
+"when extract(month from fecha_asigna_acact) =6 then 'Junio'\n" +
+"when extract(month from fecha_asigna_acact) =7 then 'Julio'\n" +
+"when extract(month from fecha_asigna_acact) =8 then 'Agosto'\n" +
+"when extract(month from fecha_asigna_acact) =9 then 'Septiembre'\n" +
+"when extract(month from fecha_asigna_acact) =10 then 'Octubre'\n" +
+"when extract(month from fecha_asigna_acact) =11 then 'Noviembre'\n" +
+"when extract(month from fecha_asigna_acact) =12 then 'Diciembre' end) as mes,\n" +
+"cast((extract(day from fecha_asigna_acact)) as integer) as dia,\n" +
+"cast((extract (year from fecha_asigna_acact)) as integer) as anio\n" +
+",g.denominacion_geper as denom_custodio,\n" +
+"k.denominacion_geper as denom_nuevo_custodio,(case when bloqueado_acact=false then 'NO APROBADO' when anulado_acact=true then 'ANULADO' else '' end) as estado\n" +
+"from act_acta_constata a\n" +
+"left join act_movimiento j on a.ide_acact = j.ide_acact\n" +
+"left join act_activo_fijo d  on d.ide_acafi=j.ide_acafi\n" +
+"left join act_ubicacion_activo b on d.ide_acuba=b.ide_acuba\n" +
+"left join gen_casa e on a.ide_gecas=e.ide_gecas\n" +
+"left join gen_OBRA f on a.ide_geobr=f.ide_geobr\n" +
+"left join gen_persona g on a.ide_geper=g.ide_geper\n" +
+"left join inv_articulo h  on d.ide_inarti=h.ide_inarti\n" +
+" left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf\n" +
+" left join gen_persona k on a.gen_ide_geper= k.ide_geper\n" +
+" left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba\n" +
+" where d.ide_acafi=" +ide_acafi+
+" order by fecha_asigna_acact desc,a.ide_acact";
+         
+         return sql;
     }
 
     /**
