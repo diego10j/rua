@@ -2978,11 +2978,12 @@ public class ServicioNomina {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
+/* comentado por luis toapanta
 		if (IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_pago_decimos"))){
 			// si es tipo de nomina pago de decimos
 			return generarDecimos(tab_empleados_departamento,ide_nrrol,ide_inicial,getIdeNrderDecimos(ide_nrdtn, ide_gepro),nro_dias_comercial_nrtit);
-		}else if (IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_liquidacion"))){
+		}else comentado pro luis toapanta*/ 
+                    if (IDE_NRTIN.equalsIgnoreCase(utilitario.getVariable("p_nrh_tipo_nomina_liquidacion"))){
 			// si es tipo de nomina liquidacion 
 			// obtengo los rubros configurados para el tipo de nomina que se va a generar
 			TablaGenerica tab_rubros = getRubrosTipoNomina(ide_nrdtn);
@@ -3010,14 +3011,14 @@ public class ServicioNomina {
 		String fecha_inicial_gepro=getPeriodoRol(ide_gepro).getValor("FECHA_INICIAL_GEPRO");
 
 		// obtengo los rubros configurados para el tipo de nomina PAGO DE DECIMOS
-		TablaGenerica tab_rubros = getRubrosTipoNominaDecimos(ide_nrdtn,ide_nrder_decimos);
+		//TablaGenerica tab_rubros = getRubrosTipoNominaDecimos(ide_nrdtn,ide_nrder_decimos); comentado por luis toapanta para aplicar nueva formula de decimos
 
 
 		String str_sql_emp_reg_pago="select * from ( ";
 		str_sql_emp_reg_pago+=tab_empleados_departamento.getSql();
 		str_sql_emp_reg_pago+=" )a ";
-		str_sql_emp_reg_pago+="where a.ide_gereg in (select c.ide_gereg from ("+tab_rubros.getSql()+")c group by c.ide_gereg) " +
-				"order by nombres";
+		//str_sql_emp_reg_pago+="where a.ide_gereg in (select c.ide_gereg from ("+tab_rubros.getSql()+")c group by c.ide_gereg) " +  comentado por lusi toapanta
+		//		"order by nombres";
                 //System.out.println("entre a str_sql_emp_reg_pago sql "+str_sql_emp_reg_pago);
 
 		TablaGenerica tab_empleados_region_pago=utilitario.consultar(str_sql_emp_reg_pago);
@@ -3059,8 +3060,8 @@ public class ServicioNomina {
 			String IDE_GEREG=tab_empleados_region_pago.getValor(i, "IDE_GEREG");
 			String dias_pend_vacacion=tab_empleados_region_pago.getValor(i, "DIAS_VACACION");
 			// calculamos el rol del empleado
-			calcularDecimoRolIndividual(tab_rubros,ide_gtemp, ide_geedp, ide_nrrol, fecha_ingreso, fecha_contrato,IDE_GEREG,RMU, acumula_fondos, ide_gepro, fecha_inicial_gepro, fecha_final_gepro,dias_pend_vacacion,ide_inicial,nro_dia_comercial);
-			ide_inicial=ide_inicial+tab_rubros.getTotalFilas();
+			//calcularDecimoRolIndividual(tab_rubros,ide_gtemp, ide_geedp, ide_nrrol, fecha_ingreso, fecha_contrato,IDE_GEREG,RMU, acumula_fondos, ide_gepro, fecha_inicial_gepro, fecha_final_gepro,dias_pend_vacacion,ide_inicial,nro_dia_comercial);  comentado por luis toapamta para nueva formula de decimos
+			//ide_inicial=ide_inicial+tab_rubros.getTotalFilas();
 
 		}
 		try {
@@ -3903,9 +3904,36 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 		}
                 else if(ide_nrrub.equals(P_NRH_RUBRO_PAGO_D3)){
                     // luis decimo tercero y pago 10 cuarto
+                    TablaGenerica tab_pago_d3=utilitario.consultar("select ide_nrder, sum(valor_nrdro)  as total_pagar from ( select b.ide_nrrol,ide_geedp,valor_nrdro,detalle_periodo_gepro,fecha_inicial_gepro,ide_nrder" +
+                                    " from nrh_detalle_rol a, nrh_rol b,gen_perido_rol c" +
+                                    " where a.ide_nrrol = b.ide_nrrol and b.ide_gepro= c.ide_gepro" +
+                                    " and fecha_inicial_gepro between '"+fecha_inicial_gepro+"' and '"+fecha_final_gepro+"'" +
+                                    " and ide_nrdtn in (4,2) and ide_nresr=1 and ide_nrder  in (select ide_nrder from nrh_detalle_rubro where ide_nrrub in ("+utilitario.getVariable("p_nrh_rubro_proviciones_d3")+"))" +
+                                    " and ide_geedp in ( select ide_geedp from gen_empleados_departamento_par where ide_gtemp in (select ide_gtemp from gen_empleados_departamento_par where ide_geedp="+ide_geedp+")  ) ) a group by ide_nrder");
+                                    if(tab_pago_d3.getTotalFilas()>0){
+                                        pago_d3=tab_pago_d3.getValor("total_pagar");
+                                        return pago_d3;
+                                    }
+                                    else {
+                                         pago_d3="0";
+                                        return pago_d3;
+                                    }
                 } 
                 else if(ide_nrrub.equals(P_NRH_RUBRO_PAGO_D4)){
-                    
+                    TablaGenerica tab_pago_d4=utilitario.consultar("select ide_nrder, sum(valor_nrdro)  as total_pagar from ( select b.ide_nrrol,ide_geedp,valor_nrdro,detalle_periodo_gepro,fecha_inicial_gepro,ide_nrder" +
+                                    " from nrh_detalle_rol a, nrh_rol b,gen_perido_rol c" +
+                                    " where a.ide_nrrol = b.ide_nrrol and b.ide_gepro= c.ide_gepro" +
+                                    " and fecha_inicial_gepro between '"+fecha_inicial_gepro+"' and '"+fecha_final_gepro+"'" +
+                                    " and ide_nrdtn in (4,2) and ide_nresr=1 and ide_nrder  in (select ide_nrder from nrh_detalle_rubro where ide_nrrub in ("+utilitario.getVariable("p_nrh_rubro_proviciones_d4")+"))" +
+                                    " and ide_geedp in ( select ide_geedp from gen_empleados_departamento_par where ide_gtemp in (select ide_gtemp from gen_empleados_departamento_par where ide_geedp="+ide_geedp+")  ) ) a group by ide_nrder");
+                                    if(tab_pago_d4.getTotalFilas()>0){
+                                        pago_d4=tab_pago_d4.getValor("total_pagar");
+                                        return pago_d4;
+                                    }
+                                    else {
+                                         pago_d4="0";
+                                        return pago_d4;
+                                    }
                 } 
 		// importa numero dias ajuste sueldo
 		else if(ide_nrrub.equals(P_NRH_RUBRO_DIAS_AJUSTE_SUELDO)){	 
@@ -4103,7 +4131,7 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 " where nrh_detalle_rol.ide_nrrol =" +ide_nrrol+
 " and nrh_detalle_rol.ide_geedp = a.ide_geedp\n" +
 " and nrh_detalle_rol.ide_nrder =a.ide_nrder";
-            System.out.println(" importa rubros fijos "+sql);
+            //System.out.println(" importa rubros fijos "+sql);
             utilitario.getConexion().ejecutarSql(sql);
             
         }
@@ -4978,7 +5006,7 @@ importarRubrosFijosEmpleado(ide_geedp, ide_nrrol); // luis toapanta
 				"select IDE_GTEMP from GTH_EMPLEADO  where DISCAPACITADO_GTEMP=TRUE) " +
 				")c on c.ide_gtemp=a.ide_gtemp and c.ide_gtemp=b.ide_gtemp " +
 				"order by nombres ";
-                //System.out.println("imprimir "+sql);                
+                //System.out.println("imprimir pago de decimos"+sql);                
 		return sql;
 	}
 
