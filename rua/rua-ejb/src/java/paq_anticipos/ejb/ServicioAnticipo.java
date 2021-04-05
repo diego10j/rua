@@ -267,8 +267,8 @@ public class ServicioAnticipo{
 				"and FECHA_VENCIMIENTO_NRAMO BETWEEN TO_DATE('"+str_fecha_ini_per_rol+"','yyyy-mm-dd') " +
 				"and TO_DATE('"+str_fecha_fin_per_rol+"', 'yyyy-mm-dd') " +
 				"ORDER BY FECHA_VENCIMIENTO_NRAMO ASC ");
-		System.out.println("----ENTRE A LA AMORTIZACION-----");
-		tab_amort.imprimirSql();
+		//System.out.println("----ENTRE A LA AMORTIZACION-----");
+		//tab_amort.imprimirSql();
 		return tab_amort;
 	}
 
