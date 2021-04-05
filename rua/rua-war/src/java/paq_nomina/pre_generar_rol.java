@@ -316,12 +316,12 @@ public class pre_generar_rol extends Pantalla{
 			return ;
 		}
 
-
+/*
 		if (!validarPagoDecimos(com_periodo.getValue()+"")){
 			utilitario.agregarMensajeInfo("No se puede generar los decimos", "No existe fecha de pago de decimos para el periodo seleccionado");
 			return;
 		}
-
+*/
 		for (int k = 0; k < set_pago_decimos.getListaSeleccionados().size(); k++) {
 			Fila fila=set_pago_decimos.getListaSeleccionados().get(k);
 			TablaGenerica tab_rol=ser_nomina.getRol(fila.getRowKey(), com_periodo.getValue()+"");
