@@ -120,7 +120,7 @@ public class ServicioActivosFijos extends ServicioBase {
      * @param ide_acafi
      * @return
      */
-    public String getSqlHistoriaAsignacionActivo(String ide_acafi) {
+    public String getSqlHistoriaAsignacionActivo(String ide_acafi,String tipo) {
         /* comenatod por luz IZa se procede a optimizar la carga d ehistorial
         String sql= "select ide_acaaf,ide_acafi,nom_geper,fecha_acaaf,observacion_acaaf,nom_usua from act_asignacion_activo a "
                 + "left join gen_persona per on per.ide_geper=a.ide_geper "
@@ -158,9 +158,11 @@ public class ServicioActivosFijos extends ServicioBase {
 "left join inv_articulo h  on d.ide_inarti=h.ide_inarti\n" +
 " left join act_estado_activo_fijo i on j.ide_aceaf=i.ide_aceaf\n" +
 " left join gen_persona k on a.gen_ide_geper= k.ide_geper\n" +
-" left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba\n" +
-" where d.ide_acafi=" +ide_acafi+
-" order by fecha_asigna_acact desc,a.ide_acact";
+" left join act_ubicacion_activo l on d.act_ide_acuba = l.ide_acuba\n" ;
+  if(tipo.equals("1")){
+       sql+=" where d.ide_acafi=" +ide_acafi ;
+        }
+sql+= " order by fecha_asigna_acact desc,a.ide_acact";
          
          return sql;
     }
