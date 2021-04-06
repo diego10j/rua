@@ -299,7 +299,7 @@ public class pre_activos_fijos extends Pantalla {
             dibujarActivoFijo();
             tab_tabla.setCondicion("codigo_barras_acafi='" + ide_acafi + "'");
             tab_tabla.ejecutarSql();
-            tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi"),"1"));
             tab_tabla2.ejecutarSql();
             tab_tabla3.setSql(ser_activos.getSqlTransaccionesActivo(tab_tabla.getValor("ide_acafi")));
             tab_tabla3.ejecutarSql();
@@ -1454,7 +1454,7 @@ public class pre_activos_fijos extends Pantalla {
         tab_tabla2 = new Tabla();
         tab_tabla2.setId("tab_tabla2");
         tab_tabla2.setIdCompleto("tab_tabulador:tab_tabla2");
-        tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo("-1"));
+        tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo("-1","1"));
         tab_tabla2.setCampoPrimaria("ide_acact");
         tab_tabla2.getColumna("ide_acact").setVisible(false);
         tab_tabla2.setLectura(true);
@@ -1604,7 +1604,7 @@ public void cambiarBien() {
             tab_tabla.setCondicion("ide_acafi=" + ide_acafi);
             tab_tabla.ejecutarSql();
             tab_tabla.modificar(tab_tabla.getFilaActual()); //dfj 
-            tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi")));
+            tab_tabla2.setSql(ser_activos.getSqlHistoriaAsignacionActivo(tab_tabla.getValor("ide_acafi"),"1"));
 
             //System.out.println(" pase tabla 2 activo fijo ");
             tab_tabla2.ejecutarSql();
