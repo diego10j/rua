@@ -36,6 +36,7 @@ public class pre_transaccion_activo extends Pantalla {
         tab_tabla1.getColumna("codigo_acact").setFiltro(true);
         tab_tabla1.setLectura(true);
         tab_tabla1.dibujar();
+        tab_tabla1.setRows(15);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla1);
 
