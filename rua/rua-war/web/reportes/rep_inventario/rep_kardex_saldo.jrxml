@@ -119,7 +119,7 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 		<variableExpression><![CDATA[$F{prec_egre}]]></variableExpression>
 	</variable>
 	<variable name="tot_egreso" class="java.math.BigDecimal" resetType="Group" resetGroup="articulo" calculation="Sum">
-		<variableExpression><![CDATA[$F{prec_egre}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cant_egre} * $F{precio}]]></variableExpression>
 	</variable>
 	<variable name="tot_costo_venta" class="java.math.BigDecimal" resetType="Group" resetGroup="articulo" calculation="Sum">
 		<variableExpression><![CDATA[$F{costo_venta}]]></variableExpression>
@@ -354,7 +354,7 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nombre_inarti}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement uuid="da22798d-d930-4930-82ad-ea5d3c5e8092" x="420" y="37" width="45" height="13"/>
 					<box>
 						<leftPen lineWidth="0.75"/>
@@ -464,35 +464,35 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 		</groupHeader>
 		<groupFooter>
 			<band height="26" splitType="Stretch">
-				<textField pattern="#,##0.00">
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement uuid="862630d7-5748-48e7-9aef-476508de3a1e" x="105" y="0" width="45" height="13"/>
 					<textElement textAlignment="Right">
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{total_ingreso}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.0000">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement uuid="862630d7-5748-48e7-9aef-476508de3a1e" x="177" y="0" width="63" height="13"/>
 					<textElement textAlignment="Right">
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{tot_tot_ingre}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.00">
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement uuid="862630d7-5748-48e7-9aef-476508de3a1e" x="240" y="0" width="45" height="13"/>
 					<textElement textAlignment="Right">
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{tot_cant_egre}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.0000">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement uuid="862630d7-5748-48e7-9aef-476508de3a1e" x="315" y="0" width="60" height="13"/>
 					<textElement textAlignment="Right">
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{tot_egreso}]]></textFieldExpression>
 				</textField>
-				<textField pattern="#,##0.00">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement uuid="862630d7-5748-48e7-9aef-476508de3a1e" x="375" y="0" width="45" height="13"/>
 					<textElement textAlignment="Right">
 						<font size="7"/>
