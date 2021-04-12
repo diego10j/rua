@@ -301,16 +301,21 @@ public class EstadosFinancieros extends Pantalla {
         com_estado_anio_fiscal.setStyle("width: 100px;");
 
         com_estado_mes_fiscal.setId("com_estado_mes_fiscal");
+        com_estado_mes_fiscal.setValue("");
         com_estado_mes_fiscal.setCombo(ser_gerencial.getEstado());
         com_estado_mes_fiscal.setDisabled(true);
         com_estado_mes_fiscal.setStyle("width: 100px;");
 
         com_tipo_balance.setId("com_tipo_balance");
+        com_tipo_balance.setValue("");
         com_tipo_balance.setCombo(ser_gerencial.getTipoBalance("1", "-1"));
         com_tipo_balance.setMetodo("actualizarEstadoBalance");
+        //com_tipo_balance.setDisabled(true);
         com_tipo_balance.setStyle("width: 100px;");
         com_mes.setId("com_mes");
         com_mes.setCombo(ser_gerencial.getMes("-1", ""));
+        //com_mes.setDisabled(true);
+        com_mes.setValue("");
         com_mes.setMetodo("actualizarTipoBalance");
         com_mes.setStyle("width: 100px;");
 
@@ -393,6 +398,7 @@ public class EstadosFinancieros extends Pantalla {
         tab_tabla3.getColumna("ide_gebame").setVisible(false);
         tab_tabla3.getColumna("ide_cndpc").setAutoCompletar();
         tab_tabla3.getColumna("ide_cndpc").setLectura(true);
+        tab_tabla3.getColumna("ide_gebade").setLectura(true);
         tab_tabla3.getColumna("valor_debe_gebade").setLectura(true);
         tab_tabla3.getColumna("valor_haber_gebade").setLectura(true);
         tab_tabla3.getColumna("ide_gebade").setNombreVisual("CODIGO");
@@ -435,7 +441,7 @@ public class EstadosFinancieros extends Pantalla {
                 int nivel_nuevo = 0;
                 for (int j = 7; j > 2; j--) {
                     nivel_nuevo = j - 1;
-                    System.out.println("j  " + j);
+                    //System.out.println("j  " + j);
                     TablaGenerica tab_temporal = utilitario.consultar(ser_gerencial.getCalTemBalance(utilitario.getVariable("ide_usua"), j + ""));
                     for (int k = 0; k < tab_temporal.getTotalFilas(); k++) {
                         // System.out.println("segundo insert k "+k);
@@ -531,7 +537,7 @@ public class EstadosFinancieros extends Pantalla {
 
     public void actualizarEstadoBalance() {
         TablaGenerica tab_casa_obra = utilitario.consultar(ser_gerencial.getCasaObraScursal(utilitario.getVariable("ide_sucu"), com_periodo.getValue().toString(), "1"));
-        TablaGenerica tab_detalle = utilitario.consultar("select * from ger_balance_mensual  where ide_gecobc=" + tab_casa_obra.getValor("ide_gecobc") + " and ide_getiba=" + com_tipo_balance.getValue());
+        TablaGenerica tab_detalle = utilitario.consultar("select * from ger_balance_mensual  where ide_gecobc=" + tab_casa_obra.getValor("ide_gecobc") + " and ide_getiba=" + com_tipo_balance.getValue()+" and ide_gemes="+com_mes.getValue());
         //System.out.println("sql_tabla ");
         //tab_detalle.imprimirSql();
         com_estado_mes_fiscal.setValue(tab_detalle.getValor("ide_gerest"));
