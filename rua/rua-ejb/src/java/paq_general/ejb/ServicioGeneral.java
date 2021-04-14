@@ -150,6 +150,10 @@ public  class ServicioGeneral  {
 		
 	}
 	
-	
+	public String getAnio(String estado){
+            String sql="";
+            sql+="select ide_geani,nom_geani from gen_anio where activo_geani in ("+estado+") order by nom_geani desc";
+            return sql;
+        }
 
 }
