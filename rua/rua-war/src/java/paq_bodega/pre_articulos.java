@@ -77,9 +77,9 @@ public class pre_articulos extends Pantalla {
         tab_tabla.getColumna("ide_inbod").setVisible(false);
         tab_tabla.getColumna("ide_geani").setVisible(false);
         tab_tabla.getColumna("ingreso_material_boart").setValorDefecto("0");
-        tab_tabla.getColumna("ingreso_material_boart").setMetodoChange("calcularExistencia");
+       // tab_tabla.getColumna("ingreso_material_boart").setMetodoChange("calcularExistencia");
         tab_tabla.getColumna("egreso_material_boart").setValorDefecto("0");
-        tab_tabla.getColumna("egreso_material_boart").setMetodoChange("calcularExistencia");
+        //tab_tabla.getColumna("egreso_material_boart").setMetodoChange("calcularExistencia");
         tab_tabla.getColumna("existencia_inicial_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_inicial_boart").setValorDefecto("0");
         tab_tabla.getColumna("costo_anterior_boart").setValorDefecto("0");
