@@ -753,7 +753,7 @@ public class ServicioInventario {
         if (tipo.equals("1")) {
             sql += " and ide_sucu=" + sucu + " and ide_empr=" + empr;
         }
-        //System.out.println("consulta bodega >>>>>>>>> "+sql);
+        //System.out.println("consulta bodega getBodtArticulo >>>>>>>>> "+sql);
         return sql;
     }
 
@@ -921,6 +921,7 @@ public class ServicioInventario {
                 + "       cantidad1_indci= " + stock + ", \n"
                 + "       precio_promedio_indci=" + precio + " \n"
                 + " WHERE ide_indci=" + codigo + " and ide_inarti=" + articulo + " ";
+        //System.out.println(" sql update actualiza detalle stock "+sql);
         return sql;
     }
 
@@ -945,7 +946,7 @@ public class ServicioInventario {
                 + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)\n"
-                + "		and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
+                + "		and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ") and extract(year from fecha_trans_incci)||'' = (select nom_geani from gen_anio where ide_geani ="+anio+")\n"
                 + "union\n"
                 + "	select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,\n"
                 + "	0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,\n"
@@ -958,7 +959,7 @@ public class ServicioInventario {
                 + "	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n"
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n"
-                + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ")\n"
+                + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ") and extract(year from fecha_trans_incci)||'' = (select nom_geani from gen_anio where ide_geani ="+anio+")\n"
                 + "order by ide_inarti,fecha_trans_incci,ide_indci ";
         //System.out.println("REPORTES >>>>> " + sql);
         return sql;
@@ -1067,7 +1068,7 @@ public class ServicioInventario {
      * @param empr
      */
     public void getRecalcularInventario(String tipo, String anio, String ide_inarti, String sucu, String empr) {
-        System.out.println("SQL RECALCULAR>>>> " + anio + "  articulo >> " + ide_inarti);
+        //System.out.println("SQL RECALCULAR ANIO>>>> " + anio + "  articulo >> " + ide_inarti);
         TablaGenerica tab_consulta = utilitario.consultar(getReporteOrdenado(anio, ide_inarti));
         double costo_actual = 0;
         utilitario.getConexion().ejecutarSql(getActualizarBdt(anio, ide_inarti));
