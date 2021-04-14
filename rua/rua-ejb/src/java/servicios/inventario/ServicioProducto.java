@@ -711,12 +711,12 @@ public class ServicioProducto {
      */
     public String getSqlTotalVentasMensualesProducto(String ide_inarti, String anio) {
         String p_cxc_estado_factura_normal = utilitario.getVariable("p_cxc_estado_factura_normal");
-        return "select nombre_gemes,"
+        return "select nombre_gemes,num_facturas,(case when cantidad is null then 0 else cantidad end) as cantidad,(case when total is null then 0 else total end) as total from ( select nombre_gemes,"
                 + "(select count(a.ide_cccfa) as num_facturas from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
                 + "(select sum(cantidad_ccdfa) as cantidad from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + "),"
                 + "(select sum(total_ccdfa) as total from cxc_cabece_factura a inner join cxc_deta_factura cdf on a.ide_cccfa=cdf.ide_cccfa  where EXTRACT(MONTH FROM fecha_emisi_cccfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cccfa) in(" + anio + ") and ide_inarti=" + ide_inarti + "  and ide_ccefa=" + p_cxc_estado_factura_normal + ") "
                 + "from gen_mes "
-                + "order by ide_gemes";
+                + "order by ide_gemes ) a";
     }
 
     /**
@@ -728,12 +728,12 @@ public class ServicioProducto {
      */
     public String getSqlTotalComprasMensualesProducto(String ide_inarti, String anio) {
         String p_cxp_estado_factura_normal = utilitario.getVariable("p_cxp_estado_factura_normal");
-        return "select nombre_gemes,"
+        return "select nombre_gemes,num_facturas,(case when cantidad is null then 0 else cantidad end) as cantidad,(case when total is null then 0 else total end) as total  from ( select nombre_gemes,"
                 + "(select count(a.ide_cpcfa) as num_facturas from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
                 + "(select sum(cantidad_cpdfa) as cantidad from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + "),"
                 + "(select sum(valor_cpdfa) as total from cxp_cabece_factur a inner join cxp_detall_factur cdf on a.ide_cpcfa=cdf.ide_cpcfa  where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in( " + anio + ") and ide_inarti=" + ide_inarti + "  and ide_cpefa=" + p_cxp_estado_factura_normal + ") "
                 + "from gen_mes "
-                + "order by ide_gemes";
+                + "order by ide_gemes ) a";
     }
 
     /**
