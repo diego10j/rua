@@ -1116,4 +1116,25 @@ public class ServicioInventario {
                 + "where fecha_trans_incci between cast('" + fecha_inicio + "' as date) and cast ('" + fecha_fin + "' as date) and a.ide_intti in(" + transaccion + ")";
         return sql;
     }
+    public String getSqlInventarioContabilizar(String anio,String tipo){
+        String sql="";
+        if(tipo.equals("2")){
+            sql+=" select 1 as ide_cndpc, nombre_inarti,sum(debe) as debe,sum(haber) as haber from ( ";
+        }
+        sql+="select ide_cndpc, ide_gelua,nombre_inarti,sum(debe) as debe,sum(haber) as haber from ( \n" +
+"                            select a.ide_gelua,a.ide_cndpc,b.ide_inarti,ide_geani, nombre_inarti,\n" +
+"                            (case when a.ide_gelua = 0 then costo_actual_boart else 0 end) as haber,(case when a.ide_gelua = 1 then costo_actual_boart else 0 end) as debe \n" +
+"                            from inv_asiento_inventario a,bodt_articulos b,inv_articulo c\n" +
+"                            where a.ide_inarti = b.ide_inarti and b.ide_inarti=c.ide_inarti\n" +
+"                           and costo_actual_boart >0\n" +
+"                            and ide_geani in ("+anio+")\n" +
+"                            ) a \n" +
+"                            group by ide_gelua,ide_cndpc,nombre_inarti";
+        if(tipo.equals("2")){
+            sql+=" ) a group by nombre_inarti having (sum(debe)-sum(haber)) != 0";
+        }
+        //System.out.println(" consultando inventarios contable "+sql);
+        return sql;
+        
+    }
 }
