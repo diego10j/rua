@@ -25,6 +25,7 @@ import paq_contabilidad.ejb.ServicioContabilidad;
 import paq_general.ejb.ServicioGeneral;
 import paq_gestion.ejb.ServicioGestion;
 import servicios.contabilidad.ServicioComprobanteContabilidad;
+import servicios.inventario.ServicioInventario;
 import servicios.pensiones.ServicioPensiones;
 
 
@@ -56,6 +57,8 @@ public class pre_asiento_inventarios extends Pantalla {
         private final ServicioGestion ser_gestion = (ServicioGestion) utilitario.instanciarEJB(ServicioGestion.class);
     @EJB
         private final ServicioGeneral ser_general = (ServicioGeneral) utilitario.instanciarEJB(ServicioGeneral.class);
+ @EJB
+        private final ServicioInventario ser_inventario = (ServicioInventario) utilitario.instanciarEJB(ServicioInventario.class);
 
     public pre_asiento_inventarios() {    
         
@@ -69,7 +72,7 @@ public class pre_asiento_inventarios extends Pantalla {
         
         com_periodo.setCombo(ser_general.getAnio("true,false"));
 	com_periodo.setMetodo("cambioPeriodo");		 
-	bar_botones.agregarComponente(new Etiqueta("Periodo Rol:"));
+	bar_botones.agregarComponente(new Etiqueta("Periódo Contable:"));
 	bar_botones.agregarComponente(com_periodo);
         
         Boton bot_generar_asiento=new Boton();
@@ -92,14 +95,14 @@ public class pre_asiento_inventarios extends Pantalla {
 
         Boton bot_consulta_descuadre=new Boton();
 	bot_consulta_descuadre.setMetodo("consultaDescuadre");
-	bot_consulta_descuadre.setValue("Consultar Rol Descuadrado");
+	bot_consulta_descuadre.setValue("Consultar Asiento Descuadrado");
 	bot_consulta_descuadre.setIcon("ui-icon-mail-closed");
 	bar_botones.agregarBoton(bot_consulta_descuadre);
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("INV_CABECERA_ASIENTO", "IDE_INCAA", 1);
         tab_tabla.getColumna("ide_geani").setCombo(ser_general.getAnio("true,false"));
-
+tab_tabla.setCondicion("ide_geani=-1");
         tab_tabla.getColumna("ide_geani").setVisible(false);
         tab_tabla.getColumna("estado_incaa").setLectura(true);
         tab_tabla.getColumna("traspaso_incaa").setLectura(true);
@@ -155,28 +158,7 @@ public class pre_asiento_inventarios extends Pantalla {
 		agregarComponente(sel_tab_tipo_nomina);
                 
                sel_tab_consuta_descuadre.setId("sel_tab_consuta_descuadre");
-                sel_tab_consuta_descuadre.setSeleccionTabla("select a.ide_gtemp,apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,debe,haber "
-                + "from gth_empleado a,( "
-                + "select sum(debe) as debe,sum(haber) as haber, ide_geedp from ( "
-                + "select ide_gelua,ide_cndpc, sum(round(debe,2)) as debe,sum(round(haber,2)) as haber, ide_geedp from ( "
-                + "select a.ide_gelua,a.ide_cndpc,b.ide_nrrub,b.ide_nrder,d.ide_nrrol,d.ide_gepro, "
-                + "round((case when a.ide_gelua = 0 then valor_nrdro else 0 end),2) as haber, "
-                + "round((case when a.ide_gelua = 1 then valor_nrdro else 0 end),2) as debe,detalle_nrrub,codig_recur_cndpc,nombre_cndpc,ide_geedp "
-                + "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d,nrh_rubro e,con_det_plan_cuen f "
-                + "where a.ide_nrrub = b.ide_nrrub "
-                + "and b.ide_nrder = c.ide_nrder "
-                + "and c.ide_nrrol = d.ide_nrrol "
-                + "and b.ide_nrrub = e.ide_nrrub "
-                + "and a.ide_cndpc = f.ide_cndpc "
-                + "and ide_gepro =-1 "
-                + ") a "
-                + "group by ide_gelua,ide_cndpc, ide_geedp "
-                + ")a "
-                + "group by ide_geedp "
-                + ") b, gen_empleados_departamento_par c "
-                + "where a.ide_gtemp = c.ide_gtemp and b.ide_geedp = c.ide_geedp "
-                + "and debe != haber "
-                + "order by apellido_paterno_gtemp","ide_gtemp");
+                sel_tab_consuta_descuadre.setSeleccionTabla(ser_inventario.getSqlInventarioContabilizar("-1", "1"),"ide_cndpc");
 
         sel_tab_tipo_nomina.setRadio();
         gru_pantalla.getChildren().add(sel_tab_consuta_descuadre);
@@ -184,7 +166,7 @@ public class pre_asiento_inventarios extends Pantalla {
         agregarComponente(sel_tab_consuta_descuadre);
     }
     public void cambioPeriodo(){
-        tab_tabla.setCondicion("ide_gepro="+com_periodo.getValue());
+        tab_tabla.setCondicion("ide_geani="+com_periodo.getValue());
         tab_tabla.ejecutarSql();
         tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
         
@@ -192,32 +174,11 @@ public class pre_asiento_inventarios extends Pantalla {
     }
 public void consultaDescuadre(){
     if(com_periodo.getValue()!=null){
-    sel_tab_consuta_descuadre.getTab_seleccion().setSql("select a.ide_gtemp,apellido_paterno_gtemp,apellido_materno_gtemp,primer_nombre_gtemp,segundo_nombre_gtemp,debe,haber "
-                + "from gth_empleado a,( "
-                + "select sum(debe) as debe,sum(haber) as haber, ide_geedp from ( "
-                + "select ide_gelua,ide_cndpc, sum(round(debe,2)) as debe,sum(round(haber,2)) as haber, ide_geedp from ( "
-                + "select a.ide_gelua,a.ide_cndpc,b.ide_nrrub,b.ide_nrder,d.ide_nrrol,d.ide_gepro, "
-                + "round((case when a.ide_gelua = 0 then valor_nrdro else 0 end),2) as haber, "
-                + "round((case when a.ide_gelua = 1 then valor_nrdro else 0 end),2) as debe,detalle_nrrub,codig_recur_cndpc,nombre_cndpc,ide_geedp "
-                + "from nrh_rubro_asiento a,nrh_detalle_rubro b, nrh_detalle_rol c,nrh_rol d,nrh_rubro e,con_det_plan_cuen f "
-                + "where a.ide_nrrub = b.ide_nrrub "
-                + "and b.ide_nrder = c.ide_nrder "
-                + "and c.ide_nrrol = d.ide_nrrol "
-                + "and b.ide_nrrub = e.ide_nrrub "
-                + "and a.ide_cndpc = f.ide_cndpc "
-                + "and ide_gepro = "+com_periodo.getValue().toString()
-                + ") a "
-                + "group by ide_gelua,ide_cndpc, ide_geedp "
-                + ")a "
-                + "group by ide_geedp "
-                + ") b, gen_empleados_departamento_par c "
-                + "where a.ide_gtemp = c.ide_gtemp and b.ide_geedp = c.ide_geedp "
-                + "and debe != haber "
-                + "order by apellido_paterno_gtemp");
+    sel_tab_consuta_descuadre.getTab_seleccion().setSql(ser_inventario.getSqlInventarioContabilizar(com_periodo.getValue().toString(), "2"));
 			sel_tab_consuta_descuadre.getTab_seleccion().ejecutarSql();
                         sel_tab_consuta_descuadre.dibujar();
     }else {
-                      utilitario.agregarMensajeInfo("Seleccione un periodo", "Seleccione El periodo para Continuar con la consulta");
+                      utilitario.agregarMensajeInfo("Seleccione un periodo", "Seleccione El ano contable para continuar con la consulta");
                       }
                       
 }
@@ -225,36 +186,36 @@ public void consultaDescuadre(){
        String maximo_cabecera ="";
        String maximo_detalle ="";
        String valor_aplica = "";
-       String valor_debe = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("debe_nrdea"),2);
-       String valor_haber = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("haber_nrdea"),2);
+       String valor_debe = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("DEBE_INDEA"),2);
+       String valor_haber = utilitario.getFormatoNumero(tab_tabla2.getSumaColumna("haber_INDEA"),2);
 
        if (valor_debe.equals(valor_haber)){
       // String numero_secuencial = ser_comprobante.getSecuencial(utilitario.getFechaActual(), utilitario.getVariable("p_reh_tipo_comprobante_nomina");
-       TablaGenerica tab_cabecera_asiento = utilitario.consultar("select IDE_NRCAA, FECHA_ASIENTO_NRCAA, OBSERVACION_NRCAA from nrh_cabecera_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
-       TablaGenerica tab_detalle_asiento = utilitario.consultar("select ide_nrdea, IDE_NRCAA, ide_cndpc, ide_gelua, debe_nrdea, haber_nrdea  from nrh_detalle_asiento where IDE_NRCAA = "+tab_tabla.getValorSeleccionado()+"");
+       TablaGenerica tab_cabecera_asiento = utilitario.consultar("select IDE_INCAA, FECHA_ASIENTO_INCAA, OBSERVACION_INCAA from inv_cabecera_asiento where IDE_INCAA = "+tab_tabla.getValorSeleccionado()+"");
+       TablaGenerica tab_detalle_asiento = utilitario.consultar("select ide_INdea, IDE_INCAA, ide_cndpc, ide_gelua, debe_INdea, haber_INdea  from INV_detalle_asiento where IDE_INCAA = "+tab_tabla.getValorSeleccionado()+"");
 
        
        try{
-          String ide_asiento_cncc= ser_gestion.saveAsientoNomina(utilitario.getVariable("IDE_USUA"), tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), tab_cabecera_asiento.getValor("OBSERVACION_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina"), utilitario.getVariable("p_reh_estado_comprobante_nomina"), utilitario.getFechaActual(), utilitario.getHoraActual(), ser_comprobante.getSecuencial(tab_cabecera_asiento.getValor("FECHA_ASIENTO_NRCAA"), utilitario.getVariable("p_reh_tipo_comprobante_nomina")), utilitario.getVariable("p_nrh_mod_asiento_nomina"), utilitario.getVariable("p_nrh_persona_asiento_nomina"));
+          String ide_asiento_cncc= ser_gestion.saveAsientoNomina(utilitario.getVariable("IDE_USUA"), tab_cabecera_asiento.getValor("FECHA_ASIENTO_INCAA"), tab_cabecera_asiento.getValor("OBSERVACION_INCAA"), utilitario.getVariable("p_inv_tipo_comprobante"), utilitario.getVariable("p_inv_estado_comprobante"), utilitario.getFechaActual(), utilitario.getHoraActual(), ser_comprobante.getSecuencial(tab_cabecera_asiento.getValor("FECHA_ASIENTO_INCAA"), utilitario.getVariable("p_inv_tipo_comprobante")), utilitario.getVariable("p_inv_mod_asiento"), utilitario.getVariable("p_inv_persona_asiento"));
                 
             for (int i =0; i<tab_detalle_asiento.getTotalFilas(); i++){
 
                 if(tab_detalle_asiento.getValor(i, "ide_gelua").equals(p_con_lugar_debe)){
-                    valor_aplica = tab_detalle_asiento.getValor(i, "debe_nrdea");
+                    valor_aplica = tab_detalle_asiento.getValor(i, "debe_indea");
                 }
                 else {
-                    valor_aplica = tab_detalle_asiento.getValor(i, "haber_nrdea");
+                    valor_aplica = tab_detalle_asiento.getValor(i, "haber_indea");
                 }
                 ser_gestion.saveDetalleAsientoNomina(ide_asiento_cncc, tab_detalle_asiento.getValor(i, "ide_cndpc"), tab_detalle_asiento.getValor(i, "ide_gelua"), valor_aplica);
             }
              guardarPantalla();
             tab_tabla.setValor("IDE_ASIENTO_RUA", ide_asiento_cncc);
-            tab_tabla.setValor("TRASPASO_NRCAA", "true");
-            tab_tabla.setValor("ESTADO_NRCAA", "false");
+            tab_tabla.setValor("TRASPASO_inCAA", "true");
+            tab_tabla.setValor("ESTADO_inCAA", "false");
             tab_tabla.modificar(tab_tabla.getFilaActual());
             utilitario.addUpdateTabla(tab_tabla, "IDE_ASIENTO_RUA","");	
-            utilitario.addUpdateTabla(tab_tabla, "TRASPASO_NRCAA","");	
-            utilitario.addUpdateTabla(tab_tabla, "ESTADO_NRCAA","");	
+            utilitario.addUpdateTabla(tab_tabla, "TRASPASO_inCAA","");	
+            utilitario.addUpdateTabla(tab_tabla, "ESTADO_inCAA","");	
             utilitario.addUpdate("tab_tabla");
             tab_tabla.guardar();
             guardarPantalla();
@@ -273,13 +234,13 @@ public void consultaDescuadre(){
  
     @Override
     public void insertar() {
-         if(tab_tabla.isFocus()){
+         if(com_periodo.getValue()!=null){
           tab_tabla.insertar();
-           
+          tab_tabla.setValor("ide_geani", com_periodo.getValue().toString());
+         } else{
+             utilitario.agregarMensajeError("Seleccione el Anio", "No se puede continuar");
          }
-         else if (tab_tabla2.isFocus()){
-             tab_tabla2.insertar();
-         }
+        
     }
 
     @Override
@@ -298,10 +259,10 @@ public void consultaDescuadre(){
 
     @Override
     public void eliminar() {
-      if (tab_tabla.getValor("ESTADO_NRCAA").equals("false")){
+      if (tab_tabla.getValor("ESTADO_inCAA").equals("false")){
         if(tab_tabla.isFocus()){
-            utilitario.getConexion().ejecutarSql("delete from NRH_DETALLE_ASIENTO where IDE_NRCAA ="+tab_tabla.getValor("IDE_NRCAA"));
-            utilitario.getConexion().ejecutarSql("delete from NRH_CABECERA_ASIENTO where IDE_NRCAA ="+tab_tabla.getValor("IDE_NRCAA"));    
+            utilitario.getConexion().ejecutarSql("delete from inv_DETALLE_ASIENTO where IDE_inCAA ="+tab_tabla.getValor("IDE_inCAA"));
+            utilitario.getConexion().ejecutarSql("delete from inv_CABECERA_ASIENTO where IDE_inCAA ="+tab_tabla.getValor("IDE_inCAA"));    
             tab_tabla.ejecutarSql();
             tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
             utilitario.addUpdate("tab_tabla2");
@@ -312,8 +273,8 @@ public void consultaDescuadre(){
     }
     public void cerrarAsiento(){
         
-        if (tab_tabla.getValor("TRASPASO_NRCAA").equals("true")){            
-                        tab_tabla.setValor("ESTADO_NRCAA", "true");                
+        if (tab_tabla.getValor("TRASPASO_INCAA").equals("true")){            
+                        tab_tabla.setValor("ESTADO_INCAA", "true");                
                         tab_tabla.modificar(tab_tabla.getFilaActual());
                         tab_tabla.guardar();
                         guardarPantalla();
@@ -360,39 +321,41 @@ public void consultaDescuadre(){
         }       
     }
 public void generarAsiento(){		
-        if(tab_tabla.getValor("IDE_NRCAA") == null){
+        if(tab_tabla.getValor("IDE_INCAA") == null){
             		utilitario.agregarMensajeInfo("Ingresar la cabecera del asiento", "Para generar el asiento contable ingrese una cabecera contable");
 			return;
         }
-        if(tab_tabla.getValor("ESTADO_NRCAA").equals("true")){
+        if(tab_tabla.getValor("ESTADO_INCAA").equals("true")){
             		utilitario.agregarMensajeInfo("Asiento Cerrado", "Para Editar o Agregar Items, El asiento no se debe encontrar cerrado");
 			return;            
         }
 		//abre el dialogo de leccion de tipo de nomina
 		if(com_periodo.getValue()!=null){
-			sel_tab_tipo_nomina.setHeader("Tipos de Nomina");
-			sel_tab_tipo_nomina.getTab_seleccion().setSql("select " +
-					"ROL.IDE_NRROL,TIN.DETALLE_NRTIN, " +
-					"TEM.DETALLE_GTTEM," +
-					"TIC.DETALLE_GTTCO, " +
-					"SUC.NOM_SUCU " +
-					"from NRH_ROL ROL " +
-					"LEFT JOIN NRH_DETALLE_TIPO_NOMINA DTN ON DTN.IDE_NRDTN=ROL.IDE_NRDTN " +
-					"LEFT JOIN NRH_TIPO_NOMINA TIN ON TIN.IDE_NRTIN=DTN.IDE_NRTIN " +
-					"LEFT JOIN GTH_TIPO_CONTRATO TIC ON TIC.IDE_GTTCO=DTN.IDE_GTTCO " +
-					"LEFT JOIN GTH_TIPO_EMPLEADO TEM ON TEM.IDE_GTTEM=DTN.IDE_GTTEM " +
-					"LEFT JOIN SIS_SUCURSAL SUC ON SUC.IDE_SUCU=DTN.IDE_SUCU " +
-					"where ROL.IDE_GEPRO="+com_periodo.getValue() +"  AND IDE_NRESR="+utilitario.getVariable("p_nrh_estado_nomina_cerrada"));
-			sel_tab_tipo_nomina.getTab_seleccion().ejecutarSql();
-			if(sel_tab_tipo_nomina.getTab_seleccion().isEmpty()==false){
-				sel_tab_tipo_nomina.dibujar();
-			}
-			else{
-				utilitario.agregarMensajeInfo("No tiene nominas cerradas en el periodo seleccionado", "Solo se pueden enviar n�minas con estado cerradas");
-			}								
-		}
+				TablaGenerica tab_valida_asiento=utilitario.consultar(ser_inventario.getSqlInventarioContabilizar(com_periodo.getValue().toString(), "2"));
+		    if(tab_valida_asiento.getTotalFilas()>0){
+                        utilitario.agregarMensajeError("Revisar configuracion de asientos", "Asiento no cuadra imprima el listado de articulos revise su configuracion");
+                    }else{
+                        TablaGenerica  tab_resultado = utilitario.consultar(ser_inventario.getSqlInventarioContabilizar(com_periodo.getValue().toString(), "1"));
+
+                        for(int i=0;i < tab_resultado.getTotalFilas();i++){
+                            tab_tabla2.insertar();
+                            tab_tabla2.setValor("ide_gelua", tab_resultado.getValor(i, "ide_gelua"));
+                            tab_tabla2.setValor("IDE_CNDPC", tab_resultado.getValor(i, "IDE_CNDPC"));
+                            tab_tabla2.setValor("DEBE_inDEA", tab_resultado.getValor(i, "debe"));
+                            tab_tabla2.setValor("HABER_inDEA", tab_resultado.getValor(i, "haber"));
+                            tab_tabla2.setValor("IDE_INCAA", tab_tabla.getValor("IDE_INCAA"));
+
+                        }                        
+
+                        tab_tabla2.guardar();
+                        tab_tabla.guardar();
+                        guardarPantalla();
+                        tab_tabla2.ejecutarSql();
+                        utilitario.addUpdate("tab_tabla2");
+                    }
+                }
 		else{
-			utilitario.agregarMensajeInfo("Debe seleccionar un periodo", "");
+			utilitario.agregarMensajeInfo("Debe seleccionar un ano contable", "");
 		}
 	}
         @Override
@@ -418,7 +381,7 @@ public void generarAsiento(){
                     if (rep_reporte.isVisible()){
 				p_parametros=new HashMap();
 				rep_reporte.cerrar();
-				p_parametros.put("ide_nrcaa",Integer.parseInt(tab_tabla.getValor("ide_nrcaa")));
+				p_parametros.put("ide_nrcaa",Integer.parseInt(tab_tabla.getValor("ide_incaa")));
 				p_parametros.put("titulo","PLANTILLA CONTABLE");
 				sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
 				sef_reporte.dibujar();					
