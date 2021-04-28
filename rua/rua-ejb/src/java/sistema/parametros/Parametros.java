@@ -66,6 +66,11 @@ public class Parametros {
         lis_parametros.add(new Parametro("1", "p_inv_estado_aprobado", "Indica el estado aprobado ", "2", "inv_est_prev_inve", "ide_inepi", "nombre_inepi"));
         lis_parametros.add(new Parametro("1", "p_inv_ingreso_compra", "Indica las compras ingresadas por facturas compras ", "0", "inv_tip_tran_inve", "ide_intti", "nombre_intti"));
         lis_parametros.add(new Parametro("1", "p_inv_grupo_entrega_productos", "Indica los articulos solo de los grupos seleccionados", "1", "inv_articulo", "ide_inarti", "nombre_inarti"));
+       lis_parametros.add(new Parametro("1", "p_inv_tipo_comprobante", "Indica el tipo de comprobante de inventario ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
+        lis_parametros.add(new Parametro("1", "p_inv_estado_comprobante", "Indica el estado de comprobante ", "0", "con_estado_compro", "ide_cneco", "nombre_cneco"));
+        lis_parametros.add(new Parametro("1", "p_inv_mod_asiento", "Indica el modulo al que pertenece el asiento de inventario", "1", "sis_modulo", "ide_modu", "nom_modu"));
+        lis_parametros.add(new Parametro("1", "p_inv_persona_asiento", "Indica la persona que pertenece el asiento de nomina puede ser el responsable", "0", "gen_persona", "ide_geper", "nom_geper"));
+
         /*
          * CUENTAS POR PAGAR MODULO =2
          */
@@ -121,6 +126,10 @@ public class Parametros {
         lis_parametros.add(new Parametro("4", "p_act_acta_constatacion", "Indica el codigo de tipo acta constatacion fisica", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
         lis_parametros.add(new Parametro("4", "p_act_acta_baja", "Indica el codigo de tipo acta de baja", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
         lis_parametros.add(new Parametro("4", "p_act_acta_cambio", "Indica el codigo de tipo acta de baja de cambio de custodio", "3", "act_tipo_acta", "ide_actia", "detalle_actia"));
+        lis_parametros.add(new Parametro("4", "p_act_tipo_comprobante", "Indica el tipo de comprobante de activos fijos ", "0", "con_tipo_comproba", "ide_cntcm", "nombre_cntcm"));
+        lis_parametros.add(new Parametro("4", "p_act_estado_comprobante", "Indica el estado de comprobante ", "0", "con_estado_compro", "ide_cneco", "nombre_cneco"));
+        lis_parametros.add(new Parametro("4", "p_act_mod_asiento", "Indica el modulo al que pertenece el asiento de activos fijos", "4", "sis_modulo", "ide_modu", "nom_modu"));
+        lis_parametros.add(new Parametro("4", "p_act_persona_asiento", "Indica la persona que pertenece el asiento de nomina puede ser el responsable", "0", "gen_persona", "ide_geper", "nom_geper"));
 
         /*
          * COMPRAS MODULO =5
@@ -555,6 +564,8 @@ public class Parametros {
         lis_parametros.add(new Parametro("16","p_ger_cuenta_activo","Indica el codigo de la cuenta activo","1", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("16","p_ger_cuenta_pasivo","Indica el codigo de la cuenta pasivo","367", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("16","p_ger_cuenta_patrimonio","Indica el codigo de la cuenta patrimonio","759", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("16","p_ger_cuenta_ingreso","Indica el codigo de la cuenta de ingreso la 4 ","772", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
+        lis_parametros.add(new Parametro("16","p_ger_cuenta_costo","Indica el codigo de la cuenta costo la 5 ","952", "con_det_plan_cuen", "ide_cndpc", "nombre_cndpc"));
         lis_parametros.add(new Parametro("16","p_ger_nom_firma1","Indica el nombre de la firma numero 1","PDR. MARFFEO PATEGUINI"));
         lis_parametros.add(new Parametro("16","p_ger_cargo_firma1","Indica el cargo de la firma numero 1","ECONOMO"));
         lis_parametros.add(new Parametro("16","p_ger_nom_firma2","Indica el nombre de la firma numero 2","LIC. LORENA SANCHEZ"));
