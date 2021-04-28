@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03a399d4-09ad-48d2-bb1f-11a555a12712">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="288"/>
-	<property name="ireport.y" value="66"/>
+	<property name="ireport.x" value="269"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="p_activo" class="java.lang.String"/>
 	<parameter name="p_pasivo" class="java.lang.String"/>
 	<parameter name="p_patrimonio" class="java.lang.String"/>
@@ -39,6 +39,8 @@
 	<parameter name="pcargo1" class="java.lang.String"/>
 	<parameter name="pfirma2" class="java.lang.String"/>
 	<parameter name="pcargo2" class="java.lang.String"/>
+	<parameter name="p_ingresos" class="java.lang.Double"/>
+	<parameter name="p_gastos" class="java.lang.Double"/>
 	<queryString>
 		<![CDATA[select a.ide_cndpc,codig_recur_cndpc,nombre_cndpc,(case when apli_saldo_cndpc=1 then debe-haber else 0 end) as debe,
 (case when apli_saldo_cndpc=2 then haber-debe else 0 end) as haber
@@ -56,11 +58,10 @@ and a.ide_gecobc in ($P!{pide_obra} )
 and c.ide_getiba in ($P!{ptipo_balance} )
 and c.ide_gemes in ( $P!{pmeses})
 and ide_cndpc in (
-select ide_cndpc from con_det_plan_cuen  where codig_recur_cndpc  like '1%' 
+select ide_cndpc from con_det_plan_cuen  where codig_recur_cndpc  like '4%' 
 union
-select ide_cndpc from con_det_plan_cuen  where codig_recur_cndpc  like '2%' 
-union
-select ide_cndpc from con_det_plan_cuen  where codig_recur_cndpc  like '3%' 
+select ide_cndpc from con_det_plan_cuen  where codig_recur_cndpc  like '5%' 
+ 
 )
 ) a group by ide_cndpc
 ) b where a.ide_cndpc= b.ide_cndpc
@@ -296,15 +297,7 @@ order by codig_recur_cndpc]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Excedente/Deficít del Ejercicio:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="10" width="82" height="15" uuid="8111c9f2-49f6-46c2-b3f1-05ee09c7b411"/>
-				<box leftPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[Total Activos:]]></text>
+				<text><![CDATA[Total Costos:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="72" y="56" width="355" height="15" uuid="5075c1a4-fe2b-45d0-9f25-87a538b3a357"/>
@@ -312,28 +305,21 @@ order by codig_recur_cndpc]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Total (Pasivos + Patrimonio + Excedente/Deficít del Ejercicio):]]></text>
+				<text><![CDATA[Excedente/Deficít del Ejercicio):]]></text>
 			</staticText>
-			<textField pattern="#,##0.00">
-				<reportElement x="83" y="10" width="120" height="15" uuid="29c402f1-6d8b-4909-a8b4-53aefd99e773"/>
-				<textElement textAlignment="Right">
-					<font isBold="true" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{p_tot_activo}]]></textFieldExpression>
-			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="430" y="56" width="120" height="15" uuid="0b507730-6733-4fc9-ab24-5c8dd86b19c6"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{p_total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{p_utilidad_perdida}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="430" y="39" width="120" height="15" uuid="dda98306-adc6-47da-9f3a-1216280a357a"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{p_utilidad_perdida}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="280" y="9" width="147" height="15" uuid="26fadaa1-fa44-4086-a777-99b7e5ed0467"/>
@@ -341,7 +327,7 @@ order by codig_recur_cndpc]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Total Pasivos:]]></text>
+				<text><![CDATA[Total Ingresos:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="280" y="24" width="147" height="15" uuid="959b4703-8550-4e6f-8be7-1104151458c0"/>
@@ -349,21 +335,21 @@ order by codig_recur_cndpc]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Total Patrimonio:	]]></text>
+				<text><![CDATA[Total Gastos:	]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
 				<reportElement x="430" y="9" width="120" height="15" uuid="7ce93e6f-9b78-4da1-bd0f-cfd4c43138e1"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{p_tot_pasivo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{p_ingresos}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="430" y="24" width="120" height="15" uuid="ac166bb3-03c0-4fa1-a502-0cfe2f32e7bc"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{p_tot_patrimonio}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{p_gastos}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="72" y="130" width="155" height="1" uuid="14835da1-d3b8-45d9-8b12-ed2db3d2225c"/>
