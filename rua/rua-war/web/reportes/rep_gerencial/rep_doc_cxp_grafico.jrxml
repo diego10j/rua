@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03a399d4-09ad-48d2-bb1f-11a555a12712">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pide_geani" class="java.lang.Integer"/>
+	<parameter name="pusuario" class="java.lang.String"/>
+	<parameter name="pfirma1" class="java.lang.String"/>
+	<parameter name="pcargo1" class="java.lang.String"/>
+	<parameter name="pfirma2" class="java.lang.String"/>
+	<parameter name="pcargo2" class="java.lang.String"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="sucursal" class="java.lang.String"/>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="telefono" class="java.lang.String"/>
+	<parameter name="ruc" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select substring(nombre_gemes from 1 for 3) as nombre_gemes,nombre_gemes as mes_completo,
+                (select count(ide_cpcfa) as num_documentos from cxp_cabece_factur a 
+                where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani}) and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null),
+                (select sum(base_grabada_cpcfa) as compras12 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani})  and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null),
+                (select sum(base_tarifa0_cpcfa+base_no_objeto_iva_cpcfa) as compras0 from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani} )  and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null),
+                (select sum(valor_iva_cpcfa) as iva from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani} )   and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null),
+                (case when (select sum(total_cpcfa) as total from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani} )  and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null) is null then 0 else
+                (select sum(total_cpcfa) as total from cxp_cabece_factur a where EXTRACT(MONTH FROM fecha_emisi_cpcfa)=ide_gemes and EXTRACT(YEAR FROM fecha_emisi_cpcfa) in($P{pide_geani} )  and ide_cpefa=0  and ide_sucu=$P{ide_sucu}  and ide_rem_cpcfa is null)  end) as total
+                from gen_mes 
+                order by ide_gemes]]>
+	</queryString>
+	<field name="nombre_gemes" class="java.lang.String"/>
+	<field name="mes_completo" class="java.lang.String"/>
+	<field name="num_documentos" class="java.lang.Long"/>
+	<field name="compras12" class="java.math.BigDecimal"/>
+	<field name="compras0" class="java.math.BigDecimal"/>
+	<field name="iva" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<variable name="venta_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="113" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="73" width="555" height="19" uuid="82ca9adb-8277-4620-a43b-b6e79e7d5679"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="188" y="94" width="53" height="14" uuid="e1b52310-f945-4978-9ce5-f92a50f65da8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="246" y="94" width="53" height="14" uuid="2442da8c-3333-442a-8bd3-a6c89d55a126"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO DOC.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="334" y="94" width="53" height="14" uuid="1e113d59-5b49-4876-b4ed-b5eb7ee81084"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOT. VENTAS]]></text>
+			</staticText>
+			<image onErrorType="Blank">
+				<reportElement x="89" y="3" width="153" height="64" uuid="e717db3c-97fa-42c6-a4ba-8fcef877a4b4"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="216" y="13" width="241" height="15" forecolor="#000000" uuid="84ac692e-da6e-4873-ac19-860133c15ee9"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="216" y="52" width="241" height="15" uuid="004c6366-6801-4a1d-a1ee-2f70324ce9da"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC: "+$P{ruc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="216" y="40" width="241" height="15" uuid="5d65a7fb-ad98-4f13-9805-a9ef422394ce"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="216" y="28" width="241" height="15" uuid="b659479f-4618-41f4-9b94-f9634d4f7a5a"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="11" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="306" y="0" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="0c0eb467-079a-4b3a-9ad3-eb1caeaa1d80"/>
+				<box leftPadding="0" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="164" y="0" width="89" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="c62b9739-1809-4503-b9da-54a3b85bb273"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mes_completo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="253" y="0" width="53" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="4e41eefe-424d-4ed2-b97c-2b5cf82e7c58"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_documentos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement x="451" y="0" width="65" height="13" uuid="dd8d03a4-37ad-48ff-b7fd-fa5327b3fb05"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="13" uuid="1fec811b-8c80-4a05-bca0-a1b3d9f835db"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="100" y="1" width="88" height="11" uuid="31a7c84f-e57e-483d-b421-4df1751597ba"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="1" width="101" height="11" uuid="cd414096-309e-48fd-ac87-df6931bf70d6"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fecha de Impresión:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="241" y="1" width="65" height="11" uuid="cd414096-309e-48fd-ac87-df6931bf70d6"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Responsable:]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="306" y="1" width="88" height="11" uuid="31a7c84f-e57e-483d-b421-4df1751597ba"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pusuario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="354" splitType="Stretch">
+			<bar3DChart>
+				<chart>
+					<reportElement x="0" y="32" width="555" height="321" uuid="8e6eb941-e29a-4073-acd6-44e97b265417"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{nombre_gemes}+" $"+$F{total}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{nombre_gemes}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{total}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+			<staticText>
+				<reportElement x="253" y="7" width="53" height="14" uuid="cf05537b-54dd-4f19-ba33-fd099d0d734b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="306" y="9" width="85" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="0a6da4d8-ebf0-4ad5-aff3-ae1a33516a7c"/>
+				<box leftPadding="0" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{venta_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
