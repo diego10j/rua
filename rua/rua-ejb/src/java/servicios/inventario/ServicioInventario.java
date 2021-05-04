@@ -1116,6 +1116,30 @@ public class ServicioInventario {
                 + "where fecha_trans_incci between cast('" + fecha_inicio + "' as date) and cast ('" + fecha_fin + "' as date) and a.ide_intti in(" + transaccion + ")";
         return sql;
     }
+    public String getSqlInventarioContabilizaFecha(String fecha_inicial,String fecha_final,String tipo){
+        String sql="";
+        if(tipo.equals("1")){
+            sql+="select ide_cndpc,ide_gelua, sum(debe) as debe,sum(haber) as haber from (";
+        }
+        if(tipo.equals("2")){
+            sql+="select ide_inarti as ide_cndpc,nombre_inarti, sum(debe) as debe,sum(haber) as haber from (";
+        }
+        sql+="select a.ide_incci,ide_indci,numero_incci,observacion_incci,b.ide_inarti,valor_indci as valor_venta,fecha_trans_incci,ide_gelua,\n" +
+"(case when ide_gelua = 0 then valor_indci else 0 end) as haber,(case when ide_gelua = 1 then valor_indci else 0 end) as debe,\n" +
+"nombre_inarti,c.ide_cndpc\n" +
+"from inv_cab_comp_inve a,inv_det_comp_inve b,inv_asiento_inventario c,inv_articulo d\n" +
+"where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_inarti=d.ide_inarti\n" +
+"and ide_intti= 29\n" +
+"and fecha_trans_incci between '"+fecha_inicial+"' and '"+fecha_final+"'\n" +
+"order by fecha_trans_incci desc";
+        if(tipo.equals("1")){
+            sql+=") a group by ide_cndpc,ide_gelua";
+        }
+        if(tipo.equals("2")){
+            sql+=") a group by ide_inarti,nombre_inarti having (sum(debe)-sum(haber)) != 0";
+        }
+        return sql;
+    }
     public String getSqlInventarioContabilizar(String anio,String tipo){
         String sql="";
         if(tipo.equals("2")){
@@ -1136,5 +1160,51 @@ public class ServicioInventario {
         //System.out.println(" consultando inventarios contable "+sql);
         return sql;
         
+    }
+    public String getSqlCostoVenta(String fecha_inicial,String fecha_final){
+        String sql="";
+        sql+="select a.ide_inarti,a.nom_geani,a.nombre_inarti,a.codigo_inarti,a.existencia_inicial_boart,a.costo_inicial_boart,precio,\n" +
+"cantidad_indci,precio_indci,valor_indci,cant_egre,prec_egre,valor_egre,(case when cantidad1_indci is null then a.existencia_inicial_boart else cantidad1_indci end) as cantidad1_indci,cant_egre*a.costo_inicial_boart as costo_venta,\n" +
+"(case when precio_promedio_indci is null then  a.costo_inicial_boart else precio_promedio_indci end) as precio_promedio_indci,\n" +
+"	fecha_trans_incci,numero_incci\n" +
+"from (\n" +
+"select a.ide_inarti,a.nombre_inarti,b.existencia_inicial_boart,b.costo_inicial_boart,c.nom_geani,c.ide_geani,codigo_inarti\n" +
+"from inv_articulo a,bodt_articulos b,gen_anio c\n" +
+"where a.ide_inarti=b.ide_inarti\n" +
+"and b.ide_geani=c.ide_geani\n" +
+") a\n" +
+"left join (\n" +
+"select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,\n" +
+"	costo_inicial_boart,0 as precio,cantidad_indci,precio_indci,valor_indci,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad1_indci,precio_promedio_indci,\n" +
+"	fecha_trans_incci,numero_incci,ide_indci\n" +
+"	from inv_cab_comp_inve a\n" +
+"	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti\n" +
+"	left join inv_tip_comp_inve c on b.ide_intci=c.ide_intci\n" +
+"	left join inv_det_comp_inve d on a.ide_incci=d.ide_incci\n" +
+"	left join bodt_articulos e on d.ide_inarti=e.ide_inarti\n" +
+"	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n" +
+"	left join gen_anio g on e.ide_geani=g.ide_geani\n" +
+"	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)\n" +
+"	and fecha_trans_incci between '"+fecha_inicial+"' and '"+fecha_final+"'\n" +
+"\n" +
+"\n" +
+"union\n" +
+"	select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,\n" +
+"	precio_promedio_indci as precio,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,\n" +
+"	fecha_trans_incci,numero_incci,ide_indci\n" +
+"	from inv_cab_comp_inve a\n" +
+"	left join inv_tip_tran_inve b on a.ide_intti=b.ide_intti\n" +
+"	left join inv_tip_comp_inve c on b.ide_intci=c.ide_intci\n" +
+"	left join inv_det_comp_inve d on a.ide_incci=d.ide_incci\n" +
+"	left join bodt_articulos e on d.ide_inarti=e.ide_inarti\n" +
+"	left join inv_articulo f on e.ide_inarti=f.ide_inarti\n" +
+"	left join gen_anio g on e.ide_geani=g.ide_geani\n" +
+"	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n" +
+"	and fecha_trans_incci between '"+fecha_inicial+"' and '"+fecha_final+"'\n" +
+"\n" +
+") b on a.ide_geani= b.ide_geani and a.ide_inarti = b.ide_inarti\n" +
+"where a.nom_geani= extract(year from cast('"+fecha_inicial+"' as date))||''\n" +
+"order by a.ide_inarti,fecha_trans_incci,ide_indci";
+        return sql;
     }
 }
