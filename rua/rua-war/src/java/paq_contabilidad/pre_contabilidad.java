@@ -104,8 +104,8 @@ public class pre_contabilidad extends Pantalla {
         mep_menu.agregarItem("Libro Diario", "dibujarLibroDiario", "ui-icon-bookmark");//2
         mep_menu.agregarItem("Balance General", "dibujarBalanceGeneral", "ui-icon-bookmark");//3
         mep_menu.agregarItem("Estado de Resultados", "dibujarEstadoResultados", "ui-icon-bookmark");//4
-        mep_menu.agregarSubMenu("GRAFICOS");
-        mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-bookmark");
+       // mep_menu.agregarSubMenu("GRAFICOS");
+       // mep_menu.agregarItem("Gráfico Balance", "dibujarGrafico", "ui-icon-bookmark");
         agregarComponente(mep_menu);
 
         //Reportes

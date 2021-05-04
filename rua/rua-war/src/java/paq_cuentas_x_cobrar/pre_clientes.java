@@ -20,9 +20,15 @@ import framework.componentes.Link;
 import framework.componentes.MenuPanel;
 import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import org.primefaces.component.fieldset.Fieldset;
@@ -56,6 +62,10 @@ public class pre_clientes extends Pantalla {
     private Tabla tab_tabla;
     private Tabla tab_tabla1;
     private Arbol arb_estructura;// Estructura Gerarquica de clientes
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
+    private Map parametro = new HashMap();
+    private VisualizarPDF vipdf_mayor = new VisualizarPDF();
 
     /*CONTABILIDAD*/
     @EJB
@@ -120,6 +130,9 @@ public class pre_clientes extends Pantalla {
         asc_asiento.setId("asc_asiento");
         agregarComponente(asc_asiento);
         dibujarDashBoard();
+        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
     }
 
     /**
@@ -810,6 +823,11 @@ public class pre_clientes extends Pantalla {
         if (isClienteSeleccionado()) {
             gca_grafico = new GraficoCartesiano();
             gca_grafico.setId("gca_grafico");
+            
+             Boton bot_imprimir_grafico = new Boton();
+        bot_imprimir_grafico.setIcon("ui-icon-print");
+        bot_imprimir_grafico.setValue("Imprimir");
+        bot_imprimir_grafico.setMetodo("imprimirGrafico");
 
             com_periodo = new Combo();
             com_periodo.setMetodo("actualizarGrafico");
@@ -843,6 +861,8 @@ public class pre_clientes extends Pantalla {
             gri_opciones.setColumns(2);
             gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
             gri_opciones.getChildren().add(com_periodo);
+            gri_opciones.getChildren().add(new Etiqueta("<strong>REPORTE :</strong>"));
+            gri_opciones.getChildren().add(bot_imprimir_grafico);
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.getChildren().add(gri_opciones);
             pat_panel.setPanelTabla(tab_tabla);
@@ -1180,7 +1200,31 @@ public class pre_clientes extends Pantalla {
             }
         }
     }
+public void imprimirGrafico() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+        }
+        TablaGenerica tab_persona=utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+aut_clientes.getValor());
+        parametro.put("titulo", "REPORTE VENTAS ANUAL CLIENTE: "+tab_persona.getValor("nom_geper"));
+        parametro.put("pusuario", utilitario.getVariable("nick"));
+         parametro.put("ide_geper", Integer.parseInt(aut_clientes.getValor()));
+        parametro.put("pide_geani", Integer.parseInt(com_periodo.getValue().toString()));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
+               vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_cliente_venta_grafico.jasper", parametro);
+        vipdf_mayor.dibujar();
 
+    }
     @Override
     public void eliminar() {
 
@@ -1264,6 +1308,14 @@ public class pre_clientes extends Pantalla {
 
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
+    }
+
+    public VisualizarPDF getVipdf_mayor() {
+        return vipdf_mayor;
+    }
+
+    public void setVipdf_mayor(VisualizarPDF vipdf_mayor) {
+        this.vipdf_mayor = vipdf_mayor;
     }
 
 }

@@ -22,7 +22,10 @@ import framework.componentes.PanelArbol;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import org.primefaces.component.fieldset.Fieldset;
@@ -70,6 +73,8 @@ public class pre_proveedores extends Pantalla {
 
     private Combo com_fac_pendientes;
     private Texto tex_num_asiento;
+    private Map parametro = new HashMap();
+    private VisualizarPDF vipdf_mayor = new VisualizarPDF();
 
     public pre_proveedores() {
 
@@ -104,12 +109,15 @@ public class pre_proveedores extends Pantalla {
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Gráfico de Compras", "dibujarGrafico", "ui-icon-bookmark");
         mep_menu.agregarItem("Reporte Cuentas por Pagar", "dibujarReporteCxP", "ui-icon-bookmark");
-        mep_menu.agregarItem("Productos Comprados", "dibujarProductosComprados", "ui-icon-cart");
+        //mep_menu.agregarItem("Productos Comprados", "dibujarProductosComprados", "ui-icon-cart");
 
         agregarComponente(mep_menu);
         asc_asiento.setId("asc_asiento");
         agregarComponente(asc_asiento);
         dibujarDashBoard();
+        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
     }
 public void dibujarDashBoard() {
 
@@ -643,6 +651,11 @@ public void dibujarDashBoard() {
         if (isProveedorSeleccionado()) {
             gca_grafico = new GraficoCartesiano();
             gca_grafico.setId("gca_grafico");
+            
+            Boton bot_imprimir_grafico = new Boton();
+        bot_imprimir_grafico.setIcon("ui-icon-print");
+        bot_imprimir_grafico.setValue("Imprimir");
+        bot_imprimir_grafico.setMetodo("imprimirGrafico");
 
             com_periodo = new Combo();
             com_periodo.setMetodo("actualizarGrafico");
@@ -665,6 +678,8 @@ public void dibujarDashBoard() {
             gri_opciones.setColumns(2);
             gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
             gri_opciones.getChildren().add(com_periodo);
+            gri_opciones.getChildren().add(new Etiqueta("<strong>REPORTE :</strong>"));
+            gri_opciones.getChildren().add(bot_imprimir_grafico);
             PanelTabla pat_panel = new PanelTabla();
             pat_panel.getChildren().add(gri_opciones);
             pat_panel.setPanelTabla(tab_tabla);
@@ -676,6 +691,31 @@ public void dibujarDashBoard() {
             gru_grupo.getChildren().add(gca_grafico);
         }
         mep_menu.dibujar(8, "GRAFICO DE COMPRAS", gru_grupo);
+    }
+public void imprimirGrafico() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+        }
+        TablaGenerica tab_persona=utilitario.consultar("select ide_geper,nom_geper from gen_persona where ide_geper="+aut_proveedor.getValor());
+        parametro.put("titulo", "REPORTE COMPRAS ANUAL PROVEEDOR: "+tab_persona.getValor("nom_geper"));
+        parametro.put("pusuario", utilitario.getVariable("nick"));
+         parametro.put("ide_geper", Integer.parseInt(aut_proveedor.getValor()));
+        parametro.put("pide_geani", Integer.parseInt(com_periodo.getValue().toString()));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
+               vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_proveedor_grafico.jasper", parametro);
+        vipdf_mayor.dibujar();
+
     }
 
     public void dibujarProductosComprados() {
@@ -899,10 +939,13 @@ public void dibujarDashBoard() {
             dibujarProveedor();
         }
 
-        if (mep_menu.getOpcion() == 1) {
+        else if (mep_menu.getOpcion() == 1) {
             //FORMULARIO Proveedor
             aut_proveedor.limpiar();
             tab_tabla.insertar();
+        }
+        else{
+            utilitario.agregarMensajeError("", "Seleccione la opcion informacion del proveedor para crear un nuevo proveedor");
         }
     }
 
@@ -1051,6 +1094,14 @@ public void dibujarDashBoard() {
 
     public void setAsc_asiento(AsientoContable asc_asiento) {
         this.asc_asiento = asc_asiento;
+    }
+
+    public VisualizarPDF getVipdf_mayor() {
+        return vipdf_mayor;
+    }
+
+    public void setVipdf_mayor(VisualizarPDF vipdf_mayor) {
+        this.vipdf_mayor = vipdf_mayor;
     }
 
 }

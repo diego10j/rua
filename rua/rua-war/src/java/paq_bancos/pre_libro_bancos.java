@@ -99,6 +99,7 @@ public class pre_libro_bancos extends Pantalla {
     private final ServicioCuentasCxC ser_cuentas_cxc = (ServicioCuentasCxC) utilitario.instanciarEJB(ServicioCuentasCxC.class);
 
     private AutoCompletar aut_persona;
+    private AutoCompletar aut_persona_caja_chica;
     private Calendario cal_fecha_pago;
     private AutoCompletar aut_cuenta;
     private AutoCompletar aut_cuenta1;
@@ -156,6 +157,7 @@ public class pre_libro_bancos extends Pantalla {
         mep_menu.agregarItem("Cuentas por Cobrar", "dibujarCxC", "ui-icon-contact");//3
         mep_menu.agregarItem("Cuentas por Cobrar Grupo", "dibujarCxCGrupo", "ui-icon-star");//15
         mep_menu.agregarItem("Cuentas por Pagar", "dibujarCxP", "ui-icon-contact");//4
+        mep_menu.agregarItem("Cuentas por Pagar Caja Chica", "dibujarCxPCajaChica", "ui-icon-contact");//16
         mep_menu.agregarItem("Anticipos a Proveedores", "dibujarAnticipo", "ui-icon-contact");//9
         mep_menu.agregarItem("Anticipos a Empleados", "dibujarAnticipoEmpleados", "ui-icon-contact");//13
         mep_menu.agregarItem("Anticipos de Clientes", "dibujarAnticipoClientes", "ui-icon-contact");//14
@@ -1183,7 +1185,119 @@ public class pre_libro_bancos extends Pantalla {
         contenido.getChildren().add(bot_aceptar);
         mep_menu.dibujar(4, "CUENTAS POR PAGAR A PROVEEDORES", contenido);
     }
+public void dibujarCxPCajaChica() {
+        Grid contenido = new Grid();
+        Grid gri1 = new Grid();
+        gri1.setColumns(3);
+        gri1.getChildren().add(new Etiqueta("<strong>BENEFICIARIO : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta());
 
+        aut_persona_caja_chica = new AutoCompletar();
+        aut_persona_caja_chica.setId("aut_persona_caja_chica");
+        aut_persona_caja_chica.setMetodoChange("cargarCuentasporPagarCajaChica");
+        aut_persona_caja_chica.setAutocompletarContenido();
+        aut_persona_caja_chica.setAutoCompletar(ser_proveedor.getSqlComboProveedor());
+        aut_persona_caja_chica.setSize(70);
+        gri1.getChildren().add(aut_persona_caja_chica);
+        cal_fecha_pago = new Calendario();
+        cal_fecha_pago.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago);
+        gri1.getChildren().add(new Etiqueta());
+
+        gri1.getChildren().add(new Etiqueta("<strong>DE LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>NUM. DOCUMENTO : </strong>"));
+
+        aut_cuenta = new AutoCompletar();
+        aut_cuenta.setId("aut_cuenta");
+        aut_cuenta.setMetodoChange("cambioCuenta");
+        aut_cuenta.setAutoCompletar(aut_cuentas.getLista());
+        aut_cuenta.setDropdown(true);
+        aut_cuenta.setSize(66);
+        aut_cuenta.setAutocompletarContenido();
+        aut_cuenta.setMaxResults(25);
+
+        gri1.getChildren().add(aut_cuenta);
+        com_tip_tran = new Combo();
+        com_tip_tran.setMetodo("cambioTipoTransBanco");
+        com_tip_tran.setCombo(ser_tesoreria.getSqlTipoTransaccionNegativo());
+        gri1.getChildren().add(com_tip_tran);
+        tex_num = new Texto();
+        tex_num.setId("tex_num");
+        tex_num.setSoloEnteros();
+        gri1.getChildren().add(tex_num);
+        contenido.getChildren().add(gri1);
+
+        Grid gri3 = new Grid();
+        gri3.setColumns(1);
+        ate_observacion = new AreaTexto();
+        ate_observacion.setCols(90);
+        ate_observacion.setMaxlength(190);
+        ate_observacion.setRows(2);
+        gri3.getChildren().add(new Etiqueta("<strong>OBSERVACIÓN : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
+        gri3.getChildren().add(ate_observacion);
+        contenido.getChildren().add(gri3);
+        contenido.getChildren().add(new Separator());
+
+        PanelGrid gri4 = new PanelGrid();
+        gri4.setColumns(4);
+        Etiqueta eti_valor_cobrar = new Etiqueta();
+        Etiqueta eti_diferencia = new Etiqueta();
+        eti_valor_cobrar.setValue("VALOR A PAGAR $:");
+        tex_diferencia = new Texto();
+        tex_diferencia.setId("tex_diferencia");
+        eti_diferencia.setStyle("font-size: 14px;font-weight: bold;padding-left:10px;");
+        tex_diferencia.setStyle("font-size: 14px;font-weight: bold");
+        tex_diferencia.setDisabled(true);
+        tex_diferencia.setSoloNumeros();
+        eti_diferencia.setValue("DIFERENCIA $: ");
+        tex_valor_pagar = new Texto();
+        tex_valor_pagar.setId("tex_valor_pagar");
+        tex_valor_pagar.setMetodoKeyPress("calcularDiferenciaCxP");
+        tex_valor_pagar.setMetodoChange("calcularDiferenciaCxP");
+        eti_valor_cobrar.setStyle("font-size: 14px;font-weight: bold;");
+        tex_valor_pagar.setStyle("font-size: 14px;font-weight: bold");
+        gri4.getChildren().add(eti_valor_cobrar);
+        gri4.getChildren().add(tex_valor_pagar);
+        gri4.getChildren().add(eti_diferencia);
+        gri4.getChildren().add(tex_diferencia);
+
+        contenido.getChildren().add(gri4);
+
+        tab_tabla1 = new Tabla();
+        tab_tabla1.setId("tab_seleccion");
+        tab_tabla1.setSql(ser_proveedor.getSqlCuentasPorPagarCajaChica(aut_cuenta.getValor()));
+        tab_tabla1.getColumna("saldo_x_pagar").setEstilo("font-size: 15px;font-weight: bold;");
+        tab_tabla1.getColumna("saldo_x_pagar").alinearDerecha();
+        tab_tabla1.getColumna("saldo_x_pagar").setLongitud(25);
+        tab_tabla1.getColumna("total_cpcfa").setLongitud(25);
+        tab_tabla1.getColumna("total_cpcfa").alinearDerecha();
+        tab_tabla1.getColumna("ide_cpcfa").setVisible(false);
+        tab_tabla1.getColumna("numero_cpcfa").setLongitud(25);
+        tab_tabla1.getColumna("fecha_emisi_cpcfa").setNombreVisual("FECHA");
+        tab_tabla1.getColumna("numero_cpcfa").setNombreVisual("NUM. FACTURA");
+        tab_tabla1.getColumna("total_cpcfa").setNombreVisual("TOTAL");
+        tab_tabla1.getColumna("saldo_x_pagar").setNombreVisual("SALDO");
+        tab_tabla1.getColumna("observacion_cpcfa").setNombreVisual("OBSERVACIÓN");
+        tab_tabla1.setScrollable(true);
+        tab_tabla1.setScrollHeight(utilitario.getAltoPantalla() - 380);
+        tab_tabla1.setCampoPrimaria("ide_cpctr");
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setTipoSeleccion(true);
+        tab_tabla1.setCondicion("ide_cpctr=-1");
+        tab_tabla1.setColumnaSuma("saldo_x_pagar");
+        tab_tabla1.onSelectCheck("seleccionaFacturaCxP");
+        tab_tabla1.onUnselectCheck("deseleccionaFacturaCxP");
+        tab_tabla1.dibujar();
+        contenido.getChildren().add(tab_tabla1);
+        contenido.getChildren().add(new Separator());
+        Boton bot_aceptar = new Boton();
+        bot_aceptar.setValue("Aceptar");
+        bot_aceptar.setMetodo("aceptarCxPCajaChica");
+        contenido.getChildren().add(bot_aceptar);
+        mep_menu.dibujar(16, "CUENTAS POR PAGAR A PROVEEDORES CAJA CHICA", contenido);
+    }
     public void dibujarAnticipo() {
         Grid contenido = new Grid();
         Grid gri1 = new Grid();
@@ -2054,6 +2168,23 @@ public class pre_libro_bancos extends Pantalla {
             utilitario.agregarMensajeError("El Proveedor seleccionado no tiene cuentas por pagar", "");
         }
     }
+//////////////CXP
+    /**
+     * Carga las facturas por Cobrar cuando se selecciona un cliente del
+     * autocompletar
+     *
+     * @param evt
+     */
+    public void cargarCuentasporPagarCajaChica(SelectEvent evt) {
+        aut_persona_caja_chica.onSelect(evt);
+        tab_tabla1.setSql(ser_proveedor.getSqlCuentasPorPagarCajaChica(aut_persona_caja_chica.getValor()));
+        tab_tabla1.ejecutarSql();
+        tex_diferencia.setValue(utilitario.getFormatoNumero(0));
+        tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));
+        if (tab_tabla1.isEmpty()) {
+            utilitario.agregarMensajeError("El Proveedor seleccionado no tiene cuentas por pagar", "");
+        }
+    }
 
     public void deseleccionaFacturaCxP(UnselectEvent evt) {
         double total = 0;
@@ -2098,6 +2229,28 @@ public class pre_libro_bancos extends Pantalla {
     }
 
     public void aceptarCxP() {
+        if (validarCxP()) {
+            String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
+            //11/02/2019 Control por si genera error al guardar la transacción
+            if (ide_teclb == null) {
+                ide_teclb = "";
+            }
+            int num = -1;
+            try {
+                num = Integer.parseInt(ide_teclb);
+            } catch (Exception e) {
+                num = -1;
+            }
+
+            if (num > 0) {
+                generarAsiento(ide_teclb);
+                dibujarCxP();
+            } else {
+                utilitario.agregarMensajeError("Error al guardar la transacción", "Cuentas por Pagar");
+            }
+        }
+    }
+public void aceptarCxPCajaChica() {
         if (validarCxP()) {
             String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             //11/02/2019 Control por si genera error al guardar la transacción
@@ -3056,6 +3209,14 @@ public void generarPDF() {
 
     public void setVipdf_comprobante(VisualizarPDF vipdf_comprobante) {
         this.vipdf_comprobante = vipdf_comprobante;
+    }
+
+    public AutoCompletar getAut_persona_caja_chica() {
+        return aut_persona_caja_chica;
+    }
+
+    public void setAut_persona_caja_chica(AutoCompletar aut_persona_caja_chica) {
+        this.aut_persona_caja_chica = aut_persona_caja_chica;
     }
 
 }

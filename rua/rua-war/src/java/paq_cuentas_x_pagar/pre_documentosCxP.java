@@ -29,6 +29,7 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import framework.componentes.VisualizarPDF;
 import framework.componentes.graficos.GraficoCartesiano;
 import framework.componentes.graficos.GraficoPastel;
 import java.util.Date;
@@ -80,7 +81,8 @@ public class pre_documentosCxP extends Pantalla {
 
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
-
+     private Map parametro = new HashMap();
+    private VisualizarPDF vipdf_mayor = new VisualizarPDF();
     private AsientoContable asc_asiento = new AsientoContable();
 
     private Confirmar con_confirmar = new Confirmar();
@@ -153,8 +155,8 @@ public class pre_documentosCxP extends Pantalla {
         mep_menu.agregarSubMenu("INFORMES");
         mep_menu.agregarItem("Grafico de Compras", "dibujarGraficoCompras", "ui-icon-clock");
         // mep_menu.agregarItem("Estadística de Ventas", "dibujarEstadisticas", "ui-icon-bookmark");        
-        mep_menu.agregarSubMenu("PRESUPUESTO");
-        mep_menu.agregarItem("Compromiso Documentos CxP", "dibujarCompromiso", "ui-icon-calculator");
+       // mep_menu.agregarSubMenu("PRESUPUESTO");
+       // mep_menu.agregarItem("Compromiso Documentos CxP", "dibujarCompromiso", "ui-icon-calculator");
 
         agregarComponente(mep_menu);
         dibujarDocumentos();
@@ -204,9 +206,37 @@ public class pre_documentosCxP extends Pantalla {
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
+        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
 
     }
+public void imprimirGrafico() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+            parametro.put("ide_sucu",Integer.parseInt( utilitario.getVariable("ide_sucu")));
+        }
 
+        parametro.put("titulo", "REPORTE COMPRAS ANUALES");
+        parametro.put("pusuario", utilitario.getVariable("nick"));
+        
+        parametro.put("pide_geani", Integer.parseInt(com_periodo.getValue().toString()));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
+               vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_doc_cxp_grafico.jasper", parametro);
+        vipdf_mayor.dibujar();
+
+    }
     public void dibujarCompromiso() {
         Grid gri = new Grid();
         Grid g1 = new Grid();
@@ -667,7 +697,7 @@ public class pre_documentosCxP extends Pantalla {
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
-    Map parametro = new HashMap();
+//    Map parametro = new HashMap();
 
     @Override
     public void aceptarReporte() {
@@ -993,6 +1023,11 @@ public class pre_documentosCxP extends Pantalla {
         com_periodo.setCombo(ser_cuentas_cxp.getSqlAniosFacturacion());
         com_periodo.eliminarVacio();
         com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+        
+         Boton bot_imprimir_grafico = new Boton();
+        bot_imprimir_grafico.setIcon("ui-icon-print");
+        bot_imprimir_grafico.setValue("Imprimir");
+        bot_imprimir_grafico.setMetodo("imprimirGrafico");
 
         tab_tabla1 = new Tabla();
         tab_tabla1.setId("tab_tabla1");
@@ -1009,6 +1044,8 @@ public class pre_documentosCxP extends Pantalla {
         gri_opciones.setColumns(2);
         gri_opciones.getChildren().add(new Etiqueta("<strong>PERÍODO :</strong>"));
         gri_opciones.getChildren().add(com_periodo);
+         gri_opciones.getChildren().add(new Etiqueta("<strong>REPORTE :</strong>"));
+            gri_opciones.getChildren().add(bot_imprimir_grafico);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.getChildren().add(gri_opciones);
         pat_panel.setPanelTabla(tab_tabla1);

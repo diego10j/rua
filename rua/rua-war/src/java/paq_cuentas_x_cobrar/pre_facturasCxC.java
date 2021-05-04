@@ -78,7 +78,8 @@ public class pre_facturasCxC extends Pantalla {
     private Combo com_mes;
     
     private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
-    
+     private Map parametro = new HashMap();
+    private VisualizarPDF vipdf_mayor = new VisualizarPDF();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     
@@ -214,7 +215,8 @@ public class pre_facturasCxC extends Pantalla {
         dia_vendedor.setHeight("40%");
         dia_vendedor.getBot_aceptar().setMetodo("aceptarModificarVendedor");
         agregarComponente(dia_vendedor);
-        
+        vipdf_mayor.setId("vipdf_mayor");
+        agregarComponente(vipdf_mayor);
     }
     
     public void dibujarUtilidadVentas() {
@@ -959,6 +961,11 @@ public class pre_facturasCxC extends Pantalla {
         com_periodo.eliminarVacio();
         com_periodo.setValue(utilitario.getAnio(utilitario.getFechaActual()));
         
+        Boton bot_imprimir_grafico = new Boton();
+        bot_imprimir_grafico.setIcon("ui-icon-print");
+        bot_imprimir_grafico.setValue("Imprimir");
+        bot_imprimir_grafico.setMetodo("imprimirGrafico");
+        
         com_vendedor = new Combo();
         com_vendedor.setMetodo("actualizarFacturas");
         com_vendedor.setCombo(ser_factura.getSqlComboVendedores());
@@ -991,7 +998,8 @@ public class pre_facturasCxC extends Pantalla {
         
         gri_opciones.getChildren().add(new Etiqueta("<strong>VENDEDOR :</strong>"));
         gri_opciones.getChildren().add(com_vendedor);
-        
+         gri_opciones.getChildren().add(new Etiqueta("<strong>REPORTE :</strong>"));
+            gri_opciones.getChildren().add(bot_imprimir_grafico);
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.getChildren().add(gri_opciones);
         pat_panel.setPanelTabla(tab_tabla);
@@ -1010,7 +1018,31 @@ public class pre_facturasCxC extends Pantalla {
         
         mep_menu.dibujar(5, "fa fa-bar-chart", "Gráficos estadísticos de ventas realizadas.", grupo, true);
     }
-    
+    public void imprimirGrafico() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+        }
+
+        parametro.put("titulo", "REPORTE VENTAS ANUALES");
+        parametro.put("pusuario", utilitario.getVariable("nick"));
+        
+        parametro.put("pide_geani", Integer.parseInt(com_periodo.getValue().toString()));
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
+        parametro.put("pfirma2", utilitario.getVariable("p_ger_nom_firma2"));
+        parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
+               vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_cliente_grafico.jasper", parametro);
+        vipdf_mayor.dibujar();
+
+    }
     public void dibujarReporteVentas() {
         Grupo grupo = new Grupo();
         
@@ -1203,7 +1235,7 @@ public class pre_facturasCxC extends Pantalla {
         rep_reporte.dibujar();
     }
     
-    Map parametro = new HashMap();
+ //   Map parametro = new HashMap();
     
     @Override
     public void aceptarReporte() {
@@ -1528,6 +1560,14 @@ public class pre_facturasCxC extends Pantalla {
     
     public void setSel_sucursales(SeleccionTabla sel_sucursales) {
         this.sel_sucursales = sel_sucursales;
+    }
+
+    public VisualizarPDF getVipdf_mayor() {
+        return vipdf_mayor;
+    }
+
+    public void setVipdf_mayor(VisualizarPDF vipdf_mayor) {
+        this.vipdf_mayor = vipdf_mayor;
     }
     
 }

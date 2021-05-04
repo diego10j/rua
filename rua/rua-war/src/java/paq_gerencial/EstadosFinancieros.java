@@ -578,7 +578,7 @@ public class EstadosFinancieros extends Pantalla {
         Boton bot_imp_estado_resultado = new Boton();
         bot_imp_estado_resultado.setIcon("ui-icon-print");
         bot_imp_estado_resultado.setValue("Estado Resultados");
-        bot_imp_estado_resultado.setMetodo("imprimirBalanceGeneral");
+        bot_imp_estado_resultado.setMetodo("imprimirEstadoResultado");
 
         Boton bot_imp_bal_comprobacion = new Boton();
         bot_imp_bal_comprobacion.setIcon("ui-icon-print");
@@ -596,17 +596,20 @@ public class EstadosFinancieros extends Pantalla {
         com_periodo_financiero.eliminarVacio();
         com_periodo_financiero.setMetodo("seleccionaPeriodoReporte");
         gri_fechas.getChildren().add(new Etiqueta("<strong>AÑO FÍSCAL </strong>"));
-        gri_fechas.getChildren().add(new Espacio("1", "1"));
+        //gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Etiqueta("<strong>TIPO BALANCE </strong>"));
-        gri_fechas.getChildren().add(new Espacio("3", "1"));
+       // gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(bot_imp_balance_general);
+        gri_fechas.getChildren().add(bot_imp_estado_resultado);        
         gri_fechas.getChildren().add(bot_imp_bal_comprobacion);
+         gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(com_periodo_financiero);
         //GENERANDO LISTA TIPO BALANCE
         lis_tipo_balance.setId("lis_tipo_balance");
         lis_tipo_balance.setListaSeleccion(ser_gerencial.getTipoBalance("-1", "-1"));
-        gri_fechas.getChildren().add(new Espacio("1", "1"));
+        //gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(lis_tipo_balance);
+        gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Espacio("1", "1"));
         gri_fechas.getChildren().add(new Espacio("1", "1"));
@@ -869,6 +872,7 @@ public void imprimirEstadoResultado() {
                 }
                 if (tab_totales.getValor(i, "ide_cndpc").equals(utilitario.getVariable("p_ger_cuenta_costo"))) {
                     tot_costos = Double.parseDouble(tab_totales.getValor(i, "debe"));
+                   // System.out.println("costos"+tab_totales.getValor(i, "debe")+" cvv "+tab_totales.getValor(i, "haber"));
                 }
             }
         }
