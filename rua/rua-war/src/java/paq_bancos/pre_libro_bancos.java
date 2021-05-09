@@ -2251,8 +2251,8 @@ public void dibujarCxPCajaChica() {
         }
     }
 public void aceptarCxPCajaChica() {
-        if (validarCxP()) {
-            String ide_teclb = cargarPagoCxP(Double.parseDouble(tex_valor_pagar.getValue().toString()));
+        if (validarCxPCajaChica()) {
+            String ide_teclb = cargarPagoCxPCaja_Chica(Double.parseDouble(tex_valor_pagar.getValue().toString()));
             //11/02/2019 Control por si genera error al guardar la transacción
             if (ide_teclb == null) {
                 ide_teclb = "";
@@ -2266,7 +2266,7 @@ public void aceptarCxPCajaChica() {
 
             if (num > 0) {
                 generarAsiento(ide_teclb);
-                dibujarCxP();
+                dibujarCxPCajaChica();
             } else {
                 utilitario.agregarMensajeError("Error al guardar la transacción", "Cuentas por Pagar");
             }
@@ -2375,6 +2375,68 @@ public void aceptarCxPCajaChica() {
             }
         }
         String ide_teclb = ser_tesoreria.generarLibroBanco(aut_persona.getValorArreglo(2), cal_fecha_pago.getFecha(),
+                com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), null);
+
+        for (Object lis_fact_pagada : lis_fact_pagadas) {
+            Object[] obj_fila = (Object[]) lis_fact_pagada;
+            System.out.println("ide_cpcfa " + obj_fila[0] + " ide_cpctr " + obj_fila[1] + " valor " + obj_fila[2]);
+            if (obj_fila[0] != null) {
+                //Actualiza cxp_detall_transa libro banco generado
+                utilitario.getConexion().agregarSqlPantalla("UPDATE cxp_detall_transa SET ide_teclb=" + ide_teclb + " WHERE ide_cpcfa =" + obj_fila[0] + " and ide_teclb is null");
+            }
+            String ide_ccctr = String.valueOf(obj_fila[1]);
+            //TRANSACCION EN TESORERIA y TRANSACCION CXP
+            TablaGenerica tab_cabecera = utilitario.consultar(ser_cuentas_cxp.getSqlCabeceraDocumento(String.valueOf(obj_fila[0])));
+            ser_cuentas_cxp.generarTransaccionPago(tab_cabecera, ide_ccctr, ide_teclb, Double.parseDouble(String.valueOf(obj_fila[2])), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()));
+        }
+        // utilitario.getConexion().setImprimirSqlConsola(true);
+        //utilitario.getConexion().guardarPantalla();
+        return ide_teclb;
+    }
+public String cargarPagoCxPCaja_Chica(double total_a_pagar) {
+
+        List lis_fact_pagadas = new ArrayList();
+        for (int i = 0; i < tab_tabla1.getListaFilasSeleccionadas().size(); i++) {
+            double monto_sobrante = 0;
+            double valor_x_pagar = Double.parseDouble(tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[5] + "");
+            if (valor_x_pagar > 0) {
+                if (total_a_pagar >= valor_x_pagar) {
+                    Object fila[] = {tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1], tab_tabla1.getListaFilasSeleccionadas().get(i).getRowKey(), tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[5]};
+                    lis_fact_pagadas.add(fila);
+                    monto_sobrante = total_a_pagar - valor_x_pagar;
+                    if (tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1] != null) {
+                        //ACTUALIZA LA FACTURA A PAGADA
+                        utilitario.getConexion().agregarSqlPantalla(ser_cuentas_cxp.getSqlActualizaPagoDocumento(String.valueOf(tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1])));
+                    }
+                } else {
+                    monto_sobrante = total_a_pagar - valor_x_pagar;
+                    if (monto_sobrante <= valor_x_pagar) {
+                        System.out.println(monto_sobrante + "    *** BREAK  " + valor_x_pagar + "  VALOR A PAGAR  " + total_a_pagar);
+                        Object fila[] = {tab_tabla1.getListaFilasSeleccionadas().get(i).getCampos()[1], tab_tabla1.getListaFilasSeleccionadas().get(i).getRowKey(), utilitario.getFormatoNumero(total_a_pagar)};
+                        lis_fact_pagadas.add(fila);
+                        break;
+                    }
+                }
+                total_a_pagar = monto_sobrante;
+            } else {
+                break;
+            }
+        }
+        //ORDENA DE MENOR A MAYOR SALDO
+        for (int i = 0; i < lis_fact_pagadas.size(); i++) {
+            for (int j = (i + 1); j < lis_fact_pagadas.size(); j++) {
+                Object[] obj_filai = (Object[]) lis_fact_pagadas.get(i);
+                Object[] obj_filaj = (Object[]) lis_fact_pagadas.get(j);
+                double dou_saldoi = Double.parseDouble(String.valueOf(obj_filai[2]));
+                double dou_saldoj = Double.parseDouble(String.valueOf(obj_filaj[2]));
+                if (dou_saldoj < dou_saldoi) {
+                    Object[] obj_aux = obj_filai;
+                    lis_fact_pagadas.set(i, obj_filaj);
+                    lis_fact_pagadas.set(j, obj_aux);
+                }
+            }
+        }
+        String ide_teclb = ser_tesoreria.generarLibroBanco(aut_persona_caja_chica.getValorArreglo(2), cal_fecha_pago.getFecha(),
                 com_tip_tran.getValue().toString(), aut_cuenta.getValor(), Double.parseDouble(tex_valor_pagar.getValue().toString()), String.valueOf(ate_observacion.getValue()), String.valueOf(tex_num.getValue()), null);
 
         for (Object lis_fact_pagada : lis_fact_pagadas) {
@@ -2575,6 +2637,80 @@ public void aceptarCxPCajaChica() {
         total = Double.parseDouble(utilitario.getFormatoNumero(total));
         double valor_a_pagar = Double.parseDouble(utilitario.getFormatoNumero(Double.parseDouble(tex_valor_pagar.getValue() + "")));
         System.out.println("total " + total + " valor a pagar " + valor_a_pagar);
+        if (total < valor_a_pagar) {
+            utilitario.agregarMensajeError("El 'VALOR A PAGAR' es menor que el saldo de las Facturas Seleccionadas", "");
+            return false;
+        }
+        return true;
+    }
+  /**
+     * Validaciones de la Transaccion CXC de Pago
+     *
+     * @return
+     */
+    public boolean validarCxPCajaChica() {
+        if (com_tip_tran.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un 'TIPO DE TRANSACCIÓN' ", "");
+            return false;
+        }
+        if (ate_observacion.getValue() == null || ate_observacion.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe ingresar una 'OBSERVACIÓN' ", "");
+            return false;
+        }
+
+        if (aut_cuenta.getValor() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar una 'CUENTA' ", "");
+            return false;
+        }
+
+        if (aut_persona_caja_chica.getValue() == null) {
+            utilitario.agregarMensajeInfo("Debe seleccionar un 'PROVEEDOR' ", "");
+            return false;
+        }
+
+        if (tab_tabla1.isEmpty()) {
+            utilitario.agregarMensajeInfo("El Proveedor seleccionado no tiene Cuentas por Pagar ", "");
+            return false;
+        }
+
+        if (tab_tabla1.getListaFilasSeleccionadas().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un Documento por Pagar", "");
+            return false;
+        }
+        if (tex_valor_pagar.getValue() == null || tex_valor_pagar.getValue().toString().isEmpty()) {
+            utilitario.agregarMensajeInfo("Debe ingresar el 'VALOR A PAGAR'", "");
+            return false;
+        } else {
+            try {
+                if (Double.parseDouble(tex_valor_pagar.getValue().toString()) <= 0) {
+                    utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                    return false;
+                }
+            } catch (Exception e) {
+                utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                return false;
+            }
+        }
+
+        if (tex_diferencia.getValue() != null) {
+            try {
+                if (Double.parseDouble(tex_diferencia.getValue().toString()) < 0) {
+                    utilitario.agregarMensajeError("El 'VALOR A PAGAR' es mayor al saldo total de la cuenta por cobrar", "");
+                    return false;
+                }
+            } catch (Exception e) {
+                utilitario.agregarMensajeError("El 'VALOR A PAGAR' no es válido", "");
+                return false;
+            }
+        }
+
+        double total = 0;
+        for (Fila actual : tab_tabla1.getSeleccionados()) {
+            total = Double.parseDouble(actual.getCampos()[5] + "") + total;
+        }
+        total = Double.parseDouble(utilitario.getFormatoNumero(total));
+        double valor_a_pagar = Double.parseDouble(utilitario.getFormatoNumero(Double.parseDouble(tex_valor_pagar.getValue() + "")));
+        //System.out.println("total " + total + " valor a pagar " + valor_a_pagar);
         if (total < valor_a_pagar) {
             utilitario.agregarMensajeError("El 'VALOR A PAGAR' es menor que el saldo de las Facturas Seleccionadas", "");
             return false;
