@@ -27,9 +27,7 @@ public class ServicioPresupuesto {
     public String getCatalogoPresupuestarioAnio(String estado, String ide_geani, String tipo) {
 
         String tab_presupesto = "SELECT a.ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla "
-                + " FROM pre_clasificador a,cont_vigente b,gen_anio c where a.ide_prcla = b.ide_prcla"
-                + " and b.ide_geani= c.ide_geani and b.ide_geani =" + ide_geani
-                + " and activo_prcla in (" + estado + ") and tipo_prcla in (" + tipo + ") order by codigo_clasificador_prcla";
+                + " FROM pre_clasificador a where activo_prcla in (" + estado + ") and tipo_prcla in (" + tipo + ") order by codigo_clasificador_prcla";
         return tab_presupesto;
 
     }
