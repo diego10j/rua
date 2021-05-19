@@ -528,7 +528,7 @@ public class ServicioCliente extends ServicioBase {
      * @param fecha
      * @return
      */
-    public String getSqlCuentasPorCobrarGrupo(String fecha) {
+    public String getSqlCuentasPorCobrarGrupo(String fecha,String fecha_fin) {
 
         String str_sql_cxc = "select dt.ide_ccctr,"
                 + "dt.ide_cccfa,"
@@ -542,7 +542,7 @@ public class ServicioCliente extends ServicioBase {
                 + "left join cxc_cabece_factura cf on cf.ide_cccfa=ct.ide_cccfa and cf.ide_ccefa=" + parametros.get("p_cxc_estado_factura_normal") + " "
                 + "left join cxc_tipo_transacc tt on tt.ide_ccttr=dt.ide_ccttr "
                 + "left join gen_persona p on cf.ide_geper=p.ide_geper "
-                + "where cf.fecha_emisi_cccfa='" + fecha + "' "
+                + "where cf.fecha_emisi_cccfa between '" + fecha + "' and '"+fecha_fin+"'"
                 + "and ct.ide_sucu=" + utilitario.getVariable("IDE_SUCU") + " "
                 + "GROUP BY dt.ide_cccfa,dt.ide_ccctr,cf.secuencial_cccfa,nom_geper, "
                 + "cf.observacion_cccfa,ct.observacion_ccctr,cf.fecha_emisi_cccfa,ct.fecha_trans_ccctr,cf.total_cccfa "

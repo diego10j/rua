@@ -1125,7 +1125,7 @@ public class ServicioInventario {
             sql+="select ide_inarti as ide_cndpc,nombre_inarti, sum(debe) as debe,sum(haber) as haber from (";
         }
         sql+="select a.ide_incci,ide_indci,numero_incci,observacion_incci,b.ide_inarti,valor_indci as valor_venta,fecha_trans_incci,ide_gelua,\n" +
-"(case when ide_gelua = 0 then valor_indci else 0 end) as haber,(case when ide_gelua = 1 then valor_indci else 0 end) as debe,\n" +
+"(case when ide_gelua = 0 then (precio_promedio_indci*cantidad_indci) else 0 end) as haber,(case when ide_gelua = 1 then (precio_promedio_indci*cantidad_indci) else 0 end) as debe,\n" +
 "nombre_inarti,c.ide_cndpc\n" +
 "from inv_cab_comp_inve a,inv_det_comp_inve b,inv_asiento_inventario c,inv_articulo d\n" +
 "where a.ide_incci=b.ide_incci and b.ide_inarti=c.ide_inarti and b.ide_inarti=d.ide_inarti\n" +
