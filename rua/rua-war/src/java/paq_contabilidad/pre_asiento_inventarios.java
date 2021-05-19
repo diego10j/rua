@@ -145,8 +145,9 @@ tab_tabla.setCondicion("ide_geani=-1");
         
         tab_tabla3.setId("tab_tabla3");
         tab_tabla3.setIdCompleto("tab_tabulador:tab_tabla3");
-        tab_tabla3.setTabla("inv_det_comp_inve", "ide_indci", 3);
-        tab_tabla3.setCondicion("ide_indci=-1");
+        tab_tabla3.setSql("select *,cantidad_indci*precio_promedio_indci as cventa from inv_det_comp_inve  where ide_indci=-1");
+        //tab_tabla3.setTabla("inv_det_comp_inve", "ide_indci", 3);
+        //tab_tabla3.setCondicion("");
         tab_tabla3.getColumna("ide_incci").setCombo("select ide_incci,numero_incci,observacion_incci from inv_cab_comp_inve");
         tab_tabla3.getColumna("ide_incci").setAutoCompletar();
         tab_tabla3.getColumna("ide_inarti").setCombo("select ide_inarti,nombre_inarti,codigo_inarti from inv_articulo");
@@ -158,9 +159,9 @@ tab_tabla.setCondicion("ide_geani=-1");
         tab_tabla3.getColumna("observacion_indci").setVisible(false);
         tab_tabla3.getColumna("referencia_indci").setVisible(false);
         tab_tabla3.getColumna("referencia1_indci").setVisible(false);
-        tab_tabla3.getColumna("precio_promedio_indci").setVisible(false);
+        tab_tabla3.getColumna("valor_indci").setVisible(false);
         tab_tabla3.getColumna("ide_ccdfa").setVisible(false);
-        tab_tabla3.setColumnaSuma("valor_indci");
+        tab_tabla3.setColumnaSuma("cantidad_indci,cventa");
         tab_tabla3.setLectura(true);
         tab_tabla3.dibujar();
         tab_tabla3.setRows(20);
@@ -190,7 +191,9 @@ tab_tabla.setCondicion("ide_geani=-1");
         tab_tabla.setCondicion("ide_geani="+com_periodo.getValue());
         tab_tabla.ejecutarSql();
         tab_tabla2.ejecutarValorForanea(tab_tabla.getValorSeleccionado());
-        tab_tabla3.setCondicion("ide_incaa="+tab_tabla.getValorSeleccionado());
+        //tab_tabla3.setCondicion("ide_incaa="+tab_tabla.getValorSeleccionado());
+        tab_tabla3.setSql("select *,cantidad_indci*precio_promedio_indci as cventa from inv_det_comp_inve  where ide_incaa="+tab_tabla.getValorSeleccionado());
+        
         tab_tabla3.ejecutarSql();
         utilitario.addUpdate("tab_tabla,tab_tabla2,tab_tabla3");
     }
@@ -283,7 +286,8 @@ public void consultaDescuadre(){
                         tab_tabla.guardar();
                         guardarPantalla();
                         tab_tabla2.ejecutarSql();
-                        tab_tabla3.setCondicion("ide_incaa="+tab_tabla.getValorSeleccionado());
+                        tab_tabla3.setSql("select *,cantidad_indci*precio_promedio_indci as cventa from inv_det_comp_inve  where ide_incaa="+tab_tabla.getValorSeleccionado());
+                        //tab_tabla3.setCondicion("ide_incaa="+tab_tabla.getValorSeleccionado());
         tab_tabla3.ejecutarSql();
                         utilitario.addUpdate("tab_tabla2,tab_tabla3");
                     }

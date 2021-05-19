@@ -101,6 +101,7 @@ public class pre_libro_bancos extends Pantalla {
     private AutoCompletar aut_persona;
     private AutoCompletar aut_persona_caja_chica;
     private Calendario cal_fecha_pago;
+    private Calendario cal_fecha_pago_fin;
     private AutoCompletar aut_cuenta;
     private AutoCompletar aut_cuenta1;
     private Combo com_tip_tran;
@@ -828,7 +829,7 @@ public class pre_libro_bancos extends Pantalla {
         Grid gri1 = new Grid();
         gri1.setColumns(3);
 
-        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp;FECHA : </strong><span style='color:red;font-weight: bold;'>*</span>"));
+        gri1.getChildren().add(new Etiqueta("<strong>&nbsp;&nbsp;&nbsp; SEL. FECHAS : </strong><span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta());
         gri1.getChildren().add(new Etiqueta());
 
@@ -842,13 +843,16 @@ public class pre_libro_bancos extends Pantalla {
         cal_fecha_pago = new Calendario();
         cal_fecha_pago.setFechaActual();
         gri1.getChildren().add(cal_fecha_pago);
+        cal_fecha_pago_fin = new Calendario();
+        cal_fecha_pago_fin.setFechaActual();
+        gri1.getChildren().add(cal_fecha_pago_fin);
 
         Boton bt_busca = new Boton();
         bt_busca.setValue("Buscar Transacciones");
         bt_busca.setMetodo("cargarCuentasporCobrarGrupo");
 
         gri1.getChildren().add(bt_busca);
-        gri1.getChildren().add(new Etiqueta());
+       // gri1.getChildren().add(new Etiqueta());
 
         gri1.getChildren().add(new Etiqueta("<strong>A LA CUENTA : </strong> <span style='color:red;font-weight: bold;'>*</span>"));
         gri1.getChildren().add(new Etiqueta("<strong>TRANSACCIÓN : </strong><span style='color:red;font-weight: bold;'>*</span>"));
@@ -2817,7 +2821,7 @@ public String cargarPagoCxPCaja_Chica(double total_a_pagar) {
      */
     public void cargarCuentasporCobrarGrupo() {
 
-        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrarGrupo(cal_fecha_pago.getFecha()));
+        tab_tabla1.setSql(ser_cliente.getSqlCuentasPorCobrarGrupo(cal_fecha_pago.getFecha(),cal_fecha_pago_fin.getFecha()));
         tab_tabla1.ejecutarSql();
         tex_diferencia.setValue(utilitario.getFormatoNumero(0));
         tex_valor_pagar.setValue(utilitario.getFormatoNumero(0));

@@ -75,6 +75,7 @@ public class pre_proveedores extends Pantalla {
     private Texto tex_num_asiento;
     private Map parametro = new HashMap();
     private VisualizarPDF vipdf_mayor = new VisualizarPDF();
+     private VisualizarPDF vipdf_rep = new VisualizarPDF();
 
     public pre_proveedores() {
 
@@ -118,6 +119,9 @@ public class pre_proveedores extends Pantalla {
         
         vipdf_mayor.setId("vipdf_mayor");
         agregarComponente(vipdf_mayor);
+        
+        vipdf_rep.setId("vipdf_rep");
+        agregarComponente(vipdf_rep);
     }
 public void dibujarDashBoard() {
 
@@ -386,6 +390,12 @@ public void dibujarDashBoard() {
             bot_consultar.setIcon("ui-icon-search");
 
             gri_fechas.getChildren().add(bot_consultar);
+            
+            Boton bot_imprimir_reporte = new Boton();
+        bot_imprimir_reporte.setIcon("ui-icon-print");
+        bot_imprimir_reporte.setValue("Imprimir");
+        bot_imprimir_reporte.setMetodo("imprimirRep");
+gri_fechas.getChildren().add(bot_imprimir_reporte);
 
             fis_consulta.getChildren().add(gri_fechas);
             gru_grupo.getChildren().add(fis_consulta);
@@ -715,6 +725,30 @@ public void imprimirGrafico() {
         parametro.put("pcargo2", utilitario.getVariable("p_ger_cargo_firma2"));
                vipdf_mayor.setVisualizarPDF("rep_gerencial/rep_proveedor_grafico.jasper", parametro);
         vipdf_mayor.dibujar();
+
+    }
+
+public void imprimirRep() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+             parametro.put("ide_sucu",  Integer.parseInt(utilitario.getVariable("ide_sucu")));
+        }
+         TablaGenerica tab_per=utilitario.consultar("select ide_geper,identificac_geper||' '||nom_geper as nom_geper from gen_persona where ide_geper="+aut_proveedor.getValor());
+        parametro.put("nom_geper", tab_per.getValor("nom_geper")); 
+                parametro.put("ide_geper", Integer.parseInt(aut_proveedor.getValor()));
+        parametro.put("fecha_inicio", cal_fecha_inicio.getFecha());
+        parametro.put("fecha_fin", cal_fecha_fin.getFecha());
+
+               vipdf_rep.setVisualizarPDF("rep_cuentas_x_pagar/rep_proveedores.jasper", parametro);
+        vipdf_rep.dibujar();
 
     }
 
@@ -1102,6 +1136,14 @@ public void imprimirGrafico() {
 
     public void setVipdf_mayor(VisualizarPDF vipdf_mayor) {
         this.vipdf_mayor = vipdf_mayor;
+    }
+
+    public VisualizarPDF getVipdf_rep() {
+        return vipdf_rep;
+    }
+
+    public void setVipdf_rep(VisualizarPDF vipdf_rep) {
+        this.vipdf_rep = vipdf_rep;
     }
 
 }
