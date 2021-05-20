@@ -768,7 +768,7 @@ public void imprimirCxC() {
         parametro = new HashMap();
         TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
         if (tab_datos.getTotalFilas() > 0) {
-            //parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
             parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
             parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
             parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -781,7 +781,7 @@ public void imprimirCxC() {
         parametro.put("ide_geper", Integer.parseInt(aut_proveedor.getValor()));
 
 
-               vipdf_cxc.setVisualizarPDF("rep_cuentas_x_pagar/rep_proveedorescxc.jasper", parametro);
+               vipdf_cxc.setVisualizarPDF("rep_cuentas_x_pagar/rep_proveedorescxp.jasper", parametro);
         vipdf_cxc.dibujar();
 
     }
