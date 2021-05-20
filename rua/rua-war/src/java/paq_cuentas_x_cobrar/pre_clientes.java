@@ -66,6 +66,8 @@ public class pre_clientes extends Pantalla {
     private SeleccionFormatoReporte sel_rep = new SeleccionFormatoReporte();
     private Map parametro = new HashMap();
     private VisualizarPDF vipdf_mayor = new VisualizarPDF();
+    
+    private VisualizarPDF vipdf_cxc = new VisualizarPDF();
 
     /*CONTABILIDAD*/
     @EJB
@@ -136,6 +138,9 @@ public class pre_clientes extends Pantalla {
         
          vipdf_rep.setId("vipdf_rep");
         agregarComponente(vipdf_rep);
+        
+         vipdf_cxc.setId("vipdf_cxc");
+        agregarComponente(vipdf_cxc);
     }
 
     /**
@@ -739,6 +744,13 @@ gri_fechas.getChildren().add(bot_imprimir_reporte);
     public void dibujarFacturas() {
         Grupo gru_grupo = new Grupo();
         if (isClienteSeleccionado()) {
+            
+             Boton bot_imprimir_reporte = new Boton();
+        bot_imprimir_reporte.setIcon("ui-icon-print");
+        bot_imprimir_reporte.setValue("Imprimir");
+        bot_imprimir_reporte.setMetodo("imprimirCxC");
+        gru_grupo.getChildren().add(bot_imprimir_reporte);
+
             tab_tabla = new Tabla();
             tab_tabla.setNumeroTabla(-1);
             tab_tabla.setId("tab_tabla");
@@ -1006,7 +1018,7 @@ public void imprimirRep() {
         parametro = new HashMap();
         TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
         if (tab_datos.getTotalFilas() > 0) {
-            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+           // parametro.put("logo", utilitario.getLogoEmpresa().getStream());
             parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
             parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
             parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
@@ -1023,6 +1035,28 @@ public void imprimirRep() {
 
                vipdf_rep.setVisualizarPDF("rep_cuentas_x_pagar/rep_clientes.jasper", parametro);
         vipdf_rep.dibujar();
+
+    }
+public void imprimirCxC() {
+        
+        parametro = new HashMap();
+        TablaGenerica tab_datos = utilitario.consultar("SELECT * FROM sis_empresa e, sis_sucursal s where s.ide_empr=e.ide_empr and s.ide_empr=" + utilitario.getVariable("ide_empr") + " and s.ide_sucu=" + utilitario.getVariable("ide_sucu"));
+        if (tab_datos.getTotalFilas() > 0) {
+            parametro.put("logo", utilitario.getLogoEmpresa().getStream());
+            parametro.put("empresa", tab_datos.getValor(0, "nom_empr"));
+            parametro.put("sucursal", tab_datos.getValor(0, "nom_sucu"));
+            parametro.put("direccion", tab_datos.getValor(0, "direccion_sucu"));
+            parametro.put("telefono", tab_datos.getValor(0, "telefonos_sucu"));
+            parametro.put("ruc", tab_datos.getValor(0, "identificacion_empr"));
+             parametro.put("ide_sucu",  Integer.parseInt(utilitario.getVariable("ide_sucu")));
+        }
+        TablaGenerica tab_per=utilitario.consultar("select ide_geper,identificac_geper||' '||nom_geper as nom_geper from gen_persona where ide_geper="+aut_clientes.getValor());
+        parametro.put("nom_geper", tab_per.getValor("nom_geper")); 
+        parametro.put("ide_geper", Integer.parseInt(aut_clientes.getValor()));
+
+
+               vipdf_cxc.setVisualizarPDF("rep_cuentas_x_pagar/rep_clientescxc.jasper", parametro);
+        vipdf_cxc.dibujar();
 
     }
 
@@ -1356,6 +1390,14 @@ public void imprimirGrafico() {
 
     public void setVipdf_rep(VisualizarPDF vipdf_rep) {
         this.vipdf_rep = vipdf_rep;
+    }
+
+    public VisualizarPDF getVipdf_cxc() {
+        return vipdf_cxc;
+    }
+
+    public void setVipdf_cxc(VisualizarPDF vipdf_cxc) {
+        this.vipdf_cxc = vipdf_cxc;
     }
 
 }
