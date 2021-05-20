@@ -76,6 +76,7 @@ public class EstadosFinancieros extends Pantalla {
     private Tabla tab_tabla3 = new Tabla();
     private Tabla tab_tabla_traspaso = new Tabla();
     private Tabla tab_tabla_traspaso_cabecera = new Tabla();
+    private Tabla tab_tabla_cuenta_traspaso = new Tabla();
     private cls_contabilidad con = new cls_contabilidad();
     private GraficoCartesiano gca_utilidad;
     private GraficoPastel gpa_utilidad;
@@ -119,6 +120,14 @@ public class EstadosFinancieros extends Pantalla {
         conPostgres.setUnidad_persistencia("rua_gerencial");
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
+        
+        tab_tabla_cuenta_traspaso.setId("tab_tabla_cuenta_traspaso");
+        tab_tabla_cuenta_traspaso.setConexion(conPostgres);
+        tab_tabla_cuenta_traspaso.setHeader("CEDULA CABECERA");
+        tab_tabla_cuenta_traspaso.setSql("select ide_cndpc,codig_recur_cndpc,nombre_cndpc from con_det_plan_cuen where codig_recur_cndpc='0' ");
+//        tab_tabla_cuenta_traspaso.setGenerarPrimaria(false);
+        tab_tabla_cuenta_traspaso.dibujar();
+        
         tab_tabla_traspaso.setId("tab_tabla_traspaso");
         tab_tabla_traspaso.setConexion(conPostgres);
         tab_tabla_traspaso.setHeader("CEDULA CABECERA");
@@ -476,18 +485,23 @@ public class EstadosFinancieros extends Pantalla {
                 utilitario.getConexion().ejecutarSql(ser_gerencial.UpdateEstadoBalanceCerrado(ide_gebame, utilitario.getVariable("p_ger_estado_cerrado")));
                 actualizarTipoBalance();
             } else {
-                utilitario.getConexion().ejecutarSql(ser_gerencial.UpdateEstadoBalanceCerrado(ide_gebame, utilitario.getVariable("p_ger_estado_cerrado")));
+               
 
                 for (int i = 0; i < tab_tabla3.getTotalFilas(); i++) {
-                    tab_tabla_traspaso.insertar();
-                    tab_tabla_traspaso.setValor("ide_cndpc", tab_tabla3.getValor(i, "ide_cndpc"));
+                    TablaGenerica tab_nombre_cuenta=utilitario.consultar("select ide_cndpc,codig_recur_cndpc,nombre_cndpc from con_det_plan_cuen where ide_cndpc= "+tab_tabla3.getValor(i, "ide_cndpc"));
+                     tab_tabla_cuenta_traspaso.setSql("select ide_cndpc,codig_recur_cndpc,nombre_cndpc from con_det_plan_cuen where codig_recur_cndpc='"+tab_nombre_cuenta.getValor("codig_recur_cndpc")+"' ");
+                    tab_tabla_cuenta_traspaso.ejecutarSql();
+                     tab_tabla_traspaso.insertar();
+                    tab_tabla_traspaso.setValor("ide_cndpc",tab_tabla_cuenta_traspaso.getValor("ide_cndpc") );
                     tab_tabla_traspaso.setValor("ide_gebame", tab_tabla_traspaso_cabecera.getValor("ide_gebame"));
                     tab_tabla_traspaso.setValor("valor_debe_gebade", tab_tabla3.getValor(i, "valor_debe_gebade"));
                     tab_tabla_traspaso.setValor("valor_haber_gebade", tab_tabla3.getValor(i, "valor_haber_gebade"));
                 }
-                tab_tabla_traspaso.guardar();
+                if(tab_tabla_traspaso.guardar()){
                 conPostgres.guardarPantalla();
-                actualizarTipoBalance();
+                utilitario.getConexion().ejecutarSql(ser_gerencial.UpdateEstadoBalanceCerrado(ide_gebame, utilitario.getVariable("p_ger_estado_cerrado")));
+                //actualizarTipoBalance();
+                }
             }
             utilitario.agregarMensaje("Balance Tranferido", "Se cerro el balance y fue tranferido con éxito");
             dia_cerrar_balance.cerrar();
@@ -1215,6 +1229,14 @@ public void imprimirEstadoResultado() {
 
     public void setTab_tabla_traspaso_cabecera(Tabla tab_tabla_traspaso_cabecera) {
         this.tab_tabla_traspaso_cabecera = tab_tabla_traspaso_cabecera;
+    }
+
+    public Tabla getTab_tabla_cuenta_traspaso() {
+        return tab_tabla_cuenta_traspaso;
+    }
+
+    public void setTab_tabla_cuenta_traspaso(Tabla tab_tabla_cuenta_traspaso) {
+        this.tab_tabla_cuenta_traspaso = tab_tabla_cuenta_traspaso;
     }
 
 }
