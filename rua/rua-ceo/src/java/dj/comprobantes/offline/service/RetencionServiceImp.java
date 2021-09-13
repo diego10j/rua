@@ -48,6 +48,8 @@ public class RetencionServiceImp implements RetencionService {
                     .append("			<ptoEmi>").append(comprobante.getPtoemi()).append("</ptoEmi> \n")
                     .append("			<secuencial>").append(comprobante.getSecuencial()).append("</secuencial> \n")
                     .append("			<dirMatriz>").append(emisor.getDirmatriz()).append("</dirMatriz> \n")
+                    .append("      		<regimenMicroempresas>").append(comprobante.getRegMicroEmpresa()).append("</regimenMicroempresas> \n")
+                    .append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n")
                     .append("		</infoTributaria> \n")
                     .append("		<infoCompRetencion> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
@@ -89,7 +91,7 @@ public class RetencionServiceImp implements RetencionService {
                 if (comprobante.getAgenteRetRes() != null) {
                     str_xml.append("      		<campoAdicional nombre=\"Agente de Retención\">").append(comprobante.getAgenteRetRes()).append("</campoAdicional> \n");
                 }
-                if (comprobante.getRegMicroEmpresa()!= null) {
+                if (comprobante.getRegMicroEmpresa() != null) {
                     str_xml.append("      		<campoAdicional nombre=\"Régimen Microempresa\">").append(comprobante.getRegMicroEmpresa()).append("</campoAdicional> \n");
                 }
             }
