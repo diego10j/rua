@@ -70,7 +70,7 @@ public class cls_anexo_transaccional {
                     Element compras = doc_anexo.createElement("compras");
                     raiz.appendChild(compras);
                     ////////////////////BUSCAR TODAS LAS COMPRAS ESTO ES EN UN FOR
-                    TablaGenerica tab_compras = utilitario.consultar("Select cabece.ide_cpcfa, cabece.ide_cncre,suste.alterno_srtst,iden.alterno1_getid,prove.identificac_geper,docu.alter_tribu_cntdo,  "
+                    TablaGenerica tab_compras = utilitario.consultar("Select cabece.ide_cpcfa, cabece.ide_cncre,suste.alterno_srtst,iden.alterno1_getid,prove.identificac_geper,docu.alter_tribu_cntdo,iden.alterno2_getid,  "
                             + " cabece.fecha_trans_cpcfa,cabece.numero_cpcfa,cabece.fecha_emisi_cpcfa,cabece.autorizacio_cpcfa,cabece.total_cpcfa,valor_ice_cpcfa, "
                             + " cabece.base_grabada_cpcfa,cabece.base_tarifa0_cpcfa,cabece.base_no_objeto_iva_cpcfa,cabece.valor_iva_cpcfa, "
                             + " rete.numero_cncre,rete.autorizacion_cncre,rete.fecha_emisi_cncre,dpa.alterno_ats,cabece.ide_cntdo, fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa "
@@ -147,6 +147,15 @@ public class cls_anexo_transaccional {
                         detalleCompras.appendChild(crearElemento("tpIdProv", null, tab_compras.getValor(i, "alterno1_getid")));
                         detalleCompras.appendChild(crearElemento("idProv", null, tab_compras.getValor(i, "identificac_geper")));
                         detalleCompras.appendChild(crearElemento("tipoComprobante", null, tab_compras.getValor(i, "alter_tribu_cntdo")));
+
+                        if (tab_compras.getValor(i, "alterno2_getid").equals("06")) {//PASAPORTE
+                            TablaGenerica tab_persona = utilitario.consultar("SELECT identificac_geper,nom_geper,alter_tribu_cntco from gen_persona cli "
+                                    + "left join con_tipo_contribu tcon on cli.ide_cntco=tcon.ide_cntco "
+                                    + "where identificac_geper='" + tab_compras.getValor(i, "identificac_geper") + "'");
+                            detalleCompras.appendChild(crearElemento("tipoProv", null, tab_persona.getValor("alter_tribu_cntco") == null ? "02" : tab_persona.getValor("alter_tribu_cntco")));
+                            detalleCompras.appendChild(crearElemento("denoProv", null, tab_persona.getValor("nom_geper") == null ? "SIN NOMBRE" : tab_persona.getValor("nom_geper")));
+                        }
+
                         detalleCompras.appendChild(crearElemento("parteRel", null, "NO"));
                         if (tab_compras.getValor(i, "fecha_emisi_cncre") != null) {
                             detalleCompras.appendChild(crearElemento("fechaRegistro", null, getFormatoFecha(tab_compras.getValor(i, "fecha_emisi_cncre"))));
@@ -437,7 +446,7 @@ public class cls_anexo_transaccional {
 //                        detalleCompras.appendChild(crearElemento("autModificado", null, "0000"));
 
                         //Si es nota de credito aumento estos campos     
-                        if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo"))|| p_con_tipo_documento_nota_debito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
+                        if (p_con_tipo_documento_nota_credito.equals(tab_compras.getValor(i, "ide_cntdo")) || p_con_tipo_documento_nota_debito.equals(tab_compras.getValor(i, "ide_cntdo"))) {
                             //fecha_emision_nc_cpcfa,numero_nc_cpcfa,autorizacio_nc_cpcfa,motivo_nc_cpcfa
                             String numero_doc_modificado = tab_compras.getValor(i, "numero_nc_cpcfa");
                             numero_doc_modificado = numero_doc_modificado.replace("-", "");
@@ -505,7 +514,7 @@ public class cls_anexo_transaccional {
                             + " and cab.fecha_emisi_cccfa BETWEEN '" + fecha_inicio + "' AND '" + fecha_fin + "' and ide_ccefa=" + utilitario.getVariable("p_cxc_estado_factura_normal")
                             + " group by alterno_ats,identificac_geper "
                             + " order by identificac_geper");
-                    System.out.println("FORMAS DE PAGO --- " + tab_formaPago.getSql());
+                    //                   System.out.println("FORMAS DE PAGO --- " + tab_formaPago.getSql());
                     // System.out.println("VENTAS --- " + tab_ventas.getSql());
                     for (int i = 0; i < tab_ventas.getTotalFilas(); i++) {
                         ////////////////////BUSCAR TODAS LAS VENTAS ESTO ES EN UN FOR
