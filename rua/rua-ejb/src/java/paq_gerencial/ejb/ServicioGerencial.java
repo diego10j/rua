@@ -256,6 +256,20 @@ public class ServicioGerencial {
                         "from ger_temp_balance a, con_det_plan_cuen b where a.ide_cndpc=b.ide_cndpc and ide_cnncu in ("+nivel+") and ide_usua="+usuario+" group by con_ide_cndpc";
         return sql;
     }
+     public String getCalTemBalanceNivel5y4(String usuario,String nivel) {
+        String sql = "select a.ide_cndpc,sum(valor_debe_geteba) as debe,sum(valor_haber_geteba) as haber " +
+                    " from ger_temp_balance a, con_det_plan_cuen b where a.ide_cndpc=b.ide_cndpc " +
+                    " and ide_cnncu in (5) " +
+                    " and codig_recur_cndpc like '4%'" +
+                    " and ide_usua="+usuario+" group by a.ide_cndpc" +
+                    " union" +
+                    " select a.ide_cndpc,sum(valor_debe_geteba) as debe,sum(valor_haber_geteba) as haber" +
+                    " from ger_temp_balance a, con_det_plan_cuen b where a.ide_cndpc=b.ide_cndpc " +
+                    " and ide_cnncu in (5) " +
+                    " and codig_recur_cndpc like '5%'" +
+                    " and ide_usua="+usuario+" group by a.ide_cndpc";
+        return sql;
+    }   
     /**
      * Sirve cuando para la generacción del balance general
      *
