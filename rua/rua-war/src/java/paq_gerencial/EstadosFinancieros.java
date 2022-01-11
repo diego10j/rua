@@ -467,6 +467,15 @@ public class EstadosFinancieros extends Pantalla {
                     tab_tabla3.setValor("valor_debe_gebade", tab_temporal_insert.getValor(k, "debe"));
                     tab_tabla3.setValor("valor_haber_gebade", tab_temporal_insert.getValor(k, "haber"));
                 }
+                // insertadmos las cuentas 4 y % porque solo se manejan al uinto nivel y son padres
+                 TablaGenerica tab_temporal_insert4y5 = utilitario.consultar(ser_gerencial.getCalTemBalanceNivel5y4(utilitario.getVariable("ide_usua"), "2,3,4,5,6"));
+                for (int k = 0; k < tab_temporal_insert4y5.getTotalFilas(); k++) {
+                    tab_tabla3.insertar();
+                    tab_tabla3.setValor("ide_cndpc", tab_temporal_insert4y5.getValor(k, "ide_cndpc"));
+                    tab_tabla3.setValor("ide_gebame", ide_gebame);
+                    tab_tabla3.setValor("valor_debe_gebade", tab_temporal_insert4y5.getValor(k, "debe"));
+                    tab_tabla3.setValor("valor_haber_gebade", tab_temporal_insert4y5.getValor(k, "haber"));
+                }
             }
             tab_tabla3.guardar();
             guardarPantalla();
