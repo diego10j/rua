@@ -20,6 +20,7 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class pre_prestamos extends Pantalla {
 
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sel_formato = new SeleccionFormatoReporte();
-
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
     private AsientoContable asc_asiento = new AsientoContable();
 
     private Confirmar con_confirma = new Confirmar();
@@ -112,6 +113,11 @@ public class pre_prestamos extends Pantalla {
         con_confirma.getBot_aceptar().setValue("Si");
         con_confirma.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma);
+
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.setMultiple(false);
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sec_rango_reporte);
     }
 
     public void guardarAsiento() {
@@ -257,6 +263,22 @@ public class pre_prestamos extends Pantalla {
                 parametro.put("ide_ipcpr", Long.parseLong(tab_tabla1.getValor("ide_ipcpr")));
                 parametro.put("es_ingreso_ipcpr", Boolean.parseBoolean(tab_tabla1.getValor("es_ingreso_ipcpr")));
                 System.out.println(tab_tabla1.getValor("es_ingreso_ipcpr"));
+                sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_formato.dibujar();
+                utilitario.addUpdate("rep_reporte,sel_formato");
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Cuotas a pagar")) {
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(true);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                parametro.put("nombre", utilitario.getVariable("NICK"));
+                parametro.put("pide_fecha_inicio", sec_rango_reporte.getFecha1());
+                parametro.put("pide_fecha_fin", sec_rango_reporte.getFecha2());
+                sec_rango_reporte.cerrar();
                 sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_formato.dibujar();
                 utilitario.addUpdate("rep_reporte,sel_formato");
@@ -854,6 +876,14 @@ public class pre_prestamos extends Pantalla {
 
     public void setCon_confirma(Confirmar con_confirma) {
         this.con_confirma = con_confirma;
+    }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
     }
 
 }

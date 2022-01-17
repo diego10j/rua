@@ -472,6 +472,8 @@ public class Adquisiciones extends Pantalla {
             parametros.put("p_usuario", utilitario.getVariable("NICK"));
             parametros.put("ide_adcomp", Integer.parseInt(tab_adquisiones.getValor("ide_adcomp")));
             parametros.put("plocalidad", utilitario.getVariable("p_localidad"));
+            parametros.put("p_contador", utilitario.getVariable("p_ger_nom_firma2"));
+            parametros.put("p_cargo", utilitario.getVariable("p_ger_cargo_firma2"));
             //System.out.println(" " + str_titulos);
             vipdf_solicitud.setVisualizarPDF("rep_compras/rep_solicitudcompra.jasper", parametros);
             vipdf_solicitud.dibujar();

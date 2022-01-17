@@ -60,6 +60,7 @@ public class pre_comp_inv_entrega extends Pantalla {
     private SeleccionTabla sel_cabece_venta = new SeleccionTabla();
     private SeleccionTabla sel_detalle_venta = new SeleccionTabla();
     private Confirmar con_confirma = new Confirmar();
+    private Confirmar con_anular = new Confirmar();
     private VisualizarPDF vipdf_comprobante = new VisualizarPDF();
     private Dialog dia_mensaje_fac = new Dialog();
 
@@ -257,6 +258,12 @@ public class pre_comp_inv_entrega extends Pantalla {
         bot_aprobar_ingreso.setMetodo("aprobarIngreso");
         bar_botones.agregarBoton(bot_aprobar_ingreso);
 
+        Boton bot_anular_ingreso = new Boton();
+        bot_anular_ingreso.setValue("ANULAR");
+        bot_anular_ingreso.setIcon("ui-icon-cancel");
+        bot_anular_ingreso.setMetodo("anularComprobante");
+        bar_botones.agregarBoton(bot_anular_ingreso);
+        
         Boton bot_imprimir = new Boton();
         bot_imprimir.setValue("IMPRIMIR");
         bot_imprimir.setIcon("ui-icon-print");
@@ -302,12 +309,69 @@ public class pre_comp_inv_entrega extends Pantalla {
         dia_mensaje_fac.setResizable(false);
         //agregarComponente(dia_mensaje_fac);
         utilitario.getPantalla().getChildren().add(dia_mensaje_fac);
+        
+        con_anular.setId("con_anular");
+        con_anular.setMessage("Está seguro que desea anular y enviar a recalcular el siguiente Ingreso/Egreso de inventarios");
+        con_anular.setTitle("ANULAR INGRESO/EGRESO INVENTARIO");
+        con_anular.getBot_aceptar().setValue("Si");
+        con_anular.getBot_cancelar().setValue("No");
+        agregarComponente(con_anular);
     }
 
+    /**
+     * anular el comprobante y realiza el recalculo del kardex
+     */
+    public void anularComprobante() {
+        TablaGenerica tab_consulta = utilitario.consultar(" select * from inv_det_comp_inve where ide_incci=" + tab_tabla1.getValor("ide_incci") + " ");
+        if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_anulado"))) {
+            utilitario.agregarMensajeInfo("Información", "El comprobante de invetario ya esta anulado");
+            return;
+        }
+        if (tab_tabla1.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("Información", "Primero debe guardar el registro que esta trabajando");
+            return;
+        }
+        if (tab_tabla2.isFilaInsertada()) {
+            utilitario.agregarMensajeInfo("Información", "Primero debe guardar el registro que esta trabajando");
+            return;
+        }
+        if (tab_consulta.getTotalFilas() <= 0) {
+            utilitario.agregarMensajeInfo("Información", "Debe insertar productos ");
+            return;
+        }
+        con_anular.getBot_aceptar().setMetodo("confirmarAnular");
+        utilitario.addUpdate("con_anular");
+        con_anular.dibujar();
+    }
+
+    public void confirmarAnular() {
+        String cod = tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_incci");
+        String fecha = tab_tabla1.getValor(tab_tabla1.getFilaActual(), "fecha_trans_incci");
+        TablaGenerica tab_extraer_anio = utilitario.consultar(ser_inventario.getExtraerAnio(fecha));
+        TablaGenerica tab_anio = utilitario.consultar(ser_inventario.getInventarioAnio(tab_extraer_anio.getValor("anio")));
+        if (tab_tabla1.getValor(tab_tabla1.getFilaActual(), "ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
+            for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
+                //System.out.println("Imprimo >> " + cod + " " + fecha + " " + tab_anio.getValor("ide_geani"));
+                //System.err.println("articulo >> " + tab_tabla2.getValor("ide_inarti"));
+                ser_inventario.getRecalcularInventario("1", tab_anio.getValor("ide_geani"), tab_tabla2.getValor("ide_inarti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
+            }
+            utilitario.getConexion().ejecutarSql("update inv_cab_comp_inve set ide_inepi =" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci=" + cod);
+            con_anular.cerrar();
+            tab_tabla1.actualizar();
+            utilitario.agregarMensaje("Se anulo correctamente", "");
+            return;
+        }
+
+        utilitario.getConexion().ejecutarSql("update inv_cab_comp_inve set ide_inepi =" + utilitario.getVariable("p_inv_estado_anulado") + " where ide_incci=" + cod);
+        con_anular.cerrar();
+        tab_tabla1.actualizar();
+        utilitario.agregarMensaje("Se anulo correctamente", "");
+    }
+    
     public void bloquearModificacion() {
         //BLOQUEOS
         if (tab_tabla1.getTotalFilas() > 0) {
-            if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
+            if (tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado")) || tab_tabla1.getValor("ide_inepi").equals(utilitario.getVariable("p_inv_estado_aprobado"))) {
                 for (int i = 0; i < tab_tabla2.getTotalFilas(); i++) {
                     tab_tabla2.getFilas().get(i).setLectura(true);
                 }
@@ -351,11 +415,11 @@ public class pre_comp_inv_entrega extends Pantalla {
          * egresos pos sucursales y empresas es decir varias bodegas False
          * permite regitrar por defecto en una solo bodega
          */
-        if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
-            ser_inventario.getRegistrarInventario("1", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_fecha.getValor("anio"));
-        } else {
+        //if (utilitario.getVariable("p_varias_bodegas").equals("true")) { comento Jhon para evitar duplicidad en el kardex
+        ser_inventario.getRegistrarInventario("1", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_fecha.getValor("anio"));
+        /*} else {
             ser_inventario.getRegistrarInventario("0", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), "0", "0", tab_fecha.getValor("anio"));
-        }
+        }*/
         con_confirma.cerrar();
         tab_tabla1.actualizar();
         utilitario.agregarMensaje("Se aprobo correctamente", "");
@@ -458,6 +522,7 @@ public class pre_comp_inv_entrega extends Pantalla {
         verificarStock();
         calcularDetalle();
     }
+
     private void calcularDetalle() {
         double cantidad = 0;
         double precio = 0;
@@ -472,11 +537,12 @@ public class pre_comp_inv_entrega extends Pantalla {
         } catch (Exception e) {
             precio = 0;
         }
-        total=cantidad*precio;
+        total = cantidad * precio;
         tab_tabla2.setValor("valor_indci", utilitario.getFormatoNumero(total, 2));
-                
+
         utilitario.addUpdate("tab_tabla2");
     }
+
     private void verificarStock() {
         double cantidad = 0;
         try {
@@ -499,7 +565,7 @@ public class pre_comp_inv_entrega extends Pantalla {
                 if (saldo <= 0) {
                     utilitario.agregarMensajeInfo("No existe stock en inventario", tab_tabla2.getValorArreglo("ide_inarti", 1) + " stock = " + saldo);
                 } else if (cantidad > saldo) {
-                   // System.out.println("entre averifuicar stock bbbbb");
+                    // System.out.println("entre averifuicar stock bbbbb");
                     dia_mensaje_fac.getChildren().clear();
                     dia_mensaje_fac.setHeader("La cantidad ingresada es mayor al stock en inventario".toUpperCase());
                     Grid g = new Grid();
@@ -511,19 +577,18 @@ public class pre_comp_inv_entrega extends Pantalla {
                 }
             } else {
                 //System.out.println("entre averifuicar stock ggggggg");
-                TablaGenerica tab_cantida=utilitario.consultar("select * from gen_anio where nom_geani in (extract(year from cast('"+tab_tabla1.getValor("fecha_trans_incci")+"' as date))||'')");
+                TablaGenerica tab_cantida = utilitario.consultar("select * from gen_anio where nom_geani in (extract(year from cast('" + tab_tabla1.getValor("fecha_trans_incci") + "' as date))||'')");
                 //tab_cantida.imprimirSql();
-                TablaGenerica tab_valor= utilitario.consultar(ser_inventario.getBodtArticulo("0", tab_tabla2.getValor("ide_inarti"), tab_cantida.getValor("ide_geani"), "0", "0"));
+                TablaGenerica tab_valor = utilitario.consultar(ser_inventario.getBodtArticulo("0", tab_tabla2.getValor("ide_inarti"), tab_cantida.getValor("ide_geani"), "0", "0"));
                 //tab_valor.imprimirSql();
-                if(tab_valor.getTotalFilas()>0){
+                if (tab_valor.getTotalFilas() > 0) {
                     tab_tabla2.setValor("precio_indci", tab_valor.getValor("costo_actual_boart"));
                     utilitario.addUpdate("tab_tabla2");
-                }
-                else{
+                } else {
                     utilitario.agregarMensajeError("EL articulo seleccionado", "Verificar si se encuentra en el inventario inicial y tiene valor de compra");
                     return;
                 }
-                
+
             }
         }
     }
@@ -747,7 +812,7 @@ public class pre_comp_inv_entrega extends Pantalla {
                 parametro.put("fecha_fin", sec_rango_reporte.getFecha2());
                 // System.out.println("seleccion..de arbol...ing" + sel_arbol.getSeleccionados());
                 sec_rango_reporte.cerrar();
-                
+
                 parametro.put("informe_para", "Jimmy Massa");
                 //  System.out.println("seleccion..de ide_geper..." + sel_empleado.getSeleccionados());
                 sef_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());

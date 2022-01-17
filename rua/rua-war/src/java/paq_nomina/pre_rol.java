@@ -2959,8 +2959,7 @@ String filename = "C:/reporte.pdf";
 		props.put("mail.smtp.user", this.miCorreo);// correo origen
 		props.put("mail.smtp.host", servidorSMTP);// tipo de servidor
 		props.put("mail.smtp.port", puertoEnvio);// puesto de salida
-		props.put("mail.smtp.starttls.enableue", false);// inicializar el
-														// servidor
+		props.put("mail.smtp.starttls.enableue", false);// inicializar// servidor
 		props.put("mail.transport.protocol","smpt");
 		props.put("mail.smtp.auth", "false");// autentificacion
 		//props.put("mail.smtp.socketFactory.port", puertoEnvio);// activar el

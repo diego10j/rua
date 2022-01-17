@@ -11,6 +11,7 @@ import framework.componentes.Barra;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Confirmar;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
@@ -43,6 +44,7 @@ public class pre_inversiones extends Pantalla {
     private Radio rad_hace_asiento;
     private Tabla tab_tabla1;
     private Tabla tab_tabla2;
+    private Tabla tab_tabla5 = new Tabla();
     @EJB
     private final ServicioInversiones ser_inversion = (ServicioInversiones) utilitario.instanciarEJB(ServicioInversiones.class);
     private AsientoContable asc_asiento = new AsientoContable();
@@ -56,13 +58,14 @@ public class pre_inversiones extends Pantalla {
     private double dou_capital_renova;
     private double dou_interes_renova;
     private Combo com_bancos;
-    private final Combo com_anio=new Combo();
+    private final Combo com_anio = new Combo();
     private Confirmar con_confirma_anular = new Confirmar();
+    private final Dialogo dia_editar_header = new Dialogo();
 
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
         bar_botones.agregarReporte();
-        
+
         com_anio.setId("com_anio");
         com_anio.setCombo(ser_inversion.getSqlComboAnio());
         bar_botones.agregarComponente(com_anio);
@@ -107,7 +110,62 @@ public class pre_inversiones extends Pantalla {
         con_confirma_anular.getBot_aceptar().setValue("Si");
         con_confirma_anular.getBot_cancelar().setValue("No");
         agregarComponente(con_confirma_anular);
+
+        //DIALOGO EDITAR GRUPO HEADER
+        dia_editar_header.setId("dia_editar_header");
+        dia_editar_header.setTitle("EDITAR CABECERA");
+        dia_editar_header.setWidth("60%");
+        dia_editar_header.setHeight("30%");
+        dia_editar_header.getBot_aceptar().setMetodo("aceptarModificarHeader");
+        dia_editar_header.setStyle("width:" + (dia_editar_header.getAnchoPanel() - 35) + "px");
+        /*Grid gri = new Grid();
+        gri.setStyle("width:" + (dia_editar_header.getAnchoPanel() - 5) + "px; height:" + dia_editar_header.getAltoPanel() + "px;overflow:auto;display:block;vertical-align:middle;");
+        gri.getChildren().add(new Etiqueta("<strong> CORREO ELECTRÓNICO: </strong>"));
+        gri.getChildren().add(tex_correo);
+        dia_editar_header.setDialogo(gri);*/
+        /*tab_tabla5.setId("tab_tabla5");
+        tab_tabla5.setTabla("iyp_cab_inversion", "ide_ipcai", 6);
+        tab_tabla5.setCondicion("ide_ipcai=-1");
+        tab_tabla5.setTipoFormulario(true);
+        tab_tabla5.getColumna("ide_ipcai").setVisible(false);
+        tab_tabla5.getColumna("ide_usua").setVisible(true);
+        tab_tabla5.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
+        tab_tabla5.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_tabla5.getColumna("ide_usua").setLectura(true);
+        tab_tabla5.getColumna("ide_geper").setCombo(ser_inversion.getSqlComboClientes());
+        tab_tabla5.getColumna("ide_geper").setRequerida(true);
+        tab_tabla5.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla5.getColumna("ide_geper_ben").setCombo(tab_tabla5.getColumna("ide_geper").getListaCombo());
+        tab_tabla5.getColumna("ide_geper_ben").setAutoCompletar();
+        tab_tabla5.getColumna("ide_geper_ben").setRequerida(true);
+        tab_tabla5.getColumna("beneficiario_ipcai").setRequerida(true);
+        tab_tabla5.getColumna("observacion_ipcai").setRequerida(true);
+        tab_tabla5.getColumna("observacion_ipcai").setMetodoChange("cargarObservacionCertificado");
+        tab_tabla5.getColumna("ide_geper_ben").setMetodoChange("selecionarCasa");
+        tab_tabla5.getColumna("fecha_inicio_ipcai").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla5.getColumna("ide_iptin").setValorDefecto("1");
+        tab_tabla5.getColumna("ide_iptin").setVisible(false);
+        tab_tabla5.getColumna("activo_ipcai").setValorDefecto("true");
+        tab_tabla5.getGrid().setColumns(4);
+        tab_tabla5.setMostrarNumeroRegistros(false);
+        tab_tabla5.dibujar();
+        PanelTabla pat_panel15 = new PanelTabla();
+        pat_panel15.setPanelTabla(tab_tabla5);
+        pat_panel15.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel15.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel15.getMenuTabla().getItem_importar().setRendered(false);
+        pat_panel15.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel15.getMenuTabla().getItem_insertar().setRendered(false);
+        dia_editar_header.setDialogo(pat_panel15);*/
+        agregarComponente(dia_editar_header);
     }
+    
+    public void aceptarModificarHeader(){
+        tab_tabla5.guardar();
+        guardarPantalla();
+        dibujarListadoCasas();
+    }
+    
 
     @Override
     public void abrirListaReportes() {
@@ -150,8 +208,7 @@ public class pre_inversiones extends Pantalla {
             rep_reporte.cerrar();
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
-        }
-        else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
@@ -159,18 +216,16 @@ public class pre_inversiones extends Pantalla {
         } else if (rep_reporte.getReporteSelecionado().equals("Inversiones Bancarias no Canceladas Años")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
-             parametro.put("pide_anio", com_anio.getValue());
+            parametro.put("pide_anio", com_anio.getValue());
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
-        }
-        else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic Años")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras 31-Dic Años")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
             parametro.put("pide_anio", com_anio.getValue());
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
-        }
-        else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Bancos 31 Dic Años")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Bancos 31 Dic Años")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
             parametro.put("pide_anio", com_anio.getValue());
@@ -979,8 +1034,8 @@ public class pre_inversiones extends Pantalla {
         itemcancela.setIcon("ui-icon-check");
         itemcancela.setMetodo("cancelarInversion");
         pat_panel.getMenuTabla().getChildren().add(itemcancela);
-        
-             ItemMenu itemanula = new ItemMenu();
+
+        ItemMenu itemanula = new ItemMenu();
         itemanula.setValue("Anular Inversión");
         itemanula.setIcon("ui-icon-close");
         itemanula.setMetodo("abrirAnularIversion");
@@ -1094,22 +1149,77 @@ public class pre_inversiones extends Pantalla {
         itemedita.setMetodo("abrirModificarC");
         pat_panel.getMenuTabla().getChildren().add(itemedita);
 
+        /**
+         *
+         */
+        ItemMenu itemeditheader = new ItemMenu();
+        itemeditheader.setValue("Modificar cabecera");
+        itemeditheader.setIcon("ui-icon-pencil");
+        itemeditheader.setMetodo("abrirModificarHeader");
+        //pat_panel.getMenuTabla().getChildren().add(itemeditheader);
+        /**
+         *
+         */
+
         ItemMenu itemcancela = new ItemMenu();
         itemcancela.setValue("Cancelar Inversión");
         itemcancela.setIcon("ui-icon-check");
         itemcancela.setMetodo("cancelarInversion");
         pat_panel.getMenuTabla().getChildren().add(itemcancela);
 
-             ItemMenu itemanula = new ItemMenu();
+        ItemMenu itemanula = new ItemMenu();
         itemanula.setValue("Anular Inversión");
         itemanula.setIcon("ui-icon-close");
         itemanula.setMetodo("abrirAnularIversion");
         pat_panel.getMenuTabla().getChildren().add(itemanula);
-        
+
         pat_panel.setPanelTabla(tab_tabla1);
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
 
         mep_menu.dibujar(5, "LISTADO DE INVERSIONES CASAS - OBRAS", pat_panel);
+    }
+
+    public void abrirModificarHeader() {
+        String ide_aux = tab_tabla1.getValor("ide_ipcer");
+        String ide_aux1 = tab_tabla1.getValor("ide_ipcai");
+        /*tab_tabla2.setId("tab_tabla2");
+        tab_tabla2.setTabla("iyp_cab_inversion", "ide_ipcai", 6);}*/
+        tab_tabla5.setCondicion("ide_ipcai=" + ide_aux1);
+        tab_tabla5.ejecutarSql();
+        /*tab_tabla2.setTipoFormulario(true);
+        tab_tabla2.getColumna("ide_ipcai").setVisible(false);
+        tab_tabla2.getColumna("ide_usua").setVisible(true);
+        tab_tabla2.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "ide_usua=" + utilitario.getVariable("ide_usua"));
+        tab_tabla2.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
+        tab_tabla2.getColumna("ide_usua").setLectura(true);
+        tab_tabla2.getColumna("ide_geper").setCombo(ser_inversion.getSqlComboClientes());
+        tab_tabla2.getColumna("ide_geper").setRequerida(true);
+        tab_tabla2.getColumna("ide_geper").setAutoCompletar();
+        tab_tabla2.getColumna("ide_geper_ben").setCombo(tab_tabla2.getColumna("ide_geper").getListaCombo());
+        tab_tabla2.getColumna("ide_geper_ben").setAutoCompletar();
+        tab_tabla2.getColumna("ide_geper_ben").setRequerida(true);
+        tab_tabla2.getColumna("beneficiario_ipcai").setRequerida(true);
+        tab_tabla2.getColumna("observacion_ipcai").setRequerida(true);
+        tab_tabla2.getColumna("observacion_ipcai").setMetodoChange("cargarObservacionCertificado");
+        tab_tabla2.getColumna("ide_geper_ben").setMetodoChange("selecionarCasa");
+        tab_tabla2.getColumna("fecha_inicio_ipcai").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla2.getColumna("ide_iptin").setValorDefecto("1");
+        tab_tabla2.getColumna("ide_iptin").setVisible(false);
+        tab_tabla2.getColumna("activo_ipcai").setValorDefecto("true");
+        tab_tabla2.getGrid().setColumns(4);
+        tab_tabla2.setMostrarNumeroRegistros(false);
+        tab_tabla2.dibujar();
+        PanelTabla pat_panel1 = new PanelTabla();
+        pat_panel1.setPanelTabla(tab_tabla2);
+        pat_panel1.getMenuTabla().getItem_actualizar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_buscar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_importar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_eliminar().setRendered(false);
+        pat_panel1.getMenuTabla().getItem_insertar().setRendered(false);
+        
+        dia_editar_header.setDialogo(tab_tabla2);*/
+
+        dia_editar_header.dibujar();
     }
 
     public void abrirModificarC() {
@@ -1124,7 +1234,7 @@ public class pre_inversiones extends Pantalla {
             tab_tabla2.setTipoFormulario(true);
             tab_tabla2.getColumna("ide_ipcai").setVisible(false);
             tab_tabla2.getColumna("ide_usua").setVisible(true);
-            tab_tabla2.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "ide_usua=" + utilitario.getVariable("ide_usua"));
+            tab_tabla2.getColumna("ide_usua").setCombo("sis_usuario", "ide_usua", "nom_usua", "");
             tab_tabla2.getColumna("ide_usua").setValorDefecto(utilitario.getVariable("ide_usua"));
             tab_tabla2.getColumna("ide_usua").setLectura(true);
             tab_tabla2.getColumna("ide_geper").setCombo(ser_inversion.getSqlComboClientes());
@@ -2079,6 +2189,14 @@ public class pre_inversiones extends Pantalla {
 
     public void setCon_confirma_anular(Confirmar con_confirma_anular) {
         this.con_confirma_anular = con_confirma_anular;
+    }
+
+    public Tabla getTab_tabla5() {
+        return tab_tabla5;
+    }
+
+    public void setTab_tabla5(Tabla tab_tabla5) {
+        this.tab_tabla5 = tab_tabla5;
     }
 
 }

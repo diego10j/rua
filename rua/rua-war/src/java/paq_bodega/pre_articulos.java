@@ -134,11 +134,11 @@ public class pre_articulos extends Pantalla {
              * egresos pos sucursales y empresas es decir varias bodegas False
              * permite regitrar por defecto en una solo bodega
              */
-            if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
+            //if (utilitario.getVariable("p_varias_bodegas").equals("true")) {
                 ser_inventario.getRecalcularInventario("1", com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"));
-            } else {
+            /*} else {
                 ser_inventario.getRecalcularInventario("0", com_anio.getValue().toString(), tab_tabla.getValor(tab_tabla.getFilaActual(), "ide_inarti"), "0", "0");
-            }
+            }*/
             utilitario.agregarMensaje("", "Se recalculo corecctamente");
             utilitario.addUpdateTabla(tab_tabla, "", "");
         }
