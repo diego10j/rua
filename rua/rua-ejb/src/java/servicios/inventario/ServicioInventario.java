@@ -947,6 +947,7 @@ public class ServicioInventario {
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)\n"
                 + "		and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ") and extract(year from fecha_trans_incci)||'' = (select nom_geani from gen_anio where ide_geani ="+anio+")\n"
+                + "     and a.ide_inepi=cast((select valor_para from sis_parametros where nom_para = 'p_inv_estado_aprobado')as numeric)\n"
                 + "union\n"
                 + "	select a.ide_incci,b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,\n"
                 + "	0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,\n"
@@ -960,6 +961,7 @@ public class ServicioInventario {
                 + "	left join gen_anio g on e.ide_geani=g.ide_geani\n"
                 + "	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)\n"
                 + "	and e.ide_geani=" + anio + " and e.ide_inarti in (" + articulo + ") and extract(year from fecha_trans_incci)||'' = (select nom_geani from gen_anio where ide_geani ="+anio+")\n"
+                + "     and a.ide_inepi=cast((select valor_para from sis_parametros where nom_para = 'p_inv_estado_aprobado')as numeric)\n"
                 + "order by ide_inarti,fecha_trans_incci,ide_indci ";
         //System.out.println("REPORTES >>>>> " + sql);
         return sql;
