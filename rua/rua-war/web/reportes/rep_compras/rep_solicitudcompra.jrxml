@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.4641000000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="226"/>
+	<property name="ireport.y" value="104"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -24,6 +24,12 @@
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="usuario" class="java.lang.Integer"/>
 	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_contador" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_cargo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select a.ide_adcomp,numero_orden_adcomp,fecha_solicitud_adcomp,detalle_adarad,
 nombre_inarti,cantidad_adcobi,especificaciones_adcobi,solicita,generador_gasto,firma_solicita,firma_gasto,
@@ -126,7 +132,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Estimado(a).-]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement uuid="ffa5b65d-63ea-4f8d-b21d-02b5877818bc" key="textField" x="6" y="177" width="514" height="27"/>
@@ -152,7 +158,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement uuid="da42dac0-70ef-4e7c-b5e8-3a6b9fff8ec1" key="rectangle-3" x="0" y="232" width="533" height="18" backcolor="#CCCCCC"/>
@@ -548,7 +554,7 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{detalle_adcarg}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["APROBADO"]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement uuid="ea942e5e-559b-4643-a2c7-cf13371e72ff" key="textField-2" x="326" y="180" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -636,20 +642,6 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 			<line>
 				<reportElement uuid="b7f99f7b-e8f1-4b76-98e4-0bbf818fa4d5" key="line-8" x="346" y="54" width="1" height="106"/>
 			</line>
-			<staticText>
-				<reportElement uuid="96861984-a43f-4baf-b6e4-218aded0d64c" key="staticText-32" mode="Transparent" x="186" y="136" width="155" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
-					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[CONTADORA GENERAL]]></text>
-			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement uuid="1be020f8-4fcd-4d0a-af76-850f28f13d18" key="textField" x="186" y="123" width="154" height="18"/>
 				<box>
@@ -661,11 +653,24 @@ where a.ide_adcomp= $P{pide_requisicion}]]>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Lorena Sánchez"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{p_contador}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="5dc80ca6-7535-49af-9769-6f2e0f7e0b6c" key="line-10" x="191" y="117" width="146" height="1"/>
 			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a1290933-c663-4804-98d0-137f461ba52e" key="textField" x="186" y="135" width="154" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_cargo}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>

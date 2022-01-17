@@ -21,10 +21,10 @@
 	<parameter name="ide_inarti" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_fecha_inicio" class="java.lang.String">
+	<parameter name="pide_fecha_inicio" class="java.util.Date">
 		<defaultValueExpression><![CDATA["2020-01-01"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="pide_fecha_fin" class="java.lang.String">
+	<parameter name="pide_fecha_fin" class="java.util.Date">
 		<defaultValueExpression><![CDATA["2021-01-01"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
@@ -51,7 +51,7 @@ select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inart
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_ingreso')as numeric)
 	and e.ide_geani=$P{ide_geani} and e.ide_inarti in ($P!{ide_inarti}) and fecha_trans_incci between cast($P{pide_fecha_inicio} as date) and cast($P{pide_fecha_fin}as date)
-
+and a.ide_inepi=cast((select valor_para from sis_parametros where nom_para = 'p_inv_estado_aprobado')as numeric)
 union
 	select b.ide_intci,e.ide_geani,nom_geani,e.ide_inarti,codigo_inarti,nombre_inarti,existencia_inicial_boart,costo_inicial_boart,
 	precio_promedio_indci as precio,0 as cant_egre,0 as prec_egre,0 as valor_egre,cantidad_indci,precio_indci,valor_indci,cantidad1_indci,precio_promedio_indci,
@@ -65,7 +65,7 @@ union
 	left join gen_anio g on e.ide_geani=g.ide_geani
 	where b.ide_intci =cast((select valor_para from sis_parametros where nom_para = 'p_inv_tipo_egreso')as numeric)
 	and e.ide_geani=$P{ide_geani} and e.ide_inarti in ($P!{ide_inarti}) and fecha_trans_incci between cast($P{pide_fecha_inicio} as date) and cast($P{pide_fecha_fin}as date)
-
+and a.ide_inepi=cast((select valor_para from sis_parametros where nom_para = 'p_inv_estado_aprobado')as numeric)
 ) b on a.ide_geani= b.ide_geani and a.ide_inarti = b.ide_inarti
 where a.ide_geani= $P{ide_geani}
 and a.ide_inarti in ($P!{ide_inarti})
@@ -574,7 +574,7 @@ order by a.ide_inarti,fecha_trans_incci,ide_indci]]>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="e3bc5fed-9059-4467-8645-3e9f665c1408" x="436" y="39" width="120" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
+					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pide_fecha_fin}]]></textFieldExpression>
 			</textField>
