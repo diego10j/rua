@@ -49,8 +49,6 @@ public class ComprobanteServiceImp implements ComprobanteService {
     @EJB
     private GuiaRemisionService guiaRemisionService;
     @EJB
-    private LiquidacionCompraService liquidacionCompraService;
-    @EJB
     private CPanelService cPanelService;
 
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
@@ -74,8 +72,6 @@ public class ComprobanteServiceImp implements ComprobanteService {
                     xml = retencionService.getXmlRetencion(comprobanteActual);
                 } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                     xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
-                } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
-                    xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
                 }
                 xml = utilitario.reemplazarCaracteresEspeciales(xml);
                 try {
@@ -240,8 +236,6 @@ public class ComprobanteServiceImp implements ComprobanteService {
                 xml = retencionService.getXmlRetencion(comprobanteActual);
             } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
-            } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
-                xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
             }
             xml = utilitario.reemplazarCaracteresEspeciales(xml);
             recepcionService.enviarRecepcionOfflineSRI(comprobanteActual, xml);
@@ -279,6 +273,8 @@ public class ComprobanteServiceImp implements ComprobanteService {
             if (comprobanteGuia != null) {
                 //Envia Guia
                 if (comprobanteGuia.getCodigoestado() == EstadoComprobanteEnum.RECIBIDA.getCodigo()) {
+                    comprobanteGuia.getCliente().setNombreCliente(comprobanteActual.getCliente().getNombreCliente());
+                    comprobanteGuia.getCliente().setIdentificacion(comprobanteActual.getCliente().getIdentificacion());
                     autorizacionService.enviarRecibidosOfflineSRI(comprobanteGuia);
                 }
             }
@@ -288,12 +284,12 @@ public class ComprobanteServiceImp implements ComprobanteService {
                 throw new GenericException("ERROR. El Comprobante " + claveAcceso + " no pudo ser Autorizado por el SRI.");
             }
             try {
-                cPanelService.guardarComprobanteNube(comprobanteActual);
-                if (comprobanteGuia != null) {
-                    comprobanteGuia.getCliente().setNombreCliente(comprobanteActual.getCliente().getNombreCliente());
-                    comprobanteGuia.getCliente().setIdentificacion(comprobanteActual.getCliente().getIdentificacion());
-                    cPanelService.guardarComprobanteNube(comprobanteGuia);
-                }
+                //cPanelService.guardarComprobanteNube(comprobanteActual);
+                //  if (comprobanteGuia != null) {
+                //  comprobanteGuia.getCliente().setNombreCliente(comprobanteActual.getCliente().getNombreCliente());
+                //  comprobanteGuia.getCliente().setIdentificacion(comprobanteActual.getCliente().getIdentificacion());
+                //  cPanelService.guardarComprobanteNube(comprobanteGuia);
+                //   }
             } catch (Exception e) {
                 System.out.println("ERROR. al subir comprobante a la Nube :" + e.getMessage());
             }

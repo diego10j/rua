@@ -21,7 +21,7 @@ public enum ParametrosSistemaEnum {
     PROXY_PORT(""),
     MAIL_SMTP_HOST("smtp.office365.com"),
     MAIL_SMTP_PORT("587"),//25  //465
-    MAIL_PASSWORD("Inspectoria2018"),
+    MAIL_PASSWORD("Inspectoria2019"),
     MAIL_GENERIC("comprobantes1@salesianos.org.ec"),
     PAGINA_CONSULTA("http://comprobantes.salesianos.org.ec"),
     CPANEL_WEB_COMPROBANTE("http://192.168.1.205/framework/servicios/ServicioNube.php/subirComprobante"),

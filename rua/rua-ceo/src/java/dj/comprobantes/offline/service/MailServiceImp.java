@@ -52,17 +52,25 @@ public class MailServiceImp implements MailService {
 
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
 
+    String HOSTNAME = "smtp.office365.com";
+    String STARTTLS_PORT = "587";
+    boolean STARTTLS = true;
+    boolean AUTH = true;
+    Properties properties;
+
     @Override
-    public String agregarCorreo(Comprobante comprobanteMail) {
+    public String agregarCorreo(Comprobante comprobanteMail, String correo) {
         if (comprobanteMail == null) {
             return null;
         }
-
-        if (comprobanteMail.getCliente().getCorreo() == null) {
-            return null;
+        if (correo == null) {
+            if (comprobanteMail.getCliente().getCorreo() == null) {
+                return null;
+            }
+            correo = comprobanteMail.getCliente().getCorreo();
         }
 
-        if (utilitario.isCorreoValido(comprobanteMail.getCliente().getCorreo()) == false) {
+        if (utilitario.isCorreoValido(correo) == false) {
             return null;
         }
 
@@ -74,16 +82,22 @@ public class MailServiceImp implements MailService {
             BodyPart texto = new MimeBodyPart();
             String stb_mensaje = "<html><head><title></title></head><body style='font-family: sans-serif'><div align=\"justify\">"
                     //+ "<span style='color:#939598;font-size:44px;'> <img src='http://www.produquimic.com.ec/images/logo_mail.gif'/> </span>"
-                    + "<div align='right' style='background-color:#e50440;color:white;white:100%;padding-right:15px;height:30px;font-size:24px;'>  COMPROBANTES ELECTRONICOS</div>"
+                    + "<div align='right' style='background-color: rgb(196, 13, 28) !important; background-position: 0% 0%; background-repeat: repeat; background-attachment: scroll; background-image: none; background-size: auto; background-origin: padding-box; background-clip: border-box; width: 98%; color: white !important; padding-right: 35px; height: 33px; font-size: 20px;'>  COMPROBANTES ELECTRONICOS</div>"
                     + "<div style='padding-left:15px;font-size:14px;'>"
-                    + "<p>Estimad@ " + comprobanteMail.getCliente().getNombreCliente().toUpperCase() + "</p>"
+                    + "<p>Estimado(a) " + comprobanteMail.getCliente().getNombreCliente().toUpperCase() + "</p>"
                     + "<p>" + "Usted a recibido un Comprobante Electr&oacute;nico :</p>"
                     + "<p> TIPO: " + TipoComprobanteEnum.getDescripcion(comprobanteMail.getCoddoc()) + " </p>"
                     + "<p>NÚMERO : " + comprobanteMail.getEstab() + "-" + comprobanteMail.getPtoemi() + "-" + comprobanteMail.getSecuencial() + "</p>"
                     + "<p>CLAVE DE ACCESO : " + comprobanteMail.getClaveacceso() + "</p>"
                     + "<br/>"
-                    + "<i style='font-size:13px;'><b> No responda a este mensaje ya que ha sido generado automaticamente para su informacion.</b></i>"
-                    + "</div>"
+                    + " <p>Gracias por preferirnos.</p> \n"
+                    + " <br/>\n"
+                    + " </div>\n"
+                    + " <div align=\"left\" style=\"display: block; background-color: rgb(196, 13, 28) !important; background-position: 0% 0%; background-repeat: repeat; background-attachment: scroll; background-image: none; background-size: auto; background-origin: padding-box; background-clip: border-box; width: 100%; color: white !important; padding: 7px 15px; font-size: 13px;\">\n"
+                    + " NOTA. Esta es una notificación automática, por favor no responder este correo electrónico. Cualquier duda o inconveniente favor contactarnos al correo <strong><a style=\"color: white\" href=\"mailto:inspectorial@salesianos.org.ec?Subject=Ayuda\" target=\"_top\">inspectorial@salesianos.org.ec</a></strong>    \n"
+                    + " </div>\n"
+                    + "</div>\n"
+                    + "</div>\n"
                     + "</div></body></html>";
             texto.setContent(stb_mensaje, "text/html");
             // Una MultiParte para agrupar texto e imagen.
@@ -120,7 +134,7 @@ public class MailServiceImp implements MailService {
             message.setFrom(new InternetAddress(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo()));
             message.addRecipient(
                     Message.RecipientType.TO,
-                    new InternetAddress(comprobanteMail.getCliente().getCorreo()));
+                    new InternetAddress(correo));
             message.setSubject("COMPROBANTE ELECTRONICO");
             message.setContent(multiParte);
             listaMensajes.add(message);
@@ -136,19 +150,22 @@ public class MailServiceImp implements MailService {
             ///SSH
             try {
                 // Realiza la conexion y valida credenciales smtp
-                Properties props = new Properties();
-                props.put("mail.smtp.host", ParametrosSistemaEnum.MAIL_SMTP_HOST.getCodigo());
-                props.put("mail.smtp.socketFactory.port", ParametrosSistemaEnum.MAIL_SMTP_PORT.getCodigo());
-                props.put("mail.smtp.auth", "true");
-                props.put("mail.smtp.ssl.enable", "true");
-                props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.smtp.port", ParametrosSistemaEnum.MAIL_SMTP_PORT.getCodigo());
+                properties = new Properties();
+                properties.put("mail.smtp.host", HOSTNAME);
+                // Setting STARTTLS_PORT
+                properties.put("mail.smtp.port", STARTTLS_PORT);
+                // AUTH enabled
+                properties.put("mail.smtp.auth", AUTH);
+                // STARTTLS enabled
+                properties.put("mail.smtp.starttls.enable", STARTTLS);
+                properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
                 Authenticator auth = new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
                     }
                 };
-                session = Session.getInstance(props, auth);
+                session = Session.getInstance(properties, auth);
             } catch (Exception e) {
                 System.out.println("Error al Conectarse al Servidor de Correo Electrónico SMTP : " + e.getMessage());
             }
@@ -181,9 +198,9 @@ public class MailServiceImp implements MailService {
     }
 
     @Override
-    public String enviar(Comprobante comprobante) {
+    public String enviar(Comprobante comprobante, String correo) {
         configurarMail();
-        String msj = agregarCorreo(comprobante);
+        String msj = agregarCorreo(comprobante, correo);
         if (msj.isEmpty()) {
             msj = enviarTodos();
         }

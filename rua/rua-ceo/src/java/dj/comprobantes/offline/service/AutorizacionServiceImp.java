@@ -16,6 +16,7 @@ import dj.comprobantes.offline.exception.GenericException;
 
 import com.sun.xml.ws.client.BindingProviderProperties;
 import dj.comprobantes.offline.dto.Emisor;
+import dj.comprobantes.offline.enums.TipoComprobanteEnum;
 import dj.comprobantes.offline.util.UtilitarioCeo;
 import ec.gob.sri.comprobantes.ws.aut.Autorizacion;
 import ec.gob.sri.comprobantes.ws.aut.AutorizacionComprobantesOffline;
@@ -42,8 +43,8 @@ public class AutorizacionServiceImp implements AutorizacionService {
     private EmisorService emisorService;
     @EJB
     private ComprobanteService comprobanteService;
-//    @EJB
-//    private MailService mailService;
+    @EJB
+    private MailService mailService;
 
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
 
@@ -91,8 +92,10 @@ public class AutorizacionServiceImp implements AutorizacionService {
                                 .append("<comprobante><![CDATA[").append(autorizacion.getComprobante()).append("]]></comprobante>\n")
                                 .append("</autorizacion>");
                         comprobanteService.actualizarAutorizacionComprobante(stb_xml.toString(), comprobateActual, mensajesAutorizacion.toString());
-                        //  mailService.agregarCorreo(comprobateActual);
-
+                        //No envia las guias por correo
+                        if (!comprobateActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
+                            mailService.agregarCorreo(comprobateActual, null);
+                        }
                     } else {
                         comprobanteService.actualizarAutorizacionComprobante(autorizacion.getComprobante(), comprobateActual, mensajesAutorizacion.toString());
                     }
@@ -101,7 +104,7 @@ public class AutorizacionServiceImp implements AutorizacionService {
                 }
                 break;
             }
-            //   mailService.enviarTodos();
+            mailService.enviarTodos();
         }
     }
 
