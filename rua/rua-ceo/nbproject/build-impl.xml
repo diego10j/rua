@@ -855,10 +855,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jasperreports-fonts-5.1.0.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.jcalendarbutton-1.4.5.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.log4j-1.2.16.jar-1}" todir="${build.classes.dir}"/>
-        <copyfiles files="${file.reference.mail.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.napkinlaf-alpha001.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.swing-worker-1.1.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.tradise-common.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.mail.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.tradise-crypto-api.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.tradise-utils.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.tradise_crypto_transport.jar}" todir="${build.classes.dir}"/>
@@ -939,10 +939,10 @@ exists or setup the property manually. For example like this:
         <basename file="${file.reference.jasperreports-fonts-5.1.0.jar}" property="manifest.file.reference.jasperreports-fonts-5.1.0.jar"/>
         <basename file="${file.reference.jcalendarbutton-1.4.5.jar}" property="manifest.file.reference.jcalendarbutton-1.4.5.jar"/>
         <basename file="${file.reference.log4j-1.2.16.jar-1}" property="manifest.file.reference.log4j-1.2.16.jar-1"/>
-        <basename file="${file.reference.mail.jar}" property="manifest.file.reference.mail.jar"/>
         <basename file="${file.reference.napkinlaf-alpha001.jar}" property="manifest.file.reference.napkinlaf-alpha001.jar"/>
         <basename file="${file.reference.swing-worker-1.1.jar}" property="manifest.file.reference.swing-worker-1.1.jar"/>
         <basename file="${file.reference.tradise-common.jar}" property="manifest.file.reference.tradise-common.jar"/>
+        <basename file="${file.reference.mail.jar}" property="manifest.file.reference.mail.jar"/>
         <basename file="${file.reference.tradise-crypto-api.jar}" property="manifest.file.reference.tradise-crypto-api.jar"/>
         <basename file="${file.reference.tradise-utils.jar}" property="manifest.file.reference.tradise-utils.jar"/>
         <basename file="${file.reference.tradise_crypto_transport.jar}" property="manifest.file.reference.tradise_crypto_transport.jar"/>
@@ -1023,10 +1023,10 @@ exists or setup the property manually. For example like this:
             <attribute name="jar-60-Extension-Name" value="${manifest.file.reference.jasperreports-fonts-5.1.0.jar}"/>
             <attribute name="jar-61-Extension-Name" value="${manifest.file.reference.jcalendarbutton-1.4.5.jar}"/>
             <attribute name="jar-62-Extension-Name" value="${manifest.file.reference.log4j-1.2.16.jar-1}"/>
-            <attribute name="jar-63-Extension-Name" value="${manifest.file.reference.mail.jar}"/>
-            <attribute name="jar-64-Extension-Name" value="${manifest.file.reference.napkinlaf-alpha001.jar}"/>
-            <attribute name="jar-65-Extension-Name" value="${manifest.file.reference.swing-worker-1.1.jar}"/>
-            <attribute name="jar-66-Extension-Name" value="${manifest.file.reference.tradise-common.jar}"/>
+            <attribute name="jar-63-Extension-Name" value="${manifest.file.reference.napkinlaf-alpha001.jar}"/>
+            <attribute name="jar-64-Extension-Name" value="${manifest.file.reference.swing-worker-1.1.jar}"/>
+            <attribute name="jar-65-Extension-Name" value="${manifest.file.reference.tradise-common.jar}"/>
+            <attribute name="jar-66-Extension-Name" value="${manifest.file.reference.mail.jar}"/>
             <attribute name="jar-67-Extension-Name" value="${manifest.file.reference.tradise-crypto-api.jar}"/>
             <attribute name="jar-68-Extension-Name" value="${manifest.file.reference.tradise-utils.jar}"/>
             <attribute name="jar-69-Extension-Name" value="${manifest.file.reference.tradise_crypto_transport.jar}"/>
@@ -1108,10 +1108,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jasperreports-fonts-5.1.0.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.jcalendarbutton-1.4.5.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.log4j-1.2.16.jar-1}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.mail.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.napkinlaf-alpha001.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.swing-worker-1.1.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.tradise-common.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.mail.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.tradise-crypto-api.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.tradise-utils.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.tradise_crypto_transport.jar}" todir="${dist.ear.dir}/lib"/>
