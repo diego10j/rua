@@ -94,7 +94,7 @@ public class AutorizacionServiceImp implements AutorizacionService {
                         comprobanteService.actualizarAutorizacionComprobante(stb_xml.toString(), comprobateActual, mensajesAutorizacion.toString());
                         //No envia las guias por correo
                         if (!comprobateActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
-                            mailService.agregarCorreo(comprobateActual, null);
+                            mailService.agregarCorreo(comprobateActual, comprobateActual.getCorreo());
                         }
                     } else {
                         comprobanteService.actualizarAutorizacionComprobante(autorizacion.getComprobante(), comprobateActual, mensajesAutorizacion.toString());

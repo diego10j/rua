@@ -13,6 +13,7 @@ import dj.comprobantes.offline.exception.GenericException;
 import dj.comprobantes.offline.service.ArchivoService;
 import dj.comprobantes.offline.service.CPanelService;
 import dj.comprobantes.offline.service.ComprobanteService;
+import dj.comprobantes.offline.service.MailService;
 import framework.aplicacion.TablaGenerica;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +42,8 @@ public class ServicioComprobanteElectronico extends ServicioBase {
     private ArchivoService archivoService;
     @EJB
     private CPanelService cPanelService;
+    @EJB
+    private MailService mailService;
 
     /**
      * retorna la direccion de una sucursal
@@ -669,9 +672,12 @@ public class ServicioComprobanteElectronico extends ServicioBase {
      */
     public void reenviarComprobante(String correo, String ide_srcom) {
         try {
-            cPanelService.reenviarComprobante(correo, Long.parseLong(ide_srcom));
+            // cPanelService.reenviarComprobante(correo, Long.parseLong(ide_srcom));
+            Comprobante comprobanteFactura = comprobanteService.getComprobantePorId(Long.parseLong(ide_srcom));
+            mailService.agregarCorreo(comprobanteFactura, correo);
+            mailService.enviarTodos();
             utilitario.agregarMensaje("Se envio correctamente", "");
-        } catch (NumberFormatException | GenericException e) {
+        } catch (Exception e) {
             utilitario.crearError("Error al reenviar el comprobante electrónico", "En el método reenviarComprobante", e);
         }
     }
@@ -816,7 +822,7 @@ public class ServicioComprobanteElectronico extends ServicioBase {
                     String serie = tab_liquidacion.getValor("serie_ccdaf");
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET secuencial_srcom='" + strSecuencialF + "' where ide_srcom=" + ide_srcom);
                     utilitario.getConexion().ejecutarSql("UPDATE sri_comprobante SET reutiliza_srcom= false where secuencial_srcom='" + strSecuencialF + "' and reutiliza_srcom=true and coddoc_srcom='" + TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo() + "'");
-                    utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET  ide_srcom=" + ide_srcom + ", numero_cpcfa='" + serie+strSecuencialF + "' where ide_cpcfa=" + ide_cpdfa);
+                    utilitario.getConexion().ejecutarSql("UPDATE cxp_cabece_factur SET  ide_srcom=" + ide_srcom + ", numero_cpcfa='" + serie + strSecuencialF + "' where ide_cpcfa=" + ide_cpdfa);
                     //utilitario.getConexion().ejecutarSql("UPDATE cxp_reembo_liqc SET  ide_srcom=" + ide_srcom + " where ide_cpcfa=" + ide_cpdfa);
 
                 }
