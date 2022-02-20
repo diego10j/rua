@@ -119,12 +119,15 @@ public class FacturaServiceImp implements FacturaService {
                     .append("			<ptoEmi>").append(comprobante.getPtoemi()).append("</ptoEmi> \n")
                     .append("			<secuencial>").append(comprobante.getSecuencial()).append("</secuencial> \n")
                     .append("			<dirMatriz>").append(emisor.getDirmatriz()).append("</dirMatriz> \n");
-//            if (comprobante.getRegMicroEmpresa() != null) {
-//                str_xml.append("      		<regimenMicroempresas>").append(comprobante.getRegMicroEmpresa()).append("</regimenMicroempresas> \n");
-//            }
-//            if (comprobante.getAgenteRetRes() != null) {
-//                str_xml.append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n");
-//            }
+            if (comprobante.getRegMicroEmpresa() != null) {
+                str_xml.append("      		<regimenMicroempresas>").append(comprobante.getRegMicroEmpresa()).append("</regimenMicroempresas> \n");
+            }
+            if (comprobante.getAgenteRetRes() != null) {
+                str_xml.append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n");
+            }
+            if (comprobante.getContribuyenteRimpe()!= null) {
+                str_xml.append("      		<contribuyenteRimpe>").append(comprobante.getContribuyenteRimpe()).append("</contribuyenteRimpe> \n");
+            }
             str_xml.append("		</infoTributaria> \n")
                     .append("		<infoFactura> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")

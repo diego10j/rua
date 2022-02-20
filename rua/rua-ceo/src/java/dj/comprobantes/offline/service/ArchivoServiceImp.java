@@ -141,7 +141,7 @@ public class ArchivoServiceImp implements ArchivoService {
             }
             parametros.put("col_name", col_name);
         } catch (Exception e) {
-            System.out.println("metodo getPdf "+e);
+            System.out.println("metodo getPdf " + e);
         }
         // Recorre todos los detalles de factura o nota de credito
         if (comprobante.getCoddoc().equals(TipoComprobanteEnum.FACTURA.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.NOTA_DE_CREDITO.getCodigo()) || comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
@@ -237,7 +237,7 @@ public class ArchivoServiceImp implements ArchivoService {
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.COMPROBANTE_DE_RETENCION.getCodigo())) {
             reporte = generarReporte.crearPDF(parametros, "comprobanteRetencion.jasper", parametros.get("CLAVE_ACC") + "");
         } else if (comprobante.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
-            System.out.println(" parametro liqui "+parametros.toString());
+            System.out.println(" parametro liqui " + parametros.toString());
             reporte = generarReporte.crearPDF(parametros, "liquidacionCompra.jasper", parametros.get("CLAVE_ACC") + "");
         }
 
@@ -286,10 +286,11 @@ public class ArchivoServiceImp implements ArchivoService {
             parametros.put("SIN_FINES_LUCRO", String.valueOf(comprobante.isSinFinesLucro())); //22-06-2018
             parametros.put("CORREO_EMPRESA", comprobante.getCorreoEmpresa()); //07-07-2018
             parametros.put("RESOLUCIONSRI", comprobante.getResolucionSri()); //12-01-2019
-            
+
             parametros.put("AGENTE_RET_RES_EMPR", comprobante.getAgenteRetRes()); //07-10-2020
             parametros.put("REG_MICRO_EMPR", comprobante.getRegMicroEmpresa()); //07-10-2020
-            
+            parametros.put("CONT_RIMPE_EMPR", comprobante.getContribuyenteRimpe()); //9-05-2022
+
             parametros.put("NUM_DOC_MODIFICADO", utilitario.getValorEtiqueta(cadenaXML, "numDocModificado"));
             parametros.put("DOC_MODIFICADO", TipoComprobanteEnum.getDescripcion(utilitario.getValorEtiqueta(cadenaXML, "codDocModificado")));
             parametros.put("FECHA_EMISION_DOC_SUSTENTO", utilitario.getValorEtiqueta(cadenaXML, "fechaEmisionDocSustento"));

@@ -91,6 +91,7 @@ public final class Comprobante implements Serializable {
     //07-10-2020
     private String agenteRetRes;
     private String regMicroEmpresa;
+    private String contribuyenteRimpe;
 
     private List<DetalleReembolso> detalleReembolso;
 
@@ -158,6 +159,9 @@ public final class Comprobante implements Serializable {
             }
             if (resultado.getString("REG_MICRO_EMPR") != null) {
                 this.regMicroEmpresa = resultado.getString("REG_MICRO_EMPR");
+            }
+            if (resultado.getString("CONT_RIMPE_EMPR") != null) {
+                this.contribuyenteRimpe = resultado.getString("CONT_RIMPE_EMPR");
             }
 
             this.motivo = resultado.getString("motivo_srcom");
@@ -943,6 +947,14 @@ public final class Comprobante implements Serializable {
 
     public void setRegMicroEmpresa(String regMicroEmpresa) {
         this.regMicroEmpresa = regMicroEmpresa;
+    }
+
+    public String getContribuyenteRimpe() {
+        return contribuyenteRimpe;
+    }
+
+    public void setContribuyenteRimpe(String contribuyenteRimpe) {
+        this.contribuyenteRimpe = contribuyenteRimpe;
     }
 
 }

@@ -49,6 +49,8 @@ public class ComprobanteServiceImp implements ComprobanteService {
     @EJB
     private GuiaRemisionService guiaRemisionService;
     @EJB
+    private LiquidacionCompraService liquidacionCompraService;
+    @EJB
     private CPanelService cPanelService;
 
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
@@ -72,6 +74,8 @@ public class ComprobanteServiceImp implements ComprobanteService {
                     xml = retencionService.getXmlRetencion(comprobanteActual);
                 } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                     xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
+                } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                    xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
                 }
                 xml = utilitario.reemplazarCaracteresEspeciales(xml);
                 try {
@@ -236,6 +240,8 @@ public class ComprobanteServiceImp implements ComprobanteService {
                 xml = retencionService.getXmlRetencion(comprobanteActual);
             } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.GUIA_DE_REMISION.getCodigo())) {
                 xml = guiaRemisionService.getXmlGuiaRemision(comprobanteActual);
+            } else if (comprobanteActual.getCoddoc().equals(TipoComprobanteEnum.LIQUIDACION_DE_COMPRAS.getCodigo())) {
+                xml = liquidacionCompraService.getXmlLiquidacionCompra(comprobanteActual);
             }
             xml = utilitario.reemplazarCaracteresEspeciales(xml);
             recepcionService.enviarRecepcionOfflineSRI(comprobanteActual, xml);

@@ -74,7 +74,6 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                 str_subtotales.append("				<totalImpuesto> \n")
                         .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
                         .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.getCodigo(dou_porcentaje_iva)).append("</codigoPorcentaje> \n")
-                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
                         .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotal())).append("</baseImponible> \n")
                         .append("					<valor>").append(utilitario.getFormatoNumero(comprobante.getIva())).append("</valor> \n")
                         .append("				</totalImpuesto> \n");
@@ -84,7 +83,6 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                 str_subtotales.append("				<totalImpuesto> \n")
                         .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
                         .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo()).append("</codigoPorcentaje> \n")
-                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
                         .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotal0())).append("</baseImponible> \n")
                         .append("					<valor>").append(utilitario.getFormatoNumero(0)).append("</valor> \n")
                         .append("				</totalImpuesto> \n");
@@ -94,14 +92,13 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                 str_subtotales.append("				<totalImpuesto> \n")
                         .append("					<codigo>").append(TipoImpuestoEnum.IVA.getCodigo()).append("</codigo> \n")
                         .append("					<codigoPorcentaje>").append(TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo()).append("</codigoPorcentaje> \n")
-                        .append("					<descuentoAdicional>").append(utilitario.getFormatoNumero(0)).append("</descuentoAdicional> \n")
                         .append("					<baseImponible>").append(utilitario.getFormatoNumero(comprobante.getSubtotalNoObjeto())).append("</baseImponible> \n")
                         .append("					<valor>").append(utilitario.getFormatoNumero(0)).append("</valor> \n")
                         .append("				</totalImpuesto> \n");
             }
 
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                    .append("     <liquidacionCompra id=\"comprobante\" version=\"1.0.0\"> \n")
+                    .append("     <liquidacionCompra id=\"comprobante\" version=\"1.1.0\"> \n")
                     .append("		<infoTributaria> \n")
                     .append("			<ambiente>").append(emisor.getAmbiente()).append("</ambiente> \n")
                     .append("			<tipoEmision>").append(comprobante.getTipoemision()).append("</tipoEmision> \n")
@@ -113,13 +110,22 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                     .append("			<estab>").append(comprobante.getEstab()).append("</estab> \n")
                     .append("			<ptoEmi>").append(comprobante.getPtoemi()).append("</ptoEmi> \n")
                     .append("			<secuencial>").append(comprobante.getSecuencial()).append("</secuencial> \n")
-                    .append("			<dirMatriz>").append(emisor.getDirmatriz()).append("</dirMatriz> \n")
-                    .append("		</infoTributaria> \n")
+                    .append("			<dirMatriz>").append(emisor.getDirmatriz()).append("</dirMatriz> \n");
+            if (comprobante.getRegMicroEmpresa() != null) {
+                str_xml.append("      		<regimenMicroempresas>").append(comprobante.getRegMicroEmpresa()).append("</regimenMicroempresas> \n");
+            }
+            if (comprobante.getAgenteRetRes() != null) {
+                str_xml.append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n");
+            }
+            if (comprobante.getContribuyenteRimpe() != null) {
+                str_xml.append("      		<contribuyenteRimpe>").append(comprobante.getContribuyenteRimpe()).append("</contribuyenteRimpe> \n");
+            }
+            str_xml.append("		</infoTributaria> \n")
                     .append("		<infoLiquidacionCompra> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
-                    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
-                    .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
+                    //    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
+                    //   .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
                     .append("			<tipoIdentificacionProveedor>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionProveedor> \n")
                     .append("			<razonSocialProveedor>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialProveedor> \n")
                     .append("			<identificacionProveedor>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionProveedor> \n")
@@ -135,6 +141,14 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                     .append("			</totalConImpuestos> \n")
                     .append("			<importeTotal>").append(utilitario.getFormatoNumero(comprobante.getImportetotal())).append("</importeTotal> \n")
                     .append("			<moneda>").append(moneda).append("</moneda> \n")
+                    .append("                   <pagos> \n")
+                    .append("                           <pago> \n")
+                    .append("                                    <formaPago>").append(comprobante.getFormaCobro()).append("</formaPago> \n")
+                    .append("                                    <total>").append(utilitario.getFormatoNumero(comprobante.getImportetotal())).append("</total> \n")
+                    .append("                                    <plazo>").append(comprobante.getDiasCredito()).append("</plazo> \n")
+                    .append("                                    <unidadTiempo>").append("dias").append("</unidadTiempo> \n")
+                    .append("                           </pago> \n")
+                    .append("                   </pagos>\n")
                     .append("		</infoLiquidacionCompra> \n")
                     .append("		<detalles> \n");
             for (DetalleComprobante detalle : comprobante.getDetalle()) {
@@ -252,7 +266,7 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                 str_xml.append("      		<campoAdicional nombre=\"Observación\">").append(comprobante.getInfoAdicional3()).append("</campoAdicional> \n");
             }
             //for (InfoAdicional inf : comprobante.getInfoAdicional()) {
-              //  str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
+            //  str_xml.append("      		<campoAdicional nombre=\"").append(inf.getNombre()).append("\">").append(inf.getValor()).append("</campoAdicional> \n");
             //}
             str_xml.append("		</infoAdicional> \n");
             str_xml.append("     </liquidacionCompra>");

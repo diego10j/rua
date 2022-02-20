@@ -19,13 +19,13 @@ public class Office365TextMsgSend {
 	Session session;
 	MimeMessage mimeMessage;
 
-	String USERNAME = "comprobantes1@salesianos.org.ec";
-	String PASSWORD = "Inspectoria2019";
+	String USERNAME = "comprobantes2@salesianos.org.ec";
+	String PASSWORD = "Inspectoria2022";
 	String HOSTNAME = "smtp.office365.com";
 	String STARTTLS_PORT = "587";
 	boolean STARTTLS = true;
 	boolean AUTH = true;
-	String FromAddress="comprobantes1@salesianos.org.ec";
+	String FromAddress="comprobantes2@salesianos.org.ec";
 
 	public static void main(String args[]) throws MessagingException {
 		String EmailSubject = "Subject:Text Subject";

@@ -176,7 +176,7 @@ public class UtilitarioCeo extends Framework {
         xml = xml.replaceAll("Ú", "U");
         xml = xml.replaceAll("ú", "u");
         xml = xml.replaceAll("&", "");
-        xml = xml.replaceAll("CONTRIBUYENTE REGIMEN MICROEMPRESAS", "CONTRIBUYENTE RÉGIMEN MICROEMPRESAS");  // Obligatorio enviar con tilde
+        xml = xml.replaceAll("REGIMEN", "RÉGIMEN");  // Obligatorio enviar con tilde
         return xml;
     }
 
