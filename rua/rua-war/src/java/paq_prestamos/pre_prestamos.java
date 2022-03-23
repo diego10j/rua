@@ -229,6 +229,8 @@ public class pre_prestamos extends Pantalla {
     @Override
     public void aceptarReporte() {
         Map parametro = new HashMap();
+        parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+        parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
         if (rep_reporte.getReporteSelecionado().equals("Facturas") || rep_reporte.getReporteSelecionado().equals("Facturas Eventos")
                 || rep_reporte.getReporteSelecionado().equals("Facturas Nueva") || rep_reporte.getReporteSelecionado().equals("Facturas con Formato")) {
             if (mep_menu.getOpcion() == 2) { //Valida que se seleccione una factura
