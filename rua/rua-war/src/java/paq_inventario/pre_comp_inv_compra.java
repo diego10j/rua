@@ -397,12 +397,12 @@ public class pre_comp_inv_compra extends Pantalla {
          * permite regitrar por defecto en una solo bodega
          */
         //if (utilitario.getVariable("p_varias_bodegas").equals("true")) { comento Jhon para evitar duplicidad en el kardex
-        ser_inventario.getRegistrarInventario("1", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_fecha.getValor("anio"));
-        /* System.out.println("VERDADERO");
-        } else {
+        //ser_inventario.getRegistrarInventario("1", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), utilitario.getVariable("IDE_SUCU"), utilitario.getVariable("IDE_EMPR"), tab_fecha.getValor("anio"));
+        // System.out.println("VERDADERO");
+        //} else {
             ser_inventario.getRegistrarInventario("0", tab_tabla1.getValor("ide_incci"), tab_tabla1.getValor("ide_intti"), "0", "0", tab_fecha.getValor("anio"));
-            System.out.println("FALSO");
-        }*/
+          //  System.out.println("FALSO");
+        //}
         con_confirma.cerrar();
         tab_tabla1.actualizar();
         utilitario.agregarMensaje("Se aprobo correctamente", "");
