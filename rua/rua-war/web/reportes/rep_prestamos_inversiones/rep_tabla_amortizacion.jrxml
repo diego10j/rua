@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b498cff8-9199-452e-95f0-40740c2bc146">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="178"/>
+	<property name="ireport.y" value="342"/>
 	<parameter name="ide_empr" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -16,6 +16,8 @@
 	<parameter name="es_ingreso_ipcpr" class="java.lang.Boolean">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pfirma1" class="java.lang.String"/>
+	<parameter name="pcargo1" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select cabpres.num_prestamo_ipcpr,cabpres.ide_ipcpr,cdpc.nombre_cndpc,
  cabpres.ide_cnccc,
@@ -63,21 +65,21 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 	<title>
 		<band height="183" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="2cb6f89d-f7d5-4c9b-a0a9-c95837756704" x="266" y="4" width="244" height="20"/>
+				<reportElement x="266" y="4" width="244" height="20" uuid="2cb6f89d-f7d5-4c9b-a0a9-c95837756704"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SOCIEDAD SALESIANA EN EL ECUADOR]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="0cb7ca0c-b0ba-42f2-8dd7-21085ee954cf" x="509" y="4" width="46" height="43"/>
+				<reportElement x="509" y="4" width="46" height="43" uuid="0cb7ca0c-b0ba-42f2-8dd7-21085ee954cf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new String ($F{es_ingreso_ipcpr}==true?"I":"E")]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="a5019116-0289-4fb1-a3c4-1120b335914c" x="1" y="0" width="139" height="85"/>
+				<reportElement x="1" y="0" width="139" height="85" uuid="a5019116-0289-4fb1-a3c4-1120b335914c"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -91,7 +93,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="1c5efa7f-526f-4ef3-a7c5-6d8b8ab1b366" x="0" y="86" width="93" height="15"/>
+				<reportElement x="0" y="86" width="93" height="15" uuid="1c5efa7f-526f-4ef3-a7c5-6d8b8ab1b366"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -99,13 +101,13 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Transacción Nº:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="cf0777d7-3ab7-430f-8781-1c72ada0506e" x="92" y="86" width="105" height="15"/>
+				<reportElement x="92" y="86" width="105" height="15" uuid="cf0777d7-3ab7-430f-8781-1c72ada0506e"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{ide_cnccc}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="43e81cf1-a976-4c5c-9dbf-3ba8d1cc3b91" x="0" y="100" width="93" height="15"/>
+				<reportElement x="0" y="100" width="93" height="15" uuid="43e81cf1-a976-4c5c-9dbf-3ba8d1cc3b91"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
@@ -113,7 +115,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Prestamo Nº:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="33470162-836d-46c1-b0e3-a98e01d9a803" x="0" y="126" width="111" height="15"/>
+				<reportElement x="0" y="126" width="111" height="15" uuid="33470162-836d-46c1-b0e3-a98e01d9a803"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -127,7 +129,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Tiempo Crédito:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="c61d3183-dcae-4005-95bb-2068dc052e32" x="111" y="126" width="132" height="15"/>
+				<reportElement x="111" y="126" width="132" height="15" uuid="c61d3183-dcae-4005-95bb-2068dc052e32"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -139,7 +141,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{num_pagos_ipcpr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="975776e0-0238-4dca-9f3b-cc1914756f1d" x="0" y="141" width="111" height="15"/>
+				<reportElement x="0" y="141" width="111" height="15" uuid="975776e0-0238-4dca-9f3b-cc1914756f1d"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -153,7 +155,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Tasa Interés Anual:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="edcca4a3-ab67-41b9-8fc5-8bbf84d5cdc1" x="111" y="141" width="132" height="15"/>
+				<reportElement x="111" y="141" width="132" height="15" uuid="edcca4a3-ab67-41b9-8fc5-8bbf84d5cdc1"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -165,7 +167,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{interes_ipcpr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="9b7fb45f-c1a2-4560-8f94-bf24fdc9d63d" x="278" y="126" width="100" height="15"/>
+				<reportElement x="278" y="126" width="100" height="15" uuid="9b7fb45f-c1a2-4560-8f94-bf24fdc9d63d"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -179,7 +181,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Cuota = Razón]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="d422823b-a377-4fb5-ba40-8c424f2223ea" x="378" y="126" width="145" height="15"/>
+				<reportElement x="378" y="126" width="145" height="15" uuid="d422823b-a377-4fb5-ba40-8c424f2223ea"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -191,7 +193,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{cuota_ipdpr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c335dc6f-edda-47b0-8c80-c48cf498fd10" x="278" y="141" width="100" height="15"/>
+				<reportElement x="278" y="141" width="100" height="15" uuid="c335dc6f-edda-47b0-8c80-c48cf498fd10"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -205,7 +207,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Monto: USD]]></text>
 			</staticText>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="adb3b5dc-0027-4616-b02c-92f3eb89d88d" x="378" y="141" width="145" height="15"/>
+				<reportElement x="378" y="141" width="145" height="15" uuid="adb3b5dc-0027-4616-b02c-92f3eb89d88d"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -217,7 +219,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{monto_ipcpr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="a51a0340-e8f1-4728-a12f-54b8961437d1" x="196" y="86" width="81" height="15"/>
+				<reportElement x="196" y="86" width="81" height="15" uuid="a51a0340-e8f1-4728-a12f-54b8961437d1"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -225,14 +227,14 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Beneficiario:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2d0705a7-1739-4366-938a-772d710ad21b" x="266" y="23" width="244" height="24"/>
+				<reportElement x="266" y="23" width="244" height="24" uuid="2d0705a7-1739-4366-938a-772d710ad21b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[AMORTIZACIÓN MENSUAL  DE CRÉDITO]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="7074a4b7-6807-42be-9072-869098363487" x="276" y="86" width="279" height="15"/>
+				<reportElement x="276" y="86" width="279" height="15" uuid="7074a4b7-6807-42be-9072-869098363487"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isStrikeThrough="false"/>
@@ -240,13 +242,11 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{nom_geper}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="41fc7a93-b478-4990-8325-2bbfe2d98124" x="94" y="100" width="105" height="15"/>
-				<textElement/>
+				<reportElement x="94" y="100" width="105" height="15" uuid="41fc7a93-b478-4990-8325-2bbfe2d98124"/>
 				<textFieldExpression><![CDATA[$F{ide_ipcpr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d48b01ee-7809-453e-94eb-e3ed7a84c5c8" x="279" y="100" width="279" height="15"/>
-				<textElement/>
+				<reportElement x="279" y="100" width="279" height="15" uuid="d48b01ee-7809-453e-94eb-e3ed7a84c5c8"/>
 				<textFieldExpression><![CDATA[$F{nombre_cndpc}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -254,7 +254,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 	<columnHeader>
 		<band height="15" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="7f3e3ccb-a4d9-41bd-9e50-7559b6de936d" x="0" y="0" width="59" height="15"/>
+				<reportElement x="0" y="0" width="59" height="15" uuid="7f3e3ccb-a4d9-41bd-9e50-7559b6de936d"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -268,7 +268,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Nº]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ce8df21d-d28e-4dc5-9db8-81f10d594798" x="58" y="0" width="101" height="15"/>
+				<reportElement x="58" y="0" width="101" height="15" uuid="ce8df21d-d28e-4dc5-9db8-81f10d594798"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -282,7 +282,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Fecha]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="90fb6504-0c63-4709-85a1-7d852efb07c1" x="158" y="0" width="108" height="15"/>
+				<reportElement x="158" y="0" width="108" height="15" uuid="90fb6504-0c63-4709-85a1-7d852efb07c1"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -296,7 +296,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Capital]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d76a0dee-4b05-4160-990a-ebb2431ab197" x="266" y="0" width="121" height="15"/>
+				<reportElement x="266" y="0" width="121" height="15" uuid="d76a0dee-4b05-4160-990a-ebb2431ab197"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -310,7 +310,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Interés]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="033aec22-2fd6-40ce-9abe-22585b935e04" x="386" y="0" width="114" height="15"/>
+				<reportElement x="386" y="0" width="114" height="15" uuid="033aec22-2fd6-40ce-9abe-22585b935e04"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -324,7 +324,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<text><![CDATA[Cuota]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9f7c7190-fa45-4392-80e8-979b83022dfe" x="500" y="0" width="55" height="15"/>
+				<reportElement x="500" y="0" width="55" height="15" uuid="9f7c7190-fa45-4392-80e8-979b83022dfe"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -342,7 +342,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="8037286b-987f-4e78-8552-23bb336c885c" x="58" y="0" width="101" height="15"/>
+				<reportElement x="58" y="0" width="101" height="15" uuid="8037286b-987f-4e78-8552-23bb336c885c"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -356,7 +356,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{fecha_ipdpr}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="9aee6d1f-b89c-450a-abaa-f2f942b79989" x="159" y="0" width="107" height="15"/>
+				<reportElement x="159" y="0" width="107" height="15" uuid="9aee6d1f-b89c-450a-abaa-f2f942b79989"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -370,7 +370,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{capital_ipdpr}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="6f734319-0e69-48b5-9af5-9c9fb8e0ef72" x="266" y="0" width="121" height="15"/>
+				<reportElement x="266" y="0" width="121" height="15" uuid="6f734319-0e69-48b5-9af5-9c9fb8e0ef72"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -384,7 +384,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{interes_ipdpr}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="7653bb63-1452-4ea5-9513-35d2387bbc7a" x="387" y="0" width="113" height="15"/>
+				<reportElement x="387" y="0" width="113" height="15" uuid="7653bb63-1452-4ea5-9513-35d2387bbc7a"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -398,7 +398,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{cuota_ipdpr}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="786dbe13-5dab-479c-8fb1-f0ddf4333ec6" x="500" y="0" width="55" height="15"/>
+				<reportElement x="500" y="0" width="55" height="15" uuid="786dbe13-5dab-479c-8fb1-f0ddf4333ec6"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -412,7 +412,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$F{pagado_ipdpr}==true?$F{cuota_ipdpr}:""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="77c7480e-58b8-4f5f-ae1e-f4aa3c235625" x="0" y="0" width="58" height="15"/>
+				<reportElement x="0" y="0" width="58" height="15" uuid="77c7480e-58b8-4f5f-ae1e-f4aa3c235625"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -430,23 +430,21 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 	<pageFooter>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement uuid="97539f3b-2db7-4e49-bfbb-6e293c373fb2" x="431" y="0" width="80" height="13"/>
+				<reportElement x="431" y="0" width="80" height="13" uuid="97539f3b-2db7-4e49-bfbb-6e293c373fb2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="23f9c477-9264-4bd6-88cc-42531000fa91" x="510" y="0" width="45" height="13"/>
+				<reportElement x="510" y="0" width="45" height="13" uuid="23f9c477-9264-4bd6-88cc-42531000fa91"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="361e187a-d892-4d02-977a-a47ccee5df04" x="57" y="0" width="100" height="13"/>
-				<textElement/>
+				<reportElement x="57" y="0" width="100" height="13" uuid="361e187a-d892-4d02-977a-a47ccee5df04"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="4f4acdab-2483-4e4c-b9a0-a732c3922980" x="1" y="0" width="57" height="13"/>
-				<textElement/>
+				<reportElement x="1" y="0" width="57" height="13" uuid="4f4acdab-2483-4e4c-b9a0-a732c3922980"/>
 				<text><![CDATA[Impresión:]]></text>
 			</staticText>
 		</band>
@@ -454,7 +452,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 	<summary>
 		<band height="192" splitType="Stretch">
 			<textField pattern="#,##0.00">
-				<reportElement uuid="8d55720b-39de-492c-8a59-b73912c50dad" x="159" y="0" width="107" height="15"/>
+				<reportElement x="159" y="0" width="107" height="15" uuid="8d55720b-39de-492c-8a59-b73912c50dad"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -468,7 +466,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$V{capital_ipdpr_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="df699612-5721-419d-bb46-96661fed285d" x="266" y="0" width="121" height="15"/>
+				<reportElement x="266" y="0" width="121" height="15" uuid="df699612-5721-419d-bb46-96661fed285d"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -482,7 +480,7 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$V{interes_ipdpr_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="0403d634-421f-4cbf-8aa4-b2a3f65c6b85" x="387" y="0" width="113" height="15"/>
+				<reportElement x="387" y="0" width="113" height="15" uuid="0403d634-421f-4cbf-8aa4-b2a3f65c6b85"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -496,47 +494,61 @@ order by detapre.fecha_ipdpr asc ,detapre.num_ipdpr asc]]>
 				<textFieldExpression><![CDATA[$V{cuota_ipdpr_1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="6d6bcf4a-3bdb-4616-bc42-f541e7868cc1" x="1" y="126" width="265" height="16"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[P. Maffeo Panthegini]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="4d63376b-f696-453c-b29c-0d2849e2581d" x="1" y="141" width="265" height="16"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Ecónomo Inspectorial.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="11306ff5-ed79-417e-931c-426a4ae08ff7" x="1" y="156" width="554" height="12"/>
+				<reportElement x="1" y="156" width="554" height="12" uuid="11306ff5-ed79-417e-931c-426a4ae08ff7"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7" isBold="false" isItalic="true" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Depositar:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8dbcd867-3b9f-409b-96fc-7773013985b4" x="1" y="167" width="554" height="12"/>
+				<reportElement x="1" y="167" width="554" height="12" uuid="8dbcd867-3b9f-409b-96fc-7773013985b4"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7" isBold="false" isItalic="true" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Cta: Cte: 30843801-04]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="547e1713-6159-40e4-bbc8-f089bab186dd" x="1" y="178" width="554" height="12"/>
+				<reportElement x="1" y="178" width="554" height="12" uuid="547e1713-6159-40e4-bbc8-f089bab186dd"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7" isBold="false" isItalic="true" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Banco Pichincha: Sociedad Salesiana en el Ecuador]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3be10fdf-0eed-41e2-aa25-ecca47f9b6a1" x="265" y="141" width="290" height="16"/>
+				<reportElement x="265" y="141" width="290" height="16" uuid="3be10fdf-0eed-41e2-aa25-ecca47f9b6a1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Director de la Casa]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="1" y="140" width="264" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="8bc391a8-82ec-4534-a842-baf464b32e75"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pcargo1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="2" y="124" width="263" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="a63ec2e3-3714-4268-8303-272b8115ae5b"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pfirma1}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>
