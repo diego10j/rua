@@ -848,7 +848,7 @@ public class ServicioInventario {
         if (tipo.equals("1")) {
             sql += " and ide_sucu=" + sucu + " and ide_empr=" + empr;
         }
-
+        //System.out.println("cargo tabla detalle "+sql);
         return sql;
     }
 
@@ -1021,7 +1021,7 @@ public class ServicioInventario {
                      //System.out.println("ingrese  p_inv_tipo_ingreso hace_kardex_inarti");
                     TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
                     if (tab_articulo.getTotalFilas() > 0) {
-                         //System.out.println("hay stockcccc hace_kardex_inarti");
+                        //System.out.println("hay stockcccc hace_kardex_inarti");
                         costo_actual = getPrecioPonderado(Double.parseDouble(tab_articulo.getValor("stock")), Double.parseDouble(tab_articulo.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
                         utilitario.getConexion().ejecutarSql(getActualizarBodegaArticulos(tab_articulo.getValor("costo_actual_boart"), costo_actual, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
                         utilitario.getConexion().ejecutarSql(getActualizarIngreso(tab_detalle.getValor(i, "cantidad_indci"), tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani")));
@@ -1029,7 +1029,7 @@ public class ServicioInventario {
                         utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
                     } else {
-                        // System.out.println("no hyyhay stock hace_kardex_inarti");
+                         //System.out.println("no hyyhay stock hace_kardex_inarti");
                         utilitario.getConexion().ejecutarSql(getInsertarBodegaArticulos(tipo, tab_anio.getValor("ide_geani"), sucu, empr, tab_detalle.getValor(i, "ide_inarti")));
                         TablaGenerica tab_articulos = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
                         costo_actual = getPrecioPonderado(Double.parseDouble(tab_articulos.getValor("stock")), Double.parseDouble(tab_articulos.getValor("costo_actual_boart")), Double.parseDouble(tab_detalle.getValor(i, "cantidad_indci")), Double.parseDouble(tab_detalle.getValor(i, "valor_indci")));
@@ -1039,12 +1039,15 @@ public class ServicioInventario {
                         utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), costo_actual, tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
                     }
+                } else {
+                        utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
                 }
             }
         } else if (tab_transaccion.getValor("ide_intci").equals(utilitario.getVariable("p_inv_tipo_egreso"))) {
-            //System.out.println("ingrese  p_inv_tipo_egreso");
+            //System.out.println("ingrese  p_inv_tipo_egreso total = "+tab_detalle.getTotalFilas());
             for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
                 TablaGenerica tab_kardex = utilitario.consultar(getAplicaKardex(tab_detalle.getValor(i, "ide_inarti")));
+                //System.out.println("hace hace_kardex_inartippppp "+ tab_kardex.getValor("hace_kardex_inarti"));
                 if (tab_kardex.getValor("hace_kardex_inarti").equals("true")) {
                     //System.out.println("ingrese  p_inv_tipo_egreso hace_kardex_inarti");
                     TablaGenerica tab_articulo = utilitario.consultar(getBodtArticulo(tipo, tab_detalle.getValor(i, "ide_inarti"), tab_anio.getValor("ide_geani"), sucu, empr));
@@ -1064,6 +1067,8 @@ public class ServicioInventario {
                         utilitario.getConexion().ejecutarSql(getActualizarDetalleStock(tab_arti2.getValor("stock"), Double.parseDouble(tab_arti2.getValor("costo_actual_boart")), tab_detalle.getValor(i, "ide_indci"), tab_detalle.getValor(i, "ide_inarti")));
                         utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
                     }
+                } else {
+                    utilitario.getConexion().ejecutarSql(getActualizarEstadoInventario(utilitario.getVariable("p_inv_estado_aprobado"), ide_incci));
                 }
             }
         }
