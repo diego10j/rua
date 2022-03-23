@@ -264,6 +264,8 @@ public class pre_prestamos extends Pantalla {
                 rep_reporte.cerrar();
                 parametro.put("ide_ipcpr", Long.parseLong(tab_tabla1.getValor("ide_ipcpr")));
                 parametro.put("es_ingreso_ipcpr", Boolean.parseBoolean(tab_tabla1.getValor("es_ingreso_ipcpr")));
+                parametro.put("pfirma1", utilitario.getVariable("p_ger_nom_firma1"));
+                parametro.put("pcargo1", utilitario.getVariable("p_ger_cargo_firma1"));
                 System.out.println(tab_tabla1.getValor("es_ingreso_ipcpr"));
                 sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
                 sel_formato.dibujar();
