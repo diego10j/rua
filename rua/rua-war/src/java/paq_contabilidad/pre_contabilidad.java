@@ -346,6 +346,7 @@ public class pre_contabilidad extends Pantalla {
             if (aut_persona.getValor() == null) {
                 String ide_geper = tab_consulta.getStringColumna("ide_geper");
                 if (ide_geper != null) {
+                     ide_geper = ide_geper.replace("null", "").trim();
                     if (ide_geper.isEmpty() == false) {
                         aut_persona.setAutoCompletar("select ide_geper,identificac_geper,nom_geper from gen_persona where ide_geper in (" + ide_geper + ")");
                     }
