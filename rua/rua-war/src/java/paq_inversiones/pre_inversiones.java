@@ -21,6 +21,7 @@ import framework.componentes.MenuPanel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Radio;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import java.util.HashMap;
@@ -61,6 +62,8 @@ public class pre_inversiones extends Pantalla {
     private final Combo com_anio = new Combo();
     private Confirmar con_confirma_anular = new Confirmar();
     private final Dialogo dia_editar_header = new Dialogo();
+    private SeleccionCalendario sec_rango_reporte = new SeleccionCalendario();
+
 
     public pre_inversiones() {
         bar_botones.quitarBotonsNavegacion();
@@ -69,6 +72,11 @@ public class pre_inversiones extends Pantalla {
         com_anio.setId("com_anio");
         com_anio.setCombo(ser_inversion.getSqlComboAnio());
         bar_botones.agregarComponente(com_anio);
+        
+        sec_rango_reporte.setId("sec_rango_reporte");
+        sec_rango_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango_reporte.setMultiple(false);
+        agregarComponente(sec_rango_reporte);
 
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
@@ -213,7 +221,25 @@ public class pre_inversiones extends Pantalla {
             rep_reporte.cerrar();
             sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
             sel_formato.dibujar();
-        } else if (rep_reporte.getReporteSelecionado().equals("Inversiones Bancarias no Canceladas Años")) {
+        } else if (rep_reporte.getReporteSelecionado().equals("Resumen Inversiones Casas - Obras Fechas")) {
+            Map parametro = new HashMap();
+           
+            
+            if (rep_reporte.isVisible()) {
+                parametro = new HashMap();
+                rep_reporte.cerrar();
+                sec_rango_reporte.setMultiple(false);
+                sec_rango_reporte.dibujar();
+                utilitario.addUpdate("rep_reporte,sec_rango_reporte");
+            } else if (sec_rango_reporte.isVisible()) {
+                parametro.put("fecha_fin", sec_rango_reporte.getFecha1String());
+                //System.out.println("ggg  "+sec_rango_reporte.getFecha1String());
+                sec_rango_reporte.cerrar();
+                 sel_formato.setSeleccionFormatoReporte(parametro, rep_reporte.getPath());
+                sel_formato.dibujar();
+            } 
+            
+        }else if (rep_reporte.getReporteSelecionado().equals("Inversiones Bancarias no Canceladas Años")) {
             Map parametro = new HashMap();
             rep_reporte.cerrar();
             parametro.put("pide_anio", com_anio.getValue());
@@ -2197,6 +2223,14 @@ public class pre_inversiones extends Pantalla {
 
     public void setTab_tabla5(Tabla tab_tabla5) {
         this.tab_tabla5 = tab_tabla5;
+    }
+
+    public SeleccionCalendario getSec_rango_reporte() {
+        return sec_rango_reporte;
+    }
+
+    public void setSec_rango_reporte(SeleccionCalendario sec_rango_reporte) {
+        this.sec_rango_reporte = sec_rango_reporte;
     }
 
 }
