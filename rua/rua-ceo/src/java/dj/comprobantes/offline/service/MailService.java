@@ -25,7 +25,7 @@ public interface MailService {
      * @param correo
      * @return
      */
-    public String agregarCorreo(Comprobante comprobanteMail,String correo);
+    public String agregarCorreo(Comprobante comprobanteMail, String correo);
 
     /**
      * Envia todos los comprobantes agregados a la lista
@@ -40,5 +40,6 @@ public interface MailService {
      * @param comprobante
      * @return
      */
-    public String enviar(Comprobante comprobante,String correo);
+    public String enviar(Comprobante comprobante, String correo);
+
 }

@@ -19,10 +19,10 @@ public enum ParametrosSistemaEnum {
     RUTA_SISTEMA("/opt/rua"), //Ruta del sistema RUA
     PROXY_HOST(""),
     PROXY_PORT(""),
-    MAIL_SMTP_HOST("smtp.office365.com"),
-    MAIL_SMTP_PORT("587"),//25  //465
-    MAIL_PASSWORD("Inspectoria2023"),
-    MAIL_GENERIC("comprobantes2@salesianos.org.ec"),
+    MAIL_SMTP_HOST("mail.ups.edu.ec"),
+    MAIL_SMTP_PORT("25"),//25  //465
+    MAIL_PASSWORD("1u%8FC_JA21"),
+    MAIL_GENERIC("comprobantessalesianos@ups.edu.ec"),
     PAGINA_CONSULTA("http://comprobantes.salesianos.org.ec"),
     CPANEL_WEB_COMPROBANTE("http://192.168.1.205/framework/servicios/ServicioNube.php/subirComprobante"),
     CPANEL_WEB_REENVIAR("http://192.168.1.205/framework/servicios/ServicioNube.php/reenviarComprobante");

@@ -52,14 +52,13 @@ public class MailServiceImp implements MailService {
 
     private final UtilitarioCeo utilitario = new UtilitarioCeo();
 
-    String HOSTNAME = "smtp.office365.com";
-    String STARTTLS_PORT = "587";
-    boolean STARTTLS = true;
-    boolean AUTH = true;
     Properties properties;
 
     @Override
     public String agregarCorreo(Comprobante comprobanteMail, String correo) {
+
+        configurarMail();
+
         if (comprobanteMail == null) {
             return null;
         }
@@ -150,21 +149,31 @@ public class MailServiceImp implements MailService {
             ///SSH
             try {
                 // Realiza la conexion y valida credenciales smtp
+////                properties = new Properties();
+////                properties.put("mail.smtp.host", HOSTNAME);
+////                // Setting STARTTLS_PORT
+////                properties.put("mail.smtp.port", STARTTLS_PORT);
+////                // AUTH enabled
+////                properties.put("mail.smtp.auth", AUTH);
+////                // STARTTLS enabled
+////                properties.put("mail.smtp.starttls.enable", STARTTLS);
+////                properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
                 properties = new Properties();
-                properties.put("mail.smtp.host", HOSTNAME);
-                // Setting STARTTLS_PORT
-                properties.put("mail.smtp.port", STARTTLS_PORT);
-                // AUTH enabled
-                properties.put("mail.smtp.auth", AUTH);
-                // STARTTLS enabled
-                properties.put("mail.smtp.starttls.enable", STARTTLS);
-                properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+                properties.put("mail.smtp.host", ParametrosSistemaEnum.MAIL_SMTP_HOST.getCodigo());
+                properties.put("mail.smtp.port", ParametrosSistemaEnum.MAIL_SMTP_PORT.getCodigo());
+                properties.put("mail.smtp.auth", "false");
+                properties.put("mail.smtp.starttls.enable", "true");
+                properties.put("mail.smtp.ssl.enable", "false");
+                properties.put("mail.smtp.user", "comprobantessalesianos");
+                properties.put("mail.smtp.password", ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
 
                 Authenticator auth = new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
                     }
                 };
+                //session.setDebug(true);
                 session = Session.getInstance(properties, auth);
             } catch (Exception e) {
                 System.out.println("Error al Conectarse al Servidor de Correo Electrónico SMTP : " + e.getMessage());
@@ -178,22 +187,25 @@ public class MailServiceImp implements MailService {
         String str = "";
         if (listaMensajes != null) {
             try {
-                configurarMail();
-                Transport t = session.getTransport("smtp");
-                t.connect(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
+//                configurarMail();
+//                Transport t = session.getTransport("smtp");
+//                t.connect(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
                 for (Message actual : listaMensajes) {
-                    if (t.isConnected() == false) {
-                        t.connect(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
-                    } else {
-                        t.sendMessage(actual, actual.getRecipients(Message.RecipientType.TO));
-                    }
+//                    if (t.isConnected() == false) {
+//                        t.connect(ParametrosSistemaEnum.MAIL_GENERIC.getCodigo(), ParametrosSistemaEnum.MAIL_PASSWORD.getCodigo());
+//                    } else {
+//                        t.sendMessage(actual, actual.getRecipients(Message.RecipientType.TO));
+//                    }
+                    Transport.send(actual);
                 }
-                t.close();
+//                t.close();
             } catch (Exception e) {
+                e.printStackTrace();
                 str += "No se puede enviar el correo: " + e.getMessage();
             }
             listaMensajes.clear();
         }
+        session = null;
         return str;
     }
 
@@ -206,4 +218,5 @@ public class MailServiceImp implements MailService {
         }
         return msj;
     }
+
 }
