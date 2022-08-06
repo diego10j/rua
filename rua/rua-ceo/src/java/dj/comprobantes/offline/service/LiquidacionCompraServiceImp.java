@@ -96,7 +96,14 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                         .append("					<valor>").append(utilitario.getFormatoNumero(0)).append("</valor> \n")
                         .append("				</totalImpuesto> \n");
             }
-
+            //6-8-2022 Validacion Contribuyente Especial
+            if (emisor.getContribuyenteespecial() == null) {
+                emisor.setContribuyenteespecial("000");
+            }
+            StringBuilder str_contribuyenteEspecial = new StringBuilder();
+            if (!emisor.getContribuyenteespecial().equals("000")) {
+                str_contribuyenteEspecial.append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n");
+            }
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                     .append("     <liquidacionCompra id=\"comprobante\" version=\"1.1.0\"> \n")
                     .append("		<infoTributaria> \n")
@@ -125,7 +132,7 @@ public class LiquidacionCompraServiceImp implements LiquidacionCompraService {
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
                     //    .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
-                    //   .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
+                    .append(str_contribuyenteEspecial)
                     .append("			<tipoIdentificacionProveedor>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionProveedor> \n")
                     .append("			<razonSocialProveedor>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialProveedor> \n")
                     .append("			<identificacionProveedor>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionProveedor> \n")

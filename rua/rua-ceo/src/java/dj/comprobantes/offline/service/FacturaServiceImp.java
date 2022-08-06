@@ -105,6 +105,15 @@ public class FacturaServiceImp implements FacturaService {
                         .append("				</totalImpuesto> \n");
             }
 
+            //6-8-2022 Validacion Contribuyente Especial
+            if (emisor.getContribuyenteespecial() == null) {
+                emisor.setContribuyenteespecial("000");
+            }
+            StringBuilder str_contribuyenteEspecial = new StringBuilder();
+            if (!emisor.getContribuyenteespecial().equals("000")) {
+                str_contribuyenteEspecial.append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n");
+            }
+
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                     .append("     <factura id=\"comprobante\" version=\"1.1.0\"> \n")
                     .append("		<infoTributaria> \n")
@@ -125,14 +134,14 @@ public class FacturaServiceImp implements FacturaService {
             if (comprobante.getAgenteRetRes() != null) {
                 str_xml.append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n");
             }
-            if (comprobante.getContribuyenteRimpe()!= null) {
+            if (comprobante.getContribuyenteRimpe() != null) {
                 str_xml.append("      		<contribuyenteRimpe>").append(comprobante.getContribuyenteRimpe()).append("</contribuyenteRimpe> \n");
             }
             str_xml.append("		</infoTributaria> \n")
                     .append("		<infoFactura> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
                     .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
-                    .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
+                    .append(str_contribuyenteEspecial)
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
                     .append("			<tipoIdentificacionComprador>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionComprador> \n");
             if (comprobante.getGuiaremision() != null) {

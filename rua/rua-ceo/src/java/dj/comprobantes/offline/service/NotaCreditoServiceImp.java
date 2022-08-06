@@ -84,6 +84,16 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
             if (comprobante.getContribuyenteRimpe() != null) {
                 str_xml.append("      		<contribuyenteRimpe>").append(comprobante.getContribuyenteRimpe()).append("</contribuyenteRimpe> \n");
             }
+
+            //6-8-2022 Validacion Contribuyente Especial
+            if (emisor.getContribuyenteespecial() == null) {
+                emisor.setContribuyenteespecial("000");
+            }
+            StringBuilder str_contribuyenteEspecial = new StringBuilder();
+            if (!emisor.getContribuyenteespecial().equals("000")) {
+                str_contribuyenteEspecial.append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n");
+            }
+
             str_xml.append("		</infoTributaria> \n")
                     .append("		<infoNotaCredito> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
@@ -91,7 +101,7 @@ public class NotaCreditoServiceImp implements NotaCreditoService {
                     .append("			<tipoIdentificacionComprador>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionComprador> \n")
                     .append("			<razonSocialComprador>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialComprador> \n")
                     .append("			<identificacionComprador>").append(comprobante.getCliente().getIdentificacion().trim()).append("</identificacionComprador> \n")
-                    .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
+                    .append(str_contribuyenteEspecial)
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
                     .append("                   <codDocModificado>").append(comprobante.getCoddocmodificado()).append("</codDocModificado> \n")
                     .append("                   <numDocModificado>").append(comprobante.getNumdocmodificado()).append("</numDocModificado> \n")

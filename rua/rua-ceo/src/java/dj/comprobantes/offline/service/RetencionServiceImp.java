@@ -54,14 +54,23 @@ public class RetencionServiceImp implements RetencionService {
             if (comprobante.getAgenteRetRes() != null) {
                 str_xml.append("      		<agenteRetencion>").append(comprobante.getAgenteRetRes()).append("</agenteRetencion> \n");
             }
-            if (comprobante.getContribuyenteRimpe()!= null) {
+            if (comprobante.getContribuyenteRimpe() != null) {
                 str_xml.append("      		<contribuyenteRimpe>").append(comprobante.getContribuyenteRimpe()).append("</contribuyenteRimpe> \n");
             }
+            //6-8-2022 Validacion Contribuyente Especial
+            if (emisor.getContribuyenteespecial() == null) {
+                emisor.setContribuyenteespecial("000");
+            }
+            StringBuilder str_contribuyenteEspecial = new StringBuilder();
+            if (!emisor.getContribuyenteespecial().equals("000")) {
+                str_contribuyenteEspecial.append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n");
+            }
+
             str_xml.append("		</infoTributaria> \n")
                     .append("		<infoCompRetencion> \n")
                     .append("			<fechaEmision>").append(utilitario.getFormatoFecha(comprobante.getFechaemision(), "dd/MM/yyyy")).append("</fechaEmision> \n")
                     .append("			<dirEstablecimiento>").append(emisor.getDirsucursal()).append("</dirEstablecimiento> \n")
-                    .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
+                    .append(str_contribuyenteEspecial)
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
                     .append("			<tipoIdentificacionSujetoRetenido>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionSujetoRetenido> \n")
                     .append("			<razonSocialSujetoRetenido>").append(comprobante.getCliente().getNombreCliente()).append("</razonSocialSujetoRetenido> \n")

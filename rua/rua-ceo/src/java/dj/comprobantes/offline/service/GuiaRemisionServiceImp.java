@@ -30,6 +30,16 @@ public class GuiaRemisionServiceImp implements GuiaRemisionService {
         StringBuilder str_xml = new StringBuilder();
         if (comprobante != null) {
             Emisor emisor = emisorService.getEmisor(comprobante.getOficina());
+
+            //6-8-2022 Validacion Contribuyente Especial
+            if (emisor.getContribuyenteespecial() == null) {
+                emisor.setContribuyenteespecial("000");
+            }
+            StringBuilder str_contribuyenteEspecial = new StringBuilder();
+            if (!emisor.getContribuyenteespecial().equals("000")) {
+                str_contribuyenteEspecial.append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n");
+            }
+
             str_xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                     .append("     <guiaRemision id=\"comprobante\" version=\"1.0.0\"> \n")
                     .append("		<infoTributaria> \n")
@@ -52,7 +62,7 @@ public class GuiaRemisionServiceImp implements GuiaRemisionService {
                     .append("			<tipoIdentificacionTransportista>").append(comprobante.getCliente().getTipoIdentificacion()).append("</tipoIdentificacionTransportista> \n")
                     .append("			<rucTransportista>").append(comprobante.getCliente().getIdentificacion().trim()).append("</rucTransportista> \n")
                     .append("			<obligadoContabilidad>").append(emisor.getObligadocontabilidad()).append("</obligadoContabilidad> \n")
-                    .append("			<contribuyenteEspecial>").append(emisor.getContribuyenteespecial()).append("</contribuyenteEspecial> \n")
+                    .append(str_contribuyenteEspecial)
                     .append("			<fechaIniTransporte>").append(utilitario.getFormatoFecha(comprobante.getFechaIniTransporte(), "dd/MM/yyyy")).append("</fechaIniTransporte> \n")
                     .append("			<fechaFinTransporte>").append(utilitario.getFormatoFecha(comprobante.getFechaFinTransporte(), "dd/MM/yyyy")).append("</fechaFinTransporte> \n")
                     .append("			<placa>").append(comprobante.getPlaca()).append("</placa> \n")
