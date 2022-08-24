@@ -551,12 +551,15 @@ public class pre_modifica_factura extends Pantalla {
             String str_aux_iva = ser_producto.getUltimoIvaProductoCliente(tab_cab_factura.getValor("ide_geper"), tab_deta_factura.getValor("ide_inarti"));
             if (str_aux_iva != null && str_aux_iva.isEmpty() == false) {
                 //Carga el valor del iva del producto para el cliente seleccionado
-                tab_deta_factura.setValor("iva_inarti_ccdfa", str_aux_iva);
+                tab_deta_factura.setValor("iva_inarti_ccdfa", str_aux_iva); 
             }
         } else {
             tab_deta_factura.setValor("precio_ccdfa", "0,00");
         }
-        utilitario.addUpdateTabla(tab_deta_factura, "precio_ccdfa,iva_inarti_ccdfa", "");
+        TablaGenerica tab_articulo= ser_producto.getProducto(tab_deta_factura.getValor("ide_inarti"));
+        tab_deta_factura.setValor("observacion_ccdfa", tab_articulo.getValor("nombre_inarti"));
+       System.out.println("valor "+tab_articulo.getValor("nombre_inarti"));
+        utilitario.addUpdateTabla(tab_deta_factura, "precio_ccdfa,iva_inarti_ccdfa,observacion_ccdfa", "");
         calcularTotalDetalleFactura();
 
     }
