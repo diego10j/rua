@@ -179,8 +179,8 @@ public class ServicioInventario {
         tab_cab_comp_inv.setValor("ide_usua", utilitario.getVariable("ide_usua"));
 
         //Busca
-        tab_cab_comp_inv.setValor("ide_inbod", getBodegaSucursal());
-        tab_cab_comp_inv.setValor("numero_incci", getSecuencialComprobanteInventario(tab_cab_comp_inv.getValor("ide_inbod")));  /// calcular numero de comprobante de inventario
+        tab_cab_comp_inv.setValor("ide_inbod", getBodegaSucursal()); 
+        tab_cab_comp_inv.setValor("numero_incci", "VENTA-"+ide_incci);  /// calcular numero de comprobante de inventario
         tab_cab_comp_inv.setValor("fecha_trans_incci", tab_factura_cxc.getValor("fecha_emisi_cccfa"));
         tab_cab_comp_inv.setValor("observacion_incci", tab_factura_cxc.getValor("observacion_cccfa"));
         tab_cab_comp_inv.setValor("fecha_siste_incci", utilitario.getFechaActual());

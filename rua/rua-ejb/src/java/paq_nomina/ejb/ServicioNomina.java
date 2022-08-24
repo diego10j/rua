@@ -2161,7 +2161,11 @@ public class ServicioNomina {
 				if (ide_geedp.equalsIgnoreCase("123")){
 					System.out.println("tot recibir antes "+dou_tot_recibir);
 				}
-*/
+*/                              // Aplicar renta 2022
+                                
+                        	//utilitario.getConexion().ejecutarSql("update nrh_detalle_rol set valor_nrdro=0 where ide_nrder in ( select ide_nrder from nrh_detalle_rubro  where ide_nrrub=42 ) and  IDE_NRROL="+tab_rol.getValorSeleccionado());
+        
+                                // hasta qui aplicado renta 2022
 				// ACTUALIZO EL TOTAL A RECIBIR
 				dou_tot_recibir=dou_tot_recibir-Double.parseDouble(big_irm1+"");
 

@@ -206,6 +206,7 @@ public class ServicioGerencial {
                         " ,ide_cndpc,ide_cnlap from con_det_comp_cont ) dcc on ccc.ide_cnccc=dcc.ide_cnccc inner join con_det_plan_cuen dpc on  dpc.ide_cndpc = dcc.ide_cndpc \n" +
                         " inner join con_tipo_cuenta tc on dpc.ide_cntcu=tc.ide_cntcu WHERE (ccc.fecha_trans_cnccc BETWEEN '"+fecha_inicial+"' and '"+fecha_final+"') \n" +
                         " and ccc.ide_cneco IN ("+estado+") and ccc.ide_sucu="+sucursal+" group by  dpc.ide_cndpc,dpc.nombre_cndpc,dpc.ide_cnncu order by dpc.ide_cndpc";
+       //System.out.println("transferrir asientos "+sql);
         return sql;
     }
         /**
