@@ -558,7 +558,7 @@ public class pre_modifica_factura extends Pantalla {
         }
         TablaGenerica tab_articulo= ser_producto.getProducto(tab_deta_factura.getValor("ide_inarti"));
         tab_deta_factura.setValor("observacion_ccdfa", tab_articulo.getValor("nombre_inarti"));
-       System.out.println("valor "+tab_articulo.getValor("nombre_inarti"));
+       //System.out.println("valor "+tab_articulo.getValor("nombre_inarti"));
         utilitario.addUpdateTabla(tab_deta_factura, "precio_ccdfa,iva_inarti_ccdfa,observacion_ccdfa", "");
         calcularTotalDetalleFactura();
 
