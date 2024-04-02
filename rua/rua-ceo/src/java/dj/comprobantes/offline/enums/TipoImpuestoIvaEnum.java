@@ -18,6 +18,7 @@ public enum TipoImpuestoIvaEnum {
     IVA_VENTA_0("0", "0.00"),
     IVA_VENTA_12("2", "12.00"),
     IVA_VENTA_14("3", "14.00"),
+    IVA_VENTA_15("4", "15.00"),
     IVA_NO_OBJETO("6", "NO OBJETO"),
     IVA_EXCENTO("7", "EXCENTO");
 
@@ -50,21 +51,19 @@ public enum TipoImpuestoIvaEnum {
      */
     public static String getCodigo(String porcentaje1) {
 
-        String codigo = IVA_VENTA_14.getCodigo(); //Por defecto
+        String codigo = IVA_VENTA_15.getCodigo(); //Por defecto
         if (porcentaje1.equals(IVA_VENTA_0.getPorcentaje())) {
             codigo = IVA_VENTA_0.getCodigo();
         } else if (porcentaje1.equals(IVA_VENTA_12.getPorcentaje())) {
             codigo = IVA_VENTA_12.getCodigo();
-        } else if (porcentaje1.equals(IVA_VENTA_14.getPorcentaje())) {
-            codigo = IVA_VENTA_14.getCodigo();
         }
         return codigo;
     }
 
     public static String getCodigo(Double valor) {
-        String codigo = IVA_VENTA_12.getCodigo(); //por defecto
-        if (String.valueOf(valor).equals(IVA_VENTA_14.getPorcentaje())) {
-            codigo = IVA_VENTA_14.getCodigo();
+        String codigo = IVA_VENTA_15.getCodigo(); //por defecto
+        if (String.valueOf(valor).equals(IVA_VENTA_12.getPorcentaje())) {
+            codigo = IVA_VENTA_12.getCodigo();
         } else if (String.valueOf(valor).equals(IVA_VENTA_0.getPorcentaje())) {
             codigo = IVA_VENTA_0.getCodigo();
         }
@@ -78,9 +77,9 @@ public enum TipoImpuestoIvaEnum {
      * @return
      */
     public static String getPorcentaje(Double valor) {
-        String codigo = IVA_VENTA_12.getPorcentaje(); //por defecto
-        if (String.valueOf(valor).equals(IVA_VENTA_14.getPorcentaje())) {
-            codigo = IVA_VENTA_14.getPorcentaje();
+        String codigo = IVA_VENTA_15.getPorcentaje(); //por defecto
+        if (String.valueOf(valor).equals(IVA_VENTA_12.getPorcentaje())) {
+            codigo = IVA_VENTA_12.getPorcentaje();
         } else if (String.valueOf(valor).equals(IVA_VENTA_0.getPorcentaje())) {
             codigo = IVA_VENTA_0.getPorcentaje();
         }

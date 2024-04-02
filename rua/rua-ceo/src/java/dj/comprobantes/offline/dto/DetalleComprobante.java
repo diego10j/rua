@@ -57,7 +57,7 @@ public class DetalleComprobante implements Serializable {
             //CodigoPorcentaje
             switch (resultado.getString("iva_inarti_ccdfa")) {
                 case "1":  //SI
-                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_12.getCodigo();
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_15.getCodigo();
                     break;
                 case "-1": //NO
                     this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_0.getCodigo();
@@ -66,7 +66,7 @@ public class DetalleComprobante implements Serializable {
                     this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_NO_OBJETO.getCodigo();
                     break;
                 default:
-                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_12.getCodigo();
+                    this.codigoPorcentaje = TipoImpuestoIvaEnum.IVA_VENTA_15.getCodigo();
                     break;
             }
         } catch (SQLException e) {
